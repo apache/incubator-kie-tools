@@ -38,7 +38,6 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
  * This displays the metadata for a versionable artifact. It also captures
  * edits, but it does not load or save anything itself.
  */
-@Dependent
 public class MetadataWidget
         extends DirtyableComposite
         implements HasBusyIndicator {
@@ -63,10 +62,10 @@ public class MetadataWidget
     @UiField TextBox external;
     @UiField TextBox source;
 
-    @Inject
     private BusyIndicatorView busyIndicatorView;
 
-    public MetadataWidget() {
+    public MetadataWidget(BusyIndicatorView busyIndicatorView) {
+        this.busyIndicatorView = busyIndicatorView;
         initWidget(uiBinder.createAndBindUi(this));
     }
 

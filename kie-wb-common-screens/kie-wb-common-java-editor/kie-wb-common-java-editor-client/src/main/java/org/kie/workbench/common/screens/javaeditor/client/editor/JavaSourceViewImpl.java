@@ -19,9 +19,11 @@ package org.kie.workbench.common.screens.javaeditor.client.editor;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.screens.javaeditor.client.widget.ViewJavaSourceWidget;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 public class JavaSourceViewImpl extends Composite
                                 implements JavaSourceView {
@@ -57,4 +59,12 @@ public class JavaSourceViewImpl extends Composite
         busyIndicatorView.hideBusyIndicator();
     }
 
+    @Override
+    public void alertReadOnly() {
+        Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
+    }
+
+    @Override public void setNotDirty() {
+
+    }
 }

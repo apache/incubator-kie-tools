@@ -53,8 +53,6 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
@@ -297,7 +295,7 @@ public class DataObjectFieldEditor extends Composite {
         final String oldValue = getObjectField().getName();
         final String newValue = DataModelerUtils.unCapitalize(name.getValue());
 
-        final String originalClassName = getContext() != null ? getContext().getEditorModel().getOriginalClassName() : null;
+        final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
         final String fieldName = oldValue;
 
         if ( originalClassName != null ) {

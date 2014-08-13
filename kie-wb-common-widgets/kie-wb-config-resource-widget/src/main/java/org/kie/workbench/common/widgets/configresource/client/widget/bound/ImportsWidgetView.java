@@ -7,10 +7,11 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.client.mvp.UberView;
 
 public interface ImportsWidgetView
-        extends HasBusyIndicator,
+        extends KieEditorView,
                 UberView<ImportsWidgetView.Presenter> {
 
     interface Presenter {

@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.uberfire.client.common.BusyPopup;
 
@@ -153,6 +154,10 @@ public class ImportsWidgetViewImpl
     @Override
     public boolean isDirty() {
         return isDirty;
+    }
+
+    @Override public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
     }
 
     @Override

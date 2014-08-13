@@ -1,12 +1,13 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.defaulteditor.client.editor.GuvnorTextEditorPresenter;
+import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorPresenter;
+import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorView;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants;
 import org.kie.workbench.common.screens.projecteditor.client.type.KModuleResourceType;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -18,7 +19,12 @@ import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchEditor(identifier = "kmoduleScreen", supportedTypes = { KModuleResourceType.class })
 public class KModuleEditorScreenPresenter
-        extends GuvnorTextEditorPresenter {
+        extends KieTextEditorPresenter {
+
+    @Inject
+    public KModuleEditorScreenPresenter(KieTextEditorView baseView) {
+        super(baseView);
+    }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -29,11 +35,6 @@ public class KModuleEditorScreenPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return super.getMenus();
-    }
-
-    @OnOpen
-    public void onOpen() {
-        super.onOpen();
     }
 
     @WorkbenchPartTitle

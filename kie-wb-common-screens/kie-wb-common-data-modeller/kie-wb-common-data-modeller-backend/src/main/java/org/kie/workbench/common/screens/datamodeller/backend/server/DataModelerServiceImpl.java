@@ -60,7 +60,7 @@ import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionT
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
+import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
@@ -223,49 +223,49 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public EditorModel loadModel( final Path path ) {
+    public EditorModelContent loadContent(final Path path) {
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Loading editor model from path: " + path.toURI() );
         }
 
         Long startTime = System.currentTimeMillis();
-        EditorModel editorModel = new EditorModel();
+        EditorModelContent editorModelContent = new EditorModelContent();
 
         try {
             //TODO review this method implementation for optimizations
             KieProject project = projectService.resolveProject( path );
             if ( project == null ) {
                 logger.warn( "File : " + path.toURI() + " do not belong to a valid project" );
-                return editorModel;
+                return editorModelContent;
             }
 
             Pair<DataModelTO, ModelDriverResult> resultPair = loadModel( project, false );
             DataModelTO dataModelTO = resultPair.getK1();
             String className = calculateClassName( project, path );
 
-            editorModel.setCurrentProject( project );
-            editorModel.setDataModel( dataModelTO );
-            editorModel.setDataObject( dataModelTO.getDataObjectByClassName( className ) );
-            if ( editorModel.getDataObject() != null ) editorModel.setOriginalClassName( className );
+            editorModelContent.setCurrentProject( project );
+            editorModelContent.setDataModel( dataModelTO );
+            editorModelContent.setDataObject( dataModelTO.getDataObjectByClassName( className ) );
+            if ( editorModelContent.getDataObject() != null ) editorModelContent.setOriginalClassName( className );
 
             //Read the sources for the file being edited.
             if ( ioService.exists( Paths.convert( path ) ) ) {
                 String source = ioService.readAllString( Paths.convert( path ) );
-                editorModel.setSource( source );
+                editorModelContent.setSource( source );
             }
 
             if ( resultPair.getK2().hasErrors() ) {
-                editorModel.setErrors( DataModelerServiceHelper.getInstance().toDataModelerError( resultPair.getK2().getErrors() ) );
+                editorModelContent.setErrors( DataModelerServiceHelper.getInstance().toDataModelerError( resultPair.getK2().getErrors() ) );
             }
 
-            editorModel.setOverview( loadOverview( path ) );
+            editorModelContent.setOverview( loadOverview( path ) );
 
-            editorModel.setElapsedTime( System.currentTimeMillis() - startTime );
+            editorModelContent.setElapsedTime( System.currentTimeMillis() - startTime );
             if ( logger.isDebugEnabled() ) {
-                logger.debug( "Time elapsed when loading editor model from:" + path + " : " + editorModel.getElapsedTime() + " ms" );
+                logger.debug( "Time elapsed when loading editor model from:" + path + " : " + editorModelContent.getElapsedTime() + " ms" );
             }
 
-            return editorModel;
+            return editorModelContent;
 
         } catch ( Exception e ) {
             logger.error( "Editor model couldn't be loaded from path: " + ( path != null ? path.toURI() : path ) + ".", e );

@@ -30,12 +30,15 @@ import org.uberfire.client.workbench.type.ClientTypeRegistry;
 public class OverviewWidgetPresenter
         implements OverviewScreenView.Presenter, IsWidget {
 
-    private final ClientTypeRegistry clientTypeRegistry;
+    private ClientTypeRegistry clientTypeRegistry;
 
     private Overview overview;
     private boolean isReadOnly = false;
 
     private OverviewScreenView view;
+
+    public OverviewWidgetPresenter() {
+    }
 
     @Inject
     public OverviewWidgetPresenter(

@@ -27,7 +27,7 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
+import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 
 /**
@@ -47,7 +47,7 @@ public class DataModelerContext {
 
     private List<String> currentProjectPackages = new ArrayList<String>();
 
-    private EditorModel editorModel;
+    private EditorModelContent editorModelContent;
 
     /**
      * Status relative to the edition tabs. This is a kind of sub status, that tells us if there are pending changes
@@ -111,7 +111,7 @@ public class DataModelerContext {
     }
 
     public DataModelTO getDataModel() {
-        return editorModel != null ? editorModel.getDataModel() : null;
+        return editorModelContent != null ? editorModelContent.getDataModel() : null;
     }
 
     public DataModelHelper getHelper() {
@@ -220,22 +220,22 @@ public class DataModelerContext {
     }
 
     public Project getCurrentProject() {
-        if ( editorModel != null ) {
-            return editorModel.getCurrentProject();
+        if ( editorModelContent != null ) {
+            return editorModelContent.getCurrentProject();
         }
         return null;
     }
 
     public DataObjectTO getDataObject() {
-        if ( editorModel != null ) {
-            return editorModel.getDataObject();
+        if ( editorModelContent != null ) {
+            return editorModelContent.getDataObject();
         }
         return null;
     }
 
     public void setDataObject(DataObjectTO dataObjectTO) {
-        if (editorModel != null) {
-            editorModel.setDataObject( dataObjectTO );
+        if (editorModelContent != null) {
+            editorModelContent.setDataObject( dataObjectTO );
         }
     }
 
@@ -247,15 +247,15 @@ public class DataModelerContext {
         this.editionStatus = editionStatus;
     }
 
-    public EditorModel getEditorModel() {
-        return editorModel;
+    public EditorModelContent getEditorModelContent() {
+        return editorModelContent;
     }
 
-    public void setEditorModel( EditorModel editorModel ) {
-        this.editorModel = editorModel;
-        if ( editorModel.getDataModel() != null) {
+    public void setEditorModelContent(EditorModelContent editorModelContent) {
+        this.editorModelContent = editorModelContent;
+        if ( editorModelContent.getDataModel() != null) {
             //TODO, likely this helper is no longer needed.
-            helper.setDataModel( editorModel.getDataModel());
+            helper.setDataModel( editorModelContent.getDataModel());
         }
     }
 

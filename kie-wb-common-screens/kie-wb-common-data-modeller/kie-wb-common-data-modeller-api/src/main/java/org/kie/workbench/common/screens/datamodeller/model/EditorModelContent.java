@@ -25,7 +25,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
-public class EditorModel extends DataModelerResult {
+public class EditorModelContent extends DataModelerResult {
 
     /**
      * Data model for current project at the time the DataObjectTO was loaded.
@@ -60,7 +60,7 @@ public class EditorModel extends DataModelerResult {
     //only to distinguish models created in memory
     private int id = modelIds++;
 
-    public EditorModel() {
+    public EditorModelContent() {
     }
 
     public DataModelTO getDataModel() {

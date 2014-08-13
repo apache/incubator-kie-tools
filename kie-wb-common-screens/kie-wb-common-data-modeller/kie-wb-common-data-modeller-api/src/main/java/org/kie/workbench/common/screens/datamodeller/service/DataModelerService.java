@@ -25,7 +25,7 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.EditorModel;
+import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
@@ -39,7 +39,7 @@ public interface DataModelerService {
 
     DataModelTO loadModel( final KieProject project );
 
-    EditorModel loadModel( final Path path );
+    EditorModelContent loadContent(final Path path);
 
     GenerationResult saveModel( final DataModelTO dataModel,
             final KieProject project,

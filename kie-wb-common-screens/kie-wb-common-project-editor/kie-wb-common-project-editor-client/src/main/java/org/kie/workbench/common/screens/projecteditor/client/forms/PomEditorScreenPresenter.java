@@ -1,7 +1,10 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.screens.defaulteditor.client.editor.GuvnorTextEditorPresenter;
+import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorPresenter;
+import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorView;
 import org.kie.workbench.common.screens.projecteditor.client.type.POMResourceType;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -15,7 +18,12 @@ import org.uberfire.workbench.model.menu.Menus;
 
 @WorkbenchEditor(identifier = "pomScreen", supportedTypes = { POMResourceType.class })
 public class PomEditorScreenPresenter
-        extends GuvnorTextEditorPresenter {
+        extends KieTextEditorPresenter {
+
+    @Inject
+    public PomEditorScreenPresenter(KieTextEditorView baseView) {
+        super(baseView);
+    }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
@@ -26,11 +34,6 @@ public class PomEditorScreenPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return super.getMenus();
-    }
-
-    @OnOpen
-    public void onOpen() {
-        super.onOpen();
     }
 
     @WorkbenchPartTitle

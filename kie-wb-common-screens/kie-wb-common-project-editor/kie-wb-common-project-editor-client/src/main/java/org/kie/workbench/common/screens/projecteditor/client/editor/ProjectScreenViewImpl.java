@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Dependency;
+import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
@@ -83,11 +84,9 @@ public class ProjectScreenViewImpl
     @Inject
     public ProjectScreenViewImpl(POMEditorPanel pomEditorPanel,
                                  DependencyGrid dependencyGrid,
-                                 MetadataWidget pomMetadataWidget,
                                  KModuleEditorPanel kModuleEditorPanel,
-                                 MetadataWidget kModuleMetaDataPanel,
                                  ImportsWidgetPresenter importsWidgetPresenter,
-                                 MetadataWidget importsPageMetadata) {
+                                 BusyIndicatorView busyIndicatorView) {
 
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -97,19 +96,19 @@ public class ProjectScreenViewImpl
         this.dependencyGrid = dependencyGrid;
         deckPanel.add(dependencyGrid);
 
-        this.pomMetadataWidget = pomMetadataWidget;
+        this.pomMetadataWidget = new MetadataWidget(busyIndicatorView);
         deckPanel.add(pomMetadataWidget);
 
         this.kModuleEditorPanel = kModuleEditorPanel;
         deckPanel.add(kModuleEditorPanel);
 
-        this.kModuleMetaDataPanel = kModuleMetaDataPanel;
+        this.kModuleMetaDataPanel = new MetadataWidget(busyIndicatorView);
         deckPanel.add(kModuleMetaDataPanel);
 
         this.importsWidgetPresenter = importsWidgetPresenter;
         deckPanel.add(importsWidgetPresenter);
 
-        this.importsPageMetadata = importsPageMetadata;
+        this.importsPageMetadata = new MetadataWidget(busyIndicatorView);
         deckPanel.add(importsPageMetadata);
 
     }

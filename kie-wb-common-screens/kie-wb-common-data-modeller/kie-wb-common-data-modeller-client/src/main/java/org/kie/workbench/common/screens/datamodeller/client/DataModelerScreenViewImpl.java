@@ -35,10 +35,10 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.ModelPropert
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
 //@Dependent
 public class DataModelerScreenViewImpl extends Composite
@@ -51,8 +51,6 @@ public class DataModelerScreenViewImpl extends Composite
     }
 
     private static DataModelerScreenViewBinder uiBinder = GWT.create(DataModelerScreenViewBinder.class);
-
-    private DataModelerScreenPresenter presenter;
 
     /*
     @UiField
@@ -102,7 +100,7 @@ public class DataModelerScreenViewImpl extends Composite
 
     @Override
     public void init(final DataModelerScreenPresenter presenter) {
-        this.presenter = presenter;
+        // Not used.
     }
 
     @Override
@@ -157,4 +155,13 @@ public class DataModelerScreenViewImpl extends Composite
         BusyPopup.close();
     }
 
+    @Override
+    public void alertReadOnly() {
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+    }
+
+    @Override
+    public void setNotDirty() {
+        context.setDirty(false);
+    }
 }

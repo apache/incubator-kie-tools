@@ -19,15 +19,15 @@ import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class, XmlResourceType.class }, priority = 1)
-public class GuvnorTextEditorScreenPresenter
-        extends GuvnorTextEditorPresenter {
+public class KieTextEditorScreenPresenter
+        extends KieTextEditorPresenter {
 
     @Inject
     private TextResourceType type;
 
-    @OnOpen
-    public void onOpen() {
-        super.onOpen();
+    @Inject
+    public KieTextEditorScreenPresenter(KieTextEditorView baseView) {
+        super(baseView);
     }
 
     @OnStartup
@@ -38,7 +38,7 @@ public class GuvnorTextEditorScreenPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return GuvnorDefaultEditorConstants.INSTANCE.TextEditor( FileNameUtil.removeExtension( path, type ) );
+        return GuvnorDefaultEditorConstants.INSTANCE.TextEditor( FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(), type ) );
     }
 
     @WorkbenchPartView

@@ -24,7 +24,10 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.service.KieService;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
@@ -38,6 +41,7 @@ import org.uberfire.security.Identity;
 @Service
 @ApplicationScoped
 public class DefaultEditorServiceImpl
+        extends KieService
         implements DefaultEditorService {
 
     private static final Logger log = LoggerFactory.getLogger( DefaultEditorServiceImpl.class );
@@ -82,5 +86,10 @@ public class DefaultEditorServiceImpl
                                     null,
                                     commitMessage,
                                     when );
+    }
+
+    @Override
+    public Overview loadOverview(ObservablePath path) {
+        return loadOverview(path);
     }
 }

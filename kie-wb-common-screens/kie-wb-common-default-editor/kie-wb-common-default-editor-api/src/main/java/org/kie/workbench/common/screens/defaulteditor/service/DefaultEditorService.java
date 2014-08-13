@@ -17,9 +17,13 @@
 package org.kie.workbench.common.screens.defaulteditor.service;
 
 import org.guvnor.common.services.shared.file.SupportsUpdate;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Remote;
+import org.uberfire.backend.vfs.ObservablePath;
 
 @Remote
 public interface DefaultEditorService extends SupportsUpdate<String> {
+
+    Overview loadOverview(ObservablePath path);
 
 }

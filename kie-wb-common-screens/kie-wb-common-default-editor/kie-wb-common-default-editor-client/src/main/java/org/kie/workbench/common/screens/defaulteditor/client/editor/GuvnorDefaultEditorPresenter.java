@@ -18,25 +18,17 @@ package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
-import org.kie.uberfire.client.editors.defaulteditor.DefaultFileEditorPresenter;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -44,6 +36,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -52,18 +45,13 @@ import org.uberfire.workbench.model.menu.Menus;
  * A text based editor for Domain Specific Language definitions
  */
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = { AnyResourceType.class }, priority = -1)
+@WorkbenchEditor(identifier = "GuvnorDefaultFileEditor", supportedTypes = {AnyResourceType.class}, priority = -1)
 public class GuvnorDefaultEditorPresenter
-        extends DefaultFileEditorPresenter {
+        extends KieEditor {
 
-    @Inject
-    private MultiPageEditor multiPage;
-
+    private final GuvnorDefaultEditorView view;
     @Inject
     private Caller<DefaultEditorService> defaultEditorService;
-
-    @Inject
-    private Caller<MetadataService> metadataService;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -75,61 +63,27 @@ public class GuvnorDefaultEditorPresenter
     private DefaultFileNameValidator fileNameValidator;
 
     @Inject
-    @New
-    private FileMenuBuilder menuBuilder;
-    private Menus menus;
-
-    @Inject
-    private MetadataWidget metadataWidget;
-
-    private boolean isReadOnly;
-    private String version;
-    private Path path;
-
-    @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.onStartup( path );
-
-        this.path = path;
-        this.isReadOnly = place.getParameter( "readOnly", null ) == null ? false : true;
-        this.version = place.getParameter( "version", null );
-
-        makeMenuBar();
-
-        multiPage.addWidget( super.getWidget(),
-                             CommonConstants.INSTANCE.EditTabTitle() );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                    metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                    metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                       isReadOnly ),
-                                          new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
-                                        ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                //Nothing to do
-            }
-        } );
+    public GuvnorDefaultEditorPresenter(GuvnorDefaultEditorView baseView) {
+        super(baseView);
+        view = baseView;
     }
 
-    private void makeMenuBar() {
-        if ( isReadOnly ) {
-            menus = menuBuilder.addRestoreVersion( path ).build();
-        } else {
-            menus = menuBuilder
-                    .addCopy( path,
-                              fileNameValidator )
-                    .addRename( path,
-                                fileNameValidator )
-                    .addDelete( path )
-                    .build();
-        }
+    @OnStartup
+    public void onStartup(final ObservablePath path,
+            final PlaceRequest place) {
+        super.init(path, place);
+        view.onStartup(path);
+    }
+
+    protected void makeMenuBar() {
+        menus = menuBuilder
+                .addCopy(versionRecordManager.getCurrentPath(),
+                        fileNameValidator)
+                .addRename(versionRecordManager.getCurrentPath(),
+                        fileNameValidator)
+                .addDelete(versionRecordManager.getCurrentPath())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .build();
     }
 
     @WorkbenchMenu
@@ -139,21 +93,39 @@ public class GuvnorDefaultEditorPresenter
 
     @OnClose
     public void onClose() {
-        super.onClose();
+        versionRecordManager.clear();
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = path.getFileName();
-        if ( version != null ) {
-            fileName = fileName + " v" + version;
+        String fileName = versionRecordManager.getCurrentPath().getFileName();
+        if (versionRecordManager.getVersion() != null) {
+            fileName = fileName + " v" + versionRecordManager.getVersion();
         }
         return "Default Editor [" + fileName + "]";
     }
 
+    @Override
+    protected void loadContent() {
+        defaultEditorService.call(new RemoteCallback<Overview>() {
+            @Override
+            public void callback(Overview overview) {
+                resetEditorPages(overview);
+            }
+        }).loadOverview(versionRecordManager.getCurrentPath());
+    }
+
+    @Override protected void save() {
+
+    }
+
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
+    }
+
+    @Override protected Command onValidate() {
+        return null;
     }
 
 }

@@ -14,19 +14,27 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.client.editor;
+package org.kie.workbench.common.widgets.metadata.client;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.uberfire.client.common.MultiPageEditor;
+import org.kie.uberfire.client.common.Page;
+import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
+import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.discussion.VersionRecordManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
@@ -43,6 +51,10 @@ import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 public abstract class KieEditor {
 
+    protected static final int OVERVIEW_TAB_INDEX = 0;
+
+    protected static final int EDITOR_TAB_INDEX = 1;
+
     protected boolean isReadOnly;
 
     private KieEditorView baseView;
@@ -50,6 +62,12 @@ public abstract class KieEditor {
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     protected Menus menus;
+
+    @Inject
+    private MultiPageEditor multiPage;
+
+    @Inject
+    private OverviewWidgetPresenter overview;
 
     @Inject
     private PlaceManager placeManager;
@@ -68,7 +86,9 @@ public abstract class KieEditor {
     @Inject
     protected Event<NotificationEvent> notification;
 
-    private PlaceRequest place;
+    protected Metadata metadata;
+
+    protected PlaceRequest place;
 
     protected KieEditor() {
     }
@@ -92,18 +112,7 @@ public abstract class KieEditor {
                 new Callback<VersionRecord>() {
                     @Override
                     public void callback(VersionRecord versionRecord) {
-
-                        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-
-                        if (versionRecordManager.isLatest(versionRecord)) {
-                            isReadOnly = false;
-                            versionRecordManager.setVersion(null);
-                        } else {
-                            isReadOnly = true;
-                            versionRecordManager.setVersion(versionRecord.id());
-                        }
-
-                        loadContent();
+                        selectVersion(versionRecord);
                     }
                 });
 
@@ -113,20 +122,79 @@ public abstract class KieEditor {
 
     }
 
+    private void selectVersion(VersionRecord versionRecord) {
+        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+
+        if (versionRecordManager.isLatest(versionRecord)) {
+            isReadOnly = false;
+            versionRecordManager.setVersion(null);
+        } else {
+            isReadOnly = true;
+            versionRecordManager.setVersion(versionRecord.id());
+        }
+
+        loadContent();
+    }
+
+    protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
+        return new CommandDrivenErrorCallback(baseView,
+                new CommandBuilder().addNoSuchFileException(
+                        baseView,
+                        multiPage,
+                        menus).build()
+        );
+    }
+
+    protected void addPage(Page page) {
+        multiPage.addPage(page);
+    }
+
+    protected void onEditTabSelected() {
+
+    }
+
+    protected void resetEditorPages(Overview overview) {
+        multiPage.clear();
+        multiPage.addWidget(this.overview,
+                CommonConstants.INSTANCE.Overview());
+
+        versionRecordManager.setVersions(overview.getMetadata().getVersion());
+        this.overview.setContent(overview, versionRecordManager.getCurrentPath());
+        this.metadata = overview.getMetadata();
+
+        addPage(
+                new Page(baseView,
+                        CommonConstants.INSTANCE.EditTabTitle()) {
+                    @Override
+                    public void onFocus() {
+                        onEditTabSelected();
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+
+                    }
+                });
+    }
+
+    protected void addImportsTab(IsWidget importsWidget) {
+        multiPage.addWidget(importsWidget,
+                CommonConstants.INSTANCE.ConfigTabTitle());
+
+    }
+
     private void addFileChangeListeners(final ObservablePath path) {
         path.onRename(new Command() {
             @Override
             public void execute() {
-                //Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
-                changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
-                baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-                loadContent();
+                onRename();
+
             }
         });
         path.onDelete(new Command() {
             @Override
             public void execute() {
-                placeManager.forceClosePlace(place);
+                onDelete();
             }
         });
 
@@ -179,6 +247,19 @@ public abstract class KieEditor {
                 ).show();
             }
         });
+    }
+
+    private void onDelete() {
+        placeManager.forceClosePlace(place);
+    }
+
+    /**
+     * Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
+     */
+    protected void onRename() {
+        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
+        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        loadContent();
     }
 
     protected void onSave() {
@@ -260,7 +341,7 @@ public abstract class KieEditor {
         }
     }
 
-    private void reload() {
+    public void reload() {
         concurrentUpdateSessionInfo = null;
         changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
         loadContent();
@@ -279,6 +360,30 @@ public abstract class KieEditor {
         }
     }
 
+    protected boolean isEditorTabSelected() {
+        return this.multiPage.selectedPage() == EDITOR_TAB_INDEX;
+    }
+
+    protected int getSelectedTabIndex() {
+        return this.multiPage.selectedPage();
+    }
+
+    protected void selectOverviewTab() {
+        setSelectedTab(OVERVIEW_TAB_INDEX);
+    }
+
+    protected void selectEditorTab() {
+        setSelectedTab(EDITOR_TAB_INDEX);
+    }
+
+    protected void setSelectedTab(int tabIndex) {
+        multiPage.selectPage(tabIndex);
+    }
+
+    public IsWidget getWidget() {
+        return multiPage;
+    }
+
     protected abstract Command onValidate();
 
     protected abstract String getTitle();
@@ -286,6 +391,5 @@ public abstract class KieEditor {
     protected abstract void loadContent();
 
     protected abstract void save();
-
 }
 

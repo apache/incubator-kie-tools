@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -77,10 +78,15 @@ public class OverviewWidgetViewImpl
     @UiField(provided = true)
     DiscussionWidgetPresenter discussionArea;
 
-    @Inject
-    public OverviewWidgetViewImpl(MetadataWidget metadata, DiscussionWidgetPresenter discussionArea) {
+    public OverviewWidgetViewImpl() {
+    }
 
-        this.metadata = metadata;
+    @Inject
+    public OverviewWidgetViewImpl(
+            BusyIndicatorView busyIndicatorView,
+            DiscussionWidgetPresenter discussionArea) {
+
+        this.metadata = new MetadataWidget(busyIndicatorView);
 
         this.discussionArea = discussionArea;
 

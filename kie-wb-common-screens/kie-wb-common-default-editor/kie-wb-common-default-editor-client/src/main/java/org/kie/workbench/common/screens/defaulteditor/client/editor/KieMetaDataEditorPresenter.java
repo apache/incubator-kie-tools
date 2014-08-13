@@ -1,12 +1,8 @@
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.resources.i18n.GuvnorDefaultEditorConstants;
 import org.kie.workbench.common.services.security.AppRoles;
@@ -20,14 +16,12 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Identity;
-import org.uberfire.security.Role;
-import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
 @WorkbenchEditor(identifier = "KieMetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE - 1)
 public class KieMetaDataEditorPresenter
-        extends GuvnorTextEditorPresenter {
+        extends KieTextEditorPresenter {
 
     @Inject
     private DotResourceType type;
@@ -35,9 +29,9 @@ public class KieMetaDataEditorPresenter
     @Inject
     private Identity identity;
 
-    @OnOpen
-    public void onOpen() {
-        super.onOpen();
+    @Inject
+    public KieMetaDataEditorPresenter(KieTextEditorView baseView) {
+        super(baseView);
     }
 
     @OnStartup
@@ -56,7 +50,7 @@ public class KieMetaDataEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return GuvnorDefaultEditorConstants.INSTANCE.MetaFileEditor( path.getFileName() );
+        return GuvnorDefaultEditorConstants.INSTANCE.MetaFileEditor( versionRecordManager.getCurrentPath().getFileName() );
     }
 
     @WorkbenchPartView

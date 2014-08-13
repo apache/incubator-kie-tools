@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
@@ -22,9 +23,9 @@ public class ProjectImportsScreenViewImpl
     private Presenter presenter;
 
     @Inject
-    public ProjectImportsScreenViewImpl( final MetadataWidget metadataWidget ) {
+    public ProjectImportsScreenViewImpl( final BusyIndicatorView busyIndicatorView ) {
         super();
-        this.metadataWidget = metadataWidget;
+        this.metadataWidget = new MetadataWidget(busyIndicatorView);
 
     }
 

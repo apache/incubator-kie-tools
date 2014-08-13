@@ -31,10 +31,13 @@ public class DiscussionWidgetPresenter
         implements IsWidget, DiscussionWidgetView.Presenter {
 
     private DiscussionWidgetView view;
-    private final Identity identity;
+    private Identity identity;
     private Caller<AppConfigService> appConfigService;
 
     private Metadata metadata;
+
+    public DiscussionWidgetPresenter() {
+    }
 
     @Inject
     public DiscussionWidgetPresenter(

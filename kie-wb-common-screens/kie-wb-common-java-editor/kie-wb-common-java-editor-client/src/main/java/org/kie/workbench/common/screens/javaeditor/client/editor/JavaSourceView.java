@@ -18,8 +18,9 @@ package org.kie.workbench.common.screens.javaeditor.client.editor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 
-public interface JavaSourceView extends HasBusyIndicator,
+public interface JavaSourceView extends KieEditorView,
                                         IsWidget {
 
     void setContent( final String content );

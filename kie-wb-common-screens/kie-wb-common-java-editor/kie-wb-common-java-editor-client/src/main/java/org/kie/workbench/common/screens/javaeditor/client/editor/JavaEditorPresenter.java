@@ -19,112 +19,90 @@ package org.kie.workbench.common.screens.javaeditor.client.editor;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.metadata.client.callbacks.MetadataSuccessCallback;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.type.FileNameUtil;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 @WorkbenchEditor(identifier = "JavaEditor", supportedTypes = { JavaResourceType.class })
-public class JavaEditorPresenter {
-
-    @Inject
-    private Caller<MetadataService> metadataService;
+public class JavaEditorPresenter
+    extends KieEditor {
 
     @Inject
     private Caller<VFSService> vfsServices;
 
-    @Inject
-    private JavaSourceView sourceView;
-
-    @Inject
-    private MetadataWidget metadataWidget;
-
-    @Inject
-    private MultiPageEditor multiPage;
+    private JavaSourceView view;
 
     @Inject
     private JavaResourceType type;
 
-    protected Path path;
-    private boolean isReadOnly = true;
-    private String version;
+    @Inject
+    public JavaEditorPresenter(JavaSourceView baseView) {
+        super(baseView);
+        view = baseView;
+    }
 
     @OnStartup
-    public void init( final Path path,
-                      final PlaceRequest place ) {
-        this.path = checkNotNull( "path", path );
-        this.version = place.getParameter( "version", null );
-        this.isReadOnly = place.getParameter( "readOnly", null ) != null;
-
-        multiPage.addPage( new Page( sourceView,
-                                     CommonConstants.INSTANCE.SourceTabTitle() ) {
-            @Override
-            public void onFocus() {
-                vfsServices.call( new RemoteCallback<String>() {
-                    @Override
-                    public void callback( String response ) {
-                        if ( response == null ) {
-                            sourceView.setContent( "-- empty --" );
-                        } else {
-                            sourceView.setContent( response );
-                        }
-                    }
-                } ).readAllString( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                sourceView.clear();
-            }
-        } );
-
-        multiPage.addPage( new Page( metadataWidget,
-                                     CommonConstants.INSTANCE.MetadataTabTitle() ) {
-            @Override
-            public void onFocus() {
-                    metadataWidget.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-                    metadataService.call( new MetadataSuccessCallback( metadataWidget,
-                                                                       isReadOnly ),
-                                          new HasBusyIndicatorDefaultErrorCallback( metadataWidget )
-                                        ).getMetadata( path );
-            }
-
-            @Override
-            public void onLostFocus() {
-                //Nothing to do
-            }
-        } );
+    public void init(final Path path,
+            final PlaceRequest place) {
+        init(path, place);
     }
 
     @WorkbenchPartTitle
     public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( path,
+        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(),
                                                         type );
-        if ( version != null ) {
-            fileName = fileName + " v" + version;
+        if ( versionRecordManager.getVersion() != null ) {
+            fileName = fileName + " v" + versionRecordManager.getVersion();
         }
         return "Java Source View [" + fileName + "]";
     }
 
+    @Override
+    protected void loadContent() {
+        vfsServices.call( new RemoteCallback<String>() {
+            @Override
+            public void callback( String response ) {
+                if ( response == null ) {
+                    view.setContent("-- empty --");
+                } else {
+                    view.setContent(response);
+                }
+            }
+        } ).readAllString( versionRecordManager.getCurrentPath() );
+    }
+
+    @Override
+    protected void makeMenuBar() {
+        menus = menuBuilder
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .build();
+    }
+
+    @Override
+    protected void save() {
+
+    }
+
     @WorkbenchPartView
     public IsWidget getWidget() {
-        return multiPage;
+        return super.getWidget();
+    }
+
+    @Override
+    protected Command onValidate() {
+        return null;
     }
 
 }

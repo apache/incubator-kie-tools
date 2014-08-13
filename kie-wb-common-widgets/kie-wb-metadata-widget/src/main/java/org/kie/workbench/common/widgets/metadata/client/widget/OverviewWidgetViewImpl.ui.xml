@@ -72,7 +72,7 @@
             <gwt:Label text='{i18n.Description}'/>
           </div>
           <div style="float:left;">
-            <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"/>
+            <bootstrap:TextArea ui:field="description" placeholder="No description yet - what does this rule do?" width="380px" visibleLines="2"></bootstrap:TextArea>
           </div>
         </div>
         <div style="clear:both;">
