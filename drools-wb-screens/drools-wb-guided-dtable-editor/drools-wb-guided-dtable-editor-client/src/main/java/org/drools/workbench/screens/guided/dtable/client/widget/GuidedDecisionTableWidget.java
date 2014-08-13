@@ -32,10 +32,10 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -91,6 +91,7 @@ import org.kie.uberfire.client.common.ImageButton;
 import org.kie.uberfire.client.common.PrettyFormLayout;
 import org.kie.uberfire.client.common.SmallLabel;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
@@ -752,9 +753,9 @@ public class GuidedDecisionTableWidget extends Composite
                 } );
 
                 //OK button to create column
-                final Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
-                ok.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
+                final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( new Command() {
+                    @Override
+                    public void execute() {
                         String s = choice.getValue( choice.getSelectedIndex() );
                         if ( s.equals( NewColumnTypes.METADATA_ATTRIBUTE.name() ) ) {
                             showMetaDataAndAttribute();
@@ -1031,7 +1032,13 @@ public class GuidedDecisionTableWidget extends Composite
                         dtable.addColumn( column );
                         refreshActionsWidget();
                     }
-                } );
+                }, new Command() {
+                    @Override
+                    public void execute() {
+                        pop.hide();
+                    }
+                }
+                );
 
                 //If a separator is clicked disable OK button
                 choice.addClickHandler( new ClickHandler() {
@@ -1041,7 +1048,7 @@ public class GuidedDecisionTableWidget extends Composite
                         if ( itemIndex < 0 ) {
                             return;
                         }
-                        ok.setEnabled( !choice.getValue( itemIndex ).equals( SECTION_SEPARATOR ) );
+                        footer.enableOkButton( !choice.getValue( itemIndex ).equals( SECTION_SEPARATOR ) );
                     }
 
                 } );
@@ -1051,8 +1058,7 @@ public class GuidedDecisionTableWidget extends Composite
                                   choice );
                 pop.addAttribute( "",
                                   chkIncludeAdvancedOptions );
-                pop.addAttribute( "",
-                                  ok );
+                pop.add( footer );
                 pop.show();
             }
 

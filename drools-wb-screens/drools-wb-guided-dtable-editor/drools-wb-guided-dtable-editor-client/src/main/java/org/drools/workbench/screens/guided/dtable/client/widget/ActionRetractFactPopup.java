@@ -21,8 +21,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -35,6 +35,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryAction
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * A popup to define the parameters of an Action to retract a Fact
@@ -94,37 +95,49 @@ public class ActionRetractFactPopup extends FormStylePopup {
         addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
-        apply.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-                if ( null == editingCol.getHeader()
-                        || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
-                    return;
-                }
-                if ( isNew ) {
-                    if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                        return;
-                    }
-
-                } else {
-                    if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
-                        if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                            return;
-                        }
-                    }
-                }
-
-                // Pass new\modified column back for handling
-                refreshGrid.execute( editingCol );
+        //Apply button
+        add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
+                applyChanges( refreshGrid,
+                              col,
+                              isNew );
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
                 hide();
             }
-        } );
-        addAttribute( "",
-                      apply );
+        }
+        ) );
+    }
 
+    private void applyChanges( final GenericColumnCommand refreshGrid,
+                               final ActionRetractFactCol52 col,
+                               final boolean isNew ) {
+        if ( null == editingCol.getHeader()
+                || "".equals( editingCol.getHeader() ) ) {
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+            return;
+        }
+        if ( isNew ) {
+            if ( !unique( editingCol.getHeader() ) ) {
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                return;
+            }
+
+        } else {
+            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+                if ( !unique( editingCol.getHeader() ) ) {
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    return;
+                }
+            }
+        }
+
+        // Pass new\modified column back for handling
+        refreshGrid.execute( editingCol );
+        hide();
     }
 
     private boolean unique( String header ) {

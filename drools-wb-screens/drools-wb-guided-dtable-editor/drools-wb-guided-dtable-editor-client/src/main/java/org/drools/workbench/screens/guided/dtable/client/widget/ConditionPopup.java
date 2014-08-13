@@ -32,9 +32,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -67,6 +66,7 @@ import org.kie.uberfire.client.common.ImageButton;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
@@ -113,6 +113,8 @@ public class ConditionPopup extends FormStylePopup {
     private final boolean isReadOnly;
 
     private InfoPopup fieldLabelInterpolationInfo = getPredicateHint();
+
+    private ModalFooterOKCancelButtons footer;
 
     public ConditionPopup( final GuidedDecisionTable52 model,
                            final AsyncPackageDataModelOracle oracle,
@@ -368,79 +370,91 @@ public class ConditionPopup extends FormStylePopup {
         initialiseViewForConstraintValueType( editingCol.getConstraintValueType() );
 
         //Apply button
-        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
-        apply.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
-                    return;
-                }
-                if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+        footer = new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
+                applyChanges( refreshGrid,
+                              col,
+                              isNew );
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        }
+        );
+        add( footer );
+    }
 
-                    //Field mandatory for Literals and Formulae
-                    if ( null == editingCol.getFactField() || "".equals( editingCol.getFactField() ) ) {
-                        Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseSelectOrEnterField() );
-                        return;
-                    }
+    private void applyChanges( final ConditionColumnCommand refreshGrid,
+                               final ConditionCol52 col,
+                               final boolean isNew ) {
+        if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+            return;
+        }
+        if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
 
-                    //Operator optional for Literals and Formulae
-                    if ( editingCol.getOperator() == null ) {
-                        Window.alert( GuidedDecisionTableConstants.INSTANCE.NotifyNoSelectedOperator() );
-                        return;
-                    }
+            //Field mandatory for Literals and Formulae
+            if ( null == editingCol.getFactField() || "".equals( editingCol.getFactField() ) ) {
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseSelectOrEnterField() );
+                return;
+            }
 
-                } else {
+            //Operator optional for Literals and Formulae
+            if ( editingCol.getOperator() == null ) {
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.NotifyNoSelectedOperator() );
+                return;
+            }
 
-                    //Clear operator for predicates, but leave field intact for interpolation of $param values
-                    editingCol.setOperator( null );
-                }
+        } else {
 
-                //Check for unique binding
-                if ( isNew ) {
+            //Clear operator for predicates, but leave field intact for interpolation of $param values
+            editingCol.setOperator( null );
+        }
+
+        //Check for unique binding
+        if ( isNew ) {
+            if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                return;
+            }
+        } else {
+            if ( col.isBound() && editingCol.isBound() ) {
+                if ( !col.getBinding().equals( editingCol.getBinding() ) ) {
                     if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
                         Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                         return;
                     }
-                } else {
-                    if ( col.isBound() && editingCol.isBound() ) {
-                        if ( !col.getBinding().equals( editingCol.getBinding() ) ) {
-                            if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
-                                Window.alert( GuidedDecisionTableConstants.INSTANCE.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
-                                return;
-                            }
-                        }
-                    }
                 }
-
-                //Check column header is unique
-                if ( isNew ) {
-                    if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                        return;
-                    }
-                } else {
-                    if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
-                        if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                            return;
-                        }
-                    }
-                }
-
-                //Clear binding if column is not a literal
-                if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
-                    editingCol.setBinding( null );
-                }
-
-                // Pass new\modified column back for handling
-                refreshGrid.execute( editingPattern,
-                                     editingCol );
-                hide();
-
             }
-        } );
-        addAttribute( "",
-                      apply );
+        }
+
+        //Check column header is unique
+        if ( isNew ) {
+            if ( !unique( editingCol.getHeader() ) ) {
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                return;
+            }
+        } else {
+            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+                if ( !unique( editingCol.getHeader() ) ) {
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    return;
+                }
+            }
+        }
+
+        //Clear binding if column is not a literal
+        if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
+            editingCol.setBinding( null );
+        }
+
+        // Pass new\modified column back for handling
+        refreshGrid.execute( editingPattern,
+                             editingCol );
+        hide();
 
     }
 
@@ -749,19 +763,28 @@ public class ConditionPopup extends FormStylePopup {
                         1 );
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.Operator(),
                           box );
-        Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
-        pop.addAttribute( "",
-                          b );
-        b.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
+
+        pop.add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
                 editingCol.setOperator( box.getValue( box.getSelectedIndex() ) );
                 makeLimitedValueWidget();
                 makeDefaultValueWidget();
                 doOperatorLabel();
                 doValueList();
                 pop.hide();
+                enableFooter( true );
             }
-        } );
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                enableFooter( true );
+            }
+        }
+        ) );
+
+        enableFooter( false );
         pop.show();
     }
 
@@ -777,36 +800,19 @@ public class ConditionPopup extends FormStylePopup {
     }
 
     protected void showChangePattern( ClickEvent w ) {
-
         final ListBox pats = this.loadPatterns();
         if ( pats.getItemCount() == 0 ) {
             showNewPatternDialog();
             return;
         }
         final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.FactType() );
-        Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add( pats );
-        hp.add( ok );
 
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
-                          hp );
-        pop.addAttribute( "",
-                          new HTML( GuidedDecisionTableConstants.INSTANCE.ORwithEmphasis() ) );
+                          pats );
 
-        Button createPattern = new Button( GuidedDecisionTableConstants.INSTANCE.CreateNewFactPattern() );
-        createPattern.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-                pop.hide();
-                showNewPatternDialog();
-            }
-        } );
-        pop.addAttribute( "",
-                          createPattern );
-
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-
+        pop.add( new ModalFooterChangePattern( new Command() {
+            @Override
+            public void execute() {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
                 editingPattern = model.getConditionPattern( val[ 1 ] );
 
@@ -826,9 +832,24 @@ public class ConditionPopup extends FormStylePopup {
                 doImageButtons();
 
                 pop.hide();
+                enableFooter( true );
             }
-        } );
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                showNewPatternDialog();
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                enableFooter( true );
+            }
+        }
+        ) );
 
+        enableFooter( false );
         pop.show();
     }
 
@@ -871,11 +892,10 @@ public class ConditionPopup extends FormStylePopup {
 
         pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           box );
-        Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
-        pop.addAttribute( "",
-                          b );
-        b.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
+
+        pop.add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
                 editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
                 editingCol.setFieldType( oracle.getFieldType( editingPattern.getFactType(),
                                                               editingCol.getFactField() ) );
@@ -894,8 +914,18 @@ public class ConditionPopup extends FormStylePopup {
                 doImageButtons();
 
                 pop.hide();
+                enableFooter( true );
             }
-        } );
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                enableFooter( true );
+            }
+        }
+        ) );
+
+        enableFooter( false );
         pop.show();
     }
 
@@ -931,10 +961,9 @@ public class ConditionPopup extends FormStylePopup {
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.negatePattern(),
                           chkNegated );
 
-        Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-
+        pop.add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
                 boolean isPatternNegated = chkNegated.getValue();
                 String ft = types.getItemText( types.getSelectedIndex() );
                 String fn = isPatternNegated ? "" : binding.getText();
@@ -974,13 +1003,19 @@ public class ConditionPopup extends FormStylePopup {
                 doImageButtons();
 
                 pop.hide();
+                enableFooter( true );
             }
-        } );
-        pop.addAttribute( "",
-                          ok );
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                enableFooter( true );
+            }
+        }
+        ) );
 
+        enableFooter( false );
         pop.show();
-
     }
 
     //Widget for CEP 'windows'
@@ -1016,6 +1051,14 @@ public class ConditionPopup extends FormStylePopup {
                                                                   Boolean.TRUE.equals( result ) );
                                       }
                                   } );
+    }
+
+    private void enableFooter( final boolean enabled ) {
+        if ( footer == null ) {
+            return;
+        }
+        footer.enableOkButton( enabled );
+        footer.enableCancelButton( enabled );
     }
 
 }

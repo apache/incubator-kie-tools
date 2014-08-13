@@ -27,9 +27,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -54,6 +53,7 @@ import org.kie.uberfire.client.common.ImageButton;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
 
@@ -74,6 +74,8 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
     private final GuidedDecisionTableUtils utils;
 
     private final boolean isReadOnly;
+
+    private ModalFooterOKCancelButtons footer;
 
     //Container to contain WorkItem and WorkItem Parameters associations
     private static class WorkItemParameter {
@@ -180,45 +182,58 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
-        Button apply = new Button( GuidedDecisionTableConstants.INSTANCE.ApplyChanges() );
-        apply.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-                if ( !isValidFactType() ) {
-                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnPattern() );
-                    return;
-                }
-                if ( !isValidFactField() ) {
-                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnField() );
-                    return;
-                }
-                if ( null == editingCol.getHeader()
-                        || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
-                    return;
-                }
-                if ( isNew ) {
-                    if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                        return;
-                    }
-
-                } else {
-                    if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
-                        if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                            return;
-                        }
-                    }
-                }
-
-                // Pass new\modified column back for handling
-                refreshGrid.execute( editingCol );
+        //Apply button
+        footer = new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
+                applyChanges( refreshGrid,
+                              col,
+                              isNew );
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
                 hide();
             }
-        } );
-        addAttribute( "",
-                      apply );
+        }
+        );
+        add( footer );
+    }
 
+    private void applyChanges( final GenericColumnCommand refreshGrid,
+                               final ActionWorkItemInsertFactCol52 col,
+                               final boolean isNew ) {
+        if ( !isValidFactType() ) {
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnPattern() );
+            return;
+        }
+        if ( !isValidFactField() ) {
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnField() );
+            return;
+        }
+        if ( null == editingCol.getHeader()
+                || "".equals( editingCol.getHeader() ) ) {
+            Window.alert( GuidedDecisionTableConstants.INSTANCE.YouMustEnterAColumnHeaderValueDescription() );
+            return;
+        }
+        if ( isNew ) {
+            if ( !unique( editingCol.getHeader() ) ) {
+                Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                return;
+            }
+
+        } else {
+            if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+                if ( !unique( editingCol.getHeader() ) ) {
+                    Window.alert( GuidedDecisionTableConstants.INSTANCE.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                    return;
+                }
+            }
+        }
+
+        // Pass new\modified column back for handling
+        refreshGrid.execute( editingCol );
+        hide();
     }
 
     private Image createDisabledEdit() {
@@ -313,21 +328,28 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
 
         pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Field() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           box );
-        Button b = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
-        pop.addAttribute( "",
-                          b );
-        b.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
+        pop.add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
                 editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
                 editingCol.setType( oracle.getFieldType( editingCol.getFactType(),
                                                          editingCol.getFactField() ) );
                 doBindFieldToWorkItem();
                 doFieldLabel();
                 pop.hide();
+                enableFooter( true );
             }
-        } );
-        pop.show();
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                enableFooter( true );
+            }
+        }
+        ) );
 
+        enableFooter( false );
+        pop.show();
     }
 
     private boolean unique( String header ) {
@@ -347,28 +369,12 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
             return;
         }
         final FormStylePopup pop = new FormStylePopup( GuidedDecisionTableConstants.INSTANCE.FactType() );
-        Button ok = new Button( "OK" );
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add( pats );
-        hp.add( ok );
 
         pop.addAttribute( GuidedDecisionTableConstants.INSTANCE.ChooseExistingPatternToAddColumnTo(),
-                          hp );
-        pop.addAttribute( "",
-                          new HTML( GuidedDecisionTableConstants.INSTANCE.ORwithEmphasis() ) );
-
-        Button createPattern = new Button( GuidedDecisionTableConstants.INSTANCE.CreateNewFactPattern() );
-        createPattern.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-                pop.hide();
-                showNewPatternDialog();
-            }
-        } );
-        pop.addAttribute( "",
-                          createPattern );
-
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
+                          pats );
+        pop.add( new ModalFooterChangePattern( new Command() {
+            @Override
+            public void execute() {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
                 editingCol.setFactType( val[ 0 ] );
                 editingCol.setBoundName( val[ 1 ] );
@@ -377,9 +383,24 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                 doPatternLabel();
                 doFieldLabel();
                 pop.hide();
+                enableFooter( true );
             }
-        } );
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                showNewPatternDialog();
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                enableFooter( true );
+            }
+        }
+        ) );
 
+        enableFooter( false );
         pop.show();
     }
 
@@ -395,11 +416,9 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         final TextBox binding = new BindingTextBox();
         pop.addAttribute( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.Binding() ).append( GuidedDecisionTableConstants.COLON ).toString(),
                           binding );
-
-        Button ok = new Button( GuidedDecisionTableConstants.INSTANCE.OK() );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
-
+        pop.add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
                 //Validate column configuration
                 String ft = types.getItemText( types.getSelectedIndex() );
                 String fn = binding.getText();
@@ -422,11 +441,18 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                 doPatternLabel();
                 doFieldLabel();
                 pop.hide();
+                enableFooter( true );
             }
-        } );
-        pop.addAttribute( "",
-                          ok );
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+                enableFooter( true );
+            }
+        }
+        ) );
 
+        enableFooter( false );
         pop.show();
     }
 
@@ -558,6 +584,14 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         String fieldClassName = oracle.getFieldClassName( editingCol.getFactType(),
                                                           editingCol.getFactField() );
         return fieldClassName.equals( ppd.getClassName() );
+    }
+
+    private void enableFooter( final boolean enabled ) {
+        if ( footer == null ) {
+            return;
+        }
+        footer.enableOkButton( enabled );
+        footer.enableCancelButton( enabled );
     }
 
 }
