@@ -15,9 +15,15 @@
  */
 package org.kie.uberfire.client.common.popups;
 
+import java.util.Iterator;
+
+import com.github.gwtbootstrap.client.ui.Close;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Base Modal for all KIE Workbench use. Setting the following properties by default:
@@ -39,4 +45,26 @@ public class KieBaseModal extends Modal {
         setHideOthers( false );
     }
 
+    @Override
+    public void show() {
+        super.show();
+        setFocus( this );
+    }
+
+    //Set focus on first widget
+    private boolean setFocus( final HasWidgets container ) {
+        final Iterator<Widget> i = container.iterator();
+        while ( i.hasNext() ) {
+            final Widget w = i.next();
+            if ( w instanceof Close ) {
+                continue;
+            } else if ( w instanceof Focusable ) {
+                ( (Focusable) w ).setFocus( true );
+                return true;
+            } else if ( w instanceof HasWidgets ) {
+                return setFocus( ( (HasWidgets) w ) );
+            }
+        }
+        return false;
+    }
 }

@@ -16,6 +16,8 @@
 
 package org.kie.uberfire.client.common;
 
+import java.util.Iterator;
+
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -23,6 +25,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -32,11 +35,11 @@ import com.google.gwt.user.client.ui.Widget;
  * This form style class is to be extended to provide "form style" dialogs (eg
  * in a popup).
  */
-public class FormStyleLayout extends Composite {
+public class FormStyleLayout extends Composite implements HasWidgets {
 
-    private FlexTable         layout      = new FlexTable();
-    private FlexCellFormatter formatter   = layout.getFlexCellFormatter();
-    private int               numInLayout = 0;
+    private FlexTable layout = new FlexTable();
+    private FlexCellFormatter formatter = layout.getFlexCellFormatter();
+    private int numInLayout = 0;
 
     /**
      * Create a new layout with a header and and icon.
@@ -237,8 +240,18 @@ public class FormStyleLayout extends Composite {
         return numInLayout;
     }
 
-    public Widget getWidget() {
-        return super.getWidget();
+    @Override
+    public void add( Widget w ) {
+        throw new UnsupportedOperationException( "Use one of the addHeader(), addAttribute() or addRow() methods." );
     }
 
+    @Override
+    public Iterator<Widget> iterator() {
+        return layout.iterator();
+    }
+
+    @Override
+    public boolean remove( Widget w ) {
+        throw new UnsupportedOperationException();
+    }
 }
