@@ -15,17 +15,17 @@
  */
 package org.kie.uberfire.backend.preferences;
 
-import org.kie.uberfire.shared.preferences.UserDataGridPreferencesService;
-import com.thoughtworks.xstream.XStream;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.kie.uberfire.shared.preferences.GridPreferencesStore;
+
+import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.uberfire.shared.preferences.GridPreferencesStore;
+import org.kie.uberfire.shared.preferences.UserDataGridPreferencesService;
 import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.security.Identity;
 
 @Service
 public class UserDataGridPreferencesServiceImpl implements UserDataGridPreferencesService {
@@ -34,7 +34,7 @@ public class UserDataGridPreferencesServiceImpl implements UserDataGridPreferenc
   private UserServicesBackendImpl userServicesBackend;
 
   @Inject
-  private Identity identity;
+  private User identity;
 
   @Inject
   @Named("configIO")
@@ -44,13 +44,13 @@ public class UserDataGridPreferencesServiceImpl implements UserDataGridPreferenc
 
   @Override
   public void saveGridPreferences(GridPreferencesStore preferences) {
-    Path preferencesPath = userServicesBackend.buildPath(identity.getName(), "datagrid-preferences", preferences.getGlobalPreferences().getKey());
+    Path preferencesPath = userServicesBackend.buildPath(identity.getIdentifier(), "datagrid-preferences", preferences.getGlobalPreferences().getKey());
     ioServiceConfig.write(preferencesPath, xs.toXML(preferences));
   }
 
   @Override
   public GridPreferencesStore loadGridPreferences(String key) {
-    Path preferencesPath = userServicesBackend.buildPath(identity.getName(), "datagrid-preferences", key);
+    Path preferencesPath = userServicesBackend.buildPath(identity.getIdentifier(), "datagrid-preferences", key);
     try {
       if (ioServiceConfig.exists(preferencesPath)) {
         final String xml = ioServiceConfig.readAllString(preferencesPath);
