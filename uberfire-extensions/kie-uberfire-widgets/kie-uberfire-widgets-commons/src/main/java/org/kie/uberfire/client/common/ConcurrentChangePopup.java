@@ -16,58 +16,57 @@
 
 package org.kie.uberfire.client.common;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.Identity;
 
 public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
-
 
     private ConcurrentChangePopup( final String content,
                                    final Command onIgnore,
                                    final Command onAction,
                                    final String buttonText ) {
-        super(content, onIgnore, onAction, buttonText);
+        super( content, onIgnore, onAction, buttonText );
     }
 
     private ConcurrentChangePopup( final String content,
                                    final Command onIgnore,
                                    final Command onReOpen ) {
-        this(content, onIgnore, onReOpen, CommonConstants.INSTANCE.ReOpen());
+        this( content, onIgnore, onReOpen, CommonConstants.INSTANCE.ReOpen() );
     }
 
     private ConcurrentChangePopup( final String content,
                                    final Command onForceSave,
                                    final Command onIgnore,
                                    final Command onReOpen ) {
-        super(content, onForceSave, onIgnore, onReOpen);
+        super( content, onForceSave, onIgnore, onReOpen );
     }
 
     public static ConcurrentChangePopup newConcurrentUpdate( final Path path,
-                                                             final Identity identity,
+                                                             final User identity,
                                                              final Command onForceSave,
                                                              final Command onCancel,
                                                              final Command onReOpen ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentUpdate( identity.getName(), path.toURI() );
+        final String message = CommonConstants.INSTANCE.ConcurrentUpdate( identity.getIdentifier(), path.toURI() );
 
         return new ConcurrentChangePopup( message, onForceSave, onCancel, onReOpen );
     }
 
     public static ConcurrentChangePopup newConcurrentRename( final Path source,
                                                              final Path target,
-                                                             final Identity identity,
+                                                             final User identity,
                                                              final Command onIgnore,
                                                              final Command onReOpen ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentRename( identity.getName(), source.toURI(), target.toURI() );
+        final String message = CommonConstants.INSTANCE.ConcurrentRename( identity.getIdentifier(), source.toURI(), target.toURI() );
         return new ConcurrentChangePopup( message, onIgnore, onReOpen );
     }
 
     public static ConcurrentChangePopup newConcurrentDelete( final Path path,
-                                                             final Identity identity,
+                                                             final User identity,
                                                              final Command onIgnore,
                                                              final Command onClose ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentDelete( identity.getName(), path.toURI() );
+        final String message = CommonConstants.INSTANCE.ConcurrentDelete( identity.getIdentifier(), path.toURI() );
         return new ConcurrentChangePopup( message, onIgnore, onClose, CommonConstants.INSTANCE.Close() );
     }
 }

@@ -16,6 +16,9 @@
 
 package org.kie.uberfire.client.tables;
 
+import java.util.List;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.github.gwtbootstrap.client.ui.Label;
@@ -41,16 +44,14 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
-import java.util.List;
-import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.resources.CommonResources;
 import org.kie.uberfire.shared.preferences.GridColumnPreference;
 import org.kie.uberfire.shared.preferences.GridGlobalPreferences;
 import org.kie.uberfire.shared.preferences.GridPreferencesStore;
 import org.kie.uberfire.shared.preferences.UserDataGridPreferencesService;
-import org.uberfire.security.Identity;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -86,24 +87,25 @@ public class SimpleTable<T>
     private String emptyTableCaption;
 
     private ColumnPicker<T> columnPicker;
-    
+
     private GridPreferencesStore gridPreferencesStore;
-    
-    @Inject 
+
+    @Inject
     private Caller<UserDataGridPreferencesService> preferencesService;
 
     @Inject
-    private Identity identity;
-    
+    private User identity;
+
     public SimpleTable() {
         dataGrid = new DataGrid<T>();
         setupGridTable();
     }
-    
-    public SimpleTable(final ProvidesKey<T> providesKey, GridGlobalPreferences gridGlobalPreferences) {
+
+    public SimpleTable( final ProvidesKey<T> providesKey,
+                        GridGlobalPreferences gridGlobalPreferences ) {
         dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
                                     providesKey );
-        gridPreferencesStore = new GridPreferencesStore(gridGlobalPreferences);
+        gridPreferencesStore = new GridPreferencesStore( gridGlobalPreferences );
         setupGridTable();
     }
 
@@ -112,7 +114,6 @@ public class SimpleTable<T>
                                     providesKey );
         setupGridTable();
     }
-   
 
     private void setupGridTable() {
         dataGrid.setStriped( true );
@@ -125,50 +126,49 @@ public class SimpleTable<T>
 
         setEmptyTableWidget();
 
-        columnPicker = new ColumnPicker<T>( dataGrid,  gridPreferencesStore);
-        
-        columnPicker.addColumnChangedHandler(new ColumnChangedHandler() {
+        columnPicker = new ColumnPicker<T>( dataGrid, gridPreferencesStore );
 
-          @Override
-          public void beforeColumnChanged() {
-           
-            if (preferencesService != null && gridPreferencesStore != null) {
-              preferencesService.call(new RemoteCallback<Void>() {
+        columnPicker.addColumnChangedHandler( new ColumnChangedHandler() {
 
-                @Override
-                public void callback(Void response) {
-                    
+            @Override
+            public void beforeColumnChanged() {
+
+                if ( preferencesService != null && gridPreferencesStore != null ) {
+                    preferencesService.call( new RemoteCallback<Void>() {
+
+                        @Override
+                        public void callback( Void response ) {
+
+                        }
+                    } ).saveGridPreferences( gridPreferencesStore );
                 }
-              }).saveGridPreferences(gridPreferencesStore);
             }
-          }
 
-          @Override
-          public void afterColumnChanged() {
-            if (gridPreferencesStore != null && preferencesService != null) {
-              List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
+            @Override
+            public void afterColumnChanged() {
+                if ( gridPreferencesStore != null && preferencesService != null ) {
+                    List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
 
-              gridPreferencesStore.resetGridColumnPreferences();
-              for (GridColumnPreference gcp : columnsState) {
-                gridPreferencesStore.addGridColumnPreference(gcp);
-              }
+                    gridPreferencesStore.resetGridColumnPreferences();
+                    for ( GridColumnPreference gcp : columnsState ) {
+                        gridPreferencesStore.addGridColumnPreference( gcp );
+                    }
 
-              preferencesService.call(new RemoteCallback<Void>() {
+                    preferencesService.call( new RemoteCallback<Void>() {
 
-                @Override
-                public void callback(Void response) {
+                        @Override
+                        public void callback( Void response ) {
 
+                        }
+                    } ).saveGridPreferences( gridPreferencesStore );
                 }
-              }).saveGridPreferences(gridPreferencesStore);
+
             }
-            
-          }
-        });
+        } );
         columnPickerButton = columnPicker.createToggleButton();
-        
+
         initWidget( makeWidget() );
-      
-        
+
     }
 
     protected Widget makeWidget() {
@@ -212,9 +212,10 @@ public class SimpleTable<T>
         return dataGrid.addRowCountChangeHandler( handler );
     }
 
-    public int getColumnIndex(Column<T, ?> column) {
-      return dataGrid.getColumnIndex(column);
+    public int getColumnIndex( Column<T, ?> column ) {
+        return dataGrid.getColumnIndex( column );
     }
+
     /**
      * Link a column sort handler to the table
      * @param handler
@@ -262,10 +263,10 @@ public class SimpleTable<T>
         dataGrid.setVisibleRange( range );
     }
 
-    public void setPreferencesService(Caller<UserDataGridPreferencesService> preferencesService) {
-      this.preferencesService = preferencesService;
+    public void setPreferencesService( Caller<UserDataGridPreferencesService> preferencesService ) {
+        this.preferencesService = preferencesService;
     }
-    
+
     @Override
     public SelectionModel<? super T> getSelectionModel() {
         return dataGrid.getSelectionModel();
@@ -326,39 +327,39 @@ public class SimpleTable<T>
                            final String caption,
                            final boolean visible ) {
         final ResizableMovableHeader header = new ResizableMovableHeader<T>( caption,
-                                                             dataGrid,
-                                                             columnPicker,
-                                                             column ) {
+                                                                             dataGrid,
+                                                                             columnPicker,
+                                                                             column ) {
             @Override
             protected int getTableBodyHeight() {
                 return dataGrid.getOffsetHeight();
             }
         };
-        header.addColumnChangedHandler(new ColumnChangedHandler() {
-          @Override
-          public void afterColumnChanged() {
-            if(gridPreferencesStore != null && preferencesService != null){
-              List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
-              gridPreferencesStore.resetGridColumnPreferences();
-              for(GridColumnPreference gcp : columnsState){
-                gridPreferencesStore.addGridColumnPreference(gcp);
-              }
+        header.addColumnChangedHandler( new ColumnChangedHandler() {
+            @Override
+            public void afterColumnChanged() {
+                if ( gridPreferencesStore != null && preferencesService != null ) {
+                    List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
+                    gridPreferencesStore.resetGridColumnPreferences();
+                    for ( GridColumnPreference gcp : columnsState ) {
+                        gridPreferencesStore.addGridColumnPreference( gcp );
+                    }
 
-              preferencesService.call(new RemoteCallback<Void>() {
+                    preferencesService.call( new RemoteCallback<Void>() {
 
-                @Override
-                public void callback(Void response) {
+                        @Override
+                        public void callback( Void response ) {
 
+                        }
+                    } ).saveGridPreferences( gridPreferencesStore );
                 }
-              }).saveGridPreferences(gridPreferencesStore);
             }
-          }
 
-          @Override
-          public void beforeColumnChanged() {
-            
-          }
-        });
+            @Override
+            public void beforeColumnChanged() {
+
+            }
+        } );
         column.setDataStoreName( caption );
         columnPicker.addColumn( column,
                                 header,
@@ -394,9 +395,9 @@ public class SimpleTable<T>
     public void setWidth( String width ) {
         dataGrid.setWidth( width );
     }
- 
+
     public void setToolBarVisible( boolean visible ) {
-        toolbarContainer.setVisible(visible);
+        toolbarContainer.setVisible( visible );
     }
 
     public ColumnSortList getColumnSortList() {
@@ -408,26 +409,23 @@ public class SimpleTable<T>
     }
 
     public HasWidgets getRightToolbar() {
-      return rightToolbar;
+        return rightToolbar;
     }
 
     public HasWidgets getLeftToolbar() {
-      return leftToolbar;
+        return leftToolbar;
     }
 
     public HasWidgets getCenterToolbar() {
-      return centerToolbar;
-    }
-    
-    
-    public void setRowStyles(RowStyles<T> styles) {
-      dataGrid.setRowStyles(styles);
+        return centerToolbar;
     }
 
-    public void setGridPreferencesStore(GridPreferencesStore gridPreferences) {
-      columnPicker.setGridPreferencesStore(gridPreferences);
+    public void setRowStyles( RowStyles<T> styles ) {
+        dataGrid.setRowStyles( styles );
     }
-    
-    
+
+    public void setGridPreferencesStore( GridPreferencesStore gridPreferences ) {
+        columnPicker.setGridPreferencesStore( gridPreferences );
+    }
 
 }

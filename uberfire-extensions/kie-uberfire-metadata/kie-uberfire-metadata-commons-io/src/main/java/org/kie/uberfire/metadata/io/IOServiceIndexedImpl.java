@@ -244,11 +244,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                             //Default indexing
                                             for ( final Class<? extends FileAttributeView> view : views ) {
                                                 getFileAttributeView( path,
-                                                        view );
+                                                                      view );
                                             }
                                             final FileAttribute<?>[] allAttrs = convert( readAttributes( path ) );
                                             indexEngine.index( KObjectUtil.toKObject( path,
-                                                    allAttrs ) );
+                                                                                      allAttrs ) );
 
                                             //Additional indexing
                                             for ( Indexer indexer : IndexersFactory.getIndexers() ) {
@@ -266,7 +266,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                         final Path sourcePath = context.getOldPath();
                                         final Path destinationPath = context.getPath();
                                         indexEngine.rename( KObjectUtil.toKObjectKey( sourcePath ),
-                                                KObjectUtil.toKObject( destinationPath ) );
+                                                            KObjectUtil.toKObject( destinationPath ) );
 
                                         //Additional indexing
                                         for ( Indexer indexer : IndexersFactory.getIndexers() ) {
@@ -275,7 +275,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                                 final KObject kObjectDestination = indexer.toKObject( destinationPath );
                                                 if ( kObjectSource != null && kObjectDestination != null ) {
                                                     indexEngine.rename( kObjectSource,
-                                                            kObjectDestination );
+                                                                        kObjectDestination );
                                                 }
                                             }
                                         }
@@ -303,7 +303,7 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                             }
                         }
                     };
-                    if (defaultInstance.equals(unmanagedInstance)) {
+                    if ( defaultInstance.equals( unmanagedInstance ) ) {
                         // if default and unmanaged are same instance simply run the job to avoid duplicated threads
                         job.run();
                     } else {

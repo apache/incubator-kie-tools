@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.security.Identity;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
@@ -39,7 +39,7 @@ public class SocialRelationsWidget extends Composite {
     FlowPanel items;
 
     @Inject
-    private Identity loggedUser;
+    private User loggedUser;
 
     private SocialUser socialLoggedUser;
 
@@ -55,12 +55,12 @@ public class SocialRelationsWidget extends Composite {
                 socialLoggedUser = user;
                 createWidget();
             }
-        }, SocialUserRepositoryAPI.class ).findSocialUser( loggedUser.getName() );
+        }, SocialUserRepositoryAPI.class ).findSocialUser( loggedUser.getIdentifier() );
     }
 
     private void createWidget() {
         items.clear();
-        items.add( new Label( "Social Relations Widget - User: " + loggedUser.getName() ) );
+        items.add( new Label( "Social Relations Widget - User: " + loggedUser.getIdentifier() ) );
         printAllFollowing();
         printAllUsers();
     }
