@@ -53,17 +53,17 @@ public class PopupDatePicker extends Composite
         HasValue<Date>,
         HasValueChangeHandlers<Date> {
 
-    private final TextBox    txtDate;
+    private final TextBox txtDate;
     private final PopupPanel panel;
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
     private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
 
-    private       Date           date;
-    private final DatePicker     datePicker;
+    private Date date;
+    private final DatePicker datePicker;
     private final DateTimeFormat format;
-    private final boolean        allowEmptyValue;
+    private final boolean allowEmptyValue;
 
     public PopupDatePicker( final boolean allowEmptyValue ) {
 
@@ -107,6 +107,7 @@ public class PopupDatePicker extends Composite
         } );
 
         panel.add( datePicker );
+        panel.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
 
         //Add an icon to select a Date value
         Image imgCalendar = new Image( CommonImages.INSTANCE.calendar() );
