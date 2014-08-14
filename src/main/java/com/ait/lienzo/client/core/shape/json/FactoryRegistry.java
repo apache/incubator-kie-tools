@@ -16,35 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.json;
 
-import com.ait.lienzo.client.core.shape.Arc;
-import com.ait.lienzo.client.core.shape.Arrow;
-import com.ait.lienzo.client.core.shape.BezierCurve;
-import com.ait.lienzo.client.core.shape.Bow;
-import com.ait.lienzo.client.core.shape.Chord;
-import com.ait.lienzo.client.core.shape.Circle;
-import com.ait.lienzo.client.core.shape.Ellipse;
-import com.ait.lienzo.client.core.shape.GridLayer;
-import com.ait.lienzo.client.core.shape.Group;
-import com.ait.lienzo.client.core.shape.IsoscelesTrapezoid;
-import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.shape.Line;
-import com.ait.lienzo.client.core.shape.Movie;
-import com.ait.lienzo.client.core.shape.Parallelogram;
-import com.ait.lienzo.client.core.shape.Picture;
-import com.ait.lienzo.client.core.shape.PolyLine;
-import com.ait.lienzo.client.core.shape.Polygon;
-import com.ait.lienzo.client.core.shape.QuadraticCurve;
-import com.ait.lienzo.client.core.shape.Rectangle;
-import com.ait.lienzo.client.core.shape.RegularPolygon;
-import com.ait.lienzo.client.core.shape.Ring;
-import com.ait.lienzo.client.core.shape.SVGPath;
-import com.ait.lienzo.client.core.shape.Scene;
-import com.ait.lienzo.client.core.shape.Slice;
-import com.ait.lienzo.client.core.shape.Spline;
-import com.ait.lienzo.client.core.shape.Star;
-import com.ait.lienzo.client.core.shape.Text;
-import com.ait.lienzo.client.core.shape.Triangle;
-import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.config.ILienzoPlugin;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.types.NFastStringMap;
 import com.ait.lienzo.client.core.util.Console;
 
@@ -106,82 +79,16 @@ public final class FactoryRegistry
     {
         if (null == s_instance)
         {
-            // changed to lazy init - DSJ
+            s_instance = new FactoryRegistry();
 
-            s_instance = makeFactoryRegistry();
+            for (ILienzoPlugin plugin : LienzoCore.get().getPlugins())
+            {
+                for (IFactory<?> factory : plugin.getFactories())
+                {
+                    s_instance.registerFactory(factory);
+                }
+            }
         }
         return s_instance;
-    }
-
-    private static final FactoryRegistry makeFactoryRegistry()
-    {
-        // Make sure we register the built-in Lienzo types first,
-        // so that toolkit users can't override them.
-
-        FactoryRegistry registry = new FactoryRegistry();
-
-        // Primitive types
-
-        registry.registerFactory(new Arc.ArcFactory());
-
-        registry.registerFactory(new Arrow.ArrowFactory());
-
-        registry.registerFactory(new BezierCurve.BezierCurveFactory());
-
-        registry.registerFactory(new Circle.CircleFactory());
-
-        registry.registerFactory(new Ellipse.EllipseFactory());
-
-        registry.registerFactory(new Line.LineFactory());
-
-        registry.registerFactory(new Movie.MovieFactory());
-
-        registry.registerFactory(new Parallelogram.ParallelogramFactory());
-
-        registry.registerFactory(new Picture.PictureFactory());
-
-        registry.registerFactory(new Polygon.PolygonFactory());
-
-        registry.registerFactory(new PolyLine.PolyLineFactory());
-
-        registry.registerFactory(new QuadraticCurve.QuadraticCurveFactory());
-
-        registry.registerFactory(new Rectangle.RectangleFactory());
-
-        registry.registerFactory(new RegularPolygon.RegularPolygonFactory());
-
-        registry.registerFactory(new Slice.SliceFactory());
-
-        registry.registerFactory(new Star.StarFactory());
-
-        registry.registerFactory(new Text.TextFactory());
-
-        registry.registerFactory(new Triangle.TriangleFactory());
-
-        registry.registerFactory(new Spline.SplineFactory());
-
-        registry.registerFactory(new Bow.BowFactory());
-
-        registry.registerFactory(new Ring.RingFactory());
-
-        registry.registerFactory(new Chord.ChordFactory());
-
-        registry.registerFactory(new IsoscelesTrapezoid.IsoscelesTrapezoidFactory());
-
-        registry.registerFactory(new SVGPath.SVGPathFactory());
-
-        // Container Types
-
-        registry.registerFactory(new Group.GroupFactory());
-
-        registry.registerFactory(new Layer.LayerFactory());
-
-        registry.registerFactory(new GridLayer.GridLayerFactory());
-
-        registry.registerFactory(new Scene.SceneFactory());
-
-        registry.registerFactory(new Viewport.ViewportFactory());
-
-        return registry;
     }
 }
