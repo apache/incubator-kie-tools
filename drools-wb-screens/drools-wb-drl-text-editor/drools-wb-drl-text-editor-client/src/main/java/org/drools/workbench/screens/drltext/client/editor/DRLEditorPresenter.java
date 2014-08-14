@@ -24,12 +24,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
-import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.type.DRLResourceType;
 import org.drools.workbench.screens.drltext.client.type.DSLRResourceType;
 import org.drools.workbench.screens.drltext.model.DrlModelContent;
 import org.drools.workbench.screens.drltext.service.DRLTextEditorService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -37,18 +35,18 @@ import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
-import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -57,7 +55,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  * This is the default rule editor widget (just text editor based).
@@ -97,7 +94,7 @@ public class DRLEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, getResourceType(path));
 
         this.isDSLR = resourceTypeDSLR.accept(path);
     }
@@ -222,25 +219,29 @@ public class DRLEditorPresenter
         return true;
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        String title = "";
-        String fileName = "";
-        if (resourceTypeDRL.accept(versionRecordManager.getCurrentPath())) {
-            title = DRLTextEditorConstants.INSTANCE.drlEditorTitle();
-            fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                    resourceTypeDRL);
-        } else if (resourceTypeDSLR.accept(versionRecordManager.getCurrentPath())) {
-            title = DRLTextEditorConstants.INSTANCE.dslrEditorTitle();
-            fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                    resourceTypeDSLR);
-        }
-
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return title + " [" + fileName + "]";
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
+
+    @WorkbenchPartTitle
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @Override
+    protected void onOverviewSelected() {
+        updatePreview(view.getContent());
+    }
+
+    private ClientResourceType getResourceType(Path path) {
+        if (resourceTypeDRL.accept(path)) {
+            return resourceTypeDRL;
+        } else {
+            return resourceTypeDSLR;
+        }
+    }
+
 
     @WorkbenchPartView
     public IsWidget getWidget() {

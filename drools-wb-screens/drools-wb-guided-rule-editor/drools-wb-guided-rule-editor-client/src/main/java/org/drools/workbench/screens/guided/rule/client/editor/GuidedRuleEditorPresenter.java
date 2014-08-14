@@ -29,8 +29,6 @@ import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourc
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDSLRResourceType;
 import org.drools.workbench.screens.guided.rule.model.GuidedEditorContent;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
-import org.guvnor.common.services.project.service.ProjectService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -51,9 +49,11 @@ import org.kie.workbench.common.widgets.configresource.client.widget.bound.Impor
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.lifecycle.IsDirty;
@@ -111,7 +111,7 @@ public class GuidedRuleEditorPresenter
             final ObservablePath path,
             final PlaceRequest place) {
 
-        super.init(path, place);
+        super.init(path, place, getResourceType(path));
 
         this.isDSLEnabled = resourceTypeDSL.accept(path);
     }
@@ -125,6 +125,16 @@ public class GuidedRuleEditorPresenter
         ).loadContent(versionRecordManager.getCurrentPath());
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        service.call(new RemoteCallback<String>() {
+            @Override
+            public void callback(String source) {
+                updatePreview(source);
+            }
+        }).toSource(versionRecordManager.getCurrentPath(), model);
+    }
+
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
         return new RemoteCallback<GuidedEditorContent>() {
 
@@ -135,9 +145,6 @@ public class GuidedRuleEditorPresenter
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
-
-                addImportsTab(importsWidget);
 
                 GuidedRuleEditorPresenter.this.model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
@@ -145,6 +152,10 @@ public class GuidedRuleEditorPresenter
                         versionRecordManager.getPathToLatest(),
                         model,
                         dataModel);
+
+                resetEditorPages(content.getOverview());
+
+                addImportsTab(importsWidget);
 
                 view.setContent(
                         versionRecordManager.getCurrentPath(),
@@ -241,14 +252,16 @@ public class GuidedRuleEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-
-        return view.getTitle(
-                FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(), getResourceType()));
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
-    private ClientResourceType getResourceType() {
-        if (resourceTypeDRL.accept(versionRecordManager.getCurrentPath())) {
+    private ClientResourceType getResourceType(Path path) {
+        if (resourceTypeDRL.accept( path )) {
             return resourceTypeDRL;
         } else {
             return resourceTypeDRL;

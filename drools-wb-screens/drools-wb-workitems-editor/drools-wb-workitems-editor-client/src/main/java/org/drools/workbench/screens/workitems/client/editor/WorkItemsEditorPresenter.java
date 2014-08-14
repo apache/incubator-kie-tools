@@ -42,6 +42,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -93,7 +94,7 @@ public class WorkItemsEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     protected void loadContent() {
@@ -164,6 +165,11 @@ public class WorkItemsEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        // No source for work items, no update needed.
+    }
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -183,13 +189,13 @@ public class WorkItemsEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type);
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return WorkItemsEditorConstants.INSTANCE.Title() + " [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @WorkbenchPartView

@@ -26,7 +26,6 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -41,6 +40,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
@@ -81,7 +81,7 @@ public class ScenarioEditorPresenter
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
 
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     @Override
@@ -142,11 +142,19 @@ public class ScenarioEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        // Source not used in test scenarios. No need to update here.
+    }
+
     @WorkbenchPartTitle
-    public String getTitle() {
-        return view.getTitle(FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type),
-                versionRecordManager.getVersion());
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @WorkbenchPartView

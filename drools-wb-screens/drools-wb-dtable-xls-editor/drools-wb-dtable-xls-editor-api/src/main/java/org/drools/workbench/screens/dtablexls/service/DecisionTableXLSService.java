@@ -23,17 +23,19 @@ import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 
 @Remote
 public interface DecisionTableXLSService
         extends ValidationService<Path>,
-                SupportsDelete,
-                SupportsCopy,
-                SupportsRename {
+        SupportsDelete,
+        SupportsCopy,
+        SupportsRename {
 
-    ConversionResult convert( final Path path );
+    ConversionResult convert(final Path path);
 
-    Overview loadContent(ObservablePath path);
+    Overview loadOverview(final Path path);
+
+    String getSource(final Path path);
+
 }

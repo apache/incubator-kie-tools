@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
 import org.drools.workbench.screens.categories.client.type.CategoryDefinitionResourceType;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
@@ -36,6 +35,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
@@ -44,7 +44,6 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  *
@@ -73,7 +72,7 @@ public class CategoriesEditorPresenter
     public void onStartup(
             final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     @Override protected Command onValidate() {
@@ -118,6 +117,11 @@ public class CategoriesEditorPresenter
         };
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        // Categories shows no preview so there is no need to update here.
+    }
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -136,10 +140,14 @@ public class CategoriesEditorPresenter
         return true;
     }
 
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
+
     @WorkbenchPartTitle
-    public String getTitle() {
-        return Constants.INSTANCE.CategoriesEditor() + " [" + FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type) + "]";
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchPartView

@@ -10,25 +10,21 @@ import org.drools.workbench.screens.globals.client.type.GlobalResourceType;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
-import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
@@ -72,7 +68,7 @@ public class GlobalsEditorPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     protected void loadContent() {
@@ -120,8 +116,8 @@ public class GlobalsEditorPresenter
                             ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
-                                                          model );
+                }, new DefaultErrorCallback() ).validate(versionRecordManager.getCurrentPath(),
+                        model);
             }
         };
     }
@@ -141,6 +137,15 @@ public class GlobalsEditorPresenter
                                          }
                                        );
         concurrentUpdateSessionInfo = null;
+    }
+
+    @Override
+    protected void onOverviewSelected() {
+        globalsEditorService.call(new RemoteCallback<String>() {
+            @Override public void callback(String source) {
+                updatePreview(source);
+            }
+        }).toSource(versionRecordManager.getCurrentPath(), model);
     }
 
     @WorkbenchPartView
@@ -169,18 +174,14 @@ public class GlobalsEditorPresenter
         return true;
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(),
-                                                        type );
-        if ( versionRecordManager.getVersion() != null ) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
 
-        if ( isReadOnly ) {
-            return GlobalsEditorConstants.INSTANCE.globalsEditorReadOnlyTitle0( fileName );
-        }
-        return GlobalsEditorConstants.INSTANCE.globalsEditorTitle0( fileName );
+    @WorkbenchPartTitle
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchMenu

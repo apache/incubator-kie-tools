@@ -37,16 +37,14 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
-import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -92,7 +90,7 @@ public class DecisionTableXLSEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, type);
 
         resetEditorPages(null);
 
@@ -106,6 +104,15 @@ public class DecisionTableXLSEditorPresenter
     }
 
     @Override
+    protected void onOverviewSelected() {
+        decisionTableXLSService.call(new RemoteCallback<String>() {
+            @Override public void callback(String source) {
+                updatePreview(source);
+            }
+        }).getSource(versionRecordManager.getCurrentPath());
+    }
+
+    @Override
     protected void loadContent() {
         decisionTableXLSService.call(
                 new RemoteCallback<Overview>() {
@@ -116,7 +123,7 @@ public class DecisionTableXLSEditorPresenter
 
                     }
                 }
-        ).loadContent(versionRecordManager.getCurrentPath());
+        ).loadOverview(versionRecordManager.getCurrentPath());
 
     }
 
@@ -171,14 +178,14 @@ public class DecisionTableXLSEditorPresenter
         this.versionRecordManager.clear();
     }
 
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
+
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type);
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return DecisionTableXLSEditorConstants.INSTANCE.DecisionTableEditorTitle() + " [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchPartView

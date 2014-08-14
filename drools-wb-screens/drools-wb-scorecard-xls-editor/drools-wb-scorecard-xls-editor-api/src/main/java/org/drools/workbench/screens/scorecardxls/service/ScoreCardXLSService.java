@@ -32,4 +32,6 @@ public interface ScoreCardXLSService
 
     ScoreCardXLSContent loadContent(Path path);
 
+    String getSource(Path path);
+
 }

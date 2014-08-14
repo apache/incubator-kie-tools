@@ -22,9 +22,6 @@ public interface ScenarioEditorView
 
     void showSaveSuccessful();
 
-    String getTitle( final String fileName,
-                     final String version );
-
     void handleNoSuchFileException();
 
 }

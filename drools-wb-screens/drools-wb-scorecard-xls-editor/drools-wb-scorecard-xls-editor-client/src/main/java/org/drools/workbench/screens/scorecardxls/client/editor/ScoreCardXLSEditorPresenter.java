@@ -40,6 +40,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -95,7 +96,7 @@ public class ScoreCardXLSEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     protected Command onValidate() {
@@ -124,13 +125,13 @@ public class ScoreCardXLSEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type);
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return ScoreCardXLSEditorConstants.INSTANCE.ScoreCardXLEditorTitle() + " [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @Override
@@ -152,6 +153,11 @@ public class ScoreCardXLSEditorPresenter
     @Override
     protected void save() {
 
+    }
+
+    @Override
+    protected void onOverviewSelected() {
+        scoreCardXLSService.call().getSource(versionRecordManager.getCurrentPath());
     }
 
     @WorkbenchPartView

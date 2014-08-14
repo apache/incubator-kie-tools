@@ -149,16 +149,6 @@ public class ScenarioEditorViewImpl
 
     }
 
-    @Override
-    public String getTitle(final String fileName,
-            final String version) {
-        String versionedFilename = fileName;
-        if (version != null) {
-            versionedFilename = versionedFilename + " v" + version;
-        }
-        return TestScenarioConstants.INSTANCE.TestScenarioParamFileName(versionedFilename);
-    }
-
     private void createWidgetForEditorLayout(final DirtyableFlexTable editorLayout,
             final int layoutRow,
             final int layoutColumn,

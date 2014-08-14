@@ -22,11 +22,9 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.dsltext.client.resources.i18n.DSLTextEditorConstants;
 import org.drools.workbench.screens.dsltext.client.type.DSLResourceType;
 import org.drools.workbench.screens.dsltext.model.DSLTextEditorContent;
 import org.drools.workbench.screens.dsltext.service.DSLTextEditorService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -34,7 +32,6 @@ import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
-import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -42,8 +39,8 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -52,7 +49,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  * DSL Editor Presenter.
@@ -82,7 +78,7 @@ public class DSLEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        this.init(path, place);
+        this.init(path, place, type);
     }
 
     protected void loadContent() {
@@ -148,6 +144,11 @@ public class DSLEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        updatePreview(view.getContent());
+    }
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -166,14 +167,14 @@ public class DSLEditorPresenter
         return true;
     }
 
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
+
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type);
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return DSLTextEditorConstants.INSTANCE.DslEditorTitle() + " [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchPartView

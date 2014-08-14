@@ -25,7 +25,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
@@ -71,11 +70,6 @@ public class GuidedRuleEditorViewImpl
                 modeller.setRuleNamesForPackage(ruleNames);
             }
         }).getRuleNames(path, model.getPackageName());
-    }
-
-    @Override
-    public String getTitle(String fileName) {
-        return fileName +" - "+  GuidedRuleEditorResources.CONSTANTS.GuidedRuleEditorTitle();
     }
 
     @Override

@@ -30,7 +30,6 @@ import org.drools.workbench.screens.guided.template.client.resources.i18n.Guided
 import org.drools.workbench.screens.guided.template.client.type.GuidedRuleTemplateResourceType;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -53,6 +52,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
@@ -106,7 +106,7 @@ public class GuidedRuleTemplateEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     protected void loadContent() {
@@ -220,6 +220,15 @@ public class GuidedRuleTemplateEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        service.call(new RemoteCallback<String>() {
+            @Override public void callback(String source) {
+                updatePreview(source);
+            }
+        }).toSource(versionRecordManager.getCurrentPath(), model);
+    }
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -240,13 +249,13 @@ public class GuidedRuleTemplateEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type);
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return GuidedTemplateEditorConstants.INSTANCE.GuidedTemplateEditorTitle() + " [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @WorkbenchPartView

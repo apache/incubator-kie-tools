@@ -28,7 +28,6 @@ import org.drools.workbench.screens.guided.scorecard.client.resources.i18n.Guide
 import org.drools.workbench.screens.guided.scorecard.client.type.GuidedScoreCardResourceType;
 import org.drools.workbench.screens.guided.scorecard.model.ScoreCardModelContent;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -49,6 +48,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
@@ -94,7 +94,7 @@ public class GuidedScoreCardEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     protected void loadContent() {
@@ -186,6 +186,15 @@ public class GuidedScoreCardEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        scoreCardEditorService.call(new RemoteCallback<String>() {
+            @Override public void callback(String source) {
+                updatePreview(source);
+            }
+        }).toSource(versionRecordManager.getCurrentPath(), model);
+    }
+
     @WorkbenchPartView
     public IsWidget getWidget() {
         return super.getWidget();
@@ -213,18 +222,14 @@ public class GuidedScoreCardEditorPresenter
         return true;
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
-                type);
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
 
-        if (isReadOnly) {
-            return "Read Only Score Card Viewer [" + fileName + "]";
-        }
-        return GuidedScoreCardConstants.INSTANCE.ScoreCardEditorTitle() + " [" + fileName + "]";
+    @WorkbenchPartTitle
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchMenu

@@ -48,6 +48,7 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -66,8 +67,10 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @ApplicationScoped
 // Implementation needs to implement both interfaces even though one extends the other
 // otherwise the implementation discovery mechanism for the @Service annotation fails.
-public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
-                                                    ExtendedDecisionTableXLSService {
+public class DecisionTableXLSServiceImpl
+        extends KieService
+        implements DecisionTableXLSService,
+                   ExtendedDecisionTableXLSService {
 
     private static final Logger log = LoggerFactory.getLogger( DecisionTableXLSServiceImpl.class );
 
@@ -286,25 +289,6 @@ public class DecisionTableXLSServiceImpl implements DecisionTableXLSService,
                        e );
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    @Override
-    public Overview loadContent(ObservablePath path) {
-        Overview overview = new Overview();
-
-        overview.setMetadata(metadataService.getMetadata(path));
-
-        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
-
-        if (sourceServices.hasServiceFor(convertedPath)) {
-            overview.setPreview(sourceServices.getServiceFor(convertedPath).getSource(convertedPath));
-        } else {
-            overview.setPreview("");
-        }
-
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
-
-        return overview;
     }
 
     @Override

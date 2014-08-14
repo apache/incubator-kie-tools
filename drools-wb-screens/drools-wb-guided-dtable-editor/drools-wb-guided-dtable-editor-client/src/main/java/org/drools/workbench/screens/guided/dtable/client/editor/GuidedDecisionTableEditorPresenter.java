@@ -27,7 +27,6 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -39,7 +38,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
-import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
@@ -48,8 +46,8 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -101,7 +99,7 @@ public class GuidedDecisionTableEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, type);
     }
 
     protected void loadContent() {
@@ -124,10 +122,6 @@ public class GuidedDecisionTableEditorPresenter
 
                 GuidedDecisionTableEditorPresenter.this.content = content;
 
-                resetEditorPages(content.getOverview());
-
-                addImportsTab(importsWidget);
-
                 model = content.getModel();
                 metadata = content.getOverview().getMetadata();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
@@ -135,6 +129,10 @@ public class GuidedDecisionTableEditorPresenter
                         versionRecordManager.getCurrentPath(),
                         model,
                         dataModel);
+
+                resetEditorPages(content.getOverview());
+
+                addImportsTab(importsWidget);
 
                 importsWidget.setContent(oracle,
                         model.getImports(),
@@ -195,6 +193,16 @@ public class GuidedDecisionTableEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        service.call(new RemoteCallback<String>() {
+            @Override
+            public void callback(String source) {
+                updatePreview(source);
+            }
+        }).toSource(versionRecordManager.getCurrentPath(), model);
+    }
+
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();
@@ -215,14 +223,13 @@ public class GuidedDecisionTableEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension(
-                versionRecordManager.getCurrentPath(),
-                type);
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return GuidedDecisionTableConstants.INSTANCE.GuidedDecisionTableEditorTitle() + " [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @WorkbenchPartView
