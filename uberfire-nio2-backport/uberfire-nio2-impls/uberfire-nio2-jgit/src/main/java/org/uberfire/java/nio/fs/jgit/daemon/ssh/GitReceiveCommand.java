@@ -7,8 +7,8 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.AuthorizationManager;
-import org.uberfire.java.nio.security.Subject;
+import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.FileSystemUser;
 
 public class GitReceiveCommand extends BaseGitCommand {
 
@@ -16,9 +16,9 @@ public class GitReceiveCommand extends BaseGitCommand {
 
     public GitReceiveCommand( final String command,
                               final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
-                              final AuthorizationManager authorizationManager,
+                              final FileSystemAuthorizer fileSystemAuthorizer,
                               final ReceivePackFactory<BaseGitCommand> receivePackFactory ) {
-        super( command, authorizationManager, repositoryResolver );
+        super( command, fileSystemAuthorizer, repositoryResolver );
         this.receivePackFactory = receivePackFactory;
     }
 
@@ -28,7 +28,7 @@ public class GitReceiveCommand extends BaseGitCommand {
     }
 
     @Override
-    protected void execute( final Subject user,
+    protected void execute( final FileSystemUser user,
                             final Repository repository,
                             final InputStream in,
                             final OutputStream out,

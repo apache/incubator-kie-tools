@@ -126,7 +126,6 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
-import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.daemon.git.Daemon;
 import org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient;
 import org.uberfire.java.nio.fs.jgit.daemon.ssh.BaseGitCommand;
@@ -139,11 +138,11 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil.JGitPathInfo;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType;
 import org.uberfire.java.nio.fs.jgit.util.MoveCommitContent;
 import org.uberfire.java.nio.fs.jgit.util.RevertCommitContent;
-import org.uberfire.java.nio.security.AuthorizationManager;
-import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.java.nio.security.UserPassAuthenticator;
+import org.uberfire.java.nio.security.FileSystemAuthenticator;
+import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 
-public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware {
+public class JGitFileSystemProvider implements SecuredFileSystemProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger( JGitFileSystemProvider.class );
 
@@ -206,8 +205,8 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
     private Daemon daemonService = null;
     private GitSSHService gitSSHService = null;
-    private UserPassAuthenticator authenticator;
-    private AuthorizationManager authorizationManager;
+    private FileSystemAuthenticator authenticator;
+    private FileSystemAuthorizer fileSystemAuthorizer;
 
     private void loadConfig( ConfigProperties config ) {
         LOG.debug("Configuring from properties:");
@@ -272,18 +271,18 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
     }
 
     @Override
-    public void setUserPassAuthenticator( final UserPassAuthenticator authenticator ) {
-        this.authenticator = authenticator;
+    public void setAuthenticator( final FileSystemAuthenticator authenticator ) {
+        this.authenticator = checkNotNull( "authenticator", authenticator );
         if ( gitSSHService != null ) {
             gitSSHService.setUserPassAuthenticator( authenticator );
         }
     }
 
     @Override
-    public void setAuthorizationManager( AuthorizationManager authorizationManager ) {
-        this.authorizationManager = authorizationManager;
+    public void setAuthorizer( FileSystemAuthorizer authorizer ) {
+        this.fileSystemAuthorizer = checkNotNull( "authorizer", authorizer );
         if ( gitSSHService != null ) {
-            gitSSHService.setAuthorizationManager( authorizationManager );
+            gitSSHService.setAuthorizationManager( authorizer );
         }
     }
 
@@ -453,7 +452,7 @@ public class JGitFileSystemProvider implements FileSystemProvider, SecurityAware
 
         gitSSHService = new GitSSHService();
 
-        gitSSHService.setup( sshFileCertDir, sshHostAddr, sshPort, authenticator, authorizationManager, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
+        gitSSHService.setup( sshFileCertDir, sshHostAddr, sshPort, authenticator, fileSystemAuthorizer, receivePackFactory, new RepositoryResolverImpl<BaseGitCommand>() );
 
         gitSSHService.start();
     }

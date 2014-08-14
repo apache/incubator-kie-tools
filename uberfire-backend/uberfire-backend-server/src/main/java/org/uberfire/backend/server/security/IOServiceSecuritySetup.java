@@ -7,6 +7,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.exception.AuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +15,10 @@ import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.security.SecurityAware;
-import org.uberfire.java.nio.security.Session;
-import org.uberfire.java.nio.security.Subject;
-import org.uberfire.java.nio.security.UserPassAuthenticator;
+import org.uberfire.java.nio.security.FileSystemAuthenticator;
+import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.FileSystemUser;
+import org.uberfire.java.nio.security.SecuredFileSystemProvider;
 import org.uberfire.security.authz.AuthorizationManager;
 
 @ApplicationScoped
@@ -65,42 +66,43 @@ public class IOServiceSecuritySetup {
         final AuthorizationManager authorizationManager = _authorizationManager;
         final AuthenticationService authenticationManager = _authenticationManager;
 
-        final org.uberfire.java.nio.security.AuthorizationManager ioAuthorizationManager = new org.uberfire.java.nio.security.AuthorizationManager() {
+        final FileSystemAuthorizer ioAuthorizationManager = new FileSystemAuthorizer() {
             @Override
             public boolean authorize( final FileSystem fs,
-                                      final Subject subject ) {
-                return authorizationManager.authorize( new FileSystemResourceAdaptor( fs ), ( (UserSubjectAdapter) subject ).getWrappedUser() );
+                                      final FileSystemUser fileSystemUser ) {
+                return authorizationManager.authorize( new FileSystemResourceAdaptor( fs ), ( (UserAdapter) fileSystemUser ).getWrappedUser() );
             }
         };
 
-        for ( final FileSystemProvider fileSystemProvider : FileSystemProviders.installedProviders() ) {
-            if ( fileSystemProvider instanceof SecurityAware ) {
-                ( (SecurityAware) fileSystemProvider ).setUserPassAuthenticator( new UserPassAuthenticator() {
+        for ( final FileSystemProvider fp : FileSystemProviders.installedProviders() ) {
+            if ( fp instanceof SecuredFileSystemProvider ) {
+                SecuredFileSystemProvider sfp = (SecuredFileSystemProvider) fp;
+                sfp.setAuthenticator( new FileSystemAuthenticator() {
                     @Override
-                    public boolean authenticate( String username,
-                                                 String password,
-                                                 Session session ) {
+                    public FileSystemUser authenticate( String username,
+                                                 String password ) {
                         try {
                             final User result = authenticationManager.login( username, password );
                             if ( result != null ) {
-                                session.setSubject( new UserSubjectAdapter( result ) );
+                                return new UserAdapter( result );
                             }
-                            return result != null;
-                        } catch ( final Exception ignored ) {
+                            return null;
+
+                        } catch ( final AuthenticationException loginFailed ) {
+                            return null;
                         }
-                        return false;
                     }
                 } );
-                ( (SecurityAware) fileSystemProvider ).setAuthorizationManager( ioAuthorizationManager );
+                sfp.setAuthorizer( ioAuthorizationManager );
             }
         }
     }
 
-    static class UserSubjectAdapter implements Subject {
+    static class UserAdapter implements FileSystemUser {
 
         private final User user;
 
-        UserSubjectAdapter( User user ) {
+        UserAdapter( User user ) {
             this.user = user;
         }
 

@@ -3,7 +3,7 @@ package org.uberfire.java.nio.security;
 /**
  * TODO: update me
  */
-public interface Subject {
+public interface FileSystemUser {
 
     String getName();
 

@@ -12,26 +12,25 @@ import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
 import org.apache.sshd.server.session.ServerSession;
 import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.AuthorizationManager;
-import org.uberfire.java.nio.security.Session;
-import org.uberfire.java.nio.security.Subject;
-import org.uberfire.java.nio.security.UserPassAuthenticator;
+import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.FileSystemUser;
+import org.uberfire.java.nio.security.FileSystemAuthenticator;
 
 public class GitSSHService {
 
     final SshServer sshd = SshServer.setUpDefaultServer();
-    private UserPassAuthenticator userPassAuthenticator;
-    private AuthorizationManager authorizationManager;
+    private FileSystemAuthenticator fileSystemAuthenticator;
+    private FileSystemAuthorizer fileSystemAuthorizer;
 
     public void setup( final File certDir,
                        final String host,
                        final int port,
-                       final UserPassAuthenticator userPassAuthenticator,
-                       final AuthorizationManager authorizationManager,
+                       final FileSystemAuthenticator fileSystemAuthenticator,
+                       final FileSystemAuthorizer fileSystemAuthorizer,
                        final ReceivePackFactory receivePackFactory,
                        final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver ) {
-        this.userPassAuthenticator = userPassAuthenticator;
-        this.authorizationManager = authorizationManager;
+        this.fileSystemAuthenticator = fileSystemAuthenticator;
+        this.fileSystemAuthorizer = fileSystemAuthorizer;
 
         sshd.getProperties().put( SshServer.IDLE_TIMEOUT, "10000" );
         sshd.setHost( host );
@@ -44,9 +43,9 @@ public class GitSSHService {
             @Override
             public Command createCommand( String command ) {
                 if ( command.startsWith( "git-upload-pack" ) ) {
-                    return new GitUploadCommand( command, repositoryResolver, authorizationManager );
+                    return new GitUploadCommand( command, repositoryResolver, fileSystemAuthorizer );
                 } else if ( command.startsWith( "git-receive-pack" ) ) {
-                    return new GitReceiveCommand( command, repositoryResolver, authorizationManager, receivePackFactory );
+                    return new GitReceiveCommand( command, repositoryResolver, fileSystemAuthorizer, receivePackFactory );
                 } else {
                     return new UnknownCommand( command );
                 }
@@ -57,17 +56,12 @@ public class GitSSHService {
             public boolean authenticate( final String username,
                                          final String password,
                                          final ServerSession session ) {
-                return userPassAuthenticator.authenticate( username, password, new Session() {
-                    @Override
-                    public void setSubject( final Subject value ) {
-                        session.setAttribute( BaseGitCommand.SUBJECT_KEY, value );
-                    }
-
-                    @Override
-                    public Subject getSubject() {
-                        return session.getAttribute( BaseGitCommand.SUBJECT_KEY );
-                    }
-                } );
+                FileSystemUser user = fileSystemAuthenticator.authenticate( username, password );
+                if ( user == null ) {
+                    return false;
+                }
+                session.setAttribute( BaseGitCommand.SUBJECT_KEY, user );
+                return true;
             }
         } );
     }
@@ -87,19 +81,19 @@ public class GitSSHService {
         }
     }
 
-    public UserPassAuthenticator getUserPassAuthenticator() {
-        return userPassAuthenticator;
+    public FileSystemAuthenticator getUserPassAuthenticator() {
+        return fileSystemAuthenticator;
     }
 
-    public void setUserPassAuthenticator( UserPassAuthenticator userPassAuthenticator ) {
-        this.userPassAuthenticator = userPassAuthenticator;
+    public void setUserPassAuthenticator( FileSystemAuthenticator fileSystemAuthenticator ) {
+        this.fileSystemAuthenticator = fileSystemAuthenticator;
     }
 
-    public AuthorizationManager getAuthorizationManager() {
-        return authorizationManager;
+    public FileSystemAuthorizer getAuthorizationManager() {
+        return fileSystemAuthorizer;
     }
 
-    public void setAuthorizationManager( AuthorizationManager authorizationManager ) {
-        this.authorizationManager = authorizationManager;
+    public void setAuthorizationManager( FileSystemAuthorizer fileSystemAuthorizer ) {
+        this.fileSystemAuthorizer = fileSystemAuthorizer;
     }
 }

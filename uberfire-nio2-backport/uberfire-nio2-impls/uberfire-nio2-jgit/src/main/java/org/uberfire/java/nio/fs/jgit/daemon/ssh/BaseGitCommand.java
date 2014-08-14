@@ -38,31 +38,31 @@ import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.AuthorizationManager;
-import org.uberfire.java.nio.security.Subject;
+import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.FileSystemUser;
 
 public abstract class BaseGitCommand implements Command,
 SessionAware,
 Runnable {
 
-    public final static Session.AttributeKey<Subject> SUBJECT_KEY = new Session.AttributeKey<Subject>();
+    public final static Session.AttributeKey<FileSystemUser> SUBJECT_KEY = new Session.AttributeKey<FileSystemUser>();
 
     protected final String command;
     protected final String repositoryName;
-    protected final AuthorizationManager authorizationManager;
+    protected final FileSystemAuthorizer fileSystemAuthorizer;
     protected final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver;
 
     private InputStream in;
     private OutputStream out;
     private OutputStream err;
     private ExitCallback callback;
-    private Subject user;
+    private FileSystemUser user;
 
     public BaseGitCommand( final String command,
-                           final AuthorizationManager authorizationManager,
+                           final FileSystemAuthorizer fileSystemAuthorizer,
                            final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver ) {
         this.command = command;
-        this.authorizationManager = authorizationManager;
+        this.fileSystemAuthorizer = fileSystemAuthorizer;
         this.repositoryName = buildRepositoryName( command );
         this.repositoryResolver = repositoryResolver;
     }
@@ -123,7 +123,7 @@ Runnable {
             if ( repository != null ) {
                 final FileSystem fileSystem = repositoryResolver.resolveFileSystem( repository );
 
-                if ( authorizationManager.authorize( fileSystem, user ) ) {
+                if ( fileSystemAuthorizer.authorize( fileSystem, user ) ) {
                     execute( user, repository, in, out, err );
                 } else {
                     err.write( "Invalid credentials.".getBytes() );
@@ -169,7 +169,7 @@ Runnable {
         }
     }
 
-    protected abstract void execute( final Subject user,
+    protected abstract void execute( final FileSystemUser user,
                                      final Repository repository,
                                      final InputStream in,
                                      final OutputStream out,
@@ -179,7 +179,7 @@ Runnable {
     public void destroy() {
     }
 
-    public Subject getUser() {
+    public FileSystemUser getUser() {
         return user;
     }
 

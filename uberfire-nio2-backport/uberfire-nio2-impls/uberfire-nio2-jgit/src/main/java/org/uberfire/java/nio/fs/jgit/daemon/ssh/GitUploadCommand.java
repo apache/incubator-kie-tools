@@ -9,15 +9,15 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.pack.PackConfig;
 import org.eclipse.jgit.transport.UploadPack;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
-import org.uberfire.java.nio.security.AuthorizationManager;
-import org.uberfire.java.nio.security.Subject;
+import org.uberfire.java.nio.security.FileSystemAuthorizer;
+import org.uberfire.java.nio.security.FileSystemUser;
 
 public class GitUploadCommand extends BaseGitCommand {
 
     public GitUploadCommand( final String command,
                              final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
-                             final AuthorizationManager authorizationManager ) {
-        super( command, authorizationManager, repositoryResolver );
+                             final FileSystemAuthorizer fileSystemAuthorizer ) {
+        super( command, fileSystemAuthorizer, repositoryResolver );
     }
 
     @Override
@@ -26,7 +26,7 @@ public class GitUploadCommand extends BaseGitCommand {
     }
 
     @Override
-    protected void execute( final Subject user,
+    protected void execute( final FileSystemUser user,
                             final Repository repository,
                             final InputStream in,
                             final OutputStream out,
