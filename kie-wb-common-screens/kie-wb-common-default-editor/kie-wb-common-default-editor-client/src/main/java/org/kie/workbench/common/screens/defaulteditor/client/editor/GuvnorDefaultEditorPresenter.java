@@ -32,6 +32,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.lifecycle.OnClose;
@@ -71,7 +72,7 @@ public class GuvnorDefaultEditorPresenter
     @OnStartup
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, new AnyResourceType());
         view.onStartup(path);
     }
 
@@ -97,12 +98,13 @@ public class GuvnorDefaultEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = versionRecordManager.getCurrentPath().getFileName();
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return "Default Editor [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @Override
@@ -117,6 +119,11 @@ public class GuvnorDefaultEditorPresenter
 
     @Override protected void save() {
 
+    }
+
+    @Override
+    protected void onOverviewSelected() {
+           // nothing to update
     }
 
     @WorkbenchPartView

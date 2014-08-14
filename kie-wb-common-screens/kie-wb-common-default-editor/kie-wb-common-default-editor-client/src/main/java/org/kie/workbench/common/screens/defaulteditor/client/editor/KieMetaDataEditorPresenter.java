@@ -10,6 +10,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.lifecycle.OnOpen;
@@ -49,8 +50,18 @@ public class KieMetaDataEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        return GuvnorDefaultEditorConstants.INSTANCE.MetaFileEditor( versionRecordManager.getCurrentPath().getFileName() );
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
+
+    @Override
+    protected void onOverviewSelected() {
+        // Nothing to do here.
     }
 
     @WorkbenchPartView

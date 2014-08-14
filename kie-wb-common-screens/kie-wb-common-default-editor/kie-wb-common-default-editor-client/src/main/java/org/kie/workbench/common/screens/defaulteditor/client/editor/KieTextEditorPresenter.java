@@ -10,6 +10,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
+import org.kie.uberfire.client.editors.texteditor.TextResourceType;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
@@ -19,6 +20,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.mvp.Command;
@@ -29,7 +31,7 @@ import org.uberfire.workbench.model.menu.Menus;
 public class KieTextEditorPresenter
         extends KieEditor {
 
-    private KieTextEditorView view;
+    protected KieTextEditorView view;
 
     @Inject
     private Caller<DefaultEditorService> defaultEditorService;
@@ -56,7 +58,7 @@ public class KieTextEditorPresenter
 
     public void onStartup(final ObservablePath path,
             final PlaceRequest place) {
-        super.init(path, place);
+        super.init(path, place, new TextResourceType());
 
         view.onStartup(path);
 
@@ -123,18 +125,24 @@ public class KieTextEditorPresenter
 
     }
 
+    @Override
+    protected void onOverviewSelected() {
+        updatePreview(view.getContent());
+    }
+
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = versionRecordManager.getCurrentPath().getFileName();
-        if (versionRecordManager.getVersion() != null) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return "Text Editor [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @IsDirty

@@ -9,6 +9,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.kie.uberfire.client.editors.texteditor.TextResourceType;
 import org.uberfire.lifecycle.OnOpen;
@@ -37,8 +38,19 @@ public class KieTextEditorScreenPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        return GuvnorDefaultEditorConstants.INSTANCE.TextEditor( FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(), type ) );
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
+
+
+    @Override
+    protected void onOverviewSelected() {
+        updatePreview(view.getContent());
     }
 
     @WorkbenchPartView
