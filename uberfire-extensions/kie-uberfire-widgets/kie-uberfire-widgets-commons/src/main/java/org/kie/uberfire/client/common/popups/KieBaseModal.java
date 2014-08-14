@@ -17,9 +17,18 @@ package org.kie.uberfire.client.common.popups;
 
 import java.util.Iterator;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Close;
 import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.ModalFooter;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.event.ShownEvent;
+import com.github.gwtbootstrap.client.ui.event.ShownHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -33,7 +42,12 @@ import com.google.gwt.user.client.ui.Widget;
  * - setAnimation( true );
  * - setDynamicSafe( true );
  * - setHideOthers( false );
+ * <p/>
+ * Furthermore this Modal provides:
+ * - Automatic focus to the first Focusable widget in the body
+ * - Automatic invocation of the first Button's ClickHandler where ButtonType==PRIMARY when <enter> is pressed
  */
+
 public class KieBaseModal extends Modal {
 
     public KieBaseModal() {
@@ -43,16 +57,34 @@ public class KieBaseModal extends Modal {
         setAnimation( true );
         setDynamicSafe( true );
         setHideOthers( false );
+
+        //Setting Focus in show() doesn't work so set after Modal is shown
+        addShownHandler( new ShownHandler() {
+            @Override
+            public void onShown( ShownEvent shownEvent ) {
+                setFocus( KieBaseModal.this,
+                          Boolean.FALSE );
+            }
+        } );
+
+        //Listen for <enter> key press
+        this.addDomHandler( new KeyDownHandler() {
+            @Override
+            public void onKeyDown( KeyDownEvent event ) {
+                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+                    if ( handleDefaultAction() ) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                }
+            }
+        }, KeyDownEvent.getType() );
     }
 
-    @Override
-    public void show() {
-        super.show();
-        setFocus( this );
-    }
-
-    //Set focus on first widget
-    private boolean setFocus( final HasWidgets container ) {
+    //Set focus on first widget. Ideally we'd only scan the body of the Modal but this is
+    //not accessible from sub-classes so we ignore some Focusable elements in the Header
+    protected boolean setFocus( final HasWidgets container,
+                                Boolean found ) {
         final Iterator<Widget> i = container.iterator();
         while ( i.hasNext() ) {
             final Widget w = i.next();
@@ -60,11 +92,46 @@ public class KieBaseModal extends Modal {
                 continue;
             } else if ( w instanceof Focusable ) {
                 ( (Focusable) w ).setFocus( true );
-                return true;
+                found = true;
             } else if ( w instanceof HasWidgets ) {
-                return setFocus( ( (HasWidgets) w ) );
+                found = setFocus( ( (HasWidgets) w ),
+                                  found );
+            }
+            if ( Boolean.TRUE.equals( found ) ) {
+                break;
+            }
+        }
+        return found;
+    }
+
+    //When <enter> is pressed look for a PRIMARY button in the ModalFooters and click it
+    protected boolean handleDefaultAction() {
+        for ( Widget w : getChildren() ) {
+            if ( w instanceof ModalFooter ) {
+                final ModalFooter footer = (ModalFooter) w;
+                return handleModalFooter( footer );
             }
         }
         return false;
     }
+
+    private boolean handleModalFooter( final ModalFooter footer ) {
+        final Iterator<Widget> iterator = footer.iterator();
+        while ( iterator.hasNext() ) {
+            final Widget fw = iterator.next();
+            //Many of our standard ModalFooters embed a ModalFooter within a ModalFooter
+            if ( fw instanceof ModalFooter ) {
+                return handleModalFooter( ( (ModalFooter) fw ) );
+            } else if ( fw instanceof Button ) {
+                final Button b = (Button) fw;
+                if ( b.getType().equals( ButtonType.PRIMARY ) ) {
+                    b.fireEvent( new ClickEvent() {
+                    } );
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }
