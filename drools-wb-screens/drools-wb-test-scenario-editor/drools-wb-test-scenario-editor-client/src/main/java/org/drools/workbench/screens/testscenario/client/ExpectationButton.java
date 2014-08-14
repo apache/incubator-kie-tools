@@ -60,6 +60,7 @@ public class ExpectationButton
         public NewExpectationPopup() {
             super( TestScenarioAltedImages.INSTANCE.RuleAsset(),
                    TestScenarioConstants.INSTANCE.NewExpectation() );
+            setWidth( 700 );
 
             Widget selectRule = scenarioWidgetComponentCreator.getRuleSelectionWidget(
                     new RuleSelectionEvent() {

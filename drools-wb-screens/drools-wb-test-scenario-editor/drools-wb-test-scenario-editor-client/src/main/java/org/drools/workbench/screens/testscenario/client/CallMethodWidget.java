@@ -209,11 +209,7 @@ public class CallMethodWidget extends DirtyableComposite {
             }
         } );
 
-        //TODO {manstis}
-        //popup.setPopupPosition( w.getAbsoluteLeft(),
-        //                        w.getAbsoluteTop() );
         popup.show();
-
     }
 
     private Widget valueEditor( final CallFieldValue val ) {

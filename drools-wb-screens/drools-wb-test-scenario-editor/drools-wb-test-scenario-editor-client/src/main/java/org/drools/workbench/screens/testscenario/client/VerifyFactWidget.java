@@ -20,8 +20,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
@@ -40,9 +40,11 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
+import org.kie.uberfire.client.common.ClickableLabel;
 import org.kie.uberfire.client.common.SmallLabel;
 import org.kie.uberfire.client.common.ValueChanged;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
@@ -76,18 +78,9 @@ public class VerifyFactWidget extends Composite {
         this.scenario = sc;
         this.executionTrace = executionTrace;
         HorizontalPanel ab = new HorizontalPanel();
-        if ( !vf.anonymous ) {
-            type = (String) sc.getVariableTypes().get( vf.getName() );
-            ab.add( new SmallLabel( TestScenarioConstants.INSTANCE.scenarioFactTypeHasValues( type, vf.getName() ) ) );
-        } else {
-            type = vf.getName();
-            ab.add( new SmallLabel( TestScenarioConstants.INSTANCE.AFactOfType0HasValues( vf.getName() ) ) );
-        }
-        this.showResults = showResults;
+        ClickableLabel label = null;
 
-        Image add = TestScenarioAltedImages.INSTANCE.AddFieldToFact();
-        add.setTitle( TestScenarioConstants.INSTANCE.AddAFieldToThisExpectation() );
-        add.addClickHandler( new ClickHandler() {
+        final ClickHandler handler = new ClickHandler() {
             public void onClick( ClickEvent w ) {
 
                 final ListBox b = new ListBox();
@@ -104,9 +97,9 @@ public class VerifyFactWidget extends Composite {
                 final FormStylePopup pop = new FormStylePopup( TestScenarioAltedImages.INSTANCE.RuleAsset(),
                                                                TestScenarioConstants.INSTANCE.ChooseAFieldToAdd() );
                 pop.addRow( b );
-                Button ok = new Button( TestScenarioConstants.INSTANCE.OK() );
-                ok.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
+                pop.add( new ModalFooterOKCancelButtons( new Command() {
+                    @Override
+                    public void execute() {
                         String f = b.getItemText( b.getSelectedIndex() );
                         vf.getFieldValues().add( new VerifyField( f,
                                                                   "",
@@ -117,14 +110,32 @@ public class VerifyFactWidget extends Composite {
                                          data );
                         pop.hide();
                     }
-                } );
-                pop.addRow( ok );
+                }, new Command() {
+                    @Override
+                    public void execute() {
+                        pop.hide();
+                    }
+                }
+                ) );
+
                 pop.show();
 
             }
-        } );
+        };
 
-        ab.add( add );
+        if ( !vf.anonymous ) {
+            type = (String) sc.getVariableTypes().get( vf.getName() );
+            label = new ClickableLabel( TestScenarioConstants.INSTANCE.scenarioFactTypeHasValues( type,
+                                                                                                  vf.getName() ),
+                                        handler );
+        } else {
+            type = vf.getName();
+            label = new ClickableLabel( TestScenarioConstants.INSTANCE.AFactOfType0HasValues( vf.getName() ),
+                                        handler );
+        }
+        ab.add( label );
+        this.showResults = showResults;
+
         outer.setWidget( 0,
                          0,
                          ab );

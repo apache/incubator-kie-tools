@@ -306,11 +306,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
             }
         } );
-        //{manstis} TODO
-//        popup.setPopupPosition( w.getAbsoluteLeft(),
-//                                w.getAbsoluteTop() );
-        popup.show();
 
+        popup.show();
     }
 
     private Widget valueEditor( final ActionFieldFunction val ) {

@@ -20,8 +20,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Command;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 
 abstract class AddFieldClickHandler
@@ -39,8 +41,23 @@ abstract class AddFieldClickHandler
 
     @Override
     public void onClick( final ClickEvent event ) {
-        final FormStylePopup pop = new FormStylePopup( TestScenarioConstants.INSTANCE.ChooseDotDotDot() );
-        pop.addAttribute( TestScenarioConstants.INSTANCE.ChooseAFieldToAdd(), createAddNewField( pop ) );
+        final FormStylePopup pop = new FormStylePopup( TestScenarioConstants.INSTANCE.ChooseAFieldToAdd() );
+        final FactFieldSelector selector = createAddNewField( pop );
+        pop.addAttribute( TestScenarioConstants.INSTANCE.ChooseAFieldToAdd(),
+                          selector );
+        pop.add( new ModalFooterOKCancelButtons( new Command() {
+            @Override
+            public void execute() {
+                SelectionEvent.fire( selector,
+                                     selector.getSelectedText() );
+            }
+        }, new Command() {
+            @Override
+            public void execute() {
+                pop.hide();
+            }
+        }
+        ) );
 
         pop.show();
     }

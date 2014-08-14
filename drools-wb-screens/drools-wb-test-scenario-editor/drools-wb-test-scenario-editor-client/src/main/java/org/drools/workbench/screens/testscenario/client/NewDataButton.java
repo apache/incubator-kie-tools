@@ -32,9 +32,9 @@ import org.drools.workbench.models.testscenarios.shared.RetractFact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
+import org.kie.uberfire.client.common.SmallLabel;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.ItemAltedImages;
-import org.kie.uberfire.client.common.SmallLabel;
 
 /**
  * This button gives a choice of modifying data, based on the positional
@@ -69,6 +69,7 @@ public class NewDataButton extends TestScenarioButton {
         public NewInputPopup() {
             super( TestScenarioAltedImages.INSTANCE.RuleAsset(),
                    TestScenarioConstants.INSTANCE.NewInput() );
+            setWidth( 700 );
 
             addAttribute( TestScenarioConstants.INSTANCE.InsertANewFact1(),
                           new InsertFactPanel() );
