@@ -79,4 +79,8 @@ public class OverviewWidgetPresenter
     public Widget asWidget() {
         return view.asWidget();
     }
+
+    public void updatePreview(String preview) {
+        view.setPreview(preview);
+    }
 }

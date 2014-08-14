@@ -36,7 +36,7 @@ public abstract class KieService {
     @Inject
     protected KieProjectService projectService;
 
-    protected Overview loadOverview(Path path) {
+    public Overview loadOverview(Path path) {
 
         Overview overview = new Overview();
 
@@ -47,7 +47,7 @@ public abstract class KieService {
         return overview;
     }
 
-    private String getSource(Path path) {
+    public String getSource(Path path) {
         org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
 
         if (sourceServices.hasServiceFor(convertedPath)) {

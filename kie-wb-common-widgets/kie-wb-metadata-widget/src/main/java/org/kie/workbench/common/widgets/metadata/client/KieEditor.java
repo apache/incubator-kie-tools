@@ -40,6 +40,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -67,7 +68,7 @@ public abstract class KieEditor {
     private MultiPageEditor multiPage;
 
     @Inject
-    private OverviewWidgetPresenter overview;
+    private OverviewWidgetPresenter overviewWidget;
 
     @Inject
     private PlaceManager placeManager;
@@ -89,6 +90,8 @@ public abstract class KieEditor {
     protected Metadata metadata;
 
     protected PlaceRequest place;
+    private ClientResourceType type;
+    private KieEditorTitle title = new KieEditorTitle();
 
     protected KieEditor() {
     }
@@ -98,8 +101,9 @@ public abstract class KieEditor {
         this.baseView = baseView;
     }
 
-    protected void init(ObservablePath path, PlaceRequest place) {
+    protected void init(ObservablePath path, PlaceRequest place, ClientResourceType type) {
         this.place = place;
+        this.type = type;
 
         baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
@@ -149,18 +153,27 @@ public abstract class KieEditor {
         multiPage.addPage(page);
     }
 
-    protected void onEditTabSelected() {
-
-    }
-
     protected void resetEditorPages(Overview overview) {
-        multiPage.clear();
-        multiPage.addWidget(this.overview,
-                CommonConstants.INSTANCE.Overview());
 
         versionRecordManager.setVersions(overview.getMetadata().getVersion());
-        this.overview.setContent(overview, versionRecordManager.getCurrentPath());
+        this.overviewWidget.setContent(overview, versionRecordManager.getCurrentPath());
         this.metadata = overview.getMetadata();
+
+        multiPage.clear();
+        addPage(
+                new Page(this.overviewWidget,
+                        CommonConstants.INSTANCE.Overview()) {
+                    @Override
+                    public void onFocus() {
+                        onOverviewSelected();
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+
+                    }
+                }
+        );
 
         addPage(
                 new Page(baseView,
@@ -257,9 +270,26 @@ public abstract class KieEditor {
      * Effectively the same as reload() but don't reset concurrentUpdateSessionInfo
      */
     protected void onRename() {
-        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
+        refreshTitle();
         baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         loadContent();
+    }
+
+    /**
+     * Override this method and use @WorkbenchPartTitleDecoration
+     * @return The widget for the title
+     */
+    protected IsWidget getTitle() {
+        refreshTitle();
+        return title;
+    }
+
+    public String getTitleText() {
+        return versionRecordManager.getCurrentPath().getFileName() + " - " + type.getDescription();
+    }
+
+    private void refreshTitle() {
+        title.setText(versionRecordManager.getCurrentPath().getFileName(), type.getDescription());
     }
 
     protected void onSave() {
@@ -299,6 +329,9 @@ public abstract class KieEditor {
         }
     }
 
+    /**
+     * If you want to customize the menu override this method.
+     */
     protected void makeMenuBar() {
         menus = menuBuilder
                 .addSave(new Command() {
@@ -335,7 +368,7 @@ public abstract class KieEditor {
             return;
         }
         if (versionRecordManager.getPathToLatest().equals(restore.getPath())) {
-            init(restore.getPath(), place);
+            init(restore.getPath(), place, type);
             loadContent();
             notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
         }
@@ -343,7 +376,8 @@ public abstract class KieEditor {
 
     public void reload() {
         concurrentUpdateSessionInfo = null;
-        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitle(), null));
+        refreshTitle();
+        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         loadContent();
     }
 
@@ -380,16 +414,46 @@ public abstract class KieEditor {
         multiPage.selectPage(tabIndex);
     }
 
+    protected void updatePreview(String preview) {
+        overviewWidget.updatePreview(preview);
+    }
+
     public IsWidget getWidget() {
         return multiPage;
     }
 
-    protected abstract Command onValidate();
-
-    protected abstract String getTitle();
+    /**
+     * If your editor has validation, overwrite this.
+     * @return The validation command
+     */
+    protected Command onValidate() {
+        return new Command() {
+            @Override public void execute() {
+                // Default is that nothing happens.
+            }
+        };
+    }
 
     protected abstract void loadContent();
 
-    protected abstract void save();
+    /**
+     * Needs to be overwritten for save to work
+     */
+    protected void save() {
+
+    }
+
+    /**
+     * Each tab needs to at least update the OverviewWidget's preview when selecting the overview tab.
+     */
+    protected abstract void onOverviewSelected();
+
+    /**
+     * Overwrite this if you want to do something special when the editor tab is selected.
+     */
+    protected void onEditTabSelected() {
+
+    }
+
 }
 

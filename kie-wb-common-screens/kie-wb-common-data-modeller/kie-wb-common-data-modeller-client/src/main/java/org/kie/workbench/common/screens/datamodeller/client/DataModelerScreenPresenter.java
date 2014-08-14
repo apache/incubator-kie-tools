@@ -77,6 +77,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
@@ -90,7 +91,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
 @WorkbenchEditor(identifier = "DataModelerEditor",
@@ -162,15 +162,13 @@ public class DataModelerScreenPresenter
     private static final int EDITABLE_SOURCE_TAB = 2;
 
     @WorkbenchPartTitle
-    public String getTitle() {
+    public String getTitleText() {
+        return super.getTitleText();
+    }
 
-        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(), resourceType );
-        /*
-            if ( version != null ) {
-                fileName = fileName + " v" + version;
-            }
-        */
-        return Constants.INSTANCE.modelEditor_screen_name() + " [" + fileName + "]";
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @WorkbenchPartView
@@ -192,7 +190,7 @@ public class DataModelerScreenPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init(path,place);
+        init(path,place,resourceType);
 
         initContext();
         open = true;
@@ -484,6 +482,11 @@ public class DataModelerScreenPresenter
         } else {
             save( null );
         }
+    }
+
+    @Override
+    protected void onOverviewSelected() {
+        loadSourceTab();
     }
 
     private void save( final String newClassName ) {
@@ -782,7 +785,8 @@ public class DataModelerScreenPresenter
                 public void callback( GenerationResult result ) {
                     view.hideBusyIndicator();
                     setSource( result.getSource() );
-                    getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+                    updatePreview(result.getSource());
+                    getContext().setEditionStatus(DataModelerContext.EditionStatus.NO_CHANGES);
                 }
             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateSource( getSource(), versionRecordManager.getCurrentPath(), getContext().getDataObject() );
         } else {
@@ -914,7 +918,7 @@ public class DataModelerScreenPresenter
     }
 
     private void reload( final ObservablePath targetPath ) {
-        super.init(targetPath,place);
+        super.init(targetPath,place, resourceType);
 
     }
 

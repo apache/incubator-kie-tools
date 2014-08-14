@@ -5,14 +5,13 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorPresenter;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorView;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.type.KModuleResourceType;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
@@ -37,9 +36,14 @@ public class KModuleEditorScreenPresenter
         return super.getMenus();
     }
 
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
+    }
+
     @WorkbenchPartTitle
-    public String getTitle() {
-        return ProjectEditorResources.CONSTANTS.KModuleDotXml();
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchPartView

@@ -21,23 +21,21 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.type.FileNameUtil;
 
-@WorkbenchEditor(identifier = "JavaEditor", supportedTypes = { JavaResourceType.class })
+@WorkbenchEditor(identifier = "JavaEditor", supportedTypes = {JavaResourceType.class})
 public class JavaEditorPresenter
-    extends KieEditor {
+        extends KieEditor {
 
     @Inject
     private Caller<VFSService> vfsServices;
@@ -60,27 +58,27 @@ public class JavaEditorPresenter
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
-        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(),
-                                                        type );
-        if ( versionRecordManager.getVersion() != null ) {
-            fileName = fileName + " v" + versionRecordManager.getVersion();
-        }
-        return "Java Source View [" + fileName + "]";
+    public String getTitleText() {
+        return super.getTitleText();
+    }
+
+    @WorkbenchPartTitleDecoration
+    public IsWidget getTitle() {
+        return super.getTitle();
     }
 
     @Override
     protected void loadContent() {
-        vfsServices.call( new RemoteCallback<String>() {
+        vfsServices.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String response ) {
-                if ( response == null ) {
+            public void callback(String response) {
+                if (response == null) {
                     view.setContent("-- empty --");
                 } else {
                     view.setContent(response);
                 }
             }
-        } ).readAllString( versionRecordManager.getCurrentPath() );
+        }).readAllString(versionRecordManager.getCurrentPath());
     }
 
     @Override
@@ -93,6 +91,11 @@ public class JavaEditorPresenter
     @Override
     protected void save() {
 
+    }
+
+    @Override
+    protected void onOverviewSelected() {
+        loadContent();
     }
 
     @WorkbenchPartView
