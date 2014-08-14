@@ -41,6 +41,7 @@ import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.server.config.ConfigurationFactory;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -51,7 +52,6 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -79,7 +79,7 @@ public class ProjectServiceImpl
                                Event<RenameProjectEvent> renameProjectEvent,
                                Event<DeleteProjectEvent> deleteProjectEvent,
                                Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
-                               Identity identity,
+                               User identity,
                                SessionInfo sessionInfo ) {
         super( ioService, pomService, projectConfigurationContentHandler, configurationService,
                configurationFactory, newProjectEvent, newPackageEvent, renameProjectEvent, deleteProjectEvent,
@@ -99,8 +99,7 @@ public class ProjectServiceImpl
             
             final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
 
-            ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( "New project [" + projectName + "]" ) );
-            
+            ioService.startBatch( fs, makeCommentedOption( "New project [" + projectName + "]" ) );
             //Set-up project structure and KModule.xml
             kModuleService.setUpKModuleStructure( projectRootPath );
 

@@ -19,6 +19,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.security.AppRoles;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -29,7 +31,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.DotResourceType;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -41,7 +42,7 @@ public class KieMetaDataEditorPresenter
     private DotResourceType type;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     public KieMetaDataEditorPresenter( final KieTextEditorView baseView ) {
@@ -51,7 +52,7 @@ public class KieMetaDataEditorPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        if ( !identity.hasRole( AppRoles.ADMIN ) ) {
+        if ( !identity.getRoles().contains( new RoleImpl( AppRoles.ADMIN.getName() ) ) ) {
             makeReadOnly( place );
         }
 

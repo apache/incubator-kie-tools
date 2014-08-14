@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.home.client.resources.HomeResources;
 import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselEntryWidget;
 import org.kie.workbench.common.screens.home.client.widgets.carousel.CarouselWidget;
@@ -40,7 +41,6 @@ import org.kie.workbench.common.screens.home.model.Section;
 import org.kie.workbench.common.screens.home.model.SectionEntry;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.Identity;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 public class HomeViewImpl extends Composite
@@ -64,7 +64,7 @@ public class HomeViewImpl extends Composite
     private RuntimeAuthorizationManager authzManager;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @UiField
     CarouselWidget carousel;

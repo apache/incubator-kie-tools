@@ -16,12 +16,27 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
@@ -40,17 +55,10 @@ import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
-import org.uberfire.security.Identity;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.server.cdi.AppResourcesAuthz;
 
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
-
-import static java.util.Collections.emptyList;
-import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.toFolderItem;
+import static java.util.Collections.*;
+import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.*;
 
 public class ProjectExplorerContentResolver {
 
@@ -72,7 +80,7 @@ public class ProjectExplorerContentResolver {
     private ExplorerServiceHelper helper;
 
     @Inject
-    @AppResourcesAuthz
+//    @AppResourcesAuthz
     private AuthorizationManager authorizationManager;
 
     @Inject
@@ -80,7 +88,7 @@ public class ProjectExplorerContentResolver {
 
     @Inject
     @SessionScoped
-    private Identity identity;
+    private User identity;
 
     private OrganizationalUnit selectedOrganizationalUnit;
     private Repository selectedRepository;

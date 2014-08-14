@@ -8,6 +8,7 @@ import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 
 import org.guvnor.structure.repositories.NewRepositoryEvent;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.ExtendedTypes;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
@@ -15,13 +16,12 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
-import org.uberfire.security.Identity;
 
 @ApplicationScoped
 public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEvent> {
 
     @Inject
-    private Identity loggedUser;
+    private User loggedUser;
 
     @Inject
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
@@ -49,7 +49,7 @@ public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEve
         NewRepositoryEvent event = (NewRepositoryEvent) object;
         SocialUser socialUser = null;
         try {
-            socialUser = socialUserRepositoryAPI.findSocialUser( loggedUser.getName() );
+            socialUser = socialUserRepositoryAPI.findSocialUser( loggedUser.getIdentifier() );
         } catch(ContextNotActiveException e) {
             //clean repository
             socialUser = new SocialUser( "system" );

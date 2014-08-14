@@ -9,6 +9,7 @@ import com.github.gwtbootstrap.client.ui.NavLink;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.uberfire.social.activities.model.SocialPaged;
@@ -24,7 +25,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.security.Identity;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "SocialHomePageSidePresenter")
@@ -45,7 +45,7 @@ public class SocialHomePageSidePresenter {
     Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
 
     @Inject
-    private Identity loggedUser;
+    private User loggedUser;
 
     @Inject
     private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
@@ -73,7 +73,7 @@ public class SocialHomePageSidePresenter {
                         .withLinkCommand( generateLinkCommand() );
                 view.setupWidget( model );
             }
-        } ).findSocialUser( loggedUser.getName() );
+        } ).findSocialUser( loggedUser.getIdentifier() );
     }
 
     private ParameterizedCommand<String> generateLinkCommand() {

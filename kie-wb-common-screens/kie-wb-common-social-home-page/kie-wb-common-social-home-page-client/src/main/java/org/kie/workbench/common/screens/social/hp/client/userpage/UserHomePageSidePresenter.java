@@ -17,6 +17,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
@@ -36,7 +37,6 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -86,7 +86,7 @@ public class UserHomePageSidePresenter {
     private Caller<SocialUserServiceAPI> socialUserService;
 
     @Inject
-    private Identity loggedUser;
+    private User loggedUser;
 
     @Inject
     SideUserInfoPresenter sideUserInfoPresenter;
@@ -100,8 +100,8 @@ public class UserHomePageSidePresenter {
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
         this.place = place;
-        this.lastUserOnpage = loggedUser.getName();
-        refreshPage( loggedUser.getName() );
+        this.lastUserOnpage = loggedUser.getIdentifier();
+        refreshPage( loggedUser.getIdentifier() );
     }
 
     @WorkbenchMenu
@@ -125,7 +125,7 @@ public class UserHomePageSidePresenter {
                                         addClickHandler( new ClickHandler() {
                                             @Override
                                             public void onClick( ClickEvent event ) {
-                                                selectedEvent.fire( new UserHomepageSelectedEvent( loggedUser.getName() ) );
+                                                selectedEvent.fire( new UserHomepageSelectedEvent( loggedUser.getIdentifier() ) );
                                             }
                                         } );
                                     }
@@ -207,7 +207,7 @@ public class UserHomePageSidePresenter {
         followUnfollow.setType( ButtonType.INFO );
         followUnfollow.setSize( ButtonSize.DEFAULT );
 
-        if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getName() ) ) {
+        if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getIdentifier() ) ) {
             createLoggedUserActionLink( socialUser, followUnfollow );
         } else {
             createAnotherUserActionLink( socialUser, followUnfollow );
@@ -230,7 +230,7 @@ public class UserHomePageSidePresenter {
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                socialUserService.call().userFollowAnotherUser( loggedUser.getName(), socialUser.getUserName() );
+                socialUserService.call().userFollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
                 selectedEvent.fire( new UserHomepageSelectedEvent( socialUser.getUserName() ) );
             }
         } );
@@ -242,14 +242,14 @@ public class UserHomePageSidePresenter {
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                socialUserService.call().userUnfollowAnotherUser( loggedUser.getName(), socialUser.getUserName() );
+                socialUserService.call().userUnfollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
                 selectedEvent.fire( new UserHomepageSelectedEvent( socialUser.getUserName() ) );
             }
         } );
     }
 
     private boolean loggedUserFollowSelectedUser( SocialUser socialUser ) {
-        return socialUser.getFollowersName().contains( loggedUser.getName() );
+        return socialUser.getFollowersName().contains( loggedUser.getIdentifier() );
     }
 
     private void createLoggedUserActionLink( final SocialUser socialUser,

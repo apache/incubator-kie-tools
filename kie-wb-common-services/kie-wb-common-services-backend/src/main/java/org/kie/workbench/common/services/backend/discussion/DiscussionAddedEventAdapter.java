@@ -16,6 +16,13 @@
 
 package org.kie.workbench.common.services.backend.discussion;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
@@ -24,21 +31,10 @@ import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
 import org.kie.workbench.common.services.shared.discussion.DiscussionEventTypes;
-import org.uberfire.security.Identity;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @ApplicationScoped
 public class DiscussionAddedEventAdapter
         implements SocialAdapter<CommentAddedEvent> {
-
-    @Inject
-    private Identity loggedUser;
 
     @Inject
     private SocialUserRepositoryAPI socialUserRepositoryAPI;

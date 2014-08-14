@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -31,6 +30,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.SystemMessage;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.model.SyntaxError;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationMemberDefinitionTO;
@@ -61,7 +61,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @ApplicationScoped
 public class DataModelerServiceHelper {
@@ -70,7 +69,7 @@ public class DataModelerServiceHelper {
     private SessionInfo sessionInfo;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     public DataModel to2Domain( DataModelTO dataModelTO ) {
         DataModel dataModel = ModelFactoryImpl.getInstance().newModel();
@@ -394,7 +393,7 @@ public class DataModelerServiceHelper {
     }
 
     public CommentedOption makeCommentedOption( String commitMessage ) {
-        final String name = identity.getName();
+        final String name = identity.getIdentifier();
         final Date when = new Date();
 
         final CommentedOption option = new CommentedOption( sessionInfo.getId(),

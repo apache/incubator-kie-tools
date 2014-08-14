@@ -15,31 +15,29 @@
  */
 package org.kie.workbench.common.screens.home.client.perspectives;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.home.client.resources.i18n.HomeConstants;
-import org.uberfire.client.annotations.Perspective;
+import com.google.gwt.user.client.ui.FlowPanel;
+import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PanelType;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.client.util.Layouts;
 
 /**
  * A Perspective to show the Home Page
  */
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "org.kie.workbench.common.screens.home.client.perspectives.HomePerspective", isDefault = true)
-public class HomePerspective {
+public class HomePerspective extends FlowPanel {
 
-    @Perspective
-    public PerspectiveDefinition getPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_STATIC );
-        p.setName( HomeConstants.INSTANCE.homePerspectiveName() );
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "org.kie.workbench.common.screens.home.client.HomePresenter" ) ) );
-        p.setTransient( true );
-        return p;
+    @Inject
+    @WorkbenchPanel(parts = "org.kie.workbench.common.screens.home.client.HomePresenter")
+    FlowPanel homeContent;
+
+    @PostConstruct
+    void doLayout() {
+        Layouts.setToFillParent( homeContent );
+        add( homeContent );
     }
-
 }

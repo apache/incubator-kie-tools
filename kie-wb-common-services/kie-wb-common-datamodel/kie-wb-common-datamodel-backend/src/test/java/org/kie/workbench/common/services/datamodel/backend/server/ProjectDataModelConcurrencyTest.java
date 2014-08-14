@@ -34,6 +34,7 @@ import org.uberfire.rpc.SessionInfo;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
+@Ignore
 public class ProjectDataModelConcurrencyTest {
 
     @Deployment()

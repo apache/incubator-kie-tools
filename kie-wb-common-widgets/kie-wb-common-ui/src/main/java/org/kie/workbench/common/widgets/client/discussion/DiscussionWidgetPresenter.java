@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.widgets.client.discussion;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.config.AppConfigService;
@@ -23,17 +26,15 @@ import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
-import org.uberfire.security.Identity;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 public class DiscussionWidgetPresenter
-        implements IsWidget, DiscussionWidgetView.Presenter {
+        implements IsWidget,
+                   DiscussionWidgetView.Presenter {
 
     private DiscussionWidgetView view;
-    private Identity identity;
+    private User identity;
     private Caller<AppConfigService> appConfigService;
 
     private Metadata metadata;
@@ -46,7 +47,7 @@ public class DiscussionWidgetPresenter
     @Inject
     public DiscussionWidgetPresenter(
             final DiscussionWidgetView view,
-            final Identity identity,
+            final User identity,
             final Event<CommentAddedEvent> commentAddedEvent,
             final Caller<AppConfigService> appConfigService) {
         this.view = view;
@@ -54,16 +55,16 @@ public class DiscussionWidgetPresenter
         this.commentAddedEvent = commentAddedEvent;
         this.appConfigService = appConfigService;
 
-        view.setPresenter(this);
+        view.setPresenter( this );
 
     }
 
-    public void setContent(Metadata metadata) {
+    public void setContent( Metadata metadata ) {
         view.clear();
 
         this.metadata = metadata;
-        for (DiscussionRecord record : metadata.getDiscussion()) {
-            view.addRow(record);
+        for ( DiscussionRecord record : metadata.getDiscussion() ) {
+            view.addRow( record );
         }
         view.scrollToBottom();
     }
@@ -74,25 +75,25 @@ public class DiscussionWidgetPresenter
     }
 
     @Override
-    public void onAddComment(final String comment) {
-        if (comment != null && !comment.trim().isEmpty()) {
-            appConfigService.call(new RemoteCallback<Long>() {
+    public void onAddComment( final String comment ) {
+        if ( comment != null && !comment.trim().isEmpty() ) {
+            appConfigService.call( new RemoteCallback<Long>() {
                 @Override
-                public void callback(Long timestamp) {
-                    DiscussionRecord record = new DiscussionRecord(timestamp, identity.getName(), comment);
-                    metadata.getDiscussion().add(record);
-                    view.addRow(record);
+                public void callback( Long timestamp ) {
+                    DiscussionRecord record = new DiscussionRecord( timestamp, identity.getIdentifier(), comment );
+                    metadata.getDiscussion().add( record );
+                    view.addRow( record );
                     view.clearCommentBox();
                     view.scrollToBottom();
 
                     commentAddedEvent.fire(
                             new CommentAddedEvent(
-                                    identity.getName(),
+                                    identity.getIdentifier(),
                                     metadata.getPath(),
                                     comment,
                                     timestamp));
                 }
-            }).getTimestamp();
+            } ).getTimestamp();
         }
     }
 }

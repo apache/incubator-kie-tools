@@ -25,6 +25,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -34,7 +35,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -45,7 +45,7 @@ public class KModuleServiceImpl
     private KieProjectService projectService;
     private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
-    private Identity identity;
+    private User identity;
     private SessionInfo sessionInfo;
 
     public KModuleServiceImpl() {
@@ -57,7 +57,7 @@ public class KModuleServiceImpl
                                final KieProjectService projectService,
                                final MetadataService metadataService,
                                final KModuleContentHandler moduleContentHandler,
-                               final Identity identity,
+                               final User identity,
                                final SessionInfo sessionInfo ) {
         this.ioService = ioService;
         this.projectService = projectService;

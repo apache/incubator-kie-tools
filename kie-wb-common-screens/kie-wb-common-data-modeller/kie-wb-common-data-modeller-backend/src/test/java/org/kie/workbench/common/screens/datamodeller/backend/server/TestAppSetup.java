@@ -28,6 +28,8 @@ import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
@@ -73,29 +75,9 @@ public class TestAppSetup {
         return mock( LuceneConfig.class );
     }
 
-    /*
-    protected IOService ioService() {
-        if ( ioService == null ) {
-            final TestIndexer indexer = getIndexer();
-            final Map<String, Analyzer> analyzers = getAnalyzers();
-            config = new LuceneConfigBuilder()
-                    .withInMemoryMetaModelStore()
-                    .usingIndexers( new HashSet<Indexer>() {{
-                        add( indexer );
-                    }} )
-                    .usingAnalyzers( analyzers )
-                    .useDirectoryBasedIndex()
-                    .useInMemoryDirectory()
-                    .build();
-
-            //Mock CDI injection and setup
-            ioService = new IOServiceIndexedImpl( config.getIndexEngine(),
-                    config.getIndexers() );
-            indexer.setIOService( ioService );
-            indexer.setResourceTypeDefinition( getResourceTypeDefinition() );
-        }
-        return ioService;
+    @Produces
+    public AuthorizationManager getAuthManager() {
+        return new RuntimeAuthorizationManager();
     }
-    */
 
 }

@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.version.VersionService;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
@@ -14,17 +15,13 @@ import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.screens.social.hp.model.HomePageTypes;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.security.Identity;
-import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @ApplicationScoped
 public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdatedEvent> {
 
     @Inject
-    private Identity loggedUser;
+    private User loggedUser;
 
     @Inject
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
@@ -53,7 +50,7 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
     @Override
     public SocialActivitiesEvent toSocial( Object object ) {
         ResourceUpdatedEvent event = (ResourceUpdatedEvent) object;
-        SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( event.getSessionInfo().getIdentity().getName() );
+        SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( event.getSessionInfo().getIdentity().getIdentifier() );
         String additionalInfo = "edited ";
         String description = getCommitDescription( event );
         return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_UPDATE_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( additionalInfo ).withDescription( description );

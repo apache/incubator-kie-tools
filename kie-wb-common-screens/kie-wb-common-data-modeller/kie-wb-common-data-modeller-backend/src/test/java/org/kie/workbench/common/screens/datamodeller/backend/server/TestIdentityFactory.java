@@ -16,69 +16,63 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
 
-import org.uberfire.security.Identity;
-import org.uberfire.security.Role;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 
 @Singleton
 @Alternative
 public class TestIdentityFactory {
 
-    private Identity identity;
+    private User identity;
 
     @PostConstruct
     public void onStartup() {
-        identity = new Identity() {
-
-            @Override
-            public String getName() {
-                return "testUser";
-            }
-
-            @Override
-            public List<Role> getRoles() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public boolean hasRole( Role role ) {
-                return true;
-            }
-
-            @Override
-            public Map<String, String> getProperties() {
-                return Collections.emptyMap();
-            }
-
-            @Override
-            public void aggregateProperty( String name,
-                                           String value ) {
-            }
-
-            @Override
-            public void removeProperty( String name ) {
-            }
-
-            @Override
-            public String getProperty( String name,
-                                       String defaultValue ) {
-                return null;
-            }
-
-        };
+        identity = new UserImpl( "testUser" );
     }
 
     @Produces
     @Alternative
-    public Identity getIdentity() {
+    public User getIdentity() {
         return identity;
+    }
+
+    @Produces
+    @Alternative
+    public AuthenticationService authenticationService() {
+        return new AuthenticationService() {
+            boolean isLoggedIn = false;
+            User user;
+
+            @Override
+            public User login( String username,
+                               String password ) {
+                isLoggedIn = true;
+                user = new UserImpl( username );
+                return user;
+            }
+
+            @Override
+            public boolean isLoggedIn() {
+                return false;
+            }
+
+            @Override
+            public void logout() {
+                user = null;
+                isLoggedIn = false;
+            }
+
+            @Override
+            public User getUser() {
+                return user;
+            }
+        };
     }
 
 }

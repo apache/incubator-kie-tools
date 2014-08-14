@@ -52,6 +52,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -189,7 +190,7 @@ public class ContainerInfoPresenter {
 
     @DefaultPosition
     public Position getPosition() {
-        return Position.EAST;
+        return CompassPosition.EAST;
     }
 
     @WorkbenchMenu

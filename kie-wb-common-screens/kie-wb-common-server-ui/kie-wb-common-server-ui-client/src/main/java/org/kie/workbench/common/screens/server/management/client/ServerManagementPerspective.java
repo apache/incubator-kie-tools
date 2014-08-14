@@ -1,27 +1,25 @@
 package org.kie.workbench.common.screens.server.management.client;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.uberfire.client.annotations.Perspective;
+import com.google.gwt.user.client.ui.FlowPanel;
+import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PanelType;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.client.util.Layouts;
 
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "ServerManagementPerspective")
-public class ServerManagementPerspective {
+public class ServerManagementPerspective extends FlowPanel {
 
-    @Perspective
-    public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_SIMPLE );
-        p.setTransient( true );
-        p.setName( "ServerManagementPerspective" );
+    @Inject
+    @WorkbenchPanel(parts = "ServerManagementBrowser")
+    FlowPanel browser;
 
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "ServerManagementBrowser" ) ) );
-
-        return p;
+    @PostConstruct
+    void doLayout() {
+        Layouts.setToFillParent( browser );
+        add( browser );
     }
 }

@@ -13,11 +13,10 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.uberfire.security.Identity;
 
 public class DeploymentScreenPopupViewImpl extends KieBaseModal {
 
@@ -30,7 +29,7 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
     private DeploymentScreenPopupWidgetBinder uiBinder = GWT.create(DeploymentScreenPopupWidgetBinder.class);
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @UiField
     ControlGroup userNameTextGroup;
@@ -127,7 +126,7 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
         this.callbackCommand = command;
 
         // set default values for the fields
-        userNameText.setText(identity.getName());
+        userNameText.setText(identity.getIdentifier());
         serverURLText.setText(GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/", ""));
     }
 

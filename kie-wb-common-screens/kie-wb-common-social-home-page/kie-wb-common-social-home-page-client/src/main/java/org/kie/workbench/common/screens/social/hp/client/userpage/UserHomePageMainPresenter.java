@@ -10,6 +10,7 @@ import com.github.gwtbootstrap.client.ui.NavLink;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
@@ -34,7 +35,6 @@ import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "UserHomePageMainPresenter")
@@ -74,7 +74,7 @@ public class UserHomePageMainPresenter {
     Caller<SocialUserServiceAPI> socialUserServiceAPI;
 
     @Inject
-    private Identity loggedUser;
+    private User loggedUser;
 
     @Inject
     private PlaceManager placeManager;
@@ -99,9 +99,9 @@ public class UserHomePageMainPresenter {
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
         this.place = place;
-        this.lastUserOnpage = loggedUser.getName();
-        setupHeader( loggedUser.getName() );
-        setupMain( loggedUser.getName() );
+        this.lastUserOnpage = loggedUser.getIdentifier();
+        setupHeader( loggedUser.getIdentifier() );
+        setupMain( loggedUser.getIdentifier() );
     }
 
     public void watchLoadUserPageEvent( @Observes LoadUserPageEvent event ) {
@@ -208,9 +208,9 @@ public class UserHomePageMainPresenter {
             @Override
             public void execute( final String parameter ) {
                 if ( relationType == UserBoxView.RelationType.CAN_FOLLOW ) {
-                    socialUserServiceAPI.call().userFollowAnotherUser( loggedUser.getName(), parameter );
+                    socialUserServiceAPI.call().userFollowAnotherUser( loggedUser.getIdentifier(), parameter );
                 } else {
-                    socialUserServiceAPI.call().userUnfollowAnotherUser( loggedUser.getName(), parameter );
+                    socialUserServiceAPI.call().userUnfollowAnotherUser( loggedUser.getIdentifier(), parameter );
                 }
                 userHomepageSelectedEvent.fire( new UserHomepageSelectedEvent( lastUserOnpage ) );
             }
@@ -218,10 +218,10 @@ public class UserHomePageMainPresenter {
     }
 
     private UserBoxView.RelationType findRelationTypeWithLoggedUser( SocialUser socialUser ) {
-        if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getName() ) ) {
+        if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getIdentifier() ) ) {
             return UserBoxView.RelationType.ME;
         } else {
-            return socialUser.getFollowersName().contains( loggedUser.getName() ) ?
+            return socialUser.getFollowersName().contains( loggedUser.getIdentifier() ) ?
                     UserBoxView.RelationType.UNFOLLOW : UserBoxView.RelationType.CAN_FOLLOW;
         }
     }

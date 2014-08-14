@@ -16,12 +16,18 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
@@ -29,28 +35,21 @@ import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresen
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetView;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.security.Identity;
 
-import javax.enterprise.event.Event;
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class DiscussionWidgetPresenterTest {
 
     private DiscussionWidgetView view;
-    private Identity identity;
+    private User identity;
     private DiscussionWidgetPresenterTest.MockAppConfigServiceCaller appConfigService;
     private DiscussionWidgetPresenterTest.CommentAddedEventMock commentAddedEvent;
 
     @Before
     public void setUp() throws Exception {
         view = mock(DiscussionWidgetView.class);
-        identity = mock(Identity.class);
+        identity = mock(User.class);
         appConfigService = new MockAppConfigServiceCaller();
         commentAddedEvent = spy(new CommentAddedEventMock());
     }
@@ -103,7 +102,7 @@ public class DiscussionWidgetPresenterTest {
 
         ArgumentCaptor<DiscussionRecord> discussionRecordArgumentCaptor = ArgumentCaptor.forClass(DiscussionRecord.class);
 
-        when(identity.getName()).thenReturn("Toni");
+        when(identity.getIdentifier()).thenReturn("Toni");
 
         DiscussionWidgetPresenter presenterImpl = new DiscussionWidgetPresenter(view, identity, commentAddedEvent, appConfigService);
         DiscussionWidgetView.Presenter presenter = presenterImpl;

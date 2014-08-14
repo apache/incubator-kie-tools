@@ -44,6 +44,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.FieldSource;
@@ -111,7 +112,6 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.paging.PageResponse;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 
 @Service
@@ -125,7 +125,7 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
     IOService ioService;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private DataModelService dataModelService;
@@ -708,7 +708,7 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
                                 ModelDriverResult result ) {
         PublishBatchMessagesEvent publishEvent = new PublishBatchMessagesEvent();
         publishEvent.setCleanExisting( true );
-        publishEvent.setUserId( identity != null ? identity.getName() : null );
+        publishEvent.setUserId( identity != null ? identity.getIdentifier() : null );
         publishEvent.setMessageType( "DataModeler" );
 
         SystemMessage systemMessage;

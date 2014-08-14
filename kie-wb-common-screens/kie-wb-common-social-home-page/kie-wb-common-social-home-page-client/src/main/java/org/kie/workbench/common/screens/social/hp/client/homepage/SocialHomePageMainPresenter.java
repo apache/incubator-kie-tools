@@ -16,6 +16,7 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
@@ -36,7 +37,6 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.security.Identity;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "SocialHomePageMainPresenter")
@@ -77,7 +77,7 @@ public class SocialHomePageMainPresenter {
     Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
 
     @Inject
-    private Identity loggedUser;
+    private User loggedUser;
 
     @Inject
     private IconLocator iconLocator;
@@ -113,7 +113,7 @@ public class SocialHomePageMainPresenter {
                 updateMainTimeline( "", socialUser );
 
             }
-        } ).findSocialUser( loggedUser.getName() );
+        } ).findSocialUser( loggedUser.getIdentifier() );
     }
 
     private void initHeader() {
@@ -127,7 +127,7 @@ public class SocialHomePageMainPresenter {
                         updateMainTimeline( param, socialUser );
 
                     }
-                } ).findSocialUser( loggedUser.getName() );
+                } ).findSocialUser( loggedUser.getIdentifier() );
 
             }
         } );
@@ -171,7 +171,7 @@ public class SocialHomePageMainPresenter {
     }
 
     private boolean loggedUserFollowSelectedUser( SocialUser socialUser ) {
-        return socialUser.getFollowersName().contains( loggedUser.getName() );
+        return socialUser.getFollowersName().contains( loggedUser.getIdentifier() );
     }
 
     private ParameterizedCommand<String> generateFollowUnfollowCommand() {
@@ -181,9 +181,9 @@ public class SocialHomePageMainPresenter {
                 socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
                     public void callback( SocialUser socialUser ) {
                         if ( loggedUserFollowSelectedUser( socialUser ) ) {
-                            socialUserService.call().userUnfollowAnotherUser( loggedUser.getName(), socialUser.getUserName() );
+                            socialUserService.call().userUnfollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
                         } else {
-                            socialUserService.call().userFollowAnotherUser( loggedUser.getName(), socialUser.getUserName() );
+                            socialUserService.call().userFollowAnotherUser( loggedUser.getIdentifier(), socialUser.getUserName() );
                         }
                         setupPage();
                     }

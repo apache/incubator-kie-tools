@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
@@ -23,7 +24,6 @@ import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Identity;
 
 import static org.mockito.Mockito.*;
 
@@ -138,7 +138,7 @@ public class KieEditorTest {
             }
 
             @Override
-            public Identity getIdentity() {
+            public User getIdentity() {
                 return null;
             }
         };

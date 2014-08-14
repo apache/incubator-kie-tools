@@ -40,6 +40,7 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
@@ -59,13 +60,10 @@ import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.server.cdi.AppResourcesAuthz;
 
 import static java.util.Collections.*;
 
@@ -98,7 +96,7 @@ public class ExplorerServiceImpl
 
     @Inject
     @SessionScoped
-    private Identity identity;
+    private User identity;
 
     @Inject
     @SessionScoped
@@ -123,7 +121,7 @@ public class ExplorerServiceImpl
     private RepositoryService repositoryService;
 
     @Inject
-    @AppResourcesAuthz
+    //@AppResourcesAuthz
     private AuthorizationManager authorizationManager;
 
     private XStream xs = new XStream();
@@ -135,7 +133,7 @@ public class ExplorerServiceImpl
     public ExplorerServiceImpl( final IOService ioService,
                                 final KieProjectService projectService,
                                 final OrganizationalUnitService organizationalUnitService,
-                                final Identity identity ) {
+                                final User identity ) {
         this.ioService = ioService;
         this.projectService = projectService;
         this.organizationalUnitService = organizationalUnitService;
@@ -278,13 +276,13 @@ public class ExplorerServiceImpl
 
         try {
             if ( paths.size() > 1 ) {
-                ioService.startBatch( new FileSystem[]{ Paths.convert( paths.iterator().next() ).getFileSystem() } );
+                ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
             }
 
             for ( final Path path : paths ) {
                 ioService.deleteIfExists( Paths.convert( path ),
                                           new CommentedOption( sessionInfo.getId(),
-                                                               identity.getName(),
+                                                               identity.getIdentifier(),
                                                                null,
                                                                comment ),
                                           StandardDeleteOption.NON_EMPTY_DIRECTORIES
@@ -307,7 +305,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as RenameHelpers may be involved with the rename operation
-            ioService.startBatch( new FileSystem[]{ Paths.convert( paths.iterator().next() ).getFileSystem() } );
+            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -325,7 +323,7 @@ public class ExplorerServiceImpl
                     ioService.move( _path,
                                     _target,
                                     new CommentedOption( sessionInfo.getId(),
-                                                         identity.getName(),
+                                                         identity.getIdentifier(),
                                                          null,
                                                          comment )
                                   );
@@ -357,7 +355,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as CopyHelpers may be involved with the rename operation
-            ioService.startBatch( new FileSystem[]{ Paths.convert( paths.iterator().next() ).getFileSystem() } );
+            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -375,7 +373,7 @@ public class ExplorerServiceImpl
                     ioService.copy( _path,
                                     _target,
                                     new CommentedOption( sessionInfo.getId(),
-                                                         identity.getName(),
+                                                         identity.getIdentifier(),
                                                          null,
                                                          comment )
                                   );

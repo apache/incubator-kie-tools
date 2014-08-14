@@ -17,52 +17,51 @@
 package org.kie.workbench.common.widgets.client.popups.project;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import org.kie.workbench.common.widgets.client.resources.i18n.ProjectConcurrentChangePopupConstants;
-import org.uberfire.backend.vfs.Path;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.common.AbstractConcurrentChangePopup;
 import org.kie.uberfire.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.resources.i18n.ProjectConcurrentChangePopupConstants;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.Identity;
 
 public class ProjectConcurrentChangePopup extends AbstractConcurrentChangePopup {
 
-
     private ProjectConcurrentChangePopup( final String content,
-                                   final Command onIgnore,
-                                   final Command onAction,
-                                   final String buttonText ) {
-        super(content, onIgnore, onAction, buttonText);
+                                          final Command onIgnore,
+                                          final Command onAction,
+                                          final String buttonText ) {
+        super( content, onIgnore, onAction, buttonText );
     }
 
     private ProjectConcurrentChangePopup( final String content,
-                                   final Command onIgnore,
-                                   final Command onReOpen ) {
-        this(content, onIgnore, onReOpen, CommonConstants.INSTANCE.ReOpen());
+                                          final Command onIgnore,
+                                          final Command onReOpen ) {
+        this( content, onIgnore, onReOpen, CommonConstants.INSTANCE.ReOpen() );
     }
 
     private ProjectConcurrentChangePopup( final String content,
-                                   final Command onForceSave,
-                                   final Command onIgnore,
-                                   final Command onReOpen ) {
-        super(content, onForceSave, onIgnore, onReOpen);
+                                          final Command onForceSave,
+                                          final Command onIgnore,
+                                          final Command onReOpen ) {
+        super( content, onForceSave, onIgnore, onReOpen );
     }
 
     public static ProjectConcurrentChangePopup newConcurrentUpdate( final Path project,
-                                                             final Identity identity,
-                                                             final Command onForceSave,
-                                                             final Command onCancel,
-                                                             final Command onReOpen ) {
+                                                                    final User identity,
+                                                                    final Command onForceSave,
+                                                                    final Command onCancel,
+                                                                    final Command onReOpen ) {
 
-        final String message = ProjectConcurrentChangePopupConstants.INSTANCE.ConcurrentUpdate( identity != null ? SafeHtmlUtils.htmlEscape(identity.getName() != null ? identity.getName() : "") : null, project.toURI() );
+        final String message = ProjectConcurrentChangePopupConstants.INSTANCE.ConcurrentUpdate( identity != null ? SafeHtmlUtils.htmlEscape( identity.getIdentifier() != null ? identity.getIdentifier() : "" ) : null, project.toURI() );
 
         return new ProjectConcurrentChangePopup( message, onForceSave, onCancel, onReOpen );
     }
 
     public static ProjectConcurrentChangePopup newConcurrentChange( final Path project,
-                                                             final Identity identity,
-                                                             final Command onIgnore,
-                                                             final Command onReOpen ) {
-        final String message = ProjectConcurrentChangePopupConstants.INSTANCE.ConcurrentChange( identity != null ? SafeHtmlUtils.htmlEscape(identity.getName() != null ? identity.getName() : "") : null, project.toURI() );
+                                                                    final User identity,
+                                                                    final Command onIgnore,
+                                                                    final Command onReOpen ) {
+        final String message = ProjectConcurrentChangePopupConstants.INSTANCE.ConcurrentChange( identity != null ? SafeHtmlUtils.htmlEscape( identity.getIdentifier() != null ? identity.getIdentifier() : "" ) : null, project.toURI() );
         return new ProjectConcurrentChangePopup( message, onIgnore, onReOpen );
     }
 

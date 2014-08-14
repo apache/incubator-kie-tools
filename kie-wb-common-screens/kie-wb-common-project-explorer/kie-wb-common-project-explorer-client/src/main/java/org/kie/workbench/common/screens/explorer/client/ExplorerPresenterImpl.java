@@ -50,6 +50,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.ContextDropdownButton;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -261,7 +262,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
     @DefaultPosition
     public Position getDefaultPosition() {
-        return Position.WEST;
+        return CompassPosition.WEST;
     }
 
     @WorkbenchMenu

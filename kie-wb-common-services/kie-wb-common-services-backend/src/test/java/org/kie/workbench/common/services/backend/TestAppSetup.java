@@ -25,6 +25,8 @@ import org.guvnor.m2repo.service.M2RepoService;
 import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
@@ -50,6 +52,11 @@ public class TestAppSetup {
     @Named("luceneConfig")
     public LuceneConfig luceneConfig() {
         return mock( LuceneConfig.class );
+    }
+
+    @Produces
+    public AuthorizationManager getAuthManager() {
+        return new RuntimeAuthorizationManager();
     }
 
 }

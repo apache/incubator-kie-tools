@@ -10,6 +10,7 @@ import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
@@ -24,7 +25,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -50,7 +50,7 @@ public class ProjectScreenServiceImpl
     private ProjectImportsService importsService;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -89,7 +89,7 @@ public class ProjectScreenServiceImpl
         final KieProject project = projectService.resolveProject( pathToPomXML );
         final FileSystem fs = Paths.convert( pathToPomXML ).getFileSystem();
         try {
-            ioService.startBatch( new FileSystem[]{fs}, makeCommentedOption( comment ) );
+            ioService.startBatch( fs, makeCommentedOption( comment ) );
             pomService.save( pathToPomXML,
                              model.getPOM(),
                              model.getPOMMetaData(),
@@ -164,7 +164,7 @@ public class ProjectScreenServiceImpl
 
     protected String getIdentityName() {
         try {
-            return identity.getName();
+            return identity.getIdentifier();
         } catch ( ContextNotActiveException e ) {
             return "unknown";
         }

@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.services.security;
 
-import org.uberfire.security.Role;
-
-public enum AppRoles implements Role {
+public enum AppRoles {
 
     /**
      * Admin can do everything
@@ -35,7 +33,6 @@ public enum AppRoles implements Role {
      */
     REPOSITORY_VIEWER;
 
-    @Override
     public String getName() {
         return toString().toLowerCase();
     }

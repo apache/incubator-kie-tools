@@ -21,6 +21,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -30,7 +31,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 public abstract class KieService {
 
@@ -46,7 +46,7 @@ public abstract class KieService {
     protected KieProjectService projectService;
 
     @Inject
-    protected Identity identity;
+    protected User identity;
 
     @Inject
     protected SessionInfo sessionInfo;
@@ -86,7 +86,7 @@ public abstract class KieService {
     }
 
     protected CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
+        final String name = identity.getIdentifier();
         final Date when = new Date();
         final CommentedOption co = new CommentedOption( sessionInfo.getId(),
                                                         name,

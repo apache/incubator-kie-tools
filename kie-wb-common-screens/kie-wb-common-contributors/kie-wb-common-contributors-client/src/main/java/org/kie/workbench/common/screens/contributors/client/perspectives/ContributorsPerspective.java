@@ -15,30 +15,29 @@
  */
 package org.kie.workbench.common.screens.contributors.client.perspectives;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.contributors.client.resources.i18n.ContributorsConstants;
-import org.uberfire.client.annotations.Perspective;
+import com.google.gwt.user.client.ui.FlowPanel;
+import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PanelType;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.impl.PartDefinitionImpl;
-import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.client.util.Layouts;
 
 /**
  * This perspective display some indicators about the commit activity around the available GIT repositories
  */
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "ContributorsPerspective")
-public class ContributorsPerspective {
+public class ContributorsPerspective extends FlowPanel {
 
-    @Perspective
-    public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_STATIC );
-        p.setTransient(true);
-        p.setName( ContributorsConstants.INSTANCE.contributorsPerspectiveName() );
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "ContributorsScreen" ) ) );
-        return p;
+    @Inject
+    @WorkbenchPanel(parts = "ContributorsScreen")
+    FlowPanel contributors;
+
+    @PostConstruct
+    void doLayout() {
+        Layouts.setToFillParent( contributors );
+        add( contributors );
     }
 }
