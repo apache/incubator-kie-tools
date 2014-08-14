@@ -24,6 +24,8 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -43,6 +46,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
+import org.uberfire.java.nio.base.FileSystemState;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.FileStore;
 import org.uberfire.java.nio.file.FileSystem;
@@ -57,6 +62,10 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.Watchable;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
+
+import static org.eclipse.jgit.lib.Repository.*;
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public class JGitFileSystem implements FileSystem,
 FileSystemId {
@@ -75,6 +84,9 @@ FileSystemId {
     private final CredentialsProvider credential;
     private final Map<WatchService, Queue<WatchKey>> events = new ConcurrentHashMap<WatchService, Queue<WatchKey>>();
     private final Collection<WatchService> watchServices = new ArrayList<WatchService>();
+    private FileSystemState state = FileSystemState.NORMAL;
+    private CommitInfo batchCommitInfo = null;
+    private boolean hadCommitOnBatchState = false;
 
     JGitFileSystem( final JGitFileSystemProvider provider,
                     final Map<String, String> fullHostNames,
@@ -447,5 +459,61 @@ FileSystemId {
     @Override
     public void dispose() {
         provider.onDisposeFileSystem( this );
+    }
+
+    public boolean isOnBatch() {
+        return state.equals( FileSystemState.BATCH );
+    }
+
+    public void setState( String state ) {
+        try {
+            this.state = FileSystemState.valueOf( state );
+        } catch ( final Exception ex ) {
+            this.state = FileSystemState.NORMAL;
+        }
+    }
+
+    private CommitInfo buildCommitInfo( final String defaultMessage,
+                                        final CommentedOption op ) {
+        String sessionId = null;
+        String name = null;
+        String email = null;
+        String message = defaultMessage;
+        TimeZone timeZone = null;
+        Date when = null;
+
+        if ( op != null ) {
+            sessionId = op.getSessionId();
+            name = op.getName();
+            email = op.getEmail();
+            if ( op.getMessage() != null && !op.getMessage().trim().isEmpty() ) {
+                message = op.getMessage();
+            }
+            timeZone = op.getTimeZone();
+            when = op.getWhen();
+        }
+
+        return new CommitInfo( sessionId, name, email, message, timeZone, when );
+    }
+
+    public void setBatchCommitInfo( final String defaultMessage,
+                                    final CommentedOption op ) {
+        this.batchCommitInfo = buildCommitInfo( defaultMessage, op );
+    }
+
+    public void setHadCommitOnBatchState( boolean hadCommitOnBatchState ) {
+        this.hadCommitOnBatchState = hadCommitOnBatchState;
+    }
+
+    public boolean isHadCommitOnBatchState() {
+        return hadCommitOnBatchState;
+    }
+
+    public void setBatchCommitInfo( CommitInfo batchCommitInfo ) {
+        this.batchCommitInfo = batchCommitInfo;
+    }
+
+    public CommitInfo getBatchCommitInfo() {
+        return batchCommitInfo;
     }
 }

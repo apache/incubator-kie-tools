@@ -29,6 +29,7 @@ import java.util.Set;
 import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.IOWatchService;
+import org.uberfire.io.lock.FSLockService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
 import org.uberfire.java.nio.base.AttrHolder;
@@ -47,6 +48,10 @@ import org.uberfire.java.nio.file.OpenOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
+
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
+import static org.uberfire.java.nio.file.StandardCopyOption.*;
 
 public class IOServiceDotFileImpl
 extends AbstractIOService
@@ -69,13 +74,13 @@ implements IOService {
         super( serviceId, watchService );
     }
 
-    public IOServiceDotFileImpl( final LockService lockService,
+    public IOServiceDotFileImpl( final FSLockService lockService,
                                  final IOWatchService watchService ) {
         super( lockService, watchService );
     }
 
     public IOServiceDotFileImpl( final String serviceId,
-                                 final LockService lockService,
+                                 final FSLockService lockService,
                                  final IOWatchService watchService ) {
         super( serviceId, lockService, watchService );
     }
@@ -85,6 +90,7 @@ implements IOService {
                                      final DeleteOption... options )
                                              throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException,
                                              IOException, SecurityException {
+        waitFSUnlock( path );
         Files.delete( path, options );
         try {
             Files.deleteIfExists( dot( path ), options );
@@ -99,6 +105,7 @@ implements IOService {
     public synchronized boolean deleteIfExists( final Path path,
                                                 final DeleteOption... options )
                                                         throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+        waitFSUnlock( path );
         final boolean result = Files.deleteIfExists( path, options );
         try {
             Files.deleteIfExists( dot( path ), options );
@@ -117,6 +124,7 @@ implements IOService {
                                                                     throws IllegalArgumentException, UnsupportedOperationException,
                                                                     FileAlreadyExistsException, IOException, SecurityException {
         checkNotNull( "path", path );
+        waitFSUnlock( path );
 
         final Properties properties = new Properties();
         if ( exists( dot( path ) ) ) {
@@ -138,6 +146,7 @@ implements IOService {
                                               final FileAttribute<?>... attrs )
                                                       throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
                                                       IOException, SecurityException {
+        waitFSUnlock( dir );
         return internalCreateDirectory( dir, false, attrs );
     }
 
@@ -146,6 +155,7 @@ implements IOService {
                                                 final FileAttribute<?>... attrs )
                                                         throws UnsupportedOperationException, FileAlreadyExistsException,
                                                         IOException, SecurityException {
+        waitFSUnlock( dir );
         final Path result = Files.createDirectories( dir, attrs );
 
         buildDotFile( dir, newOutputStream( dot( dir ) ), attrs );
@@ -159,7 +169,8 @@ implements IOService {
                                    final CopyOption... options )
                                            throws UnsupportedOperationException, FileAlreadyExistsException,
                                            DirectoryNotEmptyException, IOException, SecurityException {
-
+        waitFSUnlock( source );
+        waitFSUnlock( target );
         if ( Files.exists( dot( source ) ) ) {
             Files.copy( dot( source ), dot( target ), forceBuildOptions( options ) );
         } else if ( Files.exists( dot( target ) ) ) {
@@ -177,6 +188,8 @@ implements IOService {
                                    final CopyOption... options )
                                            throws UnsupportedOperationException, FileAlreadyExistsException,
                                            DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+        waitFSUnlock( source );
+        waitFSUnlock( target );
         if ( Files.exists( dot( source ) ) ) {
             Files.move( dot( source ), dot( target ), forceBuildOptions( options ) );
         } else if ( Files.exists( dot( target ) ) ) {
@@ -239,6 +252,7 @@ implements IOService {
                                             final FileAttribute<?>... attrs )
                                                     throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         checkNotNull( "path", path );
+        waitFSUnlock( path );
         if ( Files.isDirectory( path ) ) {
             return internalCreateDirectory( path, true, attrs );
         }
@@ -336,7 +350,7 @@ implements IOService {
                                                                  throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
                                                                  IOException, SecurityException {
         checkNotNull( "dir", dir );
-
+        waitFSUnlock( dir );
         FileAttribute<?>[] allAttrs = attrs;
         try {
             Files.createDirectory( dir, attrs );

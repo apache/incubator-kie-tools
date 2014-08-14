@@ -1,19 +1,18 @@
 package org.uberfire.io;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.FileSystem;
@@ -21,18 +20,22 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.WatchEvent;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
-import com.google.common.collect.ImmutableMap;
+import static org.junit.Assert.*;
 
 public class BatchTest {
 
-    IOService ioService;
-    private File path;
+    final static IOService ioService = new IOServiceDotFileImpl();
+    private static File path = null;
+    static FileSystem fs1;
+    static JGitFileSystem fs1Batch;
+    static FileSystem fs2;
+    static JGitFileSystem fs2Batch;
 
-    @Before
-    public void setup() throws IOException {
-        ioService = new IOServiceDotFileImpl();
+    @BeforeClass
+    public static void setup() throws IOException {
         path = CommonIOServiceDotFileTest.createTempDirectory();
 
         // XXX this is shaky at best: FileSystemProviders bootstraps the JGit FS in a static initializer.
@@ -42,19 +45,23 @@ public class BatchTest {
 
         final URI newRepo = URI.create( "git://amend-repo-test" );
 
-        ioService.newFileSystem( newRepo, ImmutableMap.<String, Object>of() );
+        fs1 = ioService.newFileSystem( newRepo, new HashMap<String, Object>() );
+        fs1Batch = (JGitFileSystem) fs1;
         Path init = ioService.get( URI.create( "git://amend-repo-test/init.file" ) );
         ioService.write( init, "setupFS!" );
 
         final URI newRepo2 = URI.create( "git://check-amend-repo-test" );
 
-        ioService.newFileSystem( newRepo2, ImmutableMap.of( "init", "true" ) );
+        fs2 = ioService.newFileSystem( newRepo2, new HashMap<String, Object>() {{
+            put( "init", "true" );
+        }} );
+        fs2Batch = (JGitFileSystem) fs2;
         init = ioService.get( URI.create( "git://check-amend-repo-test/init.file" ) );
         ioService.write( init, "setupFS!" );
     }
 
-    @After
-    public void cleanup() {
+    @AfterClass
+    public static void cleanup() {
         FileUtils.deleteQuietly( path );
         JGitFileSystemProvider gitFsProvider = (JGitFileSystemProvider) FileSystemProviders.resolveProvider( URI.create( "git://whatever" ) );
         gitFsProvider.shutdown();
@@ -96,7 +103,7 @@ public class BatchTest {
         assertNotNull( vinit2 );
         assertEquals( 2, vinit2.readAttributes().history().records().size() );
 
-        ioService.startBatch();
+        ioService.startBatch( new FileSystem[]{ init.getFileSystem() } );
         final Path path = ioService.get( URI.create( "git://amend-repo-test/mybatch" + new Random( 10L ).nextInt() + ".txt" ) );
         final Path path2 = ioService.get( URI.create( "git://amend-repo-test/mybatch2" + new Random( 10L ).nextInt() + ".txt" ) );
         ioService.write( path, "ooooo!" );
@@ -125,22 +132,17 @@ public class BatchTest {
 
     @Test
     public void testBatch2() throws IOException, InterruptedException {
-
-        // XXX: Workaround for UF-70: amend-test-repo has to contain something so it can receive the BATCH flag
-        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
-        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
-        // END workaround
-
         final Path f1 = ioService.get( URI.create( "git://check-amend-repo-test/f1.txt" ) );
         final Path f2 = ioService.get( URI.create( "git://check-amend-repo-test/f2.txt" ) );
         final Path f3 = ioService.get( URI.create( "git://check-amend-repo-test/f3.txt" ) );
-
+        // XXX: Workaround for UF-70: amend-test-repo has to contain something so it can receive the BATCH
         ioService.write( f1, "init f1!" );
         ioService.write( f2, "init f2!" );
+        // END workaround
 
         final WatchService ws = f1.getFileSystem().newWatchService();
 
-        ioService.startBatch();
+        ioService.startBatch( new FileSystem[]{ f1.getFileSystem() } );
         ioService.write( f1, "f1-u1!" );
         assertNull( ws.poll() );
         ioService.write( f2, "f2-u1!" );
@@ -166,7 +168,7 @@ public class BatchTest {
             assertEquals( 1, v3.readAttributes().history().records().size() );
         }
 
-        ioService.startBatch();
+        ioService.startBatch( new FileSystem[]{ f1.getFileSystem() } );
         ioService.write( f1, "f1-u1!" );
         assertNull( ws.poll() );
         ioService.write( f2, "f2-u2!" );
@@ -194,34 +196,82 @@ public class BatchTest {
     }
 
     @Test
-    public void testFSBatchState() throws IOException, InterruptedException {
-        assertFileSystemState( FileSystemState.NORMAL );
-        ioService.startBatch();
-        assertFileSystemState( FileSystemState.BATCH );
+    public void batchTest() throws IOException, InterruptedException {
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        assertFalse( fs1Batch.isOnBatch() );
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        assertTrue( fs1Batch.isOnBatch() );
         ioService.endBatch();
-        assertFileSystemState( FileSystemState.NORMAL );
+        assertFalse( fs1Batch.isOnBatch() );
     }
 
     @Test
-    public void allFSShouldBeOnSameState() throws IOException, InterruptedException {
-        assertAllFileSystemState( FileSystemState.NORMAL );
-        ioService.startBatch();
-        assertAllFileSystemState( FileSystemState.BATCH );
+    public void justOneFSOnBatchTest() throws IOException, InterruptedException {
+        Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        assertFalse( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        assertTrue( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
         ioService.endBatch();
-        assertAllFileSystemState( FileSystemState.NORMAL );
+        assertFalse( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
     }
 
-    private void assertAllFileSystemState( FileSystemState state ) {
-        for ( FileSystem fs : ioService.getFileSystems() ) {
-            JGitFileSystemProvider provider = (JGitFileSystemProvider) fs.provider();
-            assertEquals( state, provider.getFileSystemState() );
+    @Test
+    public void testTwoStaredFsOnBatchByTheSameThread() throws IOException, InterruptedException {
+        Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        try {
+            ioService.startBatch( new FileSystem[]{ fs2 } );
+            fail();
+        } catch ( RuntimeException e ) {
+            ioService.endBatch();
         }
     }
 
-    private void assertFileSystemState( FileSystemState state ) {
-        FileSystem fs = ioService.getFileSystems().iterator().next();
-        JGitFileSystemProvider provider = (JGitFileSystemProvider) fs.provider();
-        assertEquals( state, provider.getFileSystemState() );
+    @Test
+    public void testTwoFsOnBatchByTheSameThread() throws IOException, InterruptedException {
+        Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        assertTrue( fs1Batch.isOnBatch() );
+        ioService.endBatch();
+        ioService.startBatch( new FileSystem[]{ fs2 } );
+        assertTrue( fs2Batch.isOnBatch() );
+        ioService.endBatch();
     }
 
+    @Test
+    public void iCanLockMultipleFS() throws IOException, InterruptedException {
+        Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        ioService.startBatch( new FileSystem[]{ fs1, fs2 } );
+        assertTrue( fs1Batch.isOnBatch() );
+        assertTrue( fs2Batch.isOnBatch() );
+
+        ioService.endBatch();
+        assertFalse( fs1Batch.isOnBatch() );
+        assertFalse( fs2Batch.isOnBatch() );
+    }
 }

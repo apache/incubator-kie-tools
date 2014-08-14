@@ -23,6 +23,7 @@ import java.util.Set;
 import org.uberfire.commons.lock.LockService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.IOWatchService;
+import org.uberfire.io.lock.FSLockService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
@@ -58,13 +59,13 @@ public class IOServiceNio2WrapperImpl
         super( id, watchService );
     }
 
-    public IOServiceNio2WrapperImpl( final LockService lockService,
+    public IOServiceNio2WrapperImpl( final FSLockService lockService,
                                      final IOWatchService watchService ) {
         super( lockService, watchService );
     }
 
     public IOServiceNio2WrapperImpl( final String id,
-                                     final LockService lockService,
+                                     final FSLockService lockService,
                                      final IOWatchService watchService ) {
         super( id, lockService, watchService );
     }
@@ -74,6 +75,7 @@ public class IOServiceNio2WrapperImpl
                         final DeleteOption... options )
             throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException,
             IOException, SecurityException {
+        waitFSUnlock( path );
         Files.delete( path, options );
     }
 
@@ -81,6 +83,7 @@ public class IOServiceNio2WrapperImpl
     public boolean deleteIfExists( final Path path,
                                    final DeleteOption... options )
             throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+        waitFSUnlock( path );
         return Files.deleteIfExists( path, options );
     }
 
@@ -89,6 +92,7 @@ public class IOServiceNio2WrapperImpl
                                                final Set<? extends OpenOption> options,
                                                final FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        waitFSUnlock( path );
         return Files.newByteChannel( path, options, attrs );
     }
 
@@ -97,6 +101,7 @@ public class IOServiceNio2WrapperImpl
                                  final FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
+        waitFSUnlock( dir );
         return Files.createDirectory( dir, attrs );
     }
 
@@ -105,6 +110,7 @@ public class IOServiceNio2WrapperImpl
                                    final FileAttribute<?>... attrs )
             throws UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
+        waitFSUnlock( dir );
         return Files.createDirectories( dir, attrs );
     }
 
@@ -114,6 +120,8 @@ public class IOServiceNio2WrapperImpl
                       final CopyOption... options )
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, IOException, SecurityException {
+        waitFSUnlock( source );
+        waitFSUnlock( target );
         return Files.copy( source, target, options );
     }
 
@@ -123,6 +131,8 @@ public class IOServiceNio2WrapperImpl
                       final CopyOption... options )
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+        waitFSUnlock( source );
+        waitFSUnlock( target );
         return Files.move( source, target, options );
     }
 
@@ -146,6 +156,7 @@ public class IOServiceNio2WrapperImpl
                                final FileAttribute<?>... attrs )
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException,
             IOException, SecurityException {
+        waitFSUnlock( path );
         Path out = null;
         for ( final FileAttribute<?> attr : attrs ) {
             out = Files.setAttribute( path, attr.name(), attr.value() );

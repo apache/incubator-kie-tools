@@ -61,6 +61,9 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
+import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
+
 public class IOServiceClusterImpl implements IOClusteredService {
 
     private static final Logger logger = LoggerFactory.getLogger( IOServiceClusterImpl.class );
@@ -212,14 +215,28 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public void startBatch( final Option... options ) {
+    public void startBatch( FileSystem[] fs,
+                            final Option... options ) throws InterruptedException {
         clusterService.lock();
-        service.startBatch( options );
+        service.startBatch( fs, options );
     }
 
     @Override
-    public void endBatch( final Option... options ) {
-        service.endBatch( options );
+    public void startBatch( FileSystem fs,
+                            Option... options ) throws InterruptedException {
+        clusterService.lock();
+        service.startBatch( fs, options );
+    }
+
+    @Override
+    public void startBatch( FileSystem... fs ) throws InterruptedException {
+        clusterService.lock();
+        service.startBatch( fs );
+    }
+
+    @Override
+    public void endBatch() {
+        service.endBatch();
         clusterService.unlock();
     }
 

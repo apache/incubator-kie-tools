@@ -188,10 +188,6 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
     private String sshHostName;
     private File sshFileCertDir;
 
-    private FileSystemState state = FileSystemState.NORMAL;
-    private CommitInfo batchCommitInfo = null;
-    private boolean hadCommitOnBatchState = false;
-
     private final Map<String, JGitFileSystem> fileSystems = new ConcurrentHashMap<String, JGitFileSystem>();
     private final Set<JGitFileSystem> closedFileSystems = new HashSet<JGitFileSystem>();
     private final Map<Repository, JGitFileSystem> repoIndex = new ConcurrentHashMap<Repository, JGitFileSystem>();
@@ -1655,22 +1651,22 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         checkNotEmpty( "attributes", attribute );
 
         if ( attribute.equals( FileSystemState.FILE_SYSTEM_STATE_ATTR ) ) {
+            JGitFileSystem fileSystem = (JGitFileSystem) path.getFileSystem();
+
             if ( value instanceof CommentedOption ) {
-                this.batchCommitInfo = buildCommitInfo( "Batch mode", (CommentedOption) value );
+                fileSystem.setBatchCommitInfo( "Batch mode", (CommentedOption) value );
                 return;
             }
-            final boolean isOriginalStateBatch = state.equals( FileSystemState.BATCH );
-            try {
-                state = FileSystemState.valueOf( value.toString() );
-                FileSystemState.valueOf( value.toString() );
-            } catch ( final Exception ex ) {
-                state = FileSystemState.NORMAL;
-            }
-            if ( isOriginalStateBatch && state.equals( FileSystemState.NORMAL ) ) {
-                this.batchCommitInfo = null;
+            final boolean isOriginalStateBatch = fileSystem.isOnBatch();
+
+            fileSystem.setState( value.toString() );
+            FileSystemState.valueOf( value.toString() );
+
+            if ( isOriginalStateBatch && !fileSystem.isOnBatch() ) {
+                fileSystem.setBatchCommitInfo( null );
                 notifyAllDiffs();
             }
-            hadCommitOnBatchState = false;
+            fileSystem.setHadCommitOnBatchState( false );
             return;
         }
 
@@ -1847,14 +1843,15 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                          final CommitContent commitContent ) {
         final Git git = path.getFileSystem().gitRepo();
         final String branchName = path.getRefTree();
-        final boolean batchState = state == FileSystemState.BATCH;
-        final boolean amend = batchState && hadCommitOnBatchState;
+        JGitFileSystem fileSystem = path.getFileSystem();
+        final boolean batchState = fileSystem.isOnBatch();
+        final boolean amend = batchState && fileSystem.isHadCommitOnBatchState();
 
         final ObjectId oldHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
         final boolean hasCommit;
-        if ( batchState && batchCommitInfo != null ) {
-            hasCommit = JGitUtil.commit( git, branchName, batchCommitInfo, amend, commitContent );
+        if ( batchState && fileSystem.getBatchCommitInfo() != null ) {
+            hasCommit = JGitUtil.commit( git, branchName, fileSystem.getBatchCommitInfo(), amend, commitContent );
         } else {
             hasCommit = JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
         }
@@ -1870,15 +1867,15 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                 oldHeadsOfPendingDiffs.put( path.getFileSystem(), new HashMap<String, NotificationModel>() );
             }
 
-            if ( batchCommitInfo != null ) {
-                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, batchCommitInfo.getSessionId(), batchCommitInfo.getName() ) );
+            if ( fileSystem.getBatchCommitInfo() != null ) {
+                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, fileSystem.getBatchCommitInfo().getSessionId(), fileSystem.getBatchCommitInfo().getName() ) );
             } else {
                 oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName() ) );
             }
         }
 
-        if ( state == FileSystemState.BATCH && !hadCommitOnBatchState ) {
-            hadCommitOnBatchState = hasCommit;
+        if ( path.getFileSystem().isOnBatch() && !fileSystem.isHadCommitOnBatchState() ) {
+            fileSystem.setHadCommitOnBatchState( hasCommit );
         }
     }
 
@@ -1999,7 +1996,4 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         }
     }
 
-    public FileSystemState getFileSystemState(){
-        return state;
-    }
 }
