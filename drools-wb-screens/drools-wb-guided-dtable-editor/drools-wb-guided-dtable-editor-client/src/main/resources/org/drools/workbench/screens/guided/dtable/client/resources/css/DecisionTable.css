@@ -41,15 +41,15 @@
 }
 
 .cellTableCellSelected {
-    background-color: #b9b9b9;
+    background-color: #b9b9b9 !important;
 }
 
 .cellTableCellMultipleValues {
-    background-color: #e09090;
+    background-color: #e09090 !important;
 }
 
 .cellTableCellOtherwise {
-    background-color: #60f070;
+    background-color: #60f070 !important;
 }
 
 .cellTableCell:HOVER {
