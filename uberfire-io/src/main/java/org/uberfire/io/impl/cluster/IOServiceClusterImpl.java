@@ -1,9 +1,5 @@
 package org.uberfire.io.impl.cluster;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -61,6 +57,7 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.commons.validation.Preconditions.*;
 import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
 
@@ -212,6 +209,11 @@ public class IOServiceClusterImpl implements IOClusteredService {
     public void dispose() {
         clusterService.dispose();
         service.dispose();
+    }
+
+    @Override
+    public void startBatch( FileSystem fs ) throws InterruptedException {
+        startBatch( new FileSystem[]{ fs } );
     }
 
     @Override
