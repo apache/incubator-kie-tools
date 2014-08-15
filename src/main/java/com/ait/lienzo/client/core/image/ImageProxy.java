@@ -63,6 +63,8 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     private boolean                             m_x_forms     = false;
 
+    private boolean                             m_fastout     = false;
+
     private String                              m_message     = "";
 
     private ImageShapeLoadedHandler<T>          m_handler;
@@ -103,45 +105,91 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
 
     public void reFilter(final ImageShapeFilteredHandler<T> handler)
     {
-        boolean did_xform = m_x_forms;
-
-        m_x_forms = m_filters.isTransforming();
-
-        doFiltering(m_normalImage, m_filterImage, m_filters);
-
-        if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
         {
-            handler.onImageShapeFiltered(m_image);
-        }
-        else if (did_xform || m_x_forms)
-        {
-            doFiltering(m_filterImage, m_selectImage, m_ignores);
+            m_fastout = true;
 
             handler.onImageShapeFiltered(m_image);
         }
         else
         {
-            handler.onImageShapeFiltered(m_image);
+            if (m_fastout)
+            {
+                m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_normalImage.clear();
+
+                m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+                m_fastout = false;
+            }
+            boolean did_xform = m_x_forms;
+
+            m_x_forms = m_filters.isTransforming();
+
+            doFiltering(m_normalImage, m_filterImage, m_filters);
+
+            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            {
+                handler.onImageShapeFiltered(m_image);
+            }
+            else if (did_xform || m_x_forms)
+            {
+                doFiltering(m_filterImage, m_selectImage, m_ignores);
+
+                handler.onImageShapeFiltered(m_image);
+            }
+            else
+            {
+                handler.onImageShapeFiltered(m_image);
+            }
         }
     }
 
     public void unFilter(final ImageShapeFilteredHandler<T> handler)
     {
-        doFiltering(m_normalImage, m_filterImage, null);
-
-        if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
         {
-            handler.onImageShapeFiltered(m_image);
-        }
-        else if (m_x_forms)
-        {
-            doFiltering(m_filterImage, m_selectImage, m_ignores);
+            m_fastout = true;
 
             handler.onImageShapeFiltered(m_image);
         }
         else
         {
-            handler.onImageShapeFiltered(m_image);
+            if (m_fastout)
+            {
+                m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_normalImage.clear();
+
+                m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+                m_fastout = false;
+            }
+            doFiltering(m_normalImage, m_filterImage, null);
+
+            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            {
+                handler.onImageShapeFiltered(m_image);
+            }
+            else if (m_x_forms)
+            {
+                doFiltering(m_filterImage, m_selectImage, m_ignores);
+
+                handler.onImageShapeFiltered(m_image);
+            }
+            else
+            {
+                handler.onImageShapeFiltered(m_image);
+            }
         }
     }
 
@@ -305,29 +353,40 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         {
             m_dest_high = m_clip_high;
         }
-        m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
-
-        m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
-
-        m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
-
-        m_normalImage.clear();
-
-        m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
-
-        m_x_forms = m_filters.isTransforming();
-
-        doFiltering(m_normalImage, m_filterImage, m_filters);
-
-        if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+        if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
         {
+            m_fastout = true;
+
             doneLoading(true, "loaded " + m_image.getURL());
         }
         else
         {
-            doFiltering(m_filterImage, m_selectImage, m_ignores);
+            m_fastout = false;
 
-            doneLoading(true, "loaded " + m_image.getURL());
+            m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
+
+            m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
+
+            m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
+
+            m_normalImage.clear();
+
+            m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+            m_x_forms = m_filters.isTransforming();
+
+            doFiltering(m_normalImage, m_filterImage, m_filters);
+
+            if ((false == m_image.isListening()) || (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
+            {
+                doneLoading(true, "loaded " + m_image.getURL());
+            }
+            else
+            {
+                doFiltering(m_filterImage, m_selectImage, m_ignores);
+
+                doneLoading(true, "loaded " + m_image.getURL());
+            }
         }
     }
 
@@ -367,23 +426,32 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
             {
                 m_dest_high = m_clip_high;
             }
-            m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
-
-            m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
-
-            m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
-
-            m_normalImage.clear();
-
-            m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
-
-            m_x_forms = m_filters.isTransforming();
-
-            doFiltering(m_normalImage, m_filterImage, m_filters);
-
-            if ((m_image.isListening()) && (ImageSelectionMode.SELECT_NON_TRANSPARENT == m_image.getImageSelectionMode()))
+            if ((false == (m_filters.isActive())) && (ImageSelectionMode.SELECT_BOUNDS == m_image.getImageSelectionMode()))
             {
-                doFiltering(m_filterImage, m_selectImage, m_ignores);
+                m_fastout = true;
+            }
+            else
+            {
+                m_fastout = false;
+
+                m_normalImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_filterImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_selectImage.setPixelSize(m_dest_wide, m_dest_high);
+
+                m_normalImage.clear();
+
+                m_normalImage.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+                m_x_forms = m_filters.isTransforming();
+
+                doFiltering(m_normalImage, m_filterImage, m_filters);
+
+                if ((m_image.isListening()) && (ImageSelectionMode.SELECT_NON_TRANSPARENT == m_image.getImageSelectionMode()))
+                {
+                    doFiltering(m_filterImage, m_selectImage, m_ignores);
+                }
             }
         }
     }
@@ -436,7 +504,14 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
             }
             else
             {
-                context.drawImage(m_filterImage.getElement(), 0, 0);
+                if (m_fastout)
+                {
+                    context.drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+                }
+                else
+                {
+                    context.drawImage(m_filterImage.getElement(), 0, 0);
+                }
             }
         }
     }
@@ -469,7 +544,18 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         {
             return null;
         }
-        return m_filterImage.getContext().getImageData(0, 0, m_dest_wide, m_dest_high);
+        if (m_fastout)
+        {
+            ScratchCanvas temp = new ScratchCanvas(m_dest_wide, m_dest_high);
+
+            temp.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+            return temp.getContext().getImageData(0, 0, m_dest_wide, m_dest_high);
+        }
+        else
+        {
+            return m_filterImage.getContext().getImageData(0, 0, m_dest_wide, m_dest_high);
+        }
     }
 
     /**
@@ -488,7 +574,19 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         {
             mimeType = DataURLType.PNG;
         }
-        return m_filterImage.toDataURL(mimeType);
+        if (m_fastout)
+        {
+            ScratchCanvas temp = new ScratchCanvas(m_dest_wide, m_dest_high);
+
+            temp.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+
+            return temp.toDataURL(mimeType);
+        }
+        else
+        {
+            return m_filterImage.toDataURL(mimeType);
+        }
+
     }
 
     protected void doneLoading(boolean loaded, String message)
