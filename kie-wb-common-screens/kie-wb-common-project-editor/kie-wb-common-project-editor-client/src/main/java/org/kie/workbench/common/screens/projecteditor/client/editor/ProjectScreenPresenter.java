@@ -389,18 +389,18 @@ public class ProjectScreenPresenter
                 ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
                 getYesCommand(),
                 org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.YES(),
-                ButtonType.SUCCESS,
-                IconType.THUMBS_UP,
+                ButtonType.PRIMARY,
+                IconType.SAVE,
 
                 getNoCommand(),
                 org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.NO(),
                 ButtonType.DANGER,
-                IconType.THUMBS_DOWN,
+                IconType.WARNING_SIGN,
 
                 getCancelCommand(),
                 org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
-                ButtonType.PRIMARY,
-                IconType.SIGNOUT
+                ButtonType.DEFAULT,
+                null
                                                    );
     }
 
