@@ -114,19 +114,10 @@ public class ProjectMenu {
                 }
             } ).endMenu().build().getItems().get( 0 );
 
-    private MenuItem dataModelerScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.DataModeller() ).respondsWith(
-            new Command() {
-                @Override
-                public void execute() {
-                    placeManager.goTo( "dataModelerScreen" );
-                }
-            } ).endMenu().build().getItems().get( 0 );
-
     public List<MenuItem> getMenuItems() {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
 
         menuItems.add( projectScreen );
-        menuItems.add( dataModelerScreen );
 
 //        menuItems.add(removeProject);
 //        menuItems.add(renameProject);
@@ -142,7 +133,6 @@ public class ProjectMenu {
     private void enableToolsMenuItems( final KieProject project ) {
         final boolean enabled = ( project != null );
         projectScreen.setEnabled( enabled );
-        dataModelerScreen.setEnabled( enabled );
     }
 
 }
