@@ -131,6 +131,11 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     }
 
     @Override
+    public void startBatch( FileSystem fs ) throws InterruptedException {
+        batchProcess( new FileSystem[]{ fs } );
+    }
+
+    @Override
     public void startBatch( FileSystem fs,
                             final Option... options ) throws InterruptedException {
         batchProcess( new FileSystem[]{ fs }, options );
