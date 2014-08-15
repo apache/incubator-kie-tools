@@ -72,6 +72,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.Bou
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.InsertDecisionTableColumnEvent;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.drools.workbench.screens.guided.rule.client.util.GWTDateConverter;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DecoratedGridCellValueAdaptor;
@@ -92,7 +93,6 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.Toggl
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDefinitionEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateModelEvent;
-import org.uberfire.security.Identity;
 
 /**
  * An abstract Decision Table and the necessary boiler-plate to convert from
@@ -126,7 +126,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private final BRLRuleModel rm;
 
     //Current user's security context (for audit log)
-    private final Identity identity;
+    private final User identity;
 
     //Rows that have been copied in a copy-paste operation
     private List<List<DTCellValue52>> copiedRows = new ArrayList<List<DTCellValue52>>();
@@ -138,7 +138,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public AbstractDecisionTableWidget( GuidedDecisionTable52 model,
                                         AsyncPackageDataModelOracle oracle,
-                                        Identity identity,
+                                        User identity,
                                         boolean isReadOnly,
                                         EventBus eventBus ) {
 
@@ -231,7 +231,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -248,7 +248,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                      true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -266,7 +266,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -283,7 +283,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                         true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -301,7 +301,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -319,7 +319,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -337,7 +337,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -371,7 +371,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                    true );
 
         //Log addition of column
-        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -390,7 +390,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                       true );
 
         //Log deletion of column
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -412,7 +412,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getActionCols().remove( modelColumn );
 
             //Log deletion of column
-            model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                     modelColumn ) );
         }
     }
@@ -432,7 +432,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                       true );
 
         //Log deletion of column
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -454,7 +454,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             model.getConditions().remove( modelColumn );
 
             //Log deletion of column
-            model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                     modelColumn ) );
         }
     }
@@ -474,7 +474,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                       true );
 
         //Log deletion of column
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -494,7 +494,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                           true );
 
             //Log deletion of column
-            model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                     modelColumn ) );
         }
     }
@@ -514,7 +514,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                       true );
 
         //Log deletion of column
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -544,7 +544,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                       true );
 
         //Log deletion of column
-        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
                                                                 modelColumn ) );
     }
 
@@ -677,7 +677,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -767,7 +767,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -834,7 +834,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -886,7 +886,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -938,7 +938,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -1024,7 +1024,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -1103,7 +1103,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -1151,7 +1151,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn ) );
         }
@@ -1203,7 +1203,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Log change to column definition
         if ( bUpdateColumnDefinition ) {
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
         }
@@ -1330,7 +1330,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 }
                 diffs.addAll( patternDiff );
             }
-            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                     origColumn,
                                                                     editColumn, diffs ) );
 
@@ -1402,7 +1402,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
             //Log change to column definition
             if ( bUpdateColumnDefinition ) {
-                model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getName(),
+                model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
                                                                         origColumn,
                                                                         editColumn, diffs ) );
             }
@@ -2100,7 +2100,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         } );
 
         //Log deletion of row
-        model.getAuditLog().add( new DeleteRowAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new DeleteRowAuditLogEntry( identity.getIdentifier(),
                                                              event.getIndex() ) );
     }
 
@@ -2119,7 +2119,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         } );
 
         //Log insertion of row
-        model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getIdentifier(),
                                                              event.getIndex() ) );
     }
 
@@ -2187,7 +2187,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                          new Analysis() );
 
             //Log insertion of row
-            model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getName(),
+            model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getIdentifier(),
                                                                  iRow ) );
 
             iRow++;
@@ -2215,7 +2215,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         } );
 
         //Log insertion of row
-        model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getName(),
+        model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getIdentifier(),
                                                              model.getData().size() - 1 ) );
     }
 

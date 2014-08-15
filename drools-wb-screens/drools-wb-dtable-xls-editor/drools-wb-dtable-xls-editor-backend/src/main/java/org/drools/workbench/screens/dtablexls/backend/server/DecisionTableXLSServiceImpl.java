@@ -49,6 +49,7 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
@@ -61,7 +62,6 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -133,7 +133,7 @@ public class DecisionTableXLSServiceImpl
                                                                    }
 
                                                                    @Override
-                                                                   public Identity getIdentity() {
+                                                                   public User getIdentity() {
                                                                        return identity;
                                                                    }
                                                                } ) );
@@ -152,7 +152,7 @@ public class DecisionTableXLSServiceImpl
                         final InputStream content,
                         final String sessionId,
                         final String comment ) {
-        log.info( "USER:" + identity.getName() + " CREATING asset [" + resource.getFileName() + "]" );
+        log.info( "USER:" + identity.getIdentifier() + " CREATING asset [" + resource.getFileName() + "]" );
 
         try {
 
@@ -210,7 +210,7 @@ public class DecisionTableXLSServiceImpl
                       final InputStream content,
                       final String sessionId,
                       final String comment ) {
-        log.info( "USER:" + identity.getName() + " UPDATING asset [" + resource.getFileName() + "]" );
+        log.info( "USER:" + identity.getIdentifier() + " UPDATING asset [" + resource.getFileName() + "]" );
 
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( resource );
@@ -341,7 +341,7 @@ public class DecisionTableXLSServiceImpl
 
     private CommentedOption makeCommentedOption( final String sessionId,
                                                  final String commitMessage ) {
-        final String name = identity.getName();
+        final String name = identity.getIdentifier();
         final Date when = new Date();
         final CommentedOption co = new CommentedOption( sessionId,
                                                         name,

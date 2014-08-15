@@ -52,6 +52,7 @@ import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeD
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -65,7 +66,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Files;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**
@@ -75,7 +75,7 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionTableXLSConversionService {
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     @Named("ioStrategy")

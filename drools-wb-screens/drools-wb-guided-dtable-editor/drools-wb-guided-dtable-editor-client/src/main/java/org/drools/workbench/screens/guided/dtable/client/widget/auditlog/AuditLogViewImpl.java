@@ -46,9 +46,10 @@ import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.datamodel.auditlog.AuditLog;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.kie.workbench.common.services.security.AppRoles;
+import org.jboss.errai.security.shared.api.RoleImpl;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
-import org.uberfire.security.Identity;
+import org.kie.workbench.common.services.security.AppRoles;
 
 /**
  * The AuditLog View implementation
@@ -98,7 +99,7 @@ public class AuditLogViewImpl extends Modal
     AuditLogStyle style;
 
     //The current user's security context (admins can see all records)
-    private final Identity identity;
+    private final User identity;
 
     interface AuditLogViewImplBinder
             extends
@@ -109,7 +110,7 @@ public class AuditLogViewImpl extends Modal
     private static AuditLogViewImplBinder uiBinder = GWT.create( AuditLogViewImplBinder.class );
 
     public AuditLogViewImpl( final AuditLog auditLog,
-                             final Identity identity ) {
+                             final User identity ) {
         this.auditLog = auditLog;
         this.identity = identity;
 
@@ -165,7 +166,7 @@ public class AuditLogViewImpl extends Modal
                                Unit.PCT );
 
         //If the current user is not an Administrator include the delete comment column
-        if ( identity.hasRole( AppRoles.ADMIN ) ) {
+        if ( identity.getRoles().contains( new RoleImpl( AppRoles.ADMIN.getName() ) ) ) {
 
             AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
             deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, SafeHtml>() {
@@ -223,7 +224,7 @@ public class AuditLogViewImpl extends Modal
     }
 
     private List<AuditLogEntry> filterDeletedEntries( final List<AuditLogEntry> entries ) {
-        if ( !identity.hasRole( AppRoles.ADMIN ) ) {
+        if ( !identity.getRoles().contains( new RoleImpl( AppRoles.ADMIN.getName() ) ) ) {
             return entries;
         }
         final List<AuditLogEntry> filteredEntries = new ArrayList<AuditLogEntry>();

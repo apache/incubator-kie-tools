@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- This file belongs inside the war in /META-INF/ not in /WEB-INF/classes/META-INF/ like most other of such files -->
-<Context>
-  <Resource name="BeanManager"
-            auth="Container"
-            type="javax.enterprise.inject.spi.BeanManager"
-            factory="org.jboss.weld.resources.ManagerObjectFactory"/>
-
-</Context>

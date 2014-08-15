@@ -84,6 +84,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.VerticalDe
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.client.common.AddButton;
 import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
 import org.kie.uberfire.client.common.DirtyableHorizontalPane;
@@ -97,7 +98,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.security.Identity;
 
 /**
  * This is the new guided decision table editor for the web.
@@ -126,7 +126,7 @@ public class GuidedDecisionTableWidget extends Composite
     private BRLRuleModel rm;
 
     private Path path;
-    private Identity identity;
+    private User identity;
     private Set<PortableWorkDefinition> workItemDefinitions;
 
     private VerticalDecisionTableWidget dtable;
@@ -167,7 +167,7 @@ public class GuidedDecisionTableWidget extends Composite
                                       final Set<PortableWorkDefinition> workItemDefinitions,
                                       final AsyncPackageDataModelOracle oracle,
                                       final Caller<RuleNamesService> ruleNameService,
-                                      final Identity identity,
+                                      final User identity,
                                       final boolean isReadOnly ) {
         this.path = path;
         this.oracle = oracle;
@@ -1334,7 +1334,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
+                    fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1363,13 +1363,13 @@ public class GuidedDecisionTableWidget extends Composite
 
             final Widget defaultValue = DefaultValueWidgetFactory.getDefaultValueWidget( atc,
                                                                                          isReadOnly, new DefaultValueWidgetFactory.DefaultValueChangedEventHandler() {
-                @Override
-                public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
-                    final AttributeCol52 clonedAt = at.cloneColumn();
-                    clonedAt.setDefaultValue( event.getOldDefaultValue() );
-                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
-                }
-            } );
+                        @Override
+                        public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
+                            final AttributeCol52 clonedAt = at.cloneColumn();
+                            clonedAt.setDefaultValue( event.getOldDefaultValue() );
+                            fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
+                        }
+                    } );
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1391,7 +1391,7 @@ public class GuidedDecisionTableWidget extends Composite
                         at.setUseRowNumber( useRowNumber.getValue() );
                         reverseOrder.setEnabled( useRowNumber.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
+                        fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
                     }
                 } );
 
@@ -1400,7 +1400,7 @@ public class GuidedDecisionTableWidget extends Composite
                         final AttributeCol52 clonedAt = at.cloneColumn();
                         at.setReverseOrder( reverseOrder.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
+                        fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
                     }
                 } );
                 hp.add( reverseOrder );
@@ -1421,7 +1421,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                 !at.isHideColumn() );
                     setColumnLabelStyleWhenHidden( label,
                                                    hide.getValue() );
-                    fireUpdateColumn( identity.getName(), clonedAt, at, clonedAt.diff( at ) );
+                    fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );

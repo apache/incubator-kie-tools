@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -32,7 +33,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 /**
  * Common methods shared between GuidedRuleEditorServiceImpl and GuidedRuleEditorRenameHelper
@@ -45,7 +45,7 @@ public class GuidedRuleEditorServiceUtilities {
     private static final DSLFileFilter FILTER_DSLS = new DSLFileFilter();
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -103,7 +103,7 @@ public class GuidedRuleEditorServiceUtilities {
      * @return
      */
     public CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
+        final String name = identity.getIdentifier();
         final Date when = new Date();
         final CommentedOption co = new CommentedOption( sessionInfo.getId(),
                                                         name,

@@ -33,12 +33,15 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
+import org.jboss.errai.bus.client.api.BusErrorCallback;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.services.security.KieWorkbenchACL;
 import org.kie.workbench.common.services.security.KieWorkbenchPolicy;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -83,6 +86,9 @@ public class DroolsWorkbenchEntryPoint {
 
     @Inject
     private Caller<KieWorkbenchSecurityService> kieSecurityService;
+
+    @Inject
+    private Caller<AuthenticationService> authService;
 
     @AfterInitialization
     public void startApp() {
@@ -129,7 +135,7 @@ public class DroolsWorkbenchEntryPoint {
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        redirect( GWT.getModuleBaseURL() + "uf_logout" );
+                        logout();
                     }
                 } )
                 .endMenu()
@@ -152,7 +158,7 @@ public class DroolsWorkbenchEntryPoint {
     private List<MenuItem> getPerspectives() {
         final List<MenuItem> perspectives = new ArrayList<MenuItem>();
         for ( final AbstractWorkbenchPerspectiveActivity perspective : getPerspectiveActivities() ) {
-            final String name = perspective.getPerspective().getName();
+            final String name = perspective.getDefaultPerspectiveLayout().getName();
             final Command cmd = new Command() {
 
                 @Override
@@ -199,12 +205,28 @@ public class DroolsWorkbenchEntryPoint {
                               @Override
                               public int compare( AbstractWorkbenchPerspectiveActivity o1,
                                                   AbstractWorkbenchPerspectiveActivity o2 ) {
-                                  return o1.getPerspective().getName().compareTo( o2.getPerspective().getName() );
+                                  return o1.getDefaultPerspectiveLayout().getName().compareTo( o2.getDefaultPerspectiveLayout().getName() );
                               }
 
                           } );
 
         return sortedActivities;
+    }
+
+    private void logout() {
+        authService.call( new RemoteCallback<Void>() {
+            @Override
+            public void callback( Void response ) {
+                redirect( GWT.getHostPageBaseURL() + "login.jsp" );
+            }
+        }, new BusErrorCallback() {
+            @Override
+            public boolean error( Message message,
+                                  Throwable throwable ) {
+                Window.alert( "Logout failed: " + throwable );
+                return true;
+            }
+        } ).logout();
     }
 
     //Fade out the "Loading application" pop-up

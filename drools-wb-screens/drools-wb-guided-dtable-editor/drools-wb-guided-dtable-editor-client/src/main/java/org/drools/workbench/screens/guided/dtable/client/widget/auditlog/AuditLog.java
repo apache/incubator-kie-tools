@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.auditlog;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.uberfire.security.Identity;
+import org.jboss.errai.security.shared.api.identity.User;
 
 /**
  * Presenter for AuditLog
@@ -25,8 +25,8 @@ public class AuditLog {
 
     private AuditLogView view;
 
-    public AuditLog(final GuidedDecisionTable52 dtable,
-                    final Identity identity) {
+    public AuditLog( final GuidedDecisionTable52 dtable,
+                     final User identity ) {
         this.view = new AuditLogViewImpl( dtable.getAuditLog(),
                                           identity );
     }

@@ -19,8 +19,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.SetGuidedDecisionTableModelEvent;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.security.Identity;
 
 /**
  * A Vertical Decision Table composed of a VerticalDecoratedGridWidget
@@ -31,7 +31,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
     public VerticalDecisionTableWidget( GuidedDecisionTable52 model,
                                         AsyncPackageDataModelOracle oracle,
-                                        Identity identity,
+                                        User identity,
                                         boolean isReadOnly,
                                         EventBus eventBus ) {
         super( model,

@@ -4,7 +4,6 @@
 <module>
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
-  <inherits name="org.uberfire.UberfireNSWEManager"/>
 
   <!-- Uberfire Extensions - Runtime Plugin -->
   <inherits name="org.kie.uberfire.plugin.RuntimePluginClient"/>
@@ -89,5 +88,7 @@
   <set-configuration-property name="devModeRedirectEnabled" value="true"/>
   <set-property name="compiler.useSourceMaps" value="true"/>
   <set-configuration-property name='xsiframe.failIfScriptTag' value='false'/>
+
+  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 
 </module>

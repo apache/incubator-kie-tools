@@ -15,18 +15,35 @@
   </listener>
 
   <filter>
-    <filter-name>UberFire Security Filter</filter-name>
-    <filter-class>org.uberfire.security.server.UberFireSecurityFilter</filter-class>
+    <filter-name>UI Security Filter</filter-name>
+
+    <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
+
     <init-param>
-      <param-name>org.uberfire.cookie.id</param-name>
-      <param-value>guvnor.app</param-value>
+      <param-name>authType</param-name>
+      <param-value>org.jboss.errai.security.server.FormAuthenticationScheme</param-value>
+    </init-param>
+    <init-param>
+      <param-name>form-login-page</param-name>
+      <param-value>/login.jsp</param-value>
+    </init-param>
+    <init-param>
+      <param-name>host-page</param-name>
+      <param-value>/drools-wb.html</param-value>
+    </init-param>
+    <init-param>
+      <param-name>forceReAuthentication</param-name>
+      <param-value>true</param-value>
     </init-param>
   </filter>
 
   <filter-mapping>
-    <filter-name>UberFire Security Filter</filter-name>
-    <url-pattern>/rest/*</url-pattern>
-    <url-pattern>/maven2/*</url-pattern>
+    <filter-name>UI Security Filter</filter-name>
+    <!--<url-pattern>/rest/*</url-pattern>-->
+    <!--<url-pattern>/maven2/*</url-pattern>-->
+    <url-pattern>/drools-wb.html</url-pattern>
+    <url-pattern>/uf_security_check</url-pattern>
+    <url-pattern>*.erraiBus</url-pattern>
     <url-pattern>/org.drools.workbench.DroolsWorkbench/*</url-pattern>
   </filter-mapping>
 
@@ -40,7 +57,7 @@
     <param-value>/rest</param-value>
   </context-param>
 
-  <!-- Note, this configuration needs to be removed with AS7 deployement -->  
+  <!-- Note, this configuration needs to be removed with AS7 deployement -->
   <context-param>
     <param-name>resteasy.injector.factory</param-name>
     <param-value>org.jboss.resteasy.cdi.CdiInjectorFactory</param-value>
@@ -54,17 +71,6 @@
   <servlet-mapping>
     <servlet-name>Resteasy</servlet-name>
     <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>UberFireServlet</servlet-name>
-    <servlet-class>org.uberfire.server.UberfireServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>UberFireServlet</servlet-name>
-    <url-pattern>/org.drools.workbench.DroolsWorkbench/DroolsWorkbench.html</url-pattern>
   </servlet-mapping>
 
   <servlet>
@@ -88,11 +94,6 @@ with the DefaultBlockingServlet. If you change this setting, make a backup of th
 profile in pom.xml to use that. -->
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
-
-    <init-param>
-      <param-name>service-locator</param-name>
-      <param-value>org.jboss.errai.cdi.server.CDIServiceLocator</param-value>
-    </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
 
@@ -158,22 +159,7 @@ profile in pom.xml to use that. -->
     <resource-env-ref-type>org.jboss.errai.bus.server.service.ErraiService</resource-env-ref-type>
   </resource-env-ref>
 
-  <context-param>
-    <param-name>errai.properties</param-name>
-    <param-value>/WEB-INF/errai.properties</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>login.config</param-name>
-    <param-value>/WEB-INF/login.config</param-value>
-  </context-param>
-
-  <context-param>
-    <param-name>users.properties</param-name>
-    <param-value>/WEB-INF/users.properties</param-value>
-  </context-param>
-
   <welcome-file-list>
-    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>login.jsp</welcome-file>
   </welcome-file-list>
 </web-app>

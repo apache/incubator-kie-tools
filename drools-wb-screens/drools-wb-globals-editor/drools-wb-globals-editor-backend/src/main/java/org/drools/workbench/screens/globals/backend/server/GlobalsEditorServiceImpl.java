@@ -246,5 +246,4 @@ public class GlobalsEditorServiceImpl extends KieService implements GlobalsEdito
             throw ExceptionUtilities.handleException( e );
         }
     }
-
 }

@@ -25,13 +25,13 @@ import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPer
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.RenameHelper;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.type.FileNameUtil;
 
 /**
@@ -44,7 +44,7 @@ public class GuidedDecisionTreeEditorRenameHelper implements RenameHelper {
     private GuidedDTreeResourceTypeDefinition resourceType;
 
     @Inject
-    private Identity identity;
+    private User identity;
 
     @Inject
     private SessionInfo sessionInfo;
@@ -87,7 +87,7 @@ public class GuidedDecisionTreeEditorRenameHelper implements RenameHelper {
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
+        final String name = identity.getIdentifier();
         final Date when = new Date();
         final CommentedOption co = new CommentedOption( sessionInfo.getId(),
                                                         name,

@@ -270,5 +270,4 @@ public class EnumServiceImpl extends KieService implements EnumService {
         msg.setText( message );
         return msg;
     }
-
 }

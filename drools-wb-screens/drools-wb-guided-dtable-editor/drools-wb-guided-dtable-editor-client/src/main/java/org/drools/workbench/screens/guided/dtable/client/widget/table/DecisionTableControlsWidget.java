@@ -21,10 +21,10 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.auditlog.AuditLog;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.uberfire.security.Identity;
+import org.jboss.errai.security.shared.api.identity.User;
 
 /**
  * Simple container for controls to manipulate a Decision Table
@@ -38,7 +38,7 @@ public class DecisionTableControlsWidget extends Composite {
 
     public DecisionTableControlsWidget( final AbstractDecisionTableWidget dtable,
                                         final GuidedDecisionTable52 model,
-                                        final Identity identity,
+                                        final User identity,
                                         final boolean isReadOnly ) {
 
         Panel panel = new HorizontalPanel();

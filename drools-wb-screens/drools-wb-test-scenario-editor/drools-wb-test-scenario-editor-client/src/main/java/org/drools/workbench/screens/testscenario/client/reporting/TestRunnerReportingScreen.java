@@ -11,6 +11,7 @@ import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -34,7 +35,7 @@ public class TestRunnerReportingScreen
 
     @DefaultPosition
     public Position getDefaultPosition() {
-        return Position.SOUTH;
+        return CompassPosition.SOUTH;
     }
 
     @WorkbenchPartTitle

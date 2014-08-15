@@ -271,5 +271,4 @@ public class DSLTextEditorServiceImpl extends KieService implements DSLTextEdito
         msg.setText( "Uncategorized error " + o );
         return msg;
     }
-
 }

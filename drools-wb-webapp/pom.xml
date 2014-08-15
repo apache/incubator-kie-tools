@@ -52,10 +52,21 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+    </dependency>
+
     <!-- This is a war file, so logback is not in scope test, but in scope compile -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
     </dependency>
 
     <!-- Models held within Drools -->
@@ -530,6 +541,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -539,11 +556,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-panel-manager-nswe</artifactId>
-      <scope>provided</scope>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-picketlink</artifactId>
     </dependency>
-
 
     <!-- Errai AS -->
     <dependency>
@@ -568,11 +583,6 @@
       <artifactId>errai-weld-integration</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-jetty</artifactId>
-    </dependency>
-
     <!-- Weld Modules -->
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -589,6 +599,11 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.owasp.encoder</groupId>
+      <artifactId>encoder</artifactId>
     </dependency>
 
     <!-- Rouge imports to avoid OSGi errors -->
@@ -612,7 +627,15 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    
+
+    <!-- PicketLink has a hard dependency on JBoss Logging.
+     Since this app deploys to Jetty, we include this as a runtime-scoped dependency.
+     If deploying to JBoss AS or WildFly, you would set this to provided scope. -->
+    <dependency>
+      <groupId>org.jboss.logging</groupId>
+      <artifactId>jboss-logging</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -751,9 +774,8 @@
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
-          <runTarget>org.drools.workbench.DroolsWorkbench/DroolsWorkbench.html</runTarget>
+          <runTarget>drools-wb.html</runTarget>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
-          <server>org.jboss.errai.cdi.server.gwt.JettyLauncher</server>
           <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
         </configuration>
@@ -814,6 +836,7 @@
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
           <configuration>
             <lifecycleMappingMetadata>
               <pluginExecutions>
