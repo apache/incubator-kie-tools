@@ -48,7 +48,8 @@
   </licenses>
 
   <properties>
-    <!-- IMPORTANT: Do not declare any external dependencies versions here! Declare them in kie-parent-with-dependencies. -->
+    <!-- IMPORTANT: Do not declare any external dependencies versions here! Declare them in uberfire-parent-with-dependencies. -->
+    <uberfire.version>${project.version}</uberfire.version>
     <!-- Make build platform independent -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -112,13 +113,13 @@
   </pluginRepositories>
 
   <scm>
-    <connection>scm:git:git@github.com:droolsjbpm/guvnorng.git</connection>
-    <developerConnection>scm:git:git@github.com:droolsjbpm/guvnorng.git</developerConnection>
-    <url>https://github.com/droolsjbpm/guvnorng</url>
+    <connection>scm:git:git@github.com:uberfire/uberfire.git</connection>
+    <developerConnection>scm:git:git@github.com:uberfire/uberfire.git</developerConnection>
+    <url>https://github.com/uberfire/uberfire</url>
   </scm>
   <issueManagement>
     <system>jira</system>
-    <url>https://issues.jboss.org/browse/GUVNOR</url>
+    <url>https://issues.jboss.org/browse/UF</url>
   </issueManagement>
 
   <build>

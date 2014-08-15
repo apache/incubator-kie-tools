@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.perspective;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -6,10 +6,10 @@ import java.util.Collections;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.client.jsapi.JSPlaceRequest;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.perspective.JSPanelDefinition;
-import org.uberfire.client.perspective.JSPartDefinition;
+import org.uberfire.client.plugin.JSNativePlugin;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
@@ -58,34 +58,41 @@ public class JSNativePerspective {
     }
 
     public native String getId()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.id;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.id;
     }-*/;
 
     public native boolean isDefault()  /*-{
-        if ((typeof this.@org.uberfire.client.JSNativePerspective::obj.is_default === "boolean")) {
-            return this.@org.uberfire.client.JSNativePerspective::obj.is_default;
+        if ((typeof this.@org.uberfire.client.perspective.JSNativePerspective::obj.is_default === "boolean")) {
+            return this.@org.uberfire.client.perspective.JSNativePerspective::obj.is_default;
         }
         return false;
     }-*/;
 
     public native boolean isTransient()  /*-{
-        if ((typeof this.@org.uberfire.client.JSNativePerspective::obj.is_transient === "boolean")) {
-            return this.@org.uberfire.client.JSNativePerspective::obj.is_transient;
+        var jso = this.@org.uberfire.client.perspective.JSNativePerspective::obj;
+        if ((typeof jso.is_transient === "boolean")) {
+            return jso.is_transient;
         }
         return true;
     }-*/;
 
     private native String getPanelTypeAsString()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.panel_type;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.panel_type;
     }-*/;
 
     private native String getContextDisplayModeAsString()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.context_display_mode;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.context_display_mode;
     }-*/;
 
     private native String getContextId()  /*-{
-        return this.@org.uberfire.client.JSNativePerspective::obj.context_id;
+        return this.@org.uberfire.client.perspective.JSNativePerspective::obj.context_id;
     }-*/;
+
+    public void onStartup( final PlaceRequest place ) {
+        if ( JSNativePlugin.hasMethod( obj, "on_startup" ) ) {
+            executeOnStartup( obj, JSPlaceRequest.fromPlaceRequest( place ) );
+        }
+    }
 
     public void onOpen() {
         if ( JSNativePlugin.hasMethod( obj, "on_open" ) ) {
@@ -231,6 +238,10 @@ public class JSNativePerspective {
         return o.view;
     }-*/;
 
+    private static native void executeOnStartup( final JavaScriptObject o, JSPlaceRequest place ) /*-{
+        o.on_open( place );
+    }-*/;
+
     private static native void executeOnOpen( final JavaScriptObject o ) /*-{
         o.on_open();
     }-*/;
@@ -242,10 +253,6 @@ public class JSNativePerspective {
     private static native void executeOnShutdown( final JavaScriptObject o ) /*-{
         o.on_shutdown();
     }-*/;
-
-    public void onStartup( final PlaceRequest place ) {
-        //To change body of created methods use File | Settings | File Templates.
-    }
 
     public PanelManager getPanelManager() {
         return panelManager;

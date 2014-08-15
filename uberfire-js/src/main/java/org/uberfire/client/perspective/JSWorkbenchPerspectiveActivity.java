@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.perspective;
 
 import java.util.Collection;
 
@@ -19,14 +19,14 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
-    public void onStartup( final PlaceRequest place ) {
-        this.place = place;
-        nativePerspective.onStartup( place );
+    public PlaceRequest getPlace() {
+        return place;
     }
 
     @Override
-    public PlaceRequest getPlace() {
-        return place;
+    public void onStartup( final PlaceRequest place ) {
+        this.place = place;
+        nativePerspective.onStartup( place );
     }
 
     @Override

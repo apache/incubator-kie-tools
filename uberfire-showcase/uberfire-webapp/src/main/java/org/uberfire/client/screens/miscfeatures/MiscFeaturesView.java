@@ -22,10 +22,15 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -62,6 +67,12 @@ MiscFeaturesPresenter.View {
     private PlaceManager placeManager;
 
     private MiscFeaturesPresenter presenter;
+
+    @UiField
+    Button editor;
+
+    @Inject
+    private Caller<VFSService> vfsServices;
 
     @Override
     public void init( final MiscFeaturesPresenter presenter ) {
@@ -119,6 +130,17 @@ MiscFeaturesPresenter.View {
     @UiHandler("activityNotFound")
     public void onClickActivityNotFound( final ClickEvent event ) {
         placeManager.goTo( "some.place.does.not.exists.please!" );
+    }
+
+    @UiHandler("editor")
+    void handleEditor( ClickEvent e ) {
+        vfsServices.call( new RemoteCallback<Path>() {
+            @Override
+            public void callback( final Path o ) {
+                placeManager.goTo( o );
+            }
+        } ).get( "default://uf-playground/todo.md" );
+
     }
 
 }

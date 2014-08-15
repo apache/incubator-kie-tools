@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.plugin;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -6,6 +6,7 @@ import java.util.Collections;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.client.jsapi.JSPlaceRequest;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -38,7 +39,7 @@ public class JSNativePlugin {
     }
 
     public native String getId()  /*-{
-        return this.@org.uberfire.client.JSNativePlugin::obj.id;
+        return this.@org.uberfire.client.plugin.JSNativePlugin::obj.id;
     }-*/;
 
     public Element getElement() {
@@ -92,6 +93,12 @@ public class JSNativePlugin {
     public void onOpen() {
         if ( hasMethod( obj, "on_open" ) ) {
             executeOnOpen( obj );
+        }
+    }
+
+    public void onOpen( String URI ) {
+        if ( hasMethod( obj, "on_open" ) ) {
+            executeOnOpen( obj, URI );
         }
     }
 
@@ -163,7 +170,7 @@ public class JSNativePlugin {
         }
     }
 
-    static boolean hasTemplate( final JavaScriptObject obj ) {
+    public static boolean hasTemplate( final JavaScriptObject obj ) {
         if ( hasMethod( obj, "template" ) || hasMethod( obj, "templateUrl" ) ) {
             return true;
         }
@@ -171,31 +178,31 @@ public class JSNativePlugin {
         return hasStringProperty( obj, "template" ) || hasStringProperty( obj, "templateUrl" );
     }
 
-    static native boolean hasMethod( final JavaScriptObject obj,
+    public static native boolean hasMethod( final JavaScriptObject obj,
                                      final String methodName )  /*-{
         return ((typeof obj[methodName]) === "function");
     }-*/;
 
-    static native boolean hasStringProperty( final JavaScriptObject obj,
+    public static native boolean hasStringProperty( final JavaScriptObject obj,
                                              final String propertyName )  /*-{
         return ((typeof obj[propertyName]) === "string");
     }-*/;
 
-    static native boolean hasIntProperty( final JavaScriptObject obj,
+    public static native boolean hasIntProperty( final JavaScriptObject obj,
                                           final String propertyName )  /*-{
         return (obj[propertyName] === parseInt(obj[propertyName]));
     }-*/;
 
-    static native boolean hasBooleanProperty( final JavaScriptObject obj,
+    public static native boolean hasBooleanProperty( final JavaScriptObject obj,
                                               final String propertyName )  /*-{
         return ((typeof obj[propertyName]) === "boolean");
     }-*/;
 
-    static native boolean hasArrayProperty( final JavaScriptObject obj,
+    public static native boolean hasArrayProperty( final JavaScriptObject obj,
                                             final String propertyName )  /*-{
-        Window.show((obj[propertyName]) instanceof Array)
-        return ((obj[propertyName]) instanceof Array);
+        return ((obj.propertyName) instanceof Array);
     }-*/;
+
 
     private static native String getTemplateUrlFunctionResult( final JavaScriptObject o ) /*-{
         var result = o.templateUrl();
@@ -237,6 +244,11 @@ public class JSNativePlugin {
         return null;
     }-*/;
 
+    private static native void executeOnOpen( final JavaScriptObject o,
+                                              String URI ) /*-{
+        o.on_open(URI);
+    }-*/;
+
     private static native void executeOnOpen( final JavaScriptObject o ) /*-{
         o.on_open();
     }-*/;
@@ -247,6 +259,16 @@ public class JSNativePlugin {
 
     private static native void executeOnShutdown( final JavaScriptObject o ) /*-{
         o.on_shutdown();
+    }-*/;
+
+    private static native void executeOnStartup( final JavaScriptObject o,
+                                                 String URI ) /*-{
+        o.on_startup(URI);
+    }-*/;
+
+    private static native void executeOnStartup( final JavaScriptObject o,
+                                                 final JSPlaceRequest place ) /*-{
+        o.on_startup( place );
     }-*/;
 
     private static native void executeOnFocus( final JavaScriptObject o ) /*-{
@@ -285,8 +307,16 @@ public class JSNativePlugin {
         return o.templateUrl;
     }-*/;
 
+    public void onStartup( String URI ) {
+        if ( hasMethod( obj, "on_startup" ) ) {
+            executeOnStartup( obj, URI );
+        }
+    }
+
     public void onStartup( PlaceRequest place ) {
-        //To change body of created methods use File | Settings | File Templates.
+        if ( hasMethod( obj, "on_startup" ) ) {
+            executeOnStartup( obj, JSPlaceRequest.fromPlaceRequest( place ) );
+        }
     }
 
     public void onShutdown() {

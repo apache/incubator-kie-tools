@@ -733,29 +733,6 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         return new CommitInfo( sessionId, name, email, message, timeZone, when );
     }
 
-    private CommitInfo buildCommitInfo( final String defaultMessage,
-                                        final CommentedOption op ) {
-        String sessionId = null;
-        String name = null;
-        String email = null;
-        String message = defaultMessage;
-        TimeZone timeZone = null;
-        Date when = null;
-
-        if ( op != null ) {
-            sessionId = op.getSessionId();
-            name = op.getName();
-            email = op.getEmail();
-            if ( op.getMessage() != null && !op.getMessage().trim().isEmpty() ) {
-                message = op.getMessage();
-            }
-            timeZone = op.getTimeZone();
-            when = op.getWhen();
-        }
-
-        return new CommitInfo( sessionId, name, email, message, timeZone, when );
-    }
-
     final CommentedOption extractCommentedOption( final Collection<? extends Option> options ) {
         for ( final Option option : options ) {
             if ( option instanceof CommentedOption ) {
@@ -1657,6 +1634,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                 fileSystem.setBatchCommitInfo( "Batch mode", (CommentedOption) value );
                 return;
             }
+
             final boolean isOriginalStateBatch = fileSystem.isOnBatch();
 
             fileSystem.setState( value.toString() );

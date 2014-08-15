@@ -61,9 +61,6 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
-
 public class IOServiceClusterImpl implements IOClusteredService {
 
     private static final Logger logger = LoggerFactory.getLogger( IOServiceClusterImpl.class );

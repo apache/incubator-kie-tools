@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.splash;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
+import org.uberfire.client.plugin.JSNativePlugin;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.model.impl.SplashScreenFilterImpl;

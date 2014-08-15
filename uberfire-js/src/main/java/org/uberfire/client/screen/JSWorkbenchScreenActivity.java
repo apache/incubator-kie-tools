@@ -1,9 +1,10 @@
-package org.uberfire.client;
+package org.uberfire.client.screen;
 
 import java.util.Collection;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.plugin.JSNativePlugin;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;

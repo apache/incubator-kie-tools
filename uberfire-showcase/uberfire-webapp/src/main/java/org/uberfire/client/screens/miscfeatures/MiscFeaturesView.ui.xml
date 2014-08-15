@@ -24,7 +24,7 @@
     <p>Uberfire supports notifications. Click on the following button for a demonstration.</p>
     <b:Button ui:field="notificationDefaultButton">Notification Default</b:Button>
     <b:Button ui:field="notificationErrorButton">Notification Error</b:Button>
-    <b:Button ui:field="notificationSuccessButton">Notification Sucess</b:Button>
+    <b:Button ui:field="notificationSuccessButton">Notification Success</b:Button>
     <b:Button ui:field="notificationInfoButton">Notification Info</b:Button>
     <b:Button ui:field="notificationWarnButton">Notification Warn</b:Button>
     <p>
@@ -39,6 +39,10 @@
       Activity not found
     </p>
     <b:Button ui:field="activityNotFound">Try</b:Button>
+    <p>
+      Uberfire also supports native JavaScript Editors
+    </p>
+    <b:Button text="Launch Editor" ui:field="editor"/>
   </g:HTMLPanel>
 
 </ui:UiBinder>

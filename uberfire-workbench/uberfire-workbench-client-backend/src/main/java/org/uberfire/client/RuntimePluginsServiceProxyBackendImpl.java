@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.plugin.RuntimePluginsService;
+import org.uberfire.client.plugin.RuntimePluginsServiceProxy;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -29,7 +30,7 @@ public class RuntimePluginsServiceProxyBackendImpl implements RuntimePluginsServ
     }
 
     @Override
-    public void listFramworksContent( final ParameterizedCommand<Collection<String>> command ) {
+    public void listFrameworksContent( final ParameterizedCommand<Collection<String>> command ) {
         runtimePluginsService.call( new RemoteCallback<Collection<String>>() {
             @Override
             public void callback( Collection<String> o ) {

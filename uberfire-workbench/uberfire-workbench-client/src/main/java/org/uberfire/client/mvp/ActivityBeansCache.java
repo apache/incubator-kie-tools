@@ -159,6 +159,19 @@ public class ActivityBeansCache {
     }
 
     /** Used for runtime plugins. */
+    public void addNewEditorActivity( final IOCBeanDef<Activity> activityBean,
+                                      Class<? extends ClientResourceType> resourceTypeClass ) {
+        final String id = activityBean.getName();
+
+        if ( activitiesById.keySet().contains( id ) ) {
+            throw new RuntimeException( "Conflict detected. Activity Id already exists. " + activityBean.getBeanClass().toString() );
+        }
+
+        final List<Class<? extends ClientResourceType>> resourceTypes = new ArrayList<Class<? extends ClientResourceType>>();
+        resourceTypes.add( resourceTypeClass );
+        resourceActivities.add( new ActivityAndMetaInfo( activityBean, 0, resourceTypes ) );
+    }
+
     public void addNewSplashScreenActivity( final IOCBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();
 
@@ -168,7 +181,6 @@ public class ActivityBeansCache {
 
         activitiesById.put( id, activityBean );
         splashActivities.add( (SplashScreenActivity) activityBean.getInstance() );
-        //        newSplashScreenEvent.fire( new NewSplashScreenEvent( id ) );
     }
 
     /**
@@ -181,7 +193,7 @@ public class ActivityBeansCache {
     /**
      * Returns the activity with the given CDI bean name from this cache, or null if there is no such activity or the
      * activity with the given name is not an activated bean.
-     * 
+     *
      * @param id
      *            the CDI name of the bean (see {@link Named}), or in the case of runtime plugins, the name the activity
      *            was registered under.
@@ -193,7 +205,7 @@ public class ActivityBeansCache {
     /**
      * Returns the activated activity with the highest priority that can handle the given file. Returns null if no
      * activated activity can handle the path.
-     * 
+     *
      * @param path
      *            the file to find a path-based activity for (probably a {@link WorkbenchEditorActivity}, but this cache
      *            makes no guarantees).
@@ -208,11 +220,15 @@ public class ActivityBeansCache {
             }
         }
 
-        return null;
+        throw new EditorResourceTypeNotFound();
     }
 
     Pair<Integer, List<Class<? extends ClientResourceType>>> generateActivityMetaInfo( IOCBeanDef<Activity> activityBean ) {
         return ActivityMetaInfo.generate( activityBean );
+    }
+
+    public List<String> getActivitiesById() {
+      return new ArrayList<String>(activitiesById.keySet());
     }
 
     class ActivityAndMetaInfo {
@@ -244,5 +260,9 @@ public class ActivityBeansCache {
         public ClientResourceType[] getResourceTypes() {
             return resourceTypes;
         }
+    }
+
+    private class EditorResourceTypeNotFound extends RuntimeException {
+
     }
 }

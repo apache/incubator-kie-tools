@@ -47,6 +47,12 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

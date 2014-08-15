@@ -1,4 +1,4 @@
-package org.uberfire.client;
+package org.uberfire.client.plugin;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +18,7 @@ public class RuntimePluginsServiceProxyClientImpl implements RuntimePluginsServi
     }
 
     @Override
-    public void listFramworksContent( ParameterizedCommand<Collection<String>> command ) {
+    public void listFrameworksContent( ParameterizedCommand<Collection<String>> command ) {
         command.execute( Collections.<String>emptyList() );
     }
 
