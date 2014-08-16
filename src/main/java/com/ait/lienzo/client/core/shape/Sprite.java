@@ -29,7 +29,7 @@ public class Sprite extends Shape<Sprite>
     public Sprite(String url, double rate, String name)
     {
         super(ShapeType.SPRITE);
-        
+
         setURL(url).setFrameRate(rate).setSpriteMapName(name);
     }
 
@@ -43,41 +43,56 @@ public class Sprite extends Shape<Sprite>
     {
         return new SpriteFactory();
     }
-    
+
     public String getURL()
     {
         return getAttributes().getURL();
     }
-    
+
     public Sprite setURL(String url)
     {
         getAttributes().setURL(url);
-        
+
         return this;
     }
-    
+
     public double getFrameRate()
     {
         return getAttributes().getFrameRate();
     }
-    
+
     public Sprite setFrameRate(double rate)
     {
         getAttributes().setFrameRate(rate);
-        
+
         return this;
     }
-    
+
     public String getSpriteMapName()
     {
         return getAttributes().getSpriteMapName();
     }
-    
+
     public Sprite setSpriteMapName(String name)
     {
         getAttributes().setSpriteMapName(name);
-        
+
         return this;
+    }
+
+    public Sprite run()
+    {
+        return this;
+    }
+
+    public Sprite pause()
+    {
+        return this;
+    }
+
+    public boolean isRunning()
+    {
+        return false;
     }
 
     @Override
