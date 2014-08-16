@@ -1490,6 +1490,39 @@ public class Attributes
         }
         return path;
     }
+    
+    public final void setSpriteMapName(String name)
+    {
+        if ((null == name) || (name = name.trim()).isEmpty())
+        {
+            delete(Attribute.SPRITE_MAP_NAME.getProperty());
+        }
+        else
+        {
+            put(Attribute.SPRITE_MAP_NAME.getProperty(), name);
+        }
+    }
+
+    public final String getSpriteMapName()
+    {
+        String path = getString(Attribute.SPRITE_MAP_NAME.getProperty());
+
+        if ((null == path) || (path = path.trim()).isEmpty())
+        {
+            return null;
+        }
+        return path;
+    }
+    
+    public final double getFrameRate()
+    {
+        return getDouble(Attribute.FRAME_RATE.getProperty());
+    }
+    
+    public final void setFrameRate(double rate)
+    {
+        put(Attribute.FRAME_RATE.getProperty(), rate);
+    }
 
     public final String getString(String name)
     {

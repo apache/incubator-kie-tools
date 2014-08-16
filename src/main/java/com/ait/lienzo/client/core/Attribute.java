@@ -177,6 +177,12 @@ public class Attribute implements IAttribute
 
     public static final Attribute           PATH                             = new Attribute("path", MESSAGES.pathLabel(), MESSAGES.pathDescription(), AttributeType.STRING_TYPE);
 
+    public static final Attribute           FRAME_RATE                       = new Attribute("frameRate", MESSAGES.frameRateLabel(), MESSAGES.frameRateDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           SPRITE_MAP                       = new Attribute("spriteMap", MESSAGES.spriteMapLabel(), MESSAGES.spriteMapDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           SPRITE_MAP_NAME                  = new Attribute("spriteMapName", MESSAGES.spriteMapNameLabel(), MESSAGES.spriteMapNameDescription(), AttributeType.NUMBER_TYPE);
+
     private final String                    m_property;
 
     private final String                    m_label;

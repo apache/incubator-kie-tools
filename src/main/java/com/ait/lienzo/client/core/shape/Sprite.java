@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -25,9 +26,11 @@ import com.google.gwt.json.client.JSONObject;
 
 public class Sprite extends Shape<Sprite>
 {
-    public Sprite()
+    public Sprite(String url, double rate, String name)
     {
         super(ShapeType.SPRITE);
+        
+        setURL(url).setFrameRate(rate).setSpriteMapName(name);
     }
 
     public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -39,6 +42,42 @@ public class Sprite extends Shape<Sprite>
     public IFactory<Sprite> getFactory()
     {
         return new SpriteFactory();
+    }
+    
+    public String getURL()
+    {
+        return getAttributes().getURL();
+    }
+    
+    public Sprite setURL(String url)
+    {
+        getAttributes().setURL(url);
+        
+        return this;
+    }
+    
+    public double getFrameRate()
+    {
+        return getAttributes().getFrameRate();
+    }
+    
+    public Sprite setFrameRate(double rate)
+    {
+        getAttributes().setFrameRate(rate);
+        
+        return this;
+    }
+    
+    public String getSpriteMapName()
+    {
+        return getAttributes().getSpriteMapName();
+    }
+    
+    public Sprite setSpriteMapName(String name)
+    {
+        getAttributes().setSpriteMapName(name);
+        
+        return this;
     }
 
     @Override
@@ -52,6 +91,14 @@ public class Sprite extends Shape<Sprite>
         public SpriteFactory()
         {
             super(ShapeType.SPRITE);
+
+            addAttribute(Attribute.URL, true);
+
+            addAttribute(Attribute.FRAME_RATE, true);
+
+            addAttribute(Attribute.SPRITE_MAP, true);
+
+            addAttribute(Attribute.SPRITE_MAP_NAME, true);
         }
 
         @Override
