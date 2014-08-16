@@ -45,6 +45,7 @@ import com.ait.lienzo.client.core.shape.SVGPath;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Slice;
 import com.ait.lienzo.client.core.shape.Spline;
+import com.ait.lienzo.client.core.shape.Sprite;
 import com.ait.lienzo.client.core.shape.Star;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
@@ -117,6 +118,8 @@ public final class LienzoCorePlugin implements ILienzoPlugin
             m_factories.add(new IsoscelesTrapezoid.IsoscelesTrapezoidFactory());
 
             m_factories.add(new SVGPath.SVGPathFactory());
+
+            m_factories.add(new Sprite.SpriteFactory());
 
             m_factories.add(new Group.GroupFactory());
 
