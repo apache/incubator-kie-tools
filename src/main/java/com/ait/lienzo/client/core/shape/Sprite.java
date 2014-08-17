@@ -21,17 +21,25 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.SpriteMap;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 
 public class Sprite extends Shape<Sprite>
 {
-    public Sprite(String url, double rate, String name, SpriteMap smap)
+    private int           m_cframe = 0;
+
+    private BoundingBox[] m_frames = null;
+
+    private ImageElement  m_sprite = null;
+
+    public Sprite(String url, double rate, SpriteMap smap, String name)
     {
         super(ShapeType.SPRITE);
 
-        setURL(url).setFrameRate(rate).setSpriteMapName(name).setSpriteMap(smap);
+        setURL(url).setFrameRate(rate).setSpriteMap(smap).setSpriteMapName(name);
     }
 
     public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -123,6 +131,15 @@ public class Sprite extends Shape<Sprite>
     @Override
     protected boolean prepare(Context2D context, Attributes attr, double alpha)
     {
+        if ((null != m_frames) && (null != m_sprite) && (m_cframe < m_frames.length))
+        {
+            BoundingBox bbox = m_frames[m_cframe];
+
+            if (null != bbox)
+            {
+                context.drawImage(m_sprite, bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight(), 0, 0, bbox.getWidth(), bbox.getHeight());
+            }
+        }
         return false;
     }
 
@@ -139,7 +156,7 @@ public class Sprite extends Shape<Sprite>
             addAttribute(Attribute.SPRITE_MAP, true);
 
             addAttribute(Attribute.SPRITE_MAP_NAME, true);
-            
+
             addAttribute(Attribute.AUTO_PLAY);
         }
 
