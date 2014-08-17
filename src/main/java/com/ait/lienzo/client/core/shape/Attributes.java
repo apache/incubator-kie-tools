@@ -36,6 +36,8 @@ import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.RadialGradient.RadialGradientJSO;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.client.core.types.Shadow.ShadowJSO;
+import com.ait.lienzo.client.core.types.SpriteMap;
+import com.ait.lienzo.client.core.types.SpriteMap.SpriteMapJSO;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
 import com.ait.lienzo.shared.core.types.ArrowType;
@@ -1490,7 +1492,32 @@ public class Attributes
         }
         return path;
     }
-    
+
+    public final void setSpriteMap(SpriteMap smap)
+    {
+        if (null == smap)
+        {
+            delete(Attribute.SPRITE_MAP.getProperty());
+        }
+        else
+        {
+            put(Attribute.SPRITE_MAP.getProperty(), smap.getJSO());
+        }
+    }
+
+    public final SpriteMap getSpriteMap()
+    {
+        JavaScriptObject object = getObject(Attribute.SPRITE_MAP_NAME.getProperty());
+
+        if (null != object)
+        {
+            SpriteMapJSO sjso = object.cast();
+
+            return new SpriteMap(sjso);
+        }
+        return null;
+    }
+
     public final void setSpriteMapName(String name)
     {
         if ((null == name) || (name = name.trim()).isEmpty())
@@ -1513,12 +1540,12 @@ public class Attributes
         }
         return path;
     }
-    
+
     public final double getFrameRate()
     {
         return getDouble(Attribute.FRAME_RATE.getProperty());
     }
-    
+
     public final void setFrameRate(double rate)
     {
         put(Attribute.FRAME_RATE.getProperty(), rate);

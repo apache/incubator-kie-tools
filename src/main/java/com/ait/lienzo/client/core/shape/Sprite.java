@@ -21,16 +21,17 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.SpriteMap;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
 public class Sprite extends Shape<Sprite>
 {
-    public Sprite(String url, double rate, String name)
+    public Sprite(String url, double rate, String name, SpriteMap smap)
     {
         super(ShapeType.SPRITE);
 
-        setURL(url).setFrameRate(rate).setSpriteMapName(name);
+        setURL(url).setFrameRate(rate).setSpriteMapName(name).setSpriteMap(smap);
     }
 
     public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -64,6 +65,18 @@ public class Sprite extends Shape<Sprite>
     public Sprite setFrameRate(double rate)
     {
         getAttributes().setFrameRate(rate);
+
+        return this;
+    }
+
+    public SpriteMap getSpriteMap()
+    {
+        return getAttributes().getSpriteMap();
+    }
+
+    public Sprite setSpriteMap(SpriteMap smap)
+    {
+        getAttributes().setSpriteMap(smap);
 
         return this;
     }

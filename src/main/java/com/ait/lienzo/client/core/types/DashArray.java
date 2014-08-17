@@ -106,7 +106,6 @@ public final class DashArray
     {
         protected DashArrayJSO()
         {
-
         }
 
         public static final native DashArrayJSO makeDashArrayJSO()
