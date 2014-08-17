@@ -93,7 +93,19 @@ public class Sprite extends Shape<Sprite>
         return this;
     }
 
-    public Sprite run()
+    public Sprite setAutoPlay(boolean play)
+    {
+        getAttributes().setAutoPlay(play);
+
+        return this;
+    }
+
+    public boolean isAutoPlay()
+    {
+        return getAttributes().isAutoPlay();
+    }
+
+    public Sprite play()
     {
         return this;
     }
@@ -103,7 +115,7 @@ public class Sprite extends Shape<Sprite>
         return this;
     }
 
-    public boolean isRunning()
+    public boolean isPlaying()
     {
         return false;
     }
@@ -127,6 +139,8 @@ public class Sprite extends Shape<Sprite>
             addAttribute(Attribute.SPRITE_MAP, true);
 
             addAttribute(Attribute.SPRITE_MAP_NAME, true);
+            
+            addAttribute(Attribute.AUTO_PLAY);
         }
 
         @Override
