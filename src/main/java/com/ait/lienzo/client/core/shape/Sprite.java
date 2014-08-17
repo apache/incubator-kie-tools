@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -29,11 +30,13 @@ import com.google.gwt.json.client.JSONObject;
 
 public class Sprite extends Shape<Sprite>
 {
-    private int           m_cframe = 0;
+    private int                 m_cframe = 0;
 
-    private BoundingBox[] m_frames = null;
+    private BoundingBox[]       m_frames = null;
 
-    private ImageElement  m_sprite = null;
+    private ImageElement        m_sprite = null;
+
+    private SpriteLoadedHandler m_loaded = null;
 
     public Sprite(String url, double rate, SpriteMap smap, String name)
     {
@@ -45,12 +48,6 @@ public class Sprite extends Shape<Sprite>
     public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SPRITE, node, ctx);
-    }
-
-    @Override
-    public IFactory<Sprite> getFactory()
-    {
-        return new SpriteFactory();
     }
 
     public String getURL()
@@ -137,10 +134,43 @@ public class Sprite extends Shape<Sprite>
 
             if (null != bbox)
             {
-                context.drawImage(m_sprite, bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight(), 0, 0, bbox.getWidth(), bbox.getHeight());
+                context.save();
+
+                if (context.isSelection())
+                {
+                    context.setGlobalAlpha(1);
+
+                    context.setFillColor(getColorKey());
+
+                    context.fillRect(0, 0, bbox.getWidth(), bbox.getHeight());
+                }
+                else
+                {
+                    context.setGlobalAlpha(alpha);
+
+                    context.drawImage(m_sprite, bbox.getX(), bbox.getY(), bbox.getWidth(), bbox.getHeight(), 0, 0, bbox.getWidth(), bbox.getHeight());
+                }
+                context.restore();
             }
         }
         return false;
+    }
+
+    public Sprite onLoaded(SpriteLoadedHandler handler)
+    {
+        m_loaded = handler;
+
+        if (null != m_sprite)
+        {
+            m_loaded.onSpriteLoaded(this);
+        }
+        return this;
+    }
+
+    @Override
+    public IFactory<Sprite> getFactory()
+    {
+        return new SpriteFactory();
     }
 
     public static class SpriteFactory extends ShapeFactory<Sprite>
