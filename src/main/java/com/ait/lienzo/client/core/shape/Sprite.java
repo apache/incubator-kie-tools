@@ -100,6 +100,12 @@ public class Sprite extends Shape<Sprite>
     {
         getAttributes().setFrameRate(rate);
 
+        if (isPlaying())
+        {
+            pause();
+
+            play();
+        }
         return this;
     }
 
@@ -118,6 +124,8 @@ public class Sprite extends Shape<Sprite>
 
             if (null != name)
             {
+                m_cframe = 0;
+
                 m_frames = smap.getFrames(name);
             }
         }
@@ -139,6 +147,8 @@ public class Sprite extends Shape<Sprite>
 
             if (null != smap)
             {
+                m_cframe = 0;
+
                 m_frames = smap.getFrames(name);
             }
         }
