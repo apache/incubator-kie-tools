@@ -155,49 +155,37 @@ public class Sprite extends Shape<Sprite>
         return this;
     }
 
-    public Sprite setAutoPlay(boolean play)
-    {
-        getAttributes().setAutoPlay(play);
-
-        return this;
-    }
-
-    public boolean isAutoPlay()
-    {
-        return getAttributes().isAutoPlay();
-    }
-
     public Sprite play()
     {
         if (false == isPlaying())
         {
-            double rate = getFrameRate();
-
-            int wait = (int) (1000.0 / Math.min(Math.max(rate, 0.001), 60.0));
-
-            m_paused = false;
-
-            m_ftimer = new Timer()
+            if ((null != m_frames) && (null != m_sprite) && (m_cframe < m_frames.length))
             {
-                @Override
-                public void run()
-                {
-                    if ((null != m_frames) && (null != m_sprite) && (m_cframe < m_frames.length))
-                    {
-                        Layer layer = getLayer();
+                final Layer layer = getLayer();
 
-                        if (null != layer)
+                if (null != layer)
+                {
+                    final LayerRedrawManager redraw = LayerRedrawManager.get();
+
+                    final int repeat = (int) (1000.0 / Math.min(Math.max(getFrameRate(), 0.001), 60.0));
+
+                    m_paused = false;
+
+                    m_ftimer = new Timer()
+                    {
+                        @Override
+                        public void run()
                         {
                             if ((++m_cframe) >= m_frames.length)
                             {
                                 m_cframe = 0;
                             }
-                            LayerRedrawManager.get().schedule(layer);
+                            redraw.schedule(layer);
                         }
-                    }
+                    };
+                    m_ftimer.scheduleRepeating(repeat);
                 }
-            };
-            m_ftimer.scheduleRepeating(wait);
+            }
         }
         return this;
     }
@@ -223,7 +211,7 @@ public class Sprite extends Shape<Sprite>
     {
         if ((null != m_frames) && (null != m_sprite) && (m_cframe < m_frames.length))
         {
-            BoundingBox bbox = m_frames[m_cframe];
+            final BoundingBox bbox = m_frames[m_cframe];
 
             if (null != bbox)
             {
@@ -279,8 +267,6 @@ public class Sprite extends Shape<Sprite>
             addAttribute(Attribute.SPRITE_MAP, true);
 
             addAttribute(Attribute.SPRITE_MAP_NAME, true);
-
-            addAttribute(Attribute.AUTO_PLAY);
         }
 
         @Override
