@@ -18,15 +18,20 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.animation.LayerRedrawManager;
+import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.SpriteMap;
+import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.shared.core.types.ShapeType;
+//import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.Timer;
 
 public class Sprite extends Shape<Sprite>
 {
@@ -38,11 +43,35 @@ public class Sprite extends Shape<Sprite>
 
     private SpriteLoadedHandler m_loaded = null;
 
+    private boolean             m_paused = true;
+
+    private Timer               m_ftimer = null;
+
     public Sprite(String url, double rate, SpriteMap smap, String name)
     {
         super(ShapeType.SPRITE);
 
         setURL(url).setFrameRate(rate).setSpriteMap(smap).setSpriteMapName(name);
+
+        new ImageLoader(getURL())
+        {
+            @Override
+            public void onLoad(ImageElement sprite)
+            {
+                m_sprite = sprite;
+
+                if (null != m_loaded)
+                {
+                    m_loaded.onSpriteLoaded(Sprite.this);
+                }
+            }
+
+            @Override
+            public void onError(String message)
+            {
+                Console.log("Sprite could not load URL " + getURL() + " " + message);
+            }
+        };
     }
 
     public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -81,8 +110,17 @@ public class Sprite extends Shape<Sprite>
 
     public Sprite setSpriteMap(SpriteMap smap)
     {
-        getAttributes().setSpriteMap(smap);
+        if (smap != null)
+        {
+            getAttributes().setSpriteMap(smap);
 
+            String name = getSpriteMapName();
+
+            if (null != name)
+            {
+                m_frames = smap.getFrames(name);
+            }
+        }
         return this;
     }
 
@@ -93,8 +131,17 @@ public class Sprite extends Shape<Sprite>
 
     public Sprite setSpriteMapName(String name)
     {
-        getAttributes().setSpriteMapName(name);
+        if (null != name)
+        {
+            getAttributes().setSpriteMapName(name);
 
+            SpriteMap smap = getSpriteMap();
+
+            if (null != smap)
+            {
+                m_frames = smap.getFrames(name);
+            }
+        }
         return this;
     }
 
@@ -112,17 +159,53 @@ public class Sprite extends Shape<Sprite>
 
     public Sprite play()
     {
+        if (false == isPlaying())
+        {
+            double rate = getFrameRate();
+
+            int wait = (int) (1000.0 / Math.min(Math.max(rate, 0.001), 60.0));
+
+            m_paused = false;
+
+            m_ftimer = new Timer()
+            {
+                @Override
+                public void run()
+                {
+                    if ((null != m_frames) && (null != m_sprite) && (m_cframe < m_frames.length))
+                    {
+                        Layer layer = getLayer();
+
+                        if (null != layer)
+                        {
+                            if ((++m_cframe) >= m_frames.length)
+                            {
+                                m_cframe = 0;
+                            }
+                            LayerRedrawManager.get().schedule(layer);
+                        }
+                    }
+                }
+            };
+            m_ftimer.scheduleRepeating(wait);
+        }
         return this;
     }
 
     public Sprite pause()
     {
+        m_paused = true;
+
+        if (null != m_ftimer)
+        {
+            m_ftimer.cancel();
+        }
         return this;
     }
 
     public boolean isPlaying()
     {
-        return false;
+        return (false == m_paused);
     }
 
     @Override

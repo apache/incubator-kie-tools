@@ -1507,7 +1507,7 @@ public class Attributes
 
     public final SpriteMap getSpriteMap()
     {
-        JavaScriptObject object = getObject(Attribute.SPRITE_MAP_NAME.getProperty());
+        JavaScriptObject object = getObject(Attribute.SPRITE_MAP.getProperty());
 
         if (null != object)
         {

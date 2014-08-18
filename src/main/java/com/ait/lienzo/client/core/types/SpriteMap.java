@@ -59,6 +59,8 @@ public final class SpriteMap
         {
             ajso.add(frames[i].getJSO());
         }
+        m_jso.put(name, ajso);
+
         return this;
     }
 
@@ -70,6 +72,8 @@ public final class SpriteMap
         {
             ajso.add(frame.getJSO());
         }
+        m_jso.put(name, ajso);
+
         return this;
     }
 
