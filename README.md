@@ -55,9 +55,13 @@ Issue Tracking
 
 https://github.com/ahome-it/lienzo-core/issues
 
-Kitchen Sink Demo	
+2.0 Kitchen Sink Demo	
 
 http://www.lienzo-core.com/lienzo-ks/
+
+1.2 Kitchen Sink Demo ( Deprecated )
+
+http://emitrom-lienzo.appspot.com/
 
 Contributing
 
