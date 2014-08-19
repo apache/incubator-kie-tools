@@ -232,4 +232,10 @@ public interface CommonConstants
 
     String Comments();
 
+    String Version();
+
+    String More();
+
+    String ShowAll();
+
 }

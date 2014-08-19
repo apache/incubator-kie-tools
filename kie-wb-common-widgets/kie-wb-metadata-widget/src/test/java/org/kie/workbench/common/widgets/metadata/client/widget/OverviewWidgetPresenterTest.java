@@ -20,9 +20,8 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.widgets.client.discussion.VersionRecordManager;
+import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 import static org.junit.Assert.*;

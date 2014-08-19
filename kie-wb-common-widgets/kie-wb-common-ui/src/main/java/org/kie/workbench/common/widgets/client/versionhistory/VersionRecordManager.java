@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.client.discussion;
+package org.kie.workbench.common.widgets.client.versionhistory;
 
-import java.util.Collection;
 import java.util.List;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
@@ -34,28 +31,24 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.menu.RestoreVersionCommandProvider;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SavePopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
+import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuPosition;
 
 public class VersionRecordManager {
 
     private DropdownButton button = new DropdownButton(ToolsMenuConstants.INSTANCE.LatestVersion());
-
-    @Inject
-    private RestoreVersionCommandProvider restoreVersionCommandProvider;
 
     @Inject
     @New
@@ -70,6 +63,12 @@ public class VersionRecordManager {
     @Inject
     private Event<RestoreEvent> restoreEvent;
 
+    @Inject
+    private PlaceManager placeManager;
+
+    @Inject
+    private Event<VersionSelectedEvent> versionSelectedEvent;
+
     private Callback<VersionRecord> selectionCallback;
     private List<VersionRecord> versions;
     private ObservablePath pathToLatest;
@@ -81,89 +80,119 @@ public class VersionRecordManager {
     }
 
     public MenuItem buildMenu() {
-        MenuCustom<Widget> versionMenu = new MenuCustom<Widget>() {
-
-            @Override public Widget build() {
-                return button;
-            }
-
-            @Override public boolean isEnabled() {
-                return false;
-            }
-
-            @Override public void setEnabled(boolean enabled) {
-
-            }
-
-            @Override public String getContributionPoint() {
-                return null;
-            }
-
-            @Override public String getCaption() {
-                return null;
-            }
-
-            @Override public MenuPosition getPosition() {
-                return null;
-            }
-
-            @Override public int getOrder() {
-                return 0;
-            }
-
-            @Override public void addEnabledStateChangeListener(EnabledStateChangeListener listener) {
-
-            }
-
-            @Override public String getSignatureId() {
-                return null;
-            }
-
-            @Override public Collection<String> getRoles() {
-                return null;
-            }
-
-            @Override public Collection<String> getTraits() {
-                return null;
-            }
-        };
-        return versionMenu;
+        return new VersionMenuItem(button);
     }
 
     public void setVersions(List<VersionRecord> versions) {
 
         button.clear();
 
+        if (version == null) {
+            version = versions.get(versions.size() - 1).id();
+        }
+
         resolveVersions(versions);
 
-        fillMenu(version);
+        fillMenu();
     }
 
-    private void fillMenu(String version) {
-        int versionIndex = 1;
+    private void fillMenu() {
 
         button.setText(ToolsMenuConstants.INSTANCE.LatestVersion());
 
+        fillVersions();
+
+    }
+
+    private void fillVersions() {
+        int versionIndex = 1;
+        boolean currentHasBeenAdded = false;
+
         for (final VersionRecord versionRecord : versions) {
-            final CommitLabel commitLabel = new CommitLabel(versionRecord);
-            commitLabel.addClickHandler(
-                    new ClickHandler() {
-                        @Override
-                        public void onClick(ClickEvent event) {
-                            if (selectionCallback != null) {
-                                selectionCallback.callback(versionRecord);
-                            }
-                        }
-                    });
 
-            button.add(commitLabel);
+            boolean isSelected = isSelected(versionRecord);
 
-            if (versionRecord.id().equals(version) && versionIndex != versions.size()) {
-                button.setText(ToolsMenuConstants.INSTANCE.Version(versionIndex));
+            if (isSelected) {
+                currentHasBeenAdded = true;
+            }
+
+            if (versionIndex < 7 || versions.size() <= 7) {
+
+                addVersionMenuItemLabel(versionIndex, isSelected, versionRecord);
+                changeMenuLabelIfNotLatest(versionIndex, versionRecord);
+
+            } else {
+
+                if (!currentHasBeenAdded) {
+                    addVersionMenuItemLabel(getCurrentVersionIndex(), true, getCurrentVersionRecord());
+                }
+
+                addShowMoreLabel(versionIndex);
+
+                break;
+
             }
 
             versionIndex++;
         }
+    }
+
+    private int getCurrentVersionIndex() {
+        for (int i = 0; i < versions.size(); i++) {
+            if (versions.get(i).id().equals(version)) {
+                return i + 1;
+            }
+        }
+        return -1;
+    }
+
+    private void addVersionMenuItemLabel(int versionIndex, boolean isSelected, VersionRecord versionRecord) {
+        VersionMenuItemLabel widget = new VersionMenuItemLabel(
+                versionRecord,
+                versionIndex,
+                isSelected,
+                getSelectionCommand(versionRecord));
+        widget.setWidth("400px");
+        button.add(
+                widget);
+    }
+
+    private void addShowMoreLabel(int versionIndex) {
+        button.add(
+                new ViewAllLabel(
+                        versions.size() - versionIndex,
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                placeManager.goTo(
+                                        new VersionHistoryScreenPlace(
+                                                getPathToLatest(),
+                                                getPathToLatest().getFileName(),
+                                                getCurrentVersionRecord().id()));
+                            }
+                        }));
+    }
+
+    private boolean isSelected(VersionRecord versionRecord) {
+        return versionRecord.id().equals(version);
+    }
+
+    private void changeMenuLabelIfNotLatest(int versionIndex, VersionRecord versionRecord) {
+        if (versionRecord.id().equals(version) && versionIndex != versions.size()) {
+            button.setText(ToolsMenuConstants.INSTANCE.Version(versionIndex));
+        }
+    }
+
+    private Command getSelectionCommand(final VersionRecord versionRecord) {
+        return new Command() {
+            @Override
+            public void execute() {
+                versionSelectedEvent.fire(new VersionSelectedEvent(
+                        getPathToLatest(),
+                        versionRecord
+                ));
+            }
+        };
     }
 
     private void resolveVersions(List<VersionRecord> versions) {
@@ -192,6 +221,16 @@ public class VersionRecordManager {
         return pathToLatest;
     }
 
+    /**
+     * It is also possible to change the version with an event.
+     * @param event
+     */
+    public void onVersionSelectedEvent(@Observes VersionSelectedEvent event) {
+        if (getPathToLatest().equals(event.getPathToFile()) && selectionCallback != null) {
+            selectionCallback.callback(event.getVersionRecord());
+        }
+    }
+
     public void setVersion(String version) {
         this.version = version;
     }
@@ -201,11 +240,19 @@ public class VersionRecordManager {
     }
 
     public ObservablePath getCurrentPath() {
-        if (version == null) {
+        if (isCurrentLatest()) {
             return getPathToLatest();
         } else {
             return createObservablePath(getPathToLatest());
         }
+    }
+
+    public boolean isCurrentLatest() {
+        return versions == null || getLatestVersionRecord().id().equals(version);
+    }
+
+    private VersionRecord getLatestVersionRecord() {
+        return versions.get(versions.size()-1);
     }
 
     private ObservablePath createObservablePath(Path path) {
@@ -257,6 +304,7 @@ public class VersionRecordManager {
         versionService.call(new RemoteCallback<List<VersionRecord>>() {
             @Override
             public void callback(List<VersionRecord> records) {
+                setVersion(records.get(records.size() - 1).id());
                 setVersions(records);
             }
         }).getVersion(path);

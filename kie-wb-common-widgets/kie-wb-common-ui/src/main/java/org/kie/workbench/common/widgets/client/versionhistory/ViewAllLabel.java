@@ -14,55 +14,45 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.client.discussion;
+package org.kie.workbench.common.widgets.client.versionhistory;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.Command;
 
-public class CommitLabel
-        extends Composite
-        implements HasClickHandlers {
+public class ViewAllLabel
+        extends Composite {
+
+    private Command showAllCommand;
 
     interface Binder
             extends
-            UiBinder<Widget, CommitLabel> {
+            UiBinder<Widget, ViewAllLabel> {
 
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
 
-    @UiField
-    FocusPanel base;
+    @UiField Label amount;
+    @UiField Label link;
 
-    @UiField
-    Label author;
+    public ViewAllLabel(Integer amount, Command showAllCommand) {
+        this.showAllCommand = showAllCommand;
 
-    @UiField
-    Label date;
-
-    @UiField
-    Label comment;
-
-    public CommitLabel(VersionRecord versionRecord) {
         initWidget(uiBinder.createAndBindUi(this));
 
-        author.setText(versionRecord.author());
-        date.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(versionRecord.date()));
-        comment.setText(versionRecord.comment());
+        this.amount.setText(amount.toString());
+
     }
 
-    @Override
-    public HandlerRegistration addClickHandler(ClickHandler handler) {
-        return base.addClickHandler(handler);
+    @UiHandler("link")
+    public void handleClick(ClickEvent event) {
+        showAllCommand.execute();
     }
 }
