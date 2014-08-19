@@ -16,14 +16,12 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Named;
 
 /**
- * A Workbench panel that can contain WorkbenchParts.
+ * View component of the drag-and-drop enabled {@link SimpleDnDWorkbenchPanelPresenter}.
  */
 @Dependent
-@Named("SimpleWorkbenchPanelView")
-public class SimpleWorkbenchPanelView
-extends AbstractSimpleWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
+public class SimpleDnDWorkbenchPanelView
+extends AbstractSimpleWorkbenchPanelView<SimpleDnDWorkbenchPanelPresenter> {
 
 }
