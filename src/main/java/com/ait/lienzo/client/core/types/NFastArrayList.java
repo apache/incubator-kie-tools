@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.types;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -223,6 +226,19 @@ public final class NFastArrayList<M>
     public final NFastArrayList<M> slice(int beg, int end)
     {
         return new NFastArrayList<M>(m_jso.slice(beg, end));
+    }
+    
+    public final List<M> toList()
+    {
+        final int size = size();
+        
+        ArrayList<M> list = new ArrayList<M>(size);
+        
+        for(int i = 0; i < size; i++)
+        {
+            list.add(get(i));
+        }
+        return list;
     }
 
     private static final class FastArrayListJSO<M> extends JavaScriptObject

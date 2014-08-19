@@ -531,21 +531,21 @@ public interface MessageConstants extends Constants
     @DefaultStringValue("A valid SVG Path specification.")
     public String pathDescription();
 
-    @DefaultStringValue("Frame Rate")
-    public String frameRateLabel();
+    @DefaultStringValue("Tick Rate")
+    public String tickRateLabel();
 
-    @DefaultStringValue("Frames per second of a Sprite.")
-    public String frameRateDescription();
+    @DefaultStringValue("Ticks per second of a Sprite.")
+    public String tickRateDescription();
 
-    @DefaultStringValue("Sprite Map")
-    public String spriteMapLabel();
+    @DefaultStringValue("Sprite Behavior Map")
+    public String spriteBehaviorMapLabel();
 
-    @DefaultStringValue("Map of Sprites.")
-    public String spriteMapDescription();
+    @DefaultStringValue("Map of Sprite Behaviors.")
+    public String spriteBehaviorMapDescription();
 
-    @DefaultStringValue("Sprite Map Name")
-    public String spriteMapNameLabel();
+    @DefaultStringValue("Sprite Behavior")
+    public String spriteBehaviorLabel();
 
-    @DefaultStringValue("Current Sprite Map.")
-    public String spriteMapNameDescription();
+    @DefaultStringValue("Current Sprite Behavior.")
+    public String spriteBehaviorDescription();
 }

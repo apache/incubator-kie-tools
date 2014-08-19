@@ -21,21 +21,29 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
+import com.ait.lienzo.client.core.image.SpriteOnRollHandler;
+import com.ait.lienzo.client.core.image.SpriteOnTickHandler;
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.SpriteMap;
+import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
 import com.ait.lienzo.client.core.util.Console;
+import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.shared.core.types.DataURLType;
+import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 //import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Timer;
 
 public class Sprite extends Shape<Sprite>
 {
-    private int                 m_cframe = 0;
+    private int                 m_index  = 0;
 
     private BoundingBox[]       m_frames = null;
 
@@ -43,17 +51,23 @@ public class Sprite extends Shape<Sprite>
 
     private SpriteLoadedHandler m_loaded = null;
 
+    private SpriteOnTickHandler m_ontick = null;
+
+    private SpriteOnRollHandler m_onroll = null;
+
     private boolean             m_paused = true;
 
-    private Timer               m_ftimer = null;
+    private boolean             m_inited = false;
 
-    public Sprite(String url, double rate, SpriteMap smap, String name)
+    private Timer               m_ticker = null;
+
+    public Sprite(final String url, double rate, SpriteBehaviorMap bmap, String behavior)
     {
         super(ShapeType.SPRITE);
 
-        setURL(url).setFrameRate(rate).setSpriteMap(smap).setSpriteMapName(name);
+        setURL(url).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
 
-        new ImageLoader(getURL())
+        new ImageLoader(url)
         {
             @Override
             public void onLoad(ImageElement sprite)
@@ -69,9 +83,50 @@ public class Sprite extends Shape<Sprite>
             @Override
             public void onError(String message)
             {
-                Console.log("Sprite could not load URL " + getURL() + " " + message);
+                Console.log("Sprite could not load URL " + url + " " + message);
             }
         };
+    }
+
+    public Sprite(final ImageResource resource, double rate, SpriteBehaviorMap bmap, String behavior)
+    {
+        super(ShapeType.SPRITE);
+
+        setURL(resource.getSafeUri().asString()).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
+
+        new ImageLoader(resource)
+        {
+            @Override
+            public void onLoad(ImageElement sprite)
+            {
+                m_sprite = sprite;
+
+                if (null != m_loaded)
+                {
+                    m_loaded.onSpriteLoaded(Sprite.this);
+                }
+            }
+
+            @Override
+            public void onError(String message)
+            {
+                Console.log("Sprite could not load resource " + resource.getName() + " " + message);
+            }
+        };
+    }
+
+    public Sprite(ImageElement sprite, double rate, SpriteBehaviorMap bmap, String behavior)
+    {
+        super(ShapeType.SPRITE);
+
+        setURL(sprite.getSrc()).setTickRate(rate).setSpriteBehaviorMap(bmap).setSpriteBehavior(behavior);
+
+        m_sprite = sprite;
+
+        if (null != m_loaded)
+        {
+            m_loaded.onSpriteLoaded(this);
+        }
     }
 
     public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -79,26 +134,30 @@ public class Sprite extends Shape<Sprite>
         super(ShapeType.SPRITE, node, ctx);
     }
 
-    public String getURL()
+    public final String getURL()
     {
         return getAttributes().getURL();
     }
 
-    public Sprite setURL(String url)
+    public final Sprite setURL(String url)
     {
+        if ((null == url) || (url.trim().isEmpty()))
+        {
+            throw new NullPointerException("url is null or empty");
+        }
         getAttributes().setURL(url);
 
         return this;
     }
 
-    public double getFrameRate()
+    public final double getTickRate()
     {
-        return getAttributes().getFrameRate();
+        return getAttributes().getTickRate();
     }
 
-    public Sprite setFrameRate(double rate)
+    public final Sprite setTickRate(double rate)
     {
-        getAttributes().setFrameRate(rate);
+        getAttributes().setTickRate(rate);
 
         if (isPlaying())
         {
@@ -109,99 +168,158 @@ public class Sprite extends Shape<Sprite>
         return this;
     }
 
-    public SpriteMap getSpriteMap()
+    public final SpriteBehaviorMap getSpriteBehaviorMap()
     {
-        return getAttributes().getSpriteMap();
+        return getAttributes().getSpriteBehaviorMap();
     }
 
-    public Sprite setSpriteMap(SpriteMap smap)
+    public final Sprite setSpriteBehaviorMap(SpriteBehaviorMap bmap)
     {
-        if (smap != null)
+        if (bmap == null)
         {
-            getAttributes().setSpriteMap(smap);
+            throw new NullPointerException("SpriteBehaviorMap is null");
+        }
+        getAttributes().setSpriteBehaviorMap(bmap);
 
-            String name = getSpriteMapName();
+        String behavior = getSpriteBehavior();
 
-            if (null != name)
-            {
-                m_cframe = 0;
+        if ((null != behavior) && (false == behavior.trim().isEmpty()))
+        {
+            m_index = 0;
 
-                m_frames = smap.getFrames(name);
-            }
+            m_frames = bmap.getFramesForBehavior(behavior);
         }
         return this;
     }
 
-    public String getSpriteMapName()
+    public final String getSpriteBehavior()
     {
-        return getAttributes().getSpriteMapName();
+        return getAttributes().getSpriteBehavior();
     }
 
-    public Sprite setSpriteMapName(String name)
+    public final Sprite setSpriteBehavior(String behavior)
     {
-        if (null != name)
+        if ((null == behavior) || (behavior.trim().isEmpty()))
         {
-            getAttributes().setSpriteMapName(name);
+            throw new NullPointerException("behavior is null or empty");
+        }
+        getAttributes().setSpriteBehavior(behavior);
 
-            SpriteMap smap = getSpriteMap();
+        SpriteBehaviorMap bmap = getSpriteBehaviorMap();
 
-            if (null != smap)
-            {
-                m_cframe = 0;
+        if (null != bmap)
+        {
+            m_index = 0;
 
-                m_frames = smap.getFrames(name);
-            }
+            m_frames = bmap.getFramesForBehavior(behavior);
         }
         return this;
     }
 
-    public Sprite play()
+    public final Sprite setSerializationMode(ImageSerializationMode mode)
+    {
+        getAttributes().setSerializationMode(mode);
+
+        return this;
+    }
+
+    public final ImageSerializationMode getSerializationMode()
+    {
+        return getAttributes().getSerializationMode();
+    }
+
+    public final Sprite setAutoPlay(boolean play)
+    {
+        getAttributes().setAutoPlay(play);
+
+        return this;
+    }
+
+    public final boolean isAutoPlay()
+    {
+        return getAttributes().isAutoPlay();
+    }
+
+    public final Sprite play()
     {
         if (false == isPlaying())
         {
-            if ((null != m_frames) && (null != m_sprite) && (m_cframe < m_frames.length))
+            if ((null != m_frames) && (null != m_sprite) && (m_index < m_frames.length))
             {
                 final Layer layer = getLayer();
 
                 if (null != layer)
                 {
+                    final Sprite sprite = this;
+
                     final LayerRedrawManager redraw = LayerRedrawManager.get();
 
-                    final int repeat = (int) (1000.0 / Math.min(Math.max(getFrameRate(), 0.001), 60.0));
+                    final int repeat = (int) (1000.0 / Math.min(Math.max(getTickRate(), 0.001), 60.0));
 
                     m_paused = false;
 
-                    m_ftimer = new Timer()
+                    m_ticker = new Timer()
                     {
                         @Override
                         public void run()
                         {
-                            if ((++m_cframe) >= m_frames.length)
+                            boolean draw = true;
+
+                            if ((++m_index) >= m_frames.length)
                             {
-                                m_cframe = 0;
+                                m_index = 0;
+
+                                if (null != m_onroll)
+                                {
+                                    draw = m_onroll.onSpriteRoll(sprite);
+                                }
                             }
-                            redraw.schedule(layer);
+                            if (draw)
+                            {
+                                if (null != m_ontick)
+                                {
+                                    draw = m_ontick.onSpriteTick(sprite);
+                                }
+                                if (draw)
+                                {
+                                    redraw.schedule(layer);
+                                }
+                            }
                         }
                     };
-                    m_ftimer.scheduleRepeating(repeat);
+                    m_ticker.scheduleRepeating(repeat);
                 }
             }
         }
         return this;
     }
 
-    public Sprite pause()
+    public final Sprite onTick(SpriteOnTickHandler handler)
+    {
+        m_ontick = handler;
+
+        return this;
+    }
+
+    public final Sprite onRoll(SpriteOnRollHandler handler)
+    {
+        m_onroll = handler;
+
+        return this;
+    }
+
+    public final Sprite pause()
     {
         m_paused = true;
 
-        if (null != m_ftimer)
+        if (null != m_ticker)
         {
-            m_ftimer.cancel();
+            m_ticker.cancel();
         }
         return this;
     }
 
-    public boolean isPlaying()
+    public final boolean isPlaying()
     {
         return (false == m_paused);
     }
@@ -209,12 +327,21 @@ public class Sprite extends Shape<Sprite>
     @Override
     protected boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        if ((null != m_frames) && (null != m_sprite) && (m_cframe < m_frames.length))
+        if ((null != m_frames) && (null != m_sprite) && (m_index < m_frames.length))
         {
-            final BoundingBox bbox = m_frames[m_cframe];
+            final BoundingBox bbox = m_frames[m_index];
 
             if (null != bbox)
             {
+                if (false == m_inited)
+                {
+                    m_inited = true;
+
+                    if (isAutoPlay())
+                    {
+                        play();
+                    }
+                }
                 context.save();
 
                 if (context.isSelection())
@@ -237,7 +364,7 @@ public class Sprite extends Shape<Sprite>
         return false;
     }
 
-    public Sprite onLoaded(SpriteLoadedHandler handler)
+    public final Sprite onLoaded(SpriteLoadedHandler handler)
     {
         m_loaded = handler;
 
@@ -246,6 +373,49 @@ public class Sprite extends Shape<Sprite>
             m_loaded.onSpriteLoaded(this);
         }
         return this;
+    }
+
+    public final int getTick()
+    {
+        return m_index;
+    }
+
+    public final boolean isLoaded()
+    {
+        return (m_sprite != null);
+    }
+
+    @Override
+    public JSONObject toJSONObject()
+    {
+        JSONObject attr = new JSONObject(getAttributes().getJSO());
+
+        ImageSerializationMode mode = getSerializationMode();
+
+        if (mode == ImageSerializationMode.DATA_URL)
+        {
+            String url = getURL();
+
+            if (false == url.startsWith("data:"))
+            {
+                ScratchCanvas temp = new ScratchCanvas(m_sprite.getWidth(), m_sprite.getHeight());
+
+                temp.getContext().drawImage(m_sprite, 0, 0);
+
+                attr.put("url", new JSONString(temp.toDataURL(DataURLType.PNG)));
+            }
+        }
+        JSONObject object = new JSONObject();
+
+        object.put("type", new JSONString(getShapeType().getValue()));
+
+        if (false == getMetaData().isEmpty())
+        {
+            object.put("meta", new JSONObject(getMetaData().getJSO()));
+        }
+        object.put("attributes", attr);
+
+        return object;
     }
 
     @Override
@@ -262,17 +432,57 @@ public class Sprite extends Shape<Sprite>
 
             addAttribute(Attribute.URL, true);
 
-            addAttribute(Attribute.FRAME_RATE, true);
+            addAttribute(Attribute.TICK_RATE, true);
 
-            addAttribute(Attribute.SPRITE_MAP, true);
+            addAttribute(Attribute.SPRITE_BEHAVIOR_MAP, true);
 
-            addAttribute(Attribute.SPRITE_MAP_NAME, true);
+            addAttribute(Attribute.SPRITE_BEHAVIOR, true);
+
+            addAttribute(Attribute.AUTO_PLAY);
+
+            addAttribute(Attribute.SERIALIZATION_MODE);
         }
 
         @Override
         public Sprite create(JSONObject node, ValidationContext ctx) throws ValidationException
         {
             return new Sprite(node, ctx);
+        }
+
+        @Override
+        public boolean isPostProcessed()
+        {
+            return true;
+        }
+
+        @Override
+        public void process(IJSONSerializable<?> node, ValidationContext ctx) throws ValidationException
+        {
+            if (false == (node instanceof Sprite))
+            {
+                return;
+            }
+            Sprite self = (Sprite) node;
+
+            if (false == self.isLoaded())
+            {
+                self.onLoaded(new SpriteLoadedHandler()
+                {
+                    @Override
+                    public void onSpriteLoaded(Sprite sprite)
+                    {
+                        if (sprite.isLoaded() && sprite.isVisible())
+                        {
+                            Layer layer = sprite.getLayer();
+
+                            if ((null != layer) && (null != layer.getViewport()))
+                            {
+                                layer.batch();
+                            }
+                        }
+                    }
+                });
+            }
         }
     }
 }

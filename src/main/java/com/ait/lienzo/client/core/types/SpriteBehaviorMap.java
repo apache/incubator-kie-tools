@@ -21,71 +21,93 @@ import java.util.Collection;
 import com.ait.lienzo.client.core.types.BoundingBox.BoundingBoxJSO;
 import com.google.gwt.core.client.JavaScriptObject;
 
-public final class SpriteMap
+public final class SpriteBehaviorMap
 {
-    private final SpriteMapJSO m_jso;
+    private final SpriteBehaviorMapJSO m_jso;
 
-    public SpriteMap(String name, BoundingBox frame, BoundingBox... frames)
+    public SpriteBehaviorMap(String behavior, BoundingBox... frames)
     {
-        this(SpriteMapJSO.make());
+        this(SpriteBehaviorMapJSO.make());
 
-        define(name, frame, frames);
+        addBehavior(behavior, frames);
     }
 
-    public SpriteMap(String name, Collection<BoundingBox> list)
+    public SpriteBehaviorMap(String behavior, Collection<BoundingBox> list)
     {
-        this(SpriteMapJSO.make());
+        this(SpriteBehaviorMapJSO.make());
 
-        define(name, list);
+        addBehavior(behavior, list);
     }
 
-    public SpriteMap(SpriteMapJSO jso)
+    public SpriteBehaviorMap(SpriteBehaviorMapJSO jso)
     {
         m_jso = jso;
     }
 
-    public final SpriteMapJSO getJSO()
+    public final SpriteBehaviorMapJSO getJSO()
     {
         return m_jso;
     }
 
-    public final SpriteMap define(String name, BoundingBox frame, BoundingBox... frames)
+    public final SpriteBehaviorMap addBehavior(String behavior, BoundingBox... frames)
     {
+        if ((null == behavior) || (behavior.trim().isEmpty()))
+        {
+            throw new NullPointerException("behavior is null or empty");
+        }
+        if (null != m_jso.get(behavior))
+        {
+            throw new IllegalStateException("behavior " + behavior + " is already defined");
+        }
+        if (frames.length < 2)
+        {
+            throw new IllegalStateException("must be at least 2 frames for behavior " + behavior);
+        }
         BoundingBoxArrayJSO ajso = BoundingBoxArrayJSO.make();
-
-        ajso.add(frame.getJSO());
 
         for (int i = 0; i < frames.length; i++)
         {
             ajso.add(frames[i].getJSO());
         }
-        m_jso.put(name, ajso);
+        m_jso.put(behavior, ajso);
 
         return this;
     }
 
-    public final SpriteMap define(String name, Collection<BoundingBox> list)
+    public final SpriteBehaviorMap addBehavior(String behavior, Collection<BoundingBox> frames)
     {
+        if ((null == behavior) || (behavior.trim().isEmpty()))
+        {
+            throw new NullPointerException("behavior is null or empty");
+        }
+        if (null != m_jso.get(behavior))
+        {
+            throw new IllegalStateException("behavior " + behavior + " is already defined");
+        }
+        if (frames.size() < 2)
+        {
+            throw new IllegalStateException("must be at least 2 frames for behavior " + behavior);
+        }
         BoundingBoxArrayJSO ajso = BoundingBoxArrayJSO.make();
 
-        for (BoundingBox frame : list)
+        for (BoundingBox frame : frames)
         {
             ajso.add(frame.getJSO());
         }
-        m_jso.put(name, ajso);
+        m_jso.put(behavior, ajso);
 
         return this;
     }
 
-    public final BoundingBox[] getFrames(String name)
+    public final BoundingBox[] getFramesForBehavior(String behavior)
     {
-        BoundingBoxArrayJSO ajso = m_jso.get(name);
+        BoundingBoxArrayJSO ajso = m_jso.get(behavior);
 
         if (ajso != null)
         {
             final int size = ajso.size();
 
-            if (size > 0)
+            if (size > 1)
             {
                 BoundingBox[] frames = new BoundingBox[size];
 
@@ -99,25 +121,25 @@ public final class SpriteMap
         return null;
     }
 
-    public static final class SpriteMapJSO extends JavaScriptObject
+    public static final class SpriteBehaviorMapJSO extends JavaScriptObject
     {
-        static final SpriteMapJSO make()
+        static final SpriteBehaviorMapJSO make()
         {
             return JavaScriptObject.createObject().cast();
         }
 
-        protected SpriteMapJSO()
+        protected SpriteBehaviorMapJSO()
         {
         }
 
-        final native BoundingBoxArrayJSO get(String name)
+        final native BoundingBoxArrayJSO get(String behavior)
         /*-{
-             return this[name];
+             return this[behavior];
          }-*/;
 
-        final native void put(String name, BoundingBoxArrayJSO valu)
+        final native void put(String behavior, BoundingBoxArrayJSO valu)
         /*-{
-             this[name] = valu;
+             this[behavior] = valu;
          }-*/;
     }
 

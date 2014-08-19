@@ -36,8 +36,8 @@ import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.RadialGradient.RadialGradientJSO;
 import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.client.core.types.Shadow.ShadowJSO;
-import com.ait.lienzo.client.core.types.SpriteMap;
-import com.ait.lienzo.client.core.types.SpriteMap.SpriteMapJSO;
+import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
+import com.ait.lienzo.client.core.types.SpriteBehaviorMap.SpriteBehaviorMapJSO;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
 import com.ait.lienzo.shared.core.types.ArrowType;
@@ -1493,62 +1493,62 @@ public class Attributes
         return path;
     }
 
-    public final void setSpriteMap(SpriteMap smap)
+    public final void setSpriteBehaviorMap(SpriteBehaviorMap smap)
     {
         if (null == smap)
         {
-            delete(Attribute.SPRITE_MAP.getProperty());
+            delete(Attribute.SPRITE_BEHAVIOR_MAP.getProperty());
         }
         else
         {
-            put(Attribute.SPRITE_MAP.getProperty(), smap.getJSO());
+            put(Attribute.SPRITE_BEHAVIOR_MAP.getProperty(), smap.getJSO());
         }
     }
 
-    public final SpriteMap getSpriteMap()
+    public final SpriteBehaviorMap getSpriteBehaviorMap()
     {
-        JavaScriptObject object = getObject(Attribute.SPRITE_MAP.getProperty());
+        JavaScriptObject object = getObject(Attribute.SPRITE_BEHAVIOR_MAP.getProperty());
 
         if (null != object)
         {
-            SpriteMapJSO sjso = object.cast();
+            SpriteBehaviorMapJSO sjso = object.cast();
 
-            return new SpriteMap(sjso);
+            return new SpriteBehaviorMap(sjso);
         }
         return null;
     }
 
-    public final void setSpriteMapName(String name)
+    public final void setSpriteBehavior(String behavior)
     {
-        if ((null == name) || (name = name.trim()).isEmpty())
+        if ((null == behavior) || (behavior = behavior.trim()).isEmpty())
         {
-            delete(Attribute.SPRITE_MAP_NAME.getProperty());
+            delete(Attribute.SPRITE_BEHAVIOR.getProperty());
         }
         else
         {
-            put(Attribute.SPRITE_MAP_NAME.getProperty(), name);
+            put(Attribute.SPRITE_BEHAVIOR.getProperty(), behavior);
         }
     }
 
-    public final String getSpriteMapName()
+    public final String getSpriteBehavior()
     {
-        String path = getString(Attribute.SPRITE_MAP_NAME.getProperty());
+        String behavior = getString(Attribute.SPRITE_BEHAVIOR.getProperty());
 
-        if ((null == path) || (path = path.trim()).isEmpty())
+        if ((null == behavior) || (behavior = behavior.trim()).isEmpty())
         {
             return null;
         }
-        return path;
+        return behavior;
     }
 
-    public final double getFrameRate()
+    public final double getTickRate()
     {
-        return getDouble(Attribute.FRAME_RATE.getProperty());
+        return getDouble(Attribute.TICK_RATE.getProperty());
     }
 
-    public final void setFrameRate(double rate)
+    public final void setTickRate(double rate)
     {
-        put(Attribute.FRAME_RATE.getProperty(), rate);
+        put(Attribute.TICK_RATE.getProperty(), rate);
     }
 
     public final String getString(String name)
