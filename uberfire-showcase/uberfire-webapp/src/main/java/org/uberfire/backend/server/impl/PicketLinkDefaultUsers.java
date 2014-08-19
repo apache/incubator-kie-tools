@@ -16,10 +16,11 @@
  */
 package org.uberfire.backend.server.impl;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.picketlink.authentication.event.PreAuthenticateEvent;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.PartitionManager;
 import org.picketlink.idm.RelationshipManager;
@@ -27,20 +28,25 @@ import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.basic.Grant;
 import org.picketlink.idm.model.basic.Role;
 import org.picketlink.idm.model.basic.User;
-import org.uberfire.commons.services.cdi.Startup;
 
 @ApplicationScoped
-@Startup
 public class PicketLinkDefaultUsers {
 
     @Inject
     private PartitionManager partitionManager;
 
+    private boolean done = false;
+
     /**
      * Creates example users so people can log in while trying out the app.
      */
-    @PostConstruct
-    public void create() {
+    public synchronized void create( @Observes PreAuthenticateEvent event ) {
+        if ( done ) {
+            return;
+        }
+
+        done = true;
+
         final IdentityManager identityManager = partitionManager.createIdentityManager();
         final RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
 

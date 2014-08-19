@@ -24,7 +24,6 @@
   <inherits name="org.uberfire.UberfireAPI"/>
   <inherits name="org.uberfire.UberfireClientAPI"/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
-  <inherits name="org.uberfire.security.UberfireSecurityClient"/>
   <inherits name="org.uberfire.UberfireJS"/>
 
 </module>

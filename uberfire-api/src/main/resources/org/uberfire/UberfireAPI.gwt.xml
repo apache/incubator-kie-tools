@@ -20,6 +20,7 @@
 <module>
 
   <inherits name='org.jboss.errai.ioc.Container'/>
+  <inherits name='org.jboss.errai.security.Security'/>
 
   <script src="js/uri.min.js"/>
 

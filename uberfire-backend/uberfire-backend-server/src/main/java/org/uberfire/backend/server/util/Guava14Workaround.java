@@ -1,4 +1,4 @@
-package org.uberfire.backend.server.impl;
+package org.uberfire.backend.server.util;
 
 import java.util.Set;
 
