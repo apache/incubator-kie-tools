@@ -13,13 +13,10 @@ import org.uberfire.workbench.model.SplashScreenFilter;
 public class WorkbenchServicesProxyClientImpl implements WorkbenchServicesProxy {
 
     @Override
-    public void save( final PerspectiveDefinition activePerspective,
+    public void save( final String perspectiveId,
+                      final PerspectiveDefinition activePerspective,
                       final Command callback ) {
         callback.execute();
-    }
-
-    @Override
-    public void save( final PerspectiveDefinition perspective ) {
     }
 
     @Override

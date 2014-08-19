@@ -63,11 +63,11 @@ public class PerspectiveManagerTest {
         doAnswer( new Answer<Void>() {
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
-                Command callback = (Command) invocation.getArguments()[1];
+                Command callback = (Command) invocation.getArguments()[2];
                 callback.execute();
                 return null;
             }
-        } ).when( wbServices ).save( any( PerspectiveDefinition.class ), any( Command.class ) );
+        } ).when( wbServices ).save( any( String.class), any( PerspectiveDefinition.class ), any( Command.class ) );
 
         // simulate "no saved state found" result on wbServices.loadPerspective()
         doAnswer( new Answer<Void>() {
@@ -115,7 +115,7 @@ public class PerspectiveManagerTest {
         perspectiveManager.switchToPerspective( kansas, doWhenFinished );
         perspectiveManager.switchToPerspective( oz, doWhenFinished );
 
-        verify( wbServices ).save( eq( kansasDefinition ), any( Command.class ) );
+        verify( wbServices ).save( eq( "kansas_perspective" ), eq( kansasDefinition ), any( Command.class ) );
     }
 
     @Test
@@ -130,7 +130,7 @@ public class PerspectiveManagerTest {
         perspectiveManager.switchToPerspective( kansas, doWhenFinished );
         perspectiveManager.switchToPerspective( oz, doWhenFinished );
 
-        verify( wbServices, never() ).save( eq( kansasDefinition ), any( Command.class ) );
+        verify( wbServices, never() ).save( any( String.class ), eq( kansasDefinition ), any( Command.class ) );
     }
 
     @SuppressWarnings("unchecked")

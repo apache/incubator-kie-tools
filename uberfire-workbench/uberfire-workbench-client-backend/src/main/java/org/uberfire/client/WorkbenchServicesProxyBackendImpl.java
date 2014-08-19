@@ -1,6 +1,5 @@
 package org.uberfire.client;
 
-import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
@@ -22,19 +21,15 @@ public class WorkbenchServicesProxyBackendImpl implements WorkbenchServicesProxy
     private Caller<WorkbenchServices> workbenchServices;
 
     @Override
-    public void save( final PerspectiveDefinition activePerspective,
+    public void save( final String perspectiveId,
+                      final PerspectiveDefinition activePerspective,
                       final Command callback ) {
         workbenchServices.call( new RemoteCallback<Void>() {
             @Override
             public void callback( Void o ) {
                 callback.execute();
             }
-        } ).save( activePerspective );
-    }
-
-    @Override
-    public void save( final PerspectiveDefinition perspective ) {
-        workbenchServices.call().save( perspective );
+        } ).save( perspectiveId, activePerspective );
     }
 
     @Override

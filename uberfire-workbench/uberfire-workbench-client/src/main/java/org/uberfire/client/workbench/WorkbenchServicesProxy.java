@@ -23,10 +23,9 @@ import org.uberfire.workbench.model.SplashScreenFilter;
 
 public interface WorkbenchServicesProxy {
 
-    void save( final PerspectiveDefinition activePerspective,
+    void save( final String perspectiveId,
+               final PerspectiveDefinition activePerspective,
                final Command callback );
-
-    void save( final PerspectiveDefinition perspective );
 
     void loadPerspective( final String name,
                           final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand );
