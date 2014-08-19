@@ -580,30 +580,35 @@ implements PlaceManager {
             return;
         }
 
-        // XXX there is a layering problem here: PerspectiveManager directs us to open activities, but we are cleaning them up.
-        // both operations must be the responsibility of the same manager (probably PerspectiveManager)
-        if ( closeAllCurrentPanels() ) {
+        perspectiveManager.savePerspectiveState( new Command() {
+            @Override
+            public void execute() {
+                // XXX there is a layering problem here: PerspectiveManager directs us to open activities, but we are cleaning them up.
+                // both operations must be the responsibility of the same manager (probably PerspectiveManager)
+                if ( closeAllCurrentPanels() ) {
 
-            closeAllSplashScreens();
-            final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
-            if ( splashScreen != null ) {
-                launchSplashScreen( place, splashScreen );
-            }
-
-            Command closeOldActivityAndExecuteChainedCallback = new Command() {
-                @Override
-                public void execute() {
-                    if ( oldPerspectiveActivity != null ) {
-                        oldPerspectiveActivity.onClose();
-                        existingWorkbenchActivities.remove( oldPerspectiveActivity.getPlace() );
-                        activityManager.destroyActivity( oldPerspectiveActivity );
+                    closeAllSplashScreens();
+                    final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
+                    if ( splashScreen != null ) {
+                        launchSplashScreen( place, splashScreen );
                     }
-                    doWhenFinished.execute();
+
+                    Command closeOldActivityAndExecuteChainedCallback = new Command() {
+                        @Override
+                        public void execute() {
+                            if ( oldPerspectiveActivity != null ) {
+                                oldPerspectiveActivity.onClose();
+                                existingWorkbenchActivities.remove( oldPerspectiveActivity.getPlace() );
+                                activityManager.destroyActivity( oldPerspectiveActivity );
+                            }
+                            doWhenFinished.execute();
+                        }
+                    };
+                    activity.onOpen();
+                    perspectiveManager.switchToPerspective( activity, closeOldActivityAndExecuteChainedCallback );
                 }
-            };
-            activity.onOpen();
-            perspectiveManager.switchToPerspective( activity, closeOldActivityAndExecuteChainedCallback );
-        }
+            }
+        } );
     }
 
     private void closePlace( final PlaceRequest place, final boolean force ) {

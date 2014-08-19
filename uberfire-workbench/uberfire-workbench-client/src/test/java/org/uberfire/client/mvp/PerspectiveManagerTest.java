@@ -104,7 +104,7 @@ public class PerspectiveManagerTest {
     }
 
     @Test
-    public void shouldSaveOldNonTransientPerspectiveStateWhenSwitching() throws Exception {
+    public void shouldSaveNonTransientPerspectives() throws Exception {
         PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
 
         PerspectiveActivity kansas = mock( PerspectiveActivity.class );
@@ -113,13 +113,13 @@ public class PerspectiveManagerTest {
         when( kansas.isTransient() ).thenReturn( false );
 
         perspectiveManager.switchToPerspective( kansas, doWhenFinished );
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.savePerspectiveState( doWhenFinished );
 
-        verify( wbServices ).save( eq( "kansas_perspective" ), eq( kansasDefinition ), any( Command.class ) );
+        verify( wbServices ).save( eq( "kansas_perspective" ), eq( kansasDefinition ), eq( doWhenFinished ) );
     }
 
     @Test
-    public void shouldNotSaveOldTransientPerspectiveStateWhenSwitching() throws Exception {
+    public void shouldNotSaveTransientPerspectives() throws Exception {
         PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
 
         PerspectiveActivity kansas = mock( PerspectiveActivity.class );
@@ -128,7 +128,7 @@ public class PerspectiveManagerTest {
         when( kansas.isTransient() ).thenReturn( true );
 
         perspectiveManager.switchToPerspective( kansas, doWhenFinished );
-        perspectiveManager.switchToPerspective( oz, doWhenFinished );
+        perspectiveManager.savePerspectiveState( doWhenFinished );
 
         verify( wbServices, never() ).save( any( String.class ), eq( kansasDefinition ), any( Command.class ) );
     }

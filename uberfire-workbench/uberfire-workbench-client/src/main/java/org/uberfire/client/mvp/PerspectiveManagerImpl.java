@@ -53,11 +53,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
         FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand( activity, thirdOperation );
 
-        if ( currentPerspective != null && !currentPerspective.isTransient() ) {
-            wbServices.save( currentPerspective.getIdentifier(), livePerspectiveDef, secondOperation );
-        } else {
-            secondOperation.execute();
-        }
+        secondOperation.execute();
     }
 
     @Override
@@ -68,6 +64,15 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     @Override
     public PerspectiveDefinition getLivePerspectiveDefinition() {
         return livePerspectiveDef;
+    }
+
+    @Override
+    public void savePerspectiveState( Command doWhenFinished ) {
+        if ( currentPerspective != null && !currentPerspective.isTransient() ) {
+            wbServices.save( currentPerspective.getIdentifier(), livePerspectiveDef, doWhenFinished );
+        } else {
+            doWhenFinished.execute();
+        }
     }
 
     /**

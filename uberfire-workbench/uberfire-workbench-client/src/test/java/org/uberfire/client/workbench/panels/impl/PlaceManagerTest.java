@@ -107,7 +107,7 @@ public class PlaceManagerTest {
 
         when( kansasActivity.onMayClose() ).thenReturn( true );
 
-        // arrange for the mock PerspectiveManager to invoke the doWhenFinished callback
+        // arrange for the mock PerspectiveManager to invoke the doWhenFinished callbacks
         doAnswer( new Answer<Void>(){
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
@@ -115,6 +115,13 @@ public class PlaceManagerTest {
                 callback.execute();
                 return null;
             }} ).when( perspectiveManager ).switchToPerspective( any( PerspectiveActivity.class ), any( Command.class ) );
+        doAnswer( new Answer<Void>(){
+            @Override
+            public Void answer( InvocationOnMock invocation ) throws Throwable {
+                Command callback = (Command) invocation.getArguments()[0];
+                callback.execute();
+                return null;
+            }} ).when( perspectiveManager ).savePerspectiveState( any( Command.class ) );
     }
 
     /**
@@ -269,6 +276,7 @@ public class PlaceManagerTest {
         placeManager.goTo( ozPerspectivePlace );
 
         // verify perspective changed to oz
+        verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
         verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( Command.class) );
         verify( ozPerspectiveActivity ).onOpen();
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
@@ -321,6 +329,7 @@ public class PlaceManagerTest {
 
         // verify no side effects (should stay put)
         verify( ozPerspectiveActivity, never() ).onOpen();
+        verify( perspectiveManager, never() ).savePerspectiveState( any( Command.class ) );
         verify( perspectiveManager, never() ).switchToPerspective( any( PerspectiveActivity.class ), any( Command.class ) );
     }
 
@@ -346,6 +355,7 @@ public class PlaceManagerTest {
         placeManager.goTo( emeraldCityPlace, (PanelDefinition) null );
 
         // verify perspective changed to oz
+        verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
         verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( Command.class) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
 
@@ -577,7 +587,7 @@ public class PlaceManagerTest {
 
     /**
      * Verifies that all the expected side effects of a screen or editor activity launch have happened.
-     * 
+     *
      * @param placeRequest
      *            The place request that was passed to some variant of PlaceManager.goTo().
      * @param activity
@@ -614,7 +624,7 @@ public class PlaceManagerTest {
 
     /**
      * Verifies that the "place change" side effects have not happened, and that the given activity is still current.
-     * 
+     *
      * @param expectedCurrentPlace
      *            The place request that placeManager should still consider "current."
      * @param activity
