@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.IColor;
+import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
 import com.google.gwt.canvas.client.Canvas;
@@ -70,6 +71,8 @@ public final class LienzoCore
     private final boolean            m_canvasSupported        = Canvas.isSupported();
 
     private LayerClearMode           m_layerClearMode         = LayerClearMode.CLEAR;
+
+    private ImageSelectionMode       m_imageSelectionMode     = ImageSelectionMode.SELECT_NON_TRANSPARENT;
 
     private ArrayList<ILienzoPlugin> m_plugins                = new ArrayList<ILienzoPlugin>();
 
@@ -129,6 +132,23 @@ public final class LienzoCore
     public final void setDefaultFillShapeForSelection(boolean fill)
     {
         m_fillShapeForSelection = fill;
+    }
+
+    public final ImageSelectionMode getDefaultImageSelectionMode()
+    {
+        return m_imageSelectionMode;
+    }
+
+    public final void setDefaultImageSelectionMode(ImageSelectionMode mode)
+    {
+        if (null == mode)
+        {
+            m_imageSelectionMode = ImageSelectionMode.SELECT_NON_TRANSPARENT;
+        }
+        else
+        {
+            m_imageSelectionMode = mode;
+        }
     }
 
     public final boolean getDefaultFillShapeForSelection()

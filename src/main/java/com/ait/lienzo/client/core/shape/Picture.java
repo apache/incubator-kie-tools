@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageClipBounds;
 import com.ait.lienzo.client.core.image.ImageShapeFilteredHandler;
 import com.ait.lienzo.client.core.image.ImageShapeLoadedHandler;
@@ -79,7 +80,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url)
     {
-        super(ShapeType.PICTURE, url, true, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().load(url);
     }
@@ -103,7 +104,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, url, true, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().setFilters(filter, filters);
 
@@ -179,7 +180,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, boolean listening)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().load(url);
     }
@@ -203,7 +204,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().setFilters(filter, filters);
 
@@ -279,7 +280,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, int sx, int sy, int sw, int sh, boolean listening)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -311,7 +312,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -407,7 +408,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -439,7 +440,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -543,7 +544,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, int dw, int dh, boolean listening)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageDestinationWidth(dw);
 
@@ -571,7 +572,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(String url, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, url, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageDestinationWidth(dw);
 
@@ -659,7 +660,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(ImageResource resource)
     {
-        super(ShapeType.PICTURE, resource, true, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().load(resource);
     }
@@ -683,7 +684,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     */
     public Picture(ImageResource resource, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, resource, true, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().setFilters(filter, filters);
 
@@ -759,7 +760,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     */
     public Picture(ImageResource resource, boolean listening)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().load(resource);
     }
@@ -783,7 +784,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(ImageResource resource, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         getImageProxy().setFilters(filter, filters);
 
@@ -860,7 +861,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -893,7 +894,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -993,7 +994,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -1027,7 +1028,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageStartX(sx);
 
@@ -1136,7 +1137,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      */
     public Picture(ImageResource resource, int dw, int dh, boolean listening)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageDestinationWidth(dw);
 
@@ -1165,7 +1166,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     */
     public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
     {
-        super(ShapeType.PICTURE, resource, listening, ImageSelectionMode.SELECT_NON_TRANSPARENT);
+        super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
         setClippedImageDestinationWidth(dw);
 
