@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 
-public abstract class AbstractConvolveImageFilter implements ImageDataFilter
+public abstract class AbstractConvolveImageDataFilter implements ImageDataFilter
 {
     private String         m_name   = null;
 
@@ -27,7 +27,7 @@ public abstract class AbstractConvolveImageFilter implements ImageDataFilter
 
     private final double[] m_weights;      // changed back because sharpen filter stopped working, TODO: reinvestigate
 
-    protected AbstractConvolveImageFilter(double[] weights)
+    protected AbstractConvolveImageDataFilter(double[] weights)
     {
         m_weights = weights;
     }

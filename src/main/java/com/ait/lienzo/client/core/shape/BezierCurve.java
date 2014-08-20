@@ -60,6 +60,44 @@ public class BezierCurve extends Shape<BezierCurve>
     @Override
     public BoundingBox getBoundingBox()
     {
+        /*
+        double[] inflections = getInflections();
+
+        double minx = Double.MAX_VALUE;
+        
+        double miny = Double.MAX_VALUE;
+        
+        double maxx = Double.MIN_VALUE;
+        
+        double maxy = Double.MIN_VALUE;
+
+        for (int i = 0; i < inflections.length; i++)
+        {
+            double t = inflections[i];
+            
+            double x = getXValue(t);
+            
+            double y = getYValue(t);
+            
+            if (x < minx)
+            {
+                minx = x;
+            }
+            if (x > maxx)
+            {
+                maxx = x;
+            }
+            if (y < miny)
+            {
+                miny = y;
+            }
+            if (y > maxy)
+            {
+                maxy = y;
+            }
+        }
+        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
+        */
         return getControlPoints().getBoundingBox();
     }
 
