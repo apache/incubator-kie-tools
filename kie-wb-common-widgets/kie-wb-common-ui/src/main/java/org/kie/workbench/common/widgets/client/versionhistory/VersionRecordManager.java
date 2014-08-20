@@ -22,25 +22,18 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
 import org.guvnor.common.services.shared.version.VersionService;
-import org.guvnor.common.services.shared.version.events.RestoreEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
-import org.kie.workbench.common.widgets.client.popups.file.SavePopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
 import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -48,20 +41,18 @@ import org.uberfire.workbench.model.menu.MenuItem;
 
 public class VersionRecordManager {
 
-    private DropdownButton button = new DropdownButton(ToolsMenuConstants.INSTANCE.LatestVersion());
+    private VersionMenuDropDownButton button;
 
     @Inject
     @New
     private FileMenuBuilder menuBuilder;
 
-    @Inject
+    private RestorePopup restorePopup;
+    private RestoreUtil restoreUtil;
     private Caller<VersionService> versionService;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
-
-    @Inject
-    private Event<RestoreEvent> restoreEvent;
 
     @Inject
     private PlaceManager placeManager;
@@ -74,9 +65,33 @@ public class VersionRecordManager {
     private ObservablePath pathToLatest;
     private String version;
 
-    public VersionRecordManager() {
-        button.setRightDropdown(true);
-        button.getTriggerWidget().addStyleName("btn-mini");
+    @Inject
+    public VersionRecordManager(
+            VersionMenuDropDownButton button,
+            RestorePopup restorePopup,
+            RestoreUtil restoreUtil,
+            Caller<VersionService> versionService) {
+        this.button = button;
+        this.restorePopup = restorePopup;
+        this.restoreUtil = restoreUtil;
+        this.versionService = versionService;
+    }
+
+    public void init(
+            String version,
+            ObservablePath path,
+            Callback<VersionRecord> selectionCallback) {
+        PortablePreconditions.checkNotNull("path", path);
+
+        this.selectionCallback = PortablePreconditions.checkNotNull("selectionCallback", selectionCallback);
+
+        if (version != null) {
+            setVersion(version);
+        } else {
+            pathToLatest = path;
+        }
+
+        loadVersions(path);
     }
 
     public MenuItem buildMenu() {
@@ -84,6 +99,7 @@ public class VersionRecordManager {
     }
 
     public void setVersions(List<VersionRecord> versions) {
+        PortablePreconditions.checkNotNull("versions", versions);
 
         button.clear();
 
@@ -98,7 +114,7 @@ public class VersionRecordManager {
 
     private void fillMenu() {
 
-        button.setText(ToolsMenuConstants.INSTANCE.LatestVersion());
+        button.setTextToLatest();
 
         fillVersions();
 
@@ -147,30 +163,25 @@ public class VersionRecordManager {
     }
 
     private void addVersionMenuItemLabel(int versionIndex, boolean isSelected, VersionRecord versionRecord) {
-        VersionMenuItemLabel widget = new VersionMenuItemLabel(
-                versionRecord,
+        button.addLabel(versionRecord,
                 versionIndex,
                 isSelected,
                 getSelectionCommand(versionRecord));
-        widget.setWidth("400px");
-        button.add(
-                widget);
     }
 
     private void addShowMoreLabel(int versionIndex) {
-        button.add(
-                new ViewAllLabel(
-                        versions.size() - versionIndex,
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo(
-                                        new VersionHistoryScreenPlace(
-                                                getPathToLatest(),
-                                                getPathToLatest().getFileName(),
-                                                getCurrentVersionRecord().id()));
-                            }
-                        }));
+        button.addViewAllLabel(
+                versions.size() - versionIndex,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(
+                                new VersionHistoryScreenPlace(
+                                        getPathToLatest(),
+                                        getPathToLatest().getFileName(),
+                                        getCurrentVersionRecord().id()));
+                    }
+                });
     }
 
     private boolean isSelected(VersionRecord versionRecord) {
@@ -179,7 +190,7 @@ public class VersionRecordManager {
 
     private void changeMenuLabelIfNotLatest(int versionIndex, VersionRecord versionRecord) {
         if (versionRecord.id().equals(version) && versionIndex != versions.size()) {
-            button.setText(ToolsMenuConstants.INSTANCE.Version(versionIndex));
+            button.setTextToVersion(versionIndex);
         }
     }
 
@@ -205,16 +216,12 @@ public class VersionRecordManager {
         return MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Save());
     }
 
-    public void addVersionSelectionCallback(Callback<VersionRecord> selectionCallback) {
-        this.selectionCallback = selectionCallback;
-    }
-
     public boolean isLatest(VersionRecord versionRecord) {
         return versions.get(versions.size() - 1).equals(versionRecord);
     }
 
-    public void setPathToLatest(ObservablePath pathToLatest) {
-        this.pathToLatest = pathToLatest;
+    private void setPathToLatest(ObservablePath pathToLatest) {
+        this.pathToLatest = PortablePreconditions.checkNotNull("pathToLatest", pathToLatest);
     }
 
     public ObservablePath getPathToLatest() {
@@ -232,7 +239,7 @@ public class VersionRecordManager {
     }
 
     public void setVersion(String version) {
-        this.version = version;
+        this.version = PortablePreconditions.checkNotNull("version", version);
     }
 
     public String getVersion() {
@@ -243,7 +250,9 @@ public class VersionRecordManager {
         if (isCurrentLatest()) {
             return getPathToLatest();
         } else {
-            return createObservablePath(getPathToLatest());
+            return restoreUtil.createObservablePath(
+                    getPathToLatest(),
+                    getCurrentVersionRecordUri());
         }
     }
 
@@ -252,12 +261,7 @@ public class VersionRecordManager {
     }
 
     private VersionRecord getLatestVersionRecord() {
-        return versions.get(versions.size()-1);
-    }
-
-    private ObservablePath createObservablePath(Path path) {
-        return IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(
-                PathFactory.newPathBasedOn(path.getFileName(), getCurrentVersionRecordUri(), path));
+        return versions.get(versions.size() - 1);
     }
 
     private String getCurrentVersionRecordUri() {
@@ -279,33 +283,48 @@ public class VersionRecordManager {
     }
 
     public void restoreToCurrentVersion() {
-        new SavePopup(new CommandWithCommitMessage() {
-            @Override
-            public void execute(final String comment) {
-                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Restoring());
-                versionService.call(getRestorationSuccessCallback(),
-                        new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).restore(getCurrentPath(), comment);
-            }
-        }).show();
+        restorePopup.show(getCurrentPath(), getCurrentVersionRecordUri());
     }
 
-    private RemoteCallback<Path> getRestorationSuccessCallback() {
-        return new RemoteCallback<Path>() {
+    private void loadVersions(final ObservablePath path) {
+        loadVersions(path, new Callback<List<VersionRecord>>() {
             @Override
-            public void callback(final Path restored) {
-                busyIndicatorView.hideBusyIndicator();
-                version = null;
-                restoreEvent.fire(new RestoreEvent(createObservablePath(restored)));
+            public void callback(List<VersionRecord> records) {
+                doesTheVersionExist(records);
             }
-        };
+        });
     }
 
-    public void reloadVersions(Path path) {
-        versionService.call(new RemoteCallback<List<VersionRecord>>() {
+    private void doesTheVersionExist(List<VersionRecord> records) {
+        boolean found = false;
+        for (VersionRecord versionRecord : records) {
+            if (versionRecord.id().equals(version)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw new IllegalArgumentException("Unknown version");
+        }
+    }
+
+    public void reloadVersions(final Path path) {
+        loadVersions(path, new Callback<List<VersionRecord>>() {
             @Override
             public void callback(List<VersionRecord> records) {
                 setVersion(records.get(records.size() - 1).id());
+            }
+        });
+    }
+
+    private void loadVersions(final Path path, final Callback<List<VersionRecord>> callback) {
+        versionService.call(new RemoteCallback<List<VersionRecord>>() {
+            @Override
+            public void callback(List<VersionRecord> records) {
+                String uri = path.toURI();
+                setPathToLatest(restoreUtil.createObservablePath(path, uri));
                 setVersions(records);
+                callback.callback(records);
             }
         }).getVersion(path);
     }
@@ -316,4 +335,5 @@ public class VersionRecordManager {
         pathToLatest = null;
         version = null;
     }
+
 }

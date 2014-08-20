@@ -30,10 +30,10 @@ import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
-import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -108,11 +108,10 @@ public abstract class KieEditor {
         baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
         this.isReadOnly = this.place.getParameter("readOnly", null) == null ? false : true;
-        versionRecordManager.setVersion(this.place.getParameter("version", null));
-        versionRecordManager.setPathToLatest(path);
-        addFileChangeListeners(path);
 
-        versionRecordManager.addVersionSelectionCallback(
+        versionRecordManager.init(
+                this.place.getParameter("version", null),
+                path,
                 new Callback<VersionRecord>() {
                     @Override
                     public void callback(VersionRecord versionRecord) {
@@ -120,10 +119,11 @@ public abstract class KieEditor {
                     }
                 });
 
+        addFileChangeListeners(path);
+
         makeMenuBar();
 
         loadContent();
-
 
     }
 
@@ -132,7 +132,7 @@ public abstract class KieEditor {
 
         if (versionRecordManager.isLatest(versionRecord)) {
             isReadOnly = false;
-            versionRecordManager.setVersion(null);
+            versionRecordManager.setVersion(versionRecord.id());
         } else {
             isReadOnly = true;
             versionRecordManager.setVersion(versionRecord.id());
@@ -295,10 +295,10 @@ public abstract class KieEditor {
 
     protected void onSave() {
 
-        if (isReadOnly && versionRecordManager.getVersion() == null) {
+        if (isReadOnly && versionRecordManager.isCurrentLatest()) {
             baseView.alertReadOnly();
             return;
-        } else if (isReadOnly && versionRecordManager.getVersion() != null) {
+        } else if (isReadOnly && !versionRecordManager.isCurrentLatest()) {
             versionRecordManager.restoreToCurrentVersion();
             return;
         }

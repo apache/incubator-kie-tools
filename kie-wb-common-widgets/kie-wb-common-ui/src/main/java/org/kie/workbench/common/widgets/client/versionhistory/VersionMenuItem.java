@@ -18,7 +18,6 @@ package org.kie.workbench.common.widgets.client.versionhistory;
 
 import java.util.Collection;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -27,14 +26,14 @@ import org.uberfire.workbench.model.menu.MenuPosition;
 public class VersionMenuItem
         implements MenuCustom<Widget> {
 
-    private DropdownButton button;
+    private VersionMenuDropDownButton button;
 
-    public VersionMenuItem(DropdownButton button) {
+    public VersionMenuItem(VersionMenuDropDownButton button) {
         this.button = button;
     }
 
     @Override public Widget build() {
-        return button;
+        return button.asWidget();
     }
 
     @Override public boolean isEnabled() {
