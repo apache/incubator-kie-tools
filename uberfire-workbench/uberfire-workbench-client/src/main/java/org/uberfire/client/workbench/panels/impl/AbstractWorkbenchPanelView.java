@@ -14,11 +14,9 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 
 public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresenter>
@@ -59,15 +57,6 @@ implements WorkbenchPanelView<P> {
     @Override
     public P getPresenter() {
         return this.presenter;
-    }
-
-    protected void scheduleResize( final RequiresResize widget ) {
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                widget.onResize();
-            }
-        } );
     }
 
     protected void addOnFocusHandler( MultiPartWidget widget ) {

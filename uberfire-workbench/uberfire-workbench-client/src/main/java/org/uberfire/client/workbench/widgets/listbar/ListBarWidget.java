@@ -35,6 +35,7 @@ import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
@@ -78,7 +79,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * The Menu Bar widget
+ * The drop-down list that appears when the user clicks the chooser button in the header of a
+ * {@link MultiListWorkbenchPanelView}.
  */
 @Dependent
 public class ListBarWidget
@@ -153,7 +155,6 @@ extends ResizeComposite implements MultiPartWidget {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         setup( true, true );
-
         scheduleResize();
     }
 
@@ -409,31 +410,17 @@ extends ResizeComposite implements MultiPartWidget {
     public void onResize() {
         super.onResize();
 
-        // TODO none of this may be necessary.
-        // also, this might work better if content and header were LayoutPanels
-
-        //        int width = getOffsetWidth();
-        //        int height = getOffsetHeight();
-        //
-        //        content.setPixelSize( width, height - getHeaderHeight() );
-        //        header.setWidth( width + "px" );
-
         // FIXME only need to do this for the one visible part .. need to call onResize() when switching parts anyway
         for ( int i = 0; i < content.getWidgetCount(); i++ ) {
             final FlowPanel container = (FlowPanel) content.getWidget( i );
             final Widget containedWidget = container.getWidget( 0 );
-            //            containedWidget.setPixelSize( width, height - getHeaderHeight() );
             if ( containedWidget instanceof RequiresResize ) {
                 ( (RequiresResize) containedWidget ).onResize();
             }
         }
-        //        if ( partChooserList != null ) {
-        //            partChooserList.onResize();
-        //        }
-    }
-
-    private int getHeaderHeight() {
-        return header.getOffsetHeight();
+        if ( partChooserList != null ) {
+            partChooserList.onResize();
+        }
     }
 
     private Widget makeItem( final MenuItem item,

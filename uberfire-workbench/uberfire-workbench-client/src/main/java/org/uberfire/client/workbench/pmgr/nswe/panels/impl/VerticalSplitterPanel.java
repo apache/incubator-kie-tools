@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -23,9 +23,6 @@ import org.uberfire.client.workbench.widgets.split.WorkbenchSplitLayoutPanel;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -79,7 +76,6 @@ SplitPanel {
 
         northWidgetContainer.setWidget( northWidget );
         southWidgetContainer.setWidget( southWidget );
-        scheduleResize( getSlp() );
     }
 
     WorkbenchSplitLayoutPanel getSlp() {
@@ -122,20 +118,6 @@ SplitPanel {
             childSize = childSize + assertSize( southPanel.getHeight() ) + getChildSize( southPanel );
         }
         return childSize;
-    }
-
-    private void scheduleResize( final Widget widget ) {
-        if ( widget instanceof RequiresResize ) {
-            final RequiresResize requiresResize = (RequiresResize) widget;
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-                @Override
-                public void execute() {
-                    requiresResize.onResize();
-                }
-
-            } );
-        }
     }
 
 }
