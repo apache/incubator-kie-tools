@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -56,6 +57,12 @@ public class BezierCurve extends Shape<BezierCurve>
         super(ShapeType.BEZIER_CURVE, node, ctx);
     }
 
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return getControlPoints().getBoundingBox();
+    }
+
     /**
      * Draws this Bezier Curve.
      * 
@@ -66,7 +73,7 @@ public class BezierCurve extends Shape<BezierCurve>
     {
         Point2DArray points = getControlPoints();
 
-        if ((points != null) && (points.getLength() == 4))
+        if ((points != null) && (points.size() == 4))
         {
             context.beginPath();
 

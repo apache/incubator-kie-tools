@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.image.filter.RGBIgnoreAlphaImageDataFilter;
 import com.ait.lienzo.client.core.shape.AbstractImageShape;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.Color;
@@ -614,5 +615,10 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     public ImageElement getImage()
     {
         return m_jsimg;
+    }
+
+    public BoundingBox getBoundingBox()
+    {
+        return new BoundingBox(0, 0, m_dest_wide, m_dest_high);
     }
 }

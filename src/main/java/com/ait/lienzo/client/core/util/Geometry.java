@@ -63,4 +63,19 @@ public class Geometry
 
         return (xbig) ? (dy / dx) : (dx / dy);
     }
+
+    public static final double distance(double dx, double dy)
+    {
+        return Math.sqrt((dx * dx) + (dy * dy));
+    }
+
+    public static final double getVectorRatio(double[] u, double[] v)
+    {
+        return ((u[0] * v[0]) + (u[1] * v[1])) / (distance(u[0], u[1]) * distance(v[0], v[1]));
+    }
+
+    public static final double getVectorAngle(double[] u, double[] v)
+    {
+        return (((u[0] * v[1]) < (u[1] * v[0])) ? -1 : 1) * Math.acos(getVectorRatio(u, v));
+    }
 }

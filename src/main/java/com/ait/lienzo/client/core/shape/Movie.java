@@ -33,6 +33,7 @@ import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
@@ -199,6 +200,12 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
         context.restore();
 
         return tf;
+    }
+    
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return new BoundingBox(0, 0, getWidth(), getHeight());
     }
 
     /**

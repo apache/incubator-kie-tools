@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -46,6 +47,45 @@ public class RegularPolygon extends Shape<RegularPolygon>
     protected RegularPolygon(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.REGULAR_POLYGON, node, ctx);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        final int s = getSides();
+
+        final double r = getRadius();
+
+        double minx = 0;
+
+        double miny = 0;
+
+        double maxx = 0;
+
+        double maxy = 0;
+
+        if ((s > 2) && (r > 0))
+        {
+            minx = maxx = 0;
+
+            miny = maxy = 0 - r;
+
+            for (int n = 1; n < s; n++)
+            {
+                double x = (r * Math.sin(n * 2 * Math.PI / s));
+
+                double y = (-1 * r * Math.cos(n * 2 * Math.PI / s));
+
+                minx = Math.min(minx, x);
+
+                miny = Math.min(miny, y);
+
+                maxx = Math.max(maxx, x);
+
+                maxy = Math.max(maxy, y);
+            }
+        }
+        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
     }
 
     /**

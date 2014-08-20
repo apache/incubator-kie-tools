@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.image.ImageProxy;
 import com.ait.lienzo.client.core.image.ImageShapeLoadedHandler;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
@@ -62,6 +63,12 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
     public final ImageProxy<T> getImageProxy()
     {
         return m_proxy;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return getImageProxy().getBoundingBox();
     }
 
     /**

@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -49,6 +50,14 @@ public class Ring extends Shape<Ring>
     protected Ring(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.RING, node, ctx);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        final double radius = Math.max(getInnerRadius(), getOuterRadius());
+
+        return new BoundingBox(0 - radius, 0 - radius, 2 * radius, 2 * radius);
     }
 
     @Override

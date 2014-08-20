@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -51,6 +52,16 @@ public class Ellipse extends Shape<Ellipse>
     protected Ellipse(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.ELLIPSE, node, ctx);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        final double w = getWidth();
+
+        final double h = getHeight();
+
+        return new BoundingBox(0 - (w / 2), 0 - (h / 2), w, h);
     }
 
     @Override

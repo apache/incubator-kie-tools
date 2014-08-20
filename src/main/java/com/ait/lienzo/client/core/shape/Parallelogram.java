@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -96,6 +97,12 @@ public class Parallelogram extends Shape<Parallelogram>
             return true;
         }
         return false;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return new BoundingBox(0, 0, getWidth(), getHeight());
     }
 
     /**

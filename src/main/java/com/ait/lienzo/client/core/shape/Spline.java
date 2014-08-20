@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -52,6 +53,12 @@ public class Spline extends Shape<Spline>
     protected Spline(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SPLINE, node, ctx);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return getControlPoints().getBoundingBox();
     }
 
     /**
@@ -373,13 +380,13 @@ public class Spline extends Shape<Spline>
 
     private final PathPoint[] convertToPathPoints(Point2DArray array)
     {
-        if ((null == array) || (array.getLength() == 0))
+        if ((null == array) || (array.size() == 0))
         {
             return new PathPoint[0];
         }
         int size = 0;
 
-        int leng = array.getLength();
+        int leng = array.size();
 
         PathPoint[] points = new PathPoint[leng];
 

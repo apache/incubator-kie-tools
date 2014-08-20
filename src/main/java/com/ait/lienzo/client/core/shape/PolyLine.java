@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -49,6 +50,12 @@ public class PolyLine extends Shape<PolyLine>
         super(ShapeType.POLYLINE, node, ctx);
     }
 
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return getPoints().getBoundingBox();
+    }
+
     /**
      * Draws this polyline.
      * 
@@ -59,9 +66,9 @@ public class PolyLine extends Shape<PolyLine>
     {
         Point2DArray list = getPoints();
 
-        if ((null != list) && (list.getLength() >= 2))
+        if ((null != list) && (list.size() >= 2))
         {
-            final int leng = list.getLength();
+            final int leng = list.size();
 
             Point2D point = list.getPoint(0);
 

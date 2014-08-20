@@ -134,6 +134,24 @@ public class Sprite extends Shape<Sprite>
         super(ShapeType.SPRITE, node, ctx);
     }
 
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        double wide = 0;
+
+        double high = 0;
+
+        for (int i = 0; i < m_frames.length; i++)
+        {
+            BoundingBox bbox = m_frames[i];
+
+            wide = Math.max(wide, bbox.getWidth());
+
+            high = Math.max(high, bbox.getHeight());
+        }
+        return new BoundingBox(0, 0, wide, high);
+    }
+
     public final String getURL()
     {
         return getAttributes().getURL();

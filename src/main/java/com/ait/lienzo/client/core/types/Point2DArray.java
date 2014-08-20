@@ -66,6 +66,42 @@ public class Point2DArray
         push(point, points);
     }
 
+    public final BoundingBox getBoundingBox()
+    {
+        double minx = 0;
+
+        double miny = 0;
+
+        double maxx = 0;
+
+        double maxy = 0;
+
+        final int size = size();
+
+        if (size > 0)
+        {
+            Point2DJSO point = m_jso.get(0);
+
+            minx = maxx = point.getX();
+
+            miny = maxy = point.getY();
+
+            for (int i = 1; i < size; i++)
+            {
+                point = m_jso.get(i);
+
+                minx = Math.min(minx, point.getX());
+
+                miny = Math.min(miny, point.getY());
+
+                maxx = Math.max(maxx, point.getX());
+
+                maxy = Math.max(maxy, point.getY());
+            }
+        }
+        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
+    }
+
     /**
      * Creates a Point2DArray from an array of X coordinates and an array of correspondng 
      * Y coordinates. The arrays should be of the same length.
@@ -149,7 +185,7 @@ public class Point2DArray
         return this;
     }
 
-    public final int getLength()
+    public final int size()
     {
         return getJSO().length();
     }
@@ -182,7 +218,7 @@ public class Point2DArray
 
     public final Collection<Point2D> getPoints()
     {
-        int leng = getLength();
+        int leng = size();
 
         ArrayList<Point2D> list = new ArrayList<Point2D>(leng);
 
@@ -212,12 +248,12 @@ public class Point2DArray
 
         public final native void pop()
         /*-{
-			this.pop();
+        	this.pop();
         }-*/;
 
         public static final native Point2DArrayJSO makePoint2DArrayJSO()
         /*-{
-			return [];
+        	return [];
         }-*/;
     }
 }

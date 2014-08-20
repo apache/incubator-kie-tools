@@ -22,11 +22,13 @@ import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.TextMetrics;
+import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
@@ -37,7 +39,9 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Text extends Shape<Text>
 {
-    private static final boolean IS_SAFARI = LienzoCore.get().isSafari();
+    private static final boolean       IS_SAFARI = LienzoCore.get().isSafari();
+
+    private static final ScratchCanvas FORBOUNDS = new ScratchCanvas(1, 1);
 
     /**
      * Constructor. Creates an instance of text.
@@ -121,6 +125,21 @@ public class Text extends Shape<Text>
     protected Text(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.TEXT, node, ctx);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return getBoundingBox(getText(), getFontSize(), getFontStyle(), getFontFamily());
+    }
+
+    public final static BoundingBox getBoundingBox(String text, double size, String style, String family)
+    {
+        FORBOUNDS.getContext().setTextFont(style + " " + size + "pt " + family);
+
+        TextMetrics metrics = FORBOUNDS.getContext().measureText(text);
+
+        return new BoundingBox(0, 0, metrics.getWidth(), metrics.getHeight());
     }
 
     /**

@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -51,6 +52,12 @@ public class Triangle extends Shape<Triangle>
         super(ShapeType.TRIANGLE, node, ctx);
     }
 
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return getPoints().getBoundingBox();
+    }
+
     /**
      * Draws this polygon.
      * 
@@ -61,7 +68,7 @@ public class Triangle extends Shape<Triangle>
     {
         Point2DArray list = getPoints();
 
-        if ((null != list) && (list.getLength() > 2))
+        if ((null != list) && (list.size() > 2))
         {
             Point2D point0 = list.getPoint(0);
 

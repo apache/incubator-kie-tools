@@ -21,8 +21,10 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -48,6 +50,12 @@ public class SVGPath extends Shape<SVGPath>
         super(ShapeType.SVG_PATH, node, ctx);
 
         setPath(getPath());
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return new BoundingBox(0, 0, 10, 10);
     }
 
     @Override
@@ -148,27 +156,27 @@ public class SVGPath extends Shape<SVGPath>
 
         for (int n = 1; n < list.length; n++)
         {
-            String st = list[n];
+            String str = list[n];
 
-            char ch = st.charAt(0);
+            char chr = str.charAt(0);
 
-            st = st.substring(1).replaceAll(",-", "-").replaceAll("-", ",-").replaceAll("e,-", "e-");
+            str = str.substring(1).replaceAll(",-", "-").replaceAll("-", ",-").replaceAll("e,-", "e-");
 
-            String[] pt = st.split(",");
+            String[] pts = str.split(",");
 
-            int sv = 0;
+            int beg = 0;
 
-            if ((pt.length > 0) && (pt[0].isEmpty()))
+            if ((pts.length > 0) && (pts[0].isEmpty()))
             {
-                sv = 1;
+                beg = 1;
             }
-            NFastDoubleArrayJSO p = NFastDoubleArrayJSO.make();
+            NFastDoubleArrayJSO source = NFastDoubleArrayJSO.make();
 
-            for (int i = sv; i < pt.length; i++)
+            for (int i = beg; i < pts.length; i++)
             {
-                p.add(Double.valueOf(pt[i]).doubleValue());
+                source.add(Double.valueOf(pts[i]).doubleValue());
             }
-            while (p.size() > 0)
+            while (source.size() > 0)
             {
                 char cmd = '\0';
 
@@ -176,42 +184,42 @@ public class SVGPath extends Shape<SVGPath>
 
                 double ctx, cty;
 
-                double rx, ry, psi, fa, fs, x1, y1;
+                double rx, ry, ps, fa, fs, x1, y1;
 
                 PathEntry prev;
 
-                switch (ch)
+                switch (chr)
                 {
                     case 'l':
-                        cpx += p.shift();
+                        cpx += source.shift();
 
-                        cpy += p.shift();
+                        cpy += source.shift();
+
+                        points.add(cpx);
+
+                        points.add(cpy);
 
                         cmd = 'L';
-
-                        points.add(cpx);
-
-                        points.add(cpy);
                     break;
                     case 'L':
-                        cpx = p.shift();
+                        cpx = source.shift();
 
-                        cpy = p.shift();
+                        cpy = source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'L';
                     break;
                     case 'm':
-                        double dx = p.shift();
+                        double dx = source.shift();
 
-                        double dy = p.shift();
+                        double dy = source.shift();
 
                         cpx += dx;
 
                         cpy += dy;
-
-                        cmd = 'M';
 
                         final int size = m_list.size();
 
@@ -235,92 +243,96 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        ch = 'l';
-                    break;
-                    case 'M':
-                        cpx = p.shift();
-
-                        cpy = p.shift();
+                        chr = 'l';
 
                         cmd = 'M';
+                    break;
+                    case 'M':
+                        cpx = source.shift();
+
+                        cpy = source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
 
-                        ch = 'L';
+                        chr = 'L';
+
+                        cmd = 'M';
                     break;
                     case 'h':
-                        cpx += p.shift();
-
-                        cmd = 'L';
+                        cpx += source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'L';
                     break;
                     case 'H':
-                        cpx = p.shift();
-
-                        cmd = 'L';
+                        cpx = source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'L';
                     break;
                     case 'v':
-                        cpy += p.shift();
-
-                        cmd = 'L';
+                        cpy += source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'L';
                     break;
                     case 'V':
-                        cpy = p.shift();
+                        cpy = source.shift();
+
+                        points.add(cpx);
+
+                        points.add(cpy);
 
                         cmd = 'L';
-
-                        points.add(cpx);
-
-                        points.add(cpy);
                     break;
                     case 'C':
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        cpx = p.shift();
+                        cpx = source.shift();
 
-                        cpy = p.shift();
+                        cpy = source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
-                    break;
-                    case 'c':
-                        points.add(cpx + p.shift());
-
-                        points.add(cpy + p.shift());
-
-                        points.add(cpx + p.shift());
-
-                        points.add(cpy + p.shift());
-
-                        cpx += p.shift();
-
-                        cpy += p.shift();
 
                         cmd = 'C';
+                    break;
+                    case 'c':
+                        points.add(cpx + source.shift());
+
+                        points.add(cpy + source.shift());
+
+                        points.add(cpx + source.shift());
+
+                        points.add(cpy + source.shift());
+
+                        cpx += source.shift();
+
+                        cpy += source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'C';
                     break;
                     case 'S':
                         ctx = cpx;
@@ -339,19 +351,19 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cty);
 
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        cpx = p.shift();
+                        cpx = source.shift();
 
-                        cpy = p.shift();
-
-                        cmd = 'C';
+                        cpy = source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'C';
                     break;
                     case 's':
                         ctx = cpx;
@@ -370,47 +382,49 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cty);
 
-                        points.add(cpx + p.shift());
+                        points.add(cpx + source.shift());
 
-                        points.add(cpy + p.shift());
+                        points.add(cpy + source.shift());
 
-                        cpx += p.shift();
+                        cpx += source.shift();
 
-                        cpy += p.shift();
+                        cpy += source.shift();
+
+                        points.add(cpx);
+
+                        points.add(cpy);
 
                         cmd = 'C';
-
-                        points.add(cpx);
-
-                        points.add(cpy);
                     break;
                     case 'Q':
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        points.add(p.shift());
+                        points.add(source.shift());
 
-                        cpx = p.shift();
+                        cpx = source.shift();
 
-                        cpy = p.shift();
+                        cpy = source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
-                    break;
-                    case 'q':
-                        points.add(cpx + p.shift());
-
-                        points.add(cpy + p.shift());
-
-                        cpx += p.shift();
-
-                        cpy += p.shift();
 
                         cmd = 'Q';
+                    break;
+                    case 'q':
+                        points.add(cpx + source.shift());
+
+                        points.add(cpy + source.shift());
+
+                        cpx += source.shift();
+
+                        cpy += source.shift();
 
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'Q';
                     break;
                     case 'T':
                         ctx = cpx;
@@ -425,11 +439,9 @@ public class SVGPath extends Shape<SVGPath>
 
                             cty = cpy + (cpy - prev.points[1]);
                         }
-                        cpx = p.shift();
+                        cpx = source.shift();
 
-                        cpy = p.shift();
-
-                        cmd = 'Q';
+                        cpy = source.shift();
 
                         points.add(ctx);
 
@@ -438,6 +450,8 @@ public class SVGPath extends Shape<SVGPath>
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'Q';
                     break;
                     case 't':
                         ctx = cpx;
@@ -452,11 +466,9 @@ public class SVGPath extends Shape<SVGPath>
 
                             cty = cpy + (cpy - prev.points[1]);
                         }
-                        cpx += p.shift();
+                        cpx += source.shift();
 
-                        cpy += p.shift();
-
-                        cmd = 'Q';
+                        cpy += source.shift();
 
                         points.add(ctx);
 
@@ -465,57 +477,59 @@ public class SVGPath extends Shape<SVGPath>
                         points.add(cpx);
 
                         points.add(cpy);
+
+                        cmd = 'Q';
                     break;
                     case 'A':
-                        rx = p.shift();
+                        rx = source.shift();
 
-                        ry = p.shift();
+                        ry = source.shift();
 
-                        psi = p.shift();
+                        ps = source.shift();
 
-                        fa = p.shift();
+                        fa = source.shift();
 
-                        fs = p.shift();
+                        fs = source.shift();
 
                         x1 = cpx;
 
                         y1 = cpy;
 
-                        cpx = p.shift();
+                        cpx = source.shift();
 
-                        cpy = p.shift();
+                        cpy = source.shift();
+
+                        points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
                         cmd = 'A';
-
-                        points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, psi);
                     break;
                     case 'a':
-                        rx = p.shift();
+                        rx = source.shift();
 
-                        ry = p.shift();
+                        ry = source.shift();
 
-                        psi = p.shift();
+                        ps = source.shift();
 
-                        fa = p.shift();
+                        fa = source.shift();
 
-                        fs = p.shift();
+                        fs = source.shift();
 
                         x1 = cpx;
 
                         y1 = cpy;
 
-                        cpx += p.shift();
+                        cpx += source.shift();
 
-                        cpy += p.shift();
+                        cpy += source.shift();
+
+                        points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
                         cmd = 'A';
-
-                        points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, psi);
                     break;
                 }
-                m_list.add(new PathEntry((('\0' == cmd) ? ch : cmd), points));
+                m_list.add(new PathEntry(cmd, points));
             }
-            if ((ch == 'z') || (ch == 'Z'))
+            if ((chr == 'z') || (chr == 'Z'))
             {
                 m_list.add(new PathEntry('z', null));
             }
@@ -556,19 +570,19 @@ public class SVGPath extends Shape<SVGPath>
 
         double cy = (y1 + y2) / 2.0 + Math.sin(ps) * cxp + Math.cos(ps) * cyp;
 
-        double th = vector_angle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
+        double th = Geometry.getVectorAngle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
 
         double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
 
         double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
 
-        double dt = vector_angle(u, v);
+        double dt = Geometry.getVectorAngle(u, v);
 
-        if (vector_ratio(u, v) <= -1)
+        if (Geometry.getVectorRatio(u, v) <= -1)
         {
             dt = Math.PI;
         }
-        if (vector_ratio(u, v) >= 1)
+        if (Geometry.getVectorRatio(u, v) >= 1)
         {
             dt = 0;
         }
@@ -599,21 +613,6 @@ public class SVGPath extends Shape<SVGPath>
         points.add(fs);
 
         return points;
-    }
-
-    private final double vector_magnitude(double[] v)
-    {
-        return Math.sqrt(v[0] * v[0] + v[1] * v[1]);
-    }
-
-    private final double vector_ratio(double[] u, double[] v)
-    {
-        return (u[0] * v[0] + u[1] * v[1]) / (vector_magnitude(u) * vector_magnitude(v));
-    }
-
-    private final double vector_angle(double[] u, double[] v)
-    {
-        return (u[0] * v[1] < u[1] * v[0] ? -1 : 1) * Math.acos(vector_ratio(u, v));
     }
 
     @Override

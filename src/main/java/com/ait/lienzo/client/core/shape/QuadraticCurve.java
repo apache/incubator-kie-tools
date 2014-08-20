@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -53,6 +54,12 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
         super(ShapeType.QUADRATIC_CURVE, node, ctx);
     }
 
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        return getControlPoints().getBoundingBox();
+    }
+
     /**
      * Draws this quadratic curve
      * 
@@ -63,7 +70,7 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
     {
         Point2DArray points = getControlPoints();
 
-        if ((points != null) && (points.getLength() == 3))
+        if ((points != null) && (points.size() == 3))
         {
             context.beginPath();
 

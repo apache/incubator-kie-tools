@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -50,6 +51,49 @@ public class Star extends Shape<Star>
     protected Star(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.STAR, node, ctx);
+    }
+
+    @Override
+    public BoundingBox getBoundingBox()
+    {
+        final int s = getStarPoints();
+
+        final double ir = getInnerRadius();
+
+        final double or = getOuterRadius();
+
+        double minx = 0;
+
+        double miny = 0;
+
+        double maxx = 0;
+
+        double maxy = 0;
+
+        if ((s > 4) && (ir > 0) && (or > 0) && (or > ir))
+        {
+            minx = maxx = 0;
+
+            miny = maxy = 0 - or;
+
+            for (int n = 1; n < s * 2; n++)
+            {
+                double radius = n % 2 == 0 ? or : ir;
+
+                double x = (radius * Math.sin(n * Math.PI / s));
+
+                double y = (-1 * radius * Math.cos(n * Math.PI / s));
+
+                minx = Math.min(minx, x);
+
+                miny = Math.min(miny, y);
+
+                maxx = Math.max(maxx, x);
+
+                maxy = Math.max(maxy, y);
+            }
+        }
+        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
     }
 
     /**
