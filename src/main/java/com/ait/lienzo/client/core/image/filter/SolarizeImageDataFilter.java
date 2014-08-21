@@ -18,41 +18,20 @@ package com.ait.lienzo.client.core.image.filter;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImageDataFilter>
+public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter>
 {
-    private double m_value = 1.0;
-
-    public GammaImageDataFilter()
+    public SolarizeImageDataFilter()
     {
-    }
-
-    public GammaImageDataFilter(double value)
-    {
-        setValue(value);
-    }
-
-    public final GammaImageDataFilter setValue(double value)
-    {
-        m_value = Math.max(Math.min(value, 2.0), 0.0);
-
-        return this;
-    }
-
-    public final double getValue()
-    {
-        return m_value;
     }
 
     @Override
     protected final native JavaScriptObject getTable()
     /*-{
-        var value = this.@com.ait.lienzo.client.core.image.filter.GammaImageDataFilter::m_value;
-        
         var table = [];
         
         for(var i = 0; i < 256; i++) {
         
-            table[i] = 255 * Math.pow(i / 255, 1 / value) + 0.5;
+            table[i] = (((i / 255 > 0.5) ? 2 * (i / 255 - 0.5) : 2 * (0.5 - i / 255)) * 255) | 0;
         }
         return table;
     }-*/;

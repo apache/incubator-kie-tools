@@ -23,6 +23,39 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
 {
     public SharpenImageDataFilter()
     {
-        super(0, -1, 0, -1, 5, -1, 0, -1, 0);
+        this(SharpenType.ORIGINAL);
+    }
+
+    public SharpenImageDataFilter(double... matrix)
+    {
+        super(matrix);
+    }
+    
+    public SharpenImageDataFilter(SharpenType matrix)
+    {
+        this(matrix.getMatrix());
+    }
+
+    public static enum SharpenType
+    {
+        ORIGINAL(0.0, -1, 0, -1, 5, -1, 0, -1, 0), ADVANCED(0, -0.2, 0, -0.2, 1.8, -0.2, 0, -0.2, 0);
+
+        private final double[] m_matrix;
+
+        private SharpenType(double... matrix)
+        {
+            m_matrix = matrix;
+        }
+
+        public final double[] getMatrix()
+        {
+            double copy[] = new double[m_matrix.length];
+
+            for (int i = 0; i < m_matrix.length; i++)
+            {
+                copy[i] = m_matrix[i];
+            }
+            return copy;
+        }
     }
 }

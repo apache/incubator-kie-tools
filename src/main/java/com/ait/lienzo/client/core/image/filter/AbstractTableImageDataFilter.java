@@ -48,5 +48,11 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         return source;
     }
 
+    @Override
+    public final boolean isTransforming()
+    {
+        return true;
+    }
+
     protected abstract JavaScriptObject getTable();
 }

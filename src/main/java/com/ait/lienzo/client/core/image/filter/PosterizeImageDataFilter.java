@@ -16,88 +16,44 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.ait.lienzo.client.core.types.ImageData;
-import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 
-/**
- * A class that allows for easy creation of a Posterize Image Filter.
- */
-public class PosterizeImageDataFilter extends AbstractBaseImageDataFilter<PosterizeImageDataFilter>
+public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<PosterizeImageDataFilter>
 {
-    private final int m_level;
+    private double m_value = 6;
 
-    public PosterizeImageDataFilter(int level)
+    public PosterizeImageDataFilter()
     {
-        m_level = Math.max(Math.min(level, 256), 2);
+    }
+
+    public PosterizeImageDataFilter(double value)
+    {
+        setValue(value);
+    }
+
+    public final PosterizeImageDataFilter setValue(double value)
+    {
+        m_value = Math.max(Math.min(value, 30), 2);
+
+        return this;
+    }
+
+    public final double getValue()
+    {
+        return m_value;
     }
 
     @Override
-    public ImageData filter(ImageData source, boolean copy)
-    {
-        if (null == source)
-        {
-            return null;
-        }
-        if (copy)
-        {
-            source = source.copy();
-        }
-        if (false == isActive())
-        {
-            return source;
-        }
-        final CanvasPixelArray data = source.getData();
-
-        if (null == data)
-        {
-            return source;
-        }
-        final double areas = 256.0 / m_level;
-
-        final double valus = 256.0 / (m_level - 1);
-
-        final int w = source.getWidth();
-
-        final int h = source.getHeight();
-
-        final int m = w * 4;
-
-        filter_(data, areas, valus, w, h, m);
-
-        return source;
-    }
-
-    private final native void filter_(JavaScriptObject pixa, double areas, double valus, int w, int h, int m)
+    protected final native JavaScriptObject getTable()
     /*-{
-    	var data = pixa;
-
-    	var y = h;
-
-    	do {
-    		var offsety = (y - 1) * m;
-    		var x = w;
-    		do {
-    			var offset = offsety + (x - 1) * 4;
-
-    			var r = (valus * ((data[offset + 0] / areas))) | 0;
-    			var g = (valus * ((data[offset + 1] / areas))) | 0;
-    			var b = (valus * ((data[offset + 2] / areas))) | 0;
-
-    			if (r > 255) {
-    				r = 255;
-    			}
-    			if (g > 255) {
-    				g = 255;
-    			}
-    			if (b > 255) {
-    				b = 255;
-    			}
-    			data[offset + 0] = r;
-    			data[offset + 1] = g;
-    			data[offset + 2] = b;
-
-    		} while (--x);
-    	} while (--y);
+        var value = this.@com.ait.lienzo.client.core.image.filter.PosterizeImageDataFilter::m_value;
+        
+        var table = [];
+        
+        for(var i = 0; i < 256; i++) {
+        
+            table[i] = (255 * ((i * value / 256) | 0) / (value - 1)) | 0;
+        }
+        return table;
     }-*/;
 }
