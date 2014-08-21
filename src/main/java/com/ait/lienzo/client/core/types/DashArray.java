@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.google.gwt.core.client.JsArrayMixed;
-
 /**
  * A native implementation of an array wrapped by a {@link DashArrayJSO}
  * This class is used in {@link Line} to create Dashed Lines.
@@ -25,16 +23,16 @@ import com.google.gwt.core.client.JsArrayMixed;
  */
 public final class DashArray
 {
-    private final DashArrayJSO m_jso;
+    private final NFastDoubleArrayJSO m_jso;
 
-    public DashArray(DashArrayJSO jso)
+    public DashArray(NFastDoubleArrayJSO jso)
     {
         m_jso = jso;
     }
 
     public DashArray()
     {
-        this(DashArrayJSO.makeDashArrayJSO());
+        this(NFastDoubleArrayJSO.make());
     }
 
     public DashArray(double dash, double... dashes)
@@ -71,7 +69,7 @@ public final class DashArray
 
     public final double[] getNormalizedArray()
     {
-        int leng = m_jso.length();
+        int leng = m_jso.size();
 
         if ((leng % 2) == 1)
         {
@@ -79,7 +77,7 @@ public final class DashArray
 
             for (int i = 0; i < leng; i++)
             {
-                dashes[i] = dashes[i + leng] = m_jso.getNumber(i);
+                dashes[i] = dashes[i + leng] = m_jso.get(i);
             }
             return dashes;
         }
@@ -87,30 +85,18 @@ public final class DashArray
 
         for (int i = 0; i < leng; i++)
         {
-            dashes[i] = m_jso.getNumber(i);
+            dashes[i] = m_jso.get(i);
         }
         return dashes;
     }
 
-    public final int getLength()
+    public final int size()
     {
-        return getJSO().length();
+        return getJSO().size();
     }
 
-    public final DashArrayJSO getJSO()
+    public final NFastDoubleArrayJSO getJSO()
     {
         return m_jso;
-    }
-
-    public static final class DashArrayJSO extends JsArrayMixed
-    {
-        protected DashArrayJSO()
-        {
-        }
-
-        public static final native DashArrayJSO makeDashArrayJSO()
-        /*-{
-			return [];
-        }-*/;
     }
 }

@@ -43,6 +43,11 @@ public final class NFastDoubleArrayJSO extends JavaScriptObject
     /*-{
         this[this.length] = value;
     }-*/;
+    
+    public final native void push(double value)
+    /*-{
+        this[this.length] = value;
+    }-*/;
 
     public final native double shift()
     /*-{

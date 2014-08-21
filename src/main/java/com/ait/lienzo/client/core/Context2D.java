@@ -316,6 +316,16 @@ public class Context2D
         m_jso.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }
 
+    public ImageData createImageData(double width, double height)
+    {
+        return m_jso.createImageData(width, height);
+    }
+
+    public ImageData createImageData(ImageData data)
+    {
+        return m_jso.createImageData(data);
+    }
+
     public TextMetrics measureText(String text)
     {
         return m_jso.measureText(text);

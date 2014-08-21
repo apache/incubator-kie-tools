@@ -19,12 +19,12 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.types.DashArray;
-import com.ait.lienzo.client.core.types.DashArray.DashArrayJSO;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.DragBounds.DragBoundsJSO;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
+import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
@@ -422,7 +422,7 @@ public class Attributes
 
         if (null != dash)
         {
-            DashArrayJSO djso = dash.cast();
+            NFastDoubleArrayJSO djso = dash.cast();
 
             return new DashArray(djso);
         }

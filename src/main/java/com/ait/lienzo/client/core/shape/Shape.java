@@ -298,7 +298,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             {
                 DashArray dash = attr.getDashArray();
 
-                if ((null != dash) && (dash.getLength() > 0))
+                if ((null != dash) && (dash.size() > 0))
                 {
                     context.setLineDash(dash);
 

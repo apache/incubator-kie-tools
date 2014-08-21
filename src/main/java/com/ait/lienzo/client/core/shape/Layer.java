@@ -123,21 +123,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return null;
     }
 
-    public final Layer getLayerSelectionLayer()
-    {
-        if (isListening())
-        {
-            if (m_select == null)
-            {
-                m_select = new SelectionLayer();
-
-                m_select.setPixelSize(m_wide, m_high);
-            }
-            return m_select;
-        }
-        return null;
-    }
-
     /**
      * Looks at the {@link SelectionLayer} and attempts to find a {@link Shape} whose alpha
      * channel is 255.
