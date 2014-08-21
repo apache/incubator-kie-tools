@@ -96,10 +96,12 @@ extends AbstractWorkbenchPanelView<StaticWorkbenchPanelPresenter> {
                 @Override
                 public void execute() {
                     panel.setPart( view );
+                    onResize();
                 }
             } );
         } else {
             panel.setPart( view );
+            onResize();
         }
     }
 
