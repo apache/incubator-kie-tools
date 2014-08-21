@@ -39,9 +39,11 @@ public class StackBlurImageDataFilter extends AbstractBaseImageDataFilter<Bright
         return m_radius;
     }
 
-    public final void setRadius(int radius)
+    public final StackBlurImageDataFilter setRadius(int radius)
     {
         m_radius = Math.max(Math.min(radius, 180), 1);
+        
+        return this;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class StackBlurImageDataFilter extends AbstractBaseImageDataFilter<Bright
             return source;
         }
         filter_(data, source.getWidth(), source.getHeight(), getRadius());
-        
+
         return source;
     }
 

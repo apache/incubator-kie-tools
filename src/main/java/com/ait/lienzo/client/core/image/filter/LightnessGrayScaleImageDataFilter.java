@@ -46,7 +46,7 @@ public class LightnessGrayScaleImageDataFilter extends AbstractBaseImageDataFilt
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source));
+        filter_(data, FilterCommonOps.getLength(source));
 
         return source;
     }
@@ -63,8 +63,7 @@ public class LightnessGrayScaleImageDataFilter extends AbstractBaseImageDataFilt
 
     		var b = data[i + 2];
 
-    		var v = ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g),
-    				b))) / 2.0) + 0.5) | 0;
+    		var v = ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g), b))) / 2.0) + 0.5) | 0;
 
     		data[i + 0] = v;
 

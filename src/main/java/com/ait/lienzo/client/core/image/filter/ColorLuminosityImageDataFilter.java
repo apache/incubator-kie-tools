@@ -62,7 +62,7 @@ public class ColorLuminosityImageDataFilter extends AbstractBaseRGBImageDataFilt
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source), getR(), getG(), getB());
+        filter_(data, FilterCommonOps.getLength(source), getR(), getG(), getB());
 
         return source;
     }

@@ -16,16 +16,13 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-
 /**
  * A class that allows for easy creation of Blur Filters.
  */
-public class BlurImageDataFilter extends AbstractConvolveImageDataFilter
+public class BlurImageDataFilter extends AbstractConvolveImageDataFilter<BlurImageDataFilter>
 {
-    private static final double[] s_weights = { 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0 };
-
     public BlurImageDataFilter()
     {
-        super(s_weights);
+        super(1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0);
     }
 }

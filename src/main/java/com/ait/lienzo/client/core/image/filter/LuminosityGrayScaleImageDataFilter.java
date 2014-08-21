@@ -46,7 +46,7 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractBaseImageDataFil
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source));
+        filter_(data, FilterCommonOps.getLength(source));
 
         return source;
     }

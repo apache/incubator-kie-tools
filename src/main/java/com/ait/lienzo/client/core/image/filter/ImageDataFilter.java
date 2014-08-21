@@ -23,15 +23,17 @@ import com.ait.lienzo.client.core.types.ImageData;
  */
 public interface ImageDataFilter
 {
-    public static int R_OFFSET = 0;
+    public static int                            R_OFFSET        = 0;
 
-    public static int G_OFFSET = 1;
+    public static int                            G_OFFSET        = 1;
 
-    public static int B_OFFSET = 2;
+    public static int                            B_OFFSET        = 2;
 
-    public static int A_OFFSET = 3;
+    public static int                            A_OFFSET        = 3;
 
-    public static int PIXEL_SZ = 4;
+    public static int                            PIXEL_SZ        = 4;
+
+    public static final ImageDataFilterCommonOps FilterCommonOps = ImageDataFilterCommonOps.make();
 
     public ImageData filter(ImageData source, boolean copy);
 
@@ -44,12 +46,4 @@ public interface ImageDataFilter
     public String getName();
 
     public void setName(String name);
-
-    public static final class FilterOps
-    {
-        public static final int getLength(ImageData source)
-        {
-            return ((source.getWidth() * source.getHeight()) * PIXEL_SZ);
-        }
-    }
 }

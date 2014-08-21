@@ -17,23 +17,35 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 
-public abstract class AbstractConvolveImageDataFilter implements ImageDataFilter
+public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractBaseImageDataFilter<T>
 {
-    private String         m_name   = null;
+    private final NFastDoubleArrayJSO m_matrix = NFastDoubleArrayJSO.make();
 
-    private boolean        m_active = true;
-
-    private final double[] m_weights;      // changed back because sharpen filter stopped working, TODO: reinvestigate
-
-    protected AbstractConvolveImageDataFilter(double[] weights)
+    protected AbstractConvolveImageDataFilter()
     {
-        m_weights = weights;
+    }
+
+    protected AbstractConvolveImageDataFilter(double... matrix)
+    {
+        setMatrix(matrix);
+    }
+
+    public final T setMatrix(double... matrix)
+    {
+        m_matrix.clear();
+
+        for (int i = 0; i < matrix.length; i++)
+        {
+            m_matrix.push(matrix[i]);
+        }
+        return cast();
     }
 
     @Override
-    public boolean isTransforming()
+    public final boolean isTransforming()
     {
         return true;
     }
@@ -45,109 +57,26 @@ public abstract class AbstractConvolveImageDataFilter implements ImageDataFilter
         {
             return null;
         }
+        if (copy)
+        {
+            source = source.copy();
+        }
         if (false == isActive())
         {
-            if (copy)
-            {
-                source = source.copy();
-            }
             return source;
         }
-        ImageData output = source.copy();
+        final CanvasPixelArray data = source.getData();
 
-        final CanvasPixelArray srcd = source.getData();
-
-        if (null == srcd)
+        if (null == data)
         {
             return source;
         }
-        final CanvasPixelArray dstd = output.getData();
-
-        if (null == dstd)
+        if (m_matrix.size() < 1)
         {
             return source;
         }
-        int side = (int) (Math.sqrt(m_weights.length) + 0.5);
+        FilterCommonOps.doFilterConvolve(data, m_matrix, source.getWidth(), source.getHeight());
 
-        int half = (int) (Math.floor(side / 2));
-
-        int sw = source.getWidth();
-
-        int sh = source.getHeight();
-
-        int w = sw;
-
-        int h = sh;
-
-        for (int y = 0; y < h; y++)
-        {
-            for (int x = 0; x < w; x++)
-            {
-                int sy = y;
-
-                int sx = x;
-
-                int dsto = (y * w + x) * 4;
-
-                int r = 0, g = 0, b = 0;
-
-                for (int cy = 0; cy < side; cy++)
-                {
-                    for (int cx = 0; cx < side; cx++)
-                    {
-                        int scy = sy + cy - half;
-
-                        int scx = sx + cx - half;
-
-                        if (scy >= 0 && scy < sh && scx >= 0 && scx < sw)
-                        {
-                            int srco = (scy * sw + scx) * 4;
-
-                            double wt = m_weights[cy * side + cx];
-
-                            r += srcd.get(srco + R_OFFSET) * wt;
-
-                            g += srcd.get(srco + G_OFFSET) * wt;
-
-                            b += srcd.get(srco + B_OFFSET) * wt;
-                        }
-                    }
-                }
-                dstd.set(dsto + R_OFFSET, r);
-
-                dstd.set(dsto + G_OFFSET, g);
-
-                dstd.set(dsto + B_OFFSET, b);
-            }
-        }
-        return output;
-    }
-
-    @Override
-    public boolean isActive()
-    {
-        return m_active;
-    }
-
-    @Override
-    public void setActive(boolean active)
-    {
-        m_active = active;
-    }
-
-    @Override
-    public String getName()
-    {
-        if (null == m_name)
-        {
-            return getClass().getSimpleName();
-        }
-        return m_name;
-    }
-
-    @Override
-    public void setName(String name)
-    {
-        m_name = name;
+        return source;
     }
 }

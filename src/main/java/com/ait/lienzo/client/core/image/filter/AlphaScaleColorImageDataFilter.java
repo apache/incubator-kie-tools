@@ -94,7 +94,7 @@ public class AlphaScaleColorImageDataFilter extends AbstractBaseRGBImageDataFilt
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source), getR(), getG(), getB(), isInverted());
+        filter_(data, FilterCommonOps.getLength(source), getR(), getG(), getB(), isInverted());
 
         return source;
     }
@@ -105,7 +105,7 @@ public class AlphaScaleColorImageDataFilter extends AbstractBaseRGBImageDataFilt
 
         function luminocity(rv, gv, bv) {
             return (rv * 0.21) + (gv * 0.72) + (bv * 0.07);
-        }
+        };
         for (var i = 0; i < length; i += 4) {
 
             var v = luminocity(data[i + 0], data[i + 1], data[i + 2]);

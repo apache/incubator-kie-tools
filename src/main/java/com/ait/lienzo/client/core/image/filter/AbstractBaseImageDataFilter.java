@@ -55,4 +55,10 @@ public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDat
     {
         m_name = name;
     }
+    
+    @SuppressWarnings("unchecked")
+    protected final T cast()
+    {
+        return (T) this;
+    }
 }

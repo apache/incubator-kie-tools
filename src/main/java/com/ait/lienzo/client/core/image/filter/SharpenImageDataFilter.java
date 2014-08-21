@@ -16,16 +16,13 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-
 /**
  * A class that allows for easy creation of a Sharpen Image Filter.
  */
-public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter
+public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<SharpenImageDataFilter>
 {
-    private static final double[] s_weights = { 0, -1, 0, -1, 5, -1, 0, -1, 0 };
-
     public SharpenImageDataFilter()
     {
-        super(s_weights);
+        super(0, -1, 0, -1, 5, -1, 0, -1, 0);
     }
 }

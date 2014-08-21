@@ -29,6 +29,11 @@ public class BrightnessImageDataFilter extends AbstractBaseImageDataFilter<Brigh
 
     public BrightnessImageDataFilter(double brightness)
     {
+        setBrightness(brightness);
+    }
+
+    public BrightnessImageDataFilter setBrightness(double brightness)
+    {
         if (brightness < -1)
         {
             brightness = -1;
@@ -38,6 +43,13 @@ public class BrightnessImageDataFilter extends AbstractBaseImageDataFilter<Brigh
             brightness = 1;
         }
         m_brightness = brightness;
+
+        return this;
+    }
+
+    public double getBrightness()
+    {
+        return m_brightness;
     }
 
     @Override
@@ -61,7 +73,7 @@ public class BrightnessImageDataFilter extends AbstractBaseImageDataFilter<Brigh
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source), m_brightness);
+        filter_(data, FilterCommonOps.getLength(source), m_brightness);
 
         return source;
     }

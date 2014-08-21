@@ -27,6 +27,12 @@ public class EmbossImageDataFilter extends AbstractBaseImageDataFilter<EmbossIma
     public EmbossImageDataFilter()
     {
     }
+    
+    @Override
+    public final boolean isTransforming()
+    {
+        return true;
+    }
 
     @Override
     public ImageData filter(ImageData source, boolean copy)
@@ -49,7 +55,7 @@ public class EmbossImageDataFilter extends AbstractBaseImageDataFilter<EmbossIma
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source), source.getWidth());
+        filter_(data, FilterCommonOps.getLength(source), source.getWidth());
 
         return POST.filter(source, false);
     }

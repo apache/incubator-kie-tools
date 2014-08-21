@@ -43,28 +43,10 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         {
             return source;
         }
-        filter_(data, getTable(), source.getWidth(), source.getHeight());
+        FilterCommonOps.doFilterTable(data, getTable(), source.getWidth(), source.getHeight());
 
         return source;
     }
-    
-    private final native void filter_(JavaScriptObject pixa, JavaScriptObject table, int wide, int high)
-    /*-{
-        var data = pixa;
 
-        for (var y = 0; y < wide; y++) {
-
-            for(var x = 0; x < high; x++) {
-            
-                var p = (y * wide + x) * 4;
-                
-                for(var i = 0; i < 3; i++) {
-                
-                    data[p+i] = table[data[p+i]];
-                }
-            }
-        }
-    }-*/;
-    
     protected abstract JavaScriptObject getTable();
 }

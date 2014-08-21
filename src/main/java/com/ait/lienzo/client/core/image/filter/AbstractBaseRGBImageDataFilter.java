@@ -91,12 +91,6 @@ public abstract class AbstractBaseRGBImageDataFilter<T extends AbstractBaseRGBIm
         return cast();
     }
 
-    @SuppressWarnings("unchecked")
-    private final T cast()
-    {
-        return (T) this;
-    }
-
     private final int fixc(int color)
     {
         if (color < 0)

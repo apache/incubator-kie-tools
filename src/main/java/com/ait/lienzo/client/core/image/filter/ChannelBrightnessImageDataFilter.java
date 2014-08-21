@@ -100,7 +100,7 @@ public class ChannelBrightnessImageDataFilter extends AbstractBaseImageDataFilte
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source), m_r_brightness, m_g_brightness, m_b_brightness);
+        filter_(data, FilterCommonOps.getLength(source), m_r_brightness, m_g_brightness, m_b_brightness);
 
         return source;
     }

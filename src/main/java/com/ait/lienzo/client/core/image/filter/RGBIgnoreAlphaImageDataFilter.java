@@ -75,7 +75,7 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractBaseRGBImageDataFilte
         {
             return source;
         }
-        filter_(data, FilterOps.getLength(source), getR(), getG(), getB());
+        filter_(data, FilterCommonOps.getLength(source), getR(), getG(), getB());
 
         return source;
     }
