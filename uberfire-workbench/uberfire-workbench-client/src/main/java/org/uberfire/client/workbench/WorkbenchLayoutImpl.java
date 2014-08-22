@@ -2,6 +2,7 @@ package org.uberfire.client.workbench;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -15,7 +16,6 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HeaderPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 
@@ -64,11 +64,15 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Inject
     private WorkbenchPickupDragController dragController;
 
-    @Inject
-    private PanelManager panelManager;
+    @PostConstruct
+    private void init() {
+        perspectiveRootContainer.ensureDebugId( "perspectiveRootContainer" );
+        headerPanel.ensureDebugId( "workbenchHeaderPanel" );
+        footerPanel.ensureDebugId( "workbenchFooterPanel" );
+    }
 
     @Override
-    public IsWidget getRoot() {
+    public HeaderPanel getRoot() {
         return root;
     }
 
@@ -80,16 +84,24 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Override
     public void setHeaderContents( List<Header> headers ) {
         headerPanel.clear();
-        for ( Header h : headers ) {
-            headerPanel.add( h );
+        root.remove( headerPanel );
+        if ( !headers.isEmpty() ) {
+            for ( Header h : headers ) {
+                headerPanel.add( h );
+            }
+            root.setHeaderWidget( headerPanel );
         }
     }
 
     @Override
     public void setFooterContents( List<Footer> footers ) {
         footerPanel.clear();
-        for ( Footer f : footers ) {
-            footerPanel.add( f );
+        root.remove( footerPanel );
+        if ( !footers.isEmpty() ) {
+            for ( Footer f : footers ) {
+                footerPanel.add( f );
+            }
+            root.setFooterWidget( footerPanel );
         }
     }
 
@@ -101,8 +113,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         dragBoundary.add( perspectiveRootContainer );
         Layouts.setToFillParent( perspectiveRootContainer );
 
-        root.setHeaderWidget( headerPanel );
-        root.setFooterWidget( footerPanel );
         root.setContentWidget( dragBoundary );
     }
 

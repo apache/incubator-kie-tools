@@ -14,9 +14,14 @@ import com.google.gwt.user.client.ui.Widget;
 public class Layouts {
 
     /**
-     * Sets the CSS on the given widget so it automatically fills the available space. This uses the same technique as
-     * GWT's LayoutPanel system: absoulte positioning with top, left, right, and bottom set to 0px. Note that, like
-     * LayoutPanels, this only works if the host page is in standards mode (has a {@code <!doctype html>} header).
+     * Sets the CSS on the given widget so it automatically fills the available space, rather than being sized based on
+     * the amount of space required by its contents. This tends to be useful when building a UI that always fills the
+     * available space on the screen, as most desktop application windows do.
+     * <p>
+     * To achieve this, the element is given relative positioning with top and left set to 0px and width and height set
+     * to 100%. This makes the widget fill its nearest ancestor which has relative or absolute positioning. This
+     * technique is compatible with GWT's LayoutPanel system. Note that, like LayoutPanels, this only works if the host
+     * page is in standards mode (has a {@code <!DOCTYPE html>} header).
      *
      * @param w
      *            the widget that should always fill its available space, rather than being sized to fit its contents.
