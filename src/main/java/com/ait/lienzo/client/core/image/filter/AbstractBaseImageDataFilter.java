@@ -16,11 +16,18 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.MetaData;
+import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+
 public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDataFilter<T>> implements ImageDataFilter
 {
-    private String  m_name   = null;
+    private boolean                         m_active = true;
 
-    private boolean m_active = true;
+    private final MetaData                  m_meta   = new MetaData();
+
+    private final ImageDataFilterAttributes m_attr   = new ImageDataFilterAttributes();
 
     @Override
     public boolean isTransforming()
@@ -41,24 +48,52 @@ public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDat
     }
 
     @Override
-    public String getName()
+    public String getType()
     {
-        if (null == m_name)
-        {
-            return getClass().getSimpleName();
-        }
-        return m_name;
+        return "LienzoCore." + getClass().getSimpleName();
     }
 
-    @Override
-    public void setName(String name)
-    {
-        m_name = name;
-    }
-    
     @SuppressWarnings("unchecked")
     protected final T cast()
     {
         return (T) this;
+    }
+
+    public final MetaData getMetaData()
+    {
+        return m_meta;
+    }
+
+    public final ImageDataFilterAttributes getAttributes()
+    {
+        return m_attr;
+    }
+
+    @Override
+    public String toJSONString()
+    {
+        return toJSONObject().toString();
+    }
+
+    @Override
+    public JSONObject toJSONObject()
+    {
+        JSONObject object = new JSONObject();
+
+        object.put("type", new JSONString(getType()));
+
+        if (false == getMetaData().isEmpty())
+        {
+            object.put("meta", new JSONObject(getMetaData().getJSO()));
+        }
+        object.put("attributes", new JSONObject(getAttributes().getJSO()));
+
+        return object;
+    }
+
+    @Override
+    public IFactory<ImageDataFilter> getFactory()
+    {
+        return null;
     }
 }

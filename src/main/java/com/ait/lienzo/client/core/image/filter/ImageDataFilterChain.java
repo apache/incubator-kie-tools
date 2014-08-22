@@ -23,12 +23,8 @@ import java.util.Iterator;
 
 import com.ait.lienzo.client.core.types.ImageData;
 
-public class ImageDataFilterChain implements ImageDataFilter, ImageDataFilterable<ImageDataFilterChain>, Iterable<ImageDataFilter>
+public class ImageDataFilterChain extends AbstractBaseImageDataFilter<ImageDataFilterChain> implements ImageDataFilterable<ImageDataFilterChain>, Iterable<ImageDataFilter>
 {
-    private String                     m_name    = null;
-
-    private boolean                    m_active  = true;
-
     private ArrayList<ImageDataFilter> m_filters = new ArrayList<ImageDataFilter>();
 
     public ImageDataFilterChain()
@@ -222,7 +218,7 @@ public class ImageDataFilterChain implements ImageDataFilter, ImageDataFilterabl
     @Override
     public boolean isActive()
     {
-        if ((m_active) && (m_filters.size() > 0))
+        if ((super.isActive()) && (m_filters.size() > 0))
         {
             for (int i = 0; i < m_filters.size(); i++)
             {
@@ -238,31 +234,9 @@ public class ImageDataFilterChain implements ImageDataFilter, ImageDataFilterabl
     }
 
     @Override
-    public void setActive(boolean active)
-    {
-        m_active = active;
-    }
-
-    @Override
     public Collection<ImageDataFilter> getFilters()
     {
         return Collections.unmodifiableCollection(m_filters);
-    }
-
-    @Override
-    public String getName()
-    {
-        if (null == m_name)
-        {
-            return getClass().getSimpleName();
-        }
-        return m_name;
-    }
-
-    @Override
-    public void setName(String name)
-    {
-        m_name = name;
     }
 
     @Override

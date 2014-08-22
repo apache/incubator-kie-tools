@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
@@ -23,7 +24,7 @@ import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 /**
  * Interface to be used to create {@link Picture} and {@link Movie} filters.
  */
-public interface ImageDataFilter
+public interface ImageDataFilter extends IJSONSerializable<ImageDataFilter>
 {
     public static int                            R_OFFSET        = 0;
 
@@ -45,9 +46,7 @@ public interface ImageDataFilter
 
     public void setActive(boolean active);
 
-    public String getName();
-
-    public void setName(String name);
+    public String getType();
 
     public static final class FilterTableArray extends JavaScriptObject
     {

@@ -62,7 +62,7 @@ public class Attributes
         m_jso = NFastStringMapMixedJSO.make();
     }
 
-    Attributes(JavaScriptObject valu)
+    protected Attributes(JavaScriptObject valu)
     {
         if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
         {
