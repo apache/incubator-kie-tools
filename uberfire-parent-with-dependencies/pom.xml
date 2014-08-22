@@ -49,7 +49,7 @@
 
     <version.xml-apis>1.3.04</version.xml-apis>
 
-    <version.org.jboss.errai>3.0.2-SNAPSHOT</version.org.jboss.errai>
+    <version.org.jboss.errai>3.0.3-SNAPSHOT</version.org.jboss.errai>
 
     <version.org.picketlink>2.6.0.CR2</version.org.picketlink>
     <version.org.jboss.logging>3.1.1.GA</version.org.jboss.logging>

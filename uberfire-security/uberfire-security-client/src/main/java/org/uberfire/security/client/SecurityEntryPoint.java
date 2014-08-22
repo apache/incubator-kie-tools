@@ -19,32 +19,19 @@ package org.uberfire.security.client;
 import static org.jboss.errai.bus.client.api.base.DefaultErrorCallback.*;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.bus.client.api.messaging.MessageCallback;
 import org.jboss.errai.common.client.protocols.MessageParts;
-import org.jboss.errai.security.client.local.api.SecurityContext;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.UnauthenticatedException;
 
 @ApplicationScoped
 public class SecurityEntryPoint {
 
     @Inject
-    private SecurityContext securityContext;
-
-    @Inject
     private ClientMessageBus bus;
-
-    @Produces
-    @Dependent
-    public User currentUser() {
-        return securityContext.getCachedUser();
-    }
 
     public void setup() {
         bus.subscribe( CLIENT_ERROR_SUBJECT, new MessageCallback() {
