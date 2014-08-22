@@ -17,6 +17,8 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.types.ImageData;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 
 /**
  * Interface to be used to create {@link Picture} and {@link Movie} filters.
@@ -46,4 +48,30 @@ public interface ImageDataFilter
     public String getName();
 
     public void setName(String name);
+
+    public static final class FilterTableArray extends JavaScriptObject
+    {
+        protected FilterTableArray()
+        {
+        }
+    }
+
+    public static final class FilterTransformFunction extends JavaScriptObject
+    {
+        protected FilterTransformFunction()
+        {
+        }
+    }
+
+    public static final class FilterConvolveMatrix extends NFastDoubleArrayJSO
+    {
+        public static final FilterConvolveMatrix make()
+        {
+            return NFastDoubleArrayJSO.make().cast();
+        }
+
+        protected FilterConvolveMatrix()
+        {
+        }
+    }
 }

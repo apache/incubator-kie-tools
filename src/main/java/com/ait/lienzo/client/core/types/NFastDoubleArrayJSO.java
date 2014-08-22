@@ -18,13 +18,13 @@ package com.ait.lienzo.client.core.types;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
-public final class NFastDoubleArrayJSO extends JavaScriptObject
+public class NFastDoubleArrayJSO extends JavaScriptObject
 {
     protected NFastDoubleArrayJSO()
     {
     }
 
-    public static final NFastDoubleArrayJSO make()
+    public static NFastDoubleArrayJSO make()
     {
         return JavaScriptObject.createArray().cast();
     }

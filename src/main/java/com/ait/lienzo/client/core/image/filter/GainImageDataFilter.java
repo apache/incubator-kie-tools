@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.google.gwt.core.client.JavaScriptObject;
 
 public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter>
 {
@@ -60,7 +59,7 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
     }
 
     @Override
-    protected final native JavaScriptObject getTable()
+    protected final native FilterTableArray getTable()
     /*-{
         var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::m_gain;
         

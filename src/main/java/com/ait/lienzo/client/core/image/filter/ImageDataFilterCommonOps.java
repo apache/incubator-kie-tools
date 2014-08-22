@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
+import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterTableArray;
+import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterTransformFunction;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -162,6 +165,56 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         this.luminocity = function(r, g, b) {
             return (r * 0.21) + (g * 0.72) + (b * 0.07);
         };
+        this.getPixel = function (data, x, y ,w, h) {
+            var p = ( y * w + x) * 4;
+            if (x < 0 || x >= w || y < 0 || y >= h) {
+                return [data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) *4],
+                data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 1],
+                data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 2],
+                data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 3]];
+            }
+            return [data[p],data[p+1],data[p+2],data[p+3]]
+        };
+        this.transformFilter = function(data, transform, w, h) {
+            var xfrm = [];
+            var buff = [];
+            var leng = data.length;
+            for(var j = 0; j < leng; j++) {
+                buff[j] = data[j];
+            }
+            for(var y = 0; y < h; y++) {
+                for (var x = 0; x < w; x++) {
+                    var p = (y * w + x) * 4;
+                    transform.apply(this, [x, y, xfrm]);
+                    var srcx = Math.floor(xfrm[0]);
+                    var srcy = Math.floor(xfrm[1]);
+                    var xwht = xfrm[0] - srcx;
+                    var ywht = xfrm[1] - srcy;
+                    var nw, ne, sw, se;
+                    if(srcx >= 0 && srcx < w - 1 && srcy >= 0 && srcy < h - 1) {
+                        var i = (w * srcy + srcx) * 4;
+                        nw = [data[i + 0], data[i + 1], data[i + 2], data[i + 3]];
+                        ne = [data[i + 4], data[i + 5], data[i + 6], data[i + 7]];
+                        sw = [data[i + w * 4], data[i + w * 4 + 1], data[i + w * 4 + 2],data[i + w * 4 + 3]];
+                        se = [data[i + (w + 1) *4], data[i + (w + 1) * 4 + 1], data[i + (w + 1) * 4 + 2], data[i + (w + 1) * 4 + 3]];
+                    } else {
+                        nw = this.getPixel(data, srcx, srcy, w, h);
+                        ne = this.getPixel(data, srcx+1, srcy, w, h);
+                        sw = this.getPixel(data, srcx, srcy+1, w, h);
+                        se = this.getPixel(data, srcx+1, srcy+1, w, h);
+                    }
+                    var rgba = this.bilinearInterpolate(xwht, ywht, nw, ne, sw, se);
+                    buff[p + 0] = rgba[0];
+                    buff[p + 1] = rgba[1];
+                    buff[p + 2] = rgba[2];
+                    buff[p + 3] = rgba[3];
+                }
+            }
+            var size = buff.length;
+            for(var k = 0; k < size; k++) {
+                data[k] = buff[k];
+            }
+        };
     }-*/;
 
     public final int getLength(ImageData source)
@@ -169,13 +222,18 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         return ((source.getWidth() * source.getHeight()) * 4);
     }
 
-    public final native void doFilterTable(JavaScriptObject data, JavaScriptObject table, int w, int h)
+    public final native void doFilterTable(JavaScriptObject data, FilterTableArray table, int w, int h)
     /*-{
         this.filterTable(data, table, w, h);
     }-*/;
 
-    public final native void doFilterConvolve(JavaScriptObject data, JavaScriptObject matrix, int w, int h)
+    public final native void doFilterConvolve(JavaScriptObject data, FilterConvolveMatrix matrix, int w, int h)
     /*-{
         this.filterConvolve(data, matrix, w, h);
+    }-*/;
+
+    public final native void doFilterTransform(JavaScriptObject data, FilterTransformFunction transform, int w, int h)
+    /*-{
+        this.filterConvolve(data, transform, w, h);
     }-*/;
 }

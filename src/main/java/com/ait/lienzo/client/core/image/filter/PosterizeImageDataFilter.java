@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<PosterizeImageDataFilter>
 {
     private double m_value = 6;
@@ -44,7 +42,7 @@ public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<Poste
     }
 
     @Override
-    protected final native JavaScriptObject getTable()
+    protected final native FilterTableArray getTable()
     /*-{
         var value = this.@com.ait.lienzo.client.core.image.filter.PosterizeImageDataFilter::m_value;
         

@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 
-public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageDataFilter<T>> extends AbstractBaseImageDataFilter<T>
+public abstract class AbstractTransformImageDataFilter<T extends AbstractTransformImageDataFilter<T>> extends AbstractBaseImageDataFilter<T>
 {
     @Override
     public ImageData filter(ImageData source, boolean copy)
@@ -42,7 +42,7 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         {
             return source;
         }
-        FilterCommonOps.doFilterTable(data, getTable(), source.getWidth(), source.getHeight());
+        FilterCommonOps.doFilterTransform(data, getTransform(), source.getWidth(), source.getHeight());
 
         return source;
     }
@@ -53,5 +53,5 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
         return true;
     }
 
-    protected abstract FilterTableArray getTable();
+    protected abstract FilterTransformFunction getTransform();
 }

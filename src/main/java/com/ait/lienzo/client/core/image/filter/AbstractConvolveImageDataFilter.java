@@ -17,12 +17,11 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 
 public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractBaseImageDataFilter<T>
 {
-    private final NFastDoubleArrayJSO m_matrix = NFastDoubleArrayJSO.make();
+    private final FilterConvolveMatrix m_matrix = FilterConvolveMatrix.make();
 
     protected AbstractConvolveImageDataFilter()
     {

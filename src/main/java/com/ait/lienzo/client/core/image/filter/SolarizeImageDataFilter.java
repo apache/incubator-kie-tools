@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter>
 {
     public SolarizeImageDataFilter()
@@ -25,7 +23,7 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
     }
 
     @Override
-    protected final native JavaScriptObject getTable()
+    protected final native FilterTableArray getTable()
     /*-{
         var table = [];
         

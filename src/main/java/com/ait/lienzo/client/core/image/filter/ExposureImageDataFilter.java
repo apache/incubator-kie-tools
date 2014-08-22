@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.google.gwt.core.client.JavaScriptObject;
 
 public class ExposureImageDataFilter extends AbstractTableImageDataFilter<ExposureImageDataFilter>
 {
@@ -44,7 +43,7 @@ public class ExposureImageDataFilter extends AbstractTableImageDataFilter<Exposu
     }
 
     @Override
-    protected final native JavaScriptObject getTable()
+    protected final native FilterTableArray getTable()
     /*-{
         var value = this.@com.ait.lienzo.client.core.image.filter.ExposureImageDataFilter::m_value;
         

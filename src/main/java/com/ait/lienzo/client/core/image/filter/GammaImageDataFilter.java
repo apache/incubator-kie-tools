@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImageDataFilter>
 {
     private double m_value = 1.0;
@@ -44,7 +42,7 @@ public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImag
     }
 
     @Override
-    protected final native JavaScriptObject getTable()
+    protected final native FilterTableArray getTable()
     /*-{
         var value = this.@com.ait.lienzo.client.core.image.filter.GammaImageDataFilter::m_value;
         
