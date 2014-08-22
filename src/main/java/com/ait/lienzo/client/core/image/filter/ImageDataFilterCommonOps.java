@@ -175,7 +175,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
             }
             return [data[p],data[p+1],data[p+2],data[p+3]]
         };
-        this.transformFilter = function(data, transform, w, h) {
+        this.filterTransform = function(data, transform, w, h) {
             var xfrm = [];
             var buff = [];
             var leng = data.length;
@@ -185,7 +185,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
             for(var y = 0; y < h; y++) {
                 for (var x = 0; x < w; x++) {
                     var p = (y * w + x) * 4;
-                    transform.apply(this, [x, y, xfrm]);
+                    transform(x, y, xfrm);
                     var srcx = Math.floor(xfrm[0]);
                     var srcy = Math.floor(xfrm[1]);
                     var xwht = xfrm[0] - srcx;
@@ -234,6 +234,6 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
 
     public final native void doFilterTransform(JavaScriptObject data, FilterTransformFunction transform, int w, int h)
     /*-{
-        this.filterConvolve(data, transform, w, h);
+        this.filterTransform(data, transform, w, h);
     }-*/;
 }
