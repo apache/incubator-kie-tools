@@ -59,6 +59,14 @@ public class ProjectMenu {
                     placeManager.goTo( "projectScreen" );
                 }
             } ).endMenu().build().getItems().get( 0 );
+    
+    private MenuItem projectStructureScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.ProjectStructure() ).respondsWith(
+            new Command() {
+                @Override
+                public void execute() {
+                    placeManager.goTo( "projectStructureScreen" );
+                }
+            } ).endMenu().build().getItems().get( 0 );
 
     private MenuItem copyProject = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.CopyProject() ).respondsWith(
             new Command() {
@@ -118,6 +126,8 @@ public class ProjectMenu {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
 
         menuItems.add( projectScreen );
+        
+        menuItems.add( projectStructureScreen );
 
 //        menuItems.add(removeProject);
 //        menuItems.add(renameProject);

@@ -27,6 +27,8 @@ public interface ToolsMenuConstants
 
     String ProjectEditor();
     
+    String ProjectStructure();
+    
     String DataModeller();
 
     String RemoveProject();
