@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.shape.Attributes;
 import com.google.gwt.core.client.JavaScriptObject;
 
@@ -43,5 +44,32 @@ public class ImageDataFilterAttributes extends Attributes
             return this.getBoolean(ImageDataFilterAttribute.ACTIVE.getProperty());
         }
         return true;
+    }
+
+    public final void setMatrix(double... matrix)
+    {
+        FilterConvolveMatrix mjso = FilterConvolveMatrix.make();
+
+        for (int i = 0; i < matrix.length; i++)
+        {
+            mjso.push(matrix[i]);
+        }
+        setMatrix(mjso);
+    }
+
+    public final void setMatrix(FilterConvolveMatrix matrix)
+    {
+        put(ImageDataFilterAttribute.MATRIX.getProperty(), matrix);
+    }
+
+    public final FilterConvolveMatrix getMatrix()
+    {
+        JavaScriptObject mjso = getObject(ImageDataFilterAttribute.MATRIX.getProperty());
+
+        if (null != mjso)
+        {
+            return mjso.cast();
+        }
+        return FilterConvolveMatrix.make();
     }
 }

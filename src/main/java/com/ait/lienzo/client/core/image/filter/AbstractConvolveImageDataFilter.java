@@ -21,8 +21,6 @@ import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 
 public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
-    private final FilterConvolveMatrix m_matrix = FilterConvolveMatrix.make();
-
     protected AbstractConvolveImageDataFilter()
     {
     }
@@ -34,13 +32,21 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
 
     public final T setMatrix(double... matrix)
     {
-        m_matrix.clear();
+        getAttributes().setMatrix(matrix);
 
-        for (int i = 0; i < matrix.length; i++)
-        {
-            m_matrix.push(matrix[i]);
-        }
         return cast();
+    }
+
+    public final T setMatrix(FilterConvolveMatrix matrix)
+    {
+        getAttributes().setMatrix(matrix);
+
+        return cast();
+    }
+
+    public final FilterConvolveMatrix getMatrix()
+    {
+        return getAttributes().getMatrix();
     }
 
     @Override
@@ -70,12 +76,24 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         {
             return source;
         }
-        if (m_matrix.size() < 1)
+        FilterConvolveMatrix matrix = getMatrix();
+
+        if (matrix.size() < 1)
         {
             return source;
         }
-        FilterCommonOps.doFilterConvolve(data, m_matrix, source.getWidth(), source.getHeight());
+        FilterCommonOps.doFilterConvolve(data, matrix, source.getWidth(), source.getHeight());
 
         return source;
+    }
+
+    protected static abstract class ConvolveImageDataFilterFactory<T extends AbstractConvolveImageDataFilter<T>> extends ImageDataFilterFactory<T>
+    {
+        protected ConvolveImageDataFilterFactory(String type)
+        {
+            super(type);
+
+            addAttribute(ImageDataFilterAttribute.MATRIX, true);
+        }
     }
 }
