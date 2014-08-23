@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -23,7 +24,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * An Image Filter than can be used to set the brightness levels for each of the RGB channels of the {@link Picture} 
  */
-public class ChannelBrightnessImageDataFilter extends AbstractBaseImageDataFilter<ChannelBrightnessImageDataFilter>
+public class ChannelBrightnessImageDataFilter extends AbstractImageDataFilter<ChannelBrightnessImageDataFilter>
 {
     private double m_r_brightness;
 
@@ -134,4 +135,11 @@ public class ChannelBrightnessImageDataFilter extends AbstractBaseImageDataFilte
     		data[i + 2] = calculate(data[i + 2], b);
     	}
     }-*/;
+
+    @Override
+    public IFactory<ChannelBrightnessImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
+
 public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter>
 {
     public SolarizeImageDataFilter()
@@ -33,4 +35,11 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
         }
         return table;
     }-*/;
+
+    @Override
+    public IFactory<SolarizeImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

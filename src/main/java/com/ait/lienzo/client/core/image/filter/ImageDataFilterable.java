@@ -20,17 +20,17 @@ import java.util.Collection;
 
 public interface ImageDataFilterable<T extends ImageDataFilterable<T>>
 {
-    public T setFilters(ImageDataFilter filter, ImageDataFilter... filters);
+    public T setFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters);
 
-    public T addFilters(ImageDataFilter filter, ImageDataFilter... filters);
+    public T addFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters);
 
-    public T removeFilters(ImageDataFilter filter, ImageDataFilter... filters);
+    public T removeFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters);
 
-    public T setFilters(Iterable<ImageDataFilter> filters);
+    public T setFilters(Iterable<ImageDataFilter<?>> filters);
 
-    public T addFilters(Iterable<ImageDataFilter> filters);
+    public T addFilters(Iterable<ImageDataFilter<?>> filters);
 
-    public T removeFilters(Iterable<ImageDataFilter> filters);
+    public T removeFilters(Iterable<ImageDataFilter<?>> filters);
 
     public T clearFilters();
 
@@ -38,5 +38,5 @@ public interface ImageDataFilterable<T extends ImageDataFilterable<T>>
 
     public boolean areFiltersActive();
 
-    public Collection<ImageDataFilter> getFilters();
+    public Collection<ImageDataFilter<?>> getFilters();
 }

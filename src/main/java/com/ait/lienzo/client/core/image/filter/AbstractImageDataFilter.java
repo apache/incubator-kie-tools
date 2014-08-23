@@ -17,17 +17,15 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.MetaData;
-import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
-public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDataFilter<T>> implements ImageDataFilter
+public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<T>> implements ImageDataFilter<T>
 {
-    private boolean                         m_active = true;
+    private final MetaData                  m_meta = new MetaData();
 
-    private final MetaData                  m_meta   = new MetaData();
-
-    private final ImageDataFilterAttributes m_attr   = new ImageDataFilterAttributes();
+    private final ImageDataFilterAttributes m_attr = new ImageDataFilterAttributes();
 
     @Override
     public boolean isTransforming()
@@ -38,13 +36,13 @@ public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDat
     @Override
     public boolean isActive()
     {
-        return m_active;
+        return getAttributes().isActive();
     }
 
     @Override
     public void setActive(boolean active)
     {
-        m_active = active;
+        getAttributes().setActive(active);
     }
 
     @Override
@@ -91,9 +89,13 @@ public abstract class AbstractBaseImageDataFilter<T extends AbstractBaseImageDat
         return object;
     }
 
-    @Override
-    public IFactory<ImageDataFilter> getFactory()
+    protected static abstract class ImageDataFilterFactory<T extends ImageDataFilter<T>> extends AbstractFactory<T>
     {
-        return null;
+        protected ImageDataFilterFactory(String type)
+        {
+            super(type);
+
+            addAttribute(ImageDataFilterAttribute.ACTIVE, true);
+        }
     }
 }

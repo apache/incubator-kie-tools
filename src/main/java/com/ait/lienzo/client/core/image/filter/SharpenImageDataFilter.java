@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
+
 /**
  * A class that allows for easy creation of a Sharpen Image Filter.
  */
@@ -57,5 +59,12 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
             }
             return copy;
         }
+    }
+
+    @Override
+    public IFactory<SharpenImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

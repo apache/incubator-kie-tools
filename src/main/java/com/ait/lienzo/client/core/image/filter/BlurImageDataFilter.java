@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
+
 /**
  * A class that allows for easy creation of Blur Filters.
  */
@@ -24,5 +26,12 @@ public class BlurImageDataFilter extends AbstractConvolveImageDataFilter<BlurIma
     public BlurImageDataFilter()
     {
         super(1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0, 1.0 / 9.0);
+    }
+
+    @Override
+    public IFactory<BlurImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

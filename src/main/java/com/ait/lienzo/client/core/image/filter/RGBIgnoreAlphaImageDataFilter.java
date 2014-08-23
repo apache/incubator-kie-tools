@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
@@ -30,7 +31,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  *  </li>
  * </ui>
  */
-public class RGBIgnoreAlphaImageDataFilter extends AbstractBaseRGBImageDataFilter<RGBIgnoreAlphaImageDataFilter>
+public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RGBIgnoreAlphaImageDataFilter>
 {
     public RGBIgnoreAlphaImageDataFilter()
     {
@@ -98,4 +99,11 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractBaseRGBImageDataFilte
     		}
     	}
     }-*/;
+
+    @Override
+    public IFactory<RGBIgnoreAlphaImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

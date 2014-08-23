@@ -16,11 +16,12 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class StackBlurImageDataFilter extends AbstractBaseImageDataFilter<BrightnessImageDataFilter>
+public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurImageDataFilter>
 {
     public int m_radius;
 
@@ -42,7 +43,7 @@ public class StackBlurImageDataFilter extends AbstractBaseImageDataFilter<Bright
     public final StackBlurImageDataFilter setRadius(int radius)
     {
         m_radius = Math.max(Math.min(radius, 180), 1);
-        
+
         return this;
     }
 
@@ -294,4 +295,11 @@ public class StackBlurImageDataFilter extends AbstractBaseImageDataFilter<Bright
             }
         }
     }-*/;
+
+    @Override
+    public IFactory<StackBlurImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
+
 public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImageDataFilter>
 {
     private double m_value = 1.0;
@@ -54,4 +56,11 @@ public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImag
         }
         return table;
     }-*/;
+
+    @Override
+    public IFactory<GammaImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

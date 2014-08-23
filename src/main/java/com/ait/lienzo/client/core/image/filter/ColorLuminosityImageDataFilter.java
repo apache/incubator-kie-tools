@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
@@ -24,7 +25,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * A class that allows for easy creation of a Color Luminosity based Image Filter.
  */
-public class ColorLuminosityImageDataFilter extends AbstractBaseRGBImageDataFilter<ColorLuminosityImageDataFilter>
+public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<ColorLuminosityImageDataFilter>
 {
     public ColorLuminosityImageDataFilter(int r, int g, int b)
     {
@@ -85,4 +86,11 @@ public class ColorLuminosityImageDataFilter extends AbstractBaseRGBImageDataFilt
     		data[i + 2] = ((b * v) + 0.5) | 0;
     	}
     }-*/;
+
+    @Override
+    public IFactory<ColorLuminosityImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

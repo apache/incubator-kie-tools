@@ -102,7 +102,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, true, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -152,7 +152,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, true, mode);
 
@@ -202,7 +202,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -252,7 +252,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
@@ -310,7 +310,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -376,7 +376,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
@@ -438,7 +438,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -504,7 +504,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
@@ -570,7 +570,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(String url, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -628,7 +628,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(String url, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(String url, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, url, listening, mode);
 
@@ -682,7 +682,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(ImageResource resource, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, true, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -732,7 +732,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(ImageResource resource, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, true, mode);
 
@@ -782,7 +782,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param listening When set to false, the Picture can't be dragged or picked,
      *      but it will be drawn faster and use less memory.
      */
-    public Picture(ImageResource resource, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -832,7 +832,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     * @param listening When set to false, the Picture can't be dragged or picked,
     *      but it will be drawn faster and use less memory.
     */
-    public Picture(ImageResource resource, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
@@ -892,7 +892,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
      *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -960,7 +960,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
      *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
@@ -1026,7 +1026,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
      *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -1096,7 +1096,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
      *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, int sx, int sy, int sw, int sh, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
@@ -1164,7 +1164,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
     *      the Pictures in a category are loaded.  Null means: use the default category.
     */
-    public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, LienzoCore.get().getDefaultImageSelectionMode());
 
@@ -1224,7 +1224,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param pictureCategory Used by {@link PictureLoader} when (all the images of) all
      *      the Pictures in a category are loaded.  Null means: use the default category.
      */
-    public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture(ImageResource resource, int dw, int dh, boolean listening, ImageSelectionMode mode, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.PICTURE, resource, listening, mode);
 
@@ -1238,7 +1238,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     }
 
     @Override
-    public Picture setFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture setFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         getImageProxy().setFilters(filter, filters);
 
@@ -1246,7 +1246,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     }
 
     @Override
-    public Picture addFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture addFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         getImageProxy().addFilters(filter, filters);
 
@@ -1254,7 +1254,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     }
 
     @Override
-    public Picture removeFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public Picture removeFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         getImageProxy().removeFilters(filter, filters);
 
@@ -1270,7 +1270,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     }
 
     @Override
-    public Collection<ImageDataFilter> getFilters()
+    public Collection<ImageDataFilter<?>> getFilters()
     {
         return getImageProxy().getFilters();
     }
@@ -1290,7 +1290,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     }
 
     @Override
-    public Picture setFilters(Iterable<ImageDataFilter> filters)
+    public Picture setFilters(Iterable<ImageDataFilter<?>> filters)
     {
         getImageProxy().setFilters(filters);
 
@@ -1298,7 +1298,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     }
 
     @Override
-    public Picture addFilters(Iterable<ImageDataFilter> filters)
+    public Picture addFilters(Iterable<ImageDataFilter<?>> filters)
     {
         getImageProxy().addFilters(filters);
 
@@ -1306,7 +1306,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     }
 
     @Override
-    public Picture removeFilters(Iterable<ImageDataFilter> filters)
+    public Picture removeFilters(Iterable<ImageDataFilter<?>> filters)
     {
         getImageProxy().removeFilters(filters);
 

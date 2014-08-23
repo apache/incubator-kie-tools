@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 
 public class ContrastImageDataFilter extends AbstractTableImageDataFilter<ContrastImageDataFilter>
 {
@@ -55,4 +56,11 @@ public class ContrastImageDataFilter extends AbstractTableImageDataFilter<Contra
         }
         return table;
     }-*/;
+
+    @Override
+    public IFactory<ContrastImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

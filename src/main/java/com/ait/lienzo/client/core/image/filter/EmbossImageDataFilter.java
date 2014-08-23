@@ -16,18 +16,19 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class EmbossImageDataFilter extends AbstractBaseImageDataFilter<EmbossImageDataFilter>
+public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDataFilter>
 {
     private final static LuminosityGrayScaleImageDataFilter POST = new LuminosityGrayScaleImageDataFilter();
-    
+
     public EmbossImageDataFilter()
     {
     }
-    
+
     @Override
     public final boolean isTransforming()
     {
@@ -59,7 +60,7 @@ public class EmbossImageDataFilter extends AbstractBaseImageDataFilter<EmbossIma
 
         return POST.filter(source, false);
     }
-    
+
     private final native void filter_(JavaScriptObject pixa, int length, int width)
     /*-{
         var data = pixa;
@@ -95,4 +96,11 @@ public class EmbossImageDataFilter extends AbstractBaseImageDataFilter<EmbossIma
             }
         }
     }-*/;
+
+    @Override
+    public IFactory<EmbossImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

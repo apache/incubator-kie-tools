@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.IColor;
 
-public abstract class AbstractBaseRGBImageDataFilter<T extends AbstractBaseRGBImageDataFilter<T>> extends AbstractBaseImageDataFilter<T>
+public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
     private int m_r;
 
@@ -27,7 +27,7 @@ public abstract class AbstractBaseRGBImageDataFilter<T extends AbstractBaseRGBIm
 
     private int m_b;
 
-    public AbstractBaseRGBImageDataFilter()
+    public AbstractRGBImageDataFilter()
     {
         m_r = 0;
 
@@ -36,7 +36,7 @@ public abstract class AbstractBaseRGBImageDataFilter<T extends AbstractBaseRGBIm
         m_b = 0;
     }
 
-    public AbstractBaseRGBImageDataFilter(int r, int g, int b)
+    public AbstractRGBImageDataFilter(int r, int g, int b)
     {
         m_r = fixc(r);
 
@@ -45,12 +45,12 @@ public abstract class AbstractBaseRGBImageDataFilter<T extends AbstractBaseRGBIm
         m_b = fixc(b);
     }
 
-    public AbstractBaseRGBImageDataFilter(IColor color)
+    public AbstractRGBImageDataFilter(IColor color)
     {
         this(color.getR(), color.getG(), color.getB());
     }
 
-    public AbstractBaseRGBImageDataFilter(String color)
+    public AbstractRGBImageDataFilter(String color)
     {
         this(Color.fromColorString(color));
     }

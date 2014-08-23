@@ -16,12 +16,13 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 
-public class AlphaScaleColorImageDataFilter extends AbstractBaseRGBImageDataFilter<AlphaScaleColorImageDataFilter>
+public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<AlphaScaleColorImageDataFilter>
 {
     private boolean m_invert = false;
 
@@ -126,4 +127,11 @@ public class AlphaScaleColorImageDataFilter extends AbstractBaseRGBImageDataFilt
             }
         }
     }-*/;
+
+    @Override
+    public IFactory<AlphaScaleColorImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

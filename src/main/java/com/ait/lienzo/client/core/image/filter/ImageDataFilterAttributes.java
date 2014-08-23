@@ -30,4 +30,18 @@ public class ImageDataFilterAttributes extends Attributes
     {
         super(valu);
     }
+
+    public final void setActive(boolean active)
+    {
+        put(ImageDataFilterAttribute.ACTIVE.getProperty(), active);
+    }
+
+    public final boolean isActive()
+    {
+        if (isDefined(ImageDataFilterAttribute.ACTIVE))
+        {
+            return this.getBoolean(ImageDataFilterAttribute.ACTIVE.getProperty());
+        }
+        return true;
+    }
 }

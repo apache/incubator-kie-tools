@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 /**
  * Interface to be used to create {@link Picture} and {@link Movie} filters.
  */
-public interface ImageDataFilter extends IJSONSerializable<ImageDataFilter>
+public interface ImageDataFilter<T extends ImageDataFilter<T>> extends IJSONSerializable<T>
 {
     public static int                            R_OFFSET        = 0;
 

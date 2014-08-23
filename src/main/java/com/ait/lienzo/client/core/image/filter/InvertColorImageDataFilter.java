@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -23,7 +24,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * A class that allows for easy creation of a Invert Color Image Filter.
  */
-public class InvertColorImageDataFilter extends AbstractBaseImageDataFilter<InvertColorImageDataFilter>
+public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertColorImageDataFilter>
 {
     @Override
     public ImageData filter(ImageData source, boolean copy)
@@ -64,4 +65,11 @@ public class InvertColorImageDataFilter extends AbstractBaseImageDataFilter<Inve
     		data[i + 2] = 255 - data[i + 2];
     	}
     }-*/;
+
+    @Override
+    public IFactory<InvertColorImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -98,7 +98,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
         m_animate = doInitialize();
     }
 
-    public Movie(String url, ImageDataFilter filter, ImageDataFilter... filters)
+    public Movie(String url, ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         super(ShapeType.MOVIE);
 
@@ -356,7 +356,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Movie setFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public Movie setFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         m_filters.setFilters(filter, filters);
 
@@ -364,7 +364,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Movie addFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public Movie addFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         m_filters.addFilters(filter, filters);
 
@@ -372,7 +372,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Movie removeFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public Movie removeFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         m_filters.removeFilters(filter, filters);
 
@@ -388,7 +388,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Collection<ImageDataFilter> getFilters()
+    public Collection<ImageDataFilter<?>> getFilters()
     {
         return m_filters.getFilters();
     }
@@ -408,7 +408,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Movie setFilters(Iterable<ImageDataFilter> filters)
+    public Movie setFilters(Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.setFilters(filters);
 
@@ -416,7 +416,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Movie addFilters(Iterable<ImageDataFilter> filters)
+    public Movie addFilters(Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.addFilters(filters);
 
@@ -424,7 +424,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
-    public Movie removeFilters(Iterable<ImageDataFilter> filters)
+    public Movie removeFilters(Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.removeFilters(filters);
 

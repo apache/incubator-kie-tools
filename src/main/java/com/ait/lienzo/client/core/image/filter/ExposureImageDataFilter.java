@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 
 public class ExposureImageDataFilter extends AbstractTableImageDataFilter<ExposureImageDataFilter>
 {
@@ -55,4 +56,11 @@ public class ExposureImageDataFilter extends AbstractTableImageDataFilter<Exposu
         }
         return table;
     }-*/;
+
+    @Override
+    public IFactory<ExposureImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -23,7 +24,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * A class that allows for easy creation of Brightness Filters.
  */
-public class BrightnessImageDataFilter extends AbstractBaseImageDataFilter<BrightnessImageDataFilter>
+public class BrightnessImageDataFilter extends AbstractImageDataFilter<BrightnessImageDataFilter>
 {
     private double m_brightness;
 
@@ -94,4 +95,11 @@ public class BrightnessImageDataFilter extends AbstractBaseImageDataFilter<Brigh
     		data[i + 2] = calculate(data[i + 2]);
     	}
     }-*/;
+
+    @Override
+    public IFactory<BrightnessImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

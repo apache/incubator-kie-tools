@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
+
 public class DiffusionImageDataFilter extends AbstractTransformImageDataFilter<DiffusionImageDataFilter>
 {
     private double m_value = 4.0;
@@ -59,4 +61,11 @@ public class DiffusionImageDataFilter extends AbstractTransformImageDataFilter<D
             out[1] = y + d * ctabl[a];
         };
     }-*/;
+
+    @Override
+    public IFactory<DiffusionImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

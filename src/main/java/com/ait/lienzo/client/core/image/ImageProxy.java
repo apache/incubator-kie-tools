@@ -195,7 +195,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> setFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public ImageProxy<T> setFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         m_filters.setFilters(filter, filters);
 
@@ -203,7 +203,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> addFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public ImageProxy<T> addFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         m_filters.addFilters(filter, filters);
 
@@ -211,7 +211,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> removeFilters(ImageDataFilter filter, ImageDataFilter... filters)
+    public ImageProxy<T> removeFilters(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         m_filters.removeFilters(filter, filters);
 
@@ -227,7 +227,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public Collection<ImageDataFilter> getFilters()
+    public Collection<ImageDataFilter<?>> getFilters()
     {
         return m_filters.getFilters();
     }
@@ -247,7 +247,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> setFilters(Iterable<ImageDataFilter> filters)
+    public ImageProxy<T> setFilters(Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.setFilters(filters);
 
@@ -255,7 +255,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> addFilters(Iterable<ImageDataFilter> filters)
+    public ImageProxy<T> addFilters(Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.addFilters(filters);
 
@@ -263,7 +263,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
     }
 
     @Override
-    public ImageProxy<T> removeFilters(Iterable<ImageDataFilter> filters)
+    public ImageProxy<T> removeFilters(Iterable<ImageDataFilter<?>> filters)
     {
         m_filters.removeFilters(filters);
 
@@ -457,7 +457,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         }
     }
 
-    private final void doFiltering(ScratchCanvas source, ScratchCanvas target, ImageDataFilter filter)
+    private final void doFiltering(ScratchCanvas source, ScratchCanvas target, ImageDataFilter<?> filter)
     {
         if ((null == filter) || (false == filter.isActive()))
         {

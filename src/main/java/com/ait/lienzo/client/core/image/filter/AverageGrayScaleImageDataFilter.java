@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -23,7 +24,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * A class that allows for easy creation of Gray Scale Filters.
  */
-public class AverageGrayScaleImageDataFilter extends AbstractBaseImageDataFilter<AverageGrayScaleImageDataFilter>
+public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<AverageGrayScaleImageDataFilter>
 {
     @Override
     public ImageData filter(ImageData source, boolean copy)
@@ -66,4 +67,11 @@ public class AverageGrayScaleImageDataFilter extends AbstractBaseImageDataFilter
     		data[i + 2] = v;
     	}
     }-*/;
+
+    @Override
+    public IFactory<AverageGrayScaleImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

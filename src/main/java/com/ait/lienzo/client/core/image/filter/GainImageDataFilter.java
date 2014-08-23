@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
 
 public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter>
 {
@@ -76,4 +77,11 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
         }
         return table;
     }-*/;
+
+    @Override
+    public IFactory<GainImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

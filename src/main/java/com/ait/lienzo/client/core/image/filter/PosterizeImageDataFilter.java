@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.IFactory;
+
 public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<PosterizeImageDataFilter>
 {
     private double m_value = 6;
@@ -54,4 +56,11 @@ public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<Poste
         }
         return table;
     }-*/;
+
+    @Override
+    public IFactory<PosterizeImageDataFilter> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
