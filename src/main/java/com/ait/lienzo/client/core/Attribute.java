@@ -183,6 +183,14 @@ public class Attribute implements IAttribute
 
     public static final Attribute           SPRITE_BEHAVIOR                  = new Attribute("spriteBehavior", MESSAGES.spriteBehaviorLabel(), MESSAGES.spriteBehaviorDescription(), AttributeType.STRING_TYPE);
 
+    public static final Attribute           ACTIVE                           = new Attribute("active", "", "", AttributeType.BOOLEAN_TYPE);
+
+    public static final Attribute           VALUE                            = new Attribute("value", "", "", AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           COLOR                            = new Attribute("color", "", "", AttributeType.COLOR_TYPE);
+
+    public static final Attribute           MATRIX                           = new Attribute("matrix", "", "", AttributeType.NUMBER_ARRAY_TYPE);
+
     private final String                    m_property;
 
     private final String                    m_label;

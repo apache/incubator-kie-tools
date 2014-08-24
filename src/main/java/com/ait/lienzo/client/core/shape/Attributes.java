@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.DragBounds.DragBoundsJSO;
@@ -62,7 +63,7 @@ public class Attributes
         m_jso = NFastStringMapMixedJSO.make();
     }
 
-    protected Attributes(JavaScriptObject valu)
+    public Attributes(JavaScriptObject valu)
     {
         if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
         {
@@ -1558,6 +1559,57 @@ public class Attributes
             return m_jso.getString(name);
         }
         return null;
+    }
+
+    public final void setActive(boolean active)
+    {
+        put(Attribute.ACTIVE.getProperty(), active);
+    }
+
+    public final boolean isActive()
+    {
+        if (isDefined(Attribute.ACTIVE))
+        {
+            return this.getBoolean(Attribute.ACTIVE.getProperty());
+        }
+        return true;
+    }
+
+    public final void setMatrix(double... matrix)
+    {
+        FilterConvolveMatrix mjso = FilterConvolveMatrix.make();
+
+        for (int i = 0; i < matrix.length; i++)
+        {
+            mjso.push(matrix[i]);
+        }
+        setMatrix(mjso);
+    }
+
+    public final void setMatrix(FilterConvolveMatrix matrix)
+    {
+        put(Attribute.MATRIX.getProperty(), matrix);
+    }
+
+    public final FilterConvolveMatrix getMatrix()
+    {
+        JavaScriptObject mjso = getObject(Attribute.MATRIX.getProperty());
+
+        if (null != mjso)
+        {
+            return mjso.cast();
+        }
+        return FilterConvolveMatrix.make();
+    }
+
+    public final double getValue()
+    {
+        return getDouble(Attribute.VALUE.getProperty());
+    }
+
+    public final void setValue(double value)
+    {
+        put(Attribute.VALUE.getProperty(), value);
     }
 
     public final boolean getBoolean(String name)

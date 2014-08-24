@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
@@ -102,7 +103,7 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         {
             super(type);
 
-            addAttribute(ImageDataFilterAttribute.MATRIX, true);
+            addAttribute(Attribute.MATRIX, true);
         }
     }
 }

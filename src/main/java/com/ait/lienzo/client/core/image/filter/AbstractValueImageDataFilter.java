@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
@@ -54,7 +55,7 @@ public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageD
         {
             super(type);
 
-            addAttribute(ImageDataFilterAttribute.VALUE, true);
+            addAttribute(Attribute.VALUE, true);
         }
     }
 }

@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.MetaData;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -27,15 +29,15 @@ import com.google.gwt.json.client.JSONValue;
 
 public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<T>> implements ImageDataFilter<T>
 {
-    private final MetaData                  m_meta;
+    private final MetaData   m_meta;
 
-    private final ImageDataFilterAttributes m_attr;
+    private final Attributes m_attr;
 
-    private final String                    m_type;
+    private final String     m_type;
 
     protected AbstractImageDataFilter()
     {
-        m_attr = new ImageDataFilterAttributes();
+        m_attr = new Attributes();
 
         m_meta = new MetaData();
 
@@ -48,7 +50,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
         if (null == node)
         {
-            m_attr = new ImageDataFilterAttributes();
+            m_attr = new Attributes();
 
             m_meta = new MetaData();
 
@@ -58,7 +60,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
         if (null == aval)
         {
-            m_attr = new ImageDataFilterAttributes();
+            m_attr = new Attributes();
         }
         else
         {
@@ -66,7 +68,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
             if (null == aobj)
             {
-                m_attr = new ImageDataFilterAttributes();
+                m_attr = new Attributes();
             }
             else
             {
@@ -74,11 +76,11 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
                 if (null == ajso)
                 {
-                    m_attr = new ImageDataFilterAttributes();
+                    m_attr = new Attributes();
                 }
                 else
                 {
-                    m_attr = new ImageDataFilterAttributes(ajso);
+                    m_attr = new Attributes(ajso);
                 }
             }
         }
@@ -147,7 +149,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         return m_meta;
     }
 
-    public final ImageDataFilterAttributes getAttributes()
+    public final Attributes getAttributes()
     {
         return m_attr;
     }
@@ -180,7 +182,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         {
             super(type);
 
-            addAttribute(ImageDataFilterAttribute.ACTIVE, true);
+            addAttribute(Attribute.ACTIVE, true);
         }
     }
 }
