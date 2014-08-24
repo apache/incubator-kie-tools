@@ -18,6 +18,8 @@ package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.MetaData;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
@@ -26,6 +28,14 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
     private final MetaData                  m_meta = new MetaData();
 
     private final ImageDataFilterAttributes m_attr = new ImageDataFilterAttributes();
+
+    protected AbstractImageDataFilter()
+    {
+    }
+
+    protected AbstractImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+    }
 
     @Override
     public boolean isTransforming()

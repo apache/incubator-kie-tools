@@ -17,15 +17,27 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * A class that allows for easy creation of Gray Scale Filters.
  */
 public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<AverageGrayScaleImageDataFilter>
 {
+    public AverageGrayScaleImageDataFilter()
+    {
+    }
+
+    protected AverageGrayScaleImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
+    }
+
     @Override
     public ImageData filter(ImageData source, boolean copy)
     {
@@ -52,10 +64,8 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
         return source;
     }
 
-    private final native void filter_(JavaScriptObject pixa, int length)
+    private final native void filter_(JavaScriptObject data, int length)
     /*-{
-    	var data = pixa;
-
     	for (var i = 0; i < length; i += 4) {
 
     		var v = (((data[i + 0] + data[i + 1] + data[i + 2]) / 3.0) + 0.5) | 0;
@@ -71,7 +81,20 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
     @Override
     public IFactory<AverageGrayScaleImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new AverageGrayScaleImageDataFilterFactory();
+    }
+
+    public static class AverageGrayScaleImageDataFilterFactory extends ImageDataFilterFactory<AverageGrayScaleImageDataFilter>
+    {
+        public AverageGrayScaleImageDataFilterFactory()
+        {
+            super(AverageGrayScaleImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public AverageGrayScaleImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new AverageGrayScaleImageDataFilter(node, ctx);
+        }
     }
 }

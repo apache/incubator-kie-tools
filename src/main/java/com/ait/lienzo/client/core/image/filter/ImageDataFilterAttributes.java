@@ -72,4 +72,14 @@ public class ImageDataFilterAttributes extends Attributes
         }
         return FilterConvolveMatrix.make();
     }
+
+    public final double getValue()
+    {
+        return getDouble(ImageDataFilterAttribute.VALUE.getProperty());
+    }
+
+    public final void setValue(double value)
+    {
+        put(ImageDataFilterAttribute.VALUE.getProperty(), value);
+    }
 }
