@@ -79,7 +79,20 @@ public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertCo
     @Override
     public IFactory<InvertColorImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new InvertColorImageDataFilterFactory();
+    }
+
+    public static class InvertColorImageDataFilterFactory extends ImageDataFilterFactory<InvertColorImageDataFilter>
+    {
+        public InvertColorImageDataFilterFactory()
+        {
+            super(InvertColorImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public InvertColorImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new InvertColorImageDataFilter(node, ctx);
+        }
     }
 }

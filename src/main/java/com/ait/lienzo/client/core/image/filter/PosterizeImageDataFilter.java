@@ -21,17 +21,34 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<PosterizeImageDataFilter>
+public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<PosterizeImageDataFilter>
 {
-    private double m_value = 6;
-
     public PosterizeImageDataFilter()
     {
+        super(6);
     }
 
     public PosterizeImageDataFilter(double value)
     {
-        setValue(value);
+        super(value);
+    }
+
+    @Override
+    public double getMinValue()
+    {
+        return 2;
+    }
+
+    @Override
+    public double getMaxValue()
+    {
+        return 30;
+    }
+
+    @Override
+    public double getRefValue()
+    {
+        return 6;
     }
 
     protected PosterizeImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -39,23 +56,9 @@ public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<Poste
         super(node, ctx);
     }
 
-    public final PosterizeImageDataFilter setValue(double value)
-    {
-        m_value = Math.max(Math.min(value, 30), 2);
-
-        return this;
-    }
-
-    public final double getValue()
-    {
-        return m_value;
-    }
-
     @Override
-    protected final native FilterTableArray getTable()
+    protected final native FilterTableArray getTable(double value)
     /*-{
-        var value = this.@com.ait.lienzo.client.core.image.filter.PosterizeImageDataFilter::m_value;
-        
         var table = [];
         
         for(var i = 0; i < 256; i++) {
@@ -68,7 +71,20 @@ public class PosterizeImageDataFilter extends AbstractTableImageDataFilter<Poste
     @Override
     public IFactory<PosterizeImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new PosterizeImageDataFilterFactory();
+    }
+
+    public static class PosterizeImageDataFilterFactory extends ValueTableImageDataFilterFactory<PosterizeImageDataFilter>
+    {
+        public PosterizeImageDataFilterFactory()
+        {
+            super(PosterizeImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public PosterizeImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new PosterizeImageDataFilter(node, ctx);
+        }
     }
 }

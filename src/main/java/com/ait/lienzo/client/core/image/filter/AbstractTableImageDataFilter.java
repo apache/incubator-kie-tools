@@ -66,4 +66,12 @@ public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageD
     }
 
     protected abstract FilterTableArray getTable();
+
+    protected static abstract class TableImageDataFilterFactory<T extends AbstractTableImageDataFilter<T>> extends ImageDataFilterFactory<T>
+    {
+        protected TableImageDataFilterFactory(String type)
+        {
+            super(type);
+        }
+    }
 }

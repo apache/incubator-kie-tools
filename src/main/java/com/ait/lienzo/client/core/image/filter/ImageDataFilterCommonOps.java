@@ -219,11 +219,6 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         };
     }-*/;
 
-    public final String getTypeName(Class<?> clazz)
-    {
-        return "LienzoCore" + clazz.getSimpleName();
-    }
-
     public final int getLength(ImageData source)
     {
         return ((source.getWidth() * source.getHeight()) * 4);

@@ -48,6 +48,8 @@ public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageD
     public abstract double getMinValue();
 
     public abstract double getMaxValue();
+    
+    public abstract double getRefValue();
 
     protected static abstract class ValueImageDataFilterFactory<T extends AbstractValueImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {

@@ -21,17 +21,16 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImageDataFilter>
+public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<GammaImageDataFilter>
 {
-    private double m_value = 1.0;
-
     public GammaImageDataFilter()
     {
+        super(1);
     }
 
     public GammaImageDataFilter(double value)
     {
-        setValue(value);
+        super(value);
     }
 
     protected GammaImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -39,23 +38,27 @@ public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImag
         super(node, ctx);
     }
 
-    public final GammaImageDataFilter setValue(double value)
+    @Override
+    public double getMinValue()
     {
-        m_value = Math.max(Math.min(value, 2.0), 0.0);
-
-        return this;
-    }
-
-    public final double getValue()
-    {
-        return m_value;
+        return 0;
     }
 
     @Override
-    protected final native FilterTableArray getTable()
-    /*-{
-        var value = this.@com.ait.lienzo.client.core.image.filter.GammaImageDataFilter::m_value;
-        
+    public double getMaxValue()
+    {
+        return 2;
+    }
+
+    @Override
+    public double getRefValue()
+    {
+        return 1;
+    }
+
+    @Override
+    protected final native FilterTableArray getTable(double value)
+    /*-{        
         var table = [];
         
         for(var i = 0; i < 256; i++) {
@@ -68,7 +71,20 @@ public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImag
     @Override
     public IFactory<GammaImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new GammaImageDataFilterFactory();
+    }
+
+    public static class GammaImageDataFilterFactory extends ValueTableImageDataFilterFactory<GammaImageDataFilter>
+    {
+        public GammaImageDataFilterFactory()
+        {
+            super(GammaImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public GammaImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new GammaImageDataFilter(node, ctx);
+        }
     }
 }

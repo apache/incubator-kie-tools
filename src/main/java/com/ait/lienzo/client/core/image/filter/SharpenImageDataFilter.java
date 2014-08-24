@@ -72,7 +72,20 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
     @Override
     public IFactory<SharpenImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new SharpenImageDataFilterFactory();
+    }
+
+    public static class SharpenImageDataFilterFactory extends ConvolveImageDataFilterFactory<SharpenImageDataFilter>
+    {
+        protected SharpenImageDataFilterFactory()
+        {
+            super(SharpenImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public SharpenImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new SharpenImageDataFilter(node, ctx);
+        }
     }
 }

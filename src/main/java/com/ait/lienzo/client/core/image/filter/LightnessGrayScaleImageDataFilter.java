@@ -87,7 +87,20 @@ public class LightnessGrayScaleImageDataFilter extends AbstractImageDataFilter<L
     @Override
     public IFactory<LightnessGrayScaleImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new LightnessGrayScaleImageDataFilterFactory();
+    }
+
+    public static class LightnessGrayScaleImageDataFilterFactory extends ImageDataFilterFactory<LightnessGrayScaleImageDataFilter>
+    {
+        public LightnessGrayScaleImageDataFilterFactory()
+        {
+            super(LightnessGrayScaleImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public LightnessGrayScaleImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new LightnessGrayScaleImageDataFilter(node, ctx);
+        }
     }
 }

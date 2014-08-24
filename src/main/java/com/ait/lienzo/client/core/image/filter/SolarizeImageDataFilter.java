@@ -47,7 +47,20 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
     @Override
     public IFactory<SolarizeImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new SolarizeImageDataFilterFactory();
+    }
+
+    public static class SolarizeImageDataFilterFactory extends TableImageDataFilterFactory<SolarizeImageDataFilter>
+    {
+        public SolarizeImageDataFilterFactory()
+        {
+            super(SolarizeImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public SolarizeImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new SolarizeImageDataFilter(node, ctx);
+        }
     }
 }

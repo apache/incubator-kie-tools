@@ -41,12 +41,12 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
         m_meta = new MetaData();
 
-        m_type = FilterCommonOps.getTypeName(getClass());
+        m_type = getClass().getSimpleName();
     }
 
     protected AbstractImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        m_type = FilterCommonOps.getTypeName(getClass());
+        m_type = getClass().getSimpleName();
 
         if (null == node)
         {

@@ -21,17 +21,16 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class ExposureImageDataFilter extends AbstractTableImageDataFilter<ExposureImageDataFilter>
+public class ExposureImageDataFilter extends AbstractValueTableImageDataFilter<ExposureImageDataFilter>
 {
-    private double m_value = 1.0;
-
     public ExposureImageDataFilter()
     {
+        super(1);
     }
 
     public ExposureImageDataFilter(double value)
     {
-        setValue(value);
+        super(value);
     }
 
     protected ExposureImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -39,23 +38,27 @@ public class ExposureImageDataFilter extends AbstractTableImageDataFilter<Exposu
         super(node, ctx);
     }
 
-    public final ExposureImageDataFilter setValue(double value)
+    @Override
+    public double getMinValue()
     {
-        m_value = Math.max(Math.min(value, 5.0), 0.0);
-
-        return this;
-    }
-
-    public final double getValue()
-    {
-        return m_value;
+        return 0;
     }
 
     @Override
-    protected final native FilterTableArray getTable()
-    /*-{
-        var value = this.@com.ait.lienzo.client.core.image.filter.ExposureImageDataFilter::m_value;
-        
+    public double getMaxValue()
+    {
+        return 5;
+    }
+
+    @Override
+    public double getRefValue()
+    {
+        return 1;
+    }
+
+    @Override
+    protected final native FilterTableArray getTable(double value)
+    /*-{        
         var table = [];
         
         for(var i = 0; i < 256; i++) {
@@ -68,7 +71,20 @@ public class ExposureImageDataFilter extends AbstractTableImageDataFilter<Exposu
     @Override
     public IFactory<ExposureImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new ExposureImageDataFilterFactory();
+    }
+
+    public static class ExposureImageDataFilterFactory extends ValueTableImageDataFilterFactory<ExposureImageDataFilter>
+    {
+        public ExposureImageDataFilterFactory()
+        {
+            super(ExposureImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public ExposureImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new ExposureImageDataFilter(node, ctx);
+        }
     }
 }

@@ -27,38 +27,39 @@ import com.google.gwt.json.client.JSONObject;
 /**
  * A class that allows for easy creation of Brightness Filters.
  */
-public class BrightnessImageDataFilter extends AbstractImageDataFilter<BrightnessImageDataFilter>
+public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<BrightnessImageDataFilter>
 {
-    private double m_brightness;
-
-    public BrightnessImageDataFilter(double brightness)
+    public BrightnessImageDataFilter()
     {
-        setBrightness(brightness);
+        super(0);
     }
-    
+
+    public BrightnessImageDataFilter(double value)
+    {
+        super(value);
+    }
+
     protected BrightnessImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(node, ctx);
     }
 
-    public BrightnessImageDataFilter setBrightness(double brightness)
+    @Override
+    public double getMinValue()
     {
-        if (brightness < -1)
-        {
-            brightness = -1;
-        }
-        if (brightness > 1)
-        {
-            brightness = 1;
-        }
-        m_brightness = brightness;
-
-        return this;
+        return -1;
     }
 
-    public double getBrightness()
+    @Override
+    public double getMaxValue()
     {
-        return m_brightness;
+        return 1;
+    }
+
+    @Override
+    public double getRefValue()
+    {
+        return 0;
     }
 
     @Override
@@ -82,15 +83,15 @@ public class BrightnessImageDataFilter extends AbstractImageDataFilter<Brightnes
         {
             return source;
         }
-        filter_(data, FilterCommonOps.getLength(source), m_brightness);
+        filter_(data, FilterCommonOps.getLength(source), getValue());
 
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length, double brightness)
+    private final native void filter_(JavaScriptObject data, int length, double value)
     /*-{
     	function calculate(v) {
-    		return Math.max(Math.min((v + (brightness * 255) + 0.5), 255), 0) | 0;
+    		return Math.max(Math.min((v + (value * 255) + 0.5), 255), 0) | 0;
     	}
     	for (var i = 0; i < length; i += 4) {
 
@@ -105,7 +106,20 @@ public class BrightnessImageDataFilter extends AbstractImageDataFilter<Brightnes
     @Override
     public IFactory<BrightnessImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new BrightnessImageDataFilterFactory();
+    }
+
+    public static class BrightnessImageDataFilterFactory extends ValueImageDataFilterFactory<BrightnessImageDataFilter>
+    {
+        public BrightnessImageDataFilterFactory()
+        {
+            super(BrightnessImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public BrightnessImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new BrightnessImageDataFilter(node, ctx);
+        }
     }
 }

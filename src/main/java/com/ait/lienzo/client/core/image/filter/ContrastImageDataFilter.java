@@ -21,17 +21,16 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class ContrastImageDataFilter extends AbstractTableImageDataFilter<ContrastImageDataFilter>
+public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<ContrastImageDataFilter>
 {
-    private double m_value = 1.0;
-
     public ContrastImageDataFilter()
     {
+        super(1);
     }
 
     public ContrastImageDataFilter(double value)
     {
-        setValue(value);
+        super(value);
     }
 
     protected ContrastImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -39,23 +38,27 @@ public class ContrastImageDataFilter extends AbstractTableImageDataFilter<Contra
         super(node, ctx);
     }
 
-    public final ContrastImageDataFilter setValue(double value)
+    @Override
+    public double getMinValue()
     {
-        m_value = Math.max(Math.min(value, 2.0), 0.0);
-
-        return this;
-    }
-
-    public final double getValue()
-    {
-        return m_value;
+        return 0;
     }
 
     @Override
-    protected final native FilterTableArray getTable()
+    public double getMaxValue()
+    {
+        return 2;
+    }
+
+    @Override
+    public double getRefValue()
+    {
+        return 1;
+    }
+
+    @Override
+    protected final native FilterTableArray getTable(double value)
     /*-{
-        var value = this.@com.ait.lienzo.client.core.image.filter.ContrastImageDataFilter::m_value;
-        
         var table = [];
         
         for(var i = 0; i < 256; i++) {
@@ -68,7 +71,20 @@ public class ContrastImageDataFilter extends AbstractTableImageDataFilter<Contra
     @Override
     public IFactory<ContrastImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new ContrastImageDataFilterFactory();
+    }
+
+    public static class ContrastImageDataFilterFactory extends ValueTableImageDataFilterFactory<ContrastImageDataFilter>
+    {
+        public ContrastImageDataFilterFactory()
+        {
+            super(ContrastImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public ContrastImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new ContrastImageDataFilter(node, ctx);
+        }
     }
 }

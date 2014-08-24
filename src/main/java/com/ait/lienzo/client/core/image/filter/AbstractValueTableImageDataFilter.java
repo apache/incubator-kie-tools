@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
@@ -33,7 +34,7 @@ public abstract class AbstractValueTableImageDataFilter<T extends AbstractValueT
     {
         super(node, ctx);
     }
-    
+
     @Override
     public ImageData filter(ImageData source, boolean copy)
     {
@@ -67,4 +68,14 @@ public abstract class AbstractValueTableImageDataFilter<T extends AbstractValueT
     }
 
     protected abstract FilterTableArray getTable(double value);
+
+    protected static abstract class ValueTableImageDataFilterFactory<T extends AbstractValueTableImageDataFilter<T>> extends ImageDataFilterFactory<T>
+    {
+        protected ValueTableImageDataFilterFactory(String type)
+        {
+            super(type);
+
+            addAttribute(Attribute.VALUE, true);
+        }
+    }
 }

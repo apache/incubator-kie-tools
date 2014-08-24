@@ -24,18 +24,16 @@ import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
-public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurImageDataFilter>
+public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<StackBlurImageDataFilter>
 {
-    public int m_radius;
-
-    public StackBlurImageDataFilter(int radius)
+    public StackBlurImageDataFilter(int value)
     {
-        setRadius(radius);
+        super(value);
     }
 
     public StackBlurImageDataFilter()
     {
-        setRadius(1);
+        super(1);
     }
 
     protected StackBlurImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -43,16 +41,22 @@ public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurI
         super(node, ctx);
     }
 
-    public final int getRadius()
+    @Override
+    public double getMinValue()
     {
-        return m_radius;
+        return 0;
     }
 
-    public final StackBlurImageDataFilter setRadius(int radius)
+    @Override
+    public double getMaxValue()
     {
-        m_radius = Math.max(Math.min(radius, 180), 1);
+        return 180;
+    }
 
-        return this;
+    @Override
+    public double getRefValue()
+    {
+        return 1;
     }
 
     @Override
@@ -76,7 +80,7 @@ public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurI
         {
             return source;
         }
-        filter_(data, source.getWidth(), source.getHeight(), getRadius());
+        filter_(data, source.getWidth(), source.getHeight(), (int) getValue());
 
         return source;
     }
@@ -305,7 +309,20 @@ public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurI
     @Override
     public IFactory<StackBlurImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new StackBlurImageDataFilterFactory();
+    }
+
+    public static class StackBlurImageDataFilterFactory extends ValueImageDataFilterFactory<StackBlurImageDataFilter>
+    {
+        public StackBlurImageDataFilterFactory()
+        {
+            super(StackBlurImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public StackBlurImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new StackBlurImageDataFilter(node, ctx);
+        }
     }
 }

@@ -21,17 +21,16 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class DiffusionImageDataFilter extends AbstractTransformImageDataFilter<DiffusionImageDataFilter>
+public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFilter<DiffusionImageDataFilter>
 {
-    private double m_value = 4.0;
-
     public DiffusionImageDataFilter()
     {
+        super(4);
     }
 
     public DiffusionImageDataFilter(double value)
     {
-        setValue(value);
+        super(value);
     }
 
     protected DiffusionImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -39,22 +38,27 @@ public class DiffusionImageDataFilter extends AbstractTransformImageDataFilter<D
         super(node, ctx);
     }
 
-    public final DiffusionImageDataFilter setValue(double value)
+    @Override
+    public double getMinValue()
     {
-        m_value = Math.max(Math.min(value, 100), 1);
-
-        return this;
-    }
-
-    public final double getValue()
-    {
-        return m_value;
+        return 1;
     }
 
     @Override
-    protected final native FilterTransformFunction getTransform()
+    public double getMaxValue()
+    {
+        return 100;
+    }
+
+    @Override
+    public double getRefValue()
+    {
+        return 4;
+    }
+
+    @Override
+    protected final native FilterTransformFunction getTransform(double value)
     /*-{
-        var value = this.@com.ait.lienzo.client.core.image.filter.DiffusionImageDataFilter::m_value;
         var stabl = [];
         var ctabl = [];
         for(var i = 0; i < 256; i++) {

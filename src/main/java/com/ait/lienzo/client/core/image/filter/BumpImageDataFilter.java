@@ -39,7 +39,20 @@ public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpIma
     @Override
     public IFactory<BumpImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new BumpImageDataFilterFactory();
+    }
+    
+    public static class BumpImageDataFilterFactory extends ConvolveImageDataFilterFactory<BumpImageDataFilter>
+    {
+        protected BumpImageDataFilterFactory()
+        {
+            super(BumpImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public BumpImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new BumpImageDataFilter(node, ctx);
+        }
     }
 }
