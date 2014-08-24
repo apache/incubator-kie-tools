@@ -28,8 +28,15 @@ public final class Console
      */
     public static native void log(String message)
     /*-{
-		if ($wnd.console) {
-			$wnd.console.log(message);
-		}
+    	if ($wnd.console) {
+    		$wnd.console.log(message);
+    	}
+    }-*/;
+
+    public static native void error(String message)
+    /*-{
+        if ($wnd.console) {
+            $wnd.console.error(message);
+        }
     }-*/;
 }
