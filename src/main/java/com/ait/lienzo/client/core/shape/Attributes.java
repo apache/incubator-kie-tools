@@ -1612,6 +1612,26 @@ public class Attributes
         put(Attribute.VALUE.getProperty(), value);
     }
 
+    public final void setColor(String color)
+    {
+        put(Attribute.COLOR.getProperty(), color);
+    }
+
+    public final String getColor()
+    {
+        return getString(Attribute.COLOR.getProperty());
+    }
+
+    public final void setInverted(boolean inverted)
+    {
+        put(Attribute.INVERTED.getProperty(), inverted);
+    }
+
+    public final boolean isInverted()
+    {
+        return getBoolean(Attribute.INVERTED.getProperty());
+    }
+
     public final boolean getBoolean(String name)
     {
         if (m_jso.typeOf(name) == NativeInternalType.BOOLEAN)

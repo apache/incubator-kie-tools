@@ -44,7 +44,7 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
     {
         super(color);
     }
-    
+
     protected ColorLuminosityImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(node, ctx);
@@ -96,7 +96,20 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
     @Override
     public IFactory<ColorLuminosityImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new ColorLuminosityImageDataFilterFactory();
+    }
+
+    public static class ColorLuminosityImageDataFilterFactory extends RGBImageDataFilterFactory<ColorLuminosityImageDataFilter>
+    {
+        public ColorLuminosityImageDataFilterFactory()
+        {
+            super(ColorLuminosityImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public ColorLuminosityImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new ColorLuminosityImageDataFilter(node, ctx);
+        }
     }
 }

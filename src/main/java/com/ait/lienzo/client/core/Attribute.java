@@ -191,6 +191,8 @@ public class Attribute implements IAttribute
 
     public static final Attribute           MATRIX                           = new Attribute("matrix", "", "", AttributeType.NUMBER_ARRAY_TYPE);
 
+    public static final Attribute           INVERTED                         = new Attribute("inverted", "", "", AttributeType.BOOLEAN_TYPE);
+
     private final String                    m_property;
 
     private final String                    m_label;

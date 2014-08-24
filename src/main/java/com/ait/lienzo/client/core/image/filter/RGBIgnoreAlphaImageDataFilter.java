@@ -109,7 +109,20 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
     @Override
     public IFactory<RGBIgnoreAlphaImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new RGBIgnoreAlphaImageDataFilterFactory();
+    }
+
+    public static class RGBIgnoreAlphaImageDataFilterFactory extends RGBImageDataFilterFactory<RGBIgnoreAlphaImageDataFilter>
+    {
+        public RGBIgnoreAlphaImageDataFilterFactory()
+        {
+            super(RGBIgnoreAlphaImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public RGBIgnoreAlphaImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new RGBIgnoreAlphaImageDataFilter(node, ctx);
+        }
     }
 }

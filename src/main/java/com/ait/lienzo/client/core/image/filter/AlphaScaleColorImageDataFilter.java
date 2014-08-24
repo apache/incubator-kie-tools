@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -27,8 +28,6 @@ import com.google.gwt.json.client.JSONObject;
 
 public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<AlphaScaleColorImageDataFilter>
 {
-    private boolean m_invert = false;
-
     public AlphaScaleColorImageDataFilter(int r, int g, int b)
     {
         super(r, g, b);
@@ -70,16 +69,16 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
         super(node, ctx);
     }
 
-    public AlphaScaleColorImageDataFilter setInverted(boolean invert)
+    public AlphaScaleColorImageDataFilter setInverted(boolean inverted)
     {
-        m_invert = invert;
+        getAttributes().setInverted(inverted);
 
         return this;
     }
 
     public boolean isInverted()
     {
-        return m_invert;
+        return getAttributes().isInverted();
     }
 
     @Override
@@ -137,7 +136,22 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
     @Override
     public IFactory<AlphaScaleColorImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new AlphaScaleColorImageDataFilterFactory();
+    }
+
+    public static class AlphaScaleColorImageDataFilterFactory extends RGBImageDataFilterFactory<AlphaScaleColorImageDataFilter>
+    {
+        public AlphaScaleColorImageDataFilterFactory()
+        {
+            super(AlphaScaleColorImageDataFilter.class.getSimpleName());
+
+            addAttribute(Attribute.INVERTED);
+        }
+
+        @Override
+        public AlphaScaleColorImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new AlphaScaleColorImageDataFilter(node, ctx);
+        }
     }
 }
