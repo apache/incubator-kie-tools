@@ -20,21 +20,96 @@ import com.ait.lienzo.client.core.shape.MetaData;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 
 public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<T>> implements ImageDataFilter<T>
 {
-    private final MetaData                  m_meta = new MetaData();
+    private final MetaData                  m_meta;
 
-    private final ImageDataFilterAttributes m_attr = new ImageDataFilterAttributes();
+    private final ImageDataFilterAttributes m_attr;
+
+    private final String                    m_type;
 
     protected AbstractImageDataFilter()
     {
+        m_attr = new ImageDataFilterAttributes();
+
+        m_meta = new MetaData();
+
+        m_type = FilterCommonOps.getTypeName(getClass());
     }
 
     protected AbstractImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
+        m_type = FilterCommonOps.getTypeName(getClass());
+
+        if (null == node)
+        {
+            m_attr = new ImageDataFilterAttributes();
+
+            m_meta = new MetaData();
+
+            return;
+        }
+        JSONValue aval = node.get("attributes");
+
+        if (null == aval)
+        {
+            m_attr = new ImageDataFilterAttributes();
+        }
+        else
+        {
+            JSONObject aobj = aval.isObject();
+
+            if (null == aobj)
+            {
+                m_attr = new ImageDataFilterAttributes();
+            }
+            else
+            {
+                JavaScriptObject ajso = aobj.getJavaScriptObject();
+
+                if (null == ajso)
+                {
+                    m_attr = new ImageDataFilterAttributes();
+                }
+                else
+                {
+                    m_attr = new ImageDataFilterAttributes(ajso);
+                }
+            }
+        }
+        JSONValue mval = node.get("meta");
+
+        if (null == mval)
+        {
+            m_meta = new MetaData();
+        }
+        else
+        {
+            JSONObject mobj = mval.isObject();
+
+            if (null == mobj)
+            {
+                m_meta = new MetaData();
+            }
+            else
+            {
+                JavaScriptObject mjso = mobj.getJavaScriptObject();
+
+                if (null == mjso)
+                {
+                    m_meta = new MetaData();
+                }
+                else
+                {
+                    m_meta = new MetaData(mjso);
+                }
+            }
+        }
     }
 
     @Override
@@ -56,9 +131,9 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
     }
 
     @Override
-    public String getType()
+    public final String getType()
     {
-        return "LienzoCore." + getClass().getSimpleName();
+        return m_type;
     }
 
     @SuppressWarnings("unchecked")

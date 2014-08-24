@@ -16,8 +16,11 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
+import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
@@ -28,6 +31,11 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
     protected AbstractConvolveImageDataFilter(double... matrix)
     {
         setMatrix(matrix);
+    }
+
+    protected AbstractConvolveImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     public final T setMatrix(double... matrix)

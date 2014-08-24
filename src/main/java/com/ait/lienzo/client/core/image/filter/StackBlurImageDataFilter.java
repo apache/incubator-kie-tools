@@ -73,7 +73,7 @@ public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurI
         return source;
     }
 
-    private final native void filter_(JavaScriptObject pixa, int width, int height, int radius)
+    private final native void filter_(JavaScriptObject data, int width, int height, int radius)
     /*-{
         function BlurStack() {
             this.r = 0;
@@ -122,7 +122,6 @@ public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurI
                 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
                 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24,
                 24, 24 ];
-        var data = pixa;
 
         var x, y, i, p, yp, yi, yw, r_sum, g_sum, b_sum, r_out_sum, g_out_sum, b_out_sum, r_in_sum, g_in_sum, b_in_sum, pr, pg, pb, rbs;
 

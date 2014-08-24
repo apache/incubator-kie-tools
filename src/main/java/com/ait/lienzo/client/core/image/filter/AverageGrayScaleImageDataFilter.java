@@ -88,7 +88,7 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
     {
         public AverageGrayScaleImageDataFilterFactory()
         {
-            super(AverageGrayScaleImageDataFilter.class.getSimpleName());
+            super(ImageDataFilter.FilterCommonOps.getTypeName(AverageGrayScaleImageDataFilter.class));
         }
 
         @Override

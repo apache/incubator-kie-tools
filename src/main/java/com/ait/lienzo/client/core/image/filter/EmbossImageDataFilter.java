@@ -61,10 +61,8 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
         return POST.filter(source, false);
     }
 
-    private final native void filter_(JavaScriptObject pixa, int length, int width)
+    private final native void filter_(JavaScriptObject data, int length, int width)
     /*-{
-        var data = pixa;
-
         for(i = 0; i < length; i++)
         {
             if(i < (length - width * 4))

@@ -31,7 +31,7 @@ public class MetaData
         m_jso = NFastStringMapMixedJSO.make();
     }
 
-    MetaData(JavaScriptObject valu)
+    public MetaData(JavaScriptObject valu)
     {
         if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
         {

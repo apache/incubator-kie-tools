@@ -79,10 +79,8 @@ public class BrightnessImageDataFilter extends AbstractImageDataFilter<Brightnes
         return source;
     }
 
-    private final native void filter_(JavaScriptObject pixa, int length, double brightness)
+    private final native void filter_(JavaScriptObject data, int length, double brightness)
     /*-{
-    	var data = pixa;
-
     	function calculate(v) {
     		return Math.max(Math.min((v + (brightness * 255) + 0.5), 255), 0) | 0;
     	}

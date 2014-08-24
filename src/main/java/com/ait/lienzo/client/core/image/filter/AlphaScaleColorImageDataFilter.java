@@ -100,10 +100,8 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
         return source;
     }
 
-    private final native void filter_(JavaScriptObject pixa, int length, int r, int g, int b, boolean invert)
+    private final native void filter_(JavaScriptObject data, int length, int r, int g, int b, boolean invert)
     /*-{
-        var data = pixa;
-
         function luminocity(rv, gv, bv) {
             return (rv * 0.21) + (gv * 0.72) + (bv * 0.07);
         };

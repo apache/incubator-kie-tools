@@ -81,10 +81,8 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
         return source;
     }
 
-    private final native void filter_(JavaScriptObject pixa, int length, int r, int g, int b)
+    private final native void filter_(JavaScriptObject data, int length, int r, int g, int b)
     /*-{
-    	var data = pixa;
-
     	for (var i = 0; i < length; i += 4) {
 
     		if (data[i + 3] > 0) {

@@ -52,10 +52,8 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
         return source;
     }
 
-    private final native void filter_(JavaScriptObject pixa, int length)
+    private final native void filter_(JavaScriptObject data, int length)
     /*-{
-    	var data = pixa;
-
     	function luminocity(rv, gv, bv) {
     		return (rv * 0.21) + (gv * 0.72) + (bv * 0.07);
     	}

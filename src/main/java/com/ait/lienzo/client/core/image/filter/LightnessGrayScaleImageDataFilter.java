@@ -52,10 +52,8 @@ public class LightnessGrayScaleImageDataFilter extends AbstractImageDataFilter<L
         return source;
     }
 
-    private final native void filter_(JavaScriptObject pixa, int length)
+    private final native void filter_(JavaScriptObject data, int length)
     /*-{
-    	var data = pixa;
-
     	for (var i = 0; i < length; i += 4) {
 
     		var r = data[i + 0];

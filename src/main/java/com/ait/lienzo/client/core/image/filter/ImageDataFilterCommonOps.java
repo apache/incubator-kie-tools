@@ -107,7 +107,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                             var f = matrix[moff + col];
                             if (f != 0) {
                                 var ix = x + col;
-                                if (!(0 <= ix && ix < w)) {
+                                if (!((0 <= ix) && (ix < w))) {
                                         ix = x;
                                 }
                                 var ipix = (ioff + ix) * 4;
@@ -166,14 +166,16 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
             return (r * 0.21) + (g * 0.72) + (b * 0.07);
         };
         this.getPixel = function (data, x, y ,w, h) {
-            var p = ( y * w + x) * 4;
-            if (x < 0 || x >= w || y < 0 || y >= h) {
-                return [data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) *4],
-                data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 1],
-                data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 2],
-                data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 3]];
+            var p = (y * w + x) * 4;
+            if ((x < 0) || (x >= w) || (y < 0) || (y >= h)) {
+                return [
+                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 0],
+                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 1],
+                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 2],
+                    data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 3]
+                ];
             }
-            return [data[p],data[p+1],data[p+2],data[p+3]]
+            return [data[p + 0], data[p + 1], data[p + 2], data[p + 3]]
         };
         this.filterTransform = function(data, transform, w, h) {
             var xfrm = [];
@@ -198,10 +200,10 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                         sw = [data[i + w * 4], data[i + w * 4 + 1], data[i + w * 4 + 2],data[i + w * 4 + 3]];
                         se = [data[i + (w + 1) *4], data[i + (w + 1) * 4 + 1], data[i + (w + 1) * 4 + 2], data[i + (w + 1) * 4 + 3]];
                     } else {
-                        nw = this.getPixel(data, srcx, srcy, w, h);
-                        ne = this.getPixel(data, srcx+1, srcy, w, h);
-                        sw = this.getPixel(data, srcx, srcy+1, w, h);
-                        se = this.getPixel(data, srcx+1, srcy+1, w, h);
+                        nw = this.getPixel(data, srcx + 0, srcy + 0, w, h);
+                        ne = this.getPixel(data, srcx + 1, srcy + 0, w, h);
+                        sw = this.getPixel(data, srcx + 0, srcy + 1, w, h);
+                        se = this.getPixel(data, srcx + 1, srcy + 1, w, h);
                     }
                     var rgba = this.bilinearInterpolate(xwht, ywht, nw, ne, sw, se);
                     buff[p + 0] = rgba[0];
@@ -216,6 +218,11 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
             }
         };
     }-*/;
+
+    public final String getTypeName(Class<?> clazz)
+    {
+        return "LienzoCore" + clazz.getSimpleName();
+    }
 
     public final int getLength(ImageData source)
     {
