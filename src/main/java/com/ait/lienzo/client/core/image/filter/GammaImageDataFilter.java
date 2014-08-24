@@ -17,6 +17,9 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.google.gwt.json.client.JSONObject;
 
 public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImageDataFilter>
 {
@@ -29,6 +32,11 @@ public class GammaImageDataFilter extends AbstractTableImageDataFilter<GammaImag
     public GammaImageDataFilter(double value)
     {
         setValue(value);
+    }
+
+    protected GammaImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     public final GammaImageDataFilter setValue(double value)

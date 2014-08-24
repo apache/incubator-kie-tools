@@ -17,10 +17,13 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * A class that allows for easy creation of a Color Luminosity based Image Filter.
@@ -40,6 +43,11 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
     public ColorLuminosityImageDataFilter(String color)
     {
         super(color);
+    }
+    
+    protected ColorLuminosityImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     @Override

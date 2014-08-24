@@ -17,6 +17,9 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.google.gwt.json.client.JSONObject;
 
 public class DiffusionImageDataFilter extends AbstractTransformImageDataFilter<DiffusionImageDataFilter>
 {
@@ -29,6 +32,11 @@ public class DiffusionImageDataFilter extends AbstractTransformImageDataFilter<D
     public DiffusionImageDataFilter(double value)
     {
         setValue(value);
+    }
+
+    protected DiffusionImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     public final DiffusionImageDataFilter setValue(double value)

@@ -17,6 +17,9 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * A class that allows for easy creation of a Sharpen Image Filter.
@@ -26,6 +29,11 @@ public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpIma
     public BumpImageDataFilter()
     {
         super(-1, -1, 0, -1, 1, 1, 0, 1, 1);
+    }
+
+    protected BumpImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     @Override

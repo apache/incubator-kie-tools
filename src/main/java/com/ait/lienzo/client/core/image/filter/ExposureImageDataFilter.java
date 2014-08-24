@@ -17,6 +17,9 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.google.gwt.json.client.JSONObject;
 
 public class ExposureImageDataFilter extends AbstractTableImageDataFilter<ExposureImageDataFilter>
 {
@@ -29,6 +32,11 @@ public class ExposureImageDataFilter extends AbstractTableImageDataFilter<Exposu
     public ExposureImageDataFilter(double value)
     {
         setValue(value);
+    }
+
+    protected ExposureImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     public final ExposureImageDataFilter setValue(double value)

@@ -16,11 +16,24 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
+import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractValueTableImageDataFilter<T extends AbstractValueTableImageDataFilter<T>> extends AbstractValueImageDataFilter<T>
 {
+    protected AbstractValueTableImageDataFilter(double value)
+    {
+        super(value);
+    }
+
+    protected AbstractValueTableImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
+    }
+    
     @Override
     public ImageData filter(ImageData source, boolean copy)
     {

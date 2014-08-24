@@ -16,8 +16,11 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.Color;
 import com.ait.lienzo.shared.core.types.IColor;
+import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
@@ -43,6 +46,11 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         m_g = fixc(g);
 
         m_b = fixc(b);
+    }
+    
+    protected AbstractRGBImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     public AbstractRGBImageDataFilter(IColor color)

@@ -24,11 +24,12 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
-    protected AbstractConvolveImageDataFilter()
+    protected AbstractConvolveImageDataFilter(double... matrix)
     {
+        setMatrix(matrix);
     }
 
-    protected AbstractConvolveImageDataFilter(double... matrix)
+    protected AbstractConvolveImageDataFilter(FilterConvolveMatrix matrix)
     {
         setMatrix(matrix);
     }

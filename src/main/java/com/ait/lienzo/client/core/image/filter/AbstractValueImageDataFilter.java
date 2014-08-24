@@ -16,8 +16,22 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.google.gwt.json.client.JSONObject;
+
 public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
+    public AbstractValueImageDataFilter(double value)
+    {
+        setValue(value);
+    }
+
+    protected AbstractValueImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
+    }
+
     public final double getValue()
     {
         return Math.max(Math.min(getAttributes().getValue(), getMaxValue()), getMinValue());

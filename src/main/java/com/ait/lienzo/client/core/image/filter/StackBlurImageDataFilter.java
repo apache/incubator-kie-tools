@@ -17,9 +17,12 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurImageDataFilter>
 {
@@ -33,6 +36,11 @@ public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurI
     public StackBlurImageDataFilter()
     {
         setRadius(1);
+    }
+
+    protected StackBlurImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
     }
 
     public final int getRadius()
@@ -271,8 +279,7 @@ public class StackBlurImageDataFilter extends AbstractImageDataFilter<StackBlurI
                 g_out_sum -= stackIn.g;
                 b_out_sum -= stackIn.b;
 
-                p = (x + (((p = y + radiusPlus1) < heightMinus1 ? p
-                        : heightMinus1) * width)) << 2;
+                p = (x + (((p = y + radiusPlus1) < heightMinus1 ? p : heightMinus1) * width)) << 2;
 
                 r_sum += (r_in_sum += (stackIn.r = data[p]));
                 g_sum += (g_in_sum += (stackIn.g = data[p + 1]));
