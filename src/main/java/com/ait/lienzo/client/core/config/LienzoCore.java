@@ -119,6 +119,17 @@ public final class LienzoCore
         return false;
     }
 
+    public boolean isFirefox()
+    {
+        String ua = getUserAgent();
+
+        if ((ua.indexOf("Mozilla") >= 0) || (ua.indexOf("Firefox") >= 0))
+        {
+            return true;
+        }
+        return false;
+    }
+
     public final boolean isBlobAPIEnabled()
     {
         return m_enableBlobIfSupported;

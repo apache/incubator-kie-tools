@@ -1332,7 +1332,20 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
         if (mode == ImageSerializationMode.DATA_URL)
         {
-            attr.put("url", new JSONString(toDataURL(DataURLType.PNG)));
+            String url = getImageProxy().getImageElementURL();
+
+            if (null == url)
+            {
+                url = getAttributes().getURL();
+            }
+            if (url.startsWith("data:"))
+            {
+                attr.put("url", new JSONString(url));
+            }
+            else
+            {
+                attr.put("url", new JSONString(toDataURL(DataURLType.PNG, false)));
+            }
         }
         JSONObject object = new JSONObject();
 

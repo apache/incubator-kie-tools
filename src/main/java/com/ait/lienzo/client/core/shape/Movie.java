@@ -31,9 +31,11 @@ import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.MovieEndedHandler;
 import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
@@ -41,13 +43,18 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.MediaElement;
 import com.google.gwt.dom.client.VideoElement;
 import com.google.gwt.event.dom.client.EndedEvent;
 import com.google.gwt.event.dom.client.EndedHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.media.client.Video;
 import com.google.gwt.media.dom.client.MediaError;
 import com.google.gwt.safehtml.shared.UriUtils;
@@ -75,6 +82,8 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     private String                     m_error          = null;
 
     private ImageElement               m_postr          = null;
+
+    private MovieEndedHandler          m_onend          = null;
 
     private final Video                m_video          = Video.createIfSupported();
 
@@ -201,7 +210,14 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
         return tf;
     }
-    
+
+    public Movie onEnded(MovieEndedHandler onend)
+    {
+        m_onend = onend;
+
+        return this;
+    }
+
     @Override
     public BoundingBox getBoundingBox()
     {
@@ -491,7 +507,25 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
     private final void setEnded(boolean ended)
     {
-        m_ended = ended;
+        if (m_ended = ended)
+        {
+            if (null != m_onend)
+            {
+                final Movie movie = this;
+
+                Scheduler.get().scheduleDeferred(new ScheduledCommand()
+                {
+                    @Override
+                    public void execute()
+                    {
+                        if (null != m_onend)
+                        {
+                            m_onend.onEnded(movie);
+                        }
+                    }
+                });
+            }
+        }
     }
 
     public boolean isEnded()
@@ -738,6 +772,40 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
     }
 
     @Override
+    public JSONObject toJSONObject()
+    {
+        JSONObject object = super.toJSONObject();
+
+        ImageDataFilterChain chain = m_filters;
+
+        if ((null != chain) && (chain.size() > 0))
+        {
+            JSONArray filters = new JSONArray();
+
+            JSONObject filter = new JSONObject();
+
+            filter.put("active", JSONBoolean.getInstance(chain.isActive()));
+
+            for (ImageDataFilter<?> ifilter : chain.getFilters())
+            {
+                if (null != ifilter)
+                {
+                    JSONObject make = ifilter.toJSONObject();
+
+                    if (null != make)
+                    {
+                        filters.set(filters.size(), make);
+                    }
+                }
+            }
+            filter.put("filters", filters);
+
+            object.put("filter", filter);
+        }
+        return object;
+    }
+
+    @Override
     public IFactory<Movie> getFactory()
     {
         return new MovieFactory();
@@ -874,7 +942,29 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
         @Override
         public Movie create(JSONObject node, ValidationContext ctx) throws ValidationException
         {
-            return new Movie(node, ctx);
+            Movie movie = new Movie(node, ctx);
+
+            JSONValue jval = node.get("filter");
+
+            if (null != jval)
+            {
+                JSONObject object = jval.isObject();
+
+                if (null != object)
+                {
+                    JSONDeserializer.getInstance().deserializeFilters(movie, object, ctx);
+
+                    jval = object.get("active");
+
+                    JSONBoolean active = jval.isBoolean();
+
+                    if (null != active)
+                    {
+                        movie.setFiltersActive(active.booleanValue());
+                    }
+                }
+            }
+            return movie;
         }
     }
 }

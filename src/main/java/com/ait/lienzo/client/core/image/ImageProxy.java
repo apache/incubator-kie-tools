@@ -93,6 +93,15 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         return m_filters;
     }
 
+    public String getImageElementURL()
+    {
+        if (null != m_jsimg)
+        {
+            return m_jsimg.getSrc();
+        }
+        return null;
+    }
+
     /**
      * Sets the {@link ImageShapeLoadedHandler} that will be notified when the image is loaded.
      * If the image is already loaded, the handler will be invoked immediately.
@@ -570,7 +579,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
      * @param mimeType If null, defaults to DataURLType.PNG
      * @return String
      */
-    public String toDataURL(DataURLType mimeType)
+    public String toDataURL(DataURLType mimeType, boolean filtered)
     {
         if (false == isLoaded())
         {
@@ -580,7 +589,7 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         {
             mimeType = DataURLType.PNG;
         }
-        if (m_fastout)
+        if ((m_fastout) || (false == filtered))
         {
             ScratchCanvas temp = new ScratchCanvas(m_dest_wide, m_dest_high);
 

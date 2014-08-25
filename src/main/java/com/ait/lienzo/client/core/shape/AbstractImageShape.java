@@ -152,9 +152,9 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         return m_proxy.getImageData();
     }
 
-    public String toDataURL(DataURLType mimeType)
+    public String toDataURL(DataURLType mimeType, boolean filtered)
     {
-        return m_proxy.toDataURL(mimeType);
+        return m_proxy.toDataURL(mimeType, filtered);
     }
 
     protected void setImageShapeLoadedHandler(ImageShapeLoadedHandler<T> handler)
