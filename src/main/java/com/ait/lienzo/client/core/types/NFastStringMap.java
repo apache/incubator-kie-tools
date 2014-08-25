@@ -114,7 +114,7 @@ public final class NFastStringMap<V>
 
         public final native boolean containsKey(String key)
         /*-{
-			return this.hasOwnProperty(String(name));
+			return this.hasOwnProperty(String(key));
         }-*/;
 
         public final native int size()

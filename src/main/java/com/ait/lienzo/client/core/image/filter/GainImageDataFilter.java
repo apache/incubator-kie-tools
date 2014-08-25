@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -23,12 +24,9 @@ import com.google.gwt.json.client.JSONObject;
 
 public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter>
 {
-    private double m_gain = 0.5;
-
-    private double m_bias = 0.5;
-
     public GainImageDataFilter()
     {
+        this(0.5, 0.5);
     }
 
     public GainImageDataFilter(double gain, double bias)
@@ -45,34 +43,54 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
 
     public final GainImageDataFilter setGain(double gain)
     {
-        m_gain = Math.max(Math.min(gain, 1.0), 0.0);
+        getAttributes().setGain(Math.max(Math.min(gain, getMaxGain()), getMinGain()));
 
         return this;
     }
 
     public final double getGain()
     {
-        return m_gain;
+        return Math.max(Math.min(getAttributes().getGain(), getMaxGain()), getMinGain());
+    }
+
+    public final double getMinGain()
+    {
+        return 0;
+    }
+
+    public final double getMaxGain()
+    {
+        return 1;
     }
 
     public final GainImageDataFilter setBias(double bias)
     {
-        m_bias = Math.max(Math.min(bias, 1.0), 0.0);
+        getAttributes().setBias(Math.max(Math.min(bias, getMaxBias()), getMinBias()));
 
         return this;
     }
 
     public final double getBias()
     {
-        return m_bias;
+        return Math.max(Math.min(getAttributes().getBias(), getMaxBias()), getMinBias());
+    }
+
+    public final double getMinBias()
+    {
+        return 0;
+    }
+
+    public final double getMaxBias()
+    {
+        return 1;
     }
 
     @Override
     protected final native FilterTableArray getTable()
     /*-{
-        var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::m_gain;
+        var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getGain()();
         
-        var bias = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::m_bias;
+        var bias = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getBias()();
         
         var table = [];
         
@@ -89,7 +107,24 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
     @Override
     public IFactory<GainImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new GainImageDataFilterFactory();
+    }
+
+    public static class GainImageDataFilterFactory extends TableImageDataFilterFactory<GainImageDataFilter>
+    {
+        public GainImageDataFilterFactory()
+        {
+            super(GainImageDataFilter.class.getSimpleName());
+
+            addAttribute(Attribute.GAIN, true);
+
+            addAttribute(Attribute.BIAS, true);
+        }
+
+        @Override
+        public GainImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new GainImageDataFilter(node, ctx);
+        }
     }
 }

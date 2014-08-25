@@ -106,7 +106,20 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
     @Override
     public IFactory<EmbossImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new EmbossImageDataFilterFactory();
+    }
+
+    public static class EmbossImageDataFilterFactory extends ImageDataFilterFactory<EmbossImageDataFilter>
+    {
+        public EmbossImageDataFilterFactory()
+        {
+            super(EmbossImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public EmbossImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new EmbossImageDataFilter(node, ctx);
+        }
     }
 }

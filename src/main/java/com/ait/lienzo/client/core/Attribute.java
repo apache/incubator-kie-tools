@@ -193,6 +193,10 @@ public class Attribute implements IAttribute
 
     public static final Attribute           INVERTED                         = new Attribute("inverted", "", "", AttributeType.BOOLEAN_TYPE);
 
+    public static final Attribute           GAIN                             = new Attribute("gain", "", "", AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           BIAS                             = new Attribute("bias", "", "", AttributeType.NUMBER_TYPE);
+
     private final String                    m_property;
 
     private final String                    m_label;

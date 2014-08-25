@@ -1593,7 +1593,7 @@ public class Attributes
 
     public final FilterConvolveMatrix getMatrix()
     {
-        JavaScriptObject mjso = getObject(Attribute.MATRIX.getProperty());
+        JavaScriptObject mjso = getArray(Attribute.MATRIX.getProperty());
 
         if (null != mjso)
         {
@@ -1630,6 +1630,26 @@ public class Attributes
     public final boolean isInverted()
     {
         return getBoolean(Attribute.INVERTED.getProperty());
+    }
+
+    public final double getGain()
+    {
+        return getDouble(Attribute.GAIN.getProperty());
+    }
+
+    public final void setGain(double gain)
+    {
+        put(Attribute.GAIN.getProperty(), gain);
+    }
+
+    public final double getBias()
+    {
+        return getDouble(Attribute.BIAS.getProperty());
+    }
+
+    public final void setBias(double bias)
+    {
+        put(Attribute.BIAS.getProperty(), bias);
     }
 
     public final boolean getBoolean(String name)
