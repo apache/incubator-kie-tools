@@ -93,10 +93,10 @@ public class VersionRecordManagerTest {
         verify(dropDownButton).addLabel(eq(versions.get(1)), eq(2), eq(false), any(Command.class));
         verify(dropDownButton).addLabel(eq(versions.get(2)), eq(3), eq(true), any(Command.class));
 
+        verify(dropDownButton).setTextToLatest();
         assertEquals(pathTo333, manager.getCurrentPath());
         assertEquals(pathTo333, manager.getPathToLatest());
         assertEquals("333", manager.getVersion());
-
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -114,6 +114,7 @@ public class VersionRecordManagerTest {
 
         manager.onVersionSelectedEvent(new VersionSelectedEvent(pathTo333, getVersionRecord("111")));
 
+        verify(dropDownButton).setTextToVersion(1);
         assertEquals(pathTo111, manager.getCurrentPath());
         assertEquals("111", manager.getVersion());
     }
@@ -139,6 +140,7 @@ public class VersionRecordManagerTest {
 
         manager.reloadVersions(pathTo444);
 
+        verify(dropDownButton, atLeastOnce()).setTextToLatest();
         assertEquals(pathTo444, manager.getPathToLatest());
         assertEquals(pathTo444, manager.getCurrentPath());
         assertEquals("444", manager.getVersion());

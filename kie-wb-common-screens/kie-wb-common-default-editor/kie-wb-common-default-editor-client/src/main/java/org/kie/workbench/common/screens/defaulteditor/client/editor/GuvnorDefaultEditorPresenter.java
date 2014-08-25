@@ -51,6 +51,7 @@ public class GuvnorDefaultEditorPresenter
         extends KieEditor {
 
     private final GuvnorDefaultEditorView view;
+
     @Inject
     private Caller<DefaultEditorService> defaultEditorService;
 

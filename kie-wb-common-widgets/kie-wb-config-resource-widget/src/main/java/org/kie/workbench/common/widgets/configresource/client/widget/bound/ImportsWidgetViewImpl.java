@@ -45,9 +45,10 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class ImportsWidgetViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements ImportsWidgetView {
 
     interface Binder
@@ -156,10 +157,6 @@ public class ImportsWidgetViewImpl
         return isDirty;
     }
 
-    @Override public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
     @Override
     public void setNotDirty() {
         isDirty = false;
@@ -185,13 +182,4 @@ public class ImportsWidgetViewImpl
         };
     }
 
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
 }

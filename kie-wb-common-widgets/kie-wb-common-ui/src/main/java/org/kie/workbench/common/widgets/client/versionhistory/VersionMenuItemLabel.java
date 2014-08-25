@@ -105,7 +105,16 @@ public class VersionMenuItemLabel
         this.number.setText(number.toString());
         author.setText(versionRecord.author());
         date.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(versionRecord.date()));
-        comment.setText(versionRecord.comment());
+        comment.setText(snip(versionRecord.comment()));
+        base.setTitle(versionRecord.comment());
+    }
+
+    private String snip(String comment) {
+        if (comment != null && comment.length() >= 60) {
+            return comment.substring(0, 58) + " ...";
+        } else {
+            return comment;
+        }
     }
 
     @UiHandler("base")

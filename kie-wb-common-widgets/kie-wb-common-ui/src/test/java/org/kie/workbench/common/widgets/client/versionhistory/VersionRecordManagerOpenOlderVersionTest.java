@@ -90,10 +90,10 @@ public class VersionRecordManagerOpenOlderVersionTest {
                     }
                 });
 
+        verify(dropDownButton).setTextToVersion(2);
         assertEquals(pathTo222, manager.getCurrentPath());
         assertEquals(pathTo333, manager.getPathToLatest());
         assertEquals("222", manager.getVersion());
-
     }
 
     @Test(expected = IllegalArgumentException.class)

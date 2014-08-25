@@ -91,7 +91,6 @@ public abstract class KieEditor {
 
     protected PlaceRequest place;
     private ClientResourceType type;
-    private KieEditorTitle title = new KieEditorTitle();
 
     protected KieEditor() {
     }
@@ -105,7 +104,7 @@ public abstract class KieEditor {
         this.place = place;
         this.type = type;
 
-        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        baseView.showLoading();
 
         this.isReadOnly = this.place.getParameter("readOnly", null) == null ? false : true;
 
@@ -132,11 +131,11 @@ public abstract class KieEditor {
 
         if (versionRecordManager.isLatest(versionRecord)) {
             isReadOnly = false;
-            versionRecordManager.setVersion(versionRecord.id());
         } else {
             isReadOnly = true;
-            versionRecordManager.setVersion(versionRecord.id());
         }
+
+        versionRecordManager.setVersion(versionRecord.id());
 
         loadContent();
     }
@@ -282,7 +281,7 @@ public abstract class KieEditor {
      */
     protected IsWidget getTitle() {
         refreshTitle();
-        return title;
+        return baseView.getTitleWidget();
     }
 
     public String getTitleText() {
@@ -290,7 +289,7 @@ public abstract class KieEditor {
     }
 
     private void refreshTitle() {
-        title.setText(versionRecordManager.getCurrentPath().getFileName(), type.getDescription());
+        baseView.refreshTitle(versionRecordManager.getCurrentPath().getFileName(), type.getDescription());
     }
 
     protected void onSave() {
@@ -304,30 +303,34 @@ public abstract class KieEditor {
         }
 
         if (concurrentUpdateSessionInfo != null) {
-            newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
-                    concurrentUpdateSessionInfo.getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            save();
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //cancel?
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            reload();
-                        }
-                    }
-            ).show();
+            showConcurrentUpdatePopup();
         } else {
             save();
         }
+    }
+
+    protected void showConcurrentUpdatePopup() {
+        newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
+                concurrentUpdateSessionInfo.getIdentity(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        save();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //cancel?
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        reload();
+                    }
+                }
+        ).show();
     }
 
     /**

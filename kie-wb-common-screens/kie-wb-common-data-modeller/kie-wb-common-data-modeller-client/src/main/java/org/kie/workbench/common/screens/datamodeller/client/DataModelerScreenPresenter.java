@@ -467,7 +467,7 @@ public class DataModelerScreenPresenter
                 newClassName[ 0 ] = getContext().getDataObject().getName();
                 save( newClassName[ 0 ] );
             } else {
-                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+                view.showLoading();
                 modelerService.call( new RemoteCallback<TypeInfoResult>() {
                     @Override
                     public void callback( TypeInfoResult typeInfoResult ) {
@@ -549,7 +549,7 @@ public class DataModelerScreenPresenter
                         modifiedDataObject[ 0 ] = null;
                     }
                 }
-                view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Saving() );
+                view.showSaving();
 
                 modelerService.call( getSaveSuccessCallback( newFileName ),
                                      new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
@@ -625,7 +625,7 @@ public class DataModelerScreenPresenter
 
     private void loadModel( final Path path ) {
 
-        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+        view.showLoading();
 
         modelerService.call( new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
             @Override
@@ -779,7 +779,7 @@ public class DataModelerScreenPresenter
         if ( getContext().isParsed() && getContext().isEditorChanged() ) {
 
             //If there are changes in the ui the source must be regenerated on server side.
-            view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+            view.showLoading();
             modelerService.call( new RemoteCallback<GenerationResult>() {
                 @Override
                 public void callback( GenerationResult result ) {
@@ -828,7 +828,7 @@ public class DataModelerScreenPresenter
 
         if ( doParsing ) {
 
-            view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Loading() );
+            view.showLoading();
 
             //If there are changes in the source, we must try to parse the file.
             modelerService.call( new RemoteCallback<GenerationResult>() {

@@ -16,12 +16,6 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
-import java.util.List;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import org.guvnor.common.services.shared.version.VersionService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -38,6 +32,12 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
+
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+import java.util.List;
 
 public class VersionRecordManager {
 
@@ -81,13 +81,13 @@ public class VersionRecordManager {
             String version,
             ObservablePath path,
             Callback<VersionRecord> selectionCallback) {
-        PortablePreconditions.checkNotNull("path", path);
 
+        PortablePreconditions.checkNotNull("path", path);
         this.selectionCallback = PortablePreconditions.checkNotNull("selectionCallback", selectionCallback);
 
-        if (version != null) {
-            setVersion(version);
-        } else {
+        this.version = version;
+
+        if (version == null) {
             pathToLatest = path;
         }
 
@@ -230,6 +230,7 @@ public class VersionRecordManager {
 
     /**
      * It is also possible to change the version with an event.
+     *
      * @param event
      */
     public void onVersionSelectedEvent(@Observes VersionSelectedEvent event) {
@@ -240,6 +241,11 @@ public class VersionRecordManager {
 
     public void setVersion(String version) {
         this.version = PortablePreconditions.checkNotNull("version", version);
+        if (isCurrentLatest()) {
+            button.setTextToLatest();
+        } else if (versions != null) {
+            button.setTextToVersion(getCurrentVersionIndex());
+        }
     }
 
     public String getVersion() {
@@ -322,7 +328,12 @@ public class VersionRecordManager {
             @Override
             public void callback(List<VersionRecord> records) {
                 String uri = path.toURI();
-                setPathToLatest(restoreUtil.createObservablePath(path, uri));
+
+                // We should not recreate the path to latest,
+                // since the new path instance will not have version support
+                if (!path.equals(pathToLatest)) {
+                    setPathToLatest(restoreUtil.createObservablePath(path, uri));
+                }
                 setVersions(records);
                 callback.callback(records);
             }

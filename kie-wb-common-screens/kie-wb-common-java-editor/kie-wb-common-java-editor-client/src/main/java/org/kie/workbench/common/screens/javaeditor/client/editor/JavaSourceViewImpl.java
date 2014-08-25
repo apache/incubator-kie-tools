@@ -24,44 +24,28 @@ import com.google.gwt.user.client.ui.Composite;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.screens.javaeditor.client.widget.ViewJavaSourceWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
-public class JavaSourceViewImpl extends Composite
-                                implements JavaSourceView {
-
-    @Inject
-    private BusyIndicatorView busyIndicatorView;
+public class JavaSourceViewImpl
+        extends KieEditorViewImpl
+        implements JavaSourceView {
 
     @Inject
     private ViewJavaSourceWidget javaSourceViewer;
 
     @PostConstruct
     public void initialize() {
-        initWidget( javaSourceViewer );
+        initWidget(javaSourceViewer);
     }
 
     @Override
     public void setContent( final String content ) {
-        javaSourceViewer.setContent( content );
+        javaSourceViewer.setContent(content);
     }
 
     @Override
     public void clear() {
         javaSourceViewer.clearContent();
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        busyIndicatorView.showBusyIndicator( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        busyIndicatorView.hideBusyIndicator();
-    }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
     }
 
     @Override public void setNotDirty() {
