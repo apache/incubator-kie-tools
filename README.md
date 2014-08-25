@@ -63,6 +63,10 @@ http://www.lienzo-core.com/lienzo-ks/
 
 http://emitrom-lienzo.appspot.com/
 
+Blog ( in progress )
+
+http://lienzocore.wordpress.com/
+
 Contributing
 
 Pull requests are welcome; see the contributor guidelines for details.
