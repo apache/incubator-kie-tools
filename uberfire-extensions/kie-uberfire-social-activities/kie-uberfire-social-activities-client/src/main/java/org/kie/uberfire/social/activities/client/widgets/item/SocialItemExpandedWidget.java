@@ -1,4 +1,4 @@
-package org.kie.uberfire.social.activities.client.widgets;
+package org.kie.uberfire.social.activities.client.widgets.item;
 
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.FluidRow;
@@ -10,9 +10,7 @@ import com.github.gwtbootstrap.client.ui.Thumbnail;
 import com.github.gwtbootstrap.client.ui.Thumbnails;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.resources.client.ImageResource;
-import org.kie.uberfire.social.activities.client.AppResource;
-import org.kie.uberfire.social.activities.client.gravatar.GravatarImage;
+import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
 
@@ -41,7 +39,7 @@ public class SocialItemExpandedWidget {
         Column column = new Column( 6 );
 
         StringBuilder title = new StringBuilder();
-        title.append( event.getAdicionalInfo()[ 0 ] );
+        title.append( event.getAdditionalInfo()[ 0 ] );
         title.append( ". " );
         title.append( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_SHORT ).format( event.getTimestamp() ) );
         column.add( new Paragraph( title.toString() ) );
@@ -54,7 +52,7 @@ public class SocialItemExpandedWidget {
 
         row.add( createSocialUserName( event ) );
 
-        row.add( createAdicionalInfo( event.getAdicionalInfo()[ 1 ] ) );
+        row.add( createAdicionalInfo( event.getAdditionalInfo()[ 1 ] ) );
 
         return row;
     }
@@ -72,7 +70,7 @@ public class SocialItemExpandedWidget {
         Column column = new Column( 2 );
         NavList list = new NavList();
         NavLink link = new NavLink();
-        link.setText( event.getSocialUser().getName() );
+        link.setText( event.getSocialUser().getUserName() );
         list.add( link );
         column.add( list );
         return column;
@@ -83,12 +81,7 @@ public class SocialItemExpandedWidget {
         Thumbnails tumThumbnails = new Thumbnails();
         Thumbnail t = new Thumbnail();
         Image userImage;
-        if ( socialUser.getEmail().isEmpty() ) {
-            userImage = generateDefaultImage();
-        }
-        else{
-            userImage = generateGravatarImage(socialUser);
-        }
+        userImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
         userImage.setSize( "30px", "30px" );
         t.add( userImage );
         tumThumbnails.add( t );
@@ -96,14 +89,4 @@ public class SocialItemExpandedWidget {
         return column;
     }
 
-    private static Image generateGravatarImage( SocialUser socialUser ) {
-        Image gravatarImage= new Image(  new GravatarImage( socialUser.getEmail(), 30 ).getUrl() );
-        return gravatarImage;
-    }
-
-    private static Image generateDefaultImage() {
-        ImageResource imageResource = AppResource.INSTANCE.images().genericAvatar();
-        Image userImage = new Image( imageResource );
-        return userImage;
-    }
 }

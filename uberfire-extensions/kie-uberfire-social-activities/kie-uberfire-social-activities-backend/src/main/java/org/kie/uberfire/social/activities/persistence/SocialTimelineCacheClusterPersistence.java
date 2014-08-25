@@ -72,20 +72,20 @@ public class SocialTimelineCacheClusterPersistence extends SocialTimelineCachePe
 
     private void registerNewEvent( SocialUser user,
                                    SocialActivitiesEvent event ) {
-        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get( user.getName() );
+        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get( user.getUserName() );
         if ( userEvents == null ) {
             userEvents = new ArrayList<SocialActivitiesEvent>();
         }
         userEvents.add( event );
-        userEventsTimelineFreshEvents.put( user.getName(), userEvents );
+        userEventsTimelineFreshEvents.put( user.getUserName(), userEvents );
         cacheControl( user );
     }
 
     private void syncCluster( SocialUser user ) {
-        List<SocialActivitiesEvent> myFreshEvents = userEventsTimelineFreshEvents.get( user.getName() );
-        SocialCacheControl socialCacheControl = userEventsCacheControl.get( user.getName() );
+        List<SocialActivitiesEvent> myFreshEvents = userEventsTimelineFreshEvents.get( user.getUserName() );
+        SocialCacheControl socialCacheControl = userEventsCacheControl.get( user.getUserName() );
         socialCacheControl.reset();
-        List<SocialActivitiesEvent> actualTypeTimeline = createOrGetUserTimeline( user.getName() );
+        List<SocialActivitiesEvent> actualTypeTimeline = createOrGetUserTimeline( user.getUserName() );
         refreshCache( user, actualTypeTimeline );
         syncMyStaleItems( myFreshEvents, actualTypeTimeline, user );
     }
@@ -150,9 +150,9 @@ public class SocialTimelineCacheClusterPersistence extends SocialTimelineCachePe
                                    SocialUser user ) {
         List<SocialActivitiesEvent> unsavedEvents = findStaleEvents( myFreshEvents, storedTimeline );
         if ( !unsavedEvents.isEmpty() ) {
-            List<SocialActivitiesEvent> cacheEvents = userEventsTimelineFreshEvents.get( user.getName() );
+            List<SocialActivitiesEvent> cacheEvents = userEventsTimelineFreshEvents.get( user.getUserName() );
             cacheEvents.addAll( unsavedEvents );
-            userEventsTimelineFreshEvents.put( user.getName(), cacheEvents );
+            userEventsTimelineFreshEvents.put( user.getUserName(), cacheEvents );
         }
 
     }
@@ -177,10 +177,10 @@ public class SocialTimelineCacheClusterPersistence extends SocialTimelineCachePe
     }
 
     private void cacheControl( SocialUser user ) {
-        SocialCacheControl socialCacheControl = userEventsCacheControl.get( user.getName() );
+        SocialCacheControl socialCacheControl = userEventsCacheControl.get( user.getUserName() );
         if ( socialCacheControl == null ) {
             socialCacheControl = new SocialCacheControl();
-            userEventsCacheControl.put( user.getName(), socialCacheControl );
+            userEventsCacheControl.put( user.getUserName(), socialCacheControl );
         }
         socialCacheControl.registerNewEvent();
         boolean iLockTheFileSystem = false;

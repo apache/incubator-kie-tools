@@ -59,7 +59,7 @@ public class SocialTypeTimelinePagedRepository extends SocialPageRepository impl
 
 
         if ( socialPaged.isANewQuery() ) {
-            socialPaged = searchForFreshEvents( adapter.socialEventType(), socialPaged, typeEvents );
+            socialPaged = searchForRecentEvents( adapter.socialEventType(), socialPaged, typeEvents );
         }
         if ( !foundEnoughtEvents( socialPaged, typeEvents ) ) {
             socialPaged = searchForStoredEvents( adapter.socialEventType(), socialPaged, typeEvents );
@@ -136,10 +136,10 @@ public class SocialTypeTimelinePagedRepository extends SocialPageRepository impl
         readEvents( socialPaged, events, timeline );
     }
 
-    private SocialPaged searchForFreshEvents( SocialEventType type,
-                                              SocialPaged socialPaged,
-                                              List<SocialActivitiesEvent> events ) {
-        List<SocialActivitiesEvent> freshEvents = getSocialTimelinePersistenceAPI().getFreshEvents( type );
+    private SocialPaged searchForRecentEvents( SocialEventType type,
+                                               SocialPaged socialPaged,
+                                               List<SocialActivitiesEvent> events ) {
+        List<SocialActivitiesEvent> freshEvents = getSocialTimelinePersistenceAPI().getRecentEvents( type );
 
         searchEvents( socialPaged, events, freshEvents );
         return socialPaged;

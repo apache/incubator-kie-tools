@@ -11,6 +11,8 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.api.runtime.rule.Match;
 import org.kie.uberfire.social.activities.model.PagedSocialQuery;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialPaged;
@@ -34,7 +36,7 @@ public class SocialTimelineRulesQuery implements SocialTimelineRulesQueryAPI {
     private SocialAdapterRepositoryAPI socialAdapterRepositoryAPI;
 
     @Override
-    public List<SocialActivitiesEvent> execute() {
+    public List<SocialActivitiesEvent> executeAllRules() {
 
         List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
         try {
@@ -51,9 +53,49 @@ public class SocialTimelineRulesQuery implements SocialTimelineRulesQueryAPI {
             events = (List<SocialActivitiesEvent>) kSession.getGlobal( "socialEvents" );
 
         } catch ( Exception e ) {
-            throw new RulesExecutionQueryException(e);
+            throw new RulesExecutionQueryException( e );
         }
         return events;
+    }
+
+    @Override
+    public List<SocialActivitiesEvent> executeSpecificRule( Map<String, String> globals,
+                                                            final String drlName ) {
+
+        List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
+        try {
+
+            KieServices ks = KieServices.Factory.get();
+            KieContainer kContainer = ks.getKieClasspathContainer();
+
+            KieSession kSession = kContainer.newKieSession( "social-session" );
+            List<SocialActivitiesEvent> socialEvents = new ArrayList<SocialActivitiesEvent>();
+            kSession.setGlobal( "socialEvents", socialEvents );
+            kSession.setGlobal( "queryAPI", this );
+            for ( String key : globals.keySet() ) {
+                kSession.setGlobal( key, globals.get( key ) );
+            }
+
+            kSession.fireAllRules( new AgendaFilter() {
+                @Override
+                public boolean accept( Match match ) {
+                    String rulename = match.getRule().getName();
+
+                    if ( rulename.equals( drlName ) ) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            } );
+
+            events = (List<SocialActivitiesEvent>) kSession.getGlobal( "socialEvents" );
+
+        } catch ( Exception e ) {
+            throw new RulesExecutionQueryException( e );
+        }
+        return events;
+
     }
 
     @Override
@@ -94,7 +136,7 @@ public class SocialTimelineRulesQuery implements SocialTimelineRulesQueryAPI {
         return events;
     }
 
-    class RulesExecutionQueryException extends  RuntimeException {
+    class RulesExecutionQueryException extends RuntimeException {
 
         private final Exception exception;
 

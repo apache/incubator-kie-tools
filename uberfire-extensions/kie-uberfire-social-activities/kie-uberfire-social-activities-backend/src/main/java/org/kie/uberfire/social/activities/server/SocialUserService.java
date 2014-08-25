@@ -41,4 +41,9 @@ public class SocialUserService implements SocialUserServiceAPI {
         socialUserPersistenceAPI.updateUsers( follower, user );
     }
 
+    @Override
+    public void update( SocialUser... users) {
+        socialUserPersistenceAPI.updateUsers( users );
+    }
+
 }

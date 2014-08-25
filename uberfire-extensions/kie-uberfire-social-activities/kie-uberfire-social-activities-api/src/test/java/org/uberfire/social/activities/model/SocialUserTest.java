@@ -23,8 +23,8 @@ public class SocialUserTest {
 
         user1.follow( user2 );
 
-        assertTrue( user1.getFollowingName().contains( user2.getName() ) );
-        assertTrue( user2.getFollowersName().contains( user1.getName() ) );
+        assertTrue( user1.getFollowingName().contains( user2.getUserName() ) );
+        assertTrue( user2.getFollowersName().contains( user1.getUserName() ) );
     }
 
     @Test
@@ -34,8 +34,8 @@ public class SocialUserTest {
 
         user1.follow( user2 );
 
-        assertTrue( user1.getFollowingName().contains( user2.getName() ) );
-        assertTrue( user2.getFollowersName().contains( user1.getName() ) );
+        assertTrue( user1.getFollowingName().contains( user2.getUserName() ) );
+        assertTrue( user2.getFollowersName().contains( user1.getUserName() ) );
 
         user1.unfollow( user2 );
         assertTrue(user1.getFollowingName().isEmpty());

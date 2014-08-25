@@ -17,7 +17,7 @@ public interface SocialTimelinePersistenceAPI {
 
     List<SocialActivitiesEvent> getLastEvents( SocialUser user );
 
-    List<SocialActivitiesEvent> getFreshEvents( SocialUser user );
+    List<SocialActivitiesEvent> getRecentEvents( SocialUser user );
 
     void persist( SocialActivitiesEvent event );
 
@@ -29,7 +29,7 @@ public interface SocialTimelinePersistenceAPI {
     List<SocialActivitiesEvent> getTimeline( SocialUser socialUser,
                                              String timelineFile );
 
-    List<SocialActivitiesEvent> getFreshEvents( SocialEventType  type );
+    List<SocialActivitiesEvent> getRecentEvents( SocialEventType type );
 
     Integer getUserMostRecentFileIndex( SocialUser user );
 

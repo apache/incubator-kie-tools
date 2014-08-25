@@ -27,6 +27,7 @@ import javax.inject.Named;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.persistence.SocialUserClusterMessaging;
 import org.kie.uberfire.social.activities.persistence.SocialUserClusterPersistence;
@@ -37,6 +38,7 @@ import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.io.IOService;
 
+@Service
 @ApplicationScoped
 public class SocialUserPersistenceProducer {
 

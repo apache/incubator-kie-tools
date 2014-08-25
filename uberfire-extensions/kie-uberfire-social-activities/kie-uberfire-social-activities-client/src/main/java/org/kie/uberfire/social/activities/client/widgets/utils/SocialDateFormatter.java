@@ -1,4 +1,4 @@
-package org.kie.uberfire.social.activities.client.widgets;
+package org.kie.uberfire.social.activities.client.widgets.utils;
 
 import java.util.Date;
 

@@ -20,10 +20,12 @@ public class SocialUserJsonDeserializer implements JsonDeserializer<SocialUser> 
                                    JsonDeserializationContext jsonDeserializationContext ) throws JsonParseException {
         final JsonObject jsonObject = jsonElement.getAsJsonObject();
 
-        final JsonElement userName = jsonObject.get( "name" );
+        final JsonElement userName = jsonObject.get( "userName" );
+        final JsonElement realName = jsonObject.get( "realName" );
+        final JsonElement email = jsonObject.get( "email" );
         List<String> followers = deserializeUserNames( jsonObject.get( "followers" ).getAsJsonArray() );
         List<String> following = deserializeUserNames( jsonObject.get( "following" ).getAsJsonArray() );
-        SocialUser socialUser = new SocialUser( userName.getAsString(),followers,following );
+        SocialUser socialUser = new SocialUser( userName.getAsString(), realName.getAsString(), email.getAsString(), followers, following );
         return socialUser;
     }
 

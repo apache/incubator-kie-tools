@@ -3,7 +3,7 @@ package org.kie.uberfire.social.activities.client;
 import java.util.Date;
 
 import org.junit.Test;
-import org.kie.uberfire.social.activities.client.widgets.SocialDateFormatter;
+import org.kie.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 
 import static org.junit.Assert.*;
 

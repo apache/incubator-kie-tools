@@ -22,7 +22,7 @@ public class AtomSocialTimelineConverter {
         for ( SocialActivitiesEvent event : eventTimeline ) {
             Entry entry = feed.addEntry();
             entry.setTitle( event.getType() );
-            entry.setSummary( event.getSocialUser().getName() + "  " + event.toString() );
+            entry.setSummary( event.getSocialUser().getUserName() + "  " + event.toString() );
             entry.setUpdated( event.getTimestamp() );
             entry.setPublished( event.getTimestamp() );
         }

@@ -1,7 +1,6 @@
 package org.kie.uberfire.social.activities.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -10,42 +9,78 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class SocialActivitiesEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static SocialActivitiesEvent dummyLastWrittenMarker;
     private Date timestamp;
     private SocialUser socialUser;
     private String type;
-    private String[] adicionalInfo;
-
-    private static SocialActivitiesEvent dummyLastWritedMarker;
+    private String linkLabel;
+    private String linkTarget;
+    private String[] additionalInfo;
+    private String description;
 
     public SocialActivitiesEvent() {
     }
 
     public SocialActivitiesEvent( SocialUser socialUser,
-                                  SocialEventType type,
-                                  Date timestamp,
-                                  String... adicionalInfo ) {
+                                  String type,
+                                  Date timestamp ) {
         this.socialUser = socialUser;
-        this.type = type.name();
-        this.adicionalInfo = adicionalInfo;
-        this.timestamp = timestamp;
-    }
-    public SocialActivitiesEvent( SocialUser socialUser,
-                                  String typeName,
-                                  Date timestamp,
-                                  String... adicionalInfo ) {
-        this.socialUser = socialUser;
-        this.type = typeName;
-        this.adicionalInfo = adicionalInfo;
+        this.type = type;
         this.timestamp = timestamp;
     }
 
-    public String[] getAdicionalInfo() {
-        return adicionalInfo;
+    public SocialActivitiesEvent( SocialUser socialUser,
+                                  SocialEventType type,
+                                  Date timestamp ) {
+        this.socialUser = socialUser;
+        this.type = type.name();
+        this.timestamp = timestamp;
+    }
+
+    public SocialActivitiesEvent withLink( String linklabel,
+                                           String linkTarget ) {
+        this.linkLabel = linklabel;
+        this.linkTarget = linkTarget;
+        return this;
+    }
+
+    public SocialActivitiesEvent withDescription( String description) {
+        this.description = description;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean hasLink() {
+        return linkLabel != null;
+    }
+
+    public String getLinkLabel() {
+        return linkLabel;
+    }
+
+    public String getLinkTarget() {
+        return linkTarget;
+    }
+
+    public SocialActivitiesEvent withAdicionalInfo( String... adicionalInfo ) {
+        this.additionalInfo = adicionalInfo;
+        return this;
+    }
+
+    public boolean hasAdicionalInfo() {
+        return additionalInfo != null;
+    }
+
+    public String[] getAdditionalInfo() {
+        return additionalInfo;
     }
 
     public String getAdicionalInfos() {
         String adicionalInfos = "";
-        for ( String info : adicionalInfo ) {
+        for ( String info : additionalInfo ) {
             adicionalInfos += info + " ";
         }
         return adicionalInfos;
@@ -53,10 +88,6 @@ public class SocialActivitiesEvent implements Serializable {
 
     public Date getTimestamp() {
         return timestamp;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public SocialUser getSocialUser() {
@@ -68,9 +99,8 @@ public class SocialActivitiesEvent implements Serializable {
 
         return "SocialActivitiesEvent{" +
                 "timestamp=" + timestamp +
-                ", user=" + socialUser.getName() +
+                ", user=" + socialUser.getUserName() +
                 ", type=" + type +
-                ", " + getAdicionalInfos() +
                 '}';
     }
 
@@ -85,16 +115,13 @@ public class SocialActivitiesEvent implements Serializable {
 
         SocialActivitiesEvent that = (SocialActivitiesEvent) o;
 
-        if ( !Arrays.equals( adicionalInfo, that.adicionalInfo ) ) {
-            return false;
-        }
         if ( socialUser != null ? !socialUser.equals( that.socialUser ) : that.socialUser != null ) {
             return false;
         }
         if ( timestamp != null ? !compareDates( that ) : that.timestamp != null ) {
             return false;
         }
-        if ( !type.equalsIgnoreCase(that.type) ) {
+        if ( !type.equals( that.type ) ) {
             return false;
         }
         return true;
@@ -117,22 +144,24 @@ public class SocialActivitiesEvent implements Serializable {
         int result = timestamp != null ? timestamp.hashCode() : 0;
         result = 31 * result + ( socialUser != null ? socialUser.hashCode() : 0 );
         result = 31 * result + ( type != null ? type.hashCode() : 0 );
-        result = 31 * result + ( adicionalInfo != null ? Arrays.hashCode( adicionalInfo ) : 0 );
         return result;
     }
 
     public boolean isDummyEvent() {
-        return type!=null&& type.equals(DefaultTypes.DUMMY_EVENT.name());
+        return type != null && type.equals( DefaultTypes.DUMMY_EVENT.name() );
     }
 
-    public static SocialActivitiesEvent getDummyLastWritedMarker() {
+    public static SocialActivitiesEvent getDummyLastWrittenMarker() {
 
-        if ( dummyLastWritedMarker == null ) {
-           dummyLastWritedMarker = new SocialActivitiesEvent(new SocialUser( "DUMMY" ),
-                                                            DefaultTypes.DUMMY_EVENT,
-                                                              new Date(  ),
-                                                              "" );
+        if ( dummyLastWrittenMarker == null ) {
+            dummyLastWrittenMarker = new SocialActivitiesEvent( new SocialUser( "DUMMY" ),
+                                                                DefaultTypes.DUMMY_EVENT,
+                                                                new Date() );
         }
-        return dummyLastWritedMarker;
+        return dummyLastWrittenMarker;
+    }
+
+    public String getType() {
+        return type;
     }
 }

@@ -99,11 +99,11 @@ public class SocialClusterMessaging {
                 user = gson.fromJson( entry.getValue(), SocialUser.class );
             }
         }
-        if ( user == null || user.getName() == null ) {
+        if ( user == null || user.getUserName() == null ) {
             SocialEventType typeEvent = socialEventTypeRepository.findType( eventTypeName.getType() );
-            cacheClusterPersistence.persist( SocialActivitiesEvent.getDummyLastWritedMarker(), typeEvent, false );
+            cacheClusterPersistence.persist( SocialActivitiesEvent.getDummyLastWrittenMarker(), typeEvent, false );
         } else {
-            cacheClusterPersistence.persist( user, SocialActivitiesEvent.getDummyLastWritedMarker() );
+            cacheClusterPersistence.persist( user, SocialActivitiesEvent.getDummyLastWrittenMarker() );
         }
     }
 

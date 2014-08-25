@@ -27,6 +27,9 @@ public interface AppImages
         ClientBundle {
 
     @Source("images/generic-avatar-30px.png")
+    ImageResource genericAvatar30px();
+
+    @Source("images/generic-avatar.png")
     ImageResource genericAvatar();
 
 }

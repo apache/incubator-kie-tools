@@ -11,6 +11,9 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 @Remote
 public interface SocialTimeLineRepositoryAPI {
 
+    List<SocialActivitiesEvent> getLastEventTimeline( String adapterName );
+
+
     List<SocialActivitiesEvent> getLastEventTimeline( String adapterName,
                                                       Map commandsMap );
 
@@ -20,6 +23,9 @@ public interface SocialTimeLineRepositoryAPI {
     public void saveTypeEvent( SocialActivitiesEvent event );
 
     void saveUserEvent( SocialActivitiesEvent event );
+
+    List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user,
+                                                     SocialPredicate<SocialActivitiesEvent> predicate );
 
     List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user,
                                                      Map parameterMap );

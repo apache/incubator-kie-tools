@@ -16,7 +16,7 @@ public class SampleUserCommand implements SocialCommandUserFilter {
                                                 List<SocialActivitiesEvent> events ) {
         List<SocialActivitiesEvent> newList = new ArrayList<SocialActivitiesEvent>();
         for ( SocialActivitiesEvent event : events ) {
-            String name = event.getSocialUser().getName();
+            String name = event.getSocialUser().getUserName();
             SocialUser socialUser = new SocialUser( name.toUpperCase() );
             SocialActivitiesEvent socialEvent = new SocialActivitiesEvent( socialUser, event.getType(), event.getTimestamp() );
             newList.add( socialEvent );

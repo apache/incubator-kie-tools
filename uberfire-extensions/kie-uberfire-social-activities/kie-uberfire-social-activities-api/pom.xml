@@ -15,6 +15,7 @@
   <description>KIE Uberfire Social Activities API</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>

@@ -44,33 +44,34 @@ public class PersistenceJsonConverterTest {
         String json = gson.toJson( user );
 
         SocialUser jsonUser = gson.fromJson( json, SocialUser.class );
-        assertEquals( "user1", jsonUser.getName() );
-        assertEquals( "user4", jsonUser.getFollowersName().get( 0 ));
-        assertEquals( "user2", jsonUser.getFollowingName().get( 0 ));
-        assertEquals( "user3", jsonUser.getFollowingName().get( 1 ));
+        assertEquals( "user1", jsonUser.getUserName() );
+        assertEquals( "user4", jsonUser.getFollowersName().get( 0 ) );
+        assertEquals( "user2", jsonUser.getFollowingName().get( 0 ) );
+        assertEquals( "user3", jsonUser.getFollowingName().get( 1 ) );
     }
 
     @Test
-    public void SocialActivitiesEvent_to_and_from_JSON(){
+    public void SocialActivitiesEvent_to_and_from_JSON() {
 
-        SocialActivitiesEvent event1 = new SocialActivitiesEvent(new SocialUser( "admin" ), ExtendedTypes.FOLLOW_USER, new Date(), "adicional1"  );
-        SocialActivitiesEvent event2 = new SocialActivitiesEvent(new SocialUser( "system" ), ExtendedTypes.FOLLOW_USER, new Date(), "adicional2"  );
+        SocialActivitiesEvent event1 = new SocialActivitiesEvent( new SocialUser( "admin" ), ExtendedTypes.FOLLOW_USER, new Date() ).withAdicionalInfo( "adicional1" );
+        SocialActivitiesEvent event2 = new SocialActivitiesEvent( new SocialUser( "system" ), ExtendedTypes.FOLLOW_USER, new Date() ).withAdicionalInfo( "adicional2" );
 
-        List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>(  );
-        events.add(event1);
+        List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
+        events.add( event1 );
         events.add( event2 );
         String json = gson.toJson( events );
 
-        Type collectionType = new TypeToken<Collection<SocialActivitiesEvent>>(){}.getType();
-        List<SocialActivitiesEvent> jsonEvents = gson.fromJson(json, collectionType);
-        compare(event1, jsonEvents.get( 0 ));
-        compare(event2, jsonEvents.get( 1 ));
+        Type collectionType = new TypeToken<Collection<SocialActivitiesEvent>>() {
+        }.getType();
+        List<SocialActivitiesEvent> jsonEvents = gson.fromJson( json, collectionType );
+        compare( event1, jsonEvents.get( 0 ) );
+        compare( event2, jsonEvents.get( 1 ) );
     }
 
     private void compare( SocialActivitiesEvent event,
                           SocialActivitiesEvent json ) {
         assertEquals( event.getAdicionalInfos(), json.getAdicionalInfos() );
-        assertEquals( event.getSocialUser().getName(), json.getSocialUser().getName() );
+        assertEquals( event.getSocialUser().getUserName(), json.getSocialUser().getUserName() );
         assertEquals( event.getType(), json.getType() );
         assertTrue( event.equals( json ) );
     }

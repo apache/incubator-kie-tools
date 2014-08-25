@@ -33,7 +33,7 @@ public class SocialUserTimelinePagedRepository extends SocialPageRepository impl
         socialPaged = setupQueryDirection( socialPaged );
 
         if ( socialPaged.isANewQuery() ) {
-            socialPaged = searchForFreshEvents( socialUser, socialPaged, userEvents );
+            socialPaged = searchForRecentEvents( socialUser, socialPaged, userEvents );
         }
         if ( !foundEnoughtEvents( socialPaged, userEvents ) ) {
             socialPaged = searchForStoredEvents( socialUser, socialPaged, userEvents );
@@ -109,10 +109,10 @@ public class SocialUserTimelinePagedRepository extends SocialPageRepository impl
         readEvents( socialPaged, events, timeline );
     }
 
-    private SocialPaged searchForFreshEvents( SocialUser socialUser,
-                                              SocialPaged socialPaged,
-                                              List<SocialActivitiesEvent> events ) {
-        List<SocialActivitiesEvent> freshEvents = getSocialTimelinePersistenceAPI().getFreshEvents( socialUser );
+    private SocialPaged searchForRecentEvents( SocialUser socialUser,
+                                               SocialPaged socialPaged,
+                                               List<SocialActivitiesEvent> events ) {
+        List<SocialActivitiesEvent> freshEvents = getSocialTimelinePersistenceAPI().getRecentEvents( socialUser );
 
         searchEvents( socialPaged, events, freshEvents );
         return socialPaged;

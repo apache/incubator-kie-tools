@@ -5,9 +5,9 @@ global org.kie.uberfire.social.activities.drools.SocialTimelineRulesQuery queryA
 global java.util.List socialEvents;
 global java.util.List socialEvents;
 global java.lang.String filter;
-rule "Get N Type Cached"
+rule "filterTimelineRecentAssets"
 when
-  $result:SocialActivitiesEvent(getAdicionalInfos() contains filter) from queryAPI.getNEventsFromEachType(3,"RESOURCE_ADDED_EVENT", "RESOURCE_UPDATE_EVENT")
+  $result:SocialActivitiesEvent(getAdicionalInfos() contains filter) from queryAPI.getTypeCached("RESOURCE_ADDED_EVENT", "RESOURCE_UPDATE_EVENT")
   eval( true )
 then
   socialEvents.add($result);

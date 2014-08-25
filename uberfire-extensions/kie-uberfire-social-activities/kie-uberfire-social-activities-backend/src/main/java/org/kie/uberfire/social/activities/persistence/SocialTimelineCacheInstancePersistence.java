@@ -49,12 +49,12 @@ public class SocialTimelineCacheInstancePersistence extends SocialTimelineCacheP
     @Override
     public void persist( SocialUser user,
                          SocialActivitiesEvent event ) {
-        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get( user.getName() );
+        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get( user.getUserName() );
         if ( userEvents == null ) {
             userEvents = new ArrayList<SocialActivitiesEvent>();
         }
         userEvents.add( event );
-        userEventsTimelineFreshEvents.put( user.getName(), userEvents );
+        userEventsTimelineFreshEvents.put( user.getUserName(), userEvents );
         cacheControl( user );
     }
 
@@ -65,10 +65,10 @@ public class SocialTimelineCacheInstancePersistence extends SocialTimelineCacheP
     }
 
     void cacheControl( SocialUser user ) {
-        SocialCacheControl socialCacheControl = userEventsCacheControl.get( user.getName() );
+        SocialCacheControl socialCacheControl = userEventsCacheControl.get( user.getUserName() );
         if ( socialCacheControl == null ) {
             socialCacheControl = new SocialCacheControl();
-            userEventsCacheControl.put( user.getName(), socialCacheControl );
+            userEventsCacheControl.put( user.getUserName(), socialCacheControl );
         }
         socialCacheControl.registerNewEvent();
         if ( socialCacheControl.needToPersist() ) {

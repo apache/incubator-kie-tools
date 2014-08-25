@@ -18,10 +18,10 @@ public class SocialTimeLineRepositoryUnitTestWrapper extends SocialTimeLineRepos
     @Override
     public List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user,
                                                             Map commandsMap ) {
-        if ( mockMap.get( user.getName() ) == null ) {
-            mockMap.put( user.getName(), new ArrayList() );
+        if ( mockMap.get( user.getUserName() ) == null ) {
+            mockMap.put( user.getUserName(), new ArrayList() );
         }
-        return mockMap.get( user.getName() );
+        return mockMap.get( user.getUserName() );
     }
 
     @Override
@@ -45,7 +45,7 @@ public class SocialTimeLineRepositoryUnitTestWrapper extends SocialTimeLineRepos
 
     @Override
     public void saveUserEvent( SocialActivitiesEvent event ) {
-        String userName = event.getSocialUser().getName();
+        String userName = event.getSocialUser().getUserName();
         if ( mockMap.get( userName ) == null ) {
             mockMap.put( userName, new ArrayList() );
         }

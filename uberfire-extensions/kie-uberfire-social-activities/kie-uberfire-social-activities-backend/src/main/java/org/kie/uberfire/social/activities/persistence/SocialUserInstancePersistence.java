@@ -19,8 +19,8 @@ public class SocialUserInstancePersistence extends SocialUserCachePersistence {
     @Override
     public void updateUsers( SocialUser... users ) {
         for ( SocialUser user : users ) {
-            usersCache.put( user.getName(), user );
-            Path userFile =userServicesBackend.buildPath( SOCIAL_FILES,user.getName() );
+            usersCache.put( user.getUserName(), user );
+            Path userFile =userServicesBackend.buildPath( SOCIAL_FILES,user.getUserName() );
             try {
                 String json = gson.toJson( user );
                 ioService.write( userFile, json );

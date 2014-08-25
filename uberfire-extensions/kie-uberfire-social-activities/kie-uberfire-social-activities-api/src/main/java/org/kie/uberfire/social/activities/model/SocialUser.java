@@ -11,7 +11,9 @@ public class SocialUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String name;
+    private String userName;
+
+    private String realName;
 
     private String email;
 
@@ -22,43 +24,58 @@ public class SocialUser implements Serializable {
     public SocialUser() {
     }
 
-    public SocialUser( String name ) {
-        this.name = name;
+    public SocialUser( String username ) {
+        this.userName = username;
+        this.realName = "";
+        this.email = "";
     }
 
-    public SocialUser( String name,
+    public SocialUser( String username,
                        List<String> followersName,
                        List<String> followingName ) {
-        this.name = name;
+        this.userName = username;
+        this.realName = "";
+        this.email = "";
         this.followersName = followersName;
         this.followingName = followingName;
+    }
 
+    public SocialUser( String username,
+                       String realName,
+                       String email,
+                       List<String> followersName,
+                       List<String> followingName ) {
+        this.userName = username;
+        this.realName = realName;
+        this.email = email;
+        this.followersName = followersName;
+        this.followingName = followingName;
     }
 
     public void follow( SocialUser anotherUser ) {
         if ( validate( anotherUser ) ) {
-            followingName.add( anotherUser.getName() );
+            followingName.add( anotherUser.getUserName() );
             anotherUser.addFollower( this );
         }
     }
 
     private boolean validate( SocialUser anotherUser ) {
-        return !this.equals( anotherUser ) && !followingName.contains( anotherUser.getName() );
+        return !this.equals( anotherUser ) && !followingName.contains( anotherUser.getUserName() );
     }
 
     public void unfollow( SocialUser anotherUser ) {
         if ( !this.equals( anotherUser ) ) {
-            followingName.remove( anotherUser.getName() );
+            followingName.remove( anotherUser.getUserName() );
             anotherUser.removeFollower( this );
         }
     }
 
     private void removeFollower( SocialUser socialUser ) {
-        followersName.remove( socialUser.getName() );
+        followersName.remove( socialUser.getUserName() );
     }
 
     private void addFollower( SocialUser socialUser ) {
-        this.followersName.add( socialUser.getName() );
+        this.followersName.add( socialUser.getUserName() );
     }
 
     public List<String> getFollowersName() {
@@ -69,8 +86,8 @@ public class SocialUser implements Serializable {
         return followersName;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
     public List<String> getFollowingName() {
@@ -83,7 +100,7 @@ public class SocialUser implements Serializable {
     @Override
     public String toString() {
         return "SocialUser{" +
-                "name='" + name +
+                "userName='" + userName +
                 '}';
     }
 
@@ -98,7 +115,7 @@ public class SocialUser implements Serializable {
 
         SocialUser that = (SocialUser) o;
 
-        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+        if ( userName != null ? !userName.equals( that.userName ) : that.userName != null ) {
             return false;
         }
 
@@ -107,7 +124,7 @@ public class SocialUser implements Serializable {
 
     @Override
     public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+        return userName != null ? userName.hashCode() : 0;
     }
 
     public String getEmail() {
@@ -115,5 +132,17 @@ public class SocialUser implements Serializable {
             return "";
         }
         return email;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName( String realName ) {
+        this.realName = realName;
+    }
+
+    public void setEmail( String email ) {
+        this.email = email;
     }
 }

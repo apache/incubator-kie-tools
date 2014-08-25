@@ -1,4 +1,4 @@
-package org.kie.uberfire.social.activities.client.widgets;
+package org.kie.uberfire.social.activities.client.widgets.relations;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -87,7 +87,7 @@ public class SocialRelationsWidget extends Composite {
         MessageBuilder.createCall( new RemoteCallback<List<SocialUser>>() {
             public void callback( List<SocialUser> users ) {
                 for ( SocialUser user : users ) {
-                    items.add( new Label( user.getName() ) );
+                    items.add( new Label( user.getUserName() ) );
                 }
             }
         }, SocialUserRepositoryAPI.class ).findAllUsers();
@@ -99,7 +99,7 @@ public class SocialRelationsWidget extends Composite {
             public void callback( SocialUser user ) {
                 updateWidget();
             }
-        }, SocialUserServiceAPI.class ).userFollowAnotherUser( socialLoggedUser.getName(), filterBox.getText() );
+        }, SocialUserServiceAPI.class ).userFollowAnotherUser( socialLoggedUser.getUserName(), filterBox.getText() );
     }
 
     @UiHandler("unfollow")
@@ -108,7 +108,7 @@ public class SocialRelationsWidget extends Composite {
             public void callback( SocialUser user ) {
                 updateWidget();
             }
-        }, SocialUserServiceAPI.class ).userUnfollowAnotherUser( socialLoggedUser.getName(), filterBox.getText() );
+        }, SocialUserServiceAPI.class ).userUnfollowAnotherUser( socialLoggedUser.getUserName(), filterBox.getText() );
     }
 
     interface MyUiBinder extends UiBinder<Widget, SocialRelationsWidget> {

@@ -18,7 +18,9 @@ public class SocialUserJsonSerializer implements JsonSerializer<SocialUser> {
                                   Type type,
                                   JsonSerializationContext jsonSerializationContext ) {
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("name", socialUser.getName());
+        jsonObject.addProperty("userName", socialUser.getUserName());
+        jsonObject.addProperty("realName", socialUser.getRealName());
+        jsonObject.addProperty("email", socialUser.getEmail());
 
         serializeList(socialUser,"following", socialUser.getFollowingName(), jsonObject);
         serializeList(socialUser,"followers", socialUser.getFollowersName(), jsonObject);

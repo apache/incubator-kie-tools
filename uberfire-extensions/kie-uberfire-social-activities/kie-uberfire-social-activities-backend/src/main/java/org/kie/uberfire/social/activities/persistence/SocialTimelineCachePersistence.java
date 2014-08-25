@@ -254,7 +254,7 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
     }
 
     @Override
-    public List<SocialActivitiesEvent>  getFreshEvents( SocialEventType type ) {
+    public List<SocialActivitiesEvent> getRecentEvents( SocialEventType type ) {
         List<SocialActivitiesEvent> socialActivitiesEvents = new ArrayList<SocialActivitiesEvent>();
         List<SocialActivitiesEvent> typeEvents = typeEventsFreshEvents.get( type );
         if ( typeEvents != null ) {
@@ -292,7 +292,7 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
 
     private String persistEvents( SocialUser user,
                                   List<SocialActivitiesEvent> newEvents ) {
-        Path userDir = getUserDirectory( user.getName() );
+        Path userDir = getUserDirectory( user.getUserName() );
         if ( !ioService.exists( userDir ) ) {
             createPersistenceStructure( userDir );
         }
@@ -309,33 +309,33 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
     public List<SocialActivitiesEvent> getLastEvents( SocialUser user ) {
 
         List<SocialActivitiesEvent> socialActivitiesEvents = new ArrayList<SocialActivitiesEvent>();
-        List<SocialActivitiesEvent> userEvents = userEventsTimelineCache.get( user.getName() );
+        List<SocialActivitiesEvent> userEvents = userEventsTimelineCache.get( user.getUserName() );
         if ( userEvents == null ) {
             createCacheStructureForNewUsers( user );
         }
-        socialActivitiesEvents.addAll( userEventsTimelineCache.get( user.getName() ) );
-        socialActivitiesEvents.addAll( userEventsTimelineFreshEvents.get( user.getName() ) );
+        socialActivitiesEvents.addAll( userEventsTimelineCache.get( user.getUserName() ) );
+        socialActivitiesEvents.addAll( userEventsTimelineFreshEvents.get( user.getUserName() ) );
         return socialActivitiesEvents;
     }
 
     @Override
-    public List<SocialActivitiesEvent> getFreshEvents( SocialUser user ) {
+    public List<SocialActivitiesEvent> getRecentEvents( SocialUser user ) {
         List<SocialActivitiesEvent> socialActivitiesEvents = new ArrayList<SocialActivitiesEvent>();
-        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get( user.getName() );
+        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get( user.getUserName() );
         if ( userEvents == null ) {
             createCacheStructureForNewUsers( user );
         }
-        socialActivitiesEvents.addAll( userEventsTimelineFreshEvents.get( user.getName() ) );
+        socialActivitiesEvents.addAll( userEventsTimelineFreshEvents.get( user.getUserName() ) );
         return socialActivitiesEvents;
     }
 
     private void createCacheStructureForNewUsers( SocialUser user ) {
-        userEventsTimelineCache.put( user.getName(), new ArrayList<SocialActivitiesEvent>() );
-        userEventsTimelineFreshEvents.put( user.getName(), new ArrayList<SocialActivitiesEvent>() );
+        userEventsTimelineCache.put( user.getUserName(), new ArrayList<SocialActivitiesEvent>() );
+        userEventsTimelineFreshEvents.put( user.getUserName(), new ArrayList<SocialActivitiesEvent>() );
     }
 
     List<SocialActivitiesEvent> storeTimeLineInFile( SocialUser user ) {
-        List<SocialActivitiesEvent> socialActivitiesEvents = userEventsTimelineFreshEvents.get( user.getName() );
+        List<SocialActivitiesEvent> socialActivitiesEvents = userEventsTimelineFreshEvents.get( user.getUserName() );
         persistEvents( user, socialActivitiesEvents );
         refreshCache( user, socialActivitiesEvents );
         return socialActivitiesEvents;
@@ -343,8 +343,8 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
 
     void refreshCache( SocialUser user,
                        List<SocialActivitiesEvent> socialActivitiesEvents ) {
-        userEventsTimelineFreshEvents.put( user.getName(), new ArrayList<SocialActivitiesEvent>() );
-        userEventsTimelineCache.put( user.getName(), socialActivitiesEvents );
+        userEventsTimelineFreshEvents.put( user.getUserName(), new ArrayList<SocialActivitiesEvent>() );
+        userEventsTimelineCache.put( user.getUserName(), socialActivitiesEvents );
     }
 
     Path getRootUserTimelineDirectory() {
@@ -354,7 +354,7 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
 
     @Override
     public Integer getUserMostRecentFileIndex( SocialUser user ) {
-        Path timelineDir = getUserDirectory( user.getName() );
+        Path timelineDir = getUserDirectory( user.getUserName() );
         Integer lastFileIndex = getLastFileIndex( timelineDir );
         return lastFileIndex;
     }
@@ -362,7 +362,7 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
     @Override
     public List<SocialActivitiesEvent> getTimeline( SocialUser socialUser,
                                                     String timelineFile ) {
-        Path userDirectory = getUserDirectory( socialUser.getName() );
+        Path userDirectory = getUserDirectory( socialUser.getUserName() );
         List<SocialActivitiesEvent> timeline = getTimeline( userDirectory, timelineFile );
         return timeline;
     }
@@ -406,7 +406,7 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
     @Override
     public Integer getNumberOfEventsOnFile( SocialUser socialUser,
                                             String originalFilename ) {
-        Path userDirectory = getUserDirectory( socialUser.getName() );
+        Path userDirectory = getUserDirectory( socialUser.getUserName() );
         return getNumberOfEventsOnPath( originalFilename, userDirectory );
     }
 }

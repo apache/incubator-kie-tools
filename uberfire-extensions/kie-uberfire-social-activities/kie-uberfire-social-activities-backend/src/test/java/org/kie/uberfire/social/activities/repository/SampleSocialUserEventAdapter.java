@@ -17,7 +17,6 @@ import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 @ApplicationScoped
 public class SampleSocialUserEventAdapter implements SocialAdapter<FollowSocialUserEvent> {
 
-
     @Override
     public Class<FollowSocialUserEvent> eventToIntercept() {
         return FollowSocialUserEvent.class;
@@ -39,8 +38,8 @@ public class SampleSocialUserEventAdapter implements SocialAdapter<FollowSocialU
     @Override
     public SocialActivitiesEvent toSocial( Object object ) {
         FollowSocialUserEvent event = (FollowSocialUserEvent) object;
-        String adicionalInfo = "follow " + event.getFollow().getName();
-        return new SocialActivitiesEvent( event.getFollower(),  ExtendedTypes.FOLLOW_USER, new Date(), adicionalInfo );
+        String adicionalInfo = "follow " + event.getFollow().getUserName();
+        return new SocialActivitiesEvent( event.getFollower(), ExtendedTypes.FOLLOW_USER, new Date() ).withAdicionalInfo( adicionalInfo );
     }
 
     @Override
@@ -70,7 +69,7 @@ public class SampleSocialUserEventAdapter implements SocialAdapter<FollowSocialU
                                                         List<SocialActivitiesEvent> events ) {
                 List<SocialActivitiesEvent> newList = new ArrayList<SocialActivitiesEvent>();
                 for ( SocialActivitiesEvent event : events ) {
-                    String name = event.getSocialUser().getName();
+                    String name = event.getSocialUser().getUserName();
                     SocialUser socialUser = new SocialUser( name + " - filtered" );
                     SocialActivitiesEvent socialEvent = new SocialActivitiesEvent( socialUser, event.getType(), new Date() );
                     newList.add( socialEvent );

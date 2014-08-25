@@ -16,6 +16,7 @@ import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
+import org.kie.uberfire.social.activities.service.SocialPredicate;
 import org.kie.uberfire.social.activities.service.SocialRouterAPI;
 import org.kie.uberfire.social.activities.service.SocialTimeLineRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialTimelinePersistenceAPI;
@@ -36,6 +37,12 @@ public class SocialTimeLineRepository implements SocialTimeLineRepositoryAPI {
 
     @Inject
     CommandTimelineFilter commandTimelineFilter;
+
+    @Override
+    public List<SocialActivitiesEvent> getLastEventTimeline( String adapterName ) {
+
+        return getLastEventTimeline( adapterName, new HashMap() );
+    }
 
     @Override
     public List<SocialActivitiesEvent> getLastEventTimeline( String adapterName,
@@ -93,8 +100,6 @@ public class SocialTimeLineRepository implements SocialTimeLineRepositoryAPI {
         socialTimelinePersistence.persist( user, event );
     }
 
-
-
     @Override
     public Integer numberOfPages( SocialEventType type ) {
         return socialTimelinePersistence.numberOfPages( type );
@@ -103,6 +108,19 @@ public class SocialTimeLineRepository implements SocialTimeLineRepositoryAPI {
     @Override
     public List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user ) {
         return getLastUserTimeline( user, new HashMap() );
+    }
+
+    @Override
+    public List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user,
+                                                            SocialPredicate<SocialActivitiesEvent> predicate ) {
+        List<SocialActivitiesEvent> filteredList = new ArrayList<SocialActivitiesEvent>();
+        List<SocialActivitiesEvent> lastUserTimeline = getLastUserTimeline( user, new HashMap() );
+        for ( SocialActivitiesEvent socialActivitiesEvent : lastUserTimeline ) {
+            if ( predicate.test( socialActivitiesEvent ) ) {
+                filteredList.add( socialActivitiesEvent );
+            }
+        }
+        return filteredList;
     }
 
     @Override

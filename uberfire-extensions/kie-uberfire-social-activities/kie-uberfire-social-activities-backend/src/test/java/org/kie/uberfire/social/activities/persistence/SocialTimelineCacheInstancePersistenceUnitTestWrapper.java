@@ -35,18 +35,18 @@ public class SocialTimelineCacheInstancePersistenceUnitTestWrapper extends Socia
     void cacheControl( SocialActivitiesEvent event ) {
     }
 
-
     @Override
     public Integer getUserMostRecentFileIndex( SocialUser user ) {
         return 5;
     }
+
     public Integer getTypeMostRecentFileIndex( SocialEventType type ) {
         return 5;
     }
+
     SocialEventType findType( SocialActivitiesEvent event ) {
         return DefaultTypes.DUMMY_EVENT;
     }
-
 
     @Override
     public List<SocialActivitiesEvent> getTimeline( SocialUser socialUser,
@@ -64,31 +64,32 @@ public class SocialTimelineCacheInstancePersistenceUnitTestWrapper extends Socia
 
     private List<SocialActivitiesEvent> createFakeTimeline( String timelineFile ) {
         if ( timelineFile.equals( "5" ) ) {
-            return createTimeline("5", 5 );
+            return createTimeline( "5", 5 );
         }
         if ( timelineFile.equals( "4" ) ) {
-            return createTimeline("4", 5 );
+            return createTimeline( "4", 5 );
         }
         if ( timelineFile.equals( "3" ) ) {
-            return createTimeline("3", 5 );
+            return createTimeline( "3", 5 );
         }
         if ( timelineFile.equals( "2" ) ) {
-            return createTimeline("2", 5 );
+            return createTimeline( "2", 5 );
         }
         if ( timelineFile.equals( "1" ) ) {
             //empty timeline
-            return new ArrayList<SocialActivitiesEvent>(  );
+            return new ArrayList<SocialActivitiesEvent>();
         }
         if ( timelineFile.equals( "0" ) ) {
-            return createTimeline("0", 5 );
+            return createTimeline( "0", 5 );
         }
         throw new RuntimeException();
     }
 
-    private List<SocialActivitiesEvent> createTimeline( String name, int numEvents ) {
+    private List<SocialActivitiesEvent> createTimeline( String name,
+                                                        int numEvents ) {
         List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
         for ( int i = 0; i < numEvents; i++ ) {
-            events.add( new SocialActivitiesEvent( new SocialUser( name ), DefaultTypes.DUMMY_EVENT, new Date(), i + "" ) );
+            events.add( new SocialActivitiesEvent( new SocialUser( name ), DefaultTypes.DUMMY_EVENT, new Date() ).withAdicionalInfo( i + "" ) );
         }
         return events;
     }
