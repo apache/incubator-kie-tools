@@ -60,9 +60,7 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
     protected final native FilterTableArray getTable(double value)
     /*-{
         var table = [];
-        
         for(var i = 0; i < 256; i++) {
-        
             table[i] = (255 * ((i * value / 256) | 0) / (value - 1)) | 0;
         }
         return table;

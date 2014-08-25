@@ -90,16 +90,10 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
 
     private final native void filter_(JavaScriptObject data, int length, double value)
     /*-{
-    	function calculate(v) {
-    		return Math.max(Math.min((v + (value * 255) + 0.5), 255), 0) | 0;
-    	}
     	for (var i = 0; i < length; i += 4) {
-
-    		data[i + 0] = calculate(data[i + 0]);
-
-    		data[i + 1] = calculate(data[i + 1]);
-
-    		data[i + 2] = calculate(data[i + 2]);
+    		data[i + 0] = Math.max(Math.min((data[i + 0] + (value * 255) + 0.5), 255), 0) | 0;
+    		data[i + 1] = Math.max(Math.min((data[i + 1] + (value * 255) + 0.5), 255), 0) | 0;
+    		data[i + 2] = Math.max(Math.min((data[i + 2] + (value * 255) + 0.5), 255), 0) | 0;
     	}
     }-*/;
 

@@ -60,9 +60,7 @@ public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<Gamm
     protected final native FilterTableArray getTable(double value)
     /*-{        
         var table = [];
-        
         for(var i = 0; i < 256; i++) {
-        
             table[i] = 255 * Math.pow(i / 255, 1 / value) + 0.5;
         }
         return table;

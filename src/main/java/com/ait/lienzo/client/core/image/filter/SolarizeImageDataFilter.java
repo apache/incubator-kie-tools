@@ -36,9 +36,7 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
     protected final native FilterTableArray getTable()
     /*-{
         var table = [];
-        
         for(var i = 0; i < 256; i++) {
-        
             table[i] = (((i / 255 > 0.5) ? 2 * (i / 255 - 0.5) : 2 * (0.5 - i / 255)) * 255) | 0;
         }
         return table;

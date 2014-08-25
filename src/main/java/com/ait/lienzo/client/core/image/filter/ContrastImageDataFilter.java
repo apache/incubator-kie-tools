@@ -60,9 +60,7 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
     protected final native FilterTableArray getTable(double value)
     /*-{
         var table = [];
-        
         for(var i = 0; i < 256; i++) {
-        
             table[i] = (255 * (((i / 255) - 0.5) * value + 0.5)) | 0;
         }
         return table;

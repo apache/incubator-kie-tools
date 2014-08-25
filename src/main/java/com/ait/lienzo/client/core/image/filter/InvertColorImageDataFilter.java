@@ -67,11 +67,8 @@ public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertCo
     private final native void filter_(JavaScriptObject data, int length)
     /*-{
     	for (var i = 0; i < length; i += 4) {
-
     		data[i + 0] = 255 - data[i + 0];
-
     		data[i + 1] = 255 - data[i + 1];
-
     		data[i + 2] = 255 - data[i + 2];
     	}
     }-*/;

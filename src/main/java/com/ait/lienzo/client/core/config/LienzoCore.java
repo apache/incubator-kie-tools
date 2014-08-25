@@ -125,7 +125,7 @@ public final class LienzoCore
 
         if ((ua.indexOf("Mozilla") >= 0) || (ua.indexOf("Firefox") >= 0))
         {
-            return true;
+            return (false == isSafari());
         }
         return false;
     }

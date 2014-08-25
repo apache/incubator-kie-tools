@@ -67,19 +67,12 @@ public class LightnessGrayScaleImageDataFilter extends AbstractImageDataFilter<L
     private final native void filter_(JavaScriptObject data, int length)
     /*-{
     	for (var i = 0; i < length; i += 4) {
-
     		var r = data[i + 0];
-
     		var g = data[i + 1];
-
     		var b = data[i + 2];
-
     		var v = ((((Math.max(Math.max(r, g), b) + Math.min(Math.min(r, g), b))) / 2.0) + 0.5) | 0;
-
     		data[i + 0] = v;
-
     		data[i + 1] = v;
-
     		data[i + 2] = v;
     	}
     }-*/;

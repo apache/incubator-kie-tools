@@ -78,17 +78,10 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
 
     private final native void filter_(JavaScriptObject data, int length, int r, int g, int b)
     /*-{
-    	function luminocity(rv, gv, bv) {
-    		return (rv * 0.21) + (gv * 0.72) + (bv * 0.07);
-    	}
     	for (var i = 0; i < length; i += 4) {
-
-    		var v = (luminocity(data[i + 0], data[i + 1], data[i + 2]) / 255.0);
-
+            var v = (((data[i + 0] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) / 255.0);
     		data[i + 0] = ((r * v) + 0.5) | 0;
-
     		data[i + 1] = ((g * v) + 0.5) | 0;
-
     		data[i + 2] = ((b * v) + 0.5) | 0;
     	}
     }-*/;

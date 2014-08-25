@@ -88,12 +88,9 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
     @Override
     protected final native FilterTableArray getTable()
     /*-{
-        var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getGain()();
-        
-        var bias = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getBias()();
-        
         var table = [];
-        
+        var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getGain()();
+        var bias = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getBias()();
         for(var i = 0; i < 256; i++) {
             var v = i / 255;
             var k = (1 / gain - 2) * (1 - 2 * v);

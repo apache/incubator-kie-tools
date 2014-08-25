@@ -26,8 +26,6 @@ import com.google.gwt.json.client.JSONObject;
 
 public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDataFilter>
 {
-    private final static LuminosityGrayScaleImageDataFilter POST = new LuminosityGrayScaleImageDataFilter();
-
     public EmbossImageDataFilter()
     {
     }
@@ -66,40 +64,34 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
         }
         filter_(data, FilterCommonOps.getLength(source), source.getWidth());
 
-        return POST.filter(source, false);
+        return source;
     }
 
     private final native void filter_(JavaScriptObject data, int length, int width)
     /*-{
-        for(i = 0; i < length; i++)
-        {
-            if(i < (length - width * 4))
-            {
-                if(((i + 1) % 4) !== 0)
-                {
-                    if(((i + 4) % (width * 4)) == 0)
-                    {
-                        data[i+0] = data[i-4];
-                        
-                        data[i+1] = data[i-3];
-                        
-                        data[i+2] = data[i-2];
-                        
-                        data[i+3] = data[i-1];
-                    }
-                    else
-                    {
-                        data[i] = 255/2 + 2 * data[i] - data[i+4] - data[i+width*4];
+        for(var i = 0; i < length; i++) {
+            if(i < (length - width * 4)) {
+                if(((i + 1) % 4) !== 0) {
+                    if(((i + 4) % (width * 4)) == 0) {
+                        data[i + 0] = data[i - 4];
+                        data[i + 1] = data[i - 3];
+                        data[i + 2] = data[i - 2];
+                        data[i + 3] = data[i - 1];
+                    } else {
+                        data[i] = 255/2 + 2 * data[i] - data[i + 4] - data[i + width * 4];
                     }
                 }
-            }
-            else
-            {
-                if(((i + 1) % 4) !== 0)
-                {
-                    data[i] = data[i-width*4];
+            } else {
+                if(((i + 1) % 4) !== 0) {
+                    data[i] = data[i - width * 4];
                 }
             }
+        }
+        for (var j = 0; j < length; j += 4) {
+            var v = (((data[j + 0] * 0.21) + (data[j + 1] * 0.72) + (data[j + 2] * 0.07)) + 0.5) | 0;
+            data[j + 0] = v;
+            data[j + 1] = v;
+            data[j + 2] = v;
         }
     }-*/;
 
