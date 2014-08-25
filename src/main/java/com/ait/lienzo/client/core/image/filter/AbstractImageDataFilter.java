@@ -42,6 +42,8 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         m_meta = new MetaData();
 
         m_type = getClass().getSimpleName();
+
+        setActive(true);
     }
 
     protected AbstractImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -112,6 +114,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
                 }
             }
         }
+        setActive(m_attr.isActive());
     }
 
     @Override
