@@ -88,6 +88,11 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
         m_ignores = new RGBIgnoreAlphaImageDataFilter(Color.fromColorString(m_image.getColorKey()));
     }
 
+    public ImageDataFilterChain getFilterChain()
+    {
+        return m_filters;
+    }
+
     /**
      * Sets the {@link ImageShapeLoadedHandler} that will be notified when the image is loaded.
      * If the image is already loaded, the handler will be invoked immediately.

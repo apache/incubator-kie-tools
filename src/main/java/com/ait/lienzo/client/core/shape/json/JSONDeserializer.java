@@ -16,10 +16,13 @@
 
 package com.ait.lienzo.client.core.shape.json;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.AttributeType;
+import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -396,6 +399,63 @@ public final class JSONDeserializer
                 }
                 ctx.pop(); // index
             }
+        }
+        ctx.pop(); // children
+    }
+
+    public final void deserializeFilters(ImageDataFilterable<?> filterable, JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        JSONValue jsonvalu = node.get("filters");
+
+        if (null == jsonvalu)
+        {
+            return; // OK - 'children' is optional
+        }
+        ctx.push("filters");
+
+        JSONArray array = jsonvalu.isArray();
+
+        if (null == array)
+        {
+            ctx.addBadTypeError("Array");
+        }
+        else
+        {
+            final int size = array.size();
+
+            ArrayList<ImageDataFilter<?>> list = new ArrayList<ImageDataFilter<?>>(size);
+
+            for (int i = 0; i < size; i++)
+            {
+                ctx.pushIndex(i);
+
+                jsonvalu = array.get(i);
+
+                JSONObject object = jsonvalu.isObject();
+
+                if (null == object)
+                {
+                    ctx.addBadTypeError("Object");
+                }
+                else
+                {
+                    IJSONSerializable<?> serial = fromJSON(object, ctx);
+
+                    if (null != serial)
+                    {
+                        if (serial instanceof ImageDataFilter)
+                        {
+                            list.add((ImageDataFilter<?>) serial);
+                        }
+                        else
+                        {
+                            ctx.addBadTypeError("ImageDataFilter");
+                        }
+                    }
+                }
+                ctx.pop(); // index
+            }
+            filterable.setFilters(list);
         }
         ctx.pop(); // children
     }

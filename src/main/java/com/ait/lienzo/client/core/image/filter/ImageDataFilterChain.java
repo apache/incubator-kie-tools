@@ -22,7 +22,12 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
+import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
 
 public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilterChain> implements ImageDataFilterable<ImageDataFilterChain>, Iterable<ImageDataFilter<?>>
 {
@@ -35,6 +40,35 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     public ImageDataFilterChain(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
         addFilters(filter, filters);
+    }
+
+    protected ImageDataFilterChain(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(node, ctx);
+    }
+
+    @Override
+    public JSONObject toJSONObject()
+    {
+        JSONObject object = super.toJSONObject();
+
+        JSONArray filters = new JSONArray();
+
+        for (ImageDataFilter<?> filter : m_filters)
+        {
+            if (null != filter)
+            {
+                JSONObject make = filter.toJSONObject();
+
+                if (null != make)
+                {
+                    filters.set(filters.size(), make);
+                }
+            }
+        }
+        object.put("filters", filters);
+
+        return object;
     }
 
     public int size()
@@ -249,7 +283,24 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     @Override
     public IFactory<ImageDataFilterChain> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new ImageDataFilterChainFactory();
+    }
+
+    public static class ImageDataFilterChainFactory extends ImageDataFilterFactory<ImageDataFilterChain>
+    {
+        public ImageDataFilterChainFactory()
+        {
+            super(ImageDataFilterChain.class.getSimpleName());
+        }
+
+        @Override
+        public ImageDataFilterChain create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            ImageDataFilterChain chain = new ImageDataFilterChain(node, ctx);
+
+            JSONDeserializer.getInstance().deserializeFilters(chain, node, ctx);
+
+            return chain;
+        }
     }
 }

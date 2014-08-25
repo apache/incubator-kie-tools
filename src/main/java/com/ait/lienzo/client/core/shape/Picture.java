@@ -27,17 +27,22 @@ import com.ait.lienzo.client.core.image.ImageShapeLoadedHandler;
 import com.ait.lienzo.client.core.image.PictureFilteredHandler;
 import com.ait.lienzo.client.core.image.PictureLoadedHandler;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
+import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONBoolean;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
@@ -1339,6 +1344,32 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
         }
         object.put("attributes", attr);
 
+        ImageDataFilterChain chain = getImageProxy().getFilterChain();
+
+        if ((null != chain) && (chain.size() > 0))
+        {
+            JSONArray filters = new JSONArray();
+
+            JSONObject filter = new JSONObject();
+
+            filter.put("active", JSONBoolean.getInstance(chain.isActive()));
+
+            for (ImageDataFilter<?> ifilter : chain)
+            {
+                if (null != ifilter)
+                {
+                    JSONObject make = ifilter.toJSONObject();
+
+                    if (null != make)
+                    {
+                        filters.set(filters.size(), make);
+                    }
+                }
+            }
+            filter.put("filters", filters);
+
+            object.put("filter", filter);
+        }
         return object;
     }
 
@@ -1620,7 +1651,29 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
         @Override
         public Picture create(JSONObject node, ValidationContext ctx) throws ValidationException
         {
-            return new Picture(node, ctx);
+            Picture picture = new Picture(node, ctx);
+
+            JSONValue jval = node.get("filter");
+
+            if (null != jval)
+            {
+                JSONObject object = jval.isObject();
+
+                if (null != object)
+                {
+                    JSONDeserializer.getInstance().deserializeFilters(picture, object, ctx);
+
+                    jval = object.get("active");
+
+                    JSONBoolean active = jval.isBoolean();
+
+                    if (null != active)
+                    {
+                        picture.setFiltersActive(active.booleanValue());
+                    }
+                }
+            }
+            return picture;
         }
 
         @Override
