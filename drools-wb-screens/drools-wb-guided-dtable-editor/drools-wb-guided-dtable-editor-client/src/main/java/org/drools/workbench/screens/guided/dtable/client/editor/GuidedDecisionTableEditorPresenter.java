@@ -103,7 +103,7 @@ public class GuidedDecisionTableEditorPresenter
     }
 
     protected void loadContent() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showLoading();
         service.call(
                 getModelSuccessCallback(),
                 getNoSuchFileExceptionErrorCallback()
@@ -180,7 +180,7 @@ public class GuidedDecisionTableEditorPresenter
                 new CommandWithCommitMessage() {
                     @Override
                     public void execute(final String commitMessage) {
-                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        view.showSaving();
                         service.call(getSaveSuccessCallback(),
                                 new HasBusyIndicatorDefaultErrorCallback(view)).save(
                                 versionRecordManager.getCurrentPath(),

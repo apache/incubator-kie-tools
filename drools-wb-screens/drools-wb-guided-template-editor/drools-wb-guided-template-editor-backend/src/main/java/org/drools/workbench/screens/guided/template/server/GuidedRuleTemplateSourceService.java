@@ -43,9 +43,14 @@ public class GuidedRuleTemplateSourceService
     }
 
     @Override
-    public String getSource( final Path path,
-                             final TemplateModel model ) {
-        return new StringBuilder().append( RuleTemplateModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
+    public String getSource(final Path path,
+            final TemplateModel model) {
+        if (model == null) {
+            return "";
+        } else {
+            return new StringBuilder().append(RuleTemplateModelDRLPersistenceImpl.getInstance().marshal(model)).toString();
+
+        }
     }
 
     @Override

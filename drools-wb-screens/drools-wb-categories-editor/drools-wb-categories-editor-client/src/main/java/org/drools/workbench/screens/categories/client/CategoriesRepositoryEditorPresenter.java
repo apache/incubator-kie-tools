@@ -83,7 +83,7 @@ public class CategoriesRepositoryEditorPresenter {
 
         makeMenuBar();
 
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showLoading();
         categoryService.call(getModelSuccessCallback(),
                 new HasBusyIndicatorDefaultErrorCallback(view)).getContentByRoot(context.getActiveRepository().getRoot());
     }
@@ -120,7 +120,7 @@ public class CategoriesRepositoryEditorPresenter {
                 new CommandWithCommitMessage() {
                     @Override
                     public void execute(final String commitMessage) {
-                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        view.showSaving();
                         categoryService.call(getSaveSuccessCallback(),
                                 new HasBusyIndicatorDefaultErrorCallback(view)).save(
                                 path,

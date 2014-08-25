@@ -28,12 +28,13 @@ import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResour
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.common.ResizableTextArea;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 /**
  * The view for the Domain Specific Language editor
  */
 public class DSLEditorViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements RequiresResize,
                    DSLEditorView {
 
@@ -121,21 +122,6 @@ public class DSLEditorViewImpl
         setPixelSize( width,
                       height );
         dslText.onResize();
-    }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
     }
 
 }

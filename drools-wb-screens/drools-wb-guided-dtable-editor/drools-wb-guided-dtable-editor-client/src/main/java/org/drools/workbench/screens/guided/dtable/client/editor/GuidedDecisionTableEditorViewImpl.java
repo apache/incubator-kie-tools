@@ -29,6 +29,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.uberfire.security.Identity;
@@ -36,7 +37,9 @@ import org.uberfire.security.Identity;
 /**
  * Guided Decision Table Editor View implementation
  */
-public class GuidedDecisionTableEditorViewImpl extends Composite implements GuidedDecisionTableEditorView {
+public class GuidedDecisionTableEditorViewImpl
+        extends KieEditorViewImpl
+        implements GuidedDecisionTableEditorView {
 
     private final SimplePanel panel = new SimplePanel();
     private GuidedDecisionTable52 model;
@@ -86,20 +89,4 @@ public class GuidedDecisionTableEditorViewImpl extends Composite implements Guid
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
-
 }

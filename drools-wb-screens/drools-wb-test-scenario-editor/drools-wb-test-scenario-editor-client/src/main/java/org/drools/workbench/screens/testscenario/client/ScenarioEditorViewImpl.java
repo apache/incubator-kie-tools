@@ -52,6 +52,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -60,6 +61,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 public class ScenarioEditorViewImpl
+        extends KieEditorViewImpl
         implements ScenarioEditorView,
         ScenarioParentWidget {
 
@@ -96,6 +98,8 @@ public class ScenarioEditorViewImpl
         this.bulkRunTestScenarioEditor = bulkRunTestScenarioEditor;
 
         layout.setWidth("100%");
+
+        initWidget(multiPage.asWidget());
     }
 
     @Override
@@ -140,12 +144,6 @@ public class ScenarioEditorViewImpl
         multiPage.addWidget(overviewWidget,
                 CommonConstants.INSTANCE.Overview());
         overviewWidget.setContent(overview, path);
-
-    }
-
-    @Override
-    public Widget asWidget() {
-        return multiPage.asWidget();
 
     }
 
@@ -335,21 +333,6 @@ public class ScenarioEditorViewImpl
 
     public Scenario getScenario() {
         return scenarioWidgetComponentCreator.getScenario();
-    }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
-    }
-
-    @Override
-    public void showBusyIndicator(final String message) {
-        busyIndicatorView.showBusyIndicator(message);
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        busyIndicatorView.hideBusyIndicator();
     }
 
     @Override

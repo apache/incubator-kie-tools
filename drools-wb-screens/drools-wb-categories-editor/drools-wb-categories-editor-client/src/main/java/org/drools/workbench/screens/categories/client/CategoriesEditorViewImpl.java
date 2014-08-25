@@ -39,13 +39,14 @@ import org.kie.uberfire.client.common.PrettyFormLayout;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 /**
  *
  */
 @Dependent
 public class CategoriesEditorViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements CategoriesEditorView {
 
     private CategoryTreeEditorWidget explorer;
@@ -142,11 +143,6 @@ public class CategoriesEditorViewImpl
     }
 
     @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
     public void setNotDirty() {
         isDirty = false;
     }
@@ -204,16 +200,6 @@ public class CategoriesEditorViewImpl
                 }
             }
         }
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
     }
 
 }

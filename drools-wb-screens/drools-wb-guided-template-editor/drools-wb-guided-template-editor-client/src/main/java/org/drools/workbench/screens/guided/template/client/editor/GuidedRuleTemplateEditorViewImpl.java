@@ -29,13 +29,16 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
 import org.kie.uberfire.client.common.BusyPopup;
 
 /**
  * Guided Rule Template Editor View implementation
  */
-public class GuidedRuleTemplateEditorViewImpl extends Composite implements GuidedRuleTemplateEditorView {
+public class GuidedRuleTemplateEditorViewImpl
+        extends KieEditorViewImpl
+        implements GuidedRuleTemplateEditorView {
 
     private final SimplePanel panel = new SimplePanel();
     private RuleModeller modeller = null;
@@ -93,20 +96,4 @@ public class GuidedRuleTemplateEditorViewImpl extends Composite implements Guide
     public void refresh() {
         modeller.refreshWidget();
     }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
-
 }

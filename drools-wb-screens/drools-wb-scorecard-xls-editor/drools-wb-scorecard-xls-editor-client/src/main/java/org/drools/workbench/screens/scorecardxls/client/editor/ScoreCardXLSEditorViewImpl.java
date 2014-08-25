@@ -36,6 +36,7 @@ import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCard
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.kie.uberfire.client.common.BusyPopup;
@@ -45,7 +46,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 public class ScoreCardXLSEditorViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements ScoreCardXLSEditorView {
 
     private AttachmentFileWidget uploadWidget;
@@ -182,21 +183,6 @@ public class ScoreCardXLSEditorViewImpl
 
     private void notifySuccess() {
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
-    }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
     }
 
     @Override

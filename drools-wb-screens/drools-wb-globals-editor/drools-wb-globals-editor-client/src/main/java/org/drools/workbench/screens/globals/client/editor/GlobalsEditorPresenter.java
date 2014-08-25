@@ -127,7 +127,7 @@ public class GlobalsEditorPresenter
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String comment ) {
-                                                 view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+                                                 view.showSaving();
                                                  globalsEditorService.call( getSaveSuccessCallback(),
                                                                             new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                                      model,

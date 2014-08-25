@@ -174,7 +174,7 @@ public class GuidedScoreCardEditorPresenter
                 new CommandWithCommitMessage() {
                     @Override
                     public void execute(final String comment) {
-                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        view.showSaving();
                         scoreCardEditorService.call(getSaveSuccessCallback(),
                                 new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
                                 view.getModel(),

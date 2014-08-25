@@ -33,8 +33,11 @@ import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConsta
 import org.drools.workbench.screens.enums.client.widget.DeleteButtonCellWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
-public class EnumEditorViewImpl extends Composite implements EnumEditorView {
+public class EnumEditorViewImpl
+        extends KieEditorViewImpl
+        implements EnumEditorView {
 
     private final ListDataProvider<EnumRow> dataProvider = new ListDataProvider<EnumRow>();
 
@@ -171,20 +174,4 @@ public class EnumEditorViewImpl extends Composite implements EnumEditorView {
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
-
 }

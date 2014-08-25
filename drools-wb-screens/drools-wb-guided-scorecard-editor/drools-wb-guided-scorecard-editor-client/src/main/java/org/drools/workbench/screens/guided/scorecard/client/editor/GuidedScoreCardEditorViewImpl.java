@@ -22,9 +22,10 @@ import org.drools.workbench.screens.guided.scorecard.client.widget.GuidedScoreCa
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class GuidedScoreCardEditorViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements GuidedScoreCardEditorView {
 
     private GuidedScoreCardEditor editor = new GuidedScoreCardEditor();
@@ -62,23 +63,8 @@ public class GuidedScoreCardEditorViewImpl
     }
 
     @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
     public void refreshFactTypes() {
         editor.refreshFactTypes();
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
     }
 
 }

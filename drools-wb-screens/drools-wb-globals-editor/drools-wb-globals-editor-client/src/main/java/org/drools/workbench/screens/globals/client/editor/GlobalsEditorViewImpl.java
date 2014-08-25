@@ -29,11 +29,14 @@ import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorC
 import org.drools.workbench.screens.globals.model.Global;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 /**
  * The Globals Editor View implementation
  */
-public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorView {
+public class GlobalsEditorViewImpl
+        extends KieEditorViewImpl
+        implements GlobalsEditorView {
 
     interface GlobalsEditorViewBinder
             extends
@@ -66,7 +69,7 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
         initWidget( uiBinder.createAndBindUi( this ) );
 
         //Disable until content is loaded
-        addGlobalButton.setEnabled( false );
+        addGlobalButton.setEnabled(false);
     }
 
     private void setup() {
@@ -155,11 +158,6 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
     @UiHandler("addGlobalButton")
     public void onClickAddGlobalButton( final ClickEvent event ) {
         addGlobalPopup.setContent( addGlobalCommand,
@@ -180,15 +178,4 @@ public class GlobalsEditorViewImpl extends Composite implements GlobalsEditorVie
             }
         };
     }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
-
 }

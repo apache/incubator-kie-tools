@@ -28,12 +28,13 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 /**
  * Guided Rule Template Data View implementation
  */
 public class GuidedRuleTemplateDataViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements GuidedRuleTemplateDataView {
 
     private final VerticalPanel widgetContainer = new VerticalPanel();
@@ -76,4 +77,7 @@ public class GuidedRuleTemplateDataViewImpl
         } );
     }
 
+    @Override public void setNotDirty() {
+
+    }
 }

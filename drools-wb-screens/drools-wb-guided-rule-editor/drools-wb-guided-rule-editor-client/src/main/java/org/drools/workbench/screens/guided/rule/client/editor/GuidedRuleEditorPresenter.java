@@ -117,7 +117,7 @@ public class GuidedRuleEditorPresenter
     }
 
     protected void loadContent() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        view.showLoading();
 
         service.call(
                 getModelSuccessCallback(),
@@ -144,7 +144,6 @@ public class GuidedRuleEditorPresenter
                 if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
-
 
                 GuidedRuleEditorPresenter.this.model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
@@ -211,11 +210,11 @@ public class GuidedRuleEditorPresenter
         GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator(model, GuidedRuleEditorResources.CONSTANTS);
 
         if (validator.isValid()) {
-            new SaveOperationService().save(versionRecordManager.getCurrentPath(),
+            new SaveOperationService().save(versionRecordManager.getPathToLatest(),
                     new CommandWithCommitMessage() {
                         @Override
                         public void execute(final String commitMessage) {
-                            view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                            view.showSaving();
                             service.call(getSaveSuccessCallback(),
                                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
                                     view.getContent(),

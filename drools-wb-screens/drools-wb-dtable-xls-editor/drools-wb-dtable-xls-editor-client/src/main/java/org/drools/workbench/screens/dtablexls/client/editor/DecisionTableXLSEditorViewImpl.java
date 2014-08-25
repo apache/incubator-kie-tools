@@ -36,6 +36,7 @@ import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTabl
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.kie.uberfire.client.common.BusyPopup;
@@ -45,7 +46,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 public class DecisionTableXLSEditorViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements DecisionTableXLSEditorView {
 
     private AttachmentFileWidget uploadWidget;
@@ -186,22 +187,7 @@ public class DecisionTableXLSEditorViewImpl
     }
 
     @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
     public void setNotDirty() {
 
-    }
-
-    @Override
-    public void showBusyIndicator(String s) {
-        BusyPopup.showMessage( s );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
     }
 }

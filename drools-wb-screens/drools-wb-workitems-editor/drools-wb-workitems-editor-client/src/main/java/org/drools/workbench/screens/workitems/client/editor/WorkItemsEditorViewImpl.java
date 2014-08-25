@@ -30,9 +30,10 @@ import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionEl
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementsBrowser;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class WorkItemsEditorViewImpl
-        extends Composite
+        extends KieEditorViewImpl
         implements WorkItemsEditorView,
                    WorkItemDefinitionElementSelectedListener {
 
@@ -103,22 +104,7 @@ public class WorkItemsEditorViewImpl
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
-
+    
     @Override
     public void onElementSelected( final String title,
                                    final String value ) {

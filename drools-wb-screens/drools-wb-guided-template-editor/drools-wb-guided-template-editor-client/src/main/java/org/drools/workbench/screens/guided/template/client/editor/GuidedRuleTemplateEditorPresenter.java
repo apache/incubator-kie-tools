@@ -208,7 +208,7 @@ public class GuidedRuleTemplateEditorPresenter
                 new CommandWithCommitMessage() {
                     @Override
                     public void execute(final String commitMessage) {
-                        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                        view.showSaving();
                         service.call(getSaveSuccessCallback(),
                                 new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
                                 view.getContent(),
