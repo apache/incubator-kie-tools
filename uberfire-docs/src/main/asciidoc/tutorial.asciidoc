@@ -202,8 +202,8 @@ using. Add this inside the `<project>` element, after the
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
     <maven.gwt.plugin.version>2.5.1</maven.gwt.plugin.version>
     <uberfire.version>0.5.0-SNAPSHOT</uberfire.version>
-    <errai.version>3.0-SNAPSHOT</errai.version>
-    <errai.devmode.version>3.0-SNAPSHOT</errai.devmode.version>
+    <errai.version>3.0.3-SNAPSHOT</errai.version>
+    <errai.devmode.version>${errai.version}</errai.devmode.version>
     <errai.jboss.home>${user.home}/wildfly-8.0.0.Final</errai.jboss.home>
     <jboss.spec.version>3.0.2.Final</jboss.spec.version>
     <slf4j.version>1.7.2</slf4j.version>
@@ -298,6 +298,17 @@ of this after the `<dependencyManagement>` section:
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-js</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-cdi</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-server</artifactId>
     </dependency>
 
     <dependency>
@@ -335,31 +346,7 @@ of this after the `<dependencyManagement>` section:
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-core-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widget-markdown</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-panel-manager-nswe</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -384,6 +371,19 @@ of this after the `<dependencyManagement>` section:
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-annotation-processors</artifactId>
+      <version>${errai.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -434,7 +434,6 @@ of this after the `<dependencyManagement>` section:
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
-      <version>2.40.0</version>
       <scope>test</scope>
     </dependency>
     
@@ -442,7 +441,6 @@ of this after the `<dependencyManagement>` section:
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-exec</artifactId>
-      <version>1.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -456,6 +454,19 @@ inherit transitively from UberFire, Errai, and GWT which must not be
 bundled in the WAR file. Maven does not provide a mechanism for
 inheriting provided-scope transitive dependencies, so we have to list
 them all here separately to ensure they are not bundled in the WAR.
+
+[TIP]
+.Extra Step for Eclipse Users
+------
+The uberfire-workbench-processors module includes Java annotation
+processors that must run every time you compile your app's client-side
+code. Netbeans, IntelliJ IDEA, and the Maven Compiler Plugin will all
+discover and activate these annotation processors during
+compilation. However, Eclipse has this feature turned off by
+default. If you are using Eclipse, you have to
+link:m2e-apt-setup{link-suffix}[set up the m2e-apt annotation
+processing configurator] before developing an UberFire application.
+------
 
 Now on to the `<build>` section, where we define the behaviour of
 several plugins we'll need in order to get the project built. The
@@ -515,33 +526,12 @@ First up, we'll define some settings for `maven-compiler-plugin`:
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.jboss.errai</groupId>
-            <artifactId>errai-annotation-processors</artifactId>
-            <version>${errai.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.uberfire</groupId>
-            <artifactId>uberfire-workbench-processors</artifactId>
-            <version>${uberfire.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
 ------
 
 The `source` and `target` options set the compiler for Java 1.6
 compliance. This is the version of the Java language that GWT 2.5.x
 supports.
-
-The dependencies on the annotation processor modules activate these
-annotation processors during compilation. Although these processors
-would also be active during Maven builds if placed the main
-dependencies section of the pom, they must be specified as compiler
-dependencies to be recognized by the m2e annotation processing
-configurator in eclipse. Remember, if you are using Eclipse, you have
-to link:m2e-apt-setup{link-suffix}[set up the m2e-apt annotation
-processing configurator] before developing an UberFire application.
 
 Now we will use `build-helper-maven-plugin` to add the
 `generated-sources` directory as a source directory within our
@@ -555,6 +545,7 @@ compiled classes visible to GWT's Dev Mode:
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
         <executions>
           <execution>
             <id>add-source</id>
@@ -593,9 +584,8 @@ Next up, the all-important `gwt-maven-plugin`.
 
           <runTarget>${project.artifactId}</runTarget>
 
-          <!-- do not insert line breaks in this string; it breaks
-          Windows compatibility -->
-          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000 -Derrai.jboss.home=${errai.jboss.home} -Derrai.jboss.javaopts=-XX:MaxPermSize=256m -Derrai.dev.context=${project.artifactId} -Derrai.jboss.javaagent.path=${settings.localRepository}/org/jboss/errai/errai-client-local-class-hider/${errai.devmode.version}/errai-client-local-class-hider-${errai.devmode.version}.jar=classPattern=${project.groupId}.client/.*</extraJvmArgs>
+          <!-- do not insert line breaks in this string; it breaks Windows compatibility -->
+          <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m -XX:CompileThreshold=1000 -Derrai.jboss.home=${errai.jboss.home} "-Derrai.jboss.javaopts=-XX:MaxPermSize=256m -Dorg.jboss.weld.nonPortableMode=true" -Derrai.dev.context=${project.artifactId} -Derrai.jboss.javaagent.path=${settings.localRepository}/org/jboss/errai/errai-client-local-class-hider/${errai.devmode.version}/errai-client-local-class-hider-${errai.devmode.version}.jar=classPattern=${project.groupId}.client/.*</extraJvmArgs>
 
         </configuration>
         <executions>
@@ -646,13 +636,20 @@ The `extraJvmArgs` setting passes some information to Errai's
 `JBossLauncher`, increases the memory limits for the Dev Mode JVM, and
 asks its JIT compiler to be more aggressive in generating native
 code. We've done some experimenting and found a compile threshold of
-1000 allows Dev Mode to start up a little faster. The
-`errai-client-local-class-hider` is a Java agent that strips out the
-contents of client-only classes while they are being loaded into the
-VM. This allows development-time deployments to succeed without having
-to exclude them from the deployment. For production, we simply exclude
-these same classes from the .war file (see the discussion around
-`<packagingExcludes> for more details).
+1000 allows Dev Mode to start up a little faster.
+
+Putting Weld (the CDI implementation in WildFly) into non-portable
+mode allows an UberFire CDI extension that was designed for CDI 1.0 to
+continue to work in newer Weld containers, which implement CDI
+1.1. This is a stopgap solution until a permanent fix for
+https://issues.jboss.org/browse/UF-133[UF-133] is found.
+
+The `errai-client-local-class-hider` is a Java agent that strips out
+the contents of client-only classes while they are being loaded into
+the VM. This allows development-time deployments to succeed without
+having to exclude them from the deployment. For production, we simply
+exclude these same classes from the .war file (see the discussion
+around `<packagingExcludes> for more details).
 
 Next up, we configure `maven-war-plugin`, which produces the WAR file
 during the build's _package_ phase:
@@ -761,6 +758,7 @@ And now on to the WildFly plugin:
         <version>1.0.1.Final</version>
         <configuration>
           <filename>${project.artifactId}.war</filename>
+          <jvmArgs>-Dorg.jboss.weld.nonPortableMode=true</jvmArgs>
         </configuration>
         <executions>
           <execution>
@@ -1191,7 +1189,7 @@ cookie just like any other Servlet-based webapp.
 === Define example users and roles
 
 For the demo, we'll populate PicketLink with a hard-coded set of users
-and roles at startup.
+and roles before the first login request is serviced.
 
 .Create src/main/java/com/mycompany/uftutorial/server/PicketLinkDefaultUsers.java
 [source,java]
@@ -1208,17 +1206,17 @@ and roles at startup.
  * http://www.apache.org/licenses/LICENSE-2.0
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- implied.
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package com.mycompany.uftutorial.server;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.picketlink.authentication.event.PreAuthenticateEvent;
 import org.picketlink.idm.IdentityManager;
 import org.picketlink.idm.PartitionManager;
 import org.picketlink.idm.RelationshipManager;
@@ -1226,17 +1224,22 @@ import org.picketlink.idm.credential.Password;
 import org.picketlink.idm.model.basic.Grant;
 import org.picketlink.idm.model.basic.Role;
 import org.picketlink.idm.model.basic.User;
-import org.uberfire.commons.services.cdi.Startup;
 
-@Startup
 @ApplicationScoped
 public class PicketLinkDefaultUsers {
 
   @Inject
   private PartitionManager partitionManager;
 
-  @PostConstruct
-  public void create() {
+  private boolean alreadyDone = false;
+
+  public synchronized void create( @Observes PreAuthenticateEvent event ) {
+    if ( alreadyDone ) {
+      return;
+    }
+
+    alreadyDone = true;
+
     final IdentityManager identityManager = partitionManager.createIdentityManager();
     final RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
 
@@ -1548,53 +1551,6 @@ browser at their main __ModuleName__.nocache.js file.
 </html>
 ------
 
-
-== Work around an incompatibility between Guava 14 and CDI
-
-Google's Guava library contains a few uses of the
-`@javax.inject.Inject` annotation, but they use it with Guice rather
-than CDI. This unfortunately causes a deployment-time failure in CDI
-containers, which find an injection point they don't know how to
-satisfy. The following class defines a CDI producer for that
-injection, suppressing the error and allowing the application to
-deploy:
-
-.Create src/main/java/com/mycompany/uftutorial/server/Guava14Workaround.java
-[source,html]
-------
-package com.mycompany.uftutorial.server;
-
-import java.util.Set;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.util.concurrent.Service;
-
-/**
- * Produces an empty {@code Set<Service>} in order to prevent
- deploy-time failure.
- * The issue is <a
- href="https://code.google.com/p/guava-libraries/issues/detail?id=1527">described in the Guava bug tracker</a>. This workaround is described in <a
- * href="https://code.google.com/p/guava-libraries/issues/detail?id=1433#c20">a
- comment on a related issue</a>.
- */
-@ApplicationScoped
-public class Guava14Workaround {
-
-  @Produces Set<Service> dummyServices() {
-    return ImmutableSet.of();
-  }
-
-}
-------
-
-Guava 15 suffers from a similar issue, but Guava 16 has removed all
-usages of `@Inject` within the library. This workaround will not be
-necessary after you upgrade to that version.
-
-
 == Create a client-side entry point class
 
 Okay, enough mucking around with directory structure and configuration
@@ -1625,11 +1581,9 @@ client-side class as an entry point, annotate it with
 ------
 package com.mycompany.uftutorial.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.uberfire.client.UberFirePreferences;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 
 import com.google.gwt.animation.client.Animation;
@@ -1639,16 +1593,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 @EntryPoint
 public class ClientEntryPoint {
-
-  /**
-   * Gets invoked early in the startup sequence, as soon as all this bean's
-   * {@code @Inject'ed} fields are initialized. Errai Bus and UberFire services
-   * are not yet available.
-   */
-  @PostConstruct
-  private void earlyInit() {
-    UberFirePreferences.setProperty("org.uberfire.client.workbench.widgets.listbar.context.disable", true);
-  }
 
   /**
    * Gets invoked late in the startup sequence, when all UberFire framework
@@ -1663,20 +1607,20 @@ public class ClientEntryPoint {
    * page by UberFireServlet.
    */
   private void hideLoadingPopup() {
-      final Element e = RootPanel.get( "loading" ).getElement();
+    final Element e = RootPanel.get( "loading" ).getElement();
 
-      new Animation() {
+    new Animation() {
 
-          @Override
-          protected void onUpdate( double progress ) {
-              e.getStyle().setOpacity( 1.0 - progress );
-          }
+      @Override
+      protected void onUpdate( double progress ) {
+        e.getStyle().setOpacity( 1.0 - progress );
+      }
 
-          @Override
-          protected void onComplete() {
-              e.getStyle().setVisibility( Style.Visibility.HIDDEN );
-          }
-      }.run( 500 );
+      @Override
+      protected void onComplete() {
+        e.getStyle().setVisibility( Style.Visibility.HIDDEN );
+      }
+    }.run( 500 );
   }
 
 }
@@ -1688,16 +1632,6 @@ browser. You can name an entry point class anything you like. You can
 create as many `@EntryPoint` classes as you want, but you can't
 specify what order they will be instantiated in. Usually, you'll just
 have one.
-
-The `earlyInit()` method is a CDI `@PostConstruct` method. It's
-executed after the constructor has been called footnote:[in this case,
-we don't have an explicit constructor, so CDI will invoke the implicit
-public no-args constructor provided by the Java compiler] and all
-`@Inject` fields have been filled in. This will happen very early in
-the life of the client application, so it's a good place to set global
-properties and preferences, but a bad place to interact with the DOM
-(which will still be empty at this point) or to make RPC requests to
-the server (the message bus will not be connected yet).
 
 The `finalInit()` method is a CDI observer method. The UberFire
 Workbench framework fires an `ApplicationReadyEvent` when the
@@ -1712,10 +1646,6 @@ usually invoked too early: before many parts of the framework
 (including the Errai communication bus and UberFire's Place Manager)
 have had a chance to initialize. Stick with observing
 `ApplicationReadyEvent` and you'll be fine.
-
-Our `earlyInit()` method sets a global preference for the UberFire
-Workbench system to switch off the _contextual list bar_, a
-feature we will not be using in this tutorial.
 
 Right now, our `finalInit()` method just hides a `<div>` element that
 was present in the host page template served by UberFireServlet. What
@@ -1852,6 +1782,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -1867,8 +1798,7 @@ public class HomePerspective {
 
   @Perspective
   public PerspectiveDefinition getPerspective() {
-    final PerspectiveDefinition p = new PerspectiveDefinitionImpl(PanelType.ROOT_LIST);
-    p.setTransient(true);
+    final PerspectiveDefinition p = new PerspectiveDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
     p.setName(getClass().getName());
     p.getRoot().addPart(
             new PartDefinitionImpl(
@@ -1925,9 +1855,7 @@ what it should ignore?  That's where GWT modules come in.
 
   <inherits name="org.uberfire.security.UberfireSecurityClient"/>
 
-  <inherits name="org.uberfire.UberfireNSWEManager"/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
-  <inherits name="org.uberfire.UberfireWidgetsCore"/>
   <inherits name="org.uberfire.UberfireBackend"/>
 
   <source path="client"/>
@@ -2170,16 +2098,15 @@ left-hand side and populate it with MoodScreen by default.
   @Perspective
   public PerspectiveDefinition getPerspective() {
     final PerspectiveDefinition p = new
-    PerspectiveDefinitionImpl(PanelType.ROOT_LIST);
-    p.setTransient(true);
+    PerspectiveDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
     p.setName(getClass().getName());
 
     p.getRoot().addPart(
             new PartDefinitionImpl(
                     new DefaultPlaceRequest(HelloWorldScreen.class.getName())));
 
-    PanelDefinitionImpl westPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
-    p.getRoot().insertChild(Position.WEST, westPanel);
+    PanelDefinitionImpl westPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+    p.getRoot().insertChild(CompassPosition.WEST, westPanel);
     westPanel.setWidth(250);
     westPanel.addPart(
             new PartDefinitionImpl(
@@ -2501,31 +2428,32 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
+import
+org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.workbench.model.PanelType;
+import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
 @WorkbenchPerspective(
-    identifier = "com.mycompany.uftutorial.client.HorizontalPerspective")
+        identifier =
+	"com.mycompany.uftutorial.client.HorizontalPerspective")
 public class HorizontalPerspective {
 
   @Perspective
   public PerspectiveDefinition getPerspective() {
-    final PerspectiveDefinition p = new PerspectiveDefinitionImpl(PanelType.ROOT_LIST);
-    p.setTransient(true);
+    final PerspectiveDefinition p = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
     p.setName(getClass().getName());
 
     p.getRoot().addPart(
             new PartDefinitionImpl(
                     new DefaultPlaceRequest(HelloWorldScreen.class.getName())));
 
-    PanelDefinitionImpl northPanel = new PanelDefinitionImpl(PanelType.MULTI_LIST);
-    p.getRoot().insertChild(Position.NORTH, northPanel);
+    PanelDefinitionImpl northPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+    p.getRoot().insertChild(CompassPosition.NORTH, northPanel);
     northPanel.setHeight(300);
     northPanel.addPart(
             new PartDefinitionImpl(
