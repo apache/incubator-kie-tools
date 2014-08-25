@@ -5,14 +5,11 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.uberfire.wbtest.client.headfoot.HeaderFooterActivator;
 import org.uberfire.wbtest.client.perspective.ListPerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.SimplePerspectiveActivity;
@@ -20,26 +17,11 @@ import org.uberfire.wbtest.client.perspective.StaticPerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity;
 
 
-public class WorkbenchResizeTest {
-
-    private static final int WINDOW_HEIGHT = 700;
-    private static final int WINDOW_WIDTH = 1000;
-
-    private WebDriver driver;
-    private String baseUrl;
+public class WorkbenchResizeTest extends AbstractSeleniumTest {
 
     @Before
-    public void setUp() throws Exception {
-      driver = new FirefoxDriver();
-      baseUrl = "http://localhost:8080/index.html";
-      driver.manage().timeouts().implicitlyWait( 30, TimeUnit.SECONDS );
-      driver.manage().window().setSize( new Dimension( WINDOW_WIDTH, WINDOW_HEIGHT ) );
-      driver.get( baseUrl );
-    }
-
-    @After
-    public void tearDown() throws Exception {
-      driver.quit();
+    public void grabPage() {
+        driver.get( baseUrl );
     }
 
     @Test
