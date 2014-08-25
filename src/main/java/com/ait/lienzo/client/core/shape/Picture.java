@@ -1354,7 +1354,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
             filter.put("active", JSONBoolean.getInstance(chain.isActive()));
 
-            for (ImageDataFilter<?> ifilter : chain)
+            for (ImageDataFilter<?> ifilter : chain.getFilters())
             {
                 if (null != ifilter)
                 {

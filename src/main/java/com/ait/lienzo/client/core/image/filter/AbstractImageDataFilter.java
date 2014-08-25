@@ -114,7 +114,6 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
                 }
             }
         }
-        setActive(m_attr.isActive());
     }
 
     @Override
