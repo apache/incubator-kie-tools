@@ -301,6 +301,21 @@
       <artifactId>kie-wb-common-server-ui-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-social-home-page-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-social-home-page-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-social-home-page-backend</artifactId>
+    </dependency>
+
     <!-- Drools Workbench REST -->
     <dependency>
       <groupId>org.drools</groupId>
