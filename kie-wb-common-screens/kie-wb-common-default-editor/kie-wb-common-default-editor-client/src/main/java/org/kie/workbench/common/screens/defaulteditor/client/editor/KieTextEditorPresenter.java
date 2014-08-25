@@ -75,8 +75,7 @@ public class KieTextEditorPresenter
                             public void execute() {
                                 onSave();
                             }
-                        }
-                )
+                        })
                 .addCopy(versionRecordManager.getCurrentPath(),
                         fileNameValidator)
                 .addRename(versionRecordManager.getCurrentPath(),

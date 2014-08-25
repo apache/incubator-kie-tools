@@ -79,6 +79,7 @@ public class FileMenuBuilderImpl
     private BusyIndicatorView busyIndicatorView;
 
     private Command saveCommand = null;
+    private MenuItem saveMenuItem;
     private Command deleteCommand = null;
     private Command renameCommand = null;
     private Command copyCommand = null;
@@ -88,7 +89,13 @@ public class FileMenuBuilderImpl
     private List<MenuItem> topLevelMenus = new ArrayList<MenuItem>();
 
     @Override
-    public FileMenuBuilder addSave( final Command command ) {
+    public FileMenuBuilder addSave(MenuItem menuItem) {
+        saveMenuItem = menuItem;
+        return this;
+    }
+
+    @Override
+    public FileMenuBuilder addSave(final Command command) {
         this.saveCommand = command;
         return this;
     }
@@ -286,11 +293,13 @@ public class FileMenuBuilderImpl
     @Override
     public Menus build() {
         final Map<Object, MenuItem> menuItems = new LinkedHashMap<Object, MenuItem>();
-        if ( saveCommand != null ) {
-            menuItems.put( MenuItems.SAVE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Save() )
-                    .respondsWith( saveCommand )
+        if (saveCommand != null) {
+            menuItems.put(MenuItems.SAVE, MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Save())
+                    .respondsWith(saveCommand)
                     .endMenu()
-                    .build().getItems().get( 0 ) );
+                    .build().getItems().get(0));
+        } else if (saveMenuItem != null) {
+            menuItems.put(MenuItems.SAVE, saveMenuItem);
         }
 
         if ( deleteCommand != null ) {

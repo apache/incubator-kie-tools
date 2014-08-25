@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.client.menu;
 import org.kie.workbench.common.services.shared.validation.Validator;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -30,7 +31,9 @@ public interface FileMenuBuilder {
 
     public Menus build();
 
-    FileMenuBuilder addSave( final Command command );
+    FileMenuBuilder addSave(MenuItem menuItem);
+
+    FileMenuBuilder addSave(final Command command);
 
     FileMenuBuilder addDelete( final Command command );
 

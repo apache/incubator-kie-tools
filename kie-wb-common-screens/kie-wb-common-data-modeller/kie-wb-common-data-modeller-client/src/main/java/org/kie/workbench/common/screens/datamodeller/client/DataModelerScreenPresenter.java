@@ -992,7 +992,7 @@ public class DataModelerScreenPresenter
                     public void execute() {
                         onSave();
                     }
-                } )
+                })
                 .addCopy( new Command() {
                     @Override
                     public void execute() {

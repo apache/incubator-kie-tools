@@ -131,7 +131,7 @@ public class ProjectImportsScreenPresenter
                         public void execute() {
                             onSave();
                         }
-                    } )
+                    })
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )

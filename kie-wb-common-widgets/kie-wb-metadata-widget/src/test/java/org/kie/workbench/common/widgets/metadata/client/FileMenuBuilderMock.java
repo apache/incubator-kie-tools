@@ -32,8 +32,13 @@ public class FileMenuBuilderMock
     }
 
     @Override
-    public FileMenuBuilder addSave(Command command) {
+    public FileMenuBuilder addSave(MenuItem menuItem) {
         return this;
+    }
+
+    @Override
+    public FileMenuBuilder addSave(Command command) {
+        return null;
     }
 
     @Override

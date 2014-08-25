@@ -16,11 +16,6 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.New;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -48,6 +43,11 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
+import javax.inject.Inject;
+
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 public abstract class KieEditor {
@@ -73,16 +73,19 @@ public abstract class KieEditor {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject protected DefaultFileNameValidator fileNameValidator;
+    @Inject
+    protected DefaultFileNameValidator fileNameValidator;
 
     @Inject
     protected Event<ChangeTitleWidgetEvent> changeTitleNotification;
 
     @Inject
-    @New protected VersionRecordManager versionRecordManager;
+    @New
+    protected VersionRecordManager versionRecordManager;
 
     @Inject
-    @New protected FileMenuBuilder menuBuilder;
+    @New
+    protected FileMenuBuilder menuBuilder;
 
     @Inject
     protected Event<NotificationEvent> notification;
@@ -277,6 +280,7 @@ public abstract class KieEditor {
 
     /**
      * Override this method and use @WorkbenchPartTitleDecoration
+     *
      * @return The widget for the title
      */
     protected IsWidget getTitle() {
@@ -338,12 +342,12 @@ public abstract class KieEditor {
      */
     protected void makeMenuBar() {
         menus = menuBuilder
-                .addSave(new Command() {
+                .addSave( versionRecordManager.newSaveMenuItem(new Command() {
                     @Override
                     public void execute() {
                         onSave();
                     }
-                })
+                }))
                 .addCopy(versionRecordManager.getCurrentPath(),
                         fileNameValidator)
                 .addRename(versionRecordManager.getPathToLatest(),
@@ -428,11 +432,13 @@ public abstract class KieEditor {
 
     /**
      * If your editor has validation, overwrite this.
+     *
      * @return The validation command
      */
     protected Command onValidate() {
         return new Command() {
-            @Override public void execute() {
+            @Override
+            public void execute() {
                 // Default is that nothing happens.
             }
         };

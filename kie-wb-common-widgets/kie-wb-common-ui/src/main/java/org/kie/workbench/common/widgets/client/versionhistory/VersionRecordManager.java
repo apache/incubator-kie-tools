@@ -21,7 +21,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -30,7 +29,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 import javax.enterprise.event.Event;
@@ -41,7 +39,7 @@ import java.util.List;
 
 public class VersionRecordManager {
 
-    private VersionMenuDropDownButton button;
+    private VersionMenuDropDownButton versionMenuDropDownButton;
 
     @Inject
     @New
@@ -64,14 +62,15 @@ public class VersionRecordManager {
     private List<VersionRecord> versions;
     private ObservablePath pathToLatest;
     private String version;
+    private SaveButton saveButton;
 
     @Inject
     public VersionRecordManager(
-            VersionMenuDropDownButton button,
+            VersionMenuDropDownButton versionMenuDropDownButton,
             RestorePopup restorePopup,
             RestoreUtil restoreUtil,
             Caller<VersionService> versionService) {
-        this.button = button;
+        this.versionMenuDropDownButton = versionMenuDropDownButton;
         this.restorePopup = restorePopup;
         this.restoreUtil = restoreUtil;
         this.versionService = versionService;
@@ -95,13 +94,13 @@ public class VersionRecordManager {
     }
 
     public MenuItem buildMenu() {
-        return new VersionMenuItem(button);
+        return new VersionMenuItem(versionMenuDropDownButton);
     }
 
     public void setVersions(List<VersionRecord> versions) {
         PortablePreconditions.checkNotNull("versions", versions);
 
-        button.clear();
+        versionMenuDropDownButton.clear();
 
         if (version == null) {
             version = versions.get(versions.size() - 1).id();
@@ -114,7 +113,7 @@ public class VersionRecordManager {
 
     private void fillMenu() {
 
-        button.setTextToLatest();
+        versionMenuDropDownButton.setTextToLatest();
 
         fillVersions();
 
@@ -163,14 +162,14 @@ public class VersionRecordManager {
     }
 
     private void addVersionMenuItemLabel(int versionIndex, boolean isSelected, VersionRecord versionRecord) {
-        button.addLabel(versionRecord,
+        versionMenuDropDownButton.addLabel(versionRecord,
                 versionIndex,
                 isSelected,
                 getSelectionCommand(versionRecord));
     }
 
     private void addShowMoreLabel(int versionIndex) {
-        button.addViewAllLabel(
+        versionMenuDropDownButton.addViewAllLabel(
                 versions.size() - versionIndex,
                 new Command() {
                     @Override
@@ -190,7 +189,7 @@ public class VersionRecordManager {
 
     private void changeMenuLabelIfNotLatest(int versionIndex, VersionRecord versionRecord) {
         if (versionRecord.id().equals(version) && versionIndex != versions.size()) {
-            button.setTextToVersion(versionIndex);
+            versionMenuDropDownButton.setTextToVersion(versionIndex);
         }
     }
 
@@ -212,8 +211,9 @@ public class VersionRecordManager {
         }
     }
 
-    public MenuFactory.MenuBuilder<MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder>> newSaveMenuItem() {
-        return MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Save());
+    public MenuItem newSaveMenuItem(Command command) {
+        saveButton = new SaveButton(command);
+        return saveButton;
     }
 
     public boolean isLatest(VersionRecord versionRecord) {
@@ -242,9 +242,15 @@ public class VersionRecordManager {
     public void setVersion(String version) {
         this.version = PortablePreconditions.checkNotNull("version", version);
         if (isCurrentLatest()) {
-            button.setTextToLatest();
+            versionMenuDropDownButton.setTextToLatest();
+            if (saveButton != null) {
+                saveButton.setTextToSave();
+            }
         } else if (versions != null) {
-            button.setTextToVersion(getCurrentVersionIndex());
+            versionMenuDropDownButton.setTextToVersion(getCurrentVersionIndex());
+            if (saveButton != null) {
+                saveButton.setTextToRestore();
+            }
         }
     }
 
