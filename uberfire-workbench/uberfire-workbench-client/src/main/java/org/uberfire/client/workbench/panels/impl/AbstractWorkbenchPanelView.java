@@ -77,4 +77,13 @@ implements WorkbenchPanelView<P> {
             }
         } );
     }
+
+    @Override
+    public void setElementId( String elementId ) {
+        if ( elementId == null ) {
+            getElement().removeAttribute( "id" );
+        } else {
+            getElement().setAttribute( "id", elementId );
+        }
+    }
 }

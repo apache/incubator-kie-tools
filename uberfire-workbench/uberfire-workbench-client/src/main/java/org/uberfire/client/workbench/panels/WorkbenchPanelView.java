@@ -56,7 +56,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      * Adds the given view to this panel if this panel does not already contain a view that handles the same
      * {@link PlaceRequest} as the given one. If this panel does already contain such a part, the existing one is
      * {@link #selectPart(PartDefinition) selected} and the given one is not added.
-     * 
+     *
      * @param view the view to add as long as it is not a duplicate. Must not be null.
      */
     void addPart( final WorkbenchPartPresenter.View view );
@@ -65,7 +65,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      * Nests the given WorkbenchPanelView inside this one at the given position. If there is already a nested panel view
      * in the target position, it will be replaced with the given panel. (TODO: what happens to the old panel's parts and
      * child panels? is the old panel bean properly destroyed?)
-     * 
+     *
      * @param panel
      *            specifies the size that should be imposed on the nested view. Must not be null.
      *            FIXME: is this sensible/correct?
@@ -86,7 +86,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
 
     /**
      * Assigns the given title to the given part, if the part belongs to this panel.
-     * 
+     *
      * @param part
      *            the part whose title to change. Must not be null.
      * @param title
@@ -101,7 +101,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
 
     /**
      * Makes the given part visible and focused, if it belongs to this view.
-     * 
+     *
      * @param part
      *            the part to reveal and give focus to.
      * @return true if the part was found, made visible, and given focus. False if not.
@@ -110,7 +110,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
 
     /**
      * Removes the given part from this view, if it belonged to this view.
-     * 
+     *
      * @param part
      *            the part to remove.
      * @return true if the part was found and removed. False if not.
@@ -119,11 +119,21 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
 
     /**
      * Requests or releases keyboard focus for the currently-visible part within this panel.
-     * 
+     *
      * @param hasFocus
      *            if true, this panel will attempt to give keyboard focus to its currently-visible part. If false, this
      *            panel will attempt to release keyboard focus.
      */
     void setFocus( boolean hasFocus );
+
+    /**
+     * Sets the ID of the physical root element of this view. For HTML-based views, this is the {@code id} attribute of
+     * the view's top-level DOM element. Implementations for other view technologies should map this to whatever the
+     * underlying widget/component system uses for unique identifiers.
+     *
+     * @param elementId
+     *            the element ID to set. If null, the ID value will be cleared.
+     */
+    void setElementId( String elementId );
 
 }

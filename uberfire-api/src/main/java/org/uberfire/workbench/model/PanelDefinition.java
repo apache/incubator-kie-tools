@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -34,6 +34,21 @@ public interface PanelDefinition {
     String PARENT_CHOOSES_TYPE = "PARENT_CHOOSES_TYPE";
 
     /**
+     * Specifies the DOM ID that should be given to the live panel's element. Applications are responsible for ensuring
+     * the ID values are unique among all live panels.
+     *
+     * @param id
+     *            the DOM ID to give the panel when it is created. If null, no ID will be set on the panel.
+     */
+    public void setElementId( final String id );
+
+    /**
+     * Returns the DOM ID that will be given to a panel created from this definition. If null, no ID attribute will be
+     * set on a panel created from this definition.
+     */
+    public String getElementId();
+
+    /**
      * Add a Part to the Panel
      * If the part is linked to an existing panel,
      * it will be removed from this panel by a call to removePart(part)
@@ -55,7 +70,7 @@ public interface PanelDefinition {
 
     /**
      * Returns this panel's immediate child panels.
-     * 
+     *
      * @return a snapshot of the current child list. The list is not modifiable, and will not change as panels are added
      *         and removed from this panel. The returned list is never null.
      */
@@ -121,7 +136,7 @@ public interface PanelDefinition {
     /**
      * Specifies the WorkbenchPanelPresenter implementation that should be used when adding this panel to the UI. Must
      * refer to a Dependent-scoped Errai IOC bean type.
-     * 
+     *
      * @return fully-qualified class name of the WorkbenchPanelPresenter implementation to use. Must not be null, but
      *         may be the special value {@link #PARENT_CHOOSES_TYPE}.
      */
@@ -130,7 +145,7 @@ public interface PanelDefinition {
     /**
      * Specifies the WorkbenchPanelPresenter implementation that should be used when adding this panel to the UI. Must
      * refer to a Dependent-scoped Errai IOC bean type.
-     * 
+     *
      * @param fqcn
      *            fully-qualified class name of the WorkbenchPanelPresenter implementation to use. Must not be null, but
      *            may be the special value {@link #PARENT_CHOOSES_TYPE}.
@@ -190,7 +205,7 @@ public interface PanelDefinition {
      * <p>
      * TODO remove this. parent panels should track the positions of their children; making it a property of the child
      * is error-prone when moving panels around in the UI.
-     * 
+     *
      * @return The Position of the Panel
      */
     public Position getPosition();
@@ -200,7 +215,7 @@ public interface PanelDefinition {
      * <p>
      * TODO remove this. parent panels should track the positions of their children; making it a property of the child
      * is error-prone when moving panels around in the UI.
-     * 
+     *
      * @param position The Position of the Panel relative to it's parent
      */
     public void setPosition( Position position );

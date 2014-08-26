@@ -110,7 +110,7 @@
         <configuration>
           <strict>true</strict>
           <logLevel>INFO</logLevel>
-          <runTarget>${project.artifactId}</runTarget>
+          <runTarget>index.html</runTarget>
 
           <!-- do not insert line breaks in this string; it breaks Windows compatibility -->
           <extraJvmArgs>-Xmx1g -Xms756m -XX:MaxPermSize=256m</extraJvmArgs>

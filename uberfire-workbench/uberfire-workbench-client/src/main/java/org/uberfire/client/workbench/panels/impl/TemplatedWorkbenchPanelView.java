@@ -109,4 +109,13 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
     public boolean removePart( PartDefinition part ) {
         throw new UnsupportedOperationException("This view doesn't support parts");
     }
+
+    @Override
+    public void setElementId( String elementId ) {
+        if ( elementId == null ) {
+            asWidget().getElement().removeAttribute( "id" );
+        } else {
+            asWidget().getElement().setAttribute( "id", elementId );
+        }
+    }
 }

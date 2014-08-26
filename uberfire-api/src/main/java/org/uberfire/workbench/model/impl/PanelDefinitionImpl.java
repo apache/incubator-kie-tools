@@ -50,6 +50,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
     //Ideally this should be a Set but the order of insertion is important
     private final List<PanelDefinition> children = new ArrayList<PanelDefinition>();
 
+    private String elementId;
     private Position position;
     private String panelType;
     private boolean isRoot;
@@ -75,6 +76,16 @@ public class PanelDefinitionImpl implements PanelDefinition {
             throw new IllegalStateException( "PanelDefinition is not properly initialised: It requires a parent panel definition" );
         }
         return parent;
+    }
+
+    @Override
+    public void setElementId( String id ) {
+        elementId = id;
+    }
+
+    @Override
+    public String getElementId() {
+        return elementId;
     }
 
     @Override
