@@ -59,6 +59,11 @@
         <version>${version.org.drools.jcrGuvnor}</version>
         <classifier>war-as-jar</classifier>
       </dependency>
+      <dependency>
+        <groupId>org.apache.pdfbox</groupId>
+        <artifactId>pdfbox-app</artifactId>
+        <version>1.8.6</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
