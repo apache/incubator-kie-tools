@@ -23,6 +23,17 @@ import com.google.gwt.json.client.JSONObject;
 
 public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter>
 {
+    private final static FilterTableArray CONSTANT_TABLE = table();
+
+    private final static native FilterTableArray table()
+    /*-{
+        var table = [];
+        for(var i = 0; i < 256; i++) {
+            table[i] = (((i / 255 > 0.5) ? 2 * (i / 255 - 0.5) : 2 * (0.5 - i / 255)) * 255) | 0;
+        }
+        return table;
+    }-*/;
+
     public SolarizeImageDataFilter()
     {
     }
@@ -33,14 +44,10 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
     }
 
     @Override
-    protected final native FilterTableArray getTable()
-    /*-{
-        var table = [];
-        for(var i = 0; i < 256; i++) {
-            table[i] = (((i / 255 > 0.5) ? 2 * (i / 255 - 0.5) : 2 * (0.5 - i / 255)) * 255) | 0;
-        }
-        return table;
-    }-*/;
+    protected final FilterTableArray getTable()
+    {
+        return CONSTANT_TABLE;
+    }
 
     @Override
     public IFactory<SolarizeImageDataFilter> getFactory()

@@ -24,6 +24,12 @@ import com.google.gwt.json.client.JSONObject;
 
 public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter>
 {
+    private double           m_ngain = Double.NaN;
+
+    private double           m_nbias = Double.NaN;
+
+    private FilterTableArray m_table = null;
+
     public GainImageDataFilter()
     {
         this(0.5, 0.5);
@@ -86,11 +92,28 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
     }
 
     @Override
-    protected final native FilterTableArray getTable()
+    protected final FilterTableArray getTable()
+    {
+        double gain = getGain();
+
+        double bias = getBias();
+
+        if ((gain != m_ngain) || (bias != m_nbias))
+        {
+            m_ngain = gain;
+
+            m_nbias = bias;
+
+            m_table = getTable_();
+        }
+        return m_table;
+    }
+
+    private final native FilterTableArray getTable_()
     /*-{
         var table = [];
-        var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getGain()();
-        var bias = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::getBias()();
+        var gain = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::m_ngain;
+        var bias = this.@com.ait.lienzo.client.core.image.filter.GainImageDataFilter::m_nbias;
         for(var i = 0; i < 256; i++) {
             var v = i / 255;
             var k = (1 / gain - 2) * (1 - 2 * v);

@@ -23,6 +23,10 @@ import com.google.gwt.json.client.JSONObject;
 
 public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<ContrastImageDataFilter>
 {
+    private double           m_value = Double.NaN;
+
+    private FilterTableArray m_table = null;
+
     public ContrastImageDataFilter()
     {
         super(1);
@@ -57,7 +61,16 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
     }
 
     @Override
-    protected final native FilterTableArray getTable(double value)
+    protected final FilterTableArray getTable(double value)
+    {
+        if (value != m_value)
+        {
+            m_table = getTable_(m_value = value);
+        }
+        return m_table;
+    }
+
+    private final native FilterTableArray getTable_(double value)
     /*-{
         var table = [];
         for(var i = 0; i < 256; i++) {
