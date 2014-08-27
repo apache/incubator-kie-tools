@@ -112,7 +112,7 @@ public class FileUtils {
         if (Files.isDirectory( file )) return false;
 
         for (String type : fileTypes) {
-            if (file.getFileName().toString().endsWith( type )) return true;
+            if (file.getFileName().toString().endsWith( type ) && !file.getFileName().toString().startsWith( "." )) return true;
         }
 
         return false;

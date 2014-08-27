@@ -375,9 +375,10 @@ public abstract class KieEditor {
         if (versionRecordManager.getCurrentPath() == null || restore == null || restore.getPath() == null) {
             return;
         }
-        if (versionRecordManager.getPathToLatest().equals(restore.getPath())) {
-            init(restore.getPath(), place, type);
-            loadContent();
+        if (versionRecordManager.getCurrentPath().equals(restore.getPath())) {
+            //WM init(restore.getPath(), place, type);
+            init( versionRecordManager.getPathToLatest(), place, type );
+            //WM init already calls -> loadContent();
             notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
         }
     }
@@ -404,6 +405,10 @@ public abstract class KieEditor {
 
     protected boolean isEditorTabSelected() {
         return this.multiPage.selectedPage() == EDITOR_TAB_INDEX;
+    }
+
+    protected boolean isOverviewTabSelected() {
+        return this.multiPage.selectedPage() == OVERVIEW_TAB_INDEX;
     }
 
     protected int getSelectedTabIndex() {

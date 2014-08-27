@@ -486,7 +486,20 @@ public class DataModelerScreenPresenter
 
     @Override
     protected void onOverviewSelected() {
-        loadSourceTab();
+        if ( getContext().isParsed() && getContext().isEditorChanged() ) {
+
+            //If there are changes in the ui the source must be regenerated on server side.
+            view.showLoading();
+            modelerService.call( new RemoteCallback<GenerationResult>() {
+                @Override
+                public void callback( GenerationResult result ) {
+                    view.hideBusyIndicator();
+                    updatePreview( result.getSource() );
+                }
+            }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateSource( getSource(), versionRecordManager.getCurrentPath(), getContext().getDataObject() );
+        } else {
+            updatePreview( javaSourceEditor.getContent() );
+        }
     }
 
     private void save( final String newClassName ) {
@@ -551,14 +564,14 @@ public class DataModelerScreenPresenter
                 }
                 view.showSaving();
 
-                modelerService.call( getSaveSuccessCallback( newFileName ),
+                modelerService.call( getSaveSuccessCallback( newFileName, versionRecordManager.getCurrentPath() ),
                                      new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
 
             }
         };
     }
 
-    private RemoteCallback<GenerationResult> getSaveSuccessCallback( final String newFileName ) {
+    private RemoteCallback<GenerationResult> getSaveSuccessCallback( final String newFileName, final Path currentPath ) {
         return new RemoteCallback<GenerationResult>() {
 
             @Override
@@ -602,7 +615,7 @@ public class DataModelerScreenPresenter
                 setSourceDirty( false );
                 getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
 
-                notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataModel_saved( result.getGenerationTimeSeconds() + "" ) ) );
+                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully()) );
                 dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
                                                                        getDataModel(),
                                                                        oldDirtyStatus,
@@ -612,11 +625,12 @@ public class DataModelerScreenPresenter
 
                 if ( newFileName != null && result.getPath() != null ) {
                     reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( result.getPath() ) );
+                } else {
+                    versionRecordManager.reloadVersions( currentPath );
                 }
             }
         };
     }
-
 
     @Override
     protected void loadContent() {
@@ -625,7 +639,7 @@ public class DataModelerScreenPresenter
 
     private void loadModel( final Path path ) {
 
-        view.showLoading();
+        //view.showLoading();
 
         modelerService.call( new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
             @Override
@@ -646,6 +660,13 @@ public class DataModelerScreenPresenter
             @Override
             public void callback( EditorModelContent content) {
 
+                javaSourceEditor.setReadonly( isReadOnly );
+                getContext().setDirty( false );
+                getContext().setReadonly( isReadOnly );
+                getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+                getContext().setEditorModelContent(content);
+                setModel(content);
+
                 resetEditorPages( content.getOverview() );
 
                 addPage(new Page(javaSourceEditor,
@@ -653,7 +674,7 @@ public class DataModelerScreenPresenter
                     @Override
                     public void onFocus() {
                         if (uiStarted) {
-                            loadSourceTab();
+                            onSourceTabSelected();
                         }
                     }
 
@@ -662,15 +683,8 @@ public class DataModelerScreenPresenter
                     }
                 });
 
-
                 view.hideBusyIndicator();
 
-                javaSourceEditor.setReadonly( isReadOnly );
-                getContext().setDirty( false );
-                getContext().setReadonly( isReadOnly );
-                getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
-                getContext().setEditorModelContent(content);
-                setModel(content);
                 if ( content.hasErrors() ) {
                     publishSystemMessages( getCurrentMessageType(), true, content.getErrors() );
                 }
@@ -685,7 +699,7 @@ public class DataModelerScreenPresenter
                                     @Override
                                     public void execute() {
                                         //we need to go directly to the sources tab
-                                        loadSourceTab();
+                                        onSourceTabSelected();
                                         setSelectedTab(EDITABLE_SOURCE_TAB);
                                     }
                                 });
@@ -774,7 +788,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void loadSourceTab() {
+    private void onSourceTabSelected() {
 
         if ( getContext().isParsed() && getContext().isEditorChanged() ) {
 
@@ -785,12 +799,15 @@ public class DataModelerScreenPresenter
                 public void callback( GenerationResult result ) {
                     view.hideBusyIndicator();
                     setSource( result.getSource() );
-                    updatePreview(result.getSource());
-                    getContext().setEditionStatus(DataModelerContext.EditionStatus.NO_CHANGES);
+                    updatePreview( result.getSource() );
+                    getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
                 }
             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateSource( getSource(), versionRecordManager.getCurrentPath(), getContext().getDataObject() );
         } else {
-            getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+            if ( !isOverviewTabSelected() ) {
+                getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+            }
+            updatePreview( javaSourceEditor.getContent() );
         }
     }
 
@@ -803,7 +820,6 @@ public class DataModelerScreenPresenter
         //if this is the likely we can show an alert to the user, etc.
         //also the file should be renamed.
 
-        //test implementation
         if ( getContext().getDataObject() != null ) {
             getContext().getDataModel().removeDataObject( getContext().getDataObject().getClassName() );
         }
@@ -864,7 +880,9 @@ public class DataModelerScreenPresenter
             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateDataObject( getContext().getDataObject(), getSource(), versionRecordManager.getCurrentPath() );
         } else {
             //no changes in the source tab
-            getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+            if ( !isOverviewTabSelected() ) {
+                getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+            }
 
             if ( getContext().isParseErrors() ) {
                 //there are parse errors, the editor tab couldn't be loaded.  (errors are already published)
@@ -919,7 +937,6 @@ public class DataModelerScreenPresenter
 
     private void reload( final ObservablePath targetPath ) {
         super.init(targetPath,place, resourceType);
-
     }
 
     private void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
@@ -1014,7 +1031,8 @@ public class DataModelerScreenPresenter
                 .addValidate(
                         onValidate()
                 )
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+                /*
                 .addCommand("ShowStatus (testing)", new Command() {
                     @Override
                     public void execute() {
@@ -1027,6 +1045,7 @@ public class DataModelerScreenPresenter
                         reload(versionRecordManager.getCurrentPath());
                     }
                 })
+                */
                 .build();
 
     }
