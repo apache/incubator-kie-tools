@@ -5,7 +5,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.client.type.GlobalResourceType;
 import org.drools.workbench.screens.globals.model.GlobalsEditorContent;
 import org.drools.workbench.screens.globals.model.GlobalsModel;
@@ -15,11 +14,11 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -34,14 +33,13 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  * Globals Editor Presenter
  */
 @WorkbenchEditor(identifier = "org.kie.guvnor.globals", supportedTypes = { GlobalResourceType.class }, priority = 101)
 public class GlobalsEditorPresenter
-    extends KieEditor {
+        extends KieEditor {
 
     @Inject
     private Caller<GlobalsEditorService> globalsEditorService;
@@ -60,22 +58,20 @@ public class GlobalsEditorPresenter
     }
 
     @Inject
-    public GlobalsEditorPresenter(GlobalsEditorView baseView) {
-        super(baseView);
+    public GlobalsEditorPresenter( final GlobalsEditorView baseView ) {
+        super( baseView );
         view = baseView;
     }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        super.init(path, place, type);
+        super.init( path, place, type );
     }
 
     protected void loadContent() {
-        globalsEditorService.call(
-                getModelSuccessCallback(),
-                getNoSuchFileExceptionErrorCallback()
-        ).loadContent(versionRecordManager.getCurrentPath());
+        globalsEditorService.call( getModelSuccessCallback(),
+                                   getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     private RemoteCallback<GlobalsEditorContent> getModelSuccessCallback() {
@@ -88,9 +84,9 @@ public class GlobalsEditorPresenter
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
-
                 model = content.getModel();
+                resetEditorPages( content.getOverview() );
+
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
 
                 view.setContent( content.getModel().getGlobals(),
@@ -116,8 +112,8 @@ public class GlobalsEditorPresenter
                             ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback() ).validate(versionRecordManager.getCurrentPath(),
-                        model);
+                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
+                                                          model );
             }
         };
     }
@@ -141,11 +137,13 @@ public class GlobalsEditorPresenter
 
     @Override
     protected void onOverviewSelected() {
-        globalsEditorService.call(new RemoteCallback<String>() {
-            @Override public void callback(String source) {
-                updatePreview(source);
+        globalsEditorService.call( new RemoteCallback<String>() {
+            @Override
+            public void callback( String source ) {
+                updatePreview( source );
             }
-        }).toSource(versionRecordManager.getCurrentPath(), model);
+        } ).toSource( versionRecordManager.getCurrentPath(),
+                      model );
     }
 
     @WorkbenchPartView
