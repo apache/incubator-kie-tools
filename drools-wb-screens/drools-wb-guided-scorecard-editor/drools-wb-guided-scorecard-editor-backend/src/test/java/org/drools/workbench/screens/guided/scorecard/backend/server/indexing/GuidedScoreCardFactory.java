@@ -61,4 +61,14 @@ public class GuidedScoreCardFactory {
         return model;
     }
 
+    //See GUVNOR-2118: Indexing of new Guided Score Cards fails
+    public static ScoreCardModel makeEmptyScoreCard( final String packageName,
+                                                     final String name ) {
+        final ScoreCardModel model = new ScoreCardModel();
+        model.setPackageName( packageName );
+        model.setName( name );
+
+        return model;
+    }
+
 }

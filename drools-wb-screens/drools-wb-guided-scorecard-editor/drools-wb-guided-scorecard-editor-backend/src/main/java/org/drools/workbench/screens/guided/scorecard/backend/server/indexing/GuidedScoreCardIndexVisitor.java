@@ -54,11 +54,17 @@ public class GuidedScoreCardIndexVisitor {
     public Set<Pair<String, String>> visit() {
         //Add type
         final String typeName = model.getFactName();
+        if ( typeName == null || typeName.isEmpty() ) {
+            return builder.build();
+        }
         final String fullyQualifiedClassName = getFullyQualifiedClassName( typeName );
         builder.addGenerator( new Type( new ValueTypeIndexTerm( fullyQualifiedClassName ) ) );
 
         //Add field
         final String fieldName = model.getFieldName();
+        if ( fieldName == null || fieldName.isEmpty() ) {
+            return builder.build();
+        }
         final String fieldFullyQualifiedClassName = getFieldFullyQualifiedClassName( fullyQualifiedClassName,
                                                                                      fieldName );
         builder.addGenerator( new TypeField( new ValueFieldIndexTerm( fieldName ),

@@ -73,6 +73,12 @@ public class IndexGuidedScoreCardTest extends BaseIndexingTest<GuidedScoreCardRe
         final String xml2 = GuidedScoreCardXMLPersistence.getInstance().marshal( model2 );
         ioService().write( path2,
                            xml2 );
+        final Path path3 = basePath.resolve( "scorecard3.scgd" );
+        final ScoreCardModel model3 = GuidedScoreCardFactory.makeEmptyScoreCard( "org.drools.workbench.screens.guided.scorecard.backend.server.indexing",
+                                                                                 "scorecard3" );
+        final String xml3 = GuidedScoreCardXMLPersistence.getInstance().marshal( model3 );
+        ioService().write( path3,
+                           xml3 );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
