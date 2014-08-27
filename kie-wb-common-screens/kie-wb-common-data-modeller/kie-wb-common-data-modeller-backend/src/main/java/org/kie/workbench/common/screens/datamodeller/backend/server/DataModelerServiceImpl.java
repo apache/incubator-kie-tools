@@ -36,7 +36,6 @@ import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
@@ -102,6 +101,7 @@ import org.kie.workbench.common.services.refactoring.model.query.RefactoringPage
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -122,7 +122,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     private static final Logger logger = LoggerFactory.getLogger( DataModelerServiceImpl.class );
 
     @Inject
-    @Named( "ioStrategy" )
+    @Named("ioStrategy")
     IOService ioService;
 
     @Inject
@@ -147,7 +147,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     private Event<DataObjectDeletedEvent> dataObjectDeletedEvent;
 
     @Inject
-    private ProjectService<KieProject> projectService;
+    private KieProjectService projectService;
 
     @Inject
     private RefactoringQueryService queryService;
@@ -185,7 +185,8 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public Path createJavaFile( final Path context, final String fileName ) {
+    public Path createJavaFile( final Path context,
+                                final String fileName ) {
 
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
         final Path newPath = Paths.convert( nioPath );
@@ -223,7 +224,7 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public EditorModelContent loadContent(final Path path) {
+    public EditorModelContent loadContent( final Path path ) {
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Loading editor model from path: " + path.toURI() );
         }
@@ -246,7 +247,9 @@ public class DataModelerServiceImpl implements DataModelerService {
             editorModelContent.setCurrentProject( project );
             editorModelContent.setDataModel( dataModelTO );
             editorModelContent.setDataObject( dataModelTO.getDataObjectByClassName( className ) );
-            if ( editorModelContent.getDataObject() != null ) editorModelContent.setOriginalClassName( className );
+            if ( editorModelContent.getDataObject() != null ) {
+                editorModelContent.setOriginalClassName( className );
+            }
 
             //Read the sources for the file being edited.
             if ( ioService.exists( Paths.convert( path ) ) ) {
@@ -279,7 +282,8 @@ public class DataModelerServiceImpl implements DataModelerService {
         return resultPair != null ? resultPair.getK1() : null;
     }
 
-    private Pair<DataModelTO, ModelDriverResult> loadModel( final KieProject project, boolean processErrors ) {
+    private Pair<DataModelTO, ModelDriverResult> loadModel( final KieProject project,
+                                                            boolean processErrors ) {
 
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Loading data model from path: " + project.getRootPath() );
@@ -329,10 +333,10 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    public TypeInfoResult loadJavaTypeInfo( final String source) {
+    public TypeInfoResult loadJavaTypeInfo( final String source ) {
 
         try {
-            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver( );
+            JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
             TypeInfoResult result = new TypeInfoResult();
             org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult driverResult = modelDriver.loadJavaTypeInfo( source );
             result.setJavaTypeInfo( DataModelerServiceHelper.getInstance().domain2TO( driverResult.getTypeInfo() ) );
@@ -340,13 +344,15 @@ public class DataModelerServiceImpl implements DataModelerService {
                 result.setErrors( DataModelerServiceHelper.getInstance().toDataModelerError( driverResult.getErrors() ) );
             }
             return result;
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             logger.error( "JavaTypeInfo object couldn't be loaded for source: " + source, e );
             throw new ServiceException( "JavaTypeInfo object couldn't be loaded for source.", e );
         }
     }
 
-    private Pair<DataObjectTO, List<DataModelerError>> loadDataObject( final Path projectPath, final String source, final Path sourcePath ) {
+    private Pair<DataObjectTO, List<DataModelerError>> loadDataObject( final Path projectPath,
+                                                                       final String source,
+                                                                       final Path sourcePath ) {
 
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Loading data object from projectPath: " + projectPath.toURI() );
@@ -395,7 +401,9 @@ public class DataModelerServiceImpl implements DataModelerService {
      * @return returns a GenerationResult object with the updated Java code and the dataObjectTO parameter as is.
      */
     @Override
-    public GenerationResult updateSource( final String source, final Path path, final DataObjectTO dataObjectTO ) {
+    public GenerationResult updateSource( final String source,
+                                          final Path path,
+                                          final DataObjectTO dataObjectTO ) {
 
         GenerationResult result = new GenerationResult();
         KieProject project;
@@ -430,10 +438,11 @@ public class DataModelerServiceImpl implements DataModelerService {
      * @param source Java code to use for the update.
      * @param path Path to the java file. (used for error messages generation)
      * @return returns a GenerationResult object with the updated data object and the source and path parameter as is.
-     *
      */
     @Override
-    public GenerationResult updateDataObject( final DataObjectTO dataObjectTO, final String source, final Path path ) {
+    public GenerationResult updateDataObject( final DataObjectTO dataObjectTO,
+                                              final String source,
+                                              final Path path ) {
         //Resolve the dataobject update in memory
 
         GenerationResult result = new GenerationResult();
@@ -469,21 +478,30 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage ) {
+    public GenerationResult saveSource( final String source,
+                                        final Path path,
+                                        final DataObjectTO dataObjectTO,
+                                        final Metadata metadata,
+                                        final String commitMessage ) {
         return saveSource( source, path, dataObjectTO, metadata, commitMessage, null );
     }
 
     @Override
-    public GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage, final String newFileName ) {
+    public GenerationResult saveSource( final String source,
+                                        final Path path,
+                                        final DataObjectTO dataObjectTO,
+                                        final Metadata metadata,
+                                        final String commitMessage,
+                                        final String newFileName ) {
 
         try {
 
             GenerationResult result = resolveSaveSource( source, path, dataObjectTO );
 
             ioService.write( Paths.convert( path ),
-                    result.getSource(),
-                    metadataService.setUpAttributes( path, metadata ),
-                    makeCommentedOption( commitMessage ) );
+                             result.getSource(),
+                             metadataService.setUpAttributes( path, metadata ),
+                             makeCommentedOption( commitMessage ) );
 
             if ( newFileName != null ) {
                 Path newPath = renameService.rename( path, newFileName, commitMessage );
@@ -497,7 +515,9 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private GenerationResult resolveSaveSource( final String source, final Path path, final DataObjectTO dataObjectTO ) {
+    private GenerationResult resolveSaveSource( final String source,
+                                                final Path path,
+                                                final DataObjectTO dataObjectTO ) {
         GenerationResult result = new GenerationResult();
         KieProject project;
         String updatedSource;
@@ -546,7 +566,10 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    public Path copy( final Path path, final String newName, final String comment, final boolean refactor ) {
+    public Path copy( final Path path,
+                      final String newName,
+                      final String comment,
+                      final boolean refactor ) {
         Path targetPath = null;
         if ( refactor ) {
             try {
@@ -559,7 +582,7 @@ public class DataModelerServiceImpl implements DataModelerService {
                         dataObjectCreatedEvent.fire( new DataObjectCreatedEvent( project, refactoringResult.getDataObject() ) );
                     }
                 }
-            } catch (Exception e) {
+            } catch ( Exception e ) {
                 //if the refactoring fails for whatever reason the file still needs to be copied.
                 logger.error( "An error was produced during class refactoring at file copying for file: " + path + ". The file copying will continue without class refactoring", e );
             }
@@ -567,21 +590,28 @@ public class DataModelerServiceImpl implements DataModelerService {
         try {
             return copyService.copy( path, newName, comment );
         } finally {
-            if ( targetPath != null ) refactoringHelper.removeRefactoredPath( targetPath );
+            if ( targetPath != null ) {
+                refactoringHelper.removeRefactoredPath( targetPath );
+            }
         }
     }
 
-    public Path rename( final Path path, final String newName, String comment, final boolean refactor,
-            final boolean saveCurrentChanges, final String source, final DataObjectTO dataObjectTO,
-            final Metadata metadata ) {
+    public Path rename( final Path path,
+                        final String newName,
+                        String comment,
+                        final boolean refactor,
+                        final boolean saveCurrentChanges,
+                        final String source,
+                        final DataObjectTO dataObjectTO,
+                        final Metadata metadata ) {
 
         GenerationResult saveResult = null;
         if ( saveCurrentChanges ) {
             saveResult = resolveSaveSource( source, path, dataObjectTO );
             ioService.write( Paths.convert( path ),
-                    saveResult.getSource(),
-                    metadataService.setUpAttributes( path, metadata ),
-                    makeCommentedOption( comment ) );
+                             saveResult.getSource(),
+                             metadataService.setUpAttributes( path, metadata ),
+                             makeCommentedOption( comment ) );
         }
 
         Path targetPath = null;
@@ -611,7 +641,9 @@ public class DataModelerServiceImpl implements DataModelerService {
         try {
             return renameService.rename( path, newName, comment );
         } finally {
-            if ( targetPath != null ) refactoringHelper.removeRefactoredPath( targetPath );
+            if ( targetPath != null ) {
+                refactoringHelper.removeRefactoredPath( targetPath );
+            }
         }
     }
 
@@ -634,7 +666,8 @@ public class DataModelerServiceImpl implements DataModelerService {
         return overview;
     }
 
-    private void processErrors( KieProject project, ModelDriverResult result ) {
+    private void processErrors( KieProject project,
+                                ModelDriverResult result ) {
         PublishBatchMessagesEvent publishEvent = new PublishBatchMessagesEvent();
         publishEvent.setCleanExisting( true );
         publishEvent.setUserId( identity != null ? identity.getName() : null );
@@ -658,9 +691,9 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public GenerationResult saveModel( final DataModelTO dataModel,
-            final KieProject project,
-            final boolean overwrite,
-            final String commitMessage ) {
+                                       final KieProject project,
+                                       final boolean overwrite,
+                                       final String commitMessage ) {
 
         Long startTime = System.currentTimeMillis();
         boolean onBatch = false;
@@ -705,14 +738,15 @@ public class DataModelerServiceImpl implements DataModelerService {
 
     @Override
     public GenerationResult saveModel( DataModelTO dataModel,
-            final KieProject project ) {
+                                       final KieProject project ) {
 
         return saveModel( dataModel, project, false, DEFAULT_COMMIT_MESSAGE );
 
     }
 
     @Override
-    public void delete( final Path path, final String comment ) {
+    public void delete( final Path path,
+                        final String comment ) {
         try {
             KieProject project = projectService.resolveProject( path );
             if ( project == null ) {
@@ -730,12 +764,17 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public GenerationResult refactorClass( final Path path, final String newPackageName, final String newClassName ) {
+    public GenerationResult refactorClass( final Path path,
+                                           final String newPackageName,
+                                           final String newClassName ) {
         final String source = ioService.readAllString( Paths.convert( path ) );
         return refactorClass( source, path, newPackageName, newClassName );
     }
 
-    private GenerationResult refactorClass( final String source, final Path path, final String newPackageName, final String newClassName ) {
+    private GenerationResult refactorClass( final String source,
+                                            final Path path,
+                                            final String newPackageName,
+                                            final String newClassName ) {
         Pair<DataObjectTO, List<DataModelerError>> result = loadDataObject( path, source, path );
         if ( ( result.getK2() == null || result.getK2().isEmpty() ) && result.getK1() != null ) {
 
@@ -755,12 +794,13 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public List<ValidationMessage> validate( final String source, final Path path,
-            final DataObjectTO dataObjectTO) {
+    public List<ValidationMessage> validate( final String source,
+                                             final Path path,
+                                             final DataObjectTO dataObjectTO ) {
 
         try {
             String validationSource = null;
-            List<ValidationMessage> validations = new ArrayList<ValidationMessage>(  );
+            List<ValidationMessage> validations = new ArrayList<ValidationMessage>();
 
             KieProject project = projectService.resolveProject( path );
             if ( project == null ) {
@@ -788,8 +828,8 @@ public class DataModelerServiceImpl implements DataModelerService {
             }
 
             return genericValidator.validate( path,
-                    new ByteArrayInputStream( validationSource != null ? validationSource.getBytes( Charsets.UTF_8 ) : "".getBytes() ) ,
-                    new JavaFileFilter() );
+                                              new ByteArrayInputStream( validationSource != null ? validationSource.getBytes( Charsets.UTF_8 ) : "".getBytes() ),
+                                              new JavaFileFilter() );
 
         } catch ( Exception e ) {
             logger.error( "An error was produced during validation", e );
@@ -797,7 +837,9 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private void generateModel( DataModelTO dataModelTO, KieProject project, CommentedOption option ) throws Exception {
+    private void generateModel( DataModelTO dataModelTO,
+                                KieProject project,
+                                CommentedOption option ) throws Exception {
 
         org.uberfire.java.nio.file.Path sourceFile;
         org.uberfire.java.nio.file.Path targetFile;
@@ -862,7 +904,7 @@ public class DataModelerServiceImpl implements DataModelerService {
                     targetFile = sourceFile;
                 }
 
-                if (logger.isDebugEnabled()) {
+                if ( logger.isDebugEnabled() ) {
                     logger.debug( "original content will be read from file: " + sourceFile );
                     logger.debug( "updated content will be written into file: " + targetFile );
                 }
@@ -892,11 +934,15 @@ public class DataModelerServiceImpl implements DataModelerService {
         }
     }
 
-    private Pair<String, List<DataModelerError>> updateJavaSource( String originalSource, DataObjectTO dataObjectTO, Map<String, String> renames, List<String> deletions, ClassLoader classLoader ) throws Exception {
+    private Pair<String, List<DataModelerError>> updateJavaSource( String originalSource,
+                                                                   DataObjectTO dataObjectTO,
+                                                                   Map<String, String> renames,
+                                                                   List<String> deletions,
+                                                                   ClassLoader classLoader ) throws Exception {
 
         String newSource;
         ClassTypeResolver classTypeResolver;
-        List<DataModelerError> errors = new ArrayList<DataModelerError>(  );
+        List<DataModelerError> errors = new ArrayList<DataModelerError>();
 
         if ( logger.isDebugEnabled() ) {
             logger.debug( "Starting java source update for class: " + dataObjectTO.getClassName() );
@@ -908,12 +954,12 @@ public class DataModelerServiceImpl implements DataModelerService {
 
         JavaType<?> javaType = Roaster.parse( originalSource );
         if ( javaType.isClass() ) {
-            if (javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
+            if ( javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty() ) {
                 //if a file has parsing errors it will be skipped.
                 errors.addAll( DataModelerServiceHelper.getInstance().toDataModelerError( javaType.getSyntaxErrors(), null ) );
                 newSource = originalSource;
             } else {
-                JavaClassSource javaClassSource =  (JavaClassSource)javaType;
+                JavaClassSource javaClassSource = (JavaClassSource) javaType;
                 classTypeResolver = DriverUtils.getInstance().createClassTypeResolver( javaClassSource, classLoader );
                 updateJavaClassSource( dataObjectTO, javaClassSource, renames, deletions, classTypeResolver );
                 newSource = javaClassSource.toString();
@@ -929,7 +975,11 @@ public class DataModelerServiceImpl implements DataModelerService {
         return new Pair<String, List<DataModelerError>>( newSource, errors );
     }
 
-    private Pair<String, List<DataModelerError>> updateJavaSource( org.uberfire.java.nio.file.Path path, DataObjectTO dataObjectTO, Map<String, String> renames, List<String> deletions, ClassLoader classLoader ) throws Exception {
+    private Pair<String, List<DataModelerError>> updateJavaSource( org.uberfire.java.nio.file.Path path,
+                                                                   DataObjectTO dataObjectTO,
+                                                                   Map<String, String> renames,
+                                                                   List<String> deletions,
+                                                                   ClassLoader classLoader ) throws Exception {
 
         String originalSource;
         originalSource = ioService.readAllString( path );
@@ -940,7 +990,11 @@ public class DataModelerServiceImpl implements DataModelerService {
         return updateJavaSource( originalSource, dataObjectTO, renames, deletions, classLoader );
     }
 
-    private void updateJavaClassSource( DataObjectTO dataObjectTO, JavaClassSource javaClassSource, Map<String, String> renames, List<String> deletions, ClassTypeResolver classTypeResolver ) throws Exception {
+    private void updateJavaClassSource( DataObjectTO dataObjectTO,
+                                        JavaClassSource javaClassSource,
+                                        Map<String, String> renames,
+                                        List<String> deletions,
+                                        ClassTypeResolver classTypeResolver ) throws Exception {
 
         if ( javaClassSource == null || !javaClassSource.isClass() ) {
             logger.warn( "A null javaClassSource or javaClassSouce is not a Class, no processing will be done. javaClassSource: " + javaClassSource + " className: " + ( javaClassSource != null ? javaClassSource.getName() : null ) );
@@ -1078,7 +1132,8 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     @Override
-    public List<Path> findFieldUsages( String className, String fieldName ) {
+    public List<Path> findFieldUsages( String className,
+                                       String fieldName ) {
 
         HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>();
         queryTerms.add( new ValueTypeIndexTerm( className ) );
@@ -1086,20 +1141,21 @@ public class DataModelerServiceImpl implements DataModelerService {
         return executeReferencesQuery( "FindTypeFieldsQuery", queryTerms );
     }
 
-    private List<Path> executeReferencesQuery( String queryName, HashSet<ValueIndexTerm> queryTerms ) {
+    private List<Path> executeReferencesQuery( String queryName,
+                                               HashSet<ValueIndexTerm> queryTerms ) {
 
         List<Path> results = new ArrayList<Path>();
         final RefactoringPageRequest request = new RefactoringPageRequest( queryName,
-                queryTerms,
-                0,
-                10 );
+                                                                           queryTerms,
+                                                                           0,
+                                                                           10 );
 
         try {
 
             final PageResponse<RefactoringPageRow> response = queryService.query( request );
             if ( response != null && response.getPageRowList() != null ) {
                 for ( RefactoringPageRow row : response.getPageRowList() ) {
-                    results.add( ( org.uberfire.backend.vfs.Path ) row.getValue() );
+                    results.add( (org.uberfire.backend.vfs.Path) row.getValue() );
                 }
             }
             return results;
@@ -1144,10 +1200,10 @@ public class DataModelerServiceImpl implements DataModelerService {
         final Date when = new Date();
 
         final CommentedOption option = new CommentedOption( sessionInfo.getId(),
-                name,
-                null,
-                commitMessage,
-                when );
+                                                            name,
+                                                            null,
+                                                            commitMessage,
+                                                            when );
         return option;
     }
 
@@ -1192,7 +1248,8 @@ public class DataModelerServiceImpl implements DataModelerService {
         return javaPath;
     }
 
-    private String calculateClassName( Project project, Path path ) {
+    private String calculateClassName( Project project,
+                                       Path path ) {
 
         Path rootPath = project.getRootPath();
         if ( !path.toURI().startsWith( rootPath.toURI() ) ) {
@@ -1224,7 +1281,7 @@ public class DataModelerServiceImpl implements DataModelerService {
      * Given a className calculates the path to the java file allocating the corresponding pojo.
      */
     private org.uberfire.java.nio.file.Path calculateFilePath( String className,
-            org.uberfire.java.nio.file.Path javaPath ) {
+                                                               org.uberfire.java.nio.file.Path javaPath ) {
 
         String name = NamingUtils.extractClassName( className );
         String packageName = NamingUtils.extractPackageName( className );
@@ -1242,7 +1299,9 @@ public class DataModelerServiceImpl implements DataModelerService {
     }
 
     //TODO refactor this two methods to other class
-    private String updateJavaSourceAntlr( DataObjectTO dataObjectTO, org.uberfire.java.nio.file.Path path, ClassLoader classLoader ) throws Exception {
+    private String updateJavaSourceAntlr( DataObjectTO dataObjectTO,
+                                          org.uberfire.java.nio.file.Path path,
+                                          ClassLoader classLoader ) throws Exception {
 
         String originalSource;
         String newSource;
@@ -1269,7 +1328,9 @@ public class DataModelerServiceImpl implements DataModelerService {
         return newSource;
     }
 
-    private void updateJavaFileDescrAntlr( DataObjectTO dataObjectTO, FileDescr fileDescr, ClassTypeResolver classTypeResolver ) throws Exception {
+    private void updateJavaFileDescrAntlr( DataObjectTO dataObjectTO,
+                                           FileDescr fileDescr,
+                                           ClassTypeResolver classTypeResolver ) throws Exception {
 
         if ( fileDescr == null || fileDescr.getClassDescr() == null ) {
             logger.warn( "A null FileDescr or ClassDescr was provided, no processing will be done. fileDescr: " + fileDescr + " classDescr: " + ( fileDescr != null ? fileDescr.getClassDescr() : null ) );
