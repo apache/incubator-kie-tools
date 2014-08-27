@@ -60,9 +60,11 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
         {
             return source;
         }
-        FilterCommonOps.doFilterTransform(data, transform, source.getWidth(), source.getHeight());
+        ImageData result = source.create();
+        
+        FilterCommonOps.doFilterTransform(data, result.getData(), transform, source.getWidth(), source.getHeight());
 
-        return source;
+        return result;
     }
 
     @Override

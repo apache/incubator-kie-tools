@@ -59,14 +59,15 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
         {
             return source;
         }
-        filter_(data, source.getWidth(), source.getHeight());
+        ImageData result = source.create();
 
-        return source;
+        filter_(data, result.getData(), source.getWidth(), source.getHeight());
+
+        return result;
     }
 
-    private final native void filter_(JavaScriptObject data, int w, int h)
+    private final native void filter_(JavaScriptObject data, JavaScriptObject buff, int w, int h)
     /*-{
-        var buff = [];
         var hmap = [-1, -2, -1, 0, 0, 0, 1, 2, 1];
         var vmap = [-1, 0, 1, -2, 0, 2, -1, 0, 1];
     	for (var y = 0; y < h; y++) {
@@ -107,10 +108,6 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
                 buff[p + 2] = ((Math.sqrt(bh * bh + bv * bv) / 1.8) | 0);
                 buff[p + 3] = data[p + 3];
             }   
-        }
-        var size =  buff.length;
-        for(var i = 0; i < size; i++) {
-            data[i] = buff[i];
         }
     }-*/;
 

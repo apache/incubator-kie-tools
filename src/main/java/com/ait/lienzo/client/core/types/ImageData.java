@@ -33,18 +33,20 @@ public class ImageData extends JavaScriptObject
      * 
      * Because image data is stored as RGBA, this is 4.
      */
-    private static final int NUM_COLORS   = 4;
+    private static final int           NUM_COLORS   = 4;
 
     /**
      * Offsets for each color use RGBA ordering.
      */
-    public static final int  OFFSET_RED   = 0;
+    public static final int            OFFSET_RED   = 0;
 
-    public static final int  OFFSET_GREEN = 1;
+    public static final int            OFFSET_GREEN = 1;
 
-    public static final int  OFFSET_BLUE  = 2;
+    public static final int            OFFSET_BLUE  = 2;
 
-    public static final int  OFFSET_ALPHA = 3;
+    public static final int            OFFSET_ALPHA = 3;
+
+    private static final ScratchCanvas SCRATCH      = new ScratchCanvas(1, 1);
 
     protected ImageData()
     {
@@ -62,6 +64,11 @@ public class ImageData extends JavaScriptObject
         context.putImageData(this, 0, 0);
 
         return context.getImageData(0, 0, getWidth(), getHeight());
+    }
+
+    public final ImageData create()
+    {
+        return SCRATCH.getContext().createImageData(this);
     }
 
     /**
@@ -98,8 +105,8 @@ public class ImageData extends JavaScriptObject
      * @return a {@link CanvasPixelArray} object
      */
     public final native CanvasPixelArray getData() /*-{
-		return this.data;
-    }-*/;
+                                                   return this.data;
+                                                   }-*/;
 
     /**
      * Returns the green value at position (x,y).
@@ -121,8 +128,8 @@ public class ImageData extends JavaScriptObject
      * @return the image height as an int
      */
     public final native int getHeight() /*-{
-		return this.height;
-    }-*/;
+                                        return this.height;
+                                        }-*/;
 
     /**
      * Returns the red value at position (x,y).
@@ -144,8 +151,8 @@ public class ImageData extends JavaScriptObject
      * @return the image width as an int
      */
     public final native int getWidth() /*-{
-		return this.width;
-    }-*/;
+                                       return this.width;
+                                       }-*/;
 
     /**
      * Sets the alpha value at position (x,y).
@@ -217,9 +224,9 @@ public class ImageData extends JavaScriptObject
      * @see #setColorAt(int, int, int, int)
      */
     private native int getColorAt(int x, int y, int offset) /*-{
-		return this.data[@com.google.gwt.canvas.dom.client.ImageData::NUM_COLORS
-				* (x + y * this.width) + offset] || 0;
-    }-*/;
+                                                            return this.data[@com.google.gwt.canvas.dom.client.ImageData::NUM_COLORS
+                                                             * (x + y * this.width) + offset] || 0;
+                                                            }-*/;
 
     /**
      * Sets the color value at position (x,y) with the specified offset.
@@ -234,7 +241,7 @@ public class ImageData extends JavaScriptObject
      * @see #getColorAt(int, int, int)
      */
     private native void setColorAt(int color, int x, int y, int offset) /*-{
-		this.data[@com.google.gwt.canvas.dom.client.ImageData::NUM_COLORS
-				* (x + y * this.width) + offset] = color;
-    }-*/;
+                                                                        this.data[@com.google.gwt.canvas.dom.client.ImageData::NUM_COLORS
+                                                                         * (x + y * this.width) + offset] = color;
+                                                                        }-*/;
 }

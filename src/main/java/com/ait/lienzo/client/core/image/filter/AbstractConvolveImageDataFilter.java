@@ -92,9 +92,11 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
         {
             return source;
         }
-        FilterCommonOps.doFilterConvolve(data, matrix, source.getWidth(), source.getHeight());
+        ImageData result = source.create();
 
-        return source;
+        FilterCommonOps.doFilterConvolve(data, result.getData(), matrix, source.getWidth(), source.getHeight());
+
+        return result;
     }
 
     protected static abstract class ConvolveImageDataFilterFactory<T extends AbstractConvolveImageDataFilter<T>> extends ImageDataFilterFactory<T>

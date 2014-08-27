@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMat
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterTableArray;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterTransformFunction;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 
 public class ImageDataFilterCommonOps extends JavaScriptObject
@@ -121,8 +122,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                 data[i + 2] = table[data[i + 2]];
             }
         };
-        this.filterConvolve = function(data, matrix, w, h) {
-            var buff = [];
+        this.filterConvolve = function(data, buff, matrix, w, h) {
             var rows, cols;
             rows = cols = Math.sqrt(matrix.length);
             var row2 = (rows / 2) | 0;
@@ -159,10 +159,6 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                     buff[p + 2] = (b + 0.5) | 0;
                     buff[p + 3] = data[p + 3];
                 }
-            }
-            var size =  buff.length;
-            for(var k = 0; k < size; k++) {
-                data[k] = buff[k];
             }
         };
         this.linearInterpolate = function(t, a, b) {
@@ -214,13 +210,8 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
             }
             return [data[p + 0], data[p + 1], data[p + 2], data[p + 3]]
         };
-        this.filterTransform = function(data, transform, w, h) {
+        this.filterTransform = function(data, buff, transform, w, h) {
             var xfrm = [];
-            var buff = [];
-            var leng = data.length;
-            for(var j = 0; j < leng; j++) {
-                buff[j] = data[j];
-            }
             for(var y = 0; y < h; y++) {
                 for (var x = 0; x < w; x++) {
                     var p = (y * w + x) * 4;
@@ -249,10 +240,6 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                     buff[p + 3] = rgba[3];
                 }
             }
-            var size = buff.length;
-            for(var k = 0; k < size; k++) {
-                data[k] = buff[k];
-            }
         };
     }-*/;
 
@@ -261,18 +248,18 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         return ((source.getWidth() * source.getHeight()) * 4);
     }
 
-    public final native void doFilterTable(JavaScriptObject data, FilterTableArray table, int w, int h)
+    public final native void doFilterTable(CanvasPixelArray data, FilterTableArray table, int w, int h)
     /*-{
         this.filterTable(data, table, w, h);
     }-*/;
 
-    public final native void doFilterConvolve(JavaScriptObject data, FilterConvolveMatrix matrix, int w, int h)
+    public final native void doFilterConvolve(CanvasPixelArray data, CanvasPixelArray buff, FilterConvolveMatrix matrix, int w, int h)
     /*-{
-        this.filterConvolve(data, matrix, w, h);
+        this.filterConvolve(data, buff, matrix, w, h);
     }-*/;
 
-    public final native void doFilterTransform(JavaScriptObject data, FilterTransformFunction transform, int w, int h)
+    public final native void doFilterTransform(CanvasPixelArray data, CanvasPixelArray buff, FilterTransformFunction transform, int w, int h)
     /*-{
-        this.filterTransform(data, transform, w, h);
+        this.filterTransform(data, buff, transform, w, h);
     }-*/;
 }
