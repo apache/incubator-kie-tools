@@ -1,6 +1,5 @@
 package org.drools.workbench.screens.testscenario.client.handlers;
 
-import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -19,7 +18,6 @@ import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
@@ -48,13 +46,6 @@ public class NewTestScenarioHandler
     @Override
     public ResourceTypeDefinition getResourceType() {
         return resourceType;
-    }
-
-    @Override
-    public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        final Package activePackage = context.getActivePackage();
-        this.pathLabel.setPath( ( activePackage == null ? null : activePackage.getPackageTestResourcesPath() ) );
-        return this.extensions;
     }
 
     @Override
