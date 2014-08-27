@@ -198,7 +198,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         this.luminocity = function(r, g, b) {
             return (r * 0.21) + (g * 0.72) + (b * 0.07);
         };
-        this.getPixel = function (data, x, y ,w, h) {
+        this.getPixel = function(data, x, y, w, h) {
             var p = (y * w + x) * 4;
             if ((x < 0) || (x >= w) || (y < 0) || (y >= h)) {
                 return [
