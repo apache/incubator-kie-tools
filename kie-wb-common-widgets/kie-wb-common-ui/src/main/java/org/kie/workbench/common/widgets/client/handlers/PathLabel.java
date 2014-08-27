@@ -3,7 +3,7 @@ package org.kie.workbench.common.widgets.client.handlers;
 import java.util.Map;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Paragraph;
+import com.github.gwtbootstrap.client.ui.Label;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -14,7 +14,7 @@ import org.uberfire.backend.vfs.VFSService;
 /**
  * A Label to show a Path, truncated to the closest folder level
  */
-public class PathLabel extends Paragraph {
+public class PathLabel extends Label {
 
     @Inject
     private Caller<VFSService> vfsService;

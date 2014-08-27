@@ -31,8 +31,6 @@ import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.github.gwtbootstrap.client.ui.event.ShownEvent;
 import com.github.gwtbootstrap.client.ui.event.ShownHandler;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -129,7 +127,9 @@ public class NewResourceView extends KieBaseModal implements NewResourcePresente
         handlerExtensions.setVisible( !( extensions == null || extensions.isEmpty() ) );
         if ( extensions != null ) {
             for ( Pair<String, ? extends IsWidget> extension : extensions ) {
-                handlerExtensions.add( extension.getK2() );
+                final ControlGroup cg = new ControlGroup();
+                cg.add( extension.getK2() );
+                handlerExtensions.add( cg );
             }
         }
 
@@ -164,22 +164,6 @@ public class NewResourceView extends KieBaseModal implements NewResourcePresente
             return;
         }
         handlerOption.setEnabled( enabled );
-    }
-
-    private RadioButton makeOption( final NewResourceHandler handler ) {
-        final RadioButton option = new RadioButton( "handlers",
-                                                    handler.getDescription() );
-        option.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-
-            @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                if ( event.getValue() == true ) {
-                    selectNewResourceHandler( handler );
-                }
-            }
-        } );
-
-        return option;
     }
 
     private void selectNewResourceHandler( final NewResourceHandler handler ) {

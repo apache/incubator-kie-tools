@@ -68,7 +68,7 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public void acceptContext( final ProjectContext context,
-            final Callback<Boolean, Void> callback ) {
+                               final Callback<Boolean, Void> callback ) {
         if ( context == null ) {
             callback.onSuccess( false );
         } else {
@@ -89,21 +89,21 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public void create( final org.guvnor.common.services.project.model.Package pkg,
-            final String baseFileName,
-            final NewResourcePresenter presenter ) {
+                        final String baseFileName,
+                        final NewResourcePresenter presenter ) {
 
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         dataModelerService.call( getSuccessCallback( presenter ),
-                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).createJavaFile( pkg.getPackageMainSrcPath(),
-                buildFileName( baseFileName,
-                        resourceType ) );
+                                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).createJavaFile( pkg.getPackageMainSrcPath(),
+                                                                                                                 buildFileName( baseFileName,
+                                                                                                                                resourceType ) );
 
     }
 
     @Override
     public void validate( final String javaFileName,
-            final ValidatorWithReasonCallback callback ) {
-        if ( pathLabel.getPath() == null ) {
+                          final ValidatorWithReasonCallback callback ) {
+        if ( packagesListBox.getSelectedPackage() == null ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
             callback.onFailure();
             return;

@@ -69,7 +69,7 @@ public class NewPackageHandler
     @Override
     public void validate( final String packageName,
                           final ValidatorWithReasonCallback callback ) {
-        if ( pathLabel.getPath() == null ) {
+        if ( packagesListBox.getSelectedPackage() == null ) {
             Window.alert( CommonConstants.INSTANCE.MissingPath() );
             callback.onFailure();
             return;

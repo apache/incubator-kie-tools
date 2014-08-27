@@ -60,9 +60,6 @@ public class NewResourcePresenter {
     //This is used to get Active Package when New Resource Popup is shown.
     protected ProjectContext context;
 
-    //This holds the state of the Active Package when the New Resource Popup was first shown.
-    protected Package activePackage;
-
     @Inject
     private SyncBeanManager iocBeanManager;
 
@@ -121,8 +118,7 @@ public class NewResourcePresenter {
         view.setActiveHandler( activeHandler );
         view.setTitle( NewItemPopupConstants.INSTANCE.popupTitle() + " " + getActiveHandlerDescription() );
 
-        //Save state of current context and enable applicable handlers
-        activePackage = context.getActivePackage();
+        //Enable applicable handlers
         enableNewResourceHandlers( context );
     }
 
@@ -140,6 +136,10 @@ public class NewResourcePresenter {
 
     public void makeItem( final String fileName ) {
         if ( activeHandler != null ) {
+            Package activePackage = null;
+            if ( activeHandler instanceof PackageContextProvider ) {
+                activePackage = ( (PackageContextProvider) activeHandler ).getPackage();
+            }
             activeHandler.create( activePackage,
                                   fileName,
                                   NewResourcePresenter.this );

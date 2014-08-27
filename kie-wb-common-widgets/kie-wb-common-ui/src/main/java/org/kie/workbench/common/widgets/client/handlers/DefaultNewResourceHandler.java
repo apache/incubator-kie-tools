@@ -1,3 +1,18 @@
+/*
+ * Copyright 2014 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.kie.workbench.common.widgets.client.handlers;
 
 import java.util.LinkedList;
@@ -29,11 +44,13 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 /**
  * Handler for the creation of new Items that require a Name and Path
  */
-public abstract class DefaultNewResourceHandler implements NewResourceHandler {
+public abstract class DefaultNewResourceHandler implements NewResourceHandler,
+                                                           PackageContextProvider {
 
     protected final List<Pair<String, ? extends IsWidget>> extensions = new LinkedList<Pair<String, ? extends IsWidget>>();
 
-    protected final PathLabel pathLabel = new PathLabel();
+    @Inject
+    protected PackageListBox packagesListBox;
 
     @Inject
     protected ProjectContext context;
@@ -56,20 +73,19 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
     @PostConstruct
     private void setupExtensions() {
         this.extensions.add( Pair.newPair( CommonConstants.INSTANCE.ItemPathSubheading(),
-                                           pathLabel ) );
+                                           packagesListBox ) );
     }
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        final Package activePackage = context.getActivePackage();
-        this.pathLabel.setPath( ( activePackage == null ? null : activePackage.getPackageMainResourcesPath() ) );
+        this.packagesListBox.setContext( context );
         return this.extensions;
     }
 
     @Override
     public void validate( final String baseFileName,
                           final ValidatorWithReasonCallback callback ) {
-        if ( pathLabel.getPath() == null ) {
+        if ( packagesListBox.getSelectedPackage() == null ) {
             ErrorPopup.showMessage( CommonConstants.INSTANCE.MissingPath() );
             callback.onFailure();
             return;
@@ -100,6 +116,11 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler {
             boolean accept = ( pkg == null ? false : pkg.getPackageMainResourcesPath() != null );
             callback.onSuccess( accept );
         }
+    }
+
+    @Override
+    public Package getPackage() {
+        return packagesListBox.getSelectedPackage();
     }
 
     protected String buildFileName( final String baseFileName,
