@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.widgets.client.discussion;
 
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.config.AppConfigService;
@@ -25,7 +23,11 @@ import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
 import org.uberfire.security.Identity;
+
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 public class DiscussionWidgetPresenter
         implements IsWidget, DiscussionWidgetView.Presenter {
@@ -35,6 +37,9 @@ public class DiscussionWidgetPresenter
     private Caller<AppConfigService> appConfigService;
 
     private Metadata metadata;
+
+    @Inject
+    private Event<CommentAddedEvent> commentAddedEvent;
 
     public DiscussionWidgetPresenter() {
     }
@@ -78,6 +83,14 @@ public class DiscussionWidgetPresenter
                     view.addRow(record);
                     view.clearCommentBox();
                     view.scrollToBottom();
+
+                    // TODO: Test this
+                    commentAddedEvent.fire(
+                            new CommentAddedEvent(
+                                    identity.getName(),
+                                    metadata.getPath(),
+                                    comment,
+                                    timestamp));
                 }
             }).getTimestamp();
         }

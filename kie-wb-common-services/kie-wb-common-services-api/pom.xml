@@ -51,6 +51,11 @@
       <artifactId>guvnor-message-console-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-social-activities-api</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>
