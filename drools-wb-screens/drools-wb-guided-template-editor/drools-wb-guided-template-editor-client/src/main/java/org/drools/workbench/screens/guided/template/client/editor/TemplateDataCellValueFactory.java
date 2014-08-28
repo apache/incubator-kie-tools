@@ -260,22 +260,6 @@ public class TemplateDataCellValueFactory
 
     // Get the Data Type corresponding to a given column
     private DataType.DataTypes getDataType( TemplateDataColumn column ) {
-
-        // Columns with lists of values, enums etc are always Text (for now)
-        String[] vals = null;
-        String factType = column.getFactType();
-        String factField = column.getFactField();
-
-        //Check for enumerations
-        if ( factType != null && factField != null ) {
-            vals = oracle.getEnumValues( factType,
-                                         factField );
-            if ( vals != null && vals.length > 0 ) {
-                return DataType.DataTypes.STRING;
-            }
-        }
-
-        //Otherwise use data type extracted from model
         String dataType = column.getDataType();
         if ( dataType.equals( DataType.TYPE_BOOLEAN ) ) {
             return DataType.DataTypes.BOOLEAN;
