@@ -90,7 +90,7 @@ public class GuidedRuleDSLRSourceService
     /**
      * Returns an expander for DSLs (only if there is a DSL configured for this package).
      */
-    public Expander getDSLExpander( final Path path ) {
+    private Expander getDSLExpander( final Path path ) {
         final Expander expander = new DefaultExpander();
         final List<DSLMappingFile> dsls = getDSLMappingFiles( path );
         for ( DSLMappingFile dsl : dsls ) {
