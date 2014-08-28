@@ -40,7 +40,8 @@ public class PackageListBox extends ListBox {
 
     private final List<Package> packages = new ArrayList<Package>();
 
-    public void setContext( final ProjectContext context ) {
+    public void setContext( final ProjectContext context,
+                            final boolean includeDefaultPackage ) {
         clear();
         packages.clear();
         setEnabled( true );
@@ -69,6 +70,18 @@ public class PackageListBox extends ListBox {
                                       }
                                   } );
 
+                //Remove default package, if not required (after sorting it is guaranteed to be at index 0)
+                if ( !includeDefaultPackage ) {
+                    sortedPackages.remove( 0 );
+                }
+
+                //Disable and set default content if no Packages available
+                if ( sortedPackages.size() == 0 ) {
+                    addItem( CommonConstants.INSTANCE.ItemUndefinedPath() );
+                    setEnabled( false );
+                    return;
+                }
+
                 //Add to ListBox
                 int selectedIndex = -1;
                 for ( Package pkg : sortedPackages ) {
@@ -80,6 +93,8 @@ public class PackageListBox extends ListBox {
                 }
                 if ( selectedIndex != -1 ) {
                     setSelectedIndex( selectedIndex );
+                } else {
+                    setSelectedIndex( 0 );
                 }
             }
         } ).resolvePackages( context.getActiveProject() );

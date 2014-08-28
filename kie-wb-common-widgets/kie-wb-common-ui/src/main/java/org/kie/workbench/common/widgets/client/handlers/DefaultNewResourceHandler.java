@@ -78,7 +78,8 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        this.packagesListBox.setContext( context );
+        this.packagesListBox.setContext( context,
+                                         true );
         return this.extensions;
     }
 
@@ -112,9 +113,7 @@ public abstract class DefaultNewResourceHandler implements NewResourceHandler,
         if ( context == null ) {
             callback.onSuccess( false );
         } else {
-            final Package pkg = context.getActivePackage();
-            boolean accept = ( pkg == null ? false : pkg.getPackageMainResourcesPath() != null );
-            callback.onSuccess( accept );
+            callback.onSuccess( context.getActiveProject() != null );
         }
     }
 

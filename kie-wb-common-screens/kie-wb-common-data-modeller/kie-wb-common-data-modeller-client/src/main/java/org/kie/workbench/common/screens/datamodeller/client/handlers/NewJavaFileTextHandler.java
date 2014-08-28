@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.handlers;
 
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -37,12 +36,11 @@ import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandle
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @ApplicationScoped
 public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
-
-    private static final String DEFAULT_PACKAGE = "";
 
     @Inject
     private Caller<DataModelerService> dataModelerService;
@@ -67,24 +65,15 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void acceptContext( final ProjectContext context,
-                               final Callback<Boolean, Void> callback ) {
-        if ( context == null ) {
-            callback.onSuccess( false );
-        } else {
-            final org.guvnor.common.services.project.model.Package pkg = context.getActivePackage();
-            boolean accept = false;
-            //TODO check if we have a better way to check the default package
-            if ( pkg != null && pkg.getPackageName() != null && !DEFAULT_PACKAGE.equals( pkg.getPackageName() ) ) {
-                accept = true;
-            }
-            callback.onSuccess( accept );
-        }
+    public ResourceTypeDefinition getResourceType() {
+        return resourceType;
     }
 
     @Override
-    public ResourceTypeDefinition getResourceType() {
-        return resourceType;
+    public List<Pair<String, ? extends IsWidget>> getExtensions() {
+        this.packagesListBox.setContext( context,
+                                         false );
+        return this.extensions;
     }
 
     @Override
