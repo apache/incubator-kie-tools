@@ -3,14 +3,12 @@ package org.drools.workbench.screens.testscenario.client.handlers;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -64,15 +62,4 @@ public class NewTestScenarioHandler
                                                                                         "" );
     }
 
-    @Override
-    public void acceptContext( final ProjectContext context,
-                               final Callback<Boolean, Void> callback ) {
-        if ( context == null ) {
-            callback.onSuccess( false );
-        } else {
-            final Package pkg = context.getActivePackage();
-            boolean accept = ( pkg == null ? false : pkg.getPackageTestResourcesPath() != null );
-            callback.onSuccess( accept );
-        }
-    }
 }
