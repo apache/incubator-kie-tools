@@ -127,8 +127,10 @@ public class DefaultGenericKieValidator implements GenericValidator {
         final List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
         try {
             final Results kieResults = kieBuilder.buildAll().getResults();
+            final String destinationBasePath = getBasePath( destinationPath );
             for ( final Message message : kieResults.getMessages() ) {
-                if ( destinationPath.endsWith( message.getPath() ) ) {
+                final String messageBasePath = getBasePath( message.getPath() );
+                if ( destinationBasePath.endsWith( messageBasePath ) ) {
                     validationMessages.add( convertMessage( message ) );
                 }
             }
@@ -143,6 +145,17 @@ public class DefaultGenericKieValidator implements GenericValidator {
         }
 
         return validationMessages;
+    }
+
+    //Strip the file extension as it cannot be relied upon when filtering KieBuilder messages.
+    //For example we write MyGuidedTemplate.template to KieFileSystem but KieBuilder returns
+    //Messages containing MyGuidedTemplate.drl
+    private String getBasePath( final String path ) {
+        if ( path.contains( "." ) ) {
+            return path.substring( 0,
+                                   path.lastIndexOf( "." ) );
+        }
+        return path;
     }
 
     private void visitPaths( final String projectPrefix,
