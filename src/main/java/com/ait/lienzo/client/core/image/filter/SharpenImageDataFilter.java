@@ -77,7 +77,7 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
 
     public static class SharpenImageDataFilterFactory extends ConvolveImageDataFilterFactory<SharpenImageDataFilter>
     {
-        protected SharpenImageDataFilterFactory()
+        public SharpenImageDataFilterFactory()
         {
             super(SharpenImageDataFilter.class.getSimpleName());
         }

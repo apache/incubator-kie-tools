@@ -20,6 +20,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.ait.lienzo.client.core.image.filter.AlphaScaleColorImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.AverageGrayScaleImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.BrightnessImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.BumpImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.ColorDeltaAlphaImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.ColorLuminosityImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.ContrastImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.DiffusionImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.EdgeDetectImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.EmbossImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.ExposureImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.GainImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.GammaImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.HueImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
+import com.ait.lienzo.client.core.image.filter.InvertColorImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.LightnessGrayScaleImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.LuminosityGrayScaleImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.PosterizeImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.RGBIgnoreAlphaImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.SharpenImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.SolarizeImageDataFilter;
+import com.ait.lienzo.client.core.image.filter.StackBlurImageDataFilter;
 import com.ait.lienzo.client.core.shape.Arc;
 import com.ait.lienzo.client.core.shape.Arrow;
 import com.ait.lienzo.client.core.shape.BezierCurve;
@@ -130,6 +153,52 @@ public final class LienzoCorePlugin implements ILienzoPlugin
             m_factories.add(new Scene.SceneFactory());
 
             m_factories.add(new Viewport.ViewportFactory());
+
+            m_factories.add(new AlphaScaleColorImageDataFilter.AlphaScaleColorImageDataFilterFactory());
+
+            m_factories.add(new AverageGrayScaleImageDataFilter.AverageGrayScaleImageDataFilterFactory());
+
+            m_factories.add(new BrightnessImageDataFilter.BrightnessImageDataFilterFactory());
+
+            m_factories.add(new BumpImageDataFilter.BumpImageDataFilterFactory());
+
+            m_factories.add(new ColorDeltaAlphaImageDataFilter.ColorDeltaAlphaImageDataFilterFactory());
+
+            m_factories.add(new ColorLuminosityImageDataFilter.ColorLuminosityImageDataFilterFactory());
+
+            m_factories.add(new ContrastImageDataFilter.ContrastImageDataFilterFactory());
+
+            m_factories.add(new DiffusionImageDataFilter.DiffusionImageDataFilterFactory());
+
+            m_factories.add(new EdgeDetectImageDataFilter.EdgeDetectImageDataFilterFactory());
+
+            m_factories.add(new EmbossImageDataFilter.EmbossImageDataFilterFactory());
+
+            m_factories.add(new ExposureImageDataFilter.ExposureImageDataFilterFactory());
+
+            m_factories.add(new GainImageDataFilter.GainImageDataFilterFactory());
+
+            m_factories.add(new GammaImageDataFilter.GammaImageDataFilterFactory());
+
+            m_factories.add(new HueImageDataFilter.HueImageDataFilterFactory());
+
+            m_factories.add(new ImageDataFilterChain.ImageDataFilterChainFactory());
+
+            m_factories.add(new InvertColorImageDataFilter.InvertColorImageDataFilterFactory());
+
+            m_factories.add(new LightnessGrayScaleImageDataFilter.LightnessGrayScaleImageDataFilterFactory());
+
+            m_factories.add(new LuminosityGrayScaleImageDataFilter.LuminosityGrayScaleImageDataFilterFactory());
+
+            m_factories.add(new PosterizeImageDataFilter.PosterizeImageDataFilterFactory());
+
+            m_factories.add(new RGBIgnoreAlphaImageDataFilter.RGBIgnoreAlphaImageDataFilterFactory());
+
+            m_factories.add(new SharpenImageDataFilter.SharpenImageDataFilterFactory());
+
+            m_factories.add(new SolarizeImageDataFilter.SolarizeImageDataFilterFactory());
+
+            m_factories.add(new StackBlurImageDataFilter.StackBlurImageDataFilterFactory());
         }
         return Collections.unmodifiableCollection(m_factories);
     }

@@ -44,7 +44,7 @@ public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpIma
     
     public static class BumpImageDataFilterFactory extends ConvolveImageDataFilterFactory<BumpImageDataFilter>
     {
-        protected BumpImageDataFilterFactory()
+        public BumpImageDataFilterFactory()
         {
             super(BumpImageDataFilter.class.getSimpleName());
         }

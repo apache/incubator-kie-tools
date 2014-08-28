@@ -77,7 +77,20 @@ public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFil
     @Override
     public IFactory<DiffusionImageDataFilter> getFactory()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return new DiffusionImageDataFilterFactory();
+    }
+
+    public static class DiffusionImageDataFilterFactory extends ValueTransformImageDataFilterFactory<DiffusionImageDataFilter>
+    {
+        public DiffusionImageDataFilterFactory()
+        {
+            super(DiffusionImageDataFilter.class.getSimpleName());
+        }
+
+        @Override
+        public DiffusionImageDataFilter create(JSONObject node, ValidationContext ctx) throws ValidationException
+        {
+            return new DiffusionImageDataFilter(node, ctx);
+        }
     }
 }
