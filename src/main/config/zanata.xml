@@ -2,7 +2,7 @@
 <config xmlns="http://zanata.org/namespace/config/">
   <url>https://translate.jboss.org/</url>
   <project>drools-wb</project>
-  <project-version>6.0.0</project-version>
+  <project-version>6.2.0</project-version>
   <project-type>utf8properties</project-type>
 
   <locales>
