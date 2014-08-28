@@ -43,9 +43,9 @@ public class GitSSHService {
         sshd.setCommandFactory( new CommandFactory() {
             public Command createCommand( String command ) {
                 if ( command.startsWith( "git-upload-pack" ) ) {
-                    return new GitUploadCommand( command, repositoryResolver, authorizationManager );
+                    return new GitUploadCommand( command, repositoryResolver, getAuthorizationManager() );
                 } else if ( command.startsWith( "git-receive-pack" ) ) {
-                    return new GitReceiveCommand( command, repositoryResolver, authorizationManager, receivePackFactory );
+                    return new GitReceiveCommand( command, repositoryResolver, getAuthorizationManager(), receivePackFactory );
                 } else {
                     return new UnknownCommand( command );
                 }
@@ -56,7 +56,7 @@ public class GitSSHService {
             public boolean authenticate( final String username,
                                          final String password,
                                          final ServerSession session ) {
-                return userPassAuthenticator.authenticate( username, password, new Session() {
+                return getUserPassAuthenticator().authenticate( username, password, new Session() {
                     @Override
                     public void setSubject( final Subject value ) {
                         session.setAttribute( BaseGitCommand.SUBJECT_KEY, value );
