@@ -20,12 +20,11 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.servlet.ServletContext;
 
-import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.rpc.SessionInfo;
@@ -66,12 +65,6 @@ public class TestAppSetup {
     @Alternative
     public SessionInfo sessionInfo() {
         return mock( SessionInfo.class );
-    }
-
-    @Produces
-    @Named("uf")
-    public ServletContext servletContext() {
-        return mock( ServletContext.class );
     }
 
     @Produces

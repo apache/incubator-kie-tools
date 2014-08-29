@@ -20,14 +20,13 @@ import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.servlet.ServletContext;
 
-import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.guvnor.m2repo.service.M2RepoService;
 import org.guvnor.structure.server.config.ConfigurationService;
+import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
+import org.kie.workbench.common.services.shared.kmodule.KModuleService;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Mockito.*;
@@ -69,16 +68,11 @@ public class TestAppSetup {
     }
 
     @Produces
-    @Named("uf")
-    public ServletContext servletContext() {
-        return mock( ServletContext.class );
-    }
-
-    @Produces
     @Named("luceneConfig")
     public LuceneConfig luceneConfig() {
         return mock( LuceneConfig.class );
     }
+
     /*
     protected IOService ioService() {
         if ( ioService == null ) {
