@@ -49,6 +49,11 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
         setControlPoints(new Point2DArray(new Point2D(x, y), new Point2D(controlX, controlY), new Point2D(endX, endY)));
     }
 
+    public QuadraticCurve(double controlX, double controlY, double endX, double endY)
+    {
+        this(0, 0, controlX, controlY, endX, endY);
+    }
+
     protected QuadraticCurve(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.QUADRATIC_CURVE, node, ctx);

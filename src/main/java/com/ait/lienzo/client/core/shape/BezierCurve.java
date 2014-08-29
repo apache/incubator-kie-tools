@@ -52,6 +52,11 @@ public class BezierCurve extends Shape<BezierCurve>
         setControlPoints(new Point2DArray(new Point2D(x, y), new Point2D(controlX1, controlY1), new Point2D(controlX2, controlY2), new Point2D(endX, endY)));
     }
 
+    public BezierCurve(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY)
+    {
+        this(0, 0, controlX1, controlY1, controlX2, controlY2, endX, endY);
+    }
+
     protected BezierCurve(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.BEZIER_CURVE, node, ctx);
@@ -60,44 +65,6 @@ public class BezierCurve extends Shape<BezierCurve>
     @Override
     public BoundingBox getBoundingBox()
     {
-        /*
-        double[] inflections = getInflections();
-
-        double minx = Double.MAX_VALUE;
-        
-        double miny = Double.MAX_VALUE;
-        
-        double maxx = Double.MIN_VALUE;
-        
-        double maxy = Double.MIN_VALUE;
-
-        for (int i = 0; i < inflections.length; i++)
-        {
-            double t = inflections[i];
-            
-            double x = getXValue(t);
-            
-            double y = getYValue(t);
-            
-            if (x < minx)
-            {
-                minx = x;
-            }
-            if (x > maxx)
-            {
-                maxx = x;
-            }
-            if (y < miny)
-            {
-                miny = y;
-            }
-            if (y > maxy)
-            {
-                maxy = y;
-            }
-        }
-        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
-        */
         return getControlPoints().getBoundingBox();
     }
 

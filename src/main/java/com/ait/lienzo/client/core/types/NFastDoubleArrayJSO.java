@@ -43,7 +43,7 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
     /*-{
         this[this.length] = value;
     }-*/;
-    
+
     public final native void push(double value)
     /*-{
         this[this.length] = value;
@@ -57,5 +57,20 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
     public final native void clear()
     /*-{
         this.length = 0;
+    }-*/;
+
+    public final native NFastDoubleArrayJSO sort()
+    /*-{
+        return this.slice().sort(function(a, b){return a - b});
+    }-*/;
+
+    public final native NFastDoubleArrayJSO uniq()
+    /*-{
+        return this.slice().sort(function(a, b){return a - b}).reduce(function(a,b) {
+            if(a.slice(-1)[0] !== b) {
+                a.push(b);
+            }
+            return a;
+        },[]);
     }-*/;
 }
