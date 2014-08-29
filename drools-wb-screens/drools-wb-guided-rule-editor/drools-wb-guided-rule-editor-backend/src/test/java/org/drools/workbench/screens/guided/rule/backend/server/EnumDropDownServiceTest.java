@@ -1,10 +1,10 @@
 package org.drools.workbench.screens.guided.rule.backend.server;
 
 import org.junit.Test;
-import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
-import org.drools.workbench.screens.guided.rule.backend.server.EnumDropdownServiceImpl;
+import org.kie.workbench.common.services.backend.enums.EnumDropdownServiceImpl;
+import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Tests for GuidedRuleEditorService.loadDropDownExpression

@@ -61,7 +61,7 @@ import org.kie.uberfire.client.common.NumericShortTextBox;
 import org.kie.uberfire.client.common.NumericTextBox;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
+import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 
 /**
@@ -162,7 +162,7 @@ public class DTCellValueWidgetFactory {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         if ( utils.hasValueList( column ) ) {
             final String[] valueList = utils.getValueList( column );
-            return makeListBox( valueList,
+            return makeListBox( DropDownData.create( valueList ),
                                 pattern,
                                 column,
                                 value );
@@ -175,13 +175,14 @@ public class DTCellValueWidgetFactory {
             final DropDownData dd = oracle.getEnums( pattern.getFactType(),
                                                      column.getFactField(),
                                                      currentValueMap );
+            //No drop-down data defined
             if ( dd == null ) {
-                return makeListBox( new String[ 0 ],
+                return makeListBox( DropDownData.create( new String[ 0 ] ),
                                     pattern,
                                     column,
                                     value );
             }
-            return makeListBox( dd.getFixedList(),
+            return makeListBox( dd,
                                 pattern,
                                 column,
                                 value );
@@ -251,7 +252,7 @@ public class DTCellValueWidgetFactory {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         if ( utils.hasValueList( column ) ) {
             final String[] valueList = utils.getValueList( column );
-            return makeListBox( valueList,
+            return makeListBox( DropDownData.create( valueList ),
                                 pattern,
                                 column,
                                 value );
@@ -265,12 +266,12 @@ public class DTCellValueWidgetFactory {
                                                      column.getFactField(),
                                                      currentValueMap );
             if ( dd == null ) {
-                return makeListBox( new String[ 0 ],
+                return makeListBox( DropDownData.create( new String[ 0 ] ),
                                     pattern,
                                     column,
                                     value );
             }
-            return makeListBox( dd.getFixedList(),
+            return makeListBox( dd,
                                 pattern,
                                 column,
                                 value );
@@ -319,7 +320,7 @@ public class DTCellValueWidgetFactory {
         //Check if the column has a "Value List" or an enumeration. Value List takes precedence
         if ( utils.hasValueList( column ) ) {
             final String[] valueList = utils.getValueList( column );
-            return makeListBox( valueList,
+            return makeListBox( DropDownData.create( valueList ),
                                 column,
                                 value );
 
@@ -331,11 +332,11 @@ public class DTCellValueWidgetFactory {
                                                      column.getFactField(),
                                                      currentValueMap );
             if ( dd == null ) {
-                return makeListBox( new String[ 0 ],
+                return makeListBox( DropDownData.create( new String[ 0 ] ),
                                     column,
                                     value );
             }
-            return makeListBox( dd.getFixedList(),
+            return makeListBox( dd,
                                 column,
                                 value );
         }
@@ -407,12 +408,12 @@ public class DTCellValueWidgetFactory {
         return lb;
     }
 
-    private ListBox makeListBox( final String[] completions,
+    private ListBox makeListBox( final DropDownData dd,
                                  final Pattern52 basePattern,
                                  final ConditionCol52 baseCondition,
                                  final DTCellValue52 dcv ) {
         final boolean isMultipleSelect = isExplicitListOperator( baseCondition.getOperator() );
-        final ListBox lb = makeListBox( completions,
+        final ListBox lb = makeListBox( dd,
                                         isMultipleSelect,
                                         dcv );
 
@@ -466,11 +467,11 @@ public class DTCellValueWidgetFactory {
         return ops.contains( operator );
     }
 
-    private ListBox makeListBox( final String[] completions,
+    private ListBox makeListBox( final DropDownData dd,
                                  final Pattern52 basePattern,
                                  final ActionSetFieldCol52 baseAction,
                                  final DTCellValue52 value ) {
-        final ListBox lb = makeListBox( completions,
+        final ListBox lb = makeListBox( dd,
                                         value );
 
         // Wire up update handler
@@ -506,10 +507,10 @@ public class DTCellValueWidgetFactory {
         return lb;
     }
 
-    private ListBox makeListBox( final String[] completions,
+    private ListBox makeListBox( final DropDownData dd,
                                  final ActionInsertFactCol52 baseAction,
                                  final DTCellValue52 value ) {
-        final ListBox lb = makeListBox( completions,
+        final ListBox lb = makeListBox( dd,
                                         value );
 
         // Wire up update handler
@@ -544,46 +545,46 @@ public class DTCellValueWidgetFactory {
         return lb;
     }
 
-    private ListBox makeListBox( final String[] completions,
+    private ListBox makeListBox( final DropDownData dd,
                                  final DTCellValue52 value ) {
-        return makeListBox( completions,
+        return makeListBox( dd,
                             false,
                             value );
     }
 
-    private ListBox makeListBox( final String[] completions,
+    private ListBox makeListBox( final DropDownData dd,
                                  final boolean isMultipleSelect,
                                  final DTCellValue52 value ) {
-        int selectedIndex = -1;
         final ListBox lb = new ListBox( isMultipleSelect );
 
-        if ( allowEmptyValues ) {
-            lb.addItem( GuidedDecisionTableConstants.INSTANCE.Choose(),
-                        "" );
-        }
-
-        String currentItem = value.getStringValue() == null ? "" : value.getStringValue();
-        List<String> currentItems = Arrays.asList( currentItem.split( "," ) );
-        int selectedIndexOffset = ( allowEmptyValues ? 1 : 0 );
-        for ( int i = 0; i < completions.length; i++ ) {
-            String item = completions[ i ].trim();
-            String[] splut = ConstraintValueHelper.splitValue(item);
-            lb.addItem( splut[ 1 ],
-                        splut[ 0 ] );
-            lb.setItemSelected( i + selectedIndexOffset,
-                                currentItems.contains( splut[ 0 ] ) );
-            selectedIndex = i + selectedIndexOffset;
-        }
-
-        //If nothing has been selected, select the first value
-        if ( selectedIndex == -1 ) {
-            if ( lb.getItemCount() > 0 ) {
-                lb.setSelectedIndex( 0 );
-                value.setStringValue( lb.getValue( 0 ) );
-            } else {
-                value.setStringValue( null );
+        final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
+            @Override
+            protected int addItems( final ListBox listBox ) {
+                if ( allowEmptyValues ) {
+                    listBox.addItem( GuidedDecisionTableConstants.INSTANCE.Choose(),
+                                     "" );
+                }
+                return allowEmptyValues ? 1 : 0;
             }
-        }
+
+            @Override
+            protected void selectItem( final ListBox listBox ) {
+                final int itemCount = listBox.getItemCount();
+                listBox.setEnabled( itemCount > 0 );
+                if ( itemCount > 0 ) {
+                    listBox.setSelectedIndex( 0 );
+                    value.setStringValue( listBox.getValue( 0 ) );
+                } else {
+                    value.setStringValue( null );
+                }
+            }
+        };
+
+        final String strValue = value.getStringValue() == null ? "" : value.getStringValue();
+        utilities.setDropDownData( strValue,
+                                   dd,
+                                   isMultipleSelect,
+                                   lb );
 
         return lb;
     }

@@ -16,24 +16,15 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.screens.guided.rule.service.EnumDropdownService;
-import org.jboss.errai.bus.client.api.base.MessageBuilder;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.common.DropDownValueChanged;
 import org.kie.uberfire.client.common.IDirtyable;
+import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 
 /**
  * A drop down for enumerated values
@@ -43,6 +34,34 @@ public class EnumDropDown
         implements IDirtyable {
 
     private final DropDownValueChanged valueChangedCommand;
+
+    private EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
+        @Override
+        protected int addItems( final ListBox listBox ) {
+            return 0;
+        }
+
+        @Override
+        protected void selectItem( final ListBox listBox ) {
+            final int itemCount = listBox.getItemCount();
+            listBox.setEnabled( itemCount > 0 );
+            if ( itemCount > 0 ) {
+                listBox.setSelectedIndex( 0 );
+
+                //Schedule notification after GWT has finished tying everything together as not all
+                //Event Handlers have been set-up by consumers of this class at Construction time
+                Scheduler.get().scheduleFinally( new ScheduledCommand() {
+
+                    @Override
+                    public void execute() {
+                        valueChangedCommand.valueChanged( listBox.getItemText( 0 ),
+                                                          listBox.getValue( 0 ) );
+                    }
+
+                } );
+            }
+        }
+    };
 
     public EnumDropDown( final String currentValue,
                          final DropDownValueChanged valueChanged,
@@ -103,112 +122,10 @@ public class EnumDropDown
 
     public void setDropDownData( final String currentValue,
                                  final DropDownData dropData ) {
-
-        //if we have to do it lazy, we will hit up the server when the widget gets focus
-        if ( dropData != null && dropData.getFixedList() == null && dropData.getQueryExpression() != null ) {
-            Scheduler.get().scheduleDeferred( new Command() {
-                public void execute() {
-                    BusyPopup.showMessage( CommonConstants.INSTANCE.RefreshingList() );
-
-                    MessageBuilder.createCall( new RemoteCallback<String[]>() {
-                        public void callback( String[] response ) {
-                            BusyPopup.close();
-
-                            if ( response.length == 0 ) {
-                                response = new String[]{ CommonConstants.INSTANCE.UnableToLoadList() };
-                            }
-
-                            fillDropDown( currentValue, response );
-                        }
-                    }, EnumDropdownService.class ).loadDropDownExpression( dropData.getValuePairs(),
-                                                                               dropData.getQueryExpression() );
-                }
-            } );
-
-        } else {
-            //otherwise its just a normal one...
-            fillDropDown( currentValue,
-                          dropData );
-        }
-
+        utilities.setDropDownData( currentValue,
+                                   dropData,
+                                   isMultipleSelect(),
+                                   this );
     }
 
-    private void fillDropDown( final String currentValue,
-                               final DropDownData dropData ) {
-        if ( dropData == null ) {
-            fillDropDown( currentValue,
-                          new String[ 0 ] );
-        } else {
-            fillDropDown( currentValue,
-                          dropData.getFixedList() );
-        }
-    }
-
-    private void fillDropDown( final String currentValue,
-                               final String[] enumeratedValues ) {
-        clear();
-
-        boolean selected = false;
-        HashSet<String> currentValues = new HashSet<String>();
-        String trimmedCurrentValue = currentValue;
-        if ( isMultipleSelect() && trimmedCurrentValue != null ) {
-            trimmedCurrentValue = currentValue.replace( "\"",
-                                                        "" );
-            trimmedCurrentValue = trimmedCurrentValue.replaceAll( "\\s+",
-                                                        "" );
-            trimmedCurrentValue = trimmedCurrentValue.replace( "(",
-                                                               "" );
-            trimmedCurrentValue = trimmedCurrentValue.replace( ")",
-                                                               "" );
-            trimmedCurrentValue = trimmedCurrentValue.trim();
-            if ( trimmedCurrentValue.indexOf( "," ) > 0 ) {
-                currentValues.addAll( Arrays.asList( trimmedCurrentValue.split( "," ) ) );
-            }
-        } else {
-            currentValues.add( currentValue );
-        }
-
-        for ( int i = 0; i < enumeratedValues.length; i++ ) {
-            String v = enumeratedValues[ i ];
-            String val;
-            if ( v.indexOf( '=' ) > 0 ) {
-                //using a mapping
-                String[] splut = ConstraintValueHelper.splitValue(v);
-                String realValue = splut[ 0 ];
-                String display = splut[ 1 ];
-                val = realValue;
-                addItem( display,
-                         realValue );
-            } else {
-                addItem( v );
-                val = v;
-            }
-            if ( currentValue != null && currentValues.contains( val ) ) {
-                setItemSelected( i,
-                                 true );
-                selected = true;
-            }
-        }
-
-        if ( !selected ) {
-            final int itemCount = getItemCount();
-            setEnabled( itemCount > 0 );
-            if ( itemCount > 0 ) {
-                setSelectedIndex( 0 );
-
-                //Schedule notification after GWT has finished tying everything together as not all 
-                //Event Handlers have been set-up by consumers of this class at Construction time
-                Scheduler.get().scheduleFinally( new ScheduledCommand() {
-
-                    @Override
-                    public void execute() {
-                        valueChangedCommand.valueChanged( getItemText( 0 ),
-                                                          getValue( 0 ) );
-                    }
-
-                } );
-
-            }
-        }
-    }
 }
