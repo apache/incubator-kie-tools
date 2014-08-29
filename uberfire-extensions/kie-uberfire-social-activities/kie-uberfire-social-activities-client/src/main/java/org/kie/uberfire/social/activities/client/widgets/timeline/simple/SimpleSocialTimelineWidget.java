@@ -1,7 +1,5 @@
 package org.kie.uberfire.social.activities.client.widgets.timeline.simple;
 
-import java.util.List;
-
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Legend;
@@ -10,7 +8,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,9 +18,8 @@ import org.kie.uberfire.social.activities.client.widgets.item.model.SimpleItemWi
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.model.PagedSocialQuery;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.kie.uberfire.social.activities.model.SocialPaged;
-import org.kie.uberfire.social.activities.service.SocialTimeLineRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialTypeTimelinePagedRepositoryAPI;
+import org.kie.uberfire.social.activities.service.SocialUserTimelinePagedRepositoryAPI;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
@@ -37,96 +33,115 @@ public class SimpleSocialTimelineWidget extends Composite {
     @UiField
     FluidContainer itemsPanel;
 
-    private SocialPaged socialPaged;
+    @UiField
+    FlowPanel pagination;
 
     public SimpleSocialTimelineWidget( SimpleSocialTimelineWidgetModel model ) {
-
-        this.model = model;
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.model = model;
         title.add( new Legend( model.getTitle() ) );
+        setupPaginationLinks();
+        refreshTimelineWidget();
+    }
+
+    private void refreshTimelineWidget() {
+        itemsPanel.clear();
+        pagination.clear();
         if ( model.isSocialTypeWidget() ) {
-            createSociaTypelItemsWidget( model );
+            createSociaTypelItemsWidget();
         } else {
-            createUserTimelineItemsWidget( model );
+            createUserTimelineItemsWidget();
         }
-
     }
 
-    private void createUserTimelineItemsWidget( final SimpleSocialTimelineWidgetModel model ) {
-        MessageBuilder.createCall( new RemoteCallback<List<SocialActivitiesEvent>>() {
-            public void callback( List<SocialActivitiesEvent> events ) {
-                for ( final SocialActivitiesEvent event : events ) {
-                    if ( event.hasLink() ) {
-                        MessageBuilder.createCall( new RemoteCallback<Path>() {
-                            public void callback( Path path ) {
-                                SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() );
-                                FluidRow row = SimpleItemWidget.createRow( rowModel );
-                                itemsPanel.add( row );
-                            }
-                        }, VFSService.class ).get( event.getLinkTarget() );
-                    } else {
-                        SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(),event.getDescription(), event.getAdicionalInfos() );
-                        FluidRow row = SimpleItemWidget.createRow( rowModel );
-                        itemsPanel.add( row );
-                    }
-
-                }
-            }
-        }, SocialTimeLineRepositoryAPI.class ).getLastUserTimeline( model.getSocialUser(), model.getPredicate() );
-    }
-
-    private void createSociaTypelItemsWidget( final SimpleSocialTimelineWidgetModel model ) {
-        socialPaged = model.getSocialPaged();
+    private void createUserTimelineItemsWidget() {
         MessageBuilder.createCall( new RemoteCallback<PagedSocialQuery>() {
             public void callback( PagedSocialQuery paged ) {
-                socialPaged = paged.socialPaged();
-                for ( final SocialActivitiesEvent event : paged.socialEvents() ) {
-                    if ( event.hasLink() ) {
-                        MessageBuilder.createCall( new RemoteCallback<Path>() {
-                            public void callback( Path path ) {
-                                SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() );
-                                FluidRow row = SimpleItemWidget.createRow( rowModel );
-                                itemsPanel.add( row );
-                            }
-                        }, VFSService.class ).get( event.getLinkTarget() );
-                    } else {
-                        SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(),event.getDescription(), event.getAdicionalInfos() );
-                        FluidRow row = SimpleItemWidget.createRow( rowModel );
-                        itemsPanel.add( row );
-                    }
-                }
-                setupPaginationButtons();
+                createTimeline( paged );
             }
-        }, SocialTypeTimelinePagedRepositoryAPI.class ).getEventTimeline( model.getSocialEventType().name(), socialPaged );
+        }, SocialUserTimelinePagedRepositoryAPI.class ).getUserTimeline( model.getSocialUser(), model.getSocialPaged() );
     }
 
-    private void setupPaginationButtons() {
-        if ( socialPaged.canIGoBackward() ) {
-            itemsPanel.add( moreEventsButton( "<" ) );
+    private void createSociaTypelItemsWidget() {
+        MessageBuilder.createCall( new RemoteCallback<PagedSocialQuery>() {
+            public void callback( PagedSocialQuery paged ) {
+                createTimeline( paged );
+            }
+        }, SocialTypeTimelinePagedRepositoryAPI.class ).getEventTimeline( model.getSocialEventType().name(), model.getSocialPaged() );
+    }
+
+    private void createTimeline( PagedSocialQuery paged ) {
+        model.updateSocialPaged( paged.socialPaged() );
+        for ( final SocialActivitiesEvent event : paged.socialEvents() ) {
+            if ( event.hasLink() ) {
+                createSimpleWidgetWithFileLink( event );
+            } else {
+                createSimpleWidget( event );
+            }
         }
-        if ( socialPaged.canIGoForward() ) {
-            itemsPanel.add( moreEventsButton( ">" ) );
+        setupPaginationButtonsSocial();
+    }
+
+    private void createSimpleWidgetWithFileLink( final SocialActivitiesEvent event ) {
+        MessageBuilder.createCall( new RemoteCallback<Path>() {
+            public void callback( Path path ) {
+                SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() );
+                FluidRow row = SimpleItemWidget.createRow( rowModel );
+                itemsPanel.add( row );
+            }
+        }, VFSService.class ).get( event.getLinkTarget() );
+    }
+
+    private void createSimpleWidget( SocialActivitiesEvent event ) {
+        SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getDescription(), event.getAdicionalInfos() );
+        FluidRow row = SimpleItemWidget.createRow( rowModel );
+        itemsPanel.add( row );
+    }
+
+    private void setupPaginationButtonsSocial() {
+        if ( canICreateLessLink() ) {
+            pagination.add( model.getLess() );
+        }
+        if ( canICreateMoreLink() ) {
+            pagination.add( model.getMore() );
         }
     }
 
-    private Button moreEventsButton( final String text ) {
+    private boolean canICreateMoreLink() {
+        return model.getSocialPaged().canIGoForward() && model.getMore() != null;
+    }
 
-        Button button = GWT.create( Button.class );
-        button.setText( text );
+    private boolean canICreateLessLink() {
+        return model.getSocialPaged().canIGoBackward() && model.getLess() != null;
+    }
 
-        button.addClickHandler( new ClickHandler() {
+    private void setupPaginationLinks() {
+        if ( model.getLess() != null ) {
+            createLessLink();
+        }
+        if ( model.getMore() != null ) {
+            createMoreLink();
+        }
+    }
+
+    private void createMoreLink() {
+        model.getMore().addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                itemsPanel.clear();
-                if ( text.equalsIgnoreCase( "<" ) ) {
-                    socialPaged.backward();
-                } else {
-                    socialPaged.forward();
-                }
-                createSociaTypelItemsWidget( model );
+                model.getSocialPaged().forward();
+                refreshTimelineWidget();
             }
         } );
-        return button;
+    }
+
+    private void createLessLink() {
+        model.getLess().addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                model.getSocialPaged().backward();
+                refreshTimelineWidget();
+            }
+        } );
     }
 
     interface MyUiBinder extends UiBinder<Widget, SimpleSocialTimelineWidget> {

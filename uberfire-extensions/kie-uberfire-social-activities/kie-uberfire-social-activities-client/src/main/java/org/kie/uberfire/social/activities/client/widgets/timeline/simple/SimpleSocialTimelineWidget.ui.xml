@@ -9,6 +9,7 @@
   <g:HTMLPanel>
     <g:FlowPanel ui:field='title'/>
     <b:FluidContainer ui:field='itemsPanel'/>
+    <g:FlowPanel ui:field='pagination'/>
 
   </g:HTMLPanel>
 

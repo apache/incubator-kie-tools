@@ -7,7 +7,7 @@ global java.util.List socialEvents;
 global java.lang.String filter;
 rule "filterTimelineRecentAssets"
 when
-  $result:SocialActivitiesEvent(getAdicionalInfos() contains filter) from queryAPI.getTypeCached("RESOURCE_ADDED_EVENT", "RESOURCE_UPDATE_EVENT")
+  $result:SocialActivitiesEvent(getLinkTarget() contains filter) from queryAPI.getTypeCached("RESOURCE_ADDED_EVENT", "RESOURCE_UPDATE_EVENT")
   eval( true )
 then
   socialEvents.add($result);

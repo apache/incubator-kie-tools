@@ -14,7 +14,7 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
-@ApplicationScoped
+//@ApplicationScoped
 public class SampleSocialUserEventAdapter implements SocialAdapter<FollowSocialUserEvent> {
 
     @Override
