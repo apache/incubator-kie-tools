@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -34,12 +34,13 @@ import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 
-public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends AbstractMultiPartWorkbenchPanelPresenter<P>> extends AbstractWorkbenchPanelPresenter<P> {
+public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends AbstractMultiPartWorkbenchPanelPresenter<P>>
+extends AbstractDockingWorkbenchPanelPresenter<P> {
 
     protected ActivityManager activityManager;
     private ContextActivity perspectiveContext = null;
     private ContextActivity panelContext = null;
-    private final Map<PartDefinition, ContextActivity> partMap = new HashMap<PartDefinition, ContextActivity>();
+    private final Map<PartDefinition, ContextActivity> contextActivities = new HashMap<PartDefinition, ContextActivity>();
 
     protected AbstractMultiPartWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
                                                         final ActivityManager activityManager,
@@ -78,25 +79,23 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     }
 
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view,
+    public void addPart( final WorkbenchPartPresenter part,
                          final String contextId ) {
-        getPanelView().addPart( view );
+        super.addPart( part, contextId );
         final ContextDisplayMode perspectiveContextDisplayMode = perspectiveManager.getLivePerspectiveDefinition().getContextDisplayMode();
         if ( perspectiveContextDisplayMode == SHOW
                 && getDefinition().getContextDisplayMode() == SHOW
-                && view.getPresenter().getDefinition().getContextDisplayMode() == SHOW ) {
-            ContextActivity activity = null;
+                && part.getDefinition().getContextDisplayMode() == SHOW ) {
+            ContextActivity contextActivity = null;
             if ( contextId != null ) {
-                activity = activityManager.getActivity( ContextActivity.class, new DefaultPlaceRequest( contextId ) );
-            } else if ( view.getPresenter().getDefinition().getContextDefinition() != null ) {
-                activity = activityManager.getActivity( ContextActivity.class, view.getPresenter().getDefinition().getContextDefinition().getPlace() );
-            } else if ( view.getPresenter().getContextId() != null ) {
-                activity = activityManager.getActivity( ContextActivity.class, new DefaultPlaceRequest( view.getPresenter().getContextId() ) );
+                contextActivity = activityManager.getActivity( ContextActivity.class, new DefaultPlaceRequest( contextId ) );
+            } else if ( part.getDefinition().getContextDefinition() != null ) {
+                contextActivity = activityManager.getActivity( ContextActivity.class, part.getDefinition().getContextDefinition().getPlace() );
+            } else if ( part.getContextId() != null ) {
+                contextActivity = activityManager.getActivity( ContextActivity.class, new DefaultPlaceRequest( part.getContextId() ) );
             }
-            if ( activity != null ) {
-                partMap.put( view.getPresenter().getDefinition(), activity );
-            } else {
-                System.out.println("Warning: couldn't add this view to the partMap (no activity found): " + view);
+            if ( contextActivity != null ) {
+                contextActivities.put( part.getDefinition(), contextActivity );
             }
         }
     }
@@ -104,7 +103,7 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
     @Override
     public boolean removePart( final PartDefinition part ) {
         boolean removed = super.removePart( part );
-        partMap.remove( part );
+        contextActivities.remove( part );
         return removed;
     }
 
@@ -113,8 +112,8 @@ public abstract class AbstractMultiPartWorkbenchPanelPresenter<P extends Abstrac
         if ( panelContext != null ) {
             result = panelContext;
         }
-        if ( partMap.containsKey( part ) ) {
-            result = partMap.get( part );
+        if ( contextActivities.containsKey( part ) ) {
+            result = contextActivities.get( part );
         }
         return result;
     }

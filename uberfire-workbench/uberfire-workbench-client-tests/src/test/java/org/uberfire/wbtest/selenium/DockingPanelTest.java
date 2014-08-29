@@ -3,7 +3,6 @@ package org.uberfire.wbtest.selenium;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.wbtest.client.docking.NestedDockingPanelPerspective;
 import org.uberfire.workbench.model.CompassPosition;
@@ -40,7 +39,7 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         testAddPanelRelativeToRoot( CompassPosition.WEST );
     }
 
-    @Test @Ignore // this test currently fails due to a known bug (UF-144)
+    @Test
     public void testRemovePanelNorthOfRootNoOrphans() throws Exception {
         NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
 

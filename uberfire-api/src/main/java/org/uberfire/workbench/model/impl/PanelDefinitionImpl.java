@@ -67,14 +67,14 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     public void setParent( PanelDefinition parent ) {
+        if ( this.parent != null && parent != null ) {
+            throw new IllegalStateException( "Can't change parent: this panel still belongs to " + this.parent );
+        }
         this.parent = parent;
     }
 
     @Override
     public PanelDefinition getParent() {
-        if ( !isRoot() && parent == null ) {
-            throw new IllegalStateException( "PanelDefinition is not properly initialised: It requires a parent panel definition" );
-        }
         return parent;
     }
 
@@ -98,9 +98,12 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
-    public void removePart( PartDefinition part ) {
-        part.setParentPanel( null );
-        this.parts.remove( part );
+    public boolean removePart( PartDefinition part ) {
+        if ( this.parts.remove( part ) ) {
+            part.setParentPanel( null );
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,12 +15,8 @@
  */
 package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.workbench.model.CompassPosition;
 
@@ -34,41 +30,10 @@ import com.google.gwt.user.client.ui.Widget;
  * Helper to add or remove WorkbenchPanels from the West of a
  * HorizontalSplitterPanel.
  */
-@ApplicationScoped
-@WorkbenchPosition(position = CompassPosition.WEST)
-public class PanelHelperWest
-implements
-PanelHelper {
+public class PanelHelperWest extends AbstractPanelHelper {
 
-    @Inject
-    private BeanFactory factory;
-
-    @Override
-    public void add( final WorkbenchPanelView newPanel,
-                     final WorkbenchPanelView targetPanel,
-                     final Integer preferredSize,
-                     final Integer preferredMinSize ) {
-
-        final Widget parent = targetPanel.asWidget().getParent();
-
-        if ( parent instanceof SimplePanel ) {
-
-            final SimplePanel sp = (SimplePanel) parent;
-            final HorizontalSplitterPanel hsp = factory.newHorizontalSplitterPanel( targetPanel,
-                                                                                    newPanel,
-                                                                                    CompassPosition.WEST,
-                                                                                    preferredSize,
-                                                                                    preferredMinSize );
-
-            sp.clear();
-            sp.setWidget( hsp );
-
-            //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
-            //so ensure we set the sizes of the new Panel and it's children after the
-            //browser has added the new DIVs to the HTML tree. This does occasionally
-            //add slight flicker when adding a new Panel.
-            scheduleResize( hsp );
-        }
+    protected PanelHelperWest( BeanFactory factory ) {
+        super( factory );
     }
 
     @Override

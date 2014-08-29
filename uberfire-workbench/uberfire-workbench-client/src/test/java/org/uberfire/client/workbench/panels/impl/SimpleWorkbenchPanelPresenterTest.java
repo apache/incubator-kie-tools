@@ -1,40 +1,37 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.PerspectiveManager;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+@RunWith(MockitoJUnitRunner.class)
+public class SimpleWorkbenchPanelPresenterTest extends AbstractDockingWorkbenchPanelPresenterTest {
 
-@RunWith(GwtMockitoTestRunner.class)
-public class SimpleWorkbenchPanelPresenterTest {
+    @Mock(name="view")
+    protected WorkbenchPanelView<SimpleWorkbenchPanelPresenter> view;
 
-    private SimpleWorkbenchPanelView view;
-
-    @Mock
-    private PerspectiveManager perspectiveManager;
-
-    private SimpleWorkbenchPanelPresenter presenter;
+    @InjectMocks
+    SimpleWorkbenchPanelPresenter presenter;
 
     @Before
-    public void setup() {
-        view = new SimpleWorkbenchPanelView();
-        presenter = new SimpleWorkbenchPanelPresenter( view, perspectiveManager, null );
+    public void setUp2() {
+        presenter.init();
+        presenter.setDefinition( panelPresenterPanelDefinition );
+    }
+
+    @Override
+    AbstractDockingWorkbenchPanelPresenter<?> getPresenterToTest() {
+        return presenter;
     }
 
     @Test
-    public void init() {
-
-        presenter.init();
-
-        assertEquals( presenter, view.getPresenter() );
-
+    public void initShouldBindPresenterToView() {
+        verify( view ).init( presenter );
     }
-
-
-
 }

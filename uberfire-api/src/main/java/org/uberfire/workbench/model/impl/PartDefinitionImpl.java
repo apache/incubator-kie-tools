@@ -75,37 +75,10 @@ PartDefinition {
      */
     @Override
     public void setParentPanel( final PanelDefinition parentPanel ) {
-        if ( !validParentDefinition( parentPanel ) ) {
-            throw new IllegalStateException( "Invalid Parent Panel Attribution to a Part" );
+        if ( parentPanel != null && this.parentPanel != null ) {
+            throw new IllegalStateException( "Can't set parent: this part already belongs to " + this.parentPanel );
         }
         this.parentPanel = parentPanel;
-    }
-
-    private boolean validParentDefinition( PanelDefinition parentPanel ) {
-        return validateNullParent( parentPanel ) && validateNotNullParent( parentPanel );
-    }
-
-    private boolean validateNotNullParent( PanelDefinition parentPanel ) {
-        if ( parentPanel != null ) {
-            if ( this.getParentPanel() == null ) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        ;
-        return true;
-    }
-
-    private boolean validateNullParent( PanelDefinition parentPanel ) {
-        if ( parentPanel == null ) {
-            if ( this.getParentPanel() != null ) {
-                return true;
-            } else {
-                return false;
-            }
-        };
-        return true;
     }
 
     @Override

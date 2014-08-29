@@ -57,10 +57,12 @@ public interface PanelDefinition {
     public void addPart( final PartDefinition part );
 
     /**
-     * Remove a Part from the Panel
+     * Removes the given part definition from this panel definition.
+     *
      * @param part The Part to be removed
+     * @return true if the part was found and removed; false if it did not belong to this panel in the first place.
      */
-    public void removePart( final PartDefinition part );
+    public boolean removePart( final PartDefinition part );
 
     /**
      * Get the Parts contained in the Panel

@@ -26,7 +26,7 @@ import org.uberfire.client.workbench.events.MaximizePlaceEvent;
  * Exactly like {@link SimpleWorkbenchPanelPresenter} but has drag and drop enabled by default.
  */
 @Dependent
-public class SimpleDnDWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresenter<SimpleDnDWorkbenchPanelPresenter> {
+public class SimpleDnDWorkbenchPanelPresenter extends AbstractDockingWorkbenchPanelPresenter<SimpleDnDWorkbenchPanelPresenter> {
 
     @Inject
     public SimpleDnDWorkbenchPanelPresenter( final SimpleDnDWorkbenchPanelView view,

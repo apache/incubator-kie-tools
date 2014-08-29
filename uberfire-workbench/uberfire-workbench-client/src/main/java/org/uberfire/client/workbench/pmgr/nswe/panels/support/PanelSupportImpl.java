@@ -1,81 +1,110 @@
 package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.uberfire.client.workbench.BeanFactory;
+import org.uberfire.client.workbench.panels.SplitPanel;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
-import org.uberfire.client.workbench.pmgr.nswe.annotations.WorkbenchPosition;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
 import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.Position;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
 public class PanelSupportImpl implements PanelSupport {
 
-    @Inject
-    @WorkbenchPosition(position = CompassPosition.NORTH)
-    protected PanelHelper helperNorth;
+    private final Map<CompassPosition, AbstractPanelHelper> helpers = new HashMap<CompassPosition, AbstractPanelHelper>();
 
     @Inject
-    @WorkbenchPosition(position = CompassPosition.SOUTH)
-    protected PanelHelper helperSouth;
+    private BeanFactory factory;
 
-    @Inject
-    @WorkbenchPosition(position = CompassPosition.EAST)
-    protected PanelHelper helperEast;
-
-    @Inject
-    @WorkbenchPosition(position = CompassPosition.WEST)
-    protected PanelHelper helperWest;
+    @PostConstruct
+    private void setup() {
+        helpers.put( CompassPosition.NORTH, new PanelHelperNorth( factory ) );
+        helpers.put( CompassPosition.SOUTH, new PanelHelperSouth( factory ) );
+        helpers.put( CompassPosition.EAST, new PanelHelperEast( factory ) );
+        helpers.put( CompassPosition.WEST, new PanelHelperWest( factory ) );
+    }
 
     @Override
-    public void addPanel( final PanelDefinition panel,
-                          final WorkbenchPanelView newView,
-                          final WorkbenchPanelView targetView,
-                          final Position position ) {
-        switch ( (CompassPosition) position ) {
-            case NORTH:
-                helperNorth.add( newView,
-                                 targetView,
-                                 panel.getHeight(),
-                                 panel.getMinHeight() );
-                break;
+    public IsWidget addPanel( final PanelDefinition panel,
+                            final WorkbenchPanelView newView,
+                            final WorkbenchPanelView targetView,
+                            final CompassPosition position ) {
 
-            case SOUTH:
-                helperSouth.add( newView,
-                                 targetView,
-                                 panel.getHeight(),
-                                 panel.getMinHeight() );
-                break;
+        final Widget parent = targetView.asWidget().getParent();
 
-            case EAST:
-                helperEast.add( newView,
-                                targetView,
-                                panel.getWidth(),
-                                panel.getMinWidth() );
-                break;
+        if ( parent instanceof SimplePanel ) {
 
-            case WEST:
-                helperWest.add( newView,
-                                targetView,
-                                panel.getWidth(),
-                                panel.getMinWidth() );
-                break;
+            final SimplePanel oldParent = (SimplePanel) parent;
+            final SplitPanel splitter = newSplitterPanel( panel,
+                                                          newView,
+                                                          targetView,
+                                                          position );
+            oldParent.clear();
+            oldParent.setWidget( splitter );
 
-            default:
-                throw new IllegalArgumentException( "Unhandled Position. Expect subsequent errors." );
+            //Adding an additional embedded ScrollPanel can cause scroll-bars to disappear
+            //so ensure we set the sizes of the new Panel and it's children after the
+            //browser has added the new DIVs to the HTML tree. This does occasionally
+            //add slight flicker when adding a new Panel.
+            scheduleResize( splitter );
+
+            return splitter;
         }
+        return parent;
+    }
 
+    private SplitPanel newSplitterPanel( final PanelDefinition panel,
+                                                      final WorkbenchPanelView newView,
+                                                      final WorkbenchPanelView targetView,
+                                                      final CompassPosition position ) {
+        switch ( position ) {
+            case NORTH:
+                return factory.newVerticalSplitterPanel( newView,
+                                                         targetView,
+                                                         position,
+                                                         initialWidthOrHeight( position, panel ),
+                                                         minWidthOrHeight( position, panel ) );
+            case SOUTH:
+                return factory.newVerticalSplitterPanel( targetView,
+                                                         newView,
+                                                         position,
+                                                         initialWidthOrHeight( position, panel ),
+                                                         minWidthOrHeight( position, panel ) );
+            case EAST:
+                return factory.newHorizontalSplitterPanel( newView,
+                                                           targetView,
+                                                           position,
+                                                           initialWidthOrHeight( position, panel ),
+                                                           minWidthOrHeight( position, panel ) );
+            case WEST:
+                return factory.newHorizontalSplitterPanel( targetView,
+                                                           newView,
+                                                           position,
+                                                           initialWidthOrHeight( position, panel ),
+                                                           minWidthOrHeight( position, panel ) );
+            default: throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
+        }
     }
 
     @Override
     public boolean remove( final WorkbenchPanelView<?> view,
-                           final Widget parent ) {
+                           final IsWidget parent ) {
+
         CompassPosition position = CompassPosition.NONE;
 
         if ( parent instanceof HorizontalSplitterPanel ) {
@@ -94,24 +123,63 @@ public class PanelSupportImpl implements PanelSupport {
             }
         }
 
-        switch ( position ) {
-            case NORTH:
-                helperNorth.remove( view );
-                break;
-
-            case SOUTH:
-                helperSouth.remove( view );
-                break;
-
-            case EAST:
-                helperEast.remove( view );
-                break;
-
-            case WEST:
-                helperWest.remove( view );
-                break;
-        }
+        getHelper( position ).remove( view );
 
         return position != CompassPosition.NONE;
     }
+
+    /**
+     * Returns a helper for the given position, or throws an exception if not helper exists for that position type.
+     */
+    private AbstractPanelHelper getHelper( CompassPosition position ) {
+        AbstractPanelHelper helper = helpers.get( position );
+        if ( helper == null ) {
+            throw new IllegalArgumentException( "Unhandled Position: " + position );
+        }
+        return helper;
+    }
+
+    private static CompassPosition opposite( CompassPosition position ) {
+        switch ( position ) {
+            case NORTH: return CompassPosition.SOUTH;
+            case SOUTH: return CompassPosition.NORTH;
+            case EAST: return CompassPosition.WEST;
+            case WEST: return CompassPosition.EAST;
+            default: throw new IllegalArgumentException( "Position " + position + " has no opposite." );
+        }
+    }
+
+    private static Integer initialWidthOrHeight( CompassPosition position, PanelDefinition definition ) {
+        switch ( position ) {
+            case NORTH:
+            case SOUTH:
+                return definition.getHeight();
+            case EAST:
+            case WEST:
+                return definition.getWidth();
+            default: throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
+        }
+    }
+
+    private static Integer minWidthOrHeight( CompassPosition position, PanelDefinition definition ) {
+        switch ( position ) {
+            case NORTH:
+            case SOUTH:
+                return definition.getMinHeight();
+            case EAST:
+            case WEST:
+                return definition.getMinWidth();
+            default: throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
+        }
+    }
+
+    private static void scheduleResize( final RequiresResize widget ) {
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            @Override
+            public void execute() {
+                widget.onResize();
+            }
+        } );
+    }
+
 }

@@ -29,24 +29,90 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface WorkbenchPanelPresenter {
 
+    /**
+     * Returns the current parent of this panel presenter.
+     *
+     * @return the parent panel presenter. If this panel is the root, or it is not attached to a parent, the return
+     *         value is null.
+     */
+    public WorkbenchPanelPresenter getParent();
+
+    /**
+     * Sets the current parent of this panel presenter. This method should only be called by another
+     * WorkbenchPanelPresenter when adding or removing this panel as a child.
+     *
+     * @param parent
+     *            the new parent of this panel. If this panel is being removed, the parent should be set to null.
+     */
+    public void setParent( final WorkbenchPanelPresenter parent );
+
+    /**
+     * Returns a {@code @Portable} description of the current state of this panel.
+     */
     public PanelDefinition getDefinition();
 
+    /**
+     * Called by the framework when the panel instance is first created. Application code should not call this method
+     * directly.
+     *
+     * @param definition
+     *            description of the state this panel should put itself in. This panel is also responsible for keeping
+     *            the definition up to date with the panel's current state.
+     */
     public void setDefinition( final PanelDefinition definition );
 
-    public void addPart( final WorkbenchPartPresenter.View view );
+    /**
+     * Adds the given part to this panel's content area, updating this panel's definition and the part's definition to
+     * reflect the new part ownership.
+     * <p>
+     * Panels each implement their own policy and user interface for part management. Some panels allow only a single
+     * part, and others can hold multiple parts at a time. Either way, panels typically display one part at a time, and
+     * those that support multiple parts include UI widgets (eg. tabs or a dropdown list) that let the user select which
+     * one to display.
+     * <p>
+     * After the panel's border decorations, part switcher UI, title bar, and subpanel space has been accounted for, the
+     * part's view typically occupies all remaining space within its parent panel.
+     *
+     * @param part
+     *            the part to add. Must not be null, and must not currently belong to any panel.
+     */
+    public void addPart( final WorkbenchPartPresenter part );
 
-    public void addPart( final WorkbenchPartPresenter.View view,
+    /**
+     * Adds the given part with the given context ID, updating this panel's definition and the part's definition to
+     * reflect the new part ownership.
+     *
+     * @param part
+     *            the part to add. Must not be null, and must not currently belong to any panel.
+     * @see #addPart(org.uberfire.client.workbench.part.WorkbenchPartPresenter.View)
+     */
+    public void addPart( final WorkbenchPartPresenter part,
                          final String contextId );
 
+    /**
+     * Removes the given part from this panel, updating this panel's definition and the part's definition to reflect
+     * that the part no longer belongs to this panel.
+     *
+     * @see #addPart(org.uberfire.client.workbench.part.WorkbenchPartPresenter.View)
+     */
     public boolean removePart( final PartDefinition part );
 
-    public void addPanel( final PanelDefinition panel,
-                          final WorkbenchPanelView view,
+    /**
+     * Adds the given panel as a subpanel of this one in the given position.
+     * <p>
+     * Subpanels are typically always visible, and take up space within the bounds of their parent panel.
+     *
+     * @param child
+     *            the panel to add
+     * @param position
+     *            the position to add the child at
+     */
+    public void addPanel( final WorkbenchPanelPresenter child,
                           final Position position );
 
     /**
      * Removes the given panel presenter and its view from this panel, freeing all resources associated with them.
-     * 
+     *
      * @param child
      *            The child panel to remove. Must be a direct child of this panel, and must be empty (contain no parts
      *            or child panels). Null is not permitted.
@@ -57,7 +123,7 @@ public interface WorkbenchPanelPresenter {
     /**
      * Returns the immediate child panels of this panel. Note that panels and parts are not the same thing; this method
      * only returns the panels.
-     * 
+     *
      * @return an unmodifiable view of the immediate child panels nested within this one. Never null.
      */
     public Map<Position, WorkbenchPanelPresenter> getPanels();
@@ -72,6 +138,9 @@ public interface WorkbenchPanelPresenter {
 
     public void maximize();
 
+    /**
+     * Returns the view that was given to this panel when it was first created.
+     */
     public WorkbenchPanelView getPanelView();
 
     public void onResize( final int width,
@@ -80,7 +149,7 @@ public interface WorkbenchPanelPresenter {
     /**
      * Returns the panel type that should be used when adding child panels of type
      * {@link PanelDefinition#PARENT_CHOOSES_TYPE}.
-     * 
+     *
      * @return the fully-qualified class name of a WorkbenchPanelPresenter implementation. Returns null if
      *         this panel presenter does not allow child panels.
      */

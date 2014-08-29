@@ -41,6 +41,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenchPanelPresenter<P>> implements WorkbenchPanelPresenter {
 
+    private WorkbenchPanelPresenter parent;
     private final WorkbenchPanelView<P> view;
     protected final PerspectiveManager perspectiveManager;
     private PanelDefinition definition;
@@ -48,10 +49,10 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     private final Map<Position, WorkbenchPanelPresenter> childPanels = new HashMap<Position, WorkbenchPanelPresenter>();
 
     public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
-                                            final PerspectiveManager panelManager,
+                                            final PerspectiveManager perspectiveManager,
                                             final Event<MaximizePlaceEvent> maximizePanelEvent ) {
         this.view = view;
-        this.perspectiveManager = panelManager;
+        this.perspectiveManager = perspectiveManager;
         this.maximizePanelEvent = maximizePanelEvent;
     }
 
@@ -63,6 +64,16 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     @PostConstruct
     void init() {
         getPanelView().init( this.asPresenterType() );
+    }
+
+    @Override
+    public WorkbenchPanelPresenter getParent() {
+        return parent;
+    }
+
+    @Override
+    public void setParent( WorkbenchPanelPresenter parent ) {
+        this.parent = parent;
     }
 
     @Override
@@ -90,8 +101,8 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
      * take advantage of this by only overriding the 2-arg version.
      */
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view ) {
-        addPart( view, null );
+    public void addPart( final WorkbenchPartPresenter part ) {
+        addPart( part, null );
     }
 
     /**
@@ -99,23 +110,25 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
      * Subclasses that care about context id's will override this method.
      */
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view,
+    public void addPart( final WorkbenchPartPresenter part,
                          final String contextId ) {
-        getPanelView().addPart( view );
+        definition.addPart( part.getDefinition() );
+        getPanelView().addPart( part.getPartView() );
     }
 
     @Override
     public boolean removePart( final PartDefinition part ) {
-        return view.removePart( part );
+        view.removePart( part );
+        return definition.removePart( part );
     }
 
     @Override
-    public void addPanel( final PanelDefinition panel,
-                          final WorkbenchPanelView view, // TODO change to presenter to keep API layers distinct?
+    public void addPanel( final WorkbenchPanelPresenter child,
                           final Position position ) {
-        getPanelView().addPanel( panel, view, position );
-        definition.insertChild( position, panel );
-        childPanels.put( position, view.getPresenter() );
+        getPanelView().addPanel( child.getDefinition(), child.getPanelView(), position );
+        definition.insertChild( position, child.getDefinition() );
+        childPanels.put( position, child );
+        child.setParent( this );
     }
 
     @Override
@@ -127,6 +140,7 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         getPanelView().removePanel( child.getPanelView() );
         definition.removeChild( position );
         childPanels.remove( position );
+        child.setParent( null );
         return true;
     }
 

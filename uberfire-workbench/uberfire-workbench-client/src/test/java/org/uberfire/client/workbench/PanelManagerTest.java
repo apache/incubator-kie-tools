@@ -116,7 +116,7 @@ public class PanelManagerTest {
         verify( partPresenter ).setContextId( "rootContextId" );
 
         // the part's new presenter should have been added to the root panel presenter
-        verify( testPerspectiveRootPanelPresenter ).addPart( partPresenter.getPartView(), "rootContextId" );
+        verify( testPerspectiveRootPanelPresenter ).addPart( partPresenter, "rootContextId" );
 
         // the root panel's definition should have been updated to include the new part
         assertEquals( rootPart, testPerspectiveDef.getRoot().getParts().iterator().next() );
@@ -149,7 +149,7 @@ public class PanelManagerTest {
         verify( partPresenter ).setContextId( "rootContextId" );
 
         // the part's new presenter should have been added to the root panel presenter
-        verify( testPerspectiveRootPanelPresenter ).addPart( partPresenter.getPartView(), "rootContextId" );
+        verify( testPerspectiveRootPanelPresenter ).addPart( partPresenter, "rootContextId" );
 
         // there should still only be 1 part
         assertEquals( 1, testPerspectiveDef.getRoot().getParts().size() );
@@ -206,36 +206,6 @@ public class PanelManagerTest {
 
         // the root panel itself, although empty, should remain (because it is the root panel)
         verify( beanFactory, never() ).destroy( testPerspectiveRootPanelPresenter );
-    }
-
-    @Test
-    public void removingLastPartFromPanelShouldRemovePanelToo() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
-        panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
-
-        // need to remember this for later
-        WorkbenchPanelPresenter subPanelPresenter = panelManager.mapPanelDefinitionToPresenter.get( subPanel );
-        assertSame( subPanel, subPanelPresenter.getDefinition() );
-
-        PlaceRequest partPlace = new DefaultPlaceRequest( "partPlace" );
-        PartDefinition part = new PartDefinitionImpl( partPlace );
-        Menus partMenus = MenuFactory.newContributedMenu( "PartMenu" ).endMenu().build();
-        UIPart uiPart = new UIPart( "uiPart", null, mock(IsWidget.class) );
-
-        panelManager.addWorkbenchPart( partPlace, part, subPanel, partMenus, uiPart, "contextId" );
-
-        panelManager.removePartForPlace( partPlace );
-
-        // the panel manager should not know about the part/place mapping anymore
-        assertEquals( null, panelManager.getPartForPlace( partPlace ) );
-
-        // the part's presenter bean should be destroyed
-        verify( beanFactory ).destroy( partPresenter );
-
-        // the empty panel should be gone from the layout and its bean destroyed
-        verify( beanFactory ).destroy( subPanelPresenter );
-        assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
     }
 
     @Test

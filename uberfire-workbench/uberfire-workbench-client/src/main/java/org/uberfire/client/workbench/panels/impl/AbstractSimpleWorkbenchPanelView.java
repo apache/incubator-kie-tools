@@ -40,8 +40,11 @@ extends AbstractWorkbenchPanelView<P> {
     @Inject
     protected ListBarWidget listBar;
 
-    protected RequiresResizeFlowPanel container = new RequiresResizeFlowPanel();
-    protected ContextPanel contextWidget = new ContextPanel();
+    @Inject
+    protected RequiresResizeFlowPanel container;
+
+    @Inject
+    protected ContextPanel contextWidget;
 
     @PostConstruct
     void setup() {
