@@ -20,6 +20,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.workbench.models.datamodel.oracle.DropDownData;
 
 /**
  * Definition of Cell that can be used by AbstractProxyPopupDropDownEditCell.
@@ -34,9 +35,9 @@ public interface ProxyPopupDropDown<C> extends IsWidget {
 
     /**
      * Set values for cell
-     * @param values
+     * @param dd
      */
-    public void setValues( final String[] values );
+    public void setDropDownData( final DropDownData dd );
 
     /**
      * Render value as safe HTML

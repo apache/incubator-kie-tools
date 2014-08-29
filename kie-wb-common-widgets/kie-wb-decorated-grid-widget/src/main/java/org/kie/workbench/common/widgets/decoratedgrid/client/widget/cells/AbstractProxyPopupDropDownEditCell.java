@@ -19,9 +19,11 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 
 /**
@@ -42,6 +44,18 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
     private final ProxyPopupDropDown<C> singleValueEditor;
     private final ProxyPopupDropDown<C> multipleValueEditor;
     private ProxyPopupDropDown<C> delegate;
+
+    final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
+        @Override
+        protected int addItems( final ListBox listBox ) {
+            return 0;
+        }
+
+        @Override
+        protected void selectItem( final ListBox listBox ) {
+            //Nothing needed by default
+        }
+    };
 
     public AbstractProxyPopupDropDownEditCell( final String factType,
                                                final String factField,
@@ -79,7 +93,7 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
         } else {
             //Otherwise show a drop-down list box
             delegate = multipleValueEditor;
-            delegate.setValues( dd.getFixedList() );
+            delegate.setDropDownData( dd );
             vPanel.clear();
             vPanel.add( delegate.asWidget() );
         }
@@ -125,7 +139,7 @@ public abstract class AbstractProxyPopupDropDownEditCell<C, V> extends
         } else {
             //Otherwise show a drop-down list box
             delegate = multipleValueEditor;
-            delegate.setValues( dd.getFixedList() );
+            delegate.setDropDownData( dd );
             vPanel.clear();
             vPanel.add( delegate.asWidget() );
         }

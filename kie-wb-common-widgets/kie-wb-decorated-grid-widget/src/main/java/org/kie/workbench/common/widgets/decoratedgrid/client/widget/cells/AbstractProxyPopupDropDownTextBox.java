@@ -24,6 +24,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.oracle.DropDownData;
 
 /**
  * A Popup drop-down Editor ;-)
@@ -68,7 +69,7 @@ public abstract class AbstractProxyPopupDropDownTextBox<C> implements ProxyPopup
     }
 
     @Override
-    public void setValues( final String[] values ) {
+    public void setDropDownData( final DropDownData dd ) {
         throw new UnsupportedOperationException( "Only single values are supported" );
     }
 

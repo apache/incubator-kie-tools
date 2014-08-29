@@ -28,15 +28,28 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
+import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 
 /**
  * A Popup drop-down Editor for use within AbstractProxyPopupDropDownEditCell
  */
 public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopupDropDown<C> {
 
-    private final ListBox listBox;
     private String[][] items;
+    private final ListBox listBox;
+
+    final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
+        @Override
+        protected int addItems( final ListBox listBox ) {
+            return 0;
+        }
+
+        @Override
+        protected void selectItem( final ListBox listBox ) {
+            //Nothing needed by default
+        }
+    };
 
     public AbstractProxyPopupDropDownListBox( final AbstractProxyPopupDropDownEditCell proxy ) {
 
@@ -72,27 +85,24 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
     public void setValue( final C value ) {
         final List<String> convertedValues = new ArrayList<String>();
         convertedValues.add( convertToString( value ) );
-        setValues( (String[]) convertedValues.toArray() );
+        setDropDownData( DropDownData.create( (String[]) convertedValues.toArray() ) );
     }
 
     @Override
-    public void setValues( final String[] values ) {
-        this.listBox.clear();
-        this.items = new String[ values.length ][ 2 ];
-        for ( int i = 0; i < values.length; i++ ) {
-            String value = values[ i ].trim();
-            if ( value.indexOf( '=' ) > 0 ) {
-                String[] splut = ConstraintValueHelper.splitValue( value );
-                this.items[ i ][ 0 ] = splut[ 0 ];
-                this.items[ i ][ 1 ] = splut[ 1 ];
-                this.listBox.addItem( splut[ 1 ],
-                                      splut[ 0 ] );
-            } else {
-                this.items[ i ][ 0 ] = value;
-                this.items[ i ][ 1 ] = value;
-                this.listBox.addItem( value,
-                                      value );
-            }
+    public void setDropDownData( final DropDownData dd ) {
+        utilities.setDropDownData( "",
+                                   dd,
+                                   false,
+                                   listBox );
+
+        //Scrape values from ListBox as they may have been populated from a server-side call
+        final int itemCount = listBox.getItemCount();
+        this.items = new String[ itemCount ][ 2 ];
+        for ( int i = 0; i < itemCount; i++ ) {
+            String value = listBox.getValue( i ).trim();
+            String text = listBox.getItemText( i ).trim();
+            this.items[ i ][ 0 ] = value;
+            this.items[ i ][ 1 ] = text;
         }
     }
 

@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
+import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDropDownDataValueMapProvider;
 
 /**
@@ -38,14 +38,27 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellTableDro
 public class PopupDropDownEditCell extends
                                    AbstractPopupEditCell<String, String> {
 
-    private final ListBox listBox;
     private String[][] items;
+    private final ListBox listBox;
+    private boolean isMultipleSelect;
 
     private final String factType;
     private final String factField;
 
     private final AsyncPackageDataModelOracle dmo;
     private final CellTableDropDownDataValueMapProvider dropDownManager;
+
+    final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
+        @Override
+        protected int addItems( final ListBox listBox ) {
+            return 0;
+        }
+
+        @Override
+        protected void selectItem( final ListBox listBox ) {
+            //Nothing needed by default
+        }
+    };
 
     public PopupDropDownEditCell( final String factType,
                                   final String factField,
@@ -69,6 +82,7 @@ public class PopupDropDownEditCell extends
         super( isReadOnly );
         this.factType = factType;
         this.factField = factField;
+        this.isMultipleSelect = isMultipleSelect;
         this.dropDownManager = dropDownManager;
         this.dmo = dmo;
 
@@ -80,8 +94,7 @@ public class PopupDropDownEditCell extends
             public void onKeyDown( KeyDownEvent event ) {
                 boolean keyTab = event.getNativeKeyCode() == KeyCodes.KEY_TAB;
                 boolean keyEnter = event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
-                if ( keyEnter
-                        || keyTab ) {
+                if ( keyEnter || keyTab ) {
                     commit();
                 }
             }
@@ -105,33 +118,16 @@ public class PopupDropDownEditCell extends
         if ( dd == null ) {
             return;
         }
-        setItems( dd.getFixedList() );
+
+        utilities.setDropDownData( value,
+                                   dd,
+                                   isMultipleSelect,
+                                   listBox );
 
         //Render value
         if ( value != null ) {
             String label = getLabel( value );
             sb.append( renderer.render( label ) );
-        }
-    }
-
-    // Set content of drop-down
-    private void setItems( String[] items ) {
-        this.listBox.clear();
-        this.items = new String[ items.length ][ 2 ];
-        for ( int i = 0; i < items.length; i++ ) {
-            String item = items[ i ].trim();
-            if ( item.indexOf( '=' ) > 0 ) {
-                String[] splut = ConstraintValueHelper.splitValue( item );
-                this.items[ i ][ 0 ] = splut[ 0 ];
-                this.items[ i ][ 1 ] = splut[ 1 ];
-                this.listBox.addItem( splut[ 1 ],
-                                      splut[ 0 ] );
-            } else {
-                this.items[ i ][ 0 ] = item;
-                this.items[ i ][ 1 ] = item;
-                this.listBox.addItem( item,
-                                      item );
-            }
         }
     }
 
@@ -193,7 +189,11 @@ public class PopupDropDownEditCell extends
         if ( dd == null ) {
             return;
         }
-        setItems( dd.getFixedList() );
+
+        utilities.setDropDownData( value,
+                                   dd,
+                                   isMultipleSelect,
+                                   listBox );
 
         // Select the appropriate item
         boolean emptyValue = ( value == null );
