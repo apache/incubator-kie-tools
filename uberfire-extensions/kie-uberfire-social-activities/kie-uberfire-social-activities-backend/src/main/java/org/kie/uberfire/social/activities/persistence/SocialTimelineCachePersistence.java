@@ -94,7 +94,7 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
         Path fileTimeline = timelineDir.resolve( fileIndex );
         String numberOfEvents = getItemsMetadata( timelineDir, fileIndex );
         SocialFile socialFile = new SocialFile( fileTimeline, ioService, gson );
-        events = socialFile.readSocialEvents(Integer.valueOf( numberOfEvents ));
+        events = socialFile.readSocialEvents( Integer.valueOf( numberOfEvents ) );
         return events;
     }
 
@@ -104,8 +104,12 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
 
     Integer getLastFileIndex( Path timelineDir ) {
         Path resolve = timelineDir.resolve( Constants.LAST_FILE_INDEX.name() );
+        if ( !getIoService().exists( resolve ) ) {
+            return -1;
+        }
         String index = getIoService().readAllString( resolve );
         Integer lastIndex = Integer.valueOf( index );
+
         return lastIndex;
     }
 
@@ -143,7 +147,7 @@ public abstract class SocialTimelineCachePersistence implements SocialTimelinePe
                                      String originalFilename ) {
         String metadataFileName = originalFilename + Constants.METADATA;
         Path timelineFile = timeLineDir.resolve( metadataFileName );
-        if(ioService.exists( timelineFile )){
+        if ( ioService.exists( timelineFile ) ) {
             String itemsMetadata = ioService.readAllString( timelineFile );
             return itemsMetadata;
         }

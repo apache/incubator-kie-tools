@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.uberfire.social.activities.model.FollowSocialUserEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserPersistenceAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
@@ -19,9 +18,6 @@ public class SocialUserService implements SocialUserServiceAPI {
     @Named("socialUserPersistenceAPI")
     private SocialUserPersistenceAPI socialUserPersistenceAPI;
 
-    @Inject
-    private Event<FollowSocialUserEvent> followSocialUserEvent;
-
     @Override
     public void userFollowAnotherUser( String followerUsername,
                                        String followUsername ) {
@@ -29,7 +25,6 @@ public class SocialUserService implements SocialUserServiceAPI {
         SocialUser follow = socialUserPersistenceAPI.getSocialUser( followUsername );
         follower.follow( follow );
         socialUserPersistenceAPI.updateUsers( follower, follow );
-        followSocialUserEvent.fire( new FollowSocialUserEvent( follower, follow ) );
     }
 
     @Override

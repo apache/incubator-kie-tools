@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.uberfire.social.activities.model.ExtendedTypes;
+import org.kie.uberfire.social.activities.model.DefaultTypes;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.persistence.SocialUserJsonDeserializer;
@@ -53,8 +53,8 @@ public class PersistenceJsonConverterTest {
     @Test
     public void SocialActivitiesEvent_to_and_from_JSON() {
 
-        SocialActivitiesEvent event1 = new SocialActivitiesEvent( new SocialUser( "admin" ), ExtendedTypes.FOLLOW_USER, new Date() ).withAdicionalInfo( "adicional1" );
-        SocialActivitiesEvent event2 = new SocialActivitiesEvent( new SocialUser( "system" ), ExtendedTypes.FOLLOW_USER, new Date() ).withAdicionalInfo( "adicional2" );
+        SocialActivitiesEvent event1 = new SocialActivitiesEvent( new SocialUser( "admin" ), DefaultTypes.DUMMY_EVENT, new Date() ).withAdicionalInfo( "adicional1" );
+        SocialActivitiesEvent event2 = new SocialActivitiesEvent( new SocialUser( "system" ), DefaultTypes.DUMMY_EVENT, new Date() ).withAdicionalInfo( "adicional2" );
 
         List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
         events.add( event1 );

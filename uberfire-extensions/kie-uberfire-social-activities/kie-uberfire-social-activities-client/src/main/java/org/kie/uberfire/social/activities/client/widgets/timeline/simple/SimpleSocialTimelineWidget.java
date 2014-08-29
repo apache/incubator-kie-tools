@@ -3,6 +3,7 @@ package org.kie.uberfire.social.activities.client.widgets.timeline.simple;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Legend;
+import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -71,6 +72,23 @@ public class SimpleSocialTimelineWidget extends Composite {
     }
 
     private void createTimeline( PagedSocialQuery paged ) {
+        if ( thereIsNoEvents( paged ) ) {
+            displayNoEvents();
+        } else {
+            displayEvents( paged );
+        }
+
+    }
+
+    private void displayNoEvents() {
+        pagination.add( new Paragraph( "There are no social events...yet!" ) );
+    }
+
+    private boolean thereIsNoEvents( PagedSocialQuery paged ) {
+        return paged.socialEvents().isEmpty() && !paged.socialPaged().canIGoBackward();
+    }
+
+    private void displayEvents( PagedSocialQuery paged ) {
         model.updateSocialPaged( paged.socialPaged() );
         for ( final SocialActivitiesEvent event : paged.socialEvents() ) {
             if ( event.hasLink() ) {

@@ -6,20 +6,17 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.uberfire.social.activities.model.DefaultTypes;
-import org.kie.uberfire.social.activities.model.ExtendedTypes;
-import org.kie.uberfire.social.activities.model.FollowSocialUserEvent;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 
-//@ApplicationScoped
-public class SampleSocialUserEventAdapter implements SocialAdapter<FollowSocialUserEvent> {
+public class SampleSocialUserEventAdapter implements SocialAdapter<SampleSocialUserEvent> {
 
     @Override
-    public Class<FollowSocialUserEvent> eventToIntercept() {
-        return FollowSocialUserEvent.class;
+    public Class<SampleSocialUserEvent> eventToIntercept() {
+        return SampleSocialUserEvent.class;
     }
 
     @Override
@@ -37,9 +34,8 @@ public class SampleSocialUserEventAdapter implements SocialAdapter<FollowSocialU
 
     @Override
     public SocialActivitiesEvent toSocial( Object object ) {
-        FollowSocialUserEvent event = (FollowSocialUserEvent) object;
-        String adicionalInfo = "follow " + event.getFollow().getUserName();
-        return new SocialActivitiesEvent( event.getFollower(), ExtendedTypes.FOLLOW_USER, new Date() ).withAdicionalInfo( adicionalInfo );
+        SampleSocialUserEvent event = (SampleSocialUserEvent) object;
+        return new SocialActivitiesEvent(  );
     }
 
     @Override

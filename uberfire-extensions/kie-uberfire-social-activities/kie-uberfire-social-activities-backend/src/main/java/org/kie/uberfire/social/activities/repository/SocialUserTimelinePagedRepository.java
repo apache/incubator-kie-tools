@@ -99,14 +99,20 @@ public class SocialUserTimelinePagedRepository extends SocialPageRepository impl
         socialPaged.setNumberOfEventsOnFile( getSocialTimelinePersistenceAPI().getNumberOfEventsOnFile( socialUser, lastFileReaded ) );
     }
 
-
     private void readMostRecentFile( SocialUser socialUser,
                                      SocialPaged socialPaged,
                                      List<SocialActivitiesEvent> events ) {
         Integer userMostRecentFileIndex = getSocialTimelinePersistenceAPI().getUserMostRecentFileIndex( socialUser );
+        if ( thereIsNothingToRead( userMostRecentFileIndex ) ) {
+            return;
+        }
         List<SocialActivitiesEvent> timeline = getSocialTimelinePersistenceAPI().getTimeline( socialUser, userMostRecentFileIndex.toString() );
         socialPaged.setLastFileReaded( userMostRecentFileIndex.toString() );
         readEvents( socialPaged, events, timeline );
+    }
+
+    private boolean thereIsNothingToRead( Integer userMostRecentFileIndex ) {
+        return userMostRecentFileIndex < 0;
     }
 
     private SocialPaged searchForRecentEvents( SocialUser socialUser,

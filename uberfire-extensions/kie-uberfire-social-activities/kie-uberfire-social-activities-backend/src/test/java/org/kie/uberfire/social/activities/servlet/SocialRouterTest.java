@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-import org.kie.uberfire.social.activities.model.ExtendedTypes;
+import org.kie.uberfire.social.activities.model.DefaultTypes;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.service.SocialAdapter;
@@ -26,15 +26,15 @@ public class SocialRouterTest {
 
     @Test
     public void findSpecificAdapter() {
-        String path = "/follow_user";
+        String path = "/dummy_event";
         SocialRouter router = createMock();
         SocialAdapter adapter = router.getSocialAdapterByPath( path );
-        assertEquals( ExtendedTypes.FOLLOW_USER, adapter.socialEventType() );
+        assertEquals( DefaultTypes.DUMMY_EVENT, adapter.socialEventType() );
     }
 
     @Test
     public void getAdapterTimeLineFilters() {
-        String path = "/follow_user";
+        String path = "/dummy_event";
         SocialRouter router = createMock();
         SocialAdapter adapter = router.getSocialAdapterByPath( path );
         assertFalse( adapter.getTimelineFilters().isEmpty() );
@@ -52,7 +52,7 @@ public class SocialRouterTest {
 
                     @Override
                     public SocialEventType socialEventType() {
-                        return ExtendedTypes.FOLLOW_USER;
+                        return DefaultTypes.DUMMY_EVENT;
                     }
 
                     @Override
