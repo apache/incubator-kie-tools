@@ -315,7 +315,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
         final JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
-        
+
         if (false == getMetaData().isEmpty())
         {
             object.put("meta", new JSONObject(getMetaData().getJSO()));
@@ -745,7 +745,36 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     }
 
     @Override
-    public final ArrayList<Node<?>> search(INodeFilter filter)
+    public ArrayList<Node<?>> findByID(String id)
+    {
+        if ((null == id) || ((id = id.trim()).isEmpty()))
+        {
+            return new ArrayList<Node<?>>(0);
+        }
+        final String look = id;
+
+        return find(new INodeFilter()
+        {
+            @Override
+            public boolean matches(Node<?> node)
+            {
+                if (null == node)
+                {
+                    return false;
+                }
+                String id = node.getAttributes().getID();
+
+                if ((null != id) && (false == (id = id.trim()).isEmpty()))
+                {
+                    return id.equals(look);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public final ArrayList<Node<?>> find(INodeFilter filter)
     {
         final ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
@@ -768,7 +797,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
                         find.add(layer);
                     }
                 }
-                for (Node<?> look : layer.search(filter))
+                for (Node<?> look : layer.find(filter))
                 {
                     if (false == find.contains(look))
                     {

@@ -29,6 +29,19 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
         return JavaScriptObject.createArray().cast();
     }
 
+    public final double[] toArray()
+    {
+        final int size = size();
+
+        final double[] array = new double[size];
+
+        for (int i = 0; i < size; i++)
+        {
+            array[i] = get(i);
+        }
+        return array;
+    }
+
     public final native int size()
     /*-{
         return this.length;
@@ -57,6 +70,11 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
     public final native void clear()
     /*-{
         this.length = 0;
+    }-*/;
+
+    public final native NFastDoubleArrayJSO copy()
+    /*-{
+        return this.slice();
     }-*/;
 
     public final native NFastDoubleArrayJSO sort()

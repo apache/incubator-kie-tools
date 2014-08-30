@@ -16,13 +16,17 @@
 
 package com.ait.lienzo.client.widget;
 
+import java.util.ArrayList;
+
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.INodeFilter;
 import com.ait.lienzo.client.core.util.CursorMap;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.IColor;
@@ -277,6 +281,24 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         return m_view;
     }
 
+    public ArrayList<Node<?>> findByID(String id)
+    {
+        if (null != getViewport())
+        {
+            return getViewport().findByID(id);
+        }
+        return new ArrayList<Node<?>>(0);
+    }
+
+    public ArrayList<Node<?>> find(INodeFilter filter)
+    {
+        if (null != getViewport())
+        {
+            return getViewport().find(filter);
+        }
+        return new ArrayList<Node<?>>(0);
+    }
+
     /**
      * Sets the {@link Viewport} background {@link Layer}
      * 
@@ -406,8 +428,8 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     public static native void enableWindowMouseWheelScroll(boolean enabled)
     /*-{
-		$wnd.mousewheel = function() {
-			return enabled;
-		}
+    	$wnd.mousewheel = function() {
+    		return enabled;
+    	}
     }-*/;
 }

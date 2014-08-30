@@ -266,7 +266,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
-        
+
         if (false == getMetaData().isEmpty())
         {
             object.put("meta", new JSONObject(getMetaData().getJSO()));
@@ -676,7 +676,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     protected static final native NativeContext2D getNativeContext2D(CanvasElement element)
     /*-{
-		return element.getContext("2d");
+    	return element.getContext("2d");
     }-*/;
 
     /**
@@ -771,6 +771,35 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return this;
     }
 
+    @Override
+    public ArrayList<Node<?>> findByID(String id)
+    {
+        if ((null == id) || ((id = id.trim()).isEmpty()))
+        {
+            return new ArrayList<Node<?>>(0);
+        }
+        final String look = id;
+
+        return find(new INodeFilter()
+        {
+            @Override
+            public boolean matches(Node<?> node)
+            {
+                if (null == node)
+                {
+                    return false;
+                }
+                String id = node.getAttributes().getID();
+
+                if ((null != id) && (false == (id = id.trim()).isEmpty()))
+                {
+                    return id.equals(look);
+                }
+                return false;
+            }
+        });
+    }
+
     /**
      * Returns all the {@link Node} objects present in this layer that match the
      * given {@link com.ait.lienzo.client.core.types.INodeFilter}, this Layer
@@ -779,7 +808,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param filter
      * @return ArrayList<Node>
      */
-    public ArrayList<Node<?>> search(INodeFilter filter)
+    @Override
+    public ArrayList<Node<?>> find(INodeFilter filter)
     {
         ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
@@ -810,7 +840,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                     if (null != cont)
                     {
-                        for (Node<?> look : cont.search(filter))
+                        for (Node<?> look : cont.find(filter))
                         {
                             if (false == find.contains(look))
                             {
@@ -870,12 +900,12 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
     private static native final String toDataURL(CanvasElement element)
     /*-{
-		return element.toDataURL();
+    	return element.toDataURL();
     }-*/;
 
     private static native final String toDataURL(CanvasElement element, String mimetype)
     /*-{
-		return element.toDataURL(mimetype);
+    	return element.toDataURL(mimetype);
     }-*/;
 
     private static class SelectionLayer extends Layer

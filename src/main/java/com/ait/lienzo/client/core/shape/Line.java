@@ -97,9 +97,9 @@ public class Line extends Shape<Line>
                         {
                             if (setStrokeParams(context, attr, alpha))
                             {
-                                Point2D p0 = list.getPoint(0);
+                                Point2D p0 = list.get(0);
 
-                                Point2D p1 = list.getPoint(1);
+                                Point2D p1 = list.get(1);
 
                                 context.beginPath();
 
@@ -110,13 +110,13 @@ public class Line extends Shape<Line>
                     }
                 }
             }
-            Point2D point = list.getPoint(0);
+            Point2D point = list.get(0);
 
             context.beginPath();
 
             context.moveTo(point.getX(), point.getY());
 
-            point = list.getPoint(1);
+            point = list.get(1);
 
             context.lineTo(point.getX(), point.getY());
 

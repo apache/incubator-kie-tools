@@ -185,91 +185,87 @@ public final class DragBounds
         return m_jso;
     }
 
-    /**
-     * Proxy JSO
-     */
     public static final class DragBoundsJSO extends JavaScriptObject
     {
-        static final native DragBoundsJSO make()
-        /*-{
-			return {};
-        }-*/;
+        static final DragBoundsJSO make()
+        {
+            return JavaScriptObject.createObject().cast();
+        }
 
         protected DragBoundsJSO()
         {
-
         }
 
         final native boolean isX1()
         /*-{
-			if ((this.x1) && (this.x1 !== undefined)) {
-				return true;
-			}
-			return false;
+        	if ((this.x1) && (this.x1 !== undefined)) {
+        		return true;
+        	}
+        	return false;
         }-*/;
 
         final native boolean isX2()
         /*-{
-			if ((this.x2) && (this.x2 !== undefined)) {
-				return true;
-			}
-			return false;
+        	if ((this.x2) && (this.x2 !== undefined)) {
+        		return true;
+        	}
+        	return false;
         }-*/;
 
         final native boolean isY1()
         /*-{
-			if ((this.y1) && (this.y1 !== undefined)) {
-				return true;
-			}
-			return false;
+        	if ((this.y1) && (this.y1 !== undefined)) {
+        		return true;
+        	}
+        	return false;
         }-*/;
 
         final native boolean isY2()
         /*-{
-			if ((this.y2) && (this.y2 !== undefined)) {
-				return true;
-			}
-			return false;
+        	if ((this.y2) && (this.y2 !== undefined)) {
+        		return true;
+        	}
+        	return false;
         }-*/;
 
         final native void setX1(double x1)
         /*-{
-			this.x1 = x1;
+        	this.x1 = x1;
         }-*/;
 
         final native double getX1()
         /*-{
-			return this.x1;
+        	return this.x1;
         }-*/;
 
         final native void setX2(double x2)
         /*-{
-			this.x2 = x2;
+        	this.x2 = x2;
         }-*/;
 
         final native double getX2()
         /*-{
-			return this.x2;
+        	return this.x2;
         }-*/;
 
         final native void setY1(double y1)
         /*-{
-			this.y1 = y1;
+        	this.y1 = y1;
         }-*/;
 
         final native double getY1()
         /*-{
-			return this.y1;
+        	return this.y1;
         }-*/;
 
         final native void setY2(double y2)
         /*-{
-			this.y2 = y2;
+        	this.y2 = y2;
         }-*/;
 
         final native double getY2()
         /*-{
-			return this.y2;
+        	return this.y2;
         }-*/;
     }
 }

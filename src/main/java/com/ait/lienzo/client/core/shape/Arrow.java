@@ -117,7 +117,7 @@ public class Arrow extends Shape<Arrow>
 
         if ((null != list) && (list.size() > 2))
         {
-            Point2D point = list.getPoint(0);
+            Point2D point = list.get(0);
 
             context.beginPath();
 
@@ -127,7 +127,7 @@ public class Arrow extends Shape<Arrow>
 
             for (int i = 1; i < leng; i++)
             {
-                point = list.getPoint(i);
+                point = list.get(i);
 
                 context.lineTo(point.getX(), point.getY());
             }
@@ -145,7 +145,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Point2D getStart()
     {
-        return getPoints().getPoint(0);
+        return getPoints().get(0);
     }
 
     /**
@@ -156,7 +156,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setStart(Point2D start)
     {
-        getPoints().setPoint(0, start);
+        getPoints().set(0, start);
 
         invalidatePolygon();
 
@@ -170,7 +170,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Point2D getEnd()
     {
-        return getPoints().getPoint(1);
+        return getPoints().get(1);
     }
 
     /**
@@ -181,7 +181,7 @@ public class Arrow extends Shape<Arrow>
      */
     public Arrow setEnd(Point2D end)
     {
-        getPoints().setPoint(1, end);
+        getPoints().set(1, end);
 
         invalidatePolygon();
 
@@ -390,7 +390,7 @@ public class Arrow extends Shape<Arrow>
 
                 Point2D s = getStart(); // arr.getPoint(0);
                 Point2D e = getEnd(); // arr.getPoint(1);
-                Point2D dv = e.minus(s);
+                Point2D dv = e.sub(s);
                 Point2D dx = dv.unit(); // unit vector in the direction of SE
                 Point2D dy = dx.perpendicular();
 
@@ -406,8 +406,8 @@ public class Arrow extends Shape<Arrow>
                     //
                     double r = aw / (2 * sina);
                     double z = r * cosa;
-                    Point2D p2 = e.minus(dx.times(z)).minus(dy.times(aw / 2));
-                    Point2D p4 = e.minus(dx.times(z)).plus(dy.times(aw / 2));
+                    Point2D p2 = e.sub(dx.mul(z)).sub(dy.mul(aw / 2));
+                    Point2D p4 = e.sub(dx.mul(z)).add(dy.mul(aw / 2));
 
                     // cosb*r2
                     //
@@ -418,14 +418,14 @@ public class Arrow extends Shape<Arrow>
                     // 2
                     //
 
-                    Point2D p1 = p2.plus(dy.times((aw - w) / 2));
-                    Point2D p5 = p4.minus(dy.times((aw - w) / 2));
+                    Point2D p1 = p2.add(dy.mul((aw - w) / 2));
+                    Point2D p5 = p4.sub(dy.mul((aw - w) / 2));
                     if (b_degrees != 90)
                     {
                         double r2 = (aw - w) / (2 * sinb);
-                        Point2D d1 = dx.times(r2 * cosb);
-                        p1 = p1.minus(d1);
-                        p5 = p5.minus(d1);
+                        Point2D d1 = dx.mul(r2 * cosb);
+                        p1 = p1.sub(d1);
+                        p5 = p5.sub(d1);
                     }
 
                     arr.push(p1);
@@ -436,8 +436,8 @@ public class Arrow extends Shape<Arrow>
                 }
                 else if (type == ArrowType.AT_START)
                 {
-                    Point2D q0 = e.plus(dy.times(-w / 2));
-                    Point2D q6 = e.plus(dy.times(w / 2));
+                    Point2D q0 = e.add(dy.mul(-w / 2));
+                    Point2D q6 = e.add(dy.mul(w / 2));
                     arr.push(q0);
                     arr.push(q6);
                 }
@@ -459,8 +459,8 @@ public class Arrow extends Shape<Arrow>
                     //
                     double r = aw / (2 * sina);
                     double z = r * cosa;
-                    Point2D q2 = s.plus(dx.times(z)).minus(dy.times(aw / 2));
-                    Point2D q4 = s.plus(dx.times(z)).plus(dy.times(aw / 2));
+                    Point2D q2 = s.add(dx.mul(z)).sub(dy.mul(aw / 2));
+                    Point2D q4 = s.add(dx.mul(z)).add(dy.mul(aw / 2));
 
                     // cosb*r2
                     //
@@ -471,14 +471,14 @@ public class Arrow extends Shape<Arrow>
                     // 2
                     //
 
-                    Point2D q1 = q2.plus(dy.times((aw - w) / 2));
-                    Point2D q5 = q4.minus(dy.times((aw - w) / 2));
+                    Point2D q1 = q2.add(dy.mul((aw - w) / 2));
+                    Point2D q5 = q4.sub(dy.mul((aw - w) / 2));
                     if (b_degrees != 90)
                     {
                         double r2 = (aw - w) / (2 * sinb);
-                        Point2D d1 = dx.times(r2 * cosb);
-                        q1 = q1.plus(d1);
-                        q5 = q5.plus(d1);
+                        Point2D d1 = dx.mul(r2 * cosb);
+                        q1 = q1.add(d1);
+                        q5 = q5.add(d1);
                     }
 
                     arr.push(q5);
@@ -489,8 +489,8 @@ public class Arrow extends Shape<Arrow>
                 }
                 else if (type == ArrowType.AT_END)
                 {
-                    Point2D p0 = s.plus(dy.times(-w / 2));
-                    Point2D p6 = s.plus(dy.times(w / 2));
+                    Point2D p0 = s.add(dy.mul(-w / 2));
+                    Point2D p6 = s.add(dy.mul(w / 2));
 
                     arr.push(p6);
                     arr.push(p0);

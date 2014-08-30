@@ -85,7 +85,15 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @param filter
      * @return ArrayList
      */
-    public ArrayList<Node<?>> search(INodeFilter filter);
+    public ArrayList<Node<?>> find(INodeFilter filter);
+    
+    /**
+     * Searches and returns all {@link Node} that have a matching ID {@link INodeFilter}
+     * 
+     * @param filter
+     * @return ArrayList
+     */
+    public ArrayList<Node<?>> findByID(String id);
 
     /**
      * Returns the number of items in this container

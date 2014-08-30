@@ -436,9 +436,9 @@ public class GridLayer extends Layer
                 }
                 Point2DArray points = line.getPoints();
 
-                Point2D p1 = points.getPoint(0);
+                Point2D p1 = points.get(0);
 
-                Point2D p2 = points.getPoint(1);
+                Point2D p2 = points.get(1);
 
                 if (vertical)
                 {
@@ -511,7 +511,7 @@ public class GridLayer extends Layer
         }
         obj.put("lines", lines);
 
-        obj.put("sizes", sizes); // TODO could put sizes in Attributes
+        obj.put("sizes", sizes);
 
         return obj;
     }

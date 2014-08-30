@@ -496,7 +496,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
-        
+
         if (false == getMetaData().isEmpty())
         {
             object.put("meta", new JSONObject(getMetaData().getJSO()));
@@ -575,7 +575,36 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     }
 
     @Override
-    public final ArrayList<Node<?>> search(INodeFilter filter)
+    public ArrayList<Node<?>> findByID(String id)
+    {
+        if ((null == id) || ((id = id.trim()).isEmpty()))
+        {
+            return new ArrayList<Node<?>>(0);
+        }
+        final String look = id;
+
+        return find(new INodeFilter()
+        {
+            @Override
+            public boolean matches(Node<?> node)
+            {
+                if (null == node)
+                {
+                    return false;
+                }
+                String id = node.getAttributes().getID();
+
+                if ((null != id) && (false == (id = id.trim()).isEmpty()))
+                {
+                    return id.equals(look);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public ArrayList<Node<?>> find(INodeFilter filter)
     {
         ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
@@ -583,7 +612,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         {
             find.add(this);
         }
-        for (Node<?> look : m_main.search(filter))
+        for (Node<?> look : m_main.find(filter))
         {
             if (false == find.contains(look))
             {

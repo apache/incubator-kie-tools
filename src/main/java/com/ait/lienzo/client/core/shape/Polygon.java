@@ -68,7 +68,7 @@ public class Polygon extends Shape<Polygon>
 
         if ((null != list) && (list.size() > 2))
         {
-            Point2D point = list.getPoint(0);
+            Point2D point = list.get(0);
 
             context.beginPath();
 
@@ -78,7 +78,7 @@ public class Polygon extends Shape<Polygon>
 
             for (int i = 1; i < leng; i++)
             {
-                point = list.getPoint(i);
+                point = list.get(i);
 
                 context.lineTo(point.getX(), point.getY());
             }

@@ -392,7 +392,7 @@ public class Spline extends Shape<Spline>
 
         for (int i = 0; i < leng; i++)
         {
-            Point2D point = array.getPoint(i);
+            Point2D point = array.get(i);
 
             double x = point.getX();
 

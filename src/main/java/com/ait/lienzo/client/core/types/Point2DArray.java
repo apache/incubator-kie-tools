@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -28,7 +29,7 @@ import com.google.gwt.json.client.JSONArray;
 /**
  * Point2DArray represents an array (or List) with {@link Point2D} objects.
  */
-public class Point2DArray
+public class Point2DArray implements Iterable<Point2D>
 {
     private final Point2DArrayJSO m_jso;
 
@@ -44,24 +45,26 @@ public class Point2DArray
 
     public Point2DArray()
     {
-        this(Point2DArrayJSO.makePoint2DArrayJSO());
+        this(Point2DArrayJSO.make());
     }
 
     public Point2DArray(double x, double y)
     {
-        this(Point2DArrayJSO.makePoint2DArrayJSO());
+        this(Point2DArrayJSO.make());
+
+        push(x, y);
     }
 
     public Point2DArray(Point2D point)
     {
-        this(Point2DArrayJSO.makePoint2DArrayJSO());
+        this(Point2DArrayJSO.make());
 
         push(point);
     }
 
     public Point2DArray(Point2D point, Point2D... points)
     {
-        this(Point2DArrayJSO.makePoint2DArrayJSO());
+        this(Point2DArrayJSO.make());
 
         push(point, points);
     }
@@ -116,14 +119,12 @@ public class Point2DArray
      */
     public Point2DArray(double[] x, double[] y)
     {
-        this(Point2DArrayJSO.makePoint2DArrayJSO());
+        this(Point2DArrayJSO.make());
 
-        assert x != null;
-
-        assert y != null;
-
-        assert x.length == y.length : "x and y array should have the same length";
-
+        if (x.length != y.length)
+        {
+            throw new IllegalArgumentException("x and y array should have the same length");
+        }
         for (int i = 0; i < x.length; i++)
         {
             push(x[i], y[i]);
@@ -141,45 +142,43 @@ public class Point2DArray
      */
     public Point2DArray(double[][] points)
     {
-        this(Point2DArrayJSO.makePoint2DArrayJSO());
-
-        assert (points != null);
+        this(Point2DArrayJSO.make());
 
         for (int i = 0; i < points.length; i++)
         {
             double[] xy = points[i];
 
-            assert xy != null;
-
-            assert xy.length == 2 : "points[" + i + "] does not have length of 2";
-
+            if (xy.length != 2)
+            {
+                throw new IllegalArgumentException("points[" + i + "] does not have length of 2");
+            }
             push(xy[0], xy[1]);
         }
     }
 
     public final Point2DArray push(Point2D point)
     {
-        getJSO().push(point.getJSO());
+        m_jso.push(point.getJSO());
 
         return this;
     }
 
     public final Point2DArray push(double x, double y)
     {
-        getJSO().push(Point2DJSO.make(x, y));
+        m_jso.push(Point2DJSO.make(x, y));
 
         return this;
     }
 
     public final Point2DArray push(Point2D point, Point2D... points)
     {
-        getJSO().push(point.getJSO());
+        m_jso.push(point.getJSO());
 
         if (points != null)
         {
             for (int i = 0; i < points.length; i++)
             {
-                getJSO().push(points[i].getJSO());
+                m_jso.push(points[i].getJSO());
             }
         }
         return this;
@@ -187,17 +186,17 @@ public class Point2DArray
 
     public final int size()
     {
-        return getJSO().length();
+        return m_jso.length();
     }
 
-    public final Point2D getPoint(int i)
+    public final Point2D get(int i)
     {
-        return new Point2D(getJSO().get(i));
+        return new Point2D(m_jso.get(i));
     }
 
-    public final Point2DArray setPoint(int i, Point2D p)
+    public final Point2DArray set(int i, Point2D p)
     {
-        getJSO().set(i, p.getJSO());
+        m_jso.set(i, p.getJSO());
 
         return this;
     }
@@ -224,7 +223,7 @@ public class Point2DArray
 
         for (int i = 0; i < leng; i++)
         {
-            list.add(getPoint(i));
+            list.add(get(i));
         }
         return Collections.unmodifiableCollection(list);
     }
@@ -234,16 +233,22 @@ public class Point2DArray
         return m_jso;
     }
 
+    @Override
     public String toString()
     {
-        return new JSONArray(m_jso).toString();
+        return new JSONArray(getJSO()).toString();
+    }
+
+    @Override
+    public Iterator<Point2D> iterator()
+    {
+        return getPoints().iterator();
     }
 
     public static final class Point2DArrayJSO extends JsArray<Point2DJSO>
     {
         protected Point2DArrayJSO()
         {
-
         }
 
         public final native void pop()
@@ -251,9 +256,9 @@ public class Point2DArray
         	this.pop();
         }-*/;
 
-        public static final native Point2DArrayJSO makePoint2DArrayJSO()
-        /*-{
-        	return [];
-        }-*/;
+        public static final Point2DArrayJSO make()
+        {
+            return JsArray.createArray().cast();
+        }
     }
 }

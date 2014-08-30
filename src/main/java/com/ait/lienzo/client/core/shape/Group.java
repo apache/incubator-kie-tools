@@ -784,7 +784,36 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     @Override
-    public ArrayList<Node<?>> search(INodeFilter filter)
+    public ArrayList<Node<?>> findByID(String id)
+    {
+        if ((null == id) || ((id = id.trim()).isEmpty()))
+        {
+            return new ArrayList<Node<?>>(0);
+        }
+        final String look = id;
+
+        return find(new INodeFilter()
+        {
+            @Override
+            public boolean matches(Node<?> node)
+            {
+                if (null == node)
+                {
+                    return false;
+                }
+                String id = node.getAttributes().getID();
+
+                if ((null != id) && (false == (id = id.trim()).isEmpty()))
+                {
+                    return id.equals(look);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public ArrayList<Node<?>> find(INodeFilter filter)
     {
         ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
@@ -815,7 +844,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
 
                     if (null != cont)
                     {
-                        for (Node<?> look : cont.search(filter))
+                        for (Node<?> look : cont.find(filter))
                         {
                             if (false == find.contains(look))
                             {

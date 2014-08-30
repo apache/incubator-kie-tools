@@ -70,11 +70,11 @@ public class Triangle extends Shape<Triangle>
 
         if ((null != list) && (list.size() > 2))
         {
-            Point2D point0 = list.getPoint(0);
+            Point2D point0 = list.get(0);
 
-            Point2D point1 = list.getPoint(1);
+            Point2D point1 = list.get(1);
 
-            Point2D point2 = list.getPoint(2);
+            Point2D point2 = list.get(2);
 
             context.beginPath();
 
@@ -119,8 +119,6 @@ public class Triangle extends Shape<Triangle>
     {
         return new TriangleFactory();
     }
-
-    // TODO - add triangle math methods, inner angles, etc
 
     public static class TriangleFactory extends ShapeFactory<Triangle>
     {

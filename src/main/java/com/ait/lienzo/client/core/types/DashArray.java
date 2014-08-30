@@ -48,7 +48,7 @@ public final class DashArray
         {
             dash = Math.abs(dash);
         }
-        getJSO().push(dash);
+        m_jso.push(dash);
 
         return this;
     }
@@ -69,7 +69,7 @@ public final class DashArray
 
     public final double[] getNormalizedArray()
     {
-        int leng = m_jso.size();
+        final int leng = m_jso.size();
 
         if ((leng % 2) == 1)
         {
@@ -81,18 +81,12 @@ public final class DashArray
             }
             return dashes;
         }
-        double[] dashes = new double[leng];
-
-        for (int i = 0; i < leng; i++)
-        {
-            dashes[i] = m_jso.get(i);
-        }
-        return dashes;
+        return m_jso.toArray();
     }
 
     public final int size()
     {
-        return getJSO().size();
+        return m_jso.size();
     }
 
     public final NFastDoubleArrayJSO getJSO()

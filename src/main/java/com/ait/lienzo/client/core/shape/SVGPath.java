@@ -536,7 +536,7 @@ public class SVGPath extends Shape<SVGPath>
         }
     }
 
-    private NFastDoubleArrayJSO convertEndpointToCenterParameterization(double x1, double y1, double x2, double y2, double fa, double fs, double rx, double ry, double ps)
+    private final NFastDoubleArrayJSO convertEndpointToCenterParameterization(double x1, double y1, double x2, double y2, double fa, double fs, double rx, double ry, double ps)
     {
         ps = ps * (Math.PI / 180.0);
 
@@ -674,14 +674,7 @@ public class SVGPath extends Shape<SVGPath>
 
             if (null != list)
             {
-                final int size = list.size();
-
-                points = new double[size];
-
-                for (int i = 0; i < size; i++)
-                {
-                    points[i] = list.get(i);
-                }
+                points = list.toArray();
             }
             else
             {

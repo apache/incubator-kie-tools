@@ -82,13 +82,13 @@ public class BezierCurve extends Shape<BezierCurve>
         {
             context.beginPath();
 
-            Point2D p0 = points.getPoint(0);
+            Point2D p0 = points.get(0);
 
-            Point2D p1 = points.getPoint(1);
+            Point2D p1 = points.get(1);
 
-            Point2D p2 = points.getPoint(2);
+            Point2D p2 = points.get(2);
 
-            Point2D p3 = points.getPoint(3);
+            Point2D p3 = points.get(3);
 
             context.moveTo(p0.getX(), p0.getY());
 

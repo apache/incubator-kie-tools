@@ -70,7 +70,7 @@ public class PolyLine extends Shape<PolyLine>
         {
             final int leng = list.size();
 
-            Point2D point = list.getPoint(0);
+            Point2D point = list.get(0);
 
             context.beginPath();
 
@@ -78,7 +78,7 @@ public class PolyLine extends Shape<PolyLine>
 
             for (int i = 1; i < leng; i++)
             {
-                point = list.getPoint(i);
+                point = list.get(i);
 
                 context.lineTo(point.getX(), point.getY());
             }
@@ -90,7 +90,6 @@ public class PolyLine extends Shape<PolyLine>
     @Override
     public void fill(Context2D context, Attributes attr, double alpha)
     {
-
     }
 
     /**
