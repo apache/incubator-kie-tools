@@ -26,10 +26,10 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.types.INodeFilter;
 import com.ait.lienzo.client.core.util.CursorMap;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.IColor;
+import com.ait.lienzo.shared.java.util.function.Predicate;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -281,7 +281,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         return m_view;
     }
 
-    public ArrayList<Node<?>> findByID(String id)
+    public Iterable<Node<?>> findByID(String id)
     {
         if (null != getViewport())
         {
@@ -290,11 +290,11 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         return new ArrayList<Node<?>>(0);
     }
 
-    public ArrayList<Node<?>> find(INodeFilter filter)
+    public Iterable<Node<?>> find(Predicate<Node<?>> predicate)
     {
         if (null != getViewport())
         {
-            return getViewport().find(filter);
+            return getViewport().find(predicate);
         }
         return new ArrayList<Node<?>>(0);
     }

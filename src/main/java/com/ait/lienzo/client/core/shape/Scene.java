@@ -25,10 +25,10 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.client.core.types.INodeFilter;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.java.util.function.Predicate;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
@@ -745,7 +745,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     }
 
     @Override
-    public ArrayList<Node<?>> findByID(String id)
+    public Iterable<Node<?>> findByID(String id)
     {
         if ((null == id) || ((id = id.trim()).isEmpty()))
         {
@@ -753,10 +753,10 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
         }
         final String look = id;
 
-        return find(new INodeFilter()
+        return find(new Predicate<Node<?>>()
         {
             @Override
-            public boolean matches(Node<?> node)
+            public boolean test(Node<?> node)
             {
                 if (null == node)
                 {
@@ -774,11 +774,11 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     }
 
     @Override
-    public final ArrayList<Node<?>> find(INodeFilter filter)
+    public final Iterable<Node<?>> find(Predicate<Node<?>> predicate)
     {
         final ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
-        if (filter.matches(this))
+        if (predicate.test(this))
         {
             find.add(this);
         }
@@ -790,14 +790,14 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             if (null != layer)
             {
-                if (filter.matches(layer))
+                if (predicate.test(layer))
                 {
                     if (false == find.contains(layer))
                     {
                         find.add(layer);
                     }
                 }
-                for (Node<?> look : layer.find(filter))
+                for (Node<?> look : layer.find(predicate))
                 {
                     if (false == find.contains(look))
                     {

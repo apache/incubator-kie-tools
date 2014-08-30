@@ -16,10 +16,8 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
-
 import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.client.core.types.INodeFilter;
+import com.ait.lienzo.shared.java.util.function.Predicate;
 
 /**
  * Interface to be implemented by all primitive collections. 
@@ -85,7 +83,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @param filter
      * @return ArrayList
      */
-    public ArrayList<Node<?>> find(INodeFilter filter);
+    public Iterable<Node<?>> find(Predicate<Node<?>> predicate);
     
     /**
      * Searches and returns all {@link Node} that have a matching ID {@link INodeFilter}
@@ -93,7 +91,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @param filter
      * @return ArrayList
      */
-    public ArrayList<Node<?>> findByID(String id);
+    public Iterable<Node<?>> findByID(String id);
 
     /**
      * Returns the number of items in this container

@@ -14,11 +14,17 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.types;
+package com.ait.lienzo.shared.java.lang;
 
-import com.ait.lienzo.client.core.shape.Node;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.ElementType;
 
-public interface INodeFilter
+@Documented
+@Retention(value = RetentionPolicy.RUNTIME)
+@Target(value = ElementType.TYPE)
+public @interface FunctionalInterface
 {
-    public boolean matches(Node<?> node);
 }

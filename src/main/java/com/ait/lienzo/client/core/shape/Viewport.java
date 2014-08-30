@@ -42,11 +42,11 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.client.core.types.INodeFilter;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.java.util.function.Predicate;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
@@ -575,7 +575,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     }
 
     @Override
-    public ArrayList<Node<?>> findByID(String id)
+    public Iterable<Node<?>> findByID(String id)
     {
         if ((null == id) || ((id = id.trim()).isEmpty()))
         {
@@ -583,10 +583,10 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
         final String look = id;
 
-        return find(new INodeFilter()
+        return find(new Predicate<Node<?>>()
         {
             @Override
-            public boolean matches(Node<?> node)
+            public boolean test(Node<?> node)
             {
                 if (null == node)
                 {
@@ -604,15 +604,15 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     }
 
     @Override
-    public ArrayList<Node<?>> find(INodeFilter filter)
+    public Iterable<Node<?>> find(Predicate<Node<?>> predicate)
     {
         ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
-        if (filter.matches(this))
+        if (predicate.test(this))
         {
             find.add(this);
         }
-        for (Node<?> look : m_main.find(filter))
+        for (Node<?> look : m_main.find(predicate))
         {
             if (false == find.contains(look))
             {

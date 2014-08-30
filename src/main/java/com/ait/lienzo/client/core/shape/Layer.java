@@ -27,7 +27,6 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.INodeFilter;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.NFastStringMap;
@@ -37,6 +36,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.java.util.function.Predicate;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style.Display;
@@ -772,7 +772,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     }
 
     @Override
-    public ArrayList<Node<?>> findByID(String id)
+    public Iterable<Node<?>> findByID(String id)
     {
         if ((null == id) || ((id = id.trim()).isEmpty()))
         {
@@ -780,10 +780,10 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
         final String look = id;
 
-        return find(new INodeFilter()
+        return find(new Predicate<Node<?>>()
         {
             @Override
-            public boolean matches(Node<?> node)
+            public boolean test(Node<?> node)
             {
                 if (null == node)
                 {
@@ -809,11 +809,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @return ArrayList<Node>
      */
     @Override
-    public ArrayList<Node<?>> find(INodeFilter filter)
+    public Iterable<Node<?>> find(Predicate<Node<?>> predicate)
     {
         ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
-        if (filter.matches(this))
+        if (predicate.test(this))
         {
             find.add(this);
         }
@@ -829,7 +829,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                 if (null != node)
                 {
-                    if (filter.matches(node))
+                    if (predicate.test(node))
                     {
                         if (false == find.contains(node))
                         {
@@ -840,7 +840,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                     if (null != cont)
                     {
-                        for (Node<?> look : cont.find(filter))
+                        for (Node<?> look : cont.find(predicate))
                         {
                             if (false == find.contains(look))
                             {

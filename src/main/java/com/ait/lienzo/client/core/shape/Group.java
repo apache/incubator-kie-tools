@@ -30,7 +30,6 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.DragBounds;
-import com.ait.lienzo.client.core.types.INodeFilter;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
@@ -38,6 +37,7 @@ import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.java.util.function.Predicate;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -784,7 +784,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     @Override
-    public ArrayList<Node<?>> findByID(String id)
+    public Iterable<Node<?>> findByID(String id)
     {
         if ((null == id) || ((id = id.trim()).isEmpty()))
         {
@@ -792,10 +792,10 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
         }
         final String look = id;
 
-        return find(new INodeFilter()
+        return find(new Predicate<Node<?>>()
         {
             @Override
-            public boolean matches(Node<?> node)
+            public boolean test(Node<?> node)
             {
                 if (null == node)
                 {
@@ -813,11 +813,11 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     @Override
-    public ArrayList<Node<?>> find(INodeFilter filter)
+    public Iterable<Node<?>> find(Predicate<Node<?>> predicate)
     {
         ArrayList<Node<?>> find = new ArrayList<Node<?>>();
 
-        if (filter.matches(this))
+        if (predicate.test(this))
         {
             find.add(this);
         }
@@ -833,7 +833,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
 
                 if (null != node)
                 {
-                    if (filter.matches(node))
+                    if (predicate.test(node))
                     {
                         if (false == find.contains(node))
                         {
@@ -844,7 +844,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
 
                     if (null != cont)
                     {
-                        for (Node<?> look : cont.find(filter))
+                        for (Node<?> look : cont.find(predicate))
                         {
                             if (false == find.contains(look))
                             {
