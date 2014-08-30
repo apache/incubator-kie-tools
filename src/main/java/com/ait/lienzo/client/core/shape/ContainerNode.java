@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 
 import com.ait.lienzo.client.core.Context2D;
@@ -24,6 +26,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.java.util.function.Predicate;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -200,6 +203,45 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         getChildNodes().moveToBottom(node);
 
         return coerce();
+    }
+
+    @Override
+    public final Iterable<Node<?>> findByID(String id)
+    {
+        if ((null == id) || ((id = id.trim()).isEmpty()))
+        {
+            return new ArrayList<Node<?>>(0);
+        }
+        final String look = id;
+
+        return find(new Predicate<Node<?>>()
+        {
+            @Override
+            public boolean test(Node<?> node)
+            {
+                if (null == node)
+                {
+                    return false;
+                }
+                String id = node.getAttributes().getID();
+
+                if ((null != id) && (false == (id = id.trim()).isEmpty()))
+                {
+                    return id.equals(look);
+                }
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public final Iterable<Node<?>> find(Predicate<Node<?>> predicate)
+    {
+        LinkedHashSet<Node<?>> buff = new LinkedHashSet<Node<?>>();
+
+        find(predicate, buff);
+
+        return buff;
     }
 
     @Override

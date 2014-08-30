@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
@@ -745,42 +745,11 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     }
 
     @Override
-    public Iterable<Node<?>> findByID(String id)
+    public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff)
     {
-        if ((null == id) || ((id = id.trim()).isEmpty()))
-        {
-            return new ArrayList<Node<?>>(0);
-        }
-        final String look = id;
-
-        return find(new Predicate<Node<?>>()
-        {
-            @Override
-            public boolean test(Node<?> node)
-            {
-                if (null == node)
-                {
-                    return false;
-                }
-                String id = node.getAttributes().getID();
-
-                if ((null != id) && (false == (id = id.trim()).isEmpty()))
-                {
-                    return id.equals(look);
-                }
-                return false;
-            }
-        });
-    }
-
-    @Override
-    public final Iterable<Node<?>> find(Predicate<Node<?>> predicate)
-    {
-        final ArrayList<Node<?>> find = new ArrayList<Node<?>>();
-
         if (predicate.test(this))
         {
-            find.add(this);
+            buff.add(this);
         }
         final int size = length();
 
@@ -792,21 +761,11 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
             {
                 if (predicate.test(layer))
                 {
-                    if (false == find.contains(layer))
-                    {
-                        find.add(layer);
-                    }
+                    buff.add(layer);
                 }
-                for (Node<?> look : layer.find(predicate))
-                {
-                    if (false == find.contains(look))
-                    {
-                        find.add(look);
-                    }
-                }
+                layer.find(predicate, buff);
             }
         }
-        return find;
     }
 
     @Override

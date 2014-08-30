@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -771,35 +771,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return this;
     }
 
-    @Override
-    public Iterable<Node<?>> findByID(String id)
-    {
-        if ((null == id) || ((id = id.trim()).isEmpty()))
-        {
-            return new ArrayList<Node<?>>(0);
-        }
-        final String look = id;
-
-        return find(new Predicate<Node<?>>()
-        {
-            @Override
-            public boolean test(Node<?> node)
-            {
-                if (null == node)
-                {
-                    return false;
-                }
-                String id = node.getAttributes().getID();
-
-                if ((null != id) && (false == (id = id.trim()).isEmpty()))
-                {
-                    return id.equals(look);
-                }
-                return false;
-            }
-        });
-    }
-
     /**
      * Returns all the {@link Node} objects present in this layer that match the
      * given {@link com.ait.lienzo.client.core.types.INodeFilter}, this Layer
@@ -809,13 +780,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @return ArrayList<Node>
      */
     @Override
-    public Iterable<Node<?>> find(Predicate<Node<?>> predicate)
+    public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff)
     {
-        ArrayList<Node<?>> find = new ArrayList<Node<?>>();
-
         if (predicate.test(this))
         {
-            find.add(this);
+            buff.add(this);
         }
         int size = length();
 
@@ -831,27 +800,17 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                 {
                     if (predicate.test(node))
                     {
-                        if (false == find.contains(node))
-                        {
-                            find.add(node);
-                        }
+                        buff.add(node);
                     }
                     IContainer<?, ?> cont = node.asContainer();
 
                     if (null != cont)
                     {
-                        for (Node<?> look : cont.find(predicate))
-                        {
-                            if (false == find.contains(look))
-                            {
-                                find.add(look);
-                            }
-                        }
+                        cont.find(predicate, buff);
                     }
                 }
             }
         }
-        return find;
     }
 
     /**

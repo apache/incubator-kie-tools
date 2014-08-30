@@ -16,8 +16,8 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -575,51 +575,13 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     }
 
     @Override
-    public Iterable<Node<?>> findByID(String id)
+    public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff)
     {
-        if ((null == id) || ((id = id.trim()).isEmpty()))
-        {
-            return new ArrayList<Node<?>>(0);
-        }
-        final String look = id;
-
-        return find(new Predicate<Node<?>>()
-        {
-            @Override
-            public boolean test(Node<?> node)
-            {
-                if (null == node)
-                {
-                    return false;
-                }
-                String id = node.getAttributes().getID();
-
-                if ((null != id) && (false == (id = id.trim()).isEmpty()))
-                {
-                    return id.equals(look);
-                }
-                return false;
-            }
-        });
-    }
-
-    @Override
-    public Iterable<Node<?>> find(Predicate<Node<?>> predicate)
-    {
-        ArrayList<Node<?>> find = new ArrayList<Node<?>>();
-
         if (predicate.test(this))
         {
-            find.add(this);
+            buff.add(this);
         }
-        for (Node<?> look : m_main.find(predicate))
-        {
-            if (false == find.contains(look))
-            {
-                find.add(look);
-            }
-        }
-        return find;
+        m_main.find(predicate, buff);
     }
 
     @Override
