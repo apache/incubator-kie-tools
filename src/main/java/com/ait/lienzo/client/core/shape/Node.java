@@ -73,6 +73,7 @@ import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.Console;
+import com.ait.lienzo.client.core.util.UUID;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.ImageElement;
@@ -103,6 +104,8 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     private final MetaData   m_meta;
 
     private NodeType         m_type;
+
+    private String           m_uuid;
 
     private Node<?>          m_parent;
 
@@ -247,6 +250,21 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     protected Node<?> copyUnchecked()
     {
         return (Node<?>) JSONDeserializer.getInstance().fromString(toJSONString(), false); // don't validate
+    }
+
+    protected String uuid()
+    {
+        if (null == m_uuid)
+        {
+            m_uuid = UUID.uuid();
+        }
+        return m_uuid;
+    }
+
+    @Override
+    public final int hashCode()
+    {
+        return uuid().hashCode();
     }
 
     /**
@@ -800,13 +818,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
-    public int hashCode()
-    {
-        return toString().hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj)
+    public final boolean equals(Object obj)
     {
         if (obj == this)
         {
@@ -822,18 +834,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
         Node<?> node = ((Node<?>) obj);
 
-        if (this.getNodeType() != node.getNodeType())
-        {
-            return false;
-        }
-        if ((this instanceof Shape) && (node instanceof Shape))
-        {
-            if (((Shape<?>) this).getShapeType() != ((Shape<?>) node).getShapeType())
-            {
-                return false;
-            }
-        }
-        return toString().equals(obj.toString());
+        return uuid().equals(node.uuid());
     }
 
     public static abstract class NodeFactory<N extends IJSONSerializable<N>> extends AbstractFactory<N>
