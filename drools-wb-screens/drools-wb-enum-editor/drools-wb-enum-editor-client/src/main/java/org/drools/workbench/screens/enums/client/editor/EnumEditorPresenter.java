@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConstants;
 import org.drools.workbench.screens.enums.client.type.EnumResourceType;
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.drools.workbench.screens.enums.service.EnumService;
@@ -50,7 +49,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  * Enum Editor Presenter
@@ -101,6 +99,7 @@ public class EnumEditorPresenter
                 }
 
                 resetEditorPages(content.getOverview());
+                addSourcePage();
 
                 view.setContent(content.getModel().getDRL());
                 view.hideBusyIndicator();
@@ -146,8 +145,8 @@ public class EnumEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
-        updatePreview(view.getContent());
+    protected void onSourceTabSelected() {
+        updateSource(view.getContent());
     }
 
     @IsDirty

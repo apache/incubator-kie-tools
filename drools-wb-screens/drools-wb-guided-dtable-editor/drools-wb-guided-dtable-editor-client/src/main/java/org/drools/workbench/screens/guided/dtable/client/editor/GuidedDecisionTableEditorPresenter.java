@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
@@ -56,7 +55,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  * Guided Decision Table Editor Presenter
@@ -131,6 +129,7 @@ public class GuidedDecisionTableEditorPresenter
                         dataModel);
 
                 resetEditorPages(content.getOverview());
+                addSourcePage();
 
                 addImportsTab(importsWidget);
 
@@ -194,11 +193,11 @@ public class GuidedDecisionTableEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
+    protected void onSourceTabSelected() {
         service.call(new RemoteCallback<String>() {
             @Override
             public void callback(String source) {
-                updatePreview(source);
+                updateSource(source);
             }
         }).toSource(versionRecordManager.getCurrentPath(), model);
     }

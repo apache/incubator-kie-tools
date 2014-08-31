@@ -165,11 +165,6 @@ public class WorkItemsEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
-    @Override
-    protected void onOverviewSelected() {
-        // No source for work items, no update needed.
-    }
-
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();

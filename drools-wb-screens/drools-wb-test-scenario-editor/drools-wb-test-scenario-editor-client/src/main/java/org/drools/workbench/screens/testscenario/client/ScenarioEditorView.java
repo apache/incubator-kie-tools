@@ -17,6 +17,7 @@ public interface ScenarioEditorView
                      final boolean isReadOnly,
                      final Scenario scenario,
                      final Overview overview,
+                     final String version,
                      final AsyncPackageDataModelOracle oracle,
                      final Caller<ScenarioTestEditorService> service );
 

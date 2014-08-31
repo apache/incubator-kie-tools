@@ -142,6 +142,7 @@ public class ScoreCardXLSEditorPresenter
             public void callback(ScoreCardXLSContent content) {
 
                 resetEditorPages(content.getOverview());
+                addSourcePage();
 
                 view.setPath(versionRecordManager.getCurrentPath());
                 view.setReadOnly(isReadOnly);
@@ -156,7 +157,7 @@ public class ScoreCardXLSEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
+    protected void onSourceTabSelected() {
         scoreCardXLSService.call().getSource(versionRecordManager.getCurrentPath());
     }
 

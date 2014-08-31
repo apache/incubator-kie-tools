@@ -62,7 +62,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
 @WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = {GuidedRuleTemplateResourceType.class})
@@ -127,6 +126,7 @@ public class GuidedRuleTemplateEditorPresenter
                 }
 
                 resetEditorPages(content.getOverview());
+                addSourcePage();
 
                 addPage(
                         new Page(dataView,
@@ -221,10 +221,10 @@ public class GuidedRuleTemplateEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
+    protected void onSourceTabSelected() {
         service.call(new RemoteCallback<String>() {
             @Override public void callback(String source) {
-                updatePreview(source);
+                updateSource(source);
             }
         }).toSource(versionRecordManager.getCurrentPath(), model);
     }

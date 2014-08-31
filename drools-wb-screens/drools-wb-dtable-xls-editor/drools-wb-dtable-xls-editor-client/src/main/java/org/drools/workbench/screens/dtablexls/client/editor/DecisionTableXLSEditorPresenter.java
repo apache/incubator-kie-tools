@@ -51,7 +51,6 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
 @WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = {DecisionTableXLSResourceType.class})
@@ -93,6 +92,7 @@ public class DecisionTableXLSEditorPresenter
         super.init(path, place, type);
 
         resetEditorPages(null);
+        addSourcePage();
 
         view.setPath(path);
         view.setReadOnly(isReadOnly);
@@ -104,10 +104,10 @@ public class DecisionTableXLSEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
+    protected void onSourceTabSelected() {
         decisionTableXLSService.call(new RemoteCallback<String>() {
             @Override public void callback(String source) {
-                updatePreview(source);
+                updateSource(source);
             }
         }).getSource(versionRecordManager.getCurrentPath());
     }

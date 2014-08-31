@@ -119,6 +119,7 @@ public class GuidedScoreCardEditorPresenter
                                                                         dataModel );
 
                 resetEditorPages( content.getOverview() );
+                addSourcePage();
 
                 addImportsTab( importsWidget );
 
@@ -185,11 +186,11 @@ public class GuidedScoreCardEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
+    protected void onSourceTabSelected() {
         scoreCardEditorService.call( new RemoteCallback<String>() {
             @Override
             public void callback( String source ) {
-                updatePreview( source );
+                updateSource(source);
             }
         } ).toSource( versionRecordManager.getCurrentPath(),
                       model );

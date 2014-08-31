@@ -117,11 +117,6 @@ public class CategoriesEditorPresenter
         };
     }
 
-    @Override
-    protected void onOverviewSelected() {
-        // Categories shows no preview so there is no need to update here.
-    }
-
     @IsDirty
     public boolean isDirty() {
         return view.isDirty();

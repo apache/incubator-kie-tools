@@ -86,6 +86,7 @@ public class GlobalsEditorPresenter
 
                 model = content.getModel();
                 resetEditorPages( content.getOverview() );
+                addSourcePage();
 
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
 
@@ -136,11 +137,11 @@ public class GlobalsEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
+    protected void onSourceTabSelected() {
         globalsEditorService.call( new RemoteCallback<String>() {
             @Override
             public void callback( String source ) {
-                updatePreview( source );
+                updateSource(source);
             }
         } ).toSource( versionRecordManager.getCurrentPath(),
                       model );

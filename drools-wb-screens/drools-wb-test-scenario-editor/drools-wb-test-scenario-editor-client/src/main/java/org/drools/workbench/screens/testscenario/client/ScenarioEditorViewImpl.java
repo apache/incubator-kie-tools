@@ -22,10 +22,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
+import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -39,8 +38,6 @@ import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.uberfire.client.common.BusyIndicatorView;
@@ -53,7 +50,6 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -77,7 +73,6 @@ public class ScenarioEditorViewImpl
     private BulkRunTestScenarioEditor bulkRunTestScenarioEditor;
 
     private Caller<RuleNamesService> ruleNameService;
-    private BusyIndicatorView busyIndicatorView;
     private OverviewWidgetPresenter overviewWidget;
 
     @Inject
@@ -87,19 +82,27 @@ public class ScenarioEditorViewImpl
             final @New BulkRunTestScenarioEditor bulkRunTestScenarioEditor,
             final OverviewWidgetPresenter overviewWidget,
             final Event<NotificationEvent> notification,
-            final Caller<RuleNamesService> ruleNameService,
-            final BusyIndicatorView busyIndicatorView) {
+            final Caller<RuleNamesService> ruleNameService) {
         this.importsWidget = importsWidget;
         this.multiPage = multiPage;
         this.overviewWidget = overviewWidget;
         this.notification = notification;
         this.ruleNameService = ruleNameService;
-        this.busyIndicatorView = busyIndicatorView;
         this.bulkRunTestScenarioEditor = bulkRunTestScenarioEditor;
 
         layout.setWidth("100%");
 
-        initWidget(multiPage.asWidget());
+        // Let's not do this. It breaks the UI.
+        // Instead we overwrite asWidget();
+        // initWidget(multiPage.asWidget());
+    }
+
+    @Override
+    /**
+     * Overriding this since initWidget(...) breaks the UI.
+     */
+    public Widget asWidget() {
+        return multiPage.asWidget();
     }
 
     @Override
@@ -107,18 +110,17 @@ public class ScenarioEditorViewImpl
             final boolean isReadOnly,
             final Scenario scenario,
             final Overview overview,
+            final String version,
             final AsyncPackageDataModelOracle oracle,
             final Caller<ScenarioTestEditorService> service) {
         layout.clear();
         multiPage.clear();
 
-        addOverviewPage(path, overview);
-
         multiPage.addWidget(layout,
                 TestScenarioConstants.INSTANCE.TestScenario());
+        addOverviewPage(path, overview, version);
         multiPage.addWidget(importsWidget,
                 CommonConstants.INSTANCE.ConfigTabTitle());
-
 
         addBulkRunTestScenarioPanel(path,
                 isReadOnly);
@@ -140,11 +142,10 @@ public class ScenarioEditorViewImpl
                 isReadOnly);
     }
 
-    private void addOverviewPage(ObservablePath path, Overview overview) {
+    private void addOverviewPage(ObservablePath path, Overview overview, String version) {
         multiPage.addWidget(overviewWidget,
                 CommonConstants.INSTANCE.Overview());
-        overviewWidget.setContent(overview, path);
-
+        overviewWidget.setContent(overview, path, version);
     }
 
     private void createWidgetForEditorLayout(final DirtyableFlexTable editorLayout,

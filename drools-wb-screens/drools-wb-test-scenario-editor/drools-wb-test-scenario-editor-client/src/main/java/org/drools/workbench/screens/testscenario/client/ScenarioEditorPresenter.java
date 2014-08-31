@@ -116,6 +116,7 @@ public class ScenarioEditorPresenter
                         isReadOnly,
                         scenario,
                         content.getOverview(),
+                        versionRecordManager.getVersion(),
                         oracle,
                         service);
 
@@ -138,11 +139,6 @@ public class ScenarioEditorPresenter
                     }
                 });
         concurrentUpdateSessionInfo = null;
-    }
-
-    @Override
-    protected void onOverviewSelected() {
-        // Source not used in test scenarios. No need to update here.
     }
 
     @WorkbenchPartTitle

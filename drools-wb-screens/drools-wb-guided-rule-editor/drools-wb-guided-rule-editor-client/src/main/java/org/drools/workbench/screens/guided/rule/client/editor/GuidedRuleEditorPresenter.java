@@ -115,6 +115,7 @@ public class GuidedRuleEditorPresenter
         this.isDSLEnabled = resourceTypeDSL.accept( path );
     }
 
+
     protected void loadContent() {
         view.showLoading();
 
@@ -123,14 +124,14 @@ public class GuidedRuleEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
-        service.call( new RemoteCallback<String>() {
+    protected void onSourceTabSelected() {
+        service.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String source ) {
-                updatePreview( source );
+            public void callback(String source) {
+                updateSource(source);
             }
-        } ).toSource( versionRecordManager.getCurrentPath(),
-                      model );
+        }).toSource(versionRecordManager.getCurrentPath(),
+                model);
     }
 
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
@@ -151,6 +152,8 @@ public class GuidedRuleEditorPresenter
                         dataModel );
 
                 resetEditorPages( content.getOverview() );
+
+                addSourcePage();
 
                 addImportsTab( importsWidget );
 

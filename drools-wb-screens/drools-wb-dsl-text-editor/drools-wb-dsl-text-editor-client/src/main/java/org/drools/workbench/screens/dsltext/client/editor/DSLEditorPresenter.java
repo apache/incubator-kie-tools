@@ -99,6 +99,7 @@ public class DSLEditorPresenter
                 }
 
                 resetEditorPages(content.getOverview());
+                addSourcePage();
 
                 view.setContent(content.getModel());
                 view.hideBusyIndicator();
@@ -145,8 +146,8 @@ public class DSLEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
-        updatePreview(view.getContent());
+    protected void onSourceTabSelected() {
+        updateSource(view.getContent());
     }
 
     @IsDirty

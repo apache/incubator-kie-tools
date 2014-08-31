@@ -117,6 +117,7 @@ public class DRLEditorPresenter
                 }
 
                 resetEditorPages(content.getOverview());
+                addSourcePage();
 
                 final String drl = assertContent(content.getDrl());
                 final List<String> fullyQualifiedClassNames = content.getFullyQualifiedClassNames();
@@ -230,8 +231,8 @@ public class DRLEditorPresenter
     }
 
     @Override
-    protected void onOverviewSelected() {
-        updatePreview(view.getContent());
+    protected void onSourceTabSelected() {
+        updateSource(view.getContent());
     }
 
     private ClientResourceType getResourceType(Path path) {
