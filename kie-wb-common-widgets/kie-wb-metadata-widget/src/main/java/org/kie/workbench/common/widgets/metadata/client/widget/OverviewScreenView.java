@@ -21,10 +21,13 @@ import java.util.Date;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 public interface OverviewScreenView
         extends IsWidget, HasBusyIndicator {
+
+
 
     interface Presenter {
 
@@ -34,9 +37,11 @@ public interface OverviewScreenView
 
     void setPresenter(Presenter presenter);
 
+    void refresh();
+
     void setReadOnly(boolean isReadOnly);
 
-    void setPreview(String text);
+    void setVersionHistory(Path path, String version);
 
     void setDescription(String description);
 
@@ -51,6 +56,8 @@ public interface OverviewScreenView
     void setMetadata(Metadata metadata, boolean isReadOnly);
 
     String getTitle(String fileName, String fileType);
+
+    void showVersionHistory();
 
     void showLoadingIndicator();
 

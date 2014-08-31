@@ -484,24 +484,6 @@ public class DataModelerScreenPresenter
         }
     }
 
-    @Override
-    protected void onOverviewSelected() {
-        if ( getContext().isParsed() && getContext().isEditorChanged() ) {
-
-            //If there are changes in the ui the source must be regenerated on server side.
-            view.showLoading();
-            modelerService.call( new RemoteCallback<GenerationResult>() {
-                @Override
-                public void callback( GenerationResult result ) {
-                    view.hideBusyIndicator();
-                    updatePreview( result.getSource() );
-                }
-            }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateSource( getSource(), versionRecordManager.getCurrentPath(), getContext().getDataObject() );
-        } else {
-            updatePreview( javaSourceEditor.getContent() );
-        }
-    }
-
     private void save( final String newClassName ) {
 
         String currentFileName = DataModelerUtils.extractSimpleFileName( versionRecordManager.getCurrentPath() );
@@ -788,7 +770,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void onSourceTabSelected() {
+    protected void onSourceTabSelected() {
 
         if ( getContext().isParsed() && getContext().isEditorChanged() ) {
 
@@ -799,7 +781,7 @@ public class DataModelerScreenPresenter
                 public void callback( GenerationResult result ) {
                     view.hideBusyIndicator();
                     setSource( result.getSource() );
-                    updatePreview( result.getSource() );
+                    updateSource(result.getSource());
                     getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
                 }
             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).updateSource( getSource(), versionRecordManager.getCurrentPath(), getContext().getDataObject() );
@@ -807,7 +789,7 @@ public class DataModelerScreenPresenter
             if ( !isOverviewTabSelected() ) {
                 getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
             }
-            updatePreview( javaSourceEditor.getContent() );
+            updateSource(javaSourceEditor.getContent());
         }
     }
 

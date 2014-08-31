@@ -238,4 +238,8 @@ public interface CommonConstants
 
     String ShowAll();
 
+    String Author();
+
+    String CommitMessage();
+
 }

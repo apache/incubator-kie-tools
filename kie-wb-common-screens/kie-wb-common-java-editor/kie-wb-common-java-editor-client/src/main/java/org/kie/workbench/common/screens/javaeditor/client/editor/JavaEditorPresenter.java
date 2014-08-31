@@ -93,11 +93,6 @@ public class JavaEditorPresenter
 
     }
 
-    @Override
-    protected void onOverviewSelected() {
-        loadContent();
-    }
-
     @WorkbenchPartView
     public IsWidget getWidget() {
         return super.getWidget();

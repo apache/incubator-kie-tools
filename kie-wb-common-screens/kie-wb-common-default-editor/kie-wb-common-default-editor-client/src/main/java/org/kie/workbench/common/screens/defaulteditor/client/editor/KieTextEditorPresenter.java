@@ -124,11 +124,6 @@ public class KieTextEditorPresenter
 
     }
 
-    @Override
-    protected void onOverviewSelected() {
-        updatePreview(view.getContent());
-    }
-
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;

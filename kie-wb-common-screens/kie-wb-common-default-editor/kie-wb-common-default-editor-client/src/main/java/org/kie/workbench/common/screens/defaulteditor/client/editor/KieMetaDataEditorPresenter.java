@@ -59,11 +59,6 @@ public class KieMetaDataEditorPresenter
         return super.getTitle();
     }
 
-    @Override
-    protected void onOverviewSelected() {
-        // Nothing to do here.
-    }
-
     @WorkbenchPartView
     public IsWidget asWidget() {
         return super.getWidget();

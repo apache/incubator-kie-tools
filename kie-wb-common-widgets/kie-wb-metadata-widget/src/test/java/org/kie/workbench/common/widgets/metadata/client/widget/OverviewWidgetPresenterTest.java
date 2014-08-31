@@ -21,11 +21,14 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
+import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class OverviewWidgetPresenterTest {
 
@@ -63,25 +66,11 @@ public class OverviewWidgetPresenterTest {
         overview.setMetadata(metadata);
 
         ObservablePath observablePath = mock(ObservablePath.class);
-        editor.setContent(overview, observablePath);
+        editor.setContent(overview, observablePath, versionRecordManager.getVersion());
 
         presenter.onDescriptionEdited("Hello");
 
         assertEquals(overview.getMetadata().getDescription(), "Hello");
     }
 
-    @Test
-    public void testChangeVersion() throws Exception {
-
-//        ObservablePath path = mock(ObservablePath.class);
-//        PlaceRequest place = mock(PlaceRequest.class);
-////        editor.setContent(path, place);
-//
-//        ArgumentCaptor<Callback> callbackArgumentCaptor = ArgumentCaptor.forClass(Callback.class);
-//        verify(versionRecordManager).addVersionSelectionCallback(callbackArgumentCaptor.capture());
-//
-//        callbackArgumentCaptor.getValue().callback(VersionRecord"v1");
-//
-
-    }
 }

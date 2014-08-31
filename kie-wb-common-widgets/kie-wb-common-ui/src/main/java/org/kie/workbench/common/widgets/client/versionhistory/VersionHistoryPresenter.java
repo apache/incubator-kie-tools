@@ -16,40 +16,41 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
-import java.util.List;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 
-@WorkbenchScreen(identifier = "versionHistoryScreen", preferredWidth = 300)
-public class VersionHistoryScreen
-        implements VersionHistoryScreenView.Presenter {
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 
-    private VersionHistoryScreenView view;
+public class VersionHistoryPresenter
+        implements VersionHistoryPresenterView.Presenter,
+        IsWidget {
+
+    private VersionHistoryPresenterView view;
     private Caller<VersionService> versionService;
+
+    private AsyncDataProvider<VersionRecord> dataProvider;
 
     private Event<VersionSelectedEvent> versionSelectedEvent;
 
     private Path path;
     private String version;
+    private List<VersionRecord> records;
 
     @Inject
-    public VersionHistoryScreen(
-            VersionHistoryScreenView view,
+    public VersionHistoryPresenter(
+            final VersionHistoryPresenterView view,
             Caller<VersionService> versionService,
             Event<VersionSelectedEvent> versionSelectedEvent) {
         this.view = view;
@@ -57,16 +58,22 @@ public class VersionHistoryScreen
         this.versionSelectedEvent = versionSelectedEvent;
 
         view.setPresenter(this);
+        dataProvider = new AsyncDataProvider<VersionRecord>() {
+            @Override
+            protected void onRangeChanged(HasData<VersionRecord> display) {
+                if (records != null) {
+                    updateRowCount(records.size(), true);
+                    updateRowData(0, records);
+                }
+            }
+        };
+
     }
 
-    @OnStartup
-    public void onStartup(final PlaceRequest place) {
+    public void init(final Path path, String version) {
 
-        path = PathFactory.newPath(
-                place.getParameter(VersionHistoryScreenPlace.FILENAME, null),
-                place.getParameter(VersionHistoryScreenPlace.URI, null));
-
-        version = place.getParameter(VersionHistoryScreenPlace.VERSION, "");
+        this.path = path;
+        this.version = version;
 
         loadContent();
 
@@ -80,48 +87,40 @@ public class VersionHistoryScreen
         return new RemoteCallback<List<VersionRecord>>() {
             @Override
             public void callback(List<VersionRecord> records) {
-
-                view.clear();
-
-                int number = 1;
-
-                for (final VersionRecord record : records) {
-                    addVersionRecord(record, number++);
-                }
+                view.setup(version, dataProvider);
+                Collections.reverse(records);
+                VersionHistoryPresenter.this.records = records;
             }
         };
     }
 
-    private void addVersionRecord(final VersionRecord record, int number) {
-        view.addLine(
-                record,
-                number,
-                version.equals(record.id()));
-    }
 
     @Override
     public void onSelect(VersionRecord record) {
-        versionSelectedEvent.fire(
-                new VersionSelectedEvent(
-                        path,
-                        record
-                ));
-    }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Versions";
-    }
-
-    @WorkbenchPartView
-    public IsWidget getWidget() {
-        return view;
+        if (!record.id().equals(version)) {
+            versionSelectedEvent.fire(
+                    new VersionSelectedEvent(
+                            path,
+                            record
+                    ));
+        }
     }
 
     public void onVersionChange(@Observes VersionSelectedEvent event) {
-        if (path.toURI().equals(event.getPathToFile().toURI())) {
-            version = event.getVersionRecord().id();
-            loadContent();
+        if (path != null) {
+            if (path.toURI().equals(event.getPathToFile().toURI())) {
+                version = event.getVersionRecord().id();
+                loadContent();
+            }
         }
+    }
+
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
+    }
+
+    public void refresh() {
+        view.refreshGrid();
     }
 }

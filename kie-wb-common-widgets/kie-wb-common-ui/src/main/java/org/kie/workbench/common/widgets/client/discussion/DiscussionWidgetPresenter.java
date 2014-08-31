@@ -38,7 +38,6 @@ public class DiscussionWidgetPresenter
 
     private Metadata metadata;
 
-    @Inject
     private Event<CommentAddedEvent> commentAddedEvent;
 
     public DiscussionWidgetPresenter() {
@@ -48,9 +47,11 @@ public class DiscussionWidgetPresenter
     public DiscussionWidgetPresenter(
             final DiscussionWidgetView view,
             final Identity identity,
+            final Event<CommentAddedEvent> commentAddedEvent,
             final Caller<AppConfigService> appConfigService) {
         this.view = view;
         this.identity = identity;
+        this.commentAddedEvent = commentAddedEvent;
         this.appConfigService = appConfigService;
 
         view.setPresenter(this);
@@ -84,7 +85,6 @@ public class DiscussionWidgetPresenter
                     view.clearCommentBox();
                     view.scrollToBottom();
 
-                    // TODO: Test this
                     commentAddedEvent.fire(
                             new CommentAddedEvent(
                                     identity.getName(),

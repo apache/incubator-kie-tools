@@ -51,11 +51,11 @@ public class OverviewWidgetPresenter
         this.clientTypeRegistry = clientTypeRegistry;
     }
 
-    public void setContent(Overview overview, ObservablePath path) {
+    public void setContent(Overview overview, ObservablePath path, String version) {
 
         this.overview = overview;
 
-        view.setPreview(overview.getPreview());
+        view.setVersionHistory(path, version);
 
         view.setResourceType(clientTypeRegistry.resolve(path));
 
@@ -80,7 +80,11 @@ public class OverviewWidgetPresenter
         return view.asWidget();
     }
 
-    public void updatePreview(String preview) {
-        view.setPreview(preview);
+    public void showVersionsTab() {
+        view.showVersionHistory();
+    }
+
+    public void refresh() {
+        view.refresh();
     }
 }

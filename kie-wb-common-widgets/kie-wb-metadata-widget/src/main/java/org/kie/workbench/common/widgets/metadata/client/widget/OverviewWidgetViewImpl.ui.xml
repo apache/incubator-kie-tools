@@ -21,6 +21,7 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:metadata='urn:import:org.kie.workbench.common.widgets.metadata.client.widget'
              xmlns:discussion='urn:import:org.kie.workbench.common.widgets.client.discussion'
+             xmlns:versionHistory='urn:import:org.kie.workbench.common.widgets.client.versionhistory'
              xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>
@@ -101,10 +102,10 @@
         </div>
       </div>
       <div style="clear:both;">
-        <gwt:TabPanel ui:field="tabPanel">
-          <gwt:Tab text='{i18n.Preview}'>
+        <gwt:TabPanel ui:field="tabPanel" width="100%" height="300px">
+          <gwt:Tab text='{i18n.VersionHistory}'>
             <gwt:FlowPanel>
-              <bootstrap:TextArea ui:field="filePreview" enabled="false" styleName='{style.previewBox}' visibleLines="15"/>
+              <versionHistory:VersionHistoryPresenter ui:field="versionHistory" />
             </gwt:FlowPanel>
           </gwt:Tab>
           <gwt:Tab text='{i18n.Metadata}'>

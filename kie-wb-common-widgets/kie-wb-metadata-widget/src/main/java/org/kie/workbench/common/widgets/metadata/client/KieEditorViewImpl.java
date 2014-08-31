@@ -57,7 +57,8 @@ public abstract class KieEditorViewImpl
         BusyPopup.showMessage(message);
     }
 
-    @Override public void hideBusyIndicator() {
+    @Override
+    public void hideBusyIndicator() {
         BusyPopup.close();
     }
 

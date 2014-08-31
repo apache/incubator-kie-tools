@@ -30,6 +30,7 @@ import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileName
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.kie.workbench.common.widgets.viewsource.client.widget.ViewDRLSourceWidget;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
@@ -52,9 +53,9 @@ import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 
 public abstract class KieEditor {
 
-    protected static final int OVERVIEW_TAB_INDEX = 0;
+    protected static final int EDITOR_TAB_INDEX = 0;
 
-    protected static final int EDITOR_TAB_INDEX = 1;
+    protected static final int OVERVIEW_TAB_INDEX = 1;
 
     protected boolean isReadOnly;
 
@@ -94,6 +95,7 @@ public abstract class KieEditor {
 
     protected PlaceRequest place;
     private ClientResourceType type;
+    private ViewDRLSourceWidget sourceWidget;
 
     protected KieEditor() {
     }
@@ -101,6 +103,12 @@ public abstract class KieEditor {
     protected KieEditor(
             KieEditorView baseView) {
         this.baseView = baseView;
+
+    }
+
+    private void showVersions() {
+        selectOverviewTab();
+        overviewWidget.showVersionsTab();
     }
 
     protected void init(ObservablePath path, PlaceRequest place, ClientResourceType type) {
@@ -118,6 +126,14 @@ public abstract class KieEditor {
                     @Override
                     public void callback(VersionRecord versionRecord) {
                         selectVersion(versionRecord);
+                    }
+                });
+
+        versionRecordManager.setShowMoreCommand(
+                new Command() {
+                    @Override
+                    public void execute() {
+                        showVersions();
                     }
                 });
 
@@ -152,31 +168,34 @@ public abstract class KieEditor {
         );
     }
 
-    protected void addPage(Page page) {
-        multiPage.addPage(page);
-    }
-
-    protected void resetEditorPages(Overview overview) {
-
-        versionRecordManager.setVersions(overview.getMetadata().getVersion());
-        this.overviewWidget.setContent(overview, versionRecordManager.getCurrentPath());
-        this.metadata = overview.getMetadata();
-
-        multiPage.clear();
+    protected void addSourcePage() {
+        sourceWidget = new ViewDRLSourceWidget();
         addPage(
-                new Page(this.overviewWidget,
-                        CommonConstants.INSTANCE.Overview()) {
+                new Page(sourceWidget,
+                        CommonConstants.INSTANCE.SourceTabTitle()) {
                     @Override
                     public void onFocus() {
-                        onOverviewSelected();
+                        onSourceTabSelected();
                     }
 
                     @Override
                     public void onLostFocus() {
 
                     }
-                }
-        );
+                });
+    }
+
+    protected void addPage(Page page) {
+        multiPage.addPage(page);
+    }
+
+    protected void resetEditorPages(final Overview overview) {
+
+        versionRecordManager.setVersions(overview.getMetadata().getVersion());
+        this.overviewWidget.setContent(overview, versionRecordManager.getPathToLatest(), versionRecordManager.getVersion());
+        this.metadata = overview.getMetadata();
+
+        multiPage.clear();
 
         addPage(
                 new Page(baseView,
@@ -191,6 +210,22 @@ public abstract class KieEditor {
 
                     }
                 });
+
+        addPage(
+                new Page(this.overviewWidget,
+                        CommonConstants.INSTANCE.Overview()) {
+                    @Override
+                    public void onFocus() {
+                        overviewWidget.refresh();
+                        onOverviewSelected();
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+
+                    }
+                }
+        );
     }
 
     protected void addImportsTab(IsWidget importsWidget) {
@@ -342,7 +377,7 @@ public abstract class KieEditor {
      */
     protected void makeMenuBar() {
         menus = menuBuilder
-                .addSave( versionRecordManager.newSaveMenuItem(new Command() {
+                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
                     @Override
                     public void execute() {
                         onSave();
@@ -377,7 +412,7 @@ public abstract class KieEditor {
         }
         if (versionRecordManager.getCurrentPath().equals(restore.getPath())) {
             //WM init(restore.getPath(), place, type);
-            init( versionRecordManager.getPathToLatest(), place, type );
+            init(versionRecordManager.getPathToLatest(), place, type);
             //WM init already calls -> loadContent();
             notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
         }
@@ -427,8 +462,8 @@ public abstract class KieEditor {
         multiPage.selectPage(tabIndex);
     }
 
-    protected void updatePreview(String preview) {
-        overviewWidget.updatePreview(preview);
+    protected void updateSource(String source) {
+        sourceWidget.setContent(source);
     }
 
     public IsWidget getWidget() {
@@ -458,10 +493,9 @@ public abstract class KieEditor {
 
     }
 
-    /**
-     * Each tab needs to at least update the OverviewWidget's preview when selecting the overview tab.
-     */
-    protected abstract void onOverviewSelected();
+    protected void onSourceTabSelected(){};
+
+    protected void onOverviewSelected(){};
 
     /**
      * Overwrite this if you want to do something special when the editor tab is selected.

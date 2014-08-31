@@ -31,6 +31,11 @@
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.widgets</groupId>
+      <artifactId>kie-wb-view-source-widget</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>

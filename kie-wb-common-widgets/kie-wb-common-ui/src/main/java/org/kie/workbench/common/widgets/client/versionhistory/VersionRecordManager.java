@@ -53,9 +53,6 @@ public class VersionRecordManager {
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private Event<VersionSelectedEvent> versionSelectedEvent;
 
     private Callback<VersionRecord> selectionCallback;
@@ -63,6 +60,7 @@ public class VersionRecordManager {
     private ObservablePath pathToLatest;
     private String version;
     private SaveButton saveButton;
+    private Command showMore;
 
     @Inject
     public VersionRecordManager(
@@ -113,10 +111,11 @@ public class VersionRecordManager {
 
     private void fillMenu() {
 
-        versionMenuDropDownButton.setTextToLatest();
-
         fillVersions();
 
+        if (isCurrentLatest()) {
+            versionMenuDropDownButton.setTextToLatest();
+        }
     }
 
     private void fillVersions() {
@@ -168,17 +167,17 @@ public class VersionRecordManager {
                 getSelectionCommand(versionRecord));
     }
 
+    public void setShowMoreCommand(Command showMore){
+        this.showMore = showMore;
+    }
+
     private void addShowMoreLabel(int versionIndex) {
         versionMenuDropDownButton.addViewAllLabel(
                 versions.size() - versionIndex,
                 new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo(
-                                new VersionHistoryScreenPlace(
-                                        getPathToLatest(),
-                                        getPathToLatest().getFileName(),
-                                        getCurrentVersionRecord().id()));
+                        showMore.execute();
                     }
                 });
     }
@@ -234,7 +233,7 @@ public class VersionRecordManager {
      * @param event
      */
     public void onVersionSelectedEvent(@Observes VersionSelectedEvent event) {
-        if (getPathToLatest().equals(event.getPathToFile()) && selectionCallback != null) {
+        if (event.getPathToFile().equals(getPathToLatest()) && selectionCallback != null) {
             selectionCallback.callback(event.getVersionRecord());
         }
     }

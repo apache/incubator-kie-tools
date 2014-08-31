@@ -43,6 +43,12 @@ public class KieEditorTest {
 
             }
 
+
+            @Override
+            protected void onSourceTabSelected() {
+
+            }
+
             @Override
             protected void onOverviewSelected() {
 

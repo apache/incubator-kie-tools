@@ -122,11 +122,6 @@ public class GuvnorDefaultEditorPresenter
 
     }
 
-    @Override
-    protected void onOverviewSelected() {
-           // nothing to update
-    }
-
     @WorkbenchPartView
     public IsWidget getWidget() {
         return super.getWidget();

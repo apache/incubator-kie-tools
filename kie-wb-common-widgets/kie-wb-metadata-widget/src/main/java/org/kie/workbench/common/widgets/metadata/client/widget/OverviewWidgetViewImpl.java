@@ -35,11 +35,15 @@ import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.versionhistory.VersionHistoryPresenter;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class OverviewWidgetViewImpl
         extends Composite
         implements OverviewScreenView {
+
+    private static final int VERSION_HISTORY_TAB = 0;
 
     private Presenter presenter;
 
@@ -50,9 +54,6 @@ public class OverviewWidgetViewImpl
     }
 
     private static Binder uiBinder = GWT.create(Binder.class);
-
-    @UiField
-    TextArea filePreview;
 
     @UiField
     TextArea description;
@@ -78,21 +79,27 @@ public class OverviewWidgetViewImpl
     @UiField(provided = true)
     DiscussionWidgetPresenter discussionArea;
 
+    @UiField(provided = true)
+    VersionHistoryPresenter versionHistory;
+
     public OverviewWidgetViewImpl() {
     }
 
     @Inject
     public OverviewWidgetViewImpl(
             BusyIndicatorView busyIndicatorView,
-            DiscussionWidgetPresenter discussionArea) {
+            DiscussionWidgetPresenter discussionArea,
+            VersionHistoryPresenter versionHistory) {
 
         this.metadata = new MetadataWidget(busyIndicatorView);
 
         this.discussionArea = discussionArea;
 
+        this.versionHistory = versionHistory;
+
         initWidget(uiBinder.createAndBindUi(this));
 
-        tabPanel.selectTab(0);
+        showVersionHistory();
     }
 
     @Override
@@ -106,8 +113,8 @@ public class OverviewWidgetViewImpl
     }
 
     @Override
-    public void setPreview(String text) {
-        filePreview.setText(text);
+    public void setVersionHistory(Path path, String version) {
+        versionHistory.init(path, version);
     }
 
     @Override
@@ -146,6 +153,11 @@ public class OverviewWidgetViewImpl
     }
 
     @Override
+    public void showVersionHistory() {
+        tabPanel.selectTab(VERSION_HISTORY_TAB);
+    }
+
+    @Override
     public void setMetadata(Metadata metadata, boolean isReadOnly) {
         this.metadata.setContent(metadata, isReadOnly);
         this.discussionArea.setContent(metadata);
@@ -176,4 +188,8 @@ public class OverviewWidgetViewImpl
         showBusyIndicator(CommonConstants.INSTANCE.Loading());
     }
 
+    @Override
+    public void refresh() {
+        versionHistory.refresh();
+    }
 }

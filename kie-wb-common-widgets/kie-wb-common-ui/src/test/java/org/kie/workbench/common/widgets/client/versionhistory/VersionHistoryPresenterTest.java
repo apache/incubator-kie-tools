@@ -16,11 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import javax.enterprise.event.Event;
-
+import com.google.gwt.view.client.AsyncDataProvider;
 import org.guvnor.common.services.shared.version.VersionService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -32,25 +28,39 @@ import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
-import static org.junit.Assert.*;
+import javax.enterprise.event.Event;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class VersionHistoryScreenTest {
+public class VersionHistoryPresenterTest {
 
-    private VersionHistoryScreenView view;
-    private VersionHistoryScreenView.Presenter presenter;
+    private VersionHistoryPresenterView view;
+    private VersionHistoryPresenterView.Presenter presenter;
     private VersionService service;
-    private VersionHistoryScreen screen;
+    private VersionHistoryPresenter screen;
     private List<VersionRecord> records = new ArrayList<VersionRecord>();
-    private VersionHistoryScreenTest.VersionSelectedEventMock event;
+    private VersionHistoryPresenterTest.VersionSelectedEventMock event;
+    private Path path111;
+    private Path path222;
+    private Path path333;
 
     @Before
     public void setUp() throws Exception {
-        view = mock(VersionHistoryScreenView.class);
+        view = mock(VersionHistoryPresenterView.class);
 
+        path111 = mock(Path.class);
+        when(path111.toURI()).thenReturn("hehe//test.file");
+        path222 = mock(Path.class);
+        when(path222.toURI()).thenReturn("hehe//test.file");
+        path333 = mock(Path.class);
+        when(path333.toURI()).thenReturn("hehe//test.file");
         event = spy(new VersionSelectedEventMock());
 
-        screen = new VersionHistoryScreen(
+        screen = new VersionHistoryPresenter(
                 view,
                 new VersionServiceMock(),
                 event);
@@ -73,12 +83,10 @@ public class VersionHistoryScreenTest {
         VersionRecord versionRecord3 = getVersionRecord("333");
         records.add(versionRecord3);
 
-        screen.onStartup(getPlace("333", "hehe//test.file"));
+        screen.init(path333, "333");
 
-        verify(view).addLine(versionRecord1, 1, false);
-        verify(view).addLine(versionRecord2, 2, false);
-        verify(view).addLine(versionRecord3, 3, true);
 
+        verify(view).setup(eq("333"), any(AsyncDataProvider.class));
     }
 
     @Test
@@ -88,7 +96,7 @@ public class VersionHistoryScreenTest {
         VersionRecord versionRecord2 = getVersionRecord("222");
         records.add(versionRecord2);
 
-        screen.onStartup(getPlace("222", "hehe//test.file"));
+        screen.init(path222, "222");
 
         screen.onSelect(versionRecord1);
 
@@ -106,19 +114,15 @@ public class VersionHistoryScreenTest {
         VersionRecord versionRecord2 = getVersionRecord("222");
         records.add(versionRecord2);
 
-        screen.onStartup(getPlace("222", "hehe//test.file"));
+        screen.init(path222, "222");
 
-        verify(view).clear();
-        verify(view).addLine(versionRecord1, 1, false);
-        verify(view).addLine(versionRecord2, 2, true);
+        verify(view).setup(eq("222"), any(AsyncDataProvider.class));
 
         Path pathToFile = mock(Path.class);
         when(pathToFile.toURI()).thenReturn("hehe//test.file");
         screen.onVersionChange(new VersionSelectedEvent(pathToFile, versionRecord1));
 
-        verify(view, times(2)).clear();
-        verify(view).addLine(versionRecord1, 1, true);
-        verify(view).addLine(versionRecord2, 2, false);
+        verify(view).setup(eq("111"), any(AsyncDataProvider.class));
     }
 
     @Test
@@ -128,27 +132,16 @@ public class VersionHistoryScreenTest {
         VersionRecord versionRecord2 = getVersionRecord("222");
         records.add(versionRecord2);
 
-        screen.onStartup(getPlace("222", "hehe//test.file"));
+        screen.init(path222, "222");
 
-        verify(view).clear();
-        verify(view).addLine(versionRecord1, 1, false);
-        verify(view).addLine(versionRecord2, 2, true);
+        verify(view).setup(eq("222"), any(AsyncDataProvider.class));
 
         Path pathToFile = mock(Path.class);
         when(pathToFile.toURI()).thenReturn("hehe//another.file");
         screen.onVersionChange(new VersionSelectedEvent(pathToFile, getVersionRecord("111")));
 
-        verify(view).clear();
-        verify(view, times(2)).addLine(any(VersionRecord.class), anyInt(), anyBoolean());
+        verify(view).setup(eq("222"), any(AsyncDataProvider.class));
 
-    }
-
-    private VersionHistoryScreenPlace getPlace(String version, String uri) {
-        VersionHistoryScreenPlace place = mock(VersionHistoryScreenPlace.class);
-        when(place.getParameter(eq(VersionHistoryScreenPlace.VERSION), anyString())).thenReturn(version);
-        when(place.getParameter(eq(VersionHistoryScreenPlace.FILENAME), anyString())).thenReturn("test.file");
-        when(place.getParameter(eq(VersionHistoryScreenPlace.URI), anyString())).thenReturn(uri);
-        return place;
     }
 
     private VersionRecord getVersionRecord(String version) {
@@ -176,7 +169,7 @@ public class VersionHistoryScreenTest {
                 }
 
                 public Path restore(final Path path,
-                        final String comment) {
+                                    final String comment) {
                     return null;
                 }
 
@@ -204,15 +197,18 @@ public class VersionHistoryScreenTest {
     private class VersionSelectedEventMock
             implements Event<VersionSelectedEvent> {
 
-        @Override public void fire(VersionSelectedEvent event) {
+        @Override
+        public void fire(VersionSelectedEvent event) {
 
         }
 
-        @Override public Event<VersionSelectedEvent> select(Annotation... annotations) {
+        @Override
+        public Event<VersionSelectedEvent> select(Annotation... annotations) {
             return null;
         }
 
-        @Override public <U extends VersionSelectedEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
+        @Override
+        public <U extends VersionSelectedEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
             return null;
         }
     }
