@@ -24,6 +24,7 @@
     <module>drools-wb-factmodel-editor</module>
     <module>drools-wb-globals-editor</module>
     <module>drools-wb-guided-dtable-editor</module>
+    <module>drools-wb-guided-dtree-editor</module>
     <module>drools-wb-guided-rule-editor</module>
     <module>drools-wb-guided-scorecard-editor</module>
     <module>drools-wb-guided-template-editor</module>
