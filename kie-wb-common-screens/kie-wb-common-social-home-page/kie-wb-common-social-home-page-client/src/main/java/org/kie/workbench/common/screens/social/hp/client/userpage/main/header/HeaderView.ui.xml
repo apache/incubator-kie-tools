@@ -24,7 +24,7 @@
   <!--<ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>-->
 
   <g:HTMLPanel>
-    <span>Groups and Connections:</span>
+    <span>Connections:</span>
     <g:FlowPanel ui:field="friendsList"/>
   </g:HTMLPanel>
 

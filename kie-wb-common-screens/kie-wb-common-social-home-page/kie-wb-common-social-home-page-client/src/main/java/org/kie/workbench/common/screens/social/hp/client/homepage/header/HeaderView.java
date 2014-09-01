@@ -54,6 +54,7 @@ public class HeaderView extends Composite
     @UiField
     ListBox updatesList;
 
+// widgets from UX (not yet implemented)
 //    @UiField
 //    SpanElement numberItensAction;
 //
@@ -75,7 +76,7 @@ public class HeaderView extends Composite
 
     @Override
     public void setNumberOfItemsLabel( String numberOfItemsLabel ) {
-      //  this.numberItensAction.setInnerText( numberOfItemsLabel );
+        //  this.numberItensAction.setInnerText( numberOfItemsLabel );
     }
 
     @Override
@@ -95,6 +96,7 @@ public class HeaderView extends Composite
         onSelectCommand.execute(updatesList.getValue());
     }
 
+// widgets from UX (not yet implemented)
 //    @UiHandler("viewAll")
 //    void viewAll( ClickEvent e ) {
 //        viewAllCommand.execute();

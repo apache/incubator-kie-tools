@@ -86,33 +86,25 @@ public class UserHomePageMainPresenter {
         } ).findSocialUser( username );
     }
 
+
+
     private void setupMain( String username ) {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
                 String title = !socialUser.getRealName().isEmpty() ? socialUser.getRealName() : socialUser.getUserName();
                 title += " Recent Activities";
-                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser,
-                                                                                             title,
-                                                                                             new UserTimeLineOnlyUserActivityPredicate( socialUser ),
-                                                                                             placeManager,
-                                                                                             new SocialPaged( 10 ) );
+                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, title, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, new SocialPaged( 2 ) );
                 mainPresenter.setup( model );
             }
         } ).findSocialUser( username );
     }
 
     private void generateConnectionsList( SocialUser socialUser ) {
+        header.clear();
         for ( final String follower : socialUser.getFollowingName() ) {
-            header.clear();
             socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
                 public void callback( SocialUser socialUser ) {
                     Image followerImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
-                    followerImage.addClickHandler( new ClickHandler() {
-                        @Override
-                        public void onClick( ClickEvent event ) {
-                            Window.alert( "GOTO -> page" );
-                        }
-                    } );
                     header.addConnection( followerImage );
                 }
             } ).findSocialUser( follower );

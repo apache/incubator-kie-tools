@@ -103,6 +103,7 @@ public class SocialHomePageMainPresenter {
             }
         } );
         createHeaderMenuList();
+        // widgets from UX (not yet implemented)
 //        header.setNumberOfItemsLabel( "(12)" );
 //        header.setViewAllCommand( new Command() {
 //            @Override

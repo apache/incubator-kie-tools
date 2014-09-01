@@ -29,7 +29,10 @@
     </dependency>
 
 
-
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-widgets-commons</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>

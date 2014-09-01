@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.social.hp.client.userpage.side;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,6 +27,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -36,10 +38,19 @@ public class EditUserForm
     private SocialUser socialUser;
 
     @UiField
-    TextBox email;
+    Button save;
 
     @UiField
-    TextBox realName;
+    Button cancel;
+
+    @UiField
+    KieBaseModal popup;
+
+    @UiField
+    TextBox emailTextBox;
+
+    @UiField
+    TextBox realNameTextBox;
 
     ParameterizedCommand<SocialUser> updateCommand;
 
@@ -57,21 +68,27 @@ public class EditUserForm
 
     }
 
-    @UiHandler("update")
-    void update( final ClickEvent event ) {
-        socialUser.setEmail( email.getText() );
-        socialUser.setRealName( realName.getText() );
-        hide();
+    @UiHandler("save")
+    void save( final ClickEvent event ) {
+        socialUser.setEmail( emailTextBox.getText() );
+        socialUser.setRealName( realNameTextBox.getText() );
+        popup.hide();
         updateCommand.execute( socialUser );
     }
+
+    @UiHandler("cancel")
+    void cancel( final ClickEvent event ) {
+        popup.hide();
+    }
+
 
     public void show( SocialUser socialUser,
                       ParameterizedCommand<SocialUser> updateCommand ) {
         this.socialUser = socialUser;
         this.updateCommand = updateCommand;
-        this.email.setText( "" );
-        this.realName.setText( "" );
-        show();
+        this.emailTextBox.setText( socialUser.getEmail() );
+        this.realNameTextBox.setText( socialUser.getRealName() );
+        popup.show();
     }
 
 }

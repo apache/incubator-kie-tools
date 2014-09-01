@@ -48,7 +48,7 @@ public class HeaderView extends Composite
 
     @Override
     public void addConnection( Image connections ) {
-            friendsList.add( connections.asWidget() );
+        friendsList.add( connections.asWidget() );
     }
 
     @Override

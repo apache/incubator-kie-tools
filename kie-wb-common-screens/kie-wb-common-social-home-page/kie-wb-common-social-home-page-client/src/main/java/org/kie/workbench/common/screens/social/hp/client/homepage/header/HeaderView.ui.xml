@@ -25,14 +25,14 @@
 
   <g:HTMLPanel>
     <div>
-    <span>Showing updates for:</span>
-    <b:ListBox ui:field="updatesList">
-    </b:ListBox>
+      <span>Showing updates for:</span>
+      <b:ListBox ui:field="updatesList">
+      </b:ListBox>
       <!--<span>-->
-        <!--You have-->
-        <!--<span ui:field="numberItensAction"/>-->
-        <!--items requiring action-->
-        <!--<g:Anchor ui:field="viewAll" text="(view all)"/>-->
+      <!--You have-->
+      <!--<span ui:field="numberItensAction"/>-->
+      <!--items requiring action-->
+      <!--<g:Anchor ui:field="viewAll" text="(view all)"/>-->
       <!--</span>-->
     </div>
   </g:HTMLPanel>

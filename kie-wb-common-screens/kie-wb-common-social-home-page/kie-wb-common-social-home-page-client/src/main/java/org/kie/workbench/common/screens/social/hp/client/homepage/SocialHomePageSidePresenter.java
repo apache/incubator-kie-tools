@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -28,8 +29,7 @@ public class SocialHomePageSidePresenter {
 
     public interface View extends UberView<SocialHomePageSidePresenter> {
 
-        void setupWidget( SimpleSocialTimelineWidgetModel model,
-                          Command linkCommand );
+        void setupWidget( SimpleSocialTimelineWidgetModel model);
     }
 
     @Inject
@@ -57,17 +57,8 @@ public class SocialHomePageSidePresenter {
     public void onOpen() {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
-                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser,
-                                                                                             "Recent Assets",
-                                                                                             new UserTimeLineFileChangesPredicate(),
-                                                                                             placeManager,
-                                                                                             new SocialPaged( 10 ) );
-                view.setupWidget( model, new Command() {
-                    @Override
-                    public void execute() {
-                        Window.alert( "TODO" );
-                    }
-                } );
+                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, "Recent Assets", new UserTimeLineFileChangesPredicate(), placeManager, new SocialPaged( 5 ) ).withOnlyMorePagination(  new NavLink( "(more...)" ) );;
+                view.setupWidget( model );
 
             }
         } ).findSocialUser( loggedUser.getName() );

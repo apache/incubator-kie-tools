@@ -17,16 +17,54 @@
   -->
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:kie="urn:import:org.kie.uberfire.client.common.popups">
 
-  <!--<ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>-->
+
+  <!--<g:HTMLPanel>-->
+  <!--<b:TextBox  ui:field="email" placeholder='E-mail:'/>-->
+  <!--<b:TextBox  ui:field="realName" placeholder='Real Name:'/>-->
+  <!--<b:Button block="true" ui:field="update" text="Update"/>-->
+  <!--</g:HTMLPanel>-->
+  <ui:style>
+    .mandatory-field {
+      color: #FF0000 !important;
+    }
+  </ui:style>
 
   <g:HTMLPanel>
-    <b:TextBox  ui:field="email" placeholder='E-mail:'/>
-    <b:TextBox  ui:field="realName" placeholder='Real Name:'/>
-    <b:Button block="true" ui:field="update" text="Update"/>
+    <kie:KieBaseModal ui:field="popup" title=" Edit my infos" backdrop="STATIC" keyboard="true" animation="true">
+      <b:Well>
+        <b:Fieldset>
+          <b:ControlGroup>
+            <b:ControlLabel>
+              E-mail
+            </b:ControlLabel>
+            <b:Controls>
+              <b:TextBox ui:field="emailTextBox" placeholder="E-mail"/>
+            </b:Controls>
+          </b:ControlGroup>
+          <b:ControlGroup>
+            <b:ControlLabel>
+              Real Name
+            </b:ControlLabel>
+            <b:Controls>
+              <b:TextBox ui:field="realNameTextBox" placeholder="Real Name"/>
+            </b:Controls>
+          </b:ControlGroup>
+        </b:Fieldset>
+      </b:Well>
+      <b:ModalFooter>
+        <b:Button type="DEFAULT" ui:field="cancel">
+          Cancel
+        </b:Button>
+        <b:Button icon="SAVE" type="PRIMARY" ui:field="save">
+          Save
+        </b:Button>
+      </b:ModalFooter>
+    </kie:KieBaseModal>
   </g:HTMLPanel>
 
 </ui:UiBinder>
