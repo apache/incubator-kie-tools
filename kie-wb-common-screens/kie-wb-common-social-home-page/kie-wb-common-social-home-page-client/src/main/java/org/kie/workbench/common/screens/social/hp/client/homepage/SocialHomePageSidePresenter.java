@@ -9,6 +9,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
+import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.screens.social.hp.predicate.UserTimeLineFileChangesPredicate;
@@ -53,19 +54,23 @@ public class SocialHomePageSidePresenter {
     }
 
     @OnOpen
-    public void onOpen(){
+    public void onOpen() {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
-                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, "Recent Assets", new UserTimeLineFileChangesPredicate(), placeManager );
+                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser,
+                                                                                             "Recent Assets",
+                                                                                             new UserTimeLineFileChangesPredicate(),
+                                                                                             placeManager,
+                                                                                             new SocialPaged( 10 ) );
                 view.setupWidget( model, new Command() {
                     @Override
                     public void execute() {
-                        Window.alert("TODO");
+                        Window.alert( "TODO" );
                     }
                 } );
 
             }
-        } ).findSocialUser(loggedUser.getName() );
+        } ).findSocialUser( loggedUser.getName() );
     }
 
     @WorkbenchPartTitle

@@ -13,6 +13,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
+import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.screens.social.hp.client.UserHomepageSelectedEvent;
@@ -85,14 +86,16 @@ public class UserHomePageMainPresenter {
         } ).findSocialUser( username );
     }
 
-
-
     private void setupMain( String username ) {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
                 String title = !socialUser.getRealName().isEmpty() ? socialUser.getRealName() : socialUser.getUserName();
                 title += " Recent Activities";
-                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, title, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager );
+                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser,
+                                                                                             title,
+                                                                                             new UserTimeLineOnlyUserActivityPredicate( socialUser ),
+                                                                                             placeManager,
+                                                                                             new SocialPaged( 10 ) );
                 mainPresenter.setup( model );
             }
         } ).findSocialUser( username );
