@@ -60,7 +60,8 @@ public class SocialTimelineRulesQuery implements SocialTimelineRulesQueryAPI {
 
     @Override
     public List<SocialActivitiesEvent> executeSpecificRule( Map<String, String> globals,
-                                                            final String drlName ) {
+                                                            final String drlName,
+                                                            String maxResults ) {
 
         List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
         try {
@@ -72,10 +73,10 @@ public class SocialTimelineRulesQuery implements SocialTimelineRulesQueryAPI {
             List<SocialActivitiesEvent> socialEvents = new ArrayList<SocialActivitiesEvent>();
             kSession.setGlobal( "socialEvents", socialEvents );
             kSession.setGlobal( "queryAPI", this );
+            //maxResults ederign
             for ( String key : globals.keySet() ) {
                 kSession.setGlobal( key, globals.get( key ) );
             }
-
             kSession.fireAllRules( new AgendaFilter() {
                 @Override
                 public boolean accept( Match match ) {

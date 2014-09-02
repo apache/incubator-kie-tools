@@ -2,6 +2,7 @@ package org.kie.uberfire.social.activities.client.widgets.timeline.regular;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
@@ -17,7 +18,10 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.social.activities.client.widgets.item.SimpleItemWidget;
 import org.kie.uberfire.social.activities.client.widgets.item.SocialItemExpandedWidget;
 import org.kie.uberfire.social.activities.client.widgets.item.model.SimpleItemWidgetModel;
+import org.kie.uberfire.social.activities.client.widgets.item.model.SocialItemExpandedWidgetModel;
+import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.RecentUpdatesModel;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
+import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.UpdateItem;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
@@ -37,14 +41,6 @@ public class SocialTimelineWidget extends Composite {
     public void init( SocialTimelineWidgetModel model ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         titlePanel.add( new Legend( model.getTitle() ) );
-        if ( model.getSocialEventType() != null || model.isDroolsQuery() ) {
-            createSocialItemsWidget( model );
-        } else {
-            createMockExpandedWidget();
-        }
-    }
-
-    private void createSocialItemsWidget( SocialTimelineWidgetModel model ) {
         if ( model.isDroolsQuery() ) {
             createDroolsQuerySocialItemsWidget( model );
         } else {
@@ -66,7 +62,9 @@ public class SocialTimelineWidget extends Composite {
                             }
                         }, VFSService.class ).get( event.getLinkTarget() );
                     } else {
-
+                        SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getDescription(), event.getAdicionalInfos() );
+                        FluidRow row = SimpleItemWidget.createRow( rowModel );
+                        itemsPanel.add( row );
                     }
                 }
             }
@@ -78,37 +76,27 @@ public class SocialTimelineWidget extends Composite {
         MessageBuilder.createCall( new RemoteCallback<List<SocialActivitiesEvent>>() {
             public void callback( List<SocialActivitiesEvent> events ) {
 
-                for ( final SocialActivitiesEvent event : events ) {
-                    if ( event.hasLink() ) {
-                        MessageBuilder.createCall( new RemoteCallback<Path>() {
-                            public void callback( Path path ) {
-                                SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() );
-                                FluidRow row = SimpleItemWidget.createRow( rowModel );
-                                itemsPanel.add( row );
-                            }
-                        }, VFSService.class ).get( event.getLinkTarget() );
-                    } else {
-                        SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(),event.getDescription(), event.getAdicionalInfos() );
-                        FluidRow row = SimpleItemWidget.createRow( rowModel );
-                        itemsPanel.add( row );
-                    }
+                RecentUpdatesModel recentUpdatesModel = RecentUpdatesModel.generate( events );
+                Map<String, List<UpdateItem>> updateItems = recentUpdatesModel.getUpdateItems();
+                for ( final String fileName : updateItems.keySet() ) {
+                    SocialItemExpandedWidget.createItem(new SocialItemExpandedWidgetModel(itemsPanel, fileName, recentUpdatesModel.getUpdateItems( fileName ), model ));
                 }
 
             }
-        }, SocialTimelineRulesQueryAPI.class ).executeSpecificRule( model.getGlobals(), model.getDrlName() );
+        }, SocialTimelineRulesQueryAPI.class ).executeSpecificRule( model.getGlobals(), model.getDrlName(), model.getMaxResults() );
     }
 
     private void createMockExpandedWidget() {
         //TODO implement it with real data
-        SocialActivitiesEvent event = new SocialActivitiesEvent( new SocialUser( "Dan" ), new SocialEventType() {
-            @Override
-            public String name() {
-                return "Process Changed";
-            }
-        }, new Date() ).withAdicionalInfo( "Process 13 has changed", "\"Added another service task to this process - for the new data we need to capture from customers.\"" );
-        FluidRow firstRow = SocialItemExpandedWidget.createFirstRow( event );
-        itemsPanel.add( firstRow );
-        itemsPanel.add( SocialItemExpandedWidget.createSecondRow( event ) );
+//        SocialActivitiesEvent event = new SocialActivitiesEvent( new SocialUser( "Dan" ), new SocialEventType() {
+//            @Override
+//            public String name() {
+//                return "Process Changed";
+//            }
+//        }, new Date() ).withAdicionalInfo( "Process 13 has changed", "\"Added another service task to this process - for the new data we need to capture from customers.\"" );
+//        FluidRow firstRow = SocialItemExpandedWidget.createFirstRow( event );
+//        itemsPanel.add( firstRow );
+//        itemsPanel.add( SocialItemExpandedWidget.createSecondRow( event ) );
     }
 
     interface MyUiBinder extends UiBinder<Widget, SocialTimelineWidget> {

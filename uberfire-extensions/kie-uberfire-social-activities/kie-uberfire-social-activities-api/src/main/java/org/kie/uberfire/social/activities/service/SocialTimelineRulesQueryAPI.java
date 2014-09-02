@@ -11,8 +11,9 @@ public interface SocialTimelineRulesQueryAPI {
 
     List<SocialActivitiesEvent> executeAllRules();
 
-    List<SocialActivitiesEvent> executeSpecificRule( Map<String,String> globals,
-                                                     String drlName );
+    List<SocialActivitiesEvent> executeSpecificRule( Map<String, String> globals,
+                                                     String drlName,
+                                                     String maxResults );
 
     public List<SocialActivitiesEvent> getAllCached();
 

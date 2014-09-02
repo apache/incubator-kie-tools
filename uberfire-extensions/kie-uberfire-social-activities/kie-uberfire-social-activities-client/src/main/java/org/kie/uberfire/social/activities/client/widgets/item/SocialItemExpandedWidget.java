@@ -1,5 +1,7 @@
 package org.kie.uberfire.social.activities.client.widgets.item;
 
+import java.text.SimpleDateFormat;
+
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Image;
@@ -9,65 +11,106 @@ import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.github.gwtbootstrap.client.ui.Thumbnail;
 import com.github.gwtbootstrap.client.ui.Thumbnails;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.SimplePanel;
+import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
+import org.kie.uberfire.social.activities.client.widgets.item.model.SocialItemExpandedWidgetModel;
+import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.UpdateItem;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class SocialItemExpandedWidget {
 
-    public static FluidRow createFirstRow( SocialActivitiesEvent event ) {
+    public static void createItem( SocialItemExpandedWidgetModel model ) {
+        model.getItemsPanel().add( createFirstRow( model ) );
+        for ( UpdateItem updateItem : model.getUpdateItems() ) {
+            model.getItemsPanel().add( createSecondRow( updateItem ) );
+        }
+
+    }
+
+    public static FluidRow createFirstRow(
+            SocialItemExpandedWidgetModel model ) {
         FluidRow row = GWT.create( FluidRow.class );
 
-        row.add( createTitle( event ) );
-        row.add( createViewProcessLink() );
+        row.add( createIcon( model ) );
+        row.add( createLink( model ) );
 
         return row;
     }
 
-    private static Column createViewProcessLink() {
-        Column column = new Column( 6 );
+    private static Column createIcon( final SocialItemExpandedWidgetModel model ) {
+        final Column column = new Column( 2 );
+
+        MessageBuilder.createCall( new RemoteCallback<Path>() {
+            public void callback( Path path ) {
+                for ( ClientResourceType type : model.getModel().getResourceTypes() ) {
+                    if ( type.accept( path ) ) {
+                        column.add( type.getIcon() );
+                        break;
+                    }
+                }
+            }
+        }, VFSService.class ).get( model.getUpdateItems().get( 0 ).getEvent().getLinkTarget() );
+        return column;
+    }
+
+    private static Column createLink( final SocialItemExpandedWidgetModel model ) {
+        final UpdateItem updateItem = model.getUpdateItems().get( 0 );
+        Column column = new Column( 10 );
+        SimplePanel panel = new SimplePanel();
         NavList list = new NavList();
         NavLink link = new NavLink();
-        link.setText( "view process" );
+        link.setText( updateItem.getEvent().getLinkLabel() );
+        link.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                MessageBuilder.createCall( new RemoteCallback<Path>() {
+                    public void callback( Path path ) {
+                        PlaceManager placeManager = model.getModel().getPlaceManager();
+                        placeManager.goTo( path );
+                    }
+                }, VFSService.class ).get( updateItem.getEvent().getLinkTarget() );
+            }
+        } );
         list.add( link );
-        column.add( list );
+        panel.add( list );
+        column.add( panel );
         return column;
     }
 
-    private static Column createTitle( SocialActivitiesEvent event ) {
-        Column column = new Column( 6 );
+    public static FluidRow createSecondRow( UpdateItem updateItem ) {
 
-        StringBuilder title = new StringBuilder();
-        title.append( event.getAdditionalInfo()[ 0 ] );
-        title.append( ". " );
-        title.append( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_SHORT ).format( event.getTimestamp() ) );
-        column.add( new Paragraph( title.toString() ) );
-        return column;
-    }
-
-    public static FluidRow createSecondRow( SocialActivitiesEvent event ) {
         FluidRow row = GWT.create( FluidRow.class );
-        row.add( createThumbNail( event.getSocialUser() ) );
-
-        row.add( createSocialUserName( event ) );
-
-        row.add( createAdicionalInfo( event.getAdditionalInfo()[ 1 ] ) );
+        row.add( createThumbNail( updateItem.getEvent().getSocialUser() ) );
+        row.add( createSocialUserName( updateItem.getEvent() ) );
+        row.add( createAditionalInfo( updateItem.getEvent() ) );
 
         return row;
     }
 
-    private static Column createAdicionalInfo( String str ) {
+    private static Column createAditionalInfo( SocialActivitiesEvent event ) {
         Column column;
-        column = new Column( 8 );
+        column = new Column( 10 );
         StringBuilder comment = new StringBuilder();
-        comment.append( str );
+        comment.append( event.getAdicionalInfos() );
+        comment.append( " " );
+        SimpleDateFormat sdf1 = new SimpleDateFormat();
+        sdf1.applyPattern( "dd/MM/yyyy HH:mm:ss" );
+        comment.append( sdf1.format( event.getTimestamp() ) );
         column.add( new Paragraph( comment.toString() ) );
         return column;
     }
 
     private static Column createSocialUserName( SocialActivitiesEvent event ) {
-        Column column = new Column( 2 );
+        Column column = new Column( 1 );
         NavList list = new NavList();
         NavLink link = new NavLink();
         link.setText( event.getSocialUser().getUserName() );
@@ -77,12 +120,11 @@ public class SocialItemExpandedWidget {
     }
 
     private static Column createThumbNail( SocialUser socialUser ) {
-        Column column = new Column( 2 );
+        Column column = new Column( 1 );
         Thumbnails tumThumbnails = new Thumbnails();
         Thumbnail t = new Thumbnail();
         Image userImage;
         userImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
-        userImage.setSize( "30px", "30px" );
         t.add( userImage );
         tumThumbnails.add( t );
         column.add( tumThumbnails );
