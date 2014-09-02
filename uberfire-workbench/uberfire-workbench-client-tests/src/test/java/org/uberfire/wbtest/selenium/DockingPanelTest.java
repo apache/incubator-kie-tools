@@ -2,16 +2,37 @@ package org.uberfire.wbtest.selenium;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.uberfire.wbtest.client.docking.NestedDockingPanelPerspective;
 import org.uberfire.workbench.model.CompassPosition;
 
 /**
  * Integration tests for the addition and removal of child panels that "dock" on the north, south, east, or west edges
  * of their parents.
+ * <p>
+ * All test methods are parameterized, so they each try the same test in each of the 4 compass directions.
  */
+@RunWith(Parameterized.class)
 public class DockingPanelTest extends AbstractSeleniumTest {
+
+    @Parameters
+    public static List<Object[]> params() {
+        return Arrays.asList( new Object[][]{ { CompassPosition.NORTH },
+                                              { CompassPosition.SOUTH },
+                                              { CompassPosition.EAST },
+                                              { CompassPosition.WEST } } );
+    }
+
+    @Parameter(0)
+    public CompassPosition direction;
 
     @Before
     public void goToDockingPerspective() {
@@ -19,46 +40,33 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         driver.get( baseUrl + "#" + NestedDockingPanelPerspective.class.getName() );
     }
 
+    /**
+     * Checks that newly added panels appear in the correct place.
+     */
     @Test
-    public void testAddPanelNorthOfRoot() throws Exception {
-        testAddPanelRelativeToRoot( CompassPosition.NORTH );
-    }
-
-    @Test
-    public void testAddPanelSouthOfRoot() throws Exception {
-        testAddPanelRelativeToRoot( CompassPosition.SOUTH );
-    }
-
-    @Test
-    public void testAddPanelEastOfRoot() throws Exception {
-        testAddPanelRelativeToRoot( CompassPosition.EAST );
-    }
-
-    @Test
-    public void testAddPanelWestOfRoot() throws Exception {
-        testAddPanelRelativeToRoot( CompassPosition.WEST );
-    }
-
-    @Test
-    public void testRemovePanelNorthOfRootNoOrphans() throws Exception {
+    public void testAddPanelRelativeToRoot() throws Exception {
         NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
 
-        NestingScreenWrapper westChild = root.addChild( CompassPosition.NORTH );
-        assertTrue( westChild.isStillInDom() );
-        assertTrue( westChild.isPanelStillInDom() );
-
-        westChild.close();
-        assertFalse( westChild.isStillInDom() );
-        assertFalse( westChild.isPanelStillInDom() );
+        NestingScreenWrapper childScreen = root.addChild( direction );
+        assertTrue( childScreen.isStillInDom() );
+        assertTrue( childScreen.isPanelStillInDom() );
+        assertRelativePosition( direction, root, childScreen );
     }
 
-    private void testAddPanelRelativeToRoot( CompassPosition position ) throws Exception {
+    /**
+     * Tests that panels get removed from the layout when their only contained part is closed.
+     */
+    @Test
+    public void testAddAndRemovePanelRelativeToRoot() {
         NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
 
-        NestingScreenWrapper westChild = root.addChild( position );
-        assertTrue( westChild.isStillInDom() );
-        assertTrue( westChild.isPanelStillInDom() );
-        assertRelativePosition( position, root, westChild );
+        NestingScreenWrapper childScreen = root.addChild( direction );
+        assertTrue( childScreen.isStillInDom() );
+        assertTrue( childScreen.isPanelStillInDom() );
+
+        childScreen.close();
+        assertFalse( childScreen.isStillInDom() );
+        assertFalse( childScreen.isPanelStillInDom() );
     }
 
     /**
