@@ -38,6 +38,7 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
 
     private String[][] items;
     private final ListBox listBox;
+    private final AbstractProxyPopupDropDownEditCell proxy;
 
     final EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
         @Override
@@ -54,6 +55,7 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
     public AbstractProxyPopupDropDownListBox( final AbstractProxyPopupDropDownEditCell proxy ) {
 
         this.listBox = new ListBox();
+        this.proxy = proxy;
 
         // Tabbing out of the ListBox commits changes
         listBox.addKeyDownHandler( new KeyDownHandler() {
@@ -93,6 +95,7 @@ public abstract class AbstractProxyPopupDropDownListBox<C> implements ProxyPopup
         utilities.setDropDownData( "",
                                    dd,
                                    false,
+                                   proxy.getDataModelOracle().getResourcePath(),
                                    listBox );
 
         //Scrape values from ListBox as they may have been populated from a server-side call

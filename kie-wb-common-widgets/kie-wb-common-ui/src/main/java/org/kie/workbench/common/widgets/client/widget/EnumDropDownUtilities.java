@@ -32,6 +32,7 @@ import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Utilities to populate a ListBox with DropDownData
@@ -43,11 +44,13 @@ public class EnumDropDownUtilities {
      * @param value
      * @param dropData
      * @param isMultipleSelect
+     * @param resource
      * @param listBox
      */
     public void setDropDownData( final String value,
                                  final DropDownData dropData,
                                  final boolean isMultipleSelect,
+                                 final Path resource,
                                  final ListBox listBox ) {
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
@@ -79,7 +82,8 @@ public class EnumDropDownUtilities {
                                                    }
                                                },
                                                EnumDropdownService.class
-                                             ).loadDropDownExpression( dropData.getValuePairs(),
+                                             ).loadDropDownExpression( resource,
+                                                                       dropData.getValuePairs(),
                                                                        dropData.getQueryExpression() );
                 }
             } );

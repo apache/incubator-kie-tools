@@ -40,7 +40,7 @@ public class PopupDropDownEditCell extends
 
     private String[][] items;
     private final ListBox listBox;
-    private boolean isMultipleSelect;
+    private final boolean isMultipleSelect;
 
     private final String factType;
     private final String factField;
@@ -122,6 +122,7 @@ public class PopupDropDownEditCell extends
         utilities.setDropDownData( value,
                                    dd,
                                    isMultipleSelect,
+                                   dmo.getResourcePath(),
                                    listBox );
 
         //Render value
@@ -193,6 +194,7 @@ public class PopupDropDownEditCell extends
         utilities.setDropDownData( value,
                                    dd,
                                    isMultipleSelect,
+                                   dmo.getResourcePath(),
                                    listBox );
 
         // Select the appropriate item

@@ -31,44 +31,54 @@ import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.templates.TemplateRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.backend.vfs.Path;
 
 @Service
 @ApplicationScoped
 public class EnumDropdownServiceImpl implements EnumDropdownService {
 
+    private static final Logger logger = LoggerFactory.getLogger( EnumDropdownServiceImpl.class );
+
     @Inject
     private LRUBuilderCache builderCache;
 
-    @Override
-    public String[] loadDropDownExpression( final String[] valuePairs,
-                                            final String expression ) {
-        return load( Thread.currentThread().getContextClassLoader(),
-                     valuePairs,
-                     expression );
-    }
+    @Inject
+    private KieProjectService projectService;
 
     @Override
-    public String[] loadDropDownExpression( final KieProject project,
+    public String[] loadDropDownExpression( final Path resource,
                                             final String[] valuePairs,
                                             final String expression ) {
+
         //Lookup class-loader for Project (as the helper class can be a project dependency)
+        final KieProject project = projectService.resolveProject( resource );
+        if ( project == null ) {
+            logger.error( "A Project could not be resolved for path '" + resource.toURI() + "'. No enums will be returned." );
+            return null;
+        }
         final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+        if ( module == null ) {
+            logger.error( "A KieModule could not be resolved for path '" + resource.toURI() + "'. No enums will be returned." );
+            return null;
+        }
         final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
 
-        return load( classLoader,
-                     valuePairs,
-                     expression );
+        return loadDropDownExpression( classLoader,
+                                       valuePairs,
+                                       expression );
     }
 
-    private String[] load( final ClassLoader classLoader,
-                           final String[] valuePairs,
-                           String expression ) {
+    protected String[] loadDropDownExpression( final ClassLoader classLoader,
+                                               final String[] valuePairs,
+                                               String expression ) {
         try {
-
             final Map<String, String> context = new HashMap<String, String>();
             for ( final String valuePair : valuePairs ) {
                 if ( valuePair == null ) {

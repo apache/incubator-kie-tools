@@ -38,6 +38,8 @@ public interface AsyncPackageDataModelOracle {
 
     void init( final Path resourcePath );
 
+    Path getResourcePath();
+
     // ####################################
     // Editor functions
     // ####################################
@@ -52,11 +54,10 @@ public interface AsyncPackageDataModelOracle {
 
     String[] getExternalFactTypes();
 
-    public String getFQCNByFactName(String factName);
+    public String getFQCNByFactName( String factName );
 
     /**
      * Returns fact's name from class type
-     *
      * @param fqcnName for example org.test.Person
      * @return Shorter type name org.test.Person returns Person
      */

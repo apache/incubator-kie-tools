@@ -165,6 +165,11 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                                                                 resourcePath );
     }
 
+    @Override
+    public Path getResourcePath() {
+        return this.resourcePath;
+    }
+
     // ####################################
     // Packages
     // ####################################
@@ -269,7 +274,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      */
     @Override
     public boolean isFactTypeRecognized( final String factType ) {
-        if(filteredModelFields.containsKey( factType ) || factNameToFQCNHandleRegistry.map.containsValue(factType)){
+        if ( filteredModelFields.containsKey( factType ) || factNameToFQCNHandleRegistry.map.containsValue( factType ) ) {
             return true;
         } else {
             return false;
