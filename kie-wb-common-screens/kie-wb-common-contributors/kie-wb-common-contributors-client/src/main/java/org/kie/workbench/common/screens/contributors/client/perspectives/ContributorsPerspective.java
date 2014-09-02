@@ -36,7 +36,7 @@ public class ContributorsPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_STATIC );
+        PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_SIMPLE );
         p.setTransient(true);
         p.setName( ContributorsConstants.INSTANCE.contributorsPerspectiveName() );
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "ContributorsScreen" ) ) );

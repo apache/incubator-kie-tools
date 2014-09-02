@@ -149,10 +149,12 @@ public class ContributorsView extends Composite {
                 .dataset(ALL)
                 .title("Commits")
                 .titleVisible(false)
-                .tablePageSize(8)
+                .tablePageSize(5)
                 .tableWidth(1000)
                 .tableOrderEnabled(true)
                 .column(COLUMN_AUTHOR, "Author")
+                .column(COLUMN_REPO, "Repository")
+                .column(COLUMN_DATE, "Date")
                 .column(COLUMN_MSG, "Commit")
                 .filterOn(true, true, true)
                 .buildSettings());
