@@ -22,19 +22,26 @@ import java.util.List;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetBuilder;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetManager;
+import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
+import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.uberfire.commons.services.cdi.Startup;
 
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.uberfire.java.nio.base.version.VersionRecord;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.*;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
@@ -74,7 +81,7 @@ public class ContributorsManager {
         }
     }
 
-    private void initDataSets() throws Exception {
+    private void initDataSets() {
         DataSetBuilder dsBuilder = DataSetFactory.newDSBuilder()
                 .label(COLUMN_ORG)
                 .label(COLUMN_REPO)
@@ -105,5 +112,27 @@ public class ContributorsManager {
         DataSet dataSet = dsBuilder.buildDataSet();
         dataSet.setUUID(ALL);
         dataSetManager.registerDataSet(dataSet);
+    }
+
+    // Catch all the org & repos creation/removal events in order to sync up the contributions data set
+
+    public void onOrganizationUnitCreated(@Observes final NewOrganizationalUnitEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void onOrganizationUnitRemoved(@Observes final RemoveOrganizationalUnitEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void onRepositoryCreated(@Observes final NewRepositoryEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void onRepositoryRemoved(@Observes final RepositoryRemovedEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
     }
 }
