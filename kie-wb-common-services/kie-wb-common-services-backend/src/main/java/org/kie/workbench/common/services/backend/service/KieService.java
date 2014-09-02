@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -36,22 +37,27 @@ public abstract class KieService {
     @Inject
     protected KieProjectService projectService;
 
-    public Overview loadOverview(Path path) {
+    public Overview loadOverview( final Path path ) {
 
         Overview overview = new Overview();
 
-        overview.setMetadata(metadataService.getMetadata(path));
-        overview.setPreview(getSource(path));
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
+        overview.setMetadata( metadataService.getMetadata( path ) );
+        overview.setPreview( getSource( path ) );
+
+        //Some resources are not within a Project (e.g. categories.xml) so don't assume we can set the project name
+        final KieProject project = projectService.resolveProject( path );
+        if ( project != null ) {
+            overview.setProjectName( project.getProjectName() );
+        }
 
         return overview;
     }
 
-    public String getSource(Path path) {
-        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
+    public String getSource( final Path path ) {
+        org.uberfire.java.nio.file.Path convertedPath = Paths.convert( path );
 
-        if (sourceServices.hasServiceFor(convertedPath)) {
-            return sourceServices.getServiceFor(convertedPath).getSource(convertedPath);
+        if ( sourceServices.hasServiceFor( convertedPath ) ) {
+            return sourceServices.getServiceFor( convertedPath ).getSource( convertedPath );
         } else {
             return "";
         }
