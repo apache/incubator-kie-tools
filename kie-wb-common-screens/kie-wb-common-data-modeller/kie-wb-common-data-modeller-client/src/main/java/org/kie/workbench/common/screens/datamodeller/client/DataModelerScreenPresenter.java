@@ -35,7 +35,6 @@ import org.guvnor.messageconsole.events.SystemMessage;
 import org.guvnor.messageconsole.events.UnpublishMessagesEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.common.Page;
 import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
@@ -79,7 +78,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -214,6 +212,7 @@ public class DataModelerScreenPresenter
         versionRecordManager.clear();
         cleanSystemMessages( getCurrentMessageType() );
         clearContext();
+        super.OnClose();
     }
 
     private void onSafeDelete() {
@@ -439,8 +438,6 @@ public class DataModelerScreenPresenter
             @Override
             public void callback( final Path targetPath ) {
                 view.hideBusyIndicator();
-                //notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                //reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( targetPath ) );
             }
         };
     }
@@ -629,8 +626,6 @@ public class DataModelerScreenPresenter
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
                 if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
-
-
                 }
 
                 javaSourceEditor.setReadonly( isReadOnly );
@@ -662,23 +657,19 @@ public class DataModelerScreenPresenter
                     publishSystemMessages( getCurrentMessageType(), true, content.getErrors() );
                 }
                 if ( content.getDataObject() != null ) {
-                    setSelectedTab(OVERVIEW_TAB_INDEX);
+                    setSelectedTab( EDITOR_TAB_INDEX );
                 } else {
-                    if (isEditorTabSelected()) {
-                        showParseErrorsDialog(Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                                false,
-                                getContext().getEditorModelContent().getErrors(),
-                                new Command() {
-                                    @Override
-                                    public void execute() {
-                                        //we need to go directly to the sources tab
-                                        onSourceTabSelected();
-                                        setSelectedTab(EDITABLE_SOURCE_TAB);
-                                    }
-                                });
-                    } else {
-                        setSelectedTab(OVERVIEW_TAB_INDEX);
-                    }
+                    showParseErrorsDialog(Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                            false,
+                            getContext().getEditorModelContent().getErrors(),
+                            new Command() {
+                                @Override
+                                public void execute() {
+                                    //we need to go directly to the sources tab
+                                    onSourceTabSelected();
+                                    setSelectedTab( EDITABLE_SOURCE_TAB );
+                                }
+                    });
                 }
             }
         };
@@ -904,16 +895,6 @@ public class DataModelerScreenPresenter
         return open;
     }
 
-    @Override
-    public void reload() {
-        reload( versionRecordManager.getCurrentPath() );
-    }
-
-    private void reload( final ObservablePath targetPath ) {
-        super.init( targetPath, place, resourceType);
-        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
-    }
-
     private void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
         if ( getContext() != null &&
                 event.isFrom( getContext().getCurrentProject() ) &&
@@ -979,12 +960,12 @@ public class DataModelerScreenPresenter
     protected void makeMenuBar() {
 
         menus = menuBuilder
-                .addSave( new Command() {
+                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
                     @Override
                     public void execute() {
                         onSave();
                     }
-                })
+                } ) )
                 .addCopy( new Command() {
                     @Override
                     public void execute() {

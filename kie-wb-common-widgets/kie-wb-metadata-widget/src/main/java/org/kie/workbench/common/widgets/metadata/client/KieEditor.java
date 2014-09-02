@@ -228,6 +228,10 @@ public abstract class KieEditor {
         );
     }
 
+    protected void OnClose() {
+        multiPage.clear();
+    }
+
     protected void addImportsTab(IsWidget importsWidget) {
         multiPage.addWidget(importsWidget,
                 CommonConstants.INSTANCE.ConfigTabTitle());
@@ -412,9 +416,7 @@ public abstract class KieEditor {
             return;
         }
         if (versionRecordManager.getCurrentPath().equals(restore.getPath())) {
-            //WM init(restore.getPath(), place, type);
             init(versionRecordManager.getPathToLatest(), place, type);
-            //WM init already calls -> loadContent();
             notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
         }
     }
