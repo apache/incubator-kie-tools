@@ -79,8 +79,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
@@ -101,7 +99,6 @@ public class DataModelerScreenPresenter
 
     public interface DataModelerScreenView
             extends
-            UberView<DataModelerScreenPresenter>,
             KieEditorView {
 
         void setContext( DataModelerContext context );
@@ -120,19 +117,10 @@ public class DataModelerScreenPresenter
     private Event<DataModelerEvent> dataModelerEvent;
 
     @Inject
-    private Event<NotificationEvent> notification;
-
-    @Inject
-    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
-
-    @Inject
     private Event<UnpublishMessagesEvent> unpublishMessagesEvent;
 
     @Inject
     private Event<PublishBatchMessagesEvent> publishBatchMessagesEvent;
-
-    @Inject
-    private PlaceManager placeManager;
 
     @Inject
     private Caller<DataModelerService> modelerService;
@@ -154,8 +142,6 @@ public class DataModelerScreenPresenter
 
     @Inject
     private SessionInfo sessionInfo;
-
-    private ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
     private String currentMessageType;
 
@@ -183,14 +169,14 @@ public class DataModelerScreenPresenter
 
     @Inject
     public DataModelerScreenPresenter(DataModelerScreenView baseView) {
-        super(baseView);
+        super( baseView );
         view = baseView;
     }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init(path,place,resourceType);
+        init(path, place, resourceType);
 
         initContext();
         open = true;
@@ -252,7 +238,7 @@ public class DataModelerScreenPresenter
                                 new Command() {
                                     @Override
                                     public void execute() {
-                                        onDelete( versionRecordManager.getCurrentPath() );
+                                        onDelete( versionRecordManager.getPathToLatest() );
                                     }
                                 },
                                 new Command() {
@@ -261,21 +247,21 @@ public class DataModelerScreenPresenter
                                         //do nothing.
                                     }
                                 }
-                                                                                                   );
+                            );
 
                         showUsagesPopup.setCloseVisible( false );
                         showUsagesPopup.show();
 
                     } else {
                         //no usages, just proceed with the deletion.
-                        onDelete( versionRecordManager.getCurrentPath() );
+                        onDelete( versionRecordManager.getPathToLatest() );
                     }
                 }
             } ).findClassUsages( className );
         } else {
             //we couldn't parse the class, so no check can be done. Just proceed with the standard
             //file deletion procedure.
-            onDelete( versionRecordManager.getCurrentPath() );
+            onDelete( versionRecordManager.getPathToLatest() );
         }
     }
 
@@ -285,7 +271,7 @@ public class DataModelerScreenPresenter
             public void execute( final String comment ) {
                 view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting() );
                 modelerService.call( getDeleteSuccessCallback( path ), new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_deleting_error() ) ).delete( path,
-                                                                                                                                                                 comment );
+                        comment );
             }
         } );
         popup.show();
@@ -298,11 +284,11 @@ public class DataModelerScreenPresenter
                                                    @Override
                                                    public void execute( final FileNameAndCommitMessage details ) {
                                                        view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Copying() );
-                                                       modelerService.call( getCopySuccessCallback( versionRecordManager.getCurrentPath() ),
+                                                       modelerService.call( getCopySuccessCallback( ),
                                                                             new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_copying_error() ) ).copy( versionRecordManager.getCurrentPath(),
-                                                                                                                                                                   details.getNewFileName(),
-                                                                                                                                                                   details.getCommitMessage(),
-                                                                                                                                                                   true );
+                                                               details.getNewFileName(),
+                                                               details.getCommitMessage(),
+                                                               true );
                                                    }
                                                } );
         popup.show();
@@ -421,12 +407,12 @@ public class DataModelerScreenPresenter
                             ValidationPopup.showMessages(results);
                         }
                     }
-                }, new DefaultErrorCallback()).validate(getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[0]);
+                }, new DefaultErrorCallback()).validate( getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[ 0 ] );
             }
         };
     }
 
-    private RemoteCallback<Path> getCopySuccessCallback( final Path path ) {
+    private RemoteCallback<Path> getCopySuccessCallback( ) {
         return new RemoteCallback<Path>() {
 
             @Override
@@ -448,13 +434,13 @@ public class DataModelerScreenPresenter
         };
     }
 
-    private RemoteCallback<Path> getRenameSuccessCallback( final Path sourcePath ) {
+    private RemoteCallback<Path> getRenameSuccessCallback( ) {
         return new RemoteCallback<Path>() {
             @Override
             public void callback( final Path targetPath ) {
                 view.hideBusyIndicator();
-                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-                reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( targetPath ) );
+                //notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+                //reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( targetPath ) );
             }
         };
     }
@@ -486,7 +472,7 @@ public class DataModelerScreenPresenter
 
     private void save( final String newClassName ) {
 
-        String currentFileName = DataModelerUtils.extractSimpleFileName( versionRecordManager.getCurrentPath() );
+        String currentFileName = DataModelerUtils.extractSimpleFileName( versionRecordManager.getPathToLatest() );
         if ( currentFileName != null && newClassName != null && !currentFileName.equals( newClassName ) ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
@@ -494,7 +480,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              new SaveOperationService().save( versionRecordManager.getCurrentPath(), getSaveCommand( newClassName ) );
+                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( newClassName, versionRecordManager.getPathToLatest() ) );
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
@@ -502,7 +488,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              new SaveOperationService().save( versionRecordManager.getCurrentPath(), getSaveCommand( null ) );
+                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
@@ -521,11 +507,11 @@ public class DataModelerScreenPresenter
             yesNoCancelPopup.show();
 
         } else {
-            new SaveOperationService().save( versionRecordManager.getCurrentPath(), getSaveCommand( null ) );
+            new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
         }
     }
 
-    private CommandWithCommitMessage getSaveCommand( final String newFileName ) {
+    private CommandWithCommitMessage getSaveCommand( final String newFileName, final Path path ) {
         return new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
@@ -546,8 +532,8 @@ public class DataModelerScreenPresenter
                 }
                 view.showSaving();
 
-                modelerService.call( getSaveSuccessCallback( newFileName, versionRecordManager.getCurrentPath() ),
-                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), versionRecordManager.getCurrentPath(), modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
+                modelerService.call( getSaveSuccessCallback( newFileName, path ),
+                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), path, modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
 
             }
         };
@@ -560,55 +546,59 @@ public class DataModelerScreenPresenter
             public void callback( GenerationResult result ) {
 
                 view.hideBusyIndicator();
-                concurrentUpdateSessionInfo = null;
-                if ( result.hasErrors() ) {
-                    getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
-                    updateEditorView( null );
-                    getContext().setDataObject( null );
 
-                    if ( isEditorTabSelected() ) {
-                        //un common case
+                if ( newFileName == null ) {
 
-                        showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
-                                               true,
-                                               result.getErrors(),
-                                               new Command() {
-                                                   @Override
-                                                   public void execute() {
-                                                       //return to the source tab
-                                                       setSelectedTab(EDITABLE_SOURCE_TAB);
-                                                   }
-                                               } );
+                    if ( result.hasErrors() ) {
+                        getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
+                        updateEditorView( null );
+                        getContext().setDataObject( null );
 
+                        if ( isEditorTabSelected() ) {
+                            //un common case
+
+                            showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
+                                                   true,
+                                                   result.getErrors(),
+                                                   new Command() {
+                                                       @Override
+                                                       public void execute() {
+                                                           //return to the source tab
+                                                           setSelectedTab( EDITABLE_SOURCE_TAB );
+                                                       }
+                                                   } );
+
+                        }
+                    } else {
+                        getContext().setParseStatus( DataModelerContext.ParseStatus.PARSED );
+                        if ( getContext().isSourceChanged() ) {
+                            updateEditorView( result.getDataObject() );
+                            getContext().setDataObject( result.getDataObject() );
+                        }
+                        cleanSystemMessages( getCurrentMessageType() );
                     }
-                } else {
-                    getContext().setParseStatus( DataModelerContext.ParseStatus.PARSED );
-                    if ( getContext().isSourceChanged() ) {
-                        updateEditorView( result.getDataObject() );
-                        getContext().setDataObject( result.getDataObject() );
-                    }
-                    cleanSystemMessages( getCurrentMessageType() );
-                }
 
-                setSource( result.getSource() );
+                    setSource( result.getSource() );
 
-                Boolean oldDirtyStatus = getContext().isDirty();
-                getContext().setDirty( false );
-                setSourceDirty( false );
-                getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
+                    Boolean oldDirtyStatus = getContext().isDirty();
+                    getContext().setDirty( false );
+                    setSourceDirty( false );
+                    getContext().setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
 
-                notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully()) );
-                dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
-                                                                       getDataModel(),
-                                                                       oldDirtyStatus,
-                                                                       getContext().isDirty() ) );
+                    notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully()) );
+                    dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
+                                                                           getDataModel(),
+                                                                           oldDirtyStatus,
+                                                                           getContext().isDirty() ) );
 
-                dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
+                    dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
 
-                if ( newFileName != null && result.getPath() != null ) {
-                    reload( IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( result.getPath() ) );
-                } else {
                     versionRecordManager.reloadVersions( currentPath );
+
+                } else {
+                    //If the file was renamed as part of the file saving, don't do anything.
+                    //A rename event will arrive, the same as for the "Rename" case.
+                    //and the file will be automatically reloaded.
                 }
             }
         };
@@ -616,12 +606,6 @@ public class DataModelerScreenPresenter
 
     @Override
     protected void loadContent() {
-        loadModel( versionRecordManager.getCurrentPath() );
-    }
-
-    private void loadModel( final Path path ) {
-
-        //view.showLoading();
 
         modelerService.call( new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
             @Override
@@ -630,7 +614,7 @@ public class DataModelerScreenPresenter
                 context.setAnnotationDefinitions( defs );
 
                 modelerService.call( getLoadModelSuccessCallback(),
-                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadContent( path );
+                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadContent( versionRecordManager.getCurrentPath() );
             }
         }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
                            ).getAnnotationDefinitions();
@@ -641,6 +625,13 @@ public class DataModelerScreenPresenter
 
             @Override
             public void callback( EditorModelContent content) {
+
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( versionRecordManager.getCurrentPath() == null ) {
+                    return;
+
+
+                }
 
                 javaSourceEditor.setReadonly( isReadOnly );
                 getContext().setDirty( false );
@@ -711,20 +702,20 @@ public class DataModelerScreenPresenter
             }
         }
 
-        final RenamePopup popup = new RenamePopup( versionRecordManager.getCurrentPath(),
+        final RenamePopup popup = new RenamePopup( versionRecordManager.getPathToLatest(),
                                                    javaFileNameValidator,
                                                    new CommandWithFileNameAndCommitMessage() {
                                                        @Override
                                                        public void execute( final FileNameAndCommitMessage details ) {
                                                            view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Renaming() );
 
-                                                           modelerService.call( getRenameSuccessCallback( versionRecordManager.getCurrentPath() ),
-                                                                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_renaming_error() ) ).rename( versionRecordManager.getCurrentPath(),
-                                                                                                                                                                          details.getNewFileName(),
-                                                                                                                                                                          details.getCommitMessage(),
-                                                                                                                                                                          true,
-                                                                                                                                                                          saveCurrentChanges,
-                                                                                                                                                                          getSource(), modifiedDataObject[ 0 ], metadata );
+                                                           modelerService.call( getRenameSuccessCallback( ),
+                                                                                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_renaming_error() ) ).rename( versionRecordManager.getPathToLatest(),
+                                                                   details.getNewFileName(),
+                                                                   details.getCommitMessage(),
+                                                                   true,
+                                                                   saveCurrentChanges,
+                                                                   getSource(), modifiedDataObject[ 0 ], metadata );
                                                        }
                                                    } );
         popup.show();
@@ -793,7 +784,8 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void updateSourceView( String source ) {
+    @Override
+    protected void updateSource( String source ) {
         setSource( source );
     }
 
@@ -914,11 +906,12 @@ public class DataModelerScreenPresenter
 
     @Override
     public void reload() {
-        reload(versionRecordManager.getCurrentPath());
+        reload( versionRecordManager.getCurrentPath() );
     }
 
     private void reload( final ObservablePath targetPath ) {
-        super.init(targetPath,place, resourceType);
+        super.init( targetPath, place, resourceType);
+        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
     }
 
     private void onDataObjectDeleted( @Observes DataObjectDeletedEvent event ) {
@@ -1014,20 +1007,6 @@ public class DataModelerScreenPresenter
                         onValidate()
                 )
                 .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-                /*
-                .addCommand("ShowStatus (testing)", new Command() {
-                    @Override
-                    public void execute() {
-                        showStatus();
-                    }
-                })
-                .addCommand("TestReload (testing)", new Command() {
-                    @Override
-                    public void execute() {
-                        reload(versionRecordManager.getCurrentPath());
-                    }
-                })
-                */
                 .build();
 
     }

@@ -18,50 +18,52 @@ package org.kie.workbench.common.screens.datamodeller.backend.server.file;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.guvnor.common.services.backend.file.CopyHelper;
-import org.guvnor.common.services.backend.file.RenameHelper;
-import org.kie.workbench.common.screens.javaeditor.type.JavaResourceTypeDefinition;
+import org.kie.workbench.common.screens.datamodeller.backend.server.DataModelerServiceHelper;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
-@ApplicationScoped
-public class DataModelerServiceRefactoringHelper implements CopyHelper, RenameHelper {
-
-    @Inject
-    JavaResourceTypeDefinition resourceType;
+public class DataModelerServiceRefactoringHelper {
 
     @Inject
     @Named( "ioStrategy" )
-    private IOService ioService;
+    protected IOService ioService;
 
-    Map<Path, Pair<String, CommentedOption>> refactoringsCache = new HashMap<Path, Pair<String, CommentedOption>>();
+    @Inject
+    protected DataModelerServiceHelper serviceHelper;
 
-    @Override
-    public boolean supports( Path destination ) {
-        return refactoringsCache.containsKey( destination );
-    }
+    Map<Path, Pair<String, String>> refactoringsCache = new HashMap<Path, Pair<String, String>>();
 
-    @Override
-    public void postProcess( Path source, Path destination ) {
-        Pair<String, CommentedOption> refactoringPair = refactoringsCache.get( destination );
-        if ( refactoringPair != null ) {
-            ioService.write( Paths.convert( destination ), refactoringPair.getK1(), refactoringPair.getK2() );
-            refactoringsCache.remove( destination );
-        }
-    }
-
-    public void addRefactoredPath( Path target, String source, CommentedOption commentedOption ) {
-        refactoringsCache.put( target, new Pair<String, CommentedOption>( source, commentedOption ) );
+    public void addRefactoredPath( Path target, String source, String comment ) {
+        refactoringsCache.put( target, new Pair<String, String>( source, comment ) );
     }
 
     public void removeRefactoredPath( Path target ) {
         refactoringsCache.remove( target );
+    }
+
+    protected boolean _supports( Path destination ) {
+        return refactoringsCache.containsKey( destination );
+    }
+
+    protected void _postProcess( Path source, Path destination ) {
+        Pair<String, String> refactoringPair = refactoringsCache.get( destination );
+        if ( refactoringPair != null ) {
+            final org.uberfire.java.nio.file.Path _destination = Paths.convert( destination );
+            try {
+                ioService.write( _destination, refactoringPair.getK1(), makeCommentedOption( source, destination, refactoringPair.getK2() ) );
+            } finally {
+                refactoringsCache.remove( destination );
+            }
+        }
+    }
+
+    protected CommentedOption makeCommentedOption( Path source, Path destination, String comment ) {
+        return serviceHelper.makeCommentedOption( comment );
     }
 }

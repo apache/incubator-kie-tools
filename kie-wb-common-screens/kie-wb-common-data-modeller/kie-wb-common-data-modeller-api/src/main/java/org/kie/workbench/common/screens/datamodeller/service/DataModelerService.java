@@ -35,7 +35,7 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DataModelerService {
 
-    Path createJavaFile( final Path context, final String fileName );
+    Path createJavaFile( final Path context, final String fileName, final String comment );
 
     DataModelTO loadModel( final KieProject project );
 

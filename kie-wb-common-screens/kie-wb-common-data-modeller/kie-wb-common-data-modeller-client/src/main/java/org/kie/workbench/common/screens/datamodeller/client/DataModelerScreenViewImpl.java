@@ -41,7 +41,7 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDelet
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
-//@Dependent
+
 public class DataModelerScreenViewImpl
         extends KieEditorViewImpl
         implements DataModelerScreenPresenter.DataModelerScreenView {
@@ -54,11 +54,6 @@ public class DataModelerScreenViewImpl
 
     private static DataModelerScreenViewBinder uiBinder = GWT.create(DataModelerScreenViewBinder.class);
 
-    /*
-    @UiField
-    SimplePanel browserPanel = new SimplePanel();
-    */
-
     @UiField
     SimplePanel dataObjectPanel = new SimplePanel();
 
@@ -67,11 +62,6 @@ public class DataModelerScreenViewImpl
 
     @Inject
     private ModelPropertiesEditor modelPropertiesEditor;
-
-    /*
-    @Inject
-    private DataModelBrowser dataModelBrowser;
-    */
 
     @Inject
     private DataObjectBrowser dataObjectBrowser;
@@ -87,7 +77,6 @@ public class DataModelerScreenViewImpl
 
     @PostConstruct
     private void initUI() {
-        //browserPanel.add(dataModelBrowser);
         dataObjectPanel.add(dataObjectBrowser);
         propertiesPanel.add(modelPropertiesEditor);
     }
@@ -95,14 +84,8 @@ public class DataModelerScreenViewImpl
     @Override
     public void setContext(DataModelerContext context) {
         this.context = context;
-        //dataModelBrowser.setContext(context);
         dataObjectBrowser.setContext(context);
         modelPropertiesEditor.setContext(context);
-    }
-
-    @Override
-    public void init(final DataModelerScreenPresenter presenter) {
-        // Not used.
     }
 
     @Override

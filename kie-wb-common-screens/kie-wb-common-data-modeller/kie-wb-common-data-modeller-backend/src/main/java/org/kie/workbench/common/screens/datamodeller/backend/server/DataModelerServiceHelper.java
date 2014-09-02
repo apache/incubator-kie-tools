@@ -18,9 +18,13 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -54,13 +58,19 @@ import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyIm
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.security.Identity;
 
+@ApplicationScoped
 public class DataModelerServiceHelper {
 
-    public static DataModelerServiceHelper getInstance() {
-        return new DataModelerServiceHelper();
-    }
+    @Inject
+    private SessionInfo sessionInfo;
+
+    @Inject
+    private Identity identity;
 
     public DataModel to2Domain( DataModelTO dataModelTO ) {
         DataModel dataModel = ModelFactoryImpl.getInstance().newModel();
@@ -383,4 +393,15 @@ public class DataModelerServiceHelper {
         return validationMessages;
     }
 
+    public CommentedOption makeCommentedOption( String commitMessage ) {
+        final String name = identity.getName();
+        final Date when = new Date();
+
+        final CommentedOption option = new CommentedOption( sessionInfo.getId(),
+                name,
+                null,
+                commitMessage,
+                when );
+        return option;
+    }
 }

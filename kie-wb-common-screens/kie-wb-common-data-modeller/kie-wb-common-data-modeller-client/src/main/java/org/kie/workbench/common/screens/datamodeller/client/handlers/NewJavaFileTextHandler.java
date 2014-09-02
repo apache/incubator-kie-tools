@@ -85,7 +85,8 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
         dataModelerService.call( getSuccessCallback( presenter ),
                                  new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).createJavaFile( pkg.getPackageMainSrcPath(),
                                                                                                                  buildFileName( baseFileName,
-                                                                                                                                resourceType ) );
+                                                                                                                                resourceType ),
+                                                                                                                 "" );
 
     }
 

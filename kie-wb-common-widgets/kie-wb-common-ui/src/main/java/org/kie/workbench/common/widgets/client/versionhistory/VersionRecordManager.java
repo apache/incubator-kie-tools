@@ -79,6 +79,10 @@ public class VersionRecordManager {
             ObservablePath path,
             Callback<VersionRecord> selectionCallback) {
 
+        //clear the state before to init. This will cover the cases where the init method is invocked nultiple times.
+        //for example if KieEditor.init(...) method is invocked multiple times.
+        clear();
+
         PortablePreconditions.checkNotNull("path", path);
         this.selectionCallback = PortablePreconditions.checkNotNull("selectionCallback", selectionCallback);
 

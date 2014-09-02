@@ -191,7 +191,7 @@ public abstract class KieEditor {
 
     protected void resetEditorPages(final Overview overview) {
 
-        versionRecordManager.setVersions(overview.getMetadata().getVersion());
+        versionRecordManager.setVersions(overview.getMetadata().getVersion());        
         this.overviewWidget.setContent(overview, versionRecordManager.getPathToLatest(), versionRecordManager.getVersion());
         this.metadata = overview.getMetadata();
 
@@ -301,7 +301,7 @@ public abstract class KieEditor {
     }
 
     private void onDelete() {
-        placeManager.forceClosePlace(place);
+        placeManager.forceClosePlace( place );
     }
 
     /**
@@ -311,6 +311,7 @@ public abstract class KieEditor {
         refreshTitle();
         baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         loadContent();
+        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
     }
 
     /**
@@ -377,7 +378,7 @@ public abstract class KieEditor {
      */
     protected void makeMenuBar() {
         menus = menuBuilder
-                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
+                .addSave( versionRecordManager.newSaveMenuItem(new Command() {
                     @Override
                     public void execute() {
                         onSave();
@@ -423,6 +424,7 @@ public abstract class KieEditor {
         refreshTitle();
         baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         loadContent();
+        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
     }
 
     private void disableMenus() {
