@@ -46,6 +46,7 @@
   <inherits name="org.drools.workbench.screens.guided.rule.DroolsWorkbenchGuidedRuleEditorClient"/>
   <inherits name="org.drools.workbench.screens.guided.template.DroolsWorkbenchGuidedTemplateEditorClient"/>
   <inherits name="org.drools.workbench.screens.guided.dtable.DroolsWorkbenchGuidedDecisionTableEditorClient"/>
+  <inherits name="org.drools.workbench.screens.guided.dtree.DroolsWorkbenchGuidedDecisionTreeEditorClient"/>
   <inherits name="org.drools.workbench.screens.guided.scorecard.DroolsWorkbenchGuidedScoreCardEditorClient"/>
   <inherits name="org.drools.workbench.screens.dsltext.DroolsWorkbenchDSLTextEditorClient"/>
   <inherits name="org.drools.workbench.screens.globals.DroolsWorkbenchGlobalsEditorClient"/>

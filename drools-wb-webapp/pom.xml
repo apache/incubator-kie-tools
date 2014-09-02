@@ -71,6 +71,11 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-guided-dtree</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-guided-scorecard</artifactId>
     </dependency>
 
@@ -384,6 +389,16 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-dtree-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-dtree-editor-backend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-scorecard-editor-client</artifactId>
     </dependency>
 
@@ -669,6 +684,8 @@
             <compileSourcesArtifact>org.drools:drools-wb-guided-template-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-dtable-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-dtable-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-guided-dtree-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-wb-guided-dtree-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-scorecard-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-guided-scorecard-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-dsl-text-editor-api</compileSourcesArtifact>
