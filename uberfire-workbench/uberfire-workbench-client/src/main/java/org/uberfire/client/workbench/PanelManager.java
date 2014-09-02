@@ -9,6 +9,8 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 
+import com.google.gwt.user.client.ui.HasWidgets;
+
 /**
  * Internal framework component that handles the creation, destruction, layout, and composition (parent-child nesting)
  * of all panels that make up a perspective. Also orchestrates adding and removing parts to/from panels. The outer most
@@ -64,9 +66,19 @@ public interface PanelManager {
                                        final Position position );
 
     /**
+     * Creates an UberFire panel and installs its view in the given widget container.
+     *
+     * @param container
+     *            the widget container to install the new panel in. The new panel will fill the container.
+     * @return the definition for the newly constructed panel. Never null. The panel's type will be {@code panelType};
+     *         its parent will be null; {@code isRoot()} will return false.
+     */
+    PanelDefinition addCustomPanel( HasWidgets container, String panelType );
+
+    /**
      * Removes the panel associated with the given definition, removing the panel's presenter and view from the
      * workbench, and freeing any resources associated with them. The panel must have no parts and no child panels.
-     * 
+     *
      * @param toRemove
      *            the panel to remove from the workbench layout. Must not be null.
      * @throws IllegalStateException
@@ -81,7 +93,7 @@ public interface PanelManager {
      * removes the last part from the panel, and the panel is not the root panel, it will be removed from the workbench
      * layout. Child panels are preserved by reparenting them to the removed panel's parent. Application code should not
      * call this method directly; it is called by PlaceManager as part of the overall procedure in closing a place.
-     * 
+     *
      * @param toRemove
      *            the place that is closing. Must not be null.
      * @return true if the associated part was found and removed; false if no matching part could be found.
@@ -95,7 +107,7 @@ public interface PanelManager {
     /**
      * Gives focus to the given panel, if it is known to this PanelManager. Also removes focus from all other panels
      * associated with this PanelManager.
-     * 
+     *
      * @param panel
      *            the panel to give focus to. May be null, in which case all panels will lose focus.
      */
@@ -113,7 +125,7 @@ public interface PanelManager {
      * Clears all existing panel structure from the user interface, then installs a new root panel according to the
      * specifications in the given {@link PanelDefinition}. Only installs the root panel; does not build the child
      * panel/part structure recursively.
-     * 
+     *
      * @param root
      *            description of the new root panel to install. Must not be null.
      */

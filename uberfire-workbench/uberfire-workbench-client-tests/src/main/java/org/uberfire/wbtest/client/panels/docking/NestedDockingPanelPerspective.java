@@ -1,4 +1,4 @@
-package org.uberfire.wbtest.client.docking;
+package org.uberfire.wbtest.client.panels.docking;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @Dependent
-@Named("org.uberfire.wbtest.client.docking.NestedDockingPanelPerspective")
+@Named("org.uberfire.wbtest.client.panels.docking.NestedDockingPanelPerspective")
 public class NestedDockingPanelPerspective extends AbstractTestPerspectiveActivity {
 
     @Inject

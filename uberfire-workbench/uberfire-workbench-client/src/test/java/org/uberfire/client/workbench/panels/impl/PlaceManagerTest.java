@@ -34,6 +34,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PlaceManagerImpl;
 import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.workbench.PanelManager;
@@ -49,9 +50,13 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+import org.uberfire.workbench.model.menu.Menus;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.HasWidgets;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PlaceManagerTest {
@@ -158,7 +163,7 @@ public class PlaceManagerTest {
 
         placeManager.goTo( oz, (PanelDefinition) null );
 
-        verifyActivityLaunchSideEffects( oz, ozActivity );
+        verifyActivityLaunchSideEffects( oz, ozActivity, null );
     }
 
     @Test
@@ -198,7 +203,7 @@ public class PlaceManagerTest {
 
         placeManager.goTo( yellowBrickRoad, (PanelDefinition) null );
 
-        verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity );
+        verifyActivityLaunchSideEffects( yellowBrickRoad, ozActivity, null );
 
         // special contract just for path-type place requests (subject to preference)
         verify( yellowBrickRoad.getPath(), never() ).onDelete( any( Command.class ) );
@@ -365,7 +370,7 @@ public class PlaceManagerTest {
         inOrder.verify( emeraldCityActivity ).onOpen();
 
         // and the workbench activity should have launched (after the perspective change)
-        verifyActivityLaunchSideEffects( emeraldCityPlace, emeraldCityActivity );
+        verifyActivityLaunchSideEffects( emeraldCityPlace, emeraldCityActivity, null );
     }
 
     @Test
@@ -577,6 +582,41 @@ public class PlaceManagerTest {
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( popupPlace ) );
     }
 
+    @Test
+    public void testLaunchActivityInCustomPanel() throws Exception {
+        PanelDefinition customPanelDef = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        when( panelManager.addCustomPanel( any( HasWidgets.class ),
+                                               eq( StaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+
+        HasWidgets customContainer = mock( HasWidgets.class );
+
+        placeManager.goTo( emeraldCityPlace, customContainer );
+
+        verifyActivityLaunchSideEffects( emeraldCityPlace, emeraldCityActivity, customPanelDef );
+        verify( panelManager ).addWorkbenchPart( eq( emeraldCityPlace ),
+                                                 eq( new PartDefinitionImpl( emeraldCityPlace ) ),
+                                                 eq( customPanelDef ),
+                                                 isNull( Menus.class ),
+                                                 any( UIPart.class ),
+                                                 isNull( String.class ) );
+        assertNull( customPanelDef.getParent() );
+    }
+
+    @Test
+    public void testLaunchExistingActivityInCustomPanel() throws Exception {
+        HasWidgets customContainer = mock( HasWidgets.class );
+
+        placeManager.goTo( kansas, customContainer );
+
+        verify( panelManager, never() ).addCustomPanel( customContainer, StaticWorkbenchPanelPresenter.class.getName() );
+        verifyNoActivityLaunchSideEffects( kansas, kansasActivity );
+        verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
+    }
+
     // TODO test going to an unresolvable/unknown place
 
     // TODO test going to a place with a specific target panel (part of the PerspectiveManager/PlaceManager contract)
@@ -593,7 +633,7 @@ public class PlaceManagerTest {
      * @param activity
      *            <b>A Mockito mock<b> of the activity that was resolved for <tt>placeRequest</tt>.
      */
-    private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest, WorkbenchActivity activity) {
+    private void verifyActivityLaunchSideEffects(PlaceRequest placeRequest, WorkbenchActivity activity, PanelDefinition expectedPanel ) {
 
         // as of UberFire 0.4. this event only happens if the place is already visible.
         // it might be be better if the event was fired unconditionally. needs investigation.
@@ -603,17 +643,24 @@ public class PlaceManagerTest {
         verify( activityManager, times( 1 ) ).getActivities( placeRequest );
 
         // contract between PlaceManager and PanelManager
-        PanelDefinition rootPanel = panelManager.getRoot();
-        verify( panelManager ).addWorkbenchPanel( rootPanel, null,
-                                                  activity.preferredHeight(), activity.preferredWidth(), null, null );
+        if ( expectedPanel == null ) {
+            PanelDefinition rootPanel = panelManager.getRoot();
+            verify( panelManager ).addWorkbenchPanel( rootPanel, null,
+                                                      activity.preferredHeight(), activity.preferredWidth(), null, null );
+        }
+        verify( panelManager ).addWorkbenchPart( eq( placeRequest ),
+                                                 eq( new PartDefinitionImpl( placeRequest ) ),
+                                                 expectedPanel == null ? any( PanelDefinition.class ) : eq( expectedPanel ),
+                                                 isNull( Menus.class ),
+                                                 any( UIPart.class ),
+                                                 isNull( String.class ) );
 
         // contract between PlaceManager and PlaceHistoryHandler
         verify( placeHistoryHandler ).onPlaceChange( placeRequest );
 
         // state changes in PlaceManager itself (contract between PlaceManager and everyone)
-        assertTrue(
-                   "Actual place requests: " + placeManager.getActivePlaceRequests(),
-                   placeManager.getActivePlaceRequests().contains( placeRequest ) );
+        assertTrue( "Actual place requests: " + placeManager.getActivePlaceRequests(),
+                    placeManager.getActivePlaceRequests().contains( placeRequest ) );
         assertSame( activity, placeManager.getActivity( placeRequest ) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( placeRequest ) );
 

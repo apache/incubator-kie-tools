@@ -69,6 +69,12 @@ public class PanelManagerImpl implements PanelManager {
 
     protected final Map<PanelDefinition, WorkbenchPanelPresenter> mapPanelDefinitionToPresenter = new HashMap<PanelDefinition, WorkbenchPanelPresenter>();
 
+    /**
+     * Remembers which HasWidgets contains each existing custom panel. Items are removed from this map when the panels
+     * are closed/removed.
+     */
+    protected final Map<PanelDefinition, HasWidgets> customPanels = new HashMap<PanelDefinition, HasWidgets>();
+
     protected PartDefinition activePart = null;
 
     @Inject
@@ -190,6 +196,9 @@ public class PanelManagerImpl implements PanelManager {
 
     @Override
     public void removeWorkbenchPanel( final PanelDefinition toRemove ) throws IllegalStateException {
+        if ( toRemove.isRoot() ) {
+            throw new IllegalArgumentException( "The root panel cannot be removed. To replace it, call setRoot()" );
+        }
         if ( !toRemove.getParts().isEmpty() ) {
             throw new IllegalStateException( "Panel still contains parts: " + toRemove.getParts() );
         }
@@ -202,13 +211,18 @@ public class PanelManagerImpl implements PanelManager {
             throw new IllegalArgumentException( "Couldn't find panel to remove: " + toRemove );
         }
 
-        final PanelDefinition parentDef = toRemove.getParent();
-        final WorkbenchPanelPresenter parentPresenter = mapPanelDefinitionToPresenter.get( parentDef );
-        if ( parentPresenter == null ) {
-            throw new IllegalArgumentException( "The given panel's parent could not be found" );
-        }
+        HasWidgets customContainer = customPanels.remove( toRemove );
+        if ( customContainer != null ) {
+            customContainer.remove( presenterToRemove.getPanelView().asWidget() );
+        } else {
+            final PanelDefinition parentDef = toRemove.getParent();
+            final WorkbenchPanelPresenter parentPresenter = mapPanelDefinitionToPresenter.get( parentDef );
+            if ( parentPresenter == null ) {
+                throw new IllegalArgumentException( "The given panel's parent could not be found" );
+            }
 
-        parentPresenter.removePanel( presenterToRemove );
+            parentPresenter.removePanel( presenterToRemove );
+        }
 
         getBeanFactory().destroy( presenterToRemove );
     }
@@ -358,4 +372,16 @@ public class PanelManagerImpl implements PanelManager {
         return newPanel;
     }
 
+    @Override
+    public PanelDefinition addCustomPanel( final HasWidgets container,
+                                           final String panelType ) {
+        PanelDefinition panelDef = new PanelDefinitionImpl( panelType );
+        WorkbenchPanelPresenter panelPresenter = beanFactory.newWorkbenchPanel( panelDef );
+        container.add( panelPresenter.getPanelView().asWidget() );
+        mapPanelDefinitionToPresenter.put( panelDef,
+                                           panelPresenter );
+        customPanels.put( panelDef, container );
+        onPanelFocus( panelDef );
+        return panelDef;
+    }
 }

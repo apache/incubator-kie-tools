@@ -25,6 +25,7 @@ import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -93,7 +94,7 @@ public class PanelManagerTest {
         when( beanFactory.newWorkbenchPanel( any( PanelDefinition.class ) ) ).thenAnswer( new Answer<WorkbenchPanelPresenter>() {
             @Override
             public WorkbenchPanelPresenter answer( InvocationOnMock invocation ) throws Throwable {
-                WorkbenchPanelPresenter newPanelPresenter = mock( WorkbenchPanelPresenter.class );
+                WorkbenchPanelPresenter newPanelPresenter = mock( WorkbenchPanelPresenter.class, RETURNS_DEEP_STUBS );
                 when( newPanelPresenter.getDefinition() ).thenReturn( (PanelDefinition) invocation.getArguments()[0] );
                 return newPanelPresenter;
             }
@@ -213,11 +214,17 @@ public class PanelManagerTest {
         PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
 
-        // warning: this is not a particularly good test, because this method is stubbed out in our
-        // TestingPanelManagerImpl.
         panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
 
         assertTrue( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
+    }
+
+    @Test
+    public void addedCustomPanelsShouldBeRemembered() throws Exception {
+        HasWidgets container = mock( HasWidgets.class );
+        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
+
+        assertTrue( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
     }
 
     @Test
@@ -229,6 +236,25 @@ public class PanelManagerTest {
         panelManager.removeWorkbenchPanel( subPanel );
 
         assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
+    }
+
+    @Test
+    public void explicitlyRemovedCustomPanelsShouldBeForgotten() throws Exception {
+        HasWidgets container = mock( HasWidgets.class );
+        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
+        panelManager.removeWorkbenchPanel( customPanel );
+
+        assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
+    }
+
+    @Test
+    public void explicitlyRemovingRootPanelShouldFail() throws Exception {
+        try {
+            panelManager.removeWorkbenchPanel( testPerspectiveDef.getRoot() );
+            fail( "Should have thrown exception" );
+        } catch ( IllegalArgumentException e ) {
+            assertTrue( e.getMessage().contains( "root" ) );
+        }
     }
 
     // After UF-117:

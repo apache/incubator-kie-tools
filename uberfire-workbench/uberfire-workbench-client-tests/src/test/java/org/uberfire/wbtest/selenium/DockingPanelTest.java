@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.uberfire.wbtest.client.docking.NestedDockingPanelPerspective;
+import org.uberfire.wbtest.client.panels.docking.NestedDockingPanelPerspective;
 import org.uberfire.workbench.model.CompassPosition;
 
 /**

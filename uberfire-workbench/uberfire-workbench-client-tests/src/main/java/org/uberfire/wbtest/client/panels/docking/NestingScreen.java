@@ -1,4 +1,4 @@
-package org.uberfire.wbtest.client.docking;
+package org.uberfire.wbtest.client.panels.docking;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
 @Dependent
-@Named("org.uberfire.wbtest.client.docking.NestingScreen")
+@Named("org.uberfire.wbtest.client.panels.docking.NestingScreen")
 public class NestingScreen extends AbstractTestScreenActivity {
 
     @Inject

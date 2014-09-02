@@ -28,6 +28,8 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 
+import com.google.gwt.user.client.ui.HasWidgets;
+
 /**
  * A Workbench-centric abstraction over the browser's history mechanism. Allows the application to initiate navigation
  * to any displayable thing: a {@link WorkbenchPerspective}, a {@link WorkbenchScreen}, a {@link WorkbenchPopup}, a
@@ -60,6 +62,9 @@ public interface PlaceManager {
     void goTo( final Path path,
                final PlaceRequest place,
                final PanelDefinition panel );
+
+    void goTo( final PlaceRequest place,
+               final HasWidgets addTo );
 
     /**
      * Finds the <i>currently open</i> activity that handles the given PlaceRequest by ID. No attempt is made to match

@@ -41,6 +41,7 @@ import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.PlaceRequest;
@@ -51,6 +52,7 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
@@ -117,12 +119,12 @@ implements PlaceManager {
     @Override
     public void goTo( final String identifier ) {
         final DefaultPlaceRequest place = new DefaultPlaceRequest( identifier );
-        goTo( place, null );
+        goTo( place, (PanelDefinition) null );
     }
 
     @Override
     public void goTo( PlaceRequest place ) {
-        goTo( place, null );
+        goTo( place, (PanelDefinition) null );
     }
 
     @Override
@@ -133,7 +135,7 @@ implements PlaceManager {
 
     @Override
     public void goTo( final Path path ) {
-        goTo( new PathPlaceRequest( path ), null );
+        goTo( new PathPlaceRequest( path ), (PanelDefinition) null );
     }
 
     @Override
@@ -146,13 +148,25 @@ implements PlaceManager {
     @Override
     public void goTo( final Path path,
                       final PlaceRequest placeRequest ) {
-        goTo( getPlace( path, placeRequest ), null );
+        goTo( getPlace( path, placeRequest ), (PanelDefinition) null );
     }
 
     @Override
     public void goTo( final PlaceRequest place,
                       final PanelDefinition panel ) {
         goTo( place, panel, Commands.DO_NOTHING );
+    }
+
+    @Override
+    public void goTo( PlaceRequest place,
+                      HasWidgets addTo ) {
+        if ( existingWorkbenchActivities.containsKey( place ) ) {
+            // if already open, behaviour is to select the place where it already lives
+            goTo( place, null, Commands.DO_NOTHING );
+        } else {
+            PanelDefinition adoptedPanel = panelManager.addCustomPanel( addTo, StaticWorkbenchPanelPresenter.class.getName() );
+            goTo( place, adoptedPanel, Commands.DO_NOTHING );
+        }
     }
 
     private void goTo( final PlaceRequest place,
@@ -517,17 +531,15 @@ implements PlaceManager {
         if ( _panel != null ) {
             panel = _panel;
         } else {
-            panel = addWorkbenchPanelTo( position, activity.preferredHeight(), activity.preferredWidth() );
+            panel = panelManager.addWorkbenchPanel( panelManager.getRoot(),
+                                                    position,
+                                                    activity.preferredHeight(),
+                                                    activity.preferredWidth(),
+                                                    null,
+                                                    null );
         }
 
         launchWorkbenchActivityInPanel( place, activity, part, panel );
-    }
-
-    PanelDefinition addWorkbenchPanelTo( final Position position,
-                                         final Integer height,
-                                         final Integer width ) {
-        return panelManager.addWorkbenchPanel( panelManager.getRoot(),
-                                               position, height, width, null, null );
     }
 
     private void launchWorkbenchActivityInPanel( final PlaceRequest place,
