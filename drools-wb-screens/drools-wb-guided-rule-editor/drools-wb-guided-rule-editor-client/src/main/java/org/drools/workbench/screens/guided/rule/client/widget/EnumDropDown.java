@@ -25,6 +25,7 @@ import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.kie.uberfire.client.common.DropDownValueChanged;
 import org.kie.uberfire.client.common.IDirtyable;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * A drop down for enumerated values
@@ -34,6 +35,7 @@ public class EnumDropDown
         implements IDirtyable {
 
     private final DropDownValueChanged valueChangedCommand;
+    private final Path resource;
 
     private EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
         @Override
@@ -65,20 +67,23 @@ public class EnumDropDown
 
     public EnumDropDown( final String currentValue,
                          final DropDownValueChanged valueChanged,
-                         final DropDownData dropData ) {
+                         final DropDownData dropData,
+                         final Path resource ) {
         this( currentValue,
               valueChanged,
               dropData,
-              false );
-
+              false,
+              resource );
     }
 
     public EnumDropDown( final String currentValue,
                          final DropDownValueChanged valueChanged,
                          final DropDownData dropData,
-                         boolean multipleSelect ) {
+                         final boolean multipleSelect,
+                         final Path resource ) {
         super( multipleSelect );
         this.valueChangedCommand = valueChanged;
+        this.resource = resource;
 
         addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
@@ -125,6 +130,7 @@ public class EnumDropDown
         utilities.setDropDownData( currentValue,
                                    dropData,
                                    isMultipleSelect(),
+                                   resource,
                                    this );
     }
 

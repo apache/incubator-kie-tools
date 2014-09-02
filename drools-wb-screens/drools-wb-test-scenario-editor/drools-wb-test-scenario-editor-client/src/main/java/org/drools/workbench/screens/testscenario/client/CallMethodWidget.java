@@ -237,7 +237,8 @@ public class CallMethodWidget extends DirtyableComposite {
                                                        public void execute() {
                                                            makeDirty();
                                                        }
-                                                   } );
+                                                   },
+                                                   oracle );
     }
 
     private Widget fieldSelector( final CallFieldValue val ) {

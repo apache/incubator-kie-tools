@@ -102,7 +102,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                                  callback.valueChanged( newValue );
                                              }
                                          },
-                                         DropDownData.create( c ) ) );
+                                         DropDownData.create( c ),
+                                         oracle.getResourcePath() ) );
 
         } else if ( flType != null && flType.equals( DataType.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
@@ -139,7 +140,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                                      callback.valueChanged( newValue );
                                                  }
                                              },
-                                             dropDownData ) );
+                                             dropDownData,
+                                             oracle.getResourcePath() ) );
 
             } else {
                 if ( field.getExpected() != null && field.getExpected().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {

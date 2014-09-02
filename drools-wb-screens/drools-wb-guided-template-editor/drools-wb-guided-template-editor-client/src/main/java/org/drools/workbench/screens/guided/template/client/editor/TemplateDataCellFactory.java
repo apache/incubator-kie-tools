@@ -117,7 +117,7 @@ public class TemplateDataCellFactory
                                                                                                                                      fieldName,
                                                                                                                                      oracle,
                                                                                                                                      dropDownManager,
-                                                                                                                                     isReadOnly );
+                                                                                                                                     isReadOnly);
             cell = new DecoratedGridCellValueAdaptor<BigDecimal>( pudd,
                                                                   eventBus );
 

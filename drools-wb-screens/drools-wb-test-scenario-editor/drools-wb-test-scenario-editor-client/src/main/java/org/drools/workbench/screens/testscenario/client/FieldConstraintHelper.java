@@ -176,4 +176,8 @@ public class FieldConstraintHelper {
         this.parentIsAList = parentIsAList;
     }
 
+    public AsyncPackageDataModelOracle getDataModelOracle() {
+        return this.oracle;
+    }
+
 }

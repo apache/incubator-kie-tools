@@ -584,6 +584,7 @@ public class DTCellValueWidgetFactory {
         utilities.setDropDownData( strValue,
                                    dd,
                                    isMultipleSelect,
+                                   oracle.getResourcePath(),
                                    lb );
 
         return lb;

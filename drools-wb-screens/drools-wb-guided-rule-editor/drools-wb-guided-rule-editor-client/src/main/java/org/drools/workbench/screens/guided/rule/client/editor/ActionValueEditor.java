@@ -79,11 +79,10 @@ public class ActionValueEditor
 
     public ActionValueEditor( final ActionFieldValue val,
                               final DropDownData enums,
-                              RuleModeller modeller,
-                              EventBus eventBus,
-                              String variableType,
-                              boolean readOnly ) {
-
+                              final RuleModeller modeller,
+                              final EventBus eventBus,
+                              final String variableType,
+                              final boolean readOnly ) {
         this.readOnly = readOnly;
 
         if ( val.getType().equals( DataType.TYPE_BOOLEAN ) ) {
@@ -257,7 +256,8 @@ public class ActionValueEditor
                                                               makeDirty();
                                                           }
                                                       },
-                                                      enums );
+                                                      enums,
+                                                      modeller.getPath() );
         return enumDropDown;
     }
 

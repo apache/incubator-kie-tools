@@ -52,6 +52,7 @@ import org.kie.uberfire.client.common.DropDownValueChanged;
 import org.kie.uberfire.client.common.InfoPopup;
 import org.kie.uberfire.client.common.SmallLabel;
 import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 
@@ -66,6 +67,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
     private Scenario model = null;
     private String parameterType = null;
     private Command onValueChangeCommand = null;
+    private AsyncPackageDataModelOracle oracle;
     private ExecutionTrace ex;
 
     public MethodParameterCallValueEditor( final CallFieldValue val,
@@ -73,7 +75,8 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                            final ExecutionTrace ex,
                                            final Scenario model,
                                            final String parameterType,
-                                           final Command onValueChangeCommand ) {
+                                           final Command onValueChangeCommand,
+                                           final AsyncPackageDataModelOracle oracle ) {
         if ( val.type.equals( DataType.TYPE_BOOLEAN ) ) {
             this.enums = DropDownData.create( new String[]{ "true", "false" } );
         } else {
@@ -85,6 +88,8 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         this.model = model;
         this.parameterType = parameterType;
         this.onValueChangeCommand = onValueChangeCommand;
+        this.oracle = oracle;
+
         refresh();
         initWidget( root );
     }
@@ -103,7 +108,8 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                                 makeDirty();
                                             }
                                         },
-                                        enums ) );
+                                        enums,
+                                        oracle.getResourcePath() ) );
         } else {
 
             if ( methodParameter.nature == FieldNatureType.TYPE_UNDEFINED ) {

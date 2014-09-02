@@ -101,6 +101,7 @@ public class ConstraintValueEditor
 
     private DropDownData dropDownData;
     private boolean readOnly;
+
     private Command onValueChangeCommand;
     private Command onTemplateValueChangeCommand;
     private boolean isDropDownDataEnum;
@@ -318,7 +319,8 @@ public class ConstraintValueEditor
                                                               }
                                                           },
                                                           dropDownData,
-                                                          multipleSelect );
+                                                          multipleSelect,
+                                                          modeller.getPath() );
             return enumDropDown;
         }
 

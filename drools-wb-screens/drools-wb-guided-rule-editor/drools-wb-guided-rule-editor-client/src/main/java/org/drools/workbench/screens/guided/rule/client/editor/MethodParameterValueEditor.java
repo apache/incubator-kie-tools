@@ -63,21 +63,21 @@ public class MethodParameterValueEditor
     private ActionFieldFunction methodParameter;
     private DropDownData enums;
     private SimplePanel root = new SimplePanel();
-    private RuleModeller model = null;
+    private RuleModeller modeller = null;
     private String parameterType = null;
     private Command onValueChangeCommand = null;
 
-    public MethodParameterValueEditor(
-            final AsyncPackageDataModelOracle oracle,
-            final ActionFieldFunction val,
-            final DropDownData enums,
-            RuleModeller model,
-            Command onValueChangeCommand ) {
+    public MethodParameterValueEditor( final AsyncPackageDataModelOracle oracle,
+                                       final ActionFieldFunction val,
+                                       final DropDownData enums,
+                                       final RuleModeller modeller,
+                                       final Command onValueChangeCommand ) {
         this.oracle = oracle;
         this.methodParameter = val;
-        this.model = model;
+        this.modeller = modeller;
         this.parameterType = val.getType();
         this.onValueChangeCommand = onValueChangeCommand;
+
         setEnums( enums );
         refresh();
         initWidget( root );
@@ -101,7 +101,8 @@ public class MethodParameterValueEditor
                                                 setMethodParameterValue( newValue );
                                             }
                                         },
-                                        enums ) );
+                                        enums,
+                                        modeller.getPath() ) );
         } else {
 
             if ( methodParameter.getNature() == FieldNatureType.TYPE_UNDEFINED && methodParameter.getValue() == null ) {
@@ -123,13 +124,14 @@ public class MethodParameterValueEditor
     }
 
     private ListBox boundVariable() {
-        BoundListBox boundListBox = new BoundListBox( model, methodParameter, new SuperTypeMatcher( oracle ) );
+        BoundListBox boundListBox = new BoundListBox( modeller,
+                                                      methodParameter,
+                                                      new SuperTypeMatcher( oracle ) );
 
         boundListBox.addChangeHandler( new ChangeHandler() {
 
             public void onChange( ChangeEvent event ) {
                 ListBox w = (ListBox) event.getSource();
-
                 setMethodParameterValue( w.getValue( w.getSelectedIndex() ) );
                 refresh();
             }
@@ -261,8 +263,7 @@ public class MethodParameterValueEditor
 
     }
 
-    private void addBoundVariableButton(
-            final FormStylePopup form ) {
+    private void addBoundVariableButton( final FormStylePopup form ) {
         form.addRow( new HTML( "<hr/>" ) );
         form.addRow( new SmallLabel( GuidedRuleEditorResources.CONSTANTS.AdvancedSection() ) );
         Button variableButton = new Button( GuidedRuleEditorResources.CONSTANTS.BoundVariable() );
@@ -281,14 +282,10 @@ public class MethodParameterValueEditor
         } );
     }
 
-    private void canTheVariableButtonBeShown(
-            final Callback<Boolean> callback ) {
-
+    private void canTheVariableButtonBeShown( final Callback<Boolean> callback ) {
         List<String> factTypes = new ArrayList<String>();
-
-        for ( String variable : model.getModel().getAllVariables() ) {
+        for ( String variable : modeller.getModel().getAllVariables() ) {
             String factType = getFactType( variable );
-
             factTypes.add( factType );
 
             if ( factType.equals( this.parameterType ) ) {
@@ -297,15 +294,17 @@ public class MethodParameterValueEditor
             }
         }
 
-        new SuperTypeMatcher( oracle ).isThereAMatchingSuperType( factTypes, parameterType, callback );
+        new SuperTypeMatcher( oracle ).isThereAMatchingSuperType( factTypes,
+                                                                  parameterType,
+                                                                  callback );
     }
 
     private String getFactType( String variable ) {
-        if ( model.getModel().getRHSBoundFacts().contains( variable ) == false ) {
-            return model.getModel().getLHSBindingType( variable );
+        if ( modeller.getModel().getRHSBoundFacts().contains( variable ) == false ) {
+            return modeller.getModel().getLHSBindingType( variable );
 
         } else {
-            return model.getModel().getRHSBoundFact( variable ).getFactType();
+            return modeller.getModel().getRHSBoundFact( variable ).getFactType();
         }
     }
 

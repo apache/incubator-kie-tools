@@ -39,12 +39,12 @@ import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
-import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.kie.uberfire.client.common.DirtyableComposite;
 import org.kie.uberfire.client.common.DropDownValueChanged;
 import org.kie.uberfire.client.common.ValueChanged;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
+import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 
 /**
  * Constraint editor for the FieldData in the Given Section
@@ -180,7 +180,8 @@ public class FieldDataConstraintEditor
                                      }
 
                                  },
-                                 DropDownData.create( new String[]{ "true", "false" } ) );
+                                 DropDownData.create( new String[]{ "true", "false" } ),
+                                 helper.getDataModelOracle().getResourcePath() );
     }
 
     private EnumDropDown dropDownEditor( final DropDownData dropDownData ) {
@@ -194,7 +195,8 @@ public class FieldDataConstraintEditor
                                          }
                                      }
                                  },
-                                 dropDownData );
+                                 dropDownData,
+                                 helper.getDataModelOracle().getResourcePath() );
 
     }
 
