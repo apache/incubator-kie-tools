@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -67,6 +68,56 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         childScreen.close();
         assertFalse( childScreen.isStillInDom() );
         assertFalse( childScreen.isPanelStillInDom() );
+    }
+
+    @Test @Ignore
+    public void testAddTwoPanelsToRootRemovingOldestFirst() {
+        NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
+
+        NestingScreenWrapper childScreen1 = root.addChild( direction );
+        NestingScreenWrapper childScreen2 = root.addChild( direction );
+
+        assertTrue( childScreen1.isStillInDom() );
+        assertTrue( childScreen1.isPanelStillInDom() );
+        assertTrue( childScreen2.isStillInDom() );
+        assertTrue( childScreen2.isPanelStillInDom() );
+
+        childScreen1.close();
+        assertFalse( childScreen1.isStillInDom() );
+        assertFalse( childScreen1.isPanelStillInDom() );
+        assertTrue( childScreen2.isStillInDom() );
+        assertTrue( childScreen2.isPanelStillInDom() );
+
+        childScreen2.close();
+        assertFalse( childScreen1.isStillInDom() );
+        assertFalse( childScreen1.isPanelStillInDom() );
+        assertFalse( childScreen2.isStillInDom() );
+        assertFalse( childScreen2.isPanelStillInDom() );
+    }
+
+    @Test @Ignore
+    public void testAddTwoPanelsToRootRemovingNewestFirst() {
+        NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
+
+        NestingScreenWrapper childScreen1 = root.addChild( direction );
+        NestingScreenWrapper childScreen2 = root.addChild( direction );
+
+        assertTrue( childScreen1.isStillInDom() );
+        assertTrue( childScreen1.isPanelStillInDom() );
+        assertTrue( childScreen2.isStillInDom() );
+        assertTrue( childScreen2.isPanelStillInDom() );
+
+        childScreen2.close();
+        assertTrue( childScreen1.isStillInDom() );
+        assertTrue( childScreen1.isPanelStillInDom() );
+        assertFalse( childScreen2.isStillInDom() );
+        assertFalse( childScreen2.isPanelStillInDom() );
+
+        childScreen1.close();
+        assertFalse( childScreen1.isStillInDom() );
+        assertFalse( childScreen1.isPanelStillInDom() );
+        assertFalse( childScreen2.isStillInDom() );
+        assertFalse( childScreen2.isPanelStillInDom() );
     }
 
     /**

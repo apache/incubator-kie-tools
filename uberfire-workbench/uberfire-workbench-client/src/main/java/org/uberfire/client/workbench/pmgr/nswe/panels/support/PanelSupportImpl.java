@@ -1,9 +1,5 @@
 package org.uberfire.client.workbench.pmgr.nswe.panels.support;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -11,8 +7,6 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.SplitPanel;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PanelSupport;
-import org.uberfire.client.workbench.pmgr.nswe.panels.impl.HorizontalSplitterPanel;
-import org.uberfire.client.workbench.pmgr.nswe.panels.impl.VerticalSplitterPanel;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 
@@ -26,18 +20,8 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 public class PanelSupportImpl implements PanelSupport {
 
-    private final Map<CompassPosition, AbstractPanelHelper> helpers = new HashMap<CompassPosition, AbstractPanelHelper>();
-
     @Inject
     private BeanFactory factory;
-
-    @PostConstruct
-    private void setup() {
-        helpers.put( CompassPosition.NORTH, new PanelHelperNorth( factory ) );
-        helpers.put( CompassPosition.SOUTH, new PanelHelperSouth( factory ) );
-        helpers.put( CompassPosition.EAST, new PanelHelperEast( factory ) );
-        helpers.put( CompassPosition.WEST, new PanelHelperWest( factory ) );
-    }
 
     @Override
     public IsWidget addPanel( final PanelDefinition panel,
@@ -105,38 +89,39 @@ public class PanelSupportImpl implements PanelSupport {
     public boolean remove( final WorkbenchPanelView<?> view,
                            final IsWidget parent ) {
 
-        CompassPosition position = CompassPosition.NONE;
+        final SplitPanel splitter = (SplitPanel) parent;
 
-        if ( parent instanceof HorizontalSplitterPanel ) {
-            final HorizontalSplitterPanel hsp = (HorizontalSplitterPanel) parent;
-            if ( view.asWidget().equals( hsp.getWidget( CompassPosition.EAST ) ) ) {
-                position = CompassPosition.EAST;
-            } else if ( view.asWidget().equals( hsp.getWidget( CompassPosition.WEST ) ) ) {
-                position = CompassPosition.WEST;
-            }
-        } else if ( parent instanceof VerticalSplitterPanel ) {
-            final VerticalSplitterPanel vsp = (VerticalSplitterPanel) parent;
-            if ( view.asWidget().equals( vsp.getWidget( CompassPosition.NORTH ) ) ) {
-                position = CompassPosition.NORTH;
-            } else if ( view.asWidget().equals( vsp.getWidget( CompassPosition.SOUTH ) ) ) {
-                position = CompassPosition.SOUTH;
+        CompassPosition removalPosition = CompassPosition.NONE;
+        for ( CompassPosition searchPosition : new CompassPosition[]{ CompassPosition.NORTH,
+                                                                      CompassPosition.SOUTH,
+                                                                      CompassPosition.EAST,
+                                                                      CompassPosition.WEST } ) {
+            if ( view.asWidget().equals( splitter.getWidget( searchPosition ) ) ) {
+                removalPosition = searchPosition;
+                break;
             }
         }
 
-        getHelper( position ).remove( view );
-
-        return position != CompassPosition.NONE;
-    }
-
-    /**
-     * Returns a helper for the given position, or throws an exception if not helper exists for that position type.
-     */
-    private AbstractPanelHelper getHelper( CompassPosition position ) {
-        AbstractPanelHelper helper = helpers.get( position );
-        if ( helper == null ) {
-            throw new IllegalArgumentException( "Unhandled Position: " + position );
+        if ( removalPosition == CompassPosition.NONE ) {
+            return false;
         }
-        return helper;
+
+        final Widget splitterParent = splitter.getParent();
+        final Widget widgetToKeep = splitter.getWidget( opposite( removalPosition ) );
+
+        splitter.clear();
+
+        if ( splitterParent instanceof SimplePanel ) {
+            ( (SimplePanel) splitterParent ).setWidget( widgetToKeep );
+        } else {
+            System.out.println("Splitter's parent was not a SimplePanel!");
+        }
+
+        if ( widgetToKeep instanceof RequiresResize ) {
+            scheduleResize( (RequiresResize) widgetToKeep );
+        }
+
+        return true;
     }
 
     private static CompassPosition opposite( CompassPosition position ) {

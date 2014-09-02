@@ -54,12 +54,16 @@ implements WorkbenchPanelView<P> {
 
     @Override
     public boolean removePanel( WorkbenchPanelView<?> childView ) {
+        System.out.println("view.removePanel(): parent=" + asWidget().getElement().getId() +
+                           "; child=" + childView.asWidget().getElement().getId());
         IsWidget container = viewSplitters.remove( childView );
         if ( container != null ) {
             panelSupport.remove( childView, container );
             dndManager.unregisterDropController( childView );
             return true;
         }
+
+        System.out.println("Splitter for " + childView.asWidget().getElement().getId() + " was null");
         return false;
     }
 
