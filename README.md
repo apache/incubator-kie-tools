@@ -18,7 +18,7 @@ Downloading artifacts
 
 DIRECT DOWNLOAD LATEST SNAPSHOT:
 
-http://www.lienzo-core.com/lienzo-core-2.0.5.SNAPSHOT.jar
+http://www.lienzo-core.com/lienzo-core-2.0.7.SNAPSHOT.jar
 
 RELEASE:
 
