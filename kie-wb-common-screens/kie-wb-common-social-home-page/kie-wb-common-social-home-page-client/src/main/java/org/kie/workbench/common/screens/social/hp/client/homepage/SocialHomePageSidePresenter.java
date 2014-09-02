@@ -66,7 +66,7 @@ public class SocialHomePageSidePresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Social HomePage Side Presenter";
+        return "";
     }
 
     @WorkbenchPartView

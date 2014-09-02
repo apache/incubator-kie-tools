@@ -181,7 +181,7 @@ public class UserHomePageSidePresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "User HomePage Side Presenter";
+        return "";
     }
 
     @WorkbenchPartView

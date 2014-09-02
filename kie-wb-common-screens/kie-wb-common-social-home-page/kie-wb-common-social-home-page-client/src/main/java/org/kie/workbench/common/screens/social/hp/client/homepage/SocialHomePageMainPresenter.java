@@ -9,11 +9,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.Window;
-import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryInfo;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -25,12 +22,14 @@ import org.kie.uberfire.social.activities.service.SocialEventTypeRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.screens.social.hp.client.homepage.header.HeaderPresenter;
 import org.kie.workbench.common.screens.social.hp.client.homepage.main.MainPresenter;
+import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.mvp.Command;
+import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.security.Identity;
 
@@ -70,24 +69,33 @@ public class SocialHomePageMainPresenter {
     private Identity loggedUser;
 
     @Inject
-    private PlaceManager placeManager;
+    private IconLocator iconLocator;
 
+    @Inject
+    private PlaceManager placeManager;
 
     @AfterInitialization
     public void init() {
-        initHeader();
+        view.setHeader( header );
+        view.setMain( main );
+    }
 
+    @OnOpen
+    public void onOpen() {
+        initHeader();
         initMain();
     }
 
     private void initMain() {
-        view.setMain( main );
+        socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+            public void callback( SocialUser socialUser ) {
+                updateMainTimeline( "", socialUser );
 
+            }
+        } ).findSocialUser( loggedUser.getName() );
     }
 
     private void initHeader() {
-
-        view.setHeader( header );
 
         header.setOnSelectCommand( new ParameterizedCommand<String>() {
             @Override
@@ -95,7 +103,7 @@ public class SocialHomePageMainPresenter {
 
                 socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
                     public void callback( SocialUser socialUser ) {
-                        setupHeaderOnSelect( param, socialUser );
+                        updateMainTimeline( param, socialUser );
 
                     }
                 } ).findSocialUser( loggedUser.getName() );
@@ -113,22 +121,19 @@ public class SocialHomePageMainPresenter {
 //        } );
     }
 
-    private void setupHeaderOnSelect( String param,
-                                      SocialUser socialUser ) {
+    private void updateMainTimeline( String param,
+                                     SocialUser socialUser ) {
         if ( param.contains( "Latest" ) ) {
-            SocialTimelineWidget socialTimelineWidget = GWT.create( SocialTimelineWidget.class );
-            SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( "Latest Changes", socialUser, placeManager );
-            socialTimelineWidget.init( model );
-            main.setSocialWidget( socialTimelineWidget );
-        } else {
-            SocialTimelineWidget socialTimelineWidget = GWT.create( SocialTimelineWidget.class );
-            SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( "Latest Changes", socialUser, placeManager );
-            Map<String, String> globals = new HashMap();
-            globals.put( "filter", param );
-            model.droolsQuery( globals, "filterTimelineRecentAssets" );
-            socialTimelineWidget.init( model );
-            main.setSocialWidget( socialTimelineWidget );
+            param = "";
         }
+        SocialTimelineWidget socialTimelineWidget = GWT.create( SocialTimelineWidget.class );
+        List<ClientResourceType> resourceTypes = iconLocator.getResourceTypes();
+        SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( "Latest Changes", socialUser, placeManager, resourceTypes );
+        Map<String, String> globals = new HashMap();
+        globals.put( "filter", param );
+        model.droolsQuery( globals, "filterTimelineRecentAssets", "10" );
+        socialTimelineWidget.init( model );
+        main.setSocialWidget( socialTimelineWidget );
     }
 
     private void createHeaderMenuList() {
@@ -151,7 +156,7 @@ public class SocialHomePageMainPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "SocialHomePageMainPresenter";
+        return "";
     }
 
     @WorkbenchPartView
