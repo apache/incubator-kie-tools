@@ -700,6 +700,18 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
+    public boolean isEditable()
+    {
+        return getAttributes().isEditable();
+    }
+
+    public T setEditable(boolean editable)
+    {
+        getAttributes().setEditable(editable);
+
+        return cast();
+    }
+
     public boolean isFillShapeForSelection()
     {
         return getAttributes().isFillShapeForSelection();
@@ -1387,6 +1399,8 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             addAttribute(Attribute.STROKE_ALPHA);
 
             addAttribute(Attribute.DRAGGABLE);
+
+            addAttribute(Attribute.EDITABLE);
 
             addAttribute(Attribute.SCALE);
 

@@ -365,6 +365,16 @@ public class Attributes
         return getBoolean(Attribute.DRAGGABLE.getProperty());
     }
 
+    public final void setEditable(boolean editable)
+    {
+        put(Attribute.EDITABLE.getProperty(), editable);
+    }
+
+    public final boolean isEditable()
+    {
+        return getBoolean(Attribute.EDITABLE.getProperty());
+    }
+
     public final void setFillShapeForSelection(boolean selection)
     {
         put(Attribute.FILL_SHAPE_FOR_SELECTION.getProperty(), selection);

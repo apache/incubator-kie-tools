@@ -548,4 +548,52 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("Current Sprite Behavior.")
     public String spriteBehaviorDescription();
+
+    @DefaultStringValue("Editable")
+    public String editableLabel();
+
+    @DefaultStringValue("If an item is editable.")
+    public String editableDescription();
+
+    @DefaultStringValue("Active")
+    public String activeLabel();
+
+    @DefaultStringValue("If an item is active.")
+    public String activeDescription();
+
+    @DefaultStringValue("Value")
+    public String valueLabel();
+
+    @DefaultStringValue("Numeric value of an item.")
+    public String valueDescription();
+
+    @DefaultStringValue("Color")
+    public String colorLabel();
+
+    @DefaultStringValue("Color of an item.")
+    public String colorDescription();
+
+    @DefaultStringValue("Matrix")
+    public String matrixLabel();
+
+    @DefaultStringValue("Convolve filter matrix.")
+    public String matrixDescription();
+
+    @DefaultStringValue("Inverted")
+    public String invertedLabel();
+
+    @DefaultStringValue("Filter is inverted.")
+    public String invertedDescription();
+
+    @DefaultStringValue("Gain")
+    public String gainLabel();
+
+    @DefaultStringValue("Gain of a filter.")
+    public String gainDescription();
+
+    @DefaultStringValue("Bias")
+    public String biasLabel();
+
+    @DefaultStringValue("Bias of a filter.")
+    public String biasDescription();
 }

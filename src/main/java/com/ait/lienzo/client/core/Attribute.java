@@ -69,6 +69,8 @@ public class Attribute implements IAttribute
 
     public static final Attribute           DRAGGABLE                        = new Attribute("draggable", MESSAGES.draggableLabel(), MESSAGES.draggableDescription(), AttributeType.BOOLEAN_TYPE);
 
+    public static final Attribute           EDITABLE                         = new Attribute("editable", MESSAGES.editableLabel(), MESSAGES.editableDescription(), AttributeType.BOOLEAN_TYPE);
+
     public static final Attribute           FILL_SHAPE_FOR_SELECTION         = new Attribute("fillShapeForSelection", MESSAGES.fillShapeForSelectionLabel(), MESSAGES.fillShapeForSelectionDescription(), AttributeType.BOOLEAN_TYPE);
 
     public static final Attribute           DRAG_CONSTRAINT                  = new Attribute("dragConstraint", MESSAGES.dragConstraintLabel(), MESSAGES.dragConstraintDescription(), AttributeType.DRAG_CONSTRAINT_TYPE);
@@ -183,19 +185,19 @@ public class Attribute implements IAttribute
 
     public static final Attribute           SPRITE_BEHAVIOR                  = new Attribute("spriteBehavior", MESSAGES.spriteBehaviorLabel(), MESSAGES.spriteBehaviorDescription(), AttributeType.STRING_TYPE);
 
-    public static final Attribute           ACTIVE                           = new Attribute("active", "", "", AttributeType.BOOLEAN_TYPE);
+    public static final Attribute           ACTIVE                           = new Attribute("active", MESSAGES.activeLabel(), MESSAGES.activeDescription(), AttributeType.BOOLEAN_TYPE);
 
-    public static final Attribute           VALUE                            = new Attribute("value", "", "", AttributeType.NUMBER_TYPE);
+    public static final Attribute           VALUE                            = new Attribute("value", MESSAGES.valueLabel(), MESSAGES.valueDescription(), AttributeType.NUMBER_TYPE);
 
-    public static final Attribute           COLOR                            = new Attribute("color", "", "", AttributeType.COLOR_TYPE);
+    public static final Attribute           COLOR                            = new Attribute("color", MESSAGES.colorLabel(), MESSAGES.colorDescription(), AttributeType.COLOR_TYPE);
 
-    public static final Attribute           MATRIX                           = new Attribute("matrix", "", "", AttributeType.NUMBER_ARRAY_TYPE);
+    public static final Attribute           MATRIX                           = new Attribute("matrix", MESSAGES.matrixLabel(), MESSAGES.matrixDescription(), AttributeType.NUMBER_ARRAY_TYPE);
 
-    public static final Attribute           INVERTED                         = new Attribute("inverted", "", "", AttributeType.BOOLEAN_TYPE);
+    public static final Attribute           INVERTED                         = new Attribute("inverted", MESSAGES.invertedLabel(), MESSAGES.invertedDescription(), AttributeType.BOOLEAN_TYPE);
 
-    public static final Attribute           GAIN                             = new Attribute("gain", "", "", AttributeType.NUMBER_TYPE);
+    public static final Attribute           GAIN                             = new Attribute("gain", MESSAGES.gainLabel(), MESSAGES.gainDescription(), AttributeType.NUMBER_TYPE);
 
-    public static final Attribute           BIAS                             = new Attribute("bias", "", "", AttributeType.NUMBER_TYPE);
+    public static final Attribute           BIAS                             = new Attribute("bias", MESSAGES.biasLabel(), MESSAGES.biasDescription(), AttributeType.NUMBER_TYPE);
 
     private final String                    m_property;
 
