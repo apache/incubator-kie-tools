@@ -24,7 +24,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * Fired by the PlaceManager before the process of closing a place begins.
  */
-public class BeforeClosePlaceEvent extends UberFireEvent {
+public class BeforeClosePlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
     private final boolean force;

@@ -21,7 +21,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event when a PlaceRequest is maximized
  */
-public class MaximizePlaceEvent extends UberFireEvent {
+public class MaximizePlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -35,7 +35,7 @@ public class MaximizePlaceEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "MaximizePlaceEvent [place=" + place + "]";
+        return "MaximizePlaceEvent [place=" + place + "]";
     }
 
 }

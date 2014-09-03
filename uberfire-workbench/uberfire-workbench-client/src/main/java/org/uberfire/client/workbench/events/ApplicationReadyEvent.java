@@ -7,6 +7,6 @@ import org.uberfire.workbench.events.UberFireEvent;
  * build its components. Observers receive this event at the last possible opportunity to make changes before the UI
  * shows up for the first time.
  */
-public class ApplicationReadyEvent extends UberFireEvent {
+public class ApplicationReadyEvent implements UberFireEvent {
 
 }

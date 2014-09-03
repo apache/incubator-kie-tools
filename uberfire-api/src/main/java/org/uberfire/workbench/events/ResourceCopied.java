@@ -1,12 +1,13 @@
 package org.uberfire.workbench.events;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 @Portable
-public class ResourceCopied extends UberFireEvent implements ResourceChange {
+public class ResourceCopied implements UberFireEvent,
+                                       ResourceChange {
 
     private Path destinationPath;
 

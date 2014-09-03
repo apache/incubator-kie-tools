@@ -9,7 +9,7 @@ import org.uberfire.workbench.model.menu.Menus;
  * @author jfuerth
  *
  */
-public class PerspectiveChange extends UberFireEvent {
+public class PerspectiveChange implements UberFireEvent {
 
     private final PerspectiveDefinition perspectiveDefinition;
     private final Menus menus;
