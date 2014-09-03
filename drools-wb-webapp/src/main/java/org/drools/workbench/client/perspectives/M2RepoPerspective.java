@@ -17,7 +17,6 @@ package org.drools.workbench.client.perspectives;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -69,21 +68,11 @@ public class M2RepoPerspective {
     @Inject
     private SyncBeanManager iocManager;
 
-    private PerspectiveDefinition perspective;
     private Menus menus;
 
     @PostConstruct
     private void init() {
-        buildPerspective();
         buildMenuBar();
-    }
-
-    private void buildPerspective() {
-        this.perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_STATIC );
-        this.perspective.setTransient( true );
-        this.perspective.setName( "M2 Repository Explorer" );
-
-        this.perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
     }
 
     @WorkbenchMenu
@@ -93,7 +82,15 @@ public class M2RepoPerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        return this.perspective;
+        //UberFire's AbstractPanelManagerImpl performs destructive operations on a PerspectiveDefinition's Panels collection.
+        //Therefore create a new instance of the perspective definition each time the definition is requested. Perspectives
+        //that are not transient are not affected by the destructive operations as their definition is re-created when loaded.
+        final PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( PanelType.ROOT_STATIC );
+        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "M2RepoEditor" ) ) );
+        perspective.setName( "M2 Repository Explorer" );
+        perspective.setTransient( true );
+
+        return perspective;
     }
 
     @OnStartup
@@ -105,7 +102,6 @@ public class M2RepoPerspective {
             }
 
         } );
-
     }
 
     private void buildMenuBar() {
