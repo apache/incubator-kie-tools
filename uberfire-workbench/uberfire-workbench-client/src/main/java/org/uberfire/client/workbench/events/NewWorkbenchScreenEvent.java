@@ -2,7 +2,7 @@ package org.uberfire.client.workbench.events;
 
 import org.uberfire.workbench.events.UberFireEvent;
 
-public class NewWorkbenchScreenEvent extends UberFireEvent {
+public class NewWorkbenchScreenEvent implements UberFireEvent {
 
     private final String screenName;
 
@@ -16,6 +16,6 @@ public class NewWorkbenchScreenEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "NewWorkbenchScreenEvent [screenName=" + screenName + "]";
+        return "NewWorkbenchScreenEvent [screenName=" + screenName + "]";
     }
 }

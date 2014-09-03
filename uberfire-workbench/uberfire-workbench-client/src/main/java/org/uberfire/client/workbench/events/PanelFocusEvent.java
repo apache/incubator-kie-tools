@@ -3,7 +3,7 @@ package org.uberfire.client.workbench.events;
 import org.uberfire.workbench.events.UberFireEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 
-public class PanelFocusEvent extends UberFireEvent {
+public class PanelFocusEvent implements UberFireEvent {
 
     private final PanelDefinition panel;
 
@@ -17,7 +17,7 @@ public class PanelFocusEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "PanelFocusEvent [panel=" + panel + "]";
+        return "PanelFocusEvent [panel=" + panel + "]";
     }
 
 }

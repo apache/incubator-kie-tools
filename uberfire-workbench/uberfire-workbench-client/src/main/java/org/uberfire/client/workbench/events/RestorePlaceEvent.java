@@ -22,7 +22,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event when a PlaceRequest is restored
  */
-public class RestorePlaceEvent extends UberFireEvent {
+public class RestorePlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -36,7 +36,7 @@ public class RestorePlaceEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "RestorePlaceEvent [place=" + place + "]";
+        return "RestorePlaceEvent [place=" + place + "]";
     }
 
 }

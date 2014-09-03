@@ -21,7 +21,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event when a WorkbenchPart is closed
  */
-public class ClosePlaceEvent extends UberFireEvent {
+public class ClosePlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -35,7 +35,7 @@ public class ClosePlaceEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "ClosePlaceEvent [place=" + place + "]";
+        return "ClosePlaceEvent [place=" + place + "]";
     }
 
 }

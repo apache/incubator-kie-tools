@@ -21,7 +21,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event when a WorkbenchPart gains focus
  */
-public class PlaceGainFocusEvent extends UberFireEvent {
+public class PlaceGainFocusEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -35,7 +35,7 @@ public class PlaceGainFocusEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "PlaceGainFocusEvent [place=" + place + "]";
+        return "PlaceGainFocusEvent [place=" + place + "]";
     }
 
 }

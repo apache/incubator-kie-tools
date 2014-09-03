@@ -21,7 +21,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event when a WorkbenchPart looses focus
  */
-public class PlaceLostFocusEvent extends UberFireEvent {
+public class PlaceLostFocusEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -35,7 +35,7 @@ public class PlaceLostFocusEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "PlaceLostFocusEvent [place=" + place + "]";
+        return "PlaceLostFocusEvent [place=" + place + "]";
     }
 
 }

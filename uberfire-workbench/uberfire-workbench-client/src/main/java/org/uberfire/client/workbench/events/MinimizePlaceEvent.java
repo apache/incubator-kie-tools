@@ -22,7 +22,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event when a PlaceRequest is minimized
  */
-public class MinimizePlaceEvent extends UberFireEvent {
+public class MinimizePlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -36,7 +36,7 @@ public class MinimizePlaceEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "MinimizePlaceEvent [place=" + place + "]";
+        return "MinimizePlaceEvent [place=" + place + "]";
     }
 
 }

@@ -4,7 +4,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 
-public class PerspectiveChange extends UberFireEvent {
+public class PerspectiveChange implements UberFireEvent {
 
     private final PerspectiveDefinition perspectiveDefinition;
     private final Menus menus;
@@ -32,8 +32,8 @@ public class PerspectiveChange extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "PerspectiveChange [perspectiveDefinition=" + perspectiveDefinition + ", menus=" + menus + ", identifier="
-              + identifier + "]";
+        return "PerspectiveChange [perspectiveDefinition=" + perspectiveDefinition + ", menus=" + menus + ", identifier="
+                + identifier + "]";
     }
 
 }

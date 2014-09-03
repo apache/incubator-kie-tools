@@ -21,7 +21,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event raised before a Place is closed
  */
-public class BeforeClosePlaceEvent extends UberFireEvent {
+public class BeforeClosePlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
     private final boolean force;
@@ -47,7 +47,7 @@ public class BeforeClosePlaceEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "BeforeClosePlaceEvent [place=" + place + "]";
+        return "BeforeClosePlaceEvent [place=" + place + "]";
     }
 
 }

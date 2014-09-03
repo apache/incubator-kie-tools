@@ -14,7 +14,7 @@ import org.uberfire.rpc.SessionInfo;
  * An Event indicating a various changes to various Resources
  */
 @Portable
-public class ResourceBatchChangesEvent extends UberFireEvent {
+public class ResourceBatchChangesEvent implements UberFireEvent {
 
     private SessionInfo sessionInfo;
     private Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();

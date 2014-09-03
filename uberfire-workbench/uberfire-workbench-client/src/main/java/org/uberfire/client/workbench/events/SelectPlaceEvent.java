@@ -21,7 +21,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event to programmatically select a WorkbenchPart
  */
-public class SelectPlaceEvent extends UberFireEvent {
+public class SelectPlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -35,7 +35,7 @@ public class SelectPlaceEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "SelectPlaceEvent [place=" + place + "]";
+        return "SelectPlaceEvent [place=" + place + "]";
     }
 
 }
