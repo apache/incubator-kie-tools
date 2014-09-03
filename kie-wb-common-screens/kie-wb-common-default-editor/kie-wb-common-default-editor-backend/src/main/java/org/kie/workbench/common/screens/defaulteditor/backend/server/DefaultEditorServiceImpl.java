@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.defaulteditor.backend.server;
 
-import java.util.Date;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,9 +31,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 
 @Service
 @ApplicationScoped
@@ -48,12 +44,6 @@ public class DefaultEditorServiceImpl
 
     @Inject
     private MetadataService metadataService;
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Override
     public Path save( final Path resource,
@@ -74,18 +64,8 @@ public class DefaultEditorServiceImpl
         }
     }
 
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        return new CommentedOption( sessionInfo.getId(),
-                                    name,
-                                    null,
-                                    commitMessage,
-                                    when );
-    }
-
     @Override
-    public Overview loadOverview( ObservablePath path ) {
+    public Overview loadOverview( final ObservablePath path ) {
         return super.loadOverview( path );
     }
 }
