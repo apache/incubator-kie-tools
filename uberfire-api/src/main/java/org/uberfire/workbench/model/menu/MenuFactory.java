@@ -25,7 +25,7 @@ public final class MenuFactory {
         return new MenuBuilderImpl( REGULAR, caption );
     }
 
-    public static MenuBuilder<Builder> newTopLevelCustomMenu( final CustomMenuBuilder builder ) {
+    public static MenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newTopLevelCustomMenu( final CustomMenuBuilder builder ) {
         return new MenuBuilderImpl( CUSTOM, builder );
     }
 

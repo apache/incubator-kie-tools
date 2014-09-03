@@ -43,9 +43,9 @@ public class GitSSHService {
             @Override
             public Command createCommand( String command ) {
                 if ( command.startsWith( "git-upload-pack" ) ) {
-                    return new GitUploadCommand( command, repositoryResolver, fileSystemAuthorizer );
+                    return new GitUploadCommand( command, repositoryResolver, getAuthorizationManager() );
                 } else if ( command.startsWith( "git-receive-pack" ) ) {
-                    return new GitReceiveCommand( command, repositoryResolver, fileSystemAuthorizer, receivePackFactory );
+                    return new GitReceiveCommand( command, repositoryResolver, getAuthorizationManager(), receivePackFactory );
                 } else {
                     return new UnknownCommand( command );
                 }
@@ -56,7 +56,7 @@ public class GitSSHService {
             public boolean authenticate( final String username,
                                          final String password,
                                          final ServerSession session ) {
-                FileSystemUser user = fileSystemAuthenticator.authenticate( username, password );
+                FileSystemUser user = getUserPassAuthenticator().authenticate( username, password );
                 if ( user == null ) {
                     return false;
                 }
