@@ -48,10 +48,8 @@ public interface SplitPanel extends IsWidget, RequiresResize, ProvidesResize {
      *
      * @param position
      *            which widget to get
-     * @return the widget on the given side of the splitter; null if that side is empty.
-     * @throws IllegalArgumentException
-     *             if this splitter doesn't have the given side (eg. vertical splitters have NORTH and SOUTH but not
-     *             EAST and WEST).
+     * @return the widget on the given side of the splitter; null if that side is empty or the given position is not
+     *         supported by this panel. (For example, NORTH is not a supported position of HorizontalSplitterPanel).
      */
     public Widget getWidget( CompassPosition position );
 

@@ -95,7 +95,7 @@ SplitPanel {
             case SOUTH:
                 return this.southWidgetContainer.getWidget();
             default:
-                throw new IllegalArgumentException( "position must be either NORTH or SOUTH" );
+                return null;
         }
     }
 
