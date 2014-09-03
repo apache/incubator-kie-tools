@@ -1,7 +1,5 @@
 package org.kie.uberfire.social.activities.client.widgets.item;
 
-import java.text.SimpleDateFormat;
-
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Image;
@@ -13,6 +11,7 @@ import com.github.gwtbootstrap.client.ui.Thumbnails;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -27,6 +26,8 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class SocialItemExpandedWidget {
+
+    private final static DateTimeFormat FORMATTER = DateTimeFormat.getFormat( "dd/MM/yyyy HH:mm:ss" );
 
     public static void createItem( SocialItemExpandedWidgetModel model ) {
         model.getItemsPanel().add( createFirstRow( model ) );
@@ -87,24 +88,21 @@ public class SocialItemExpandedWidget {
     }
 
     public static FluidRow createSecondRow( UpdateItem updateItem ) {
-
         FluidRow row = GWT.create( FluidRow.class );
         row.add( createThumbNail( updateItem.getEvent().getSocialUser() ) );
         row.add( createSocialUserName( updateItem.getEvent() ) );
-        row.add( createAditionalInfo( updateItem.getEvent() ) );
+        row.add( createAdditionalInfo( updateItem.getEvent() ) );
 
         return row;
     }
 
-    private static Column createAditionalInfo( SocialActivitiesEvent event ) {
+    private static Column createAdditionalInfo( SocialActivitiesEvent event ) {
         Column column;
         column = new Column( 10 );
         StringBuilder comment = new StringBuilder();
         comment.append( event.getAdicionalInfos() );
         comment.append( " " );
-        SimpleDateFormat sdf1 = new SimpleDateFormat();
-        sdf1.applyPattern( "dd/MM/yyyy HH:mm:ss" );
-        comment.append( sdf1.format( event.getTimestamp() ) );
+        comment.append( FORMATTER.format( event.getTimestamp() ) );
         column.add( new Paragraph( comment.toString() ) );
         return column;
     }
