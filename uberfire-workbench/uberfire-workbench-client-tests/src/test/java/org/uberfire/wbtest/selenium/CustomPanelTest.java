@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.wbtest.client.panels.custom.CustomPanelMakerScreen;
 
@@ -40,7 +39,7 @@ public class CustomPanelTest extends AbstractSeleniumTest {
         assertEquals( 1, screen.getTotalInstanceCount() );
     }
 
-    @Test @Ignore // TODO implement dom removal cleanup logic
+    @Test
     public void activitiesLaunchedInCustomPanelsShouldDisposeWhenRemovedFromDom() throws Exception {
         String id = screen.createCustomPopup();
         screen.closeLatestPopupByRemovingFromDom();

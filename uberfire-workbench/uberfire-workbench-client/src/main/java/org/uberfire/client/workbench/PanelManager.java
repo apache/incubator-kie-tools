@@ -67,6 +67,13 @@ public interface PanelManager {
 
     /**
      * Creates an UberFire panel and installs its view in the given widget container.
+     * <p>
+     * <h3>Custom Panel Lifecycle</h3>
+     * <p>
+     * Custom panels can be disposed like any other panel: by calling {@link #removeWorkbenchPanel(PanelDefinition)}.
+     * Additionally, custom panels are monitored for DOM detachment. When a custom panel's view is removed from the DOM
+     * (whether directly removed from its parent or some ancestor is removed,) all the panel's parts are closed and then
+     * the associated panel is disposed.
      *
      * @param container
      *            the widget container to install the new panel in. The new panel will fill the container.

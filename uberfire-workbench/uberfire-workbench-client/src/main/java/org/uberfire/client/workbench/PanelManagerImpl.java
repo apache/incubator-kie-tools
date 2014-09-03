@@ -2,7 +2,9 @@ package org.uberfire.client.workbench;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -31,8 +33,12 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Standard implementation of {@link PanelManager}.
@@ -376,8 +382,33 @@ public class PanelManagerImpl implements PanelManager {
     public PanelDefinition addCustomPanel( final HasWidgets container,
                                            final String panelType ) {
         PanelDefinition panelDef = new PanelDefinitionImpl( panelType );
-        WorkbenchPanelPresenter panelPresenter = beanFactory.newWorkbenchPanel( panelDef );
-        container.add( panelPresenter.getPanelView().asWidget() );
+        final WorkbenchPanelPresenter panelPresenter = beanFactory.newWorkbenchPanel( panelDef );
+        Widget panelViewWidget = panelPresenter.getPanelView().asWidget();
+        panelViewWidget.addAttachHandler( new AttachEvent.Handler() {
+            private boolean detaching;
+            @Override
+            public void onAttachOrDetach( AttachEvent event ) {
+                if ( !event.isAttached() && !detaching && mapPanelDefinitionToPresenter.containsKey( panelPresenter.getDefinition() ) ) {
+                    detaching = true;
+                    Scheduler.get().scheduleFinally( new ScheduledCommand() {
+                        @Override
+                        public void execute() {
+                            try {
+                                List<PartDefinition> parts = new ArrayList<PartDefinition>( panelPresenter.getDefinition()
+                                        .getParts() );
+                                for ( PartDefinition part : parts ) {
+                                    placeManager.get().closePlace( part.getPlace() );
+                                }
+                                removeWorkbenchPanel( panelPresenter.getDefinition() );
+                            } finally {
+                                detaching = false;
+                            }
+                        }
+                    } );
+                }
+            }
+        } );
+        container.add( panelViewWidget );
         mapPanelDefinitionToPresenter.put( panelDef,
                                            panelPresenter );
         customPanels.put( panelDef, container );
