@@ -29,7 +29,6 @@ import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLPersistenceImpl;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleEditorServiceUtilities;
 import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleModelVisitor;
 import org.drools.workbench.screens.guided.template.model.GuidedTemplateEditorContent;
 import org.drools.workbench.screens.guided.template.service.GuidedRuleTemplateEditorService;
@@ -41,7 +40,6 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
@@ -52,16 +50,13 @@ import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -96,9 +91,6 @@ public class GuidedRuleTemplateEditorServiceImpl
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private SessionInfo sessionInfo;
-
-    @Inject
     private DataModelService dataModelService;
 
     @Inject
@@ -106,9 +98,6 @@ public class GuidedRuleTemplateEditorServiceImpl
 
     @Inject
     private GuidedRuleTemplateResourceTypeDefinition resourceTypeDefinition;
-
-    @Inject
-    private GuidedRuleEditorServiceUtilities utilities;
 
     public Path create( final Path context,
                         final String fileName,
@@ -128,7 +117,7 @@ public class GuidedRuleTemplateEditorServiceImpl
 
             ioService.write( nioPath,
                              RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( content ),
-                             utilities.makeCommentedOption( comment ) );
+                             makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -172,7 +161,7 @@ public class GuidedRuleTemplateEditorServiceImpl
                                                                sessionInfo ) );
 
             return new GuidedTemplateEditorContent( model,
-                                                    loadOverview(path),
+                                                    loadOverview( path ),
                                                     dataModel );
 
         } catch ( Exception e ) {
@@ -193,7 +182,7 @@ public class GuidedRuleTemplateEditorServiceImpl
             ioService.write( Paths.convert( resource ),
                              RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource, metadata ),
-                             utilities.makeCommentedOption( comment ) );
+                             makeCommentedOption( comment ) );
 
             return resource;
 

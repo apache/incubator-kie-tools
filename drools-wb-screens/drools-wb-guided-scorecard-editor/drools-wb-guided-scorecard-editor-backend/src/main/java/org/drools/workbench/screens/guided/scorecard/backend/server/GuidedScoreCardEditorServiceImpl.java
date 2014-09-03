@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.guided.scorecard.backend.server;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -47,10 +46,7 @@ import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleB
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -74,12 +70,6 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private DataModelService dataModelService;
@@ -140,7 +130,7 @@ public class GuidedScoreCardEditorServiceImpl
                                                                sessionInfo ) );
 
             return new ScoreCardModelContent( model,
-                                              loadOverview(path),
+                                              loadOverview( path ),
                                               dataModel );
 
         } catch ( Exception e ) {
@@ -315,17 +305,6 @@ public class GuidedScoreCardEditorServiceImpl
         final ValidationMessage msg = new ValidationMessage();
         msg.setText( message );
         return msg;
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }

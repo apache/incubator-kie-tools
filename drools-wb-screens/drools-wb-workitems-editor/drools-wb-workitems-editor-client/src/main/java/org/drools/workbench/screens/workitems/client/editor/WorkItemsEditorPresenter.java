@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.workitems.client.resources.i18n.WorkItemsEditorConstants;
 import org.drools.workbench.screens.workitems.client.type.WorkItemsResourceType;
 import org.drools.workbench.screens.workitems.model.WorkItemsModelContent;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
@@ -54,13 +53,12 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 /**
  * Editor for Work Item definitions
  */
 @Dependent
-@WorkbenchEditor(identifier = "WorkItemsEditor", supportedTypes = {WorkItemsResourceType.class})
+@WorkbenchEditor(identifier = "WorkItemsEditor", supportedTypes = { WorkItemsResourceType.class })
 public class WorkItemsEditorPresenter
         extends KieEditor {
 
@@ -86,42 +84,43 @@ public class WorkItemsEditorPresenter
     private Metadata metadata;
 
     @Inject
-    public WorkItemsEditorPresenter(WorkItemsEditorView baseView) {
-        super(baseView);
+    public WorkItemsEditorPresenter( final WorkItemsEditorView baseView ) {
+        super( baseView );
         view = baseView;
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-        super.init(path, place, type);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        super.init( path,
+                    place,
+                    type );
     }
 
     protected void loadContent() {
-        workItemsService.call(
-                getModelSuccessCallback(),
-                getNoSuchFileExceptionErrorCallback()
-        ).loadContent(versionRecordManager.getCurrentPath());
+        view.showLoading();
+        workItemsService.call( getModelSuccessCallback(),
+                               getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     private RemoteCallback<WorkItemsModelContent> getModelSuccessCallback() {
         return new RemoteCallback<WorkItemsModelContent>() {
 
             @Override
-            public void callback(final WorkItemsModelContent content) {
+            public void callback( final WorkItemsModelContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if (versionRecordManager.getCurrentPath() == null) {
+                if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
+                resetEditorPages( content.getOverview() );
 
                 metadata = content.getOverview().getMetadata();
 
                 final String definition = content.getDefinition();
                 final List<String> workItemImages = content.getWorkItemImages();
-                view.setContent(definition,
-                        workItemImages);
+                view.setContent( definition,
+                                 workItemImages );
                 view.hideBusyIndicator();
             }
         };
@@ -131,37 +130,36 @@ public class WorkItemsEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                workItemsService.call(new RemoteCallback<List<ValidationMessage>>() {
+                workItemsService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                    NotificationEvent.NotificationType.SUCCESS));
+                    public void callback( final List<ValidationMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages(results);
+                            ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback()).validate(
-                        versionRecordManager.getCurrentPath(),
-                        view.getContent());
+                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
+                                                          view.getContent() );
             }
         };
     }
 
     protected void save() {
-        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        view.showSaving();
-                        workItemsService.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                view.getContent(),
-                                metadata,
-                                commitMessage);
-                    }
-                }
-        );
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showSaving();
+                                                 workItemsService.call( getSaveSuccessCallback(),
+                                                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                                                                 view.getContent(),
+                                                                                                                                 metadata,
+                                                                                                                                 commitMessage );
+                                             }
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -177,7 +175,7 @@ public class WorkItemsEditorPresenter
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;

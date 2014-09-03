@@ -18,7 +18,6 @@ package org.drools.workbench.screens.drltext.backend.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -53,21 +52,19 @@ import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class DRLTextEditorServiceImpl implements DRLTextEditorService {
+public class DRLTextEditorServiceImpl extends KieService implements DRLTextEditorService {
 
     //Filters to include *all* applicable resources
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
@@ -96,12 +93,6 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private DataModelService dataModelService;
@@ -171,7 +162,8 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
                                                                sessionInfo ) );
 
             return new DrlModelContent( drl,
-                                        loadOverview(path, drl),
+                                        loadOverview( path,
+                                                      drl ),
                                         Arrays.asList( fullyQualifiedClassNames ),
                                         dslConditions,
                                         dslActions );
@@ -181,16 +173,10 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
         }
     }
 
-    private Overview loadOverview(Path path, String drl) {
-
-        Overview overview = new Overview();
-
-        overview.setMetadata(metadataService.getMetadata(path));
-
-        overview.setPreview(drl);
-
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
-
+    private Overview loadOverview( final Path path,
+                                   final String drl ) {
+        final Overview overview = super.loadOverview( path );
+        overview.setPreview( drl );
         return overview;
     }
 
@@ -324,14 +310,4 @@ public class DRLTextEditorServiceImpl implements DRLTextEditorService {
         }
     }
 
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
-    }
 }

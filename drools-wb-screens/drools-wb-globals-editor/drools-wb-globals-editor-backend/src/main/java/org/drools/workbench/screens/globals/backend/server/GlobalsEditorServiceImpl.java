@@ -18,7 +18,6 @@ package org.drools.workbench.screens.globals.backend.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -41,24 +40,21 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class GlobalsEditorServiceImpl implements GlobalsEditorService {
+public class GlobalsEditorServiceImpl extends KieService implements GlobalsEditorService {
 
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
@@ -83,12 +79,6 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private DataModelService dataModelService;
@@ -156,29 +146,12 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
                                                                sessionInfo ) );
 
             return new GlobalsEditorContent( model,
-                                             loadOverview(path),
+                                             loadOverview( path ),
                                              Arrays.asList( fullyQualifiedClassNames ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private Overview loadOverview(Path path) {
-
-        Overview overview = new Overview();
-
-        overview.setMetadata(metadataService.getMetadata(path));
-
-        org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
-
-        if (sourceServices.hasServiceFor(convertedPath)) {
-            overview.setPreview(sourceServices.getServiceFor(convertedPath).getSource(convertedPath));
-        }
-
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
-
-        return overview;
     }
 
     @Override
@@ -272,17 +245,6 @@ public class GlobalsEditorServiceImpl implements GlobalsEditorService {
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }

@@ -30,8 +30,6 @@ public interface ScoreCardXLSService
                 SupportsCopy,
                 SupportsRename {
 
-    ScoreCardXLSContent loadContent(Path path);
-
-    String getSource(Path path);
+    ScoreCardXLSContent loadContent( Path path );
 
 }

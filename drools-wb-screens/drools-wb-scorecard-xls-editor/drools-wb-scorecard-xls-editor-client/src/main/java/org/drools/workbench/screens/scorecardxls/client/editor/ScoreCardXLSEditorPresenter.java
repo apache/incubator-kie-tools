@@ -22,17 +22,14 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.workbench.screens.scorecardxls.client.resources.i18n.ScoreCardXLSEditorConstants;
 import org.drools.workbench.screens.scorecardxls.client.type.ScoreCardXLSResourceType;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSContent;
 import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -42,18 +39,15 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
-@WorkbenchEditor(identifier = "ScoreCardXLSEditor", supportedTypes = {ScoreCardXLSResourceType.class})
+@WorkbenchEditor(identifier = "ScoreCardXLSEditor", supportedTypes = { ScoreCardXLSResourceType.class })
 public class ScoreCardXLSEditorPresenter
         extends KieEditor
         implements ScoreCardXLSEditorView.Presenter {
@@ -62,19 +56,7 @@ public class ScoreCardXLSEditorPresenter
     private Caller<ScoreCardXLSService> scoreCardXLSService;
 
     @Inject
-    private Caller<MetadataService> metadataService;
-
-    @Inject
     private Event<NotificationEvent> notification;
-
-    @Inject
-    private Event<ChangeTitleWidgetEvent> changeTitleNotification;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private ScoreCardXLSEditorView view;
 
     @Inject
     private BusyIndicatorView busyIndicatorView;
@@ -82,39 +64,53 @@ public class ScoreCardXLSEditorPresenter
     @Inject
     private ScoreCardXLSResourceType type;
 
-    @Inject
-    private DefaultFileNameValidator fileNameValidator;
+    private ScoreCardXLSEditorView view;
 
     @Inject
-    public ScoreCardXLSEditorPresenter(ScoreCardXLSEditorView baseView) {
-        super(baseView);
+    public ScoreCardXLSEditorPresenter( final ScoreCardXLSEditorView baseView ) {
+        super( baseView );
         view = baseView;
-
-        view.init(this);
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-        super.init(path, place, type);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        super.init( path,
+                    place,
+                    type );
+        view.init( this );
     }
 
+    @Override
+    protected void loadContent() {
+        scoreCardXLSService.call( new RemoteCallback<ScoreCardXLSContent>() {
+            @Override
+            public void callback( ScoreCardXLSContent content ) {
+                resetEditorPages( content.getOverview() );
+
+                view.setPath( versionRecordManager.getCurrentPath() );
+                view.setReadOnly( isReadOnly );
+            }
+        } ).loadContent( versionRecordManager.getCurrentPath() );
+    }
+
+    @Override
     protected Command onValidate() {
         return new Command() {
             @Override
             public void execute() {
-                scoreCardXLSService.call(new RemoteCallback<List<ValidationMessage>>() {
+                scoreCardXLSService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                    NotificationEvent.NotificationType.SUCCESS));
+                    public void callback( final List<ValidationMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages(results);
+                            ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
-                        versionRecordManager.getCurrentPath());
+                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
+                                                          versionRecordManager.getCurrentPath() );
             }
         };
     }
@@ -124,41 +120,14 @@ public class ScoreCardXLSEditorPresenter
         this.versionRecordManager.clear();
     }
 
-    @WorkbenchPartTitle
-    public String getTitleText() {
-        return super.getTitleText();
-    }
-
     @WorkbenchPartTitleDecoration
     public IsWidget getTitle() {
         return super.getTitle();
     }
 
-    @Override
-    protected void loadContent() {
-
-        scoreCardXLSService.call(new RemoteCallback<ScoreCardXLSContent>() {
-            @Override
-            public void callback(ScoreCardXLSContent content) {
-
-                resetEditorPages(content.getOverview());
-                addSourcePage();
-
-                view.setPath(versionRecordManager.getCurrentPath());
-                view.setReadOnly(isReadOnly);
-            }
-        }).loadContent(versionRecordManager.getCurrentPath());
-
-    }
-
-    @Override
-    protected void save() {
-
-    }
-
-    @Override
-    protected void onSourceTabSelected() {
-        scoreCardXLSService.call().getSource(versionRecordManager.getCurrentPath());
+    @WorkbenchPartTitle
+    public String getTitleText() {
+        return super.getTitleText();
     }
 
     @WorkbenchPartView

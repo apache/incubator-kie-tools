@@ -33,8 +33,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.drools.decisiontable.InputType;
+import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.template.parser.DecisionTableParseException;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSConversionService;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -44,21 +47,19 @@ import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.StandardOpenOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -101,9 +102,6 @@ public class DecisionTableXLSServiceImpl
     private DecisionTableXLSConversionService conversionService;
 
     @Inject
-    private Identity identity;
-
-    @Inject
     private GenericValidator genericValidator;
 
     @Inject
@@ -112,6 +110,14 @@ public class DecisionTableXLSServiceImpl
     @Inject
     private SourceServices sourceServices;
 
+    @Override
+    public DecisionTableXLSContent loadContent( final Path path ) {
+        final DecisionTableXLSContent content = new DecisionTableXLSContent();
+        content.setOverview( loadOverview( path ) );
+        return content;
+    }
+
+    @Override
     public InputStream load( final Path path,
                              final String sessionId ) {
         try {
@@ -141,8 +147,9 @@ public class DecisionTableXLSServiceImpl
         }
     }
 
+    @Override
     public Path create( final Path resource,
-                        InputStream content,
+                        final InputStream content,
                         final String sessionId,
                         final String comment ) {
         log.info( "USER:" + identity.getName() + " CREATING asset [" + resource.getFileName() + "]" );
@@ -198,6 +205,7 @@ public class DecisionTableXLSServiceImpl
         }
     }
 
+    @Override
     public Path save( final Path resource,
                       final InputStream content,
                       final String sessionId,
@@ -229,6 +237,28 @@ public class DecisionTableXLSServiceImpl
                 content.close();
             } catch ( IOException e ) {
                 throw ExceptionUtilities.handleException( e );
+            }
+        }
+    }
+
+    @Override
+    public String getSource( final Path path ) {
+        InputStream inputStream = null;
+        try {
+            final SpreadsheetCompiler compiler = new SpreadsheetCompiler();
+            inputStream = ioService.newInputStream( Paths.convert( path ),
+                                                    StandardOpenOption.READ );
+            final String drl = compiler.compile( inputStream,
+                                                 InputType.XLS );
+            return drl;
+
+        } finally {
+            if ( inputStream != null ) {
+                try {
+                    inputStream.close();
+                } catch ( IOException ioe ) {
+                    //Swallow
+                }
             }
         }
     }

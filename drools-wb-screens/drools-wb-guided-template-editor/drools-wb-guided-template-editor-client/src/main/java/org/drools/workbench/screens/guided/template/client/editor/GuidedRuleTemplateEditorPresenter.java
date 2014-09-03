@@ -64,7 +64,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = {GuidedRuleTemplateResourceType.class})
+@WorkbenchEditor(identifier = "GuidedRuleTemplateEditor", supportedTypes = { GuidedRuleTemplateResourceType.class })
 public class GuidedRuleTemplateEditorPresenter
         extends KieEditor {
 
@@ -97,87 +97,87 @@ public class GuidedRuleTemplateEditorPresenter
     private Caller<RuleNamesService> ruleNamesService;
 
     @Inject
-    public GuidedRuleTemplateEditorPresenter(GuidedRuleTemplateEditorView baseView) {
-        super(baseView);
+    public GuidedRuleTemplateEditorPresenter( final GuidedRuleTemplateEditorView baseView ) {
+        super( baseView );
         view = baseView;
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-        super.init(path, place, type);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        super.init( path,
+                    place,
+                    type );
     }
 
     protected void loadContent() {
-        service.call(
-                getModelSuccessCallback(),
-                getNoSuchFileExceptionErrorCallback()
-        ).loadContent(versionRecordManager.getCurrentPath());
+        view.showLoading();
+        service.call( getModelSuccessCallback(),
+                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     private RemoteCallback<GuidedTemplateEditorContent> getModelSuccessCallback() {
         return new RemoteCallback<GuidedTemplateEditorContent>() {
 
             @Override
-            public void callback(final GuidedTemplateEditorContent content) {
+            public void callback( final GuidedTemplateEditorContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if (versionRecordManager.getCurrentPath() == null) {
+                if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
+                resetEditorPages( content.getOverview() );
                 addSourcePage();
 
-                addPage(
-                        new Page(dataView,
-                                GuidedTemplateEditorConstants.INSTANCE.Data()) {
+                addPage( new Page( dataView,
+                                   GuidedTemplateEditorConstants.INSTANCE.Data() ) {
 
-                            @Override
-                            public void onFocus() {
-                                dataView.setContent(model,
-                                        oracle,
-                                        eventBus,
-                                        isReadOnly);
-                            }
+                    @Override
+                    public void onFocus() {
+                        dataView.setContent( model,
+                                             oracle,
+                                             eventBus,
+                                             isReadOnly );
+                    }
 
-                            @Override
-                            public void onLostFocus() {
-                                // Nothing to do here
-                            }
-                        });
+                    @Override
+                    public void onLostFocus() {
+                        // Nothing to do here
+                    }
+                } );
 
-                addImportsTab(importsWidget);
+                addImportsTab( importsWidget );
 
                 model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
-                        model,
-                        dataModel);
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
+                                                                        model,
+                                                                        dataModel );
 
-                view.setContent(versionRecordManager.getCurrentPath(),
-                        model,
-                        oracle,
-                        ruleNamesService,
-                        eventBus,
-                        isReadOnly);
-                importsWidget.setContent(oracle,
-                        model.getImports(),
-                        isReadOnly);
+                view.setContent( versionRecordManager.getCurrentPath(),
+                                 model,
+                                 oracle,
+                                 ruleNamesService,
+                                 eventBus,
+                                 isReadOnly );
+                importsWidget.setContent( oracle,
+                                          model.getImports(),
+                                          isReadOnly );
 
                 view.hideBusyIndicator();
             }
         };
     }
 
-    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
-        if (!event.getDataModelOracle().equals(this.oracle)) {
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
             return;
         }
         view.refresh();
     }
 
-    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
-        if (!event.getDataModelOracle().equals(this.oracle)) {
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
             return;
         }
         view.refresh();
@@ -187,46 +187,47 @@ public class GuidedRuleTemplateEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                service.call(new RemoteCallback<List<ValidationMessage>>() {
+                service.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                    NotificationEvent.NotificationType.SUCCESS));
+                    public void callback( final List<ValidationMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages(results);
+                            ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
-                        view.getContent());
+                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
+                                                          view.getContent() );
             }
         };
     }
 
     protected void save() {
-        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        view.showSaving();
-                        service.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                view.getContent(),
-                                metadata,
-                                commitMessage);
-                    }
-                }
-        );
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showSaving();
+                                                 service.call( getSaveSuccessCallback(),
+                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                                                        view.getContent(),
+                                                                                                                        metadata,
+                                                                                                                        commitMessage );
+                                             }
+                                         }
+                                       );
         concurrentUpdateSessionInfo = null;
     }
 
     @Override
     protected void onSourceTabSelected() {
-        service.call(new RemoteCallback<String>() {
-            @Override public void callback(String source) {
-                updateSource(source);
+        service.call( new RemoteCallback<String>() {
+            @Override
+            public void callback( String source ) {
+                updateSource( source );
             }
-        }).toSource(versionRecordManager.getCurrentPath(), model);
+        } ).toSource( versionRecordManager.getCurrentPath(), model );
     }
 
     @IsDirty
@@ -237,12 +238,12 @@ public class GuidedRuleTemplateEditorPresenter
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
-        this.oracleFactory.destroy(oracle);
+        this.oracleFactory.destroy( oracle );
     }
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;

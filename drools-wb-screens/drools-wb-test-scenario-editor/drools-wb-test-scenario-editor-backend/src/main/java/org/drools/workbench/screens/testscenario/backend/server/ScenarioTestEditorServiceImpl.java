@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
@@ -40,7 +39,6 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -48,6 +46,7 @@ import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.runtime.KieSession;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -59,20 +58,16 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.Files;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class ScenarioTestEditorServiceImpl
-        implements ScenarioTestEditorService {
+public class ScenarioTestEditorServiceImpl extends KieService implements ScenarioTestEditorService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScenarioTestEditorServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger( ScenarioTestEditorServiceImpl.class );
 
     @Inject
     @Named("ioStrategy")
@@ -104,12 +99,6 @@ public class ScenarioTestEditorServiceImpl
 
     @Inject
     private DataModelService dataModelService;
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private ConfigurationService configurationService;
@@ -212,16 +201,6 @@ public class ScenarioTestEditorServiceImpl
         }
     }
 
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        return new CommentedOption( sessionInfo.getId(),
-                                    name,
-                                    null,
-                                    commitMessage,
-                                    when );
-    }
-
     @Override
     public TestScenarioModelContent loadContent( Path path ) {
         try {
@@ -246,7 +225,7 @@ public class ScenarioTestEditorServiceImpl
                                                                sessionInfo ) );
 
             return new TestScenarioModelContent( scenario,
-                                                 loadOverview(path),
+                                                 loadOverview( path ),
                                                  packageName,
                                                  dataModel );
 
@@ -255,23 +234,6 @@ public class ScenarioTestEditorServiceImpl
         }
     }
 
-    private Overview loadOverview(Path path) {
-
-        Overview overview = new Overview();
-
-        try {
-            overview.setMetadata(metadataService.getMetadata(path));
-        }catch (Exception e ){
-            // Some older versions in our example do not have metadata.
-            // This should be impossible in any kie-wb version
-            logger.error("No metadata found for file: " + path.getFileName() + " full path [" + path.toString()+"]");
-        }
-        overview.setPreview("");
-
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
-
-        return overview;
-    }
     @Override
     public void runScenario( final Path path,
                              final Scenario scenario ) {
@@ -305,14 +267,14 @@ public class ScenarioTestEditorServiceImpl
     }
 
     @Override
-    public void runAllTests(final Path testResourcePath) {
-        runAllTests(testResourcePath,
-                testResultMessageEvent);
+    public void runAllTests( final Path testResourcePath ) {
+        runAllTests( testResourcePath,
+                     testResultMessageEvent );
     }
 
     @Override
-    public void runAllTests(final Path testResourcePath,
-            Event<TestResultMessage> customTestResultEvent) {
+    public void runAllTests( final Path testResourcePath,
+                             Event<TestResultMessage> customTestResultEvent ) {
         try {
             final KieProject project = projectService.resolveProject( testResourcePath );
             List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );

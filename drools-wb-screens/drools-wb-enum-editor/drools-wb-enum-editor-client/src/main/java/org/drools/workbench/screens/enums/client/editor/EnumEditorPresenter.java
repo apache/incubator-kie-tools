@@ -30,11 +30,11 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -56,7 +56,7 @@ import org.uberfire.workbench.model.menu.Menus;
 @Dependent
 @WorkbenchEditor(identifier = "EnumEditor", supportedTypes = { EnumResourceType.class })
 public class EnumEditorPresenter
-    extends KieEditor {
+        extends KieEditor {
 
     private EnumEditorView view;
 
@@ -70,22 +70,23 @@ public class EnumEditorPresenter
     private EnumResourceType type;
 
     @Inject
-    public EnumEditorPresenter(EnumEditorView baseView) {
-        super(baseView);
+    public EnumEditorPresenter( final EnumEditorView baseView ) {
+        super( baseView );
         view = baseView;
     }
 
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        super.init(path, place, type);
+        super.init( path,
+                    place,
+                    type );
     }
 
     protected void loadContent() {
-        enumService.call(
-                getModelSuccessCallback(),
-                getNoSuchFileExceptionErrorCallback()
-        ).loadContent(versionRecordManager.getCurrentPath());
+        view.showLoading();
+        enumService.call( getModelSuccessCallback(),
+                          getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     private RemoteCallback<EnumModelContent> getModelSuccessCallback() {
@@ -98,10 +99,10 @@ public class EnumEditorPresenter
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
+                resetEditorPages( content.getOverview() );
                 addSourcePage();
 
-                view.setContent(content.getModel().getDRL());
+                view.setContent( content.getModel().getDRL() );
                 view.hideBusyIndicator();
             }
         };
@@ -146,12 +147,12 @@ public class EnumEditorPresenter
 
     @Override
     protected void onSourceTabSelected() {
-        updateSource(view.getContent());
+        updateSource( view.getContent() );
     }
 
     @IsDirty
     public boolean isDirty() {
-        return view.isDirty() ;
+        return view.isDirty();
     }
 
     @OnClose

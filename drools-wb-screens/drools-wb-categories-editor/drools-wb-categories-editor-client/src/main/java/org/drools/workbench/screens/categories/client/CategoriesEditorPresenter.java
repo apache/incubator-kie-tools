@@ -29,7 +29,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -49,7 +48,7 @@ import org.uberfire.workbench.model.menu.Menus;
  *
  */
 @Dependent
-@WorkbenchEditor(identifier = "CategoryFileManager", supportedTypes = {CategoryDefinitionResourceType.class})
+@WorkbenchEditor(identifier = "CategoryFileManager", supportedTypes = { CategoryDefinitionResourceType.class })
 public class CategoriesEditorPresenter
         extends KieEditor {
 
@@ -63,56 +62,56 @@ public class CategoriesEditorPresenter
     private Metadata metadata;
 
     @Inject
-    public CategoriesEditorPresenter(CategoriesEditorView baseView) {
-        super(baseView);
+    public CategoriesEditorPresenter( final CategoriesEditorView baseView ) {
+        super( baseView );
         view = baseView;
     }
 
     @OnStartup
-    public void onStartup(
-            final ObservablePath path,
-            final PlaceRequest place) {
-        super.init(path, place, type);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        super.init( path,
+                    place,
+                    type );
     }
 
-    @Override protected Command onValidate() {
+    @Override
+    protected Command onValidate() {
         return null;
     }
 
-    @Override protected void loadContent() {
-        categoryService.call(getModelSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).getContentByRoot(versionRecordManager.getCurrentPath());
+    @Override
+    protected void loadContent() {
+        view.showLoading();
+        categoryService.call( getModelSuccessCallback(),
+                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getContentByRoot( versionRecordManager.getCurrentPath() );
 
     }
 
-    @Override protected void save() {
-
-        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        view.showSaving();
-                        categoryService.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).save(
-                                versionRecordManager.getCurrentPath(),
-                                view.getContent(),
-                                metadata,
-                                commitMessage
-                        );
-                    }
-                });
+    @Override
+    protected void save() {
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showSaving();
+                                                 categoryService.call( getSaveSuccessCallback(),
+                                                                       new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                                                                view.getContent(),
+                                                                                                                                metadata,
+                                                                                                                                commitMessage );
+                                             }
+                                         } );
     }
 
     private RemoteCallback<CategoriesModelContent> getModelSuccessCallback() {
         return new RemoteCallback<CategoriesModelContent>() {
 
             @Override
-            public void callback(final CategoriesModelContent content) {
-                resetEditorPages(content.getOverview());
-
-                view.setContent(content.getCategories());
+            public void callback( final CategoriesModelContent content ) {
+                resetEditorPages( content.getOverview() );
+                view.setContent( content.getCategories() );
                 view.hideBusyIndicator();
-
             }
         };
     }
@@ -129,7 +128,7 @@ public class CategoriesEditorPresenter
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;

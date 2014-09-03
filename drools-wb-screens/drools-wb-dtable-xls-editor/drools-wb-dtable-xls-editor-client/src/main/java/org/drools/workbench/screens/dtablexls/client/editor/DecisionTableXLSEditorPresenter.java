@@ -17,7 +17,6 @@
 package org.drools.workbench.screens.dtablexls.client.editor;
 
 import java.util.List;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -29,16 +28,16 @@ import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTabl
 import org.drools.workbench.screens.dtablexls.client.type.DecisionTableXLSResourceType;
 import org.drools.workbench.screens.dtablexls.client.widgets.ConversionMessageWidget;
 import org.drools.workbench.screens.dtablexls.client.widgets.PopupListWidget;
+import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSContent;
 import org.drools.workbench.screens.dtablexls.service.DecisionTableXLSService;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -53,7 +52,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = {DecisionTableXLSResourceType.class})
+@WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = { DecisionTableXLSResourceType.class })
 public class DecisionTableXLSEditorPresenter
         extends KieEditor
         implements DecisionTableXLSEditorView.Presenter {
@@ -64,113 +63,94 @@ public class DecisionTableXLSEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
-    private DecisionTableXLSEditorView view;
-
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
     private DecisionTableXLSResourceType type;
 
-    public DecisionTableXLSEditorPresenter() {
-    }
+    private DecisionTableXLSEditorView view;
 
     @Inject
-    public DecisionTableXLSEditorPresenter(DecisionTableXLSEditorView baseView) {
-        super(baseView);
+    public DecisionTableXLSEditorPresenter( final DecisionTableXLSEditorView baseView ) {
+        super( baseView );
         view = baseView;
     }
 
-    @PostConstruct
-    public void setup() {
-        view.init(this);
-    }
-
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-        super.init(path, place, type);
-
-        resetEditorPages(null);
-        addSourcePage();
-
-        view.setPath(path);
-        view.setReadOnly(isReadOnly);
-    }
-
-    @Override
-    protected void save() {
-
-    }
-
-    @Override
-    protected void onSourceTabSelected() {
-        decisionTableXLSService.call(new RemoteCallback<String>() {
-            @Override public void callback(String source) {
-                updateSource(source);
-            }
-        }).getSource(versionRecordManager.getCurrentPath());
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        super.init( path,
+                    place,
+                    type );
+        view.init( this );
     }
 
     @Override
     protected void loadContent() {
-        decisionTableXLSService.call(
-                new RemoteCallback<Overview>() {
-                    @Override
-                    public void callback(Overview overview) {
+        decisionTableXLSService.call( new RemoteCallback<DecisionTableXLSContent>() {
+            @Override
+            public void callback( final DecisionTableXLSContent content ) {
+                resetEditorPages( content.getOverview() );
+                addSourcePage();
 
-                        resetEditorPages(overview);
-
-                    }
-                }
-        ).loadOverview(versionRecordManager.getCurrentPath());
-
+                view.setPath( versionRecordManager.getCurrentPath() );
+                view.setReadOnly( isReadOnly );
+            }
+        } ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
-    @Override public void reload() {
-
+    @Override
+    protected void onSourceTabSelected() {
+        decisionTableXLSService.call( new RemoteCallback<String>() {
+            @Override
+            public void callback( String source ) {
+                updateSource( source );
+            }
+        } ).getSource( versionRecordManager.getCurrentPath() );
     }
 
-    protected void makeMenuBar() {
-        menus = menuBuilder
-                .addCopy(versionRecordManager.getCurrentPath(),
-                        fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                        fileNameValidator)
-                .addDelete(versionRecordManager.getPathToLatest())
-                .addValidate(onValidate())
-                .addCommand(DecisionTableXLSEditorConstants.INSTANCE.Convert(),
-                        new Command() {
-
-                            @Override
-                            public void execute() {
-                                convert();
-                            }
-                        }
-                )
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
-                .build();
-
-    }
-
+    @Override
     protected Command onValidate() {
         return new Command() {
             @Override
             public void execute() {
-                decisionTableXLSService.call(new RemoteCallback<List<ValidationMessage>>() {
+                decisionTableXLSService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                    NotificationEvent.NotificationType.SUCCESS));
+                    public void callback( final List<ValidationMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages(results);
+                            ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
-                        versionRecordManager.getCurrentPath());
+                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
+                                                          versionRecordManager.getCurrentPath() );
             }
         };
+    }
+
+    @Override
+    protected void makeMenuBar() {
+        menus = menuBuilder
+                .addCopy( versionRecordManager.getCurrentPath(),
+                          fileNameValidator )
+                .addRename( versionRecordManager.getPathToLatest(),
+                            fileNameValidator )
+                .addDelete( versionRecordManager.getPathToLatest() )
+                .addValidate( onValidate() )
+                .addCommand( DecisionTableXLSEditorConstants.INSTANCE.Convert(),
+                             new Command() {
+
+                                 @Override
+                                 public void execute() {
+                                     convert();
+                                 }
+                             }
+                           )
+                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+                .build();
     }
 
     @OnClose
@@ -199,20 +179,20 @@ public class DecisionTableXLSEditorPresenter
     }
 
     private void convert() {
-        busyIndicatorView.showBusyIndicator(DecisionTableXLSEditorConstants.INSTANCE.Converting());
-        decisionTableXLSService.call(new RemoteCallback<ConversionResult>() {
+        busyIndicatorView.showBusyIndicator( DecisionTableXLSEditorConstants.INSTANCE.Converting() );
+        decisionTableXLSService.call( new RemoteCallback<ConversionResult>() {
             @Override
-            public void callback(final ConversionResult response) {
+            public void callback( final ConversionResult response ) {
                 busyIndicatorView.hideBusyIndicator();
-                if (response.getMessages().size() > 0) {
+                if ( response.getMessages().size() > 0 ) {
                     final PopupListWidget popup = new PopupListWidget();
-                    for (ConversionMessage message : response.getMessages()) {
-                        popup.addListItem(new ConversionMessageWidget(message));
+                    for ( ConversionMessage message : response.getMessages() ) {
+                        popup.addListItem( new ConversionMessageWidget( message ) );
                     }
                     popup.show();
                 }
             }
-        }).convert(versionRecordManager.getCurrentPath());
+        } ).convert( versionRecordManager.getCurrentPath() );
     }
 
 }

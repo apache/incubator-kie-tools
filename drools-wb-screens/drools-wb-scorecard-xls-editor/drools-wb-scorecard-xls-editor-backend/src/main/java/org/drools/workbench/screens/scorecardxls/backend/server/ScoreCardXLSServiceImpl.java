@@ -35,17 +35,16 @@ import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.StandardOpenOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -86,11 +85,9 @@ public class ScoreCardXLSServiceImpl
     private GenericValidator genericValidator;
 
     @Override
-    public ScoreCardXLSContent loadContent(Path path) {
-        ScoreCardXLSContent content = new ScoreCardXLSContent();
-
-        content.setOverview(loadOverview(path));
-
+    public ScoreCardXLSContent loadContent( final Path path ) {
+        final ScoreCardXLSContent content = new ScoreCardXLSContent();
+        content.setOverview( loadOverview( path ) );
         return content;
     }
 

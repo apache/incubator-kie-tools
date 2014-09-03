@@ -57,7 +57,6 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -90,9 +89,6 @@ public class GuidedRuleEditorServiceImpl
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private DataModelService dataModelService;
@@ -132,7 +128,7 @@ public class GuidedRuleEditorServiceImpl
             ioService.write( nioPath,
                              toSource( newPath,
                                        model ),
-                             utilities.makeCommentedOption( comment ) );
+                             makeCommentedOption( comment ) );
 
             return newPath;
 
@@ -172,7 +168,6 @@ public class GuidedRuleEditorServiceImpl
     public GuidedEditorContent loadContent( final Path path ) {
         try {
             final RuleModel model = load( path );
-
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
@@ -192,7 +187,7 @@ public class GuidedRuleEditorServiceImpl
                                                                sessionInfo ) );
 
             return new GuidedEditorContent( model,
-                                            loadOverview(path),
+                                            loadOverview( path ),
                                             dataModel );
 
         } catch ( Exception e ) {
@@ -215,7 +210,7 @@ public class GuidedRuleEditorServiceImpl
                                                  model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
-                             utilities.makeCommentedOption( comment ) );
+                             makeCommentedOption( comment ) );
 
             return resource;
 

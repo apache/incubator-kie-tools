@@ -18,7 +18,6 @@ package org.drools.workbench.screens.workitems.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,6 @@ import org.guvnor.common.services.backend.file.FileExtensionsFilter;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -65,16 +63,12 @@ import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -112,12 +106,6 @@ public class WorkItemsEditorServiceImpl
 
     @Inject
     private ConfigWorkDefinitionsLoader configWorkDefinitionsLoader;
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private WorkItemsTypeDefinition resourceTypeDefinition;
@@ -202,7 +190,7 @@ public class WorkItemsEditorServiceImpl
                                                                sessionInfo ) );
 
             return new WorkItemsModelContent( definition,
-                                              loadOverview(path),
+                                              loadOverview( path ),
                                               workItemImages );
 
         } catch ( Exception e ) {
@@ -389,14 +377,4 @@ public class WorkItemsEditorServiceImpl
         return pps;
     }
 
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
-    }
 }

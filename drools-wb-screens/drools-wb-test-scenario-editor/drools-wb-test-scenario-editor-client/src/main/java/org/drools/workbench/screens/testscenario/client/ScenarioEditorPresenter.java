@@ -48,7 +48,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
-@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = {TestScenarioResourceType.class})
+@WorkbenchEditor(identifier = "ScenarioEditorPresenter", supportedTypes = { TestScenarioResourceType.class })
 public class ScenarioEditorPresenter
         extends KieEditor {
 
@@ -61,13 +61,12 @@ public class ScenarioEditorPresenter
     private AsyncPackageDataModelOracle oracle;
 
     @Inject
-    public ScenarioEditorPresenter(
-            final @New ScenarioEditorView view,
-            final Caller<ScenarioTestEditorService> service,
-            final Event<ChangeTitleWidgetEvent> changeTitleNotification,
-            final TestScenarioResourceType type,
-            final AsyncPackageDataModelOracleFactory oracleFactory) {
-        super(view);
+    public ScenarioEditorPresenter( final @New ScenarioEditorView view,
+                                    final Caller<ScenarioTestEditorService> service,
+                                    final Event<ChangeTitleWidgetEvent> changeTitleNotification,
+                                    final TestScenarioResourceType type,
+                                    final AsyncPackageDataModelOracleFactory oracleFactory ) {
+        super( view );
         this.view = view;
         this.service = service;
         this.changeTitleNotification = changeTitleNotification;
@@ -76,10 +75,11 @@ public class ScenarioEditorPresenter
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-
-        super.init(path, place, type);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        super.init( path,
+                    place,
+                    type );
     }
 
     @Override
@@ -88,18 +88,17 @@ public class ScenarioEditorPresenter
     }
 
     protected void loadContent() {
-        service.call(
-                getModelSuccessCallback(),
-                getNoSuchFileExceptionErrorCallback()
-        ).loadContent(versionRecordManager.getCurrentPath());
+        view.showLoading();
+        service.call( getModelSuccessCallback(),
+                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     private RemoteCallback<TestScenarioModelContent> getModelSuccessCallback() {
         return new RemoteCallback<TestScenarioModelContent>() {
             @Override
-            public void callback(TestScenarioModelContent content) {
+            public void callback( TestScenarioModelContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if (versionRecordManager.getCurrentPath() == null) {
+                if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
                 }
 
@@ -107,18 +106,17 @@ public class ScenarioEditorPresenter
                 ifFixturesSizeZeroThenAddExecutionTrace();
 
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
-                        scenario,
-                        dataModel);
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
+                                                                        scenario,
+                                                                        dataModel );
 
-                view.setContent(
-                        versionRecordManager.getCurrentPath(),
-                        isReadOnly,
-                        scenario,
-                        content.getOverview(),
-                        versionRecordManager.getVersion(),
-                        oracle,
-                        service);
+                view.setContent( versionRecordManager.getCurrentPath(),
+                                 isReadOnly,
+                                 scenario,
+                                 content.getOverview(),
+                                 versionRecordManager.getVersion(),
+                                 oracle,
+                                 service );
 
                 view.hideBusyIndicator();
             }
@@ -126,18 +124,18 @@ public class ScenarioEditorPresenter
     }
 
     protected void save() {
-        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        view.showSaving();
-                        service.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                scenario,
-                                metadata,
-                                commitMessage);
-                    }
-                });
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showSaving();
+                                                 service.call( getSaveSuccessCallback(),
+                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                                                        scenario,
+                                                                                                                        metadata,
+                                                                                                                        commitMessage );
+                                             }
+                                         } );
         concurrentUpdateSessionInfo = null;
     }
 
@@ -163,31 +161,31 @@ public class ScenarioEditorPresenter
 
     protected void makeMenuBar() {
         menus = menuBuilder
-                .addSave(new Command() {
+                .addSave( new Command() {
                     @Override
                     public void execute() {
                         onSave();
                     }
-                })
-                .addCopy(versionRecordManager.getCurrentPath(),
-                        fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                        fileNameValidator)
-                .addDelete(versionRecordManager.getPathToLatest())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                } )
+                .addCopy( versionRecordManager.getCurrentPath(),
+                          fileNameValidator )
+                .addRename( versionRecordManager.getPathToLatest(),
+                            fileNameValidator )
+                .addDelete( versionRecordManager.getPathToLatest() )
+                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
                 .build();
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {
-        if (scenario.getFixtures().size() == 0) {
-            scenario.getFixtures().add(new ExecutionTrace());
+        if ( scenario.getFixtures().size() == 0 ) {
+            scenario.getFixtures().add( new ExecutionTrace() );
         }
     }
 
     @OnClose
     public void onClose() {
         versionRecordManager.clear();
-        this.oracleFactory.destroy(oracle);
+        this.oracleFactory.destroy( oracle );
     }
 
 }

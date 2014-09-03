@@ -98,6 +98,7 @@ public class GuidedScoreCardEditorPresenter
     }
 
     protected void loadContent() {
+        view.showLoading();
         scoreCardEditorService.call( getModelSuccessCallback(),
                                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
@@ -190,7 +191,7 @@ public class GuidedScoreCardEditorPresenter
         scoreCardEditorService.call( new RemoteCallback<String>() {
             @Override
             public void callback( String source ) {
-                updateSource(source);
+                updateSource( source );
             }
         } ).toSource( versionRecordManager.getCurrentPath(),
                       model );

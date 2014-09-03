@@ -54,7 +54,7 @@ import org.uberfire.workbench.model.menu.Menus;
  * DSL Editor Presenter.
  */
 @Dependent
-@WorkbenchEditor(identifier = "DSLEditor", supportedTypes = {DSLResourceType.class})
+@WorkbenchEditor(identifier = "DSLEditor", supportedTypes = { DSLResourceType.class })
 public class DSLEditorPresenter
         extends KieEditor {
 
@@ -70,38 +70,39 @@ public class DSLEditorPresenter
     private DSLResourceType type;
 
     @Inject
-    public DSLEditorPresenter(DSLEditorView baseView) {
-        super(baseView);
+    public DSLEditorPresenter( final DSLEditorView baseView ) {
+        super( baseView );
         view = baseView;
     }
 
     @OnStartup
-    public void onStartup(final ObservablePath path,
-            final PlaceRequest place) {
-        this.init(path, place, type);
+    public void onStartup( final ObservablePath path,
+                           final PlaceRequest place ) {
+        this.init( path,
+                   place,
+                   type );
     }
 
     protected void loadContent() {
-        dslTextEditorService.call(
-                getModelSuccessCallback(),
-                getNoSuchFileExceptionErrorCallback()
-        ).loadContent(versionRecordManager.getCurrentPath());
+        view.showLoading();
+        dslTextEditorService.call( getModelSuccessCallback(),
+                                   getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     private RemoteCallback<DSLTextEditorContent> getModelSuccessCallback() {
         return new RemoteCallback<DSLTextEditorContent>() {
 
             @Override
-            public void callback(final DSLTextEditorContent content) {
+            public void callback( final DSLTextEditorContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if (versionRecordManager.getCurrentPath() == null) {
+                if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
                 }
 
-                resetEditorPages(content.getOverview());
+                resetEditorPages( content.getOverview() );
                 addSourcePage();
 
-                view.setContent(content.getModel());
+                view.setContent( content.getModel() );
                 view.hideBusyIndicator();
             }
         };
@@ -111,43 +112,43 @@ public class DSLEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                dslTextEditorService.call(new RemoteCallback<List<ValidationMessage>>() {
+                dslTextEditorService.call( new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback(final List<ValidationMessage> results) {
-                        if (results == null || results.isEmpty()) {
-                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                    NotificationEvent.NotificationType.SUCCESS));
+                    public void callback( final List<ValidationMessage> results ) {
+                        if ( results == null || results.isEmpty() ) {
+                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                      NotificationEvent.NotificationType.SUCCESS ) );
                         } else {
-                            ValidationPopup.showMessages(results);
+                            ValidationPopup.showMessages( results );
                         }
                     }
-                }, new DefaultErrorCallback()).validate(versionRecordManager.getCurrentPath(),
-                        view.getContent());
+                }, new DefaultErrorCallback() ).validate( versionRecordManager.getCurrentPath(),
+                                                          view.getContent() );
             }
         };
     }
 
     protected void save() {
-        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
-                new CommandWithCommitMessage() {
-                    @Override
-                    public void execute(final String commitMessage) {
-                        view.showSaving();
-                        dslTextEditorService.call(getSaveSuccessCallback(),
-                                new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                view.getContent(),
-                                metadata,
-                                commitMessage);
-                    }
-                }
-        );
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+                                         new CommandWithCommitMessage() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 view.showSaving();
+                                                 dslTextEditorService.call( getSaveSuccessCallback(),
+                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
+                                                                                                                                     view.getContent(),
+                                                                                                                                     metadata,
+                                                                                                                                     commitMessage );
+                                             }
+                                         }
+                                       );
 
         concurrentUpdateSessionInfo = null;
     }
 
     @Override
     protected void onSourceTabSelected() {
-        updateSource(view.getContent());
+        updateSource( view.getContent() );
     }
 
     @IsDirty
@@ -162,7 +163,7 @@ public class DSLEditorPresenter
 
     @OnMayClose
     public boolean checkIfDirty() {
-        if (isDirty()) {
+        if ( isDirty() ) {
             return view.confirmClose();
         }
         return true;

@@ -111,27 +111,24 @@ public class GuidedRuleEditorPresenter
         super.init( path,
                     place,
                     getResourceType( path ) );
-
         this.isDSLEnabled = resourceTypeDSL.accept( path );
     }
 
-
     protected void loadContent() {
         view.showLoading();
-
         service.call( getModelSuccessCallback(),
                       getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     @Override
     protected void onSourceTabSelected() {
-        service.call(new RemoteCallback<String>() {
+        service.call( new RemoteCallback<String>() {
             @Override
-            public void callback(String source) {
-                updateSource(source);
+            public void callback( String source ) {
+                updateSource( source );
             }
-        }).toSource(versionRecordManager.getCurrentPath(),
-                model);
+        } ).toSource( versionRecordManager.getCurrentPath(),
+                      model );
     }
 
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
@@ -146,10 +143,9 @@ public class GuidedRuleEditorPresenter
 
                 GuidedRuleEditorPresenter.this.model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle(
-                        versionRecordManager.getPathToLatest(),
-                        model,
-                        dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getPathToLatest(),
+                                                                        model,
+                                                                        dataModel );
 
                 resetEditorPages( content.getOverview() );
 
@@ -223,8 +219,7 @@ public class GuidedRuleEditorPresenter
                                                                                                                             commitMessage );
 
                                                  }
-                                             }
-                                           );
+                                             } );
 
             concurrentUpdateSessionInfo = null;
         } else {

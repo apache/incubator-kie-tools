@@ -19,7 +19,6 @@ package org.drools.workbench.screens.dsltext.backend.server;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -41,20 +40,17 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class DSLTextEditorServiceImpl
-        implements DSLTextEditorService {
+public class DSLTextEditorServiceImpl extends KieService implements DSLTextEditorService {
 
     @Inject
     @Named("ioStrategy")
@@ -80,12 +76,6 @@ public class DSLTextEditorServiceImpl
 
     @Inject
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
-
-    @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
 
     @Inject
     private DSLResourceTypeDefinition resourceTypeDefinition;
@@ -131,23 +121,17 @@ public class DSLTextEditorServiceImpl
     }
 
     @Override
-    public DSLTextEditorContent loadContent(Path path) {
-        String dsl = load(path);
-        return new DSLTextEditorContent(
-                dsl,
-                loadOverview(path, dsl));
+    public DSLTextEditorContent loadContent( final Path path ) {
+        String dsl = load( path );
+        return new DSLTextEditorContent( dsl,
+                                         loadOverview( path,
+                                                       dsl ) );
     }
 
-    private Overview loadOverview(Path path, String dsl) {
-
-        Overview overview = new Overview();
-
-        overview.setMetadata(metadataService.getMetadata(path));
-
-        overview.setPreview(dsl);
-
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
-
+    private Overview loadOverview( final Path path,
+                                   final String dsl ) {
+        final Overview overview = super.loadOverview( path );
+        overview.setPreview( dsl );
         return overview;
     }
 
@@ -286,17 +270,6 @@ public class DSLTextEditorServiceImpl
         msg.setLevel( ValidationMessage.Level.ERROR );
         msg.setText( "Uncategorized error " + o );
         return msg;
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }

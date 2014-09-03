@@ -66,10 +66,13 @@ public class GlobalsEditorPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        super.init( path, place, type );
+        super.init( path,
+                    place,
+                    type );
     }
 
     protected void loadContent() {
+        view.showLoading();
         globalsEditorService.call( getModelSuccessCallback(),
                                    getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
@@ -141,7 +144,7 @@ public class GlobalsEditorPresenter
         globalsEditorService.call( new RemoteCallback<String>() {
             @Override
             public void callback( String source ) {
-                updateSource(source);
+                updateSource( source );
             }
         } ).toSource( versionRecordManager.getCurrentPath(),
                       model );

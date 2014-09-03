@@ -18,7 +18,6 @@ package org.drools.workbench.screens.enums.backend.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -42,16 +41,14 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.security.Identity;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 /**
@@ -59,7 +56,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
  */
 @Service
 @ApplicationScoped
-public class EnumServiceImpl implements EnumService {
+public class EnumServiceImpl extends KieService implements EnumService {
 
     @Inject
     @Named("ioStrategy")
@@ -84,12 +81,6 @@ public class EnumServiceImpl implements EnumService {
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Identity identity;
-
-    @Inject
-    private SessionInfo sessionInfo;
-
-    @Inject
     private EnumResourceTypeDefinition resourceTypeDefinition;
 
     @Inject
@@ -104,7 +95,7 @@ public class EnumServiceImpl implements EnumService {
                         final String content,
                         final String comment ) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve(fileName);
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
             final Path newPath = Paths.convert( nioPath );
 
             if ( ioService.exists( nioPath ) ) {
@@ -142,26 +133,20 @@ public class EnumServiceImpl implements EnumService {
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            String text = load(path);
-            return new EnumModelContent(
-                    new EnumModel(text),
-                    loadOverview(path, text));
+            String text = load( path );
+            return new EnumModelContent( new EnumModel( text ),
+                                         loadOverview( path,
+                                                       text ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
     }
 
-    private Overview loadOverview(Path path, String text) {
-
-        Overview overview = new Overview();
-
-        overview.setMetadata(metadataService.getMetadata(path));
-
-        overview.setPreview(text);
-
-        overview.setProjectName(projectService.resolveProject(path).getProjectName());
-
+    private Overview loadOverview( final Path path,
+                                   final String text ) {
+        final Overview overview = super.loadOverview( path );
+        overview.setPreview( text );
         return overview;
     }
 
@@ -284,17 +269,6 @@ public class EnumServiceImpl implements EnumService {
         msg.setLevel( ValidationMessage.Level.ERROR );
         msg.setText( message );
         return msg;
-    }
-
-    private CommentedOption makeCommentedOption( final String commitMessage ) {
-        final String name = identity.getName();
-        final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
-        return co;
     }
 
 }

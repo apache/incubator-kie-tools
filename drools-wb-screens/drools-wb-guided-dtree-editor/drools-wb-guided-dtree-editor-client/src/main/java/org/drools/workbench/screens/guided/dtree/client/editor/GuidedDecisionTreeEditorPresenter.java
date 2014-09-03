@@ -103,6 +103,7 @@ public class GuidedDecisionTreeEditorPresenter
     }
 
     protected void loadContent() {
+        view.showLoading();
         service.call( getModelSuccessCallback(),
                       getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
@@ -128,8 +129,8 @@ public class GuidedDecisionTreeEditorPresenter
 
                 resetEditorPages( content.getOverview() );
 
+                addSourcePage();
                 addImportsTab( importsWidget );
-
                 importsWidget.setContent( oracle,
                                           model.getImports(),
                                           isReadOnly );
