@@ -32,6 +32,8 @@ import org.dashbuilder.dataset.DataSetManager;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -114,24 +116,19 @@ public class ContributorsManager {
         dataSetManager.registerDataSet(dataSet);
     }
 
-    // Catch all the org & repos creation/removal events in order to sync up the contributions data set
+    // Keep synced the contributions data set with the changes made into the org>repos hierarchy
 
-    public void onOrganizationUnitCreated(@Observes final NewOrganizationalUnitEvent event) {
+    public void onRepoAddedToOrgUnit(@Observes final RepoAddedToOrganizationaUnitEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void onRepoRemovedFromOrgUnit(@Observes final RepoRemovedFromOrganizationalUnitEvent event) {
         checkNotNull("event", event);
         initDataSets();
     }
 
     public void onOrganizationUnitRemoved(@Observes final RemoveOrganizationalUnitEvent event) {
-        checkNotNull("event", event);
-        initDataSets();
-    }
-
-    public void onRepositoryCreated(@Observes final NewRepositoryEvent event) {
-        checkNotNull("event", event);
-        initDataSets();
-    }
-
-    public void onRepositoryRemoved(@Observes final RepositoryRemovedEvent event) {
         checkNotNull("event", event);
         initDataSets();
     }
