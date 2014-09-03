@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.screens.contributors.client.perspectives;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.screens.contributors.client.resources.i18n.ContributorsConstants;
@@ -36,7 +35,7 @@ public class ContributorsPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_SIMPLE );
+        PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_STATIC );
         p.setTransient(true);
         p.setName( ContributorsConstants.INSTANCE.contributorsPerspectiveName() );
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "ContributorsScreen" ) ) );
