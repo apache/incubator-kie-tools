@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -19,11 +18,6 @@ import org.uberfire.wbtest.client.resize.ResizeTestScreenActivity;
 
 
 public class WorkbenchResizeTest extends AbstractSeleniumTest {
-
-    @Before
-    public void grabPage() {
-        driver.get( baseUrl );
-    }
 
     @Test
     public void testDefaultPerspectiveSize() throws Exception {
