@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-workbench</artifactId>
-    <version>0.4.2.CR1</version>
+    <version>0.4.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>uberfire-workbench-client</artifactId>
