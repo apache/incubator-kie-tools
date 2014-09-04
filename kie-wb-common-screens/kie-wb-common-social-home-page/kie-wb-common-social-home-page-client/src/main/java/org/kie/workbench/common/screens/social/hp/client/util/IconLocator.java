@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -34,7 +35,7 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 /**
  * Utility to get file type icon
  */
-@ApplicationScoped
+@Dependent
 public class IconLocator {
 
     private List<ClientResourceType> resourceTypes = new ArrayList<ClientResourceType>();

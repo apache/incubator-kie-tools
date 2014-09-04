@@ -54,8 +54,8 @@ public class NewRepositoryEventAdapter implements SocialAdapter<NewRepositoryEve
             //clean repository
             socialUser = new SocialUser( "system" );
         }
-        String aditionalInfo = "created ";
-        return new SocialActivitiesEvent( socialUser, ExtendedTypes.NEW_REPOSITORY_EVENT, new Date() ).withAdicionalInfo( aditionalInfo ).withLink( event.getNewRepository().getAlias(), event.getNewRepository().getUri() );
+        String additionalInfo = "created ";
+        return new SocialActivitiesEvent( socialUser, ExtendedTypes.NEW_REPOSITORY_EVENT, new Date() ).withAdicionalInfo( additionalInfo ).withLink( event.getNewRepository().getAlias(), event.getNewRepository().getUri() );
     }
 
     @Override

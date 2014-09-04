@@ -128,7 +128,7 @@ public class SocialHomePageMainPresenter {
         }
         SocialTimelineWidget socialTimelineWidget = GWT.create( SocialTimelineWidget.class );
         List<ClientResourceType> resourceTypes = iconLocator.getResourceTypes();
-        SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( "Latest Changes", socialUser, placeManager, resourceTypes );
+        SocialTimelineWidgetModel model = new SocialTimelineWidgetModel(  socialUser, placeManager, resourceTypes );
         Map<String, String> globals = new HashMap();
         globals.put( "filter", param );
         model.droolsQuery( globals, "filterTimelineRecentAssets", "10" );
@@ -156,7 +156,7 @@ public class SocialHomePageMainPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "";
+        return "Latest Changes";
     }
 
     @WorkbenchPartView

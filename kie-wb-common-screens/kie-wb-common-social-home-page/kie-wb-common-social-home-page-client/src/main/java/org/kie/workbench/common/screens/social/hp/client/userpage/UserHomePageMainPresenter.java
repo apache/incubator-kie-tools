@@ -1,6 +1,7 @@
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -19,18 +20,24 @@ import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.screens.social.hp.client.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.MainPresenter;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.header.HeaderPresenter;
+import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
 import org.kie.workbench.common.screens.social.hp.predicate.UserTimeLineOnlyUserActivityPredicate;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Identity;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "UserHomePageMainPresenter")
 public class UserHomePageMainPresenter {
+
+    private PlaceRequest place;
 
     public interface View extends UberView<UserHomePageMainPresenter> {
 
@@ -39,6 +46,12 @@ public class UserHomePageMainPresenter {
         void setMain( MainPresenter main );
     }
 
+    @Inject
+    private IconLocator iconLocator;
+
+    @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
+    
     @Inject
     private View view;
 
@@ -66,6 +79,11 @@ public class UserHomePageMainPresenter {
         view.setHeader( header );
         view.setMain( mainPresenter );
     }
+    
+    @OnStartup
+    public void onStartup( final PlaceRequest place ) {
+        this.place = place;
+    }
 
     @OnOpen
     public void onOpen() {
@@ -92,8 +110,9 @@ public class UserHomePageMainPresenter {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
                 String title = !socialUser.getRealName().isEmpty() ? socialUser.getRealName() : socialUser.getUserName();
-                title += " Recent Activities";
-                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, title, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, new SocialPaged( 2 ) );
+                title += "'s Recent Activities";
+                changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( place, title ) );
+                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, new SocialPaged( 2 ) ).withIcons( iconLocator.getResourceTypes() );
                 mainPresenter.setup( model );
             }
         } ).findSocialUser( username );

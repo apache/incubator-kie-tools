@@ -6,6 +6,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.shared.version.VersionService;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
@@ -24,6 +25,9 @@ public class ResourceAddedEventAdapter implements SocialAdapter<ResourceAddedEve
 
     @Inject
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
+
+    @Inject
+    private VersionService versionService;
 
     @Override
     public Class<ResourceAddedEvent> eventToIntercept() {
@@ -47,8 +51,16 @@ public class ResourceAddedEventAdapter implements SocialAdapter<ResourceAddedEve
     public SocialActivitiesEvent toSocial( Object object ) {
         ResourceAddedEvent event = (ResourceAddedEvent) object;
         SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( event.getSessionInfo().getIdentity().getName() );
-        String aditionalInfo = "added ";
-        return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_ADDED_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( aditionalInfo );
+        String additionalInfo = "added ";
+        String description = getCommitDescription( event );
+        return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_ADDED_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( additionalInfo ).withDescription( description );
+    }
+
+    private String getCommitDescription( ResourceAddedEvent event ) {
+        if ( event.getMessage() != null ) {
+            return event.getMessage();
+        }
+        return "";
     }
 
     @Override

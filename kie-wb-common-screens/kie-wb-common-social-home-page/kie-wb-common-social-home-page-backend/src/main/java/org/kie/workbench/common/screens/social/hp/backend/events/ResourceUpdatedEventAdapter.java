@@ -6,6 +6,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.shared.version.VersionService;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
@@ -13,7 +14,10 @@ import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.screens.social.hp.model.HomePageTypes;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.security.Identity;
+import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @ApplicationScoped
@@ -24,6 +28,9 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
 
     @Inject
     private SocialUserRepositoryAPI socialUserRepositoryAPI;
+
+    @Inject
+    private VersionService versionService;
 
     @Override
     public Class<ResourceUpdatedEvent> eventToIntercept() {
@@ -47,9 +54,18 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
     public SocialActivitiesEvent toSocial( Object object ) {
         ResourceUpdatedEvent event = (ResourceUpdatedEvent) object;
         SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( event.getSessionInfo().getIdentity().getName() );
-        String aditionalInfo = "edited ";
-        return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_UPDATE_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( aditionalInfo );
+        String additionalInfo = "edited ";
+        String description = getCommitDescription( event );
+        return new SocialActivitiesEvent( socialUser, HomePageTypes.RESOURCE_UPDATE_EVENT.name(), new Date() ).withLink( event.getPath().getFileName(), event.getPath().toURI() ).withAdicionalInfo( additionalInfo ).withDescription( description );
     }
+
+    private String getCommitDescription( ResourceUpdatedEvent event ) {
+        if ( event.getMessage() != null ) {
+            return event.getMessage();
+        }
+        return "";
+    }
+
 
     @Override
     public List<SocialCommandTypeFilter> getTimelineFilters() {

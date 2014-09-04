@@ -25,21 +25,31 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Identity;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "UserHomePageSidePresenter")
 public class UserHomePageSidePresenter {
 
+    private PlaceRequest place;
+
     public interface View extends UberView<UserHomePageSidePresenter> {
 
-        void setupUserMenu( String userName,
+        void setupUserInfo( String userName,
                             SideUserInfoPresenter widget );
 
-        void setupAllPeopleMenu( List<String> users,
-                                 ParameterizedCommand onSelect );
+        void setupSearchPeopleMenu( List<String> userNames,
+                                    ParameterizedCommand<String> parameterizedCommand,
+                                    String suggestText );
+
+        void setupHomeLink( Anchor anchor );
+
+        void clear();
     }
 
     @Inject
@@ -47,6 +57,9 @@ public class UserHomePageSidePresenter {
 
     @Inject
     private Event<UserHomepageSelectedEvent> selectedEvent;
+
+    @Inject
+    private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     @Inject
     private PlaceManager placeManager;
@@ -71,11 +84,17 @@ public class UserHomePageSidePresenter {
         refreshPage( loggedUser.getName() );
     }
 
+    @OnStartup
+    public void onStartup( final PlaceRequest place ) {
+        this.place = place;
+    }
+
     public void watchUserHomepageSelectedEvent( @Observes UserHomepageSelectedEvent event ) {
         refreshPage( event.getSocialUserName() );
     }
 
     private void refreshPage( final String username ) {
+        view.clear();
         socialUserRepositoryAPI.call( new RemoteCallback<List<SocialUser>>() {
             public void callback( List<SocialUser> users ) {
                 List<String> userNames = new ArrayList<String>();
@@ -86,7 +105,7 @@ public class UserHomePageSidePresenter {
                         userOnPage = user;
                     }
                 }
-                setupAllPeopleMenu( userNames );
+                setupSearchPeopleMenu( userOnPage, userNames );
                 if ( userOnPage != null ) {
                     setupUserMenu( userOnPage );
                 }
@@ -95,18 +114,33 @@ public class UserHomePageSidePresenter {
         } ).findAllUsers();
     }
 
-    private void setupAllPeopleMenu( List<String> userNames ) {
-        view.setupAllPeopleMenu( userNames, new ParameterizedCommand<String>() {
+    private void setupSearchPeopleMenu( SocialUser socialUser,
+                                        List<String> userNames ) {
+        if ( !socialUser.getUserName().equalsIgnoreCase( loggedUser.getName() ) ) {
+            Anchor anchor = GWT.create( Anchor.class );
+            anchor.setText( "My Profile" );
+            anchor.addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    refreshPage( loggedUser.getName() );
+
+                }
+            } );
+            view.setupHomeLink( anchor );
+        }
+        view.setupSearchPeopleMenu( userNames, new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
                 selectedEvent.fire( new UserHomepageSelectedEvent( parameter ) );
             }
-        } );
+        }, "search users..." );
     }
 
     private void setupUserMenu( SocialUser userOnPage ) {
-        String userName = userOnPage.getRealName().isEmpty()?userOnPage.getUserName(): userOnPage.getRealName();
-        view.setupUserMenu(userName , setupSideUserInfoPresenter( userOnPage ) );
+        String userName = userOnPage.getRealName().isEmpty() ? userOnPage.getUserName() : userOnPage.getRealName();
+        view.setupUserInfo( userName, setupSideUserInfoPresenter( userOnPage ) );
+        String title = userName + "'s Profile";
+        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( this.place, title ) );
     }
 
     private SideUserInfoPresenter setupSideUserInfoPresenter( SocialUser socialUser ) {
@@ -163,9 +197,9 @@ public class UserHomePageSidePresenter {
     }
 
     private void createLoggedUserActionLink( final SocialUser socialUser,
-                                             Anchor button ) {
-        button.setText( "Edit my infos" );
-        button.addClickHandler( new ClickHandler() {
+                                             Anchor anchor ) {
+        anchor.setText( "Edit my infos" );
+        anchor.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
                 editUserForm.show( socialUser, new ParameterizedCommand<SocialUser>() {
