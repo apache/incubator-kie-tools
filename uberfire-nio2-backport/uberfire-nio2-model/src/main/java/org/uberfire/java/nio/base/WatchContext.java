@@ -10,5 +10,7 @@ public interface WatchContext {
 
     String getSessionId();
 
+    String getMessage();
+
     String getUser();
 }

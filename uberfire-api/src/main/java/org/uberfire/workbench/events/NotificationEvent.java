@@ -48,7 +48,7 @@ public class NotificationEvent implements UberFireEvent {
 
     @Override
     public String toString() {
-      return "NotificationEvent [notification=" + notification + ", type=" + type + "]";
+        return "NotificationEvent [notification=" + notification + ", type=" + type + "]";
     }
 
 }
