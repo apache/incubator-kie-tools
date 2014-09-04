@@ -7,6 +7,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,6 +22,7 @@ import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
 import org.kie.workbench.common.screens.social.hp.client.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.EditUserForm;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.SideUserInfoPresenter;
+import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -31,6 +34,12 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Identity;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
+
+import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "UserHomePageSidePresenter")
@@ -87,6 +96,38 @@ public class UserHomePageSidePresenter {
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
         this.place = place;
+    }
+
+    @WorkbenchMenu
+    public Menus buildMenu() {
+        return MenuFactory
+                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
+                    @Override
+                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                    }
+
+                    @Override
+                    public MenuItem build() {
+                        return new BaseMenuCustom<Button>() {
+
+                            @Override
+                            public Button build() {
+                                return new Button() {
+                                    {
+                                        setIcon( IconType.HOME );
+                                        setSize( MINI );
+                                        addClickHandler( new ClickHandler() {
+                                            @Override
+                                            public void onClick( ClickEvent event ) {
+                                                refreshPage( loggedUser.getName() );
+                                            }
+                                        } );
+                                    }
+                                };
+                            }
+                        };
+                    }
+                } ).endMenu().build();
     }
 
     public void watchUserHomepageSelectedEvent( @Observes UserHomepageSelectedEvent event ) {
