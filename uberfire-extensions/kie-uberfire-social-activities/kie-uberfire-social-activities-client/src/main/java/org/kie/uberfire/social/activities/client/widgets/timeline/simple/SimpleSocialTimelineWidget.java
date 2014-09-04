@@ -29,9 +29,6 @@ public class SimpleSocialTimelineWidget extends Composite {
     private SimpleSocialTimelineWidgetModel model;
 
     @UiField
-    FlowPanel title;
-
-    @UiField
     FluidContainer itemsPanel;
 
     @UiField
@@ -40,7 +37,6 @@ public class SimpleSocialTimelineWidget extends Composite {
     public SimpleSocialTimelineWidget( SimpleSocialTimelineWidgetModel model ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.model = model;
-        title.add( new Legend( model.getTitle() ) );
         setupPaginationLinks();
         refreshTimelineWidget();
     }

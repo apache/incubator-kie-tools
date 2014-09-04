@@ -11,7 +11,6 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 public class SocialTimelineWidgetModel {
 
 
-    private String title;
     private String maxResults;
     private SocialEventType socialEventType;
     private SocialUser socialUser;
@@ -20,21 +19,17 @@ public class SocialTimelineWidgetModel {
     private Map<String, String> globals;
     private String drlName;
 
-    public SocialTimelineWidgetModel( String title,
-                                      SocialUser socialUser,
+    public SocialTimelineWidgetModel( SocialUser socialUser,
                                       PlaceManager placeManager, List<ClientResourceType> resourceTypes ) {
-        this.title = title;
         this.socialUser = socialUser;
         this.placeManager = placeManager;
         this.resourceTypes = resourceTypes;
     }
 
 
-    public SocialTimelineWidgetModel( String title,
-                                      SocialEventType socialEventType,
+    public SocialTimelineWidgetModel(SocialEventType socialEventType,
                                       SocialUser socialUser,
                                       PlaceManager placeManager ) {
-        this.title = title;
         this.socialEventType = socialEventType;
         this.socialUser = socialUser;
         this.placeManager = placeManager;
@@ -50,10 +45,6 @@ public class SocialTimelineWidgetModel {
 
     public boolean isDroolsQuery(){
         return this.drlName !=null;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public SocialEventType getSocialEventType() {

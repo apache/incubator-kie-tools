@@ -13,7 +13,6 @@
   </ui:style>
 
   <g:HTMLPanel >
-    <g:FlowPanel ui:field="titlePanel"/>
     <b:FluidContainer ui:field="itemsPanel"/>
   </g:HTMLPanel>
 </ui:UiBinder>

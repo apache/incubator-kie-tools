@@ -73,7 +73,7 @@ public class SocialTimelineRulesQuery implements SocialTimelineRulesQueryAPI {
             List<SocialActivitiesEvent> socialEvents = new ArrayList<SocialActivitiesEvent>();
             kSession.setGlobal( "socialEvents", socialEvents );
             kSession.setGlobal( "queryAPI", this );
-            //maxResults ederign
+            kSession.setGlobal( "maxResults", new Integer( maxResults ) );
             for ( String key : globals.keySet() ) {
                 kSession.setGlobal( key, globals.get( key ) );
             }

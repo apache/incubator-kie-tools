@@ -1,5 +1,7 @@
 package org.kie.uberfire.social.activities.client.widgets.timeline.simple.model;
 
+import java.util.List;
+
 import com.github.gwtbootstrap.client.ui.NavLink;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
@@ -7,37 +9,34 @@ import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialPredicate;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class SimpleSocialTimelineWidgetModel {
 
     private SocialEventType socialEventType;
     private SocialUser socialUser;
-    private String title;
     private SocialPredicate<SocialActivitiesEvent> predicate;
     private PlaceManager placeManager;
     private SocialPaged socialPaged;
     private NavLink less;
     private NavLink more;
+    private List<ClientResourceType> resourceTypes;
 
     public SimpleSocialTimelineWidgetModel( SocialEventType socialEventType,
-                                            String title,
                                             SocialPredicate<SocialActivitiesEvent> predicate,
                                             PlaceManager placeManager,
                                             SocialPaged socialPaged ) {
         this.socialEventType = socialEventType;
-        this.title = title;
         this.predicate = predicate;
         this.placeManager = placeManager;
         this.socialPaged = socialPaged;
     }
 
     public SimpleSocialTimelineWidgetModel( SocialUser socialUser,
-                                            String title,
                                             SocialPredicate<SocialActivitiesEvent> predicate,
                                             PlaceManager placeManager,
                                             SocialPaged socialPaged ) {
         this.socialUser = socialUser;
-        this.title = title;
         this.predicate = predicate;
         this.placeManager = placeManager;
         this.socialPaged = socialPaged;
@@ -47,6 +46,12 @@ public class SimpleSocialTimelineWidgetModel {
                                                            NavLink more ) {
         this.less = less;
         this.more = more;
+        return this;
+    }
+
+
+    public SimpleSocialTimelineWidgetModel withIcons(List<ClientResourceType> resourceTypes ) {
+        this.resourceTypes = resourceTypes;
         return this;
     }
 
@@ -61,10 +66,6 @@ public class SimpleSocialTimelineWidgetModel {
 
     public SocialUser getSocialUser() {
         return socialUser;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public SocialPredicate<SocialActivitiesEvent> getPredicate() {
@@ -93,5 +94,9 @@ public class SimpleSocialTimelineWidgetModel {
 
     public void updateSocialPaged( SocialPaged socialPaged ) {
         this.socialPaged = socialPaged;
+    }
+
+    public List<ClientResourceType> getResourceTypes() {
+        return resourceTypes;
     }
 }

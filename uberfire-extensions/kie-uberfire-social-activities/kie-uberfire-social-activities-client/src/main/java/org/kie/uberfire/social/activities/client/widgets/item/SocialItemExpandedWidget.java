@@ -48,13 +48,15 @@ public class SocialItemExpandedWidget {
     }
 
     private static Column createIcon( final SocialItemExpandedWidgetModel model ) {
-        final Column column = new Column( 2 );
+        final Column column = new Column( 1 );
 
         MessageBuilder.createCall( new RemoteCallback<Path>() {
             public void callback( Path path ) {
                 for ( ClientResourceType type : model.getModel().getResourceTypes() ) {
                     if ( type.accept( path ) ) {
-                        column.add( type.getIcon() );
+                        com.google.gwt.user.client.ui.Image maybeAlreadyAttachedImage = ( com.google.gwt.user.client.ui.Image ) type.getIcon();
+                        Image newImage = new Image( maybeAlreadyAttachedImage.getUrl(),maybeAlreadyAttachedImage.getOriginLeft(), maybeAlreadyAttachedImage.getOriginTop(),maybeAlreadyAttachedImage.getWidth(),maybeAlreadyAttachedImage.getHeight() );
+                        column.add( newImage);
                         break;
                     }
                 }
@@ -65,7 +67,7 @@ public class SocialItemExpandedWidget {
 
     private static Column createLink( final SocialItemExpandedWidgetModel model ) {
         final UpdateItem updateItem = model.getUpdateItems().get( 0 );
-        Column column = new Column( 10 );
+        Column column = new Column( 11 );
         SimplePanel panel = new SimplePanel();
         NavList list = new NavList();
         NavLink link = new NavLink();
@@ -103,6 +105,10 @@ public class SocialItemExpandedWidget {
         comment.append( event.getAdicionalInfos() );
         comment.append( " " );
         comment.append( FORMATTER.format( event.getTimestamp() ) );
+        comment.append( " " );
+        if ( !event.getDescription().isEmpty() ) {
+            comment.append( "\"" + event.getDescription() + "\"" );
+        }
         column.add( new Paragraph( comment.toString() ) );
         return column;
     }
@@ -121,8 +127,7 @@ public class SocialItemExpandedWidget {
         Column column = new Column( 1 );
         Thumbnails tumThumbnails = new Thumbnails();
         Thumbnail t = new Thumbnail();
-        Image userImage;
-        userImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
+        Image userImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
         t.add( userImage );
         tumThumbnails.add( t );
         column.add( tumThumbnails );

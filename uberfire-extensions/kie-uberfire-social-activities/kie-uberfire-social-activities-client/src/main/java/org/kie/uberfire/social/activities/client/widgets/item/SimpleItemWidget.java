@@ -17,12 +17,17 @@ import org.kie.uberfire.social.activities.client.widgets.item.model.SimpleItemWi
 import org.kie.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class SimpleItemWidget {
 
     public static FluidRow createRow( SimpleItemWidgetModel model ) {
         FluidRow row = GWT.create( FluidRow.class );
-        row.add( createThumbNail( model.getSocialUser() ) );
+        if ( !model.shouldIPrintIcon() ) {
+            row.add( createThumbNail( model.getSocialUser() ) );
+        } else {
+            row.add( createIcon( model ) );
+        }
 
         if ( model.getLinkText() != null ) {
             row.add( createLink( model ) );
@@ -43,10 +48,22 @@ public class SimpleItemWidget {
         return column;
     }
 
+    private static Column createIcon( final SimpleItemWidgetModel model ) {
+        final Column column = new Column( 2 );
+        for ( ClientResourceType type : model.getResourceTypes() ) {
+            if ( type.accept( model.getLinkPath() ) ) {
+                com.google.gwt.user.client.ui.Image maybeAlreadyAttachedImage = ( com.google.gwt.user.client.ui.Image ) type.getIcon();
+                Image newImage = new Image( maybeAlreadyAttachedImage.getUrl(),maybeAlreadyAttachedImage.getOriginLeft(), maybeAlreadyAttachedImage.getOriginTop(),maybeAlreadyAttachedImage.getWidth(),maybeAlreadyAttachedImage.getHeight() );
+                column.add( newImage );
+                break;
+            }
+        }
+        return column;
+    }
+
     private static Column createLink( final SimpleItemWidgetModel model ) {
         Column column = new Column( 4 );
         SimplePanel panel = new SimplePanel();
-        ;
 
         NavList list = new NavList();
         NavLink link = new NavLink();
