@@ -15,6 +15,7 @@ import org.uberfire.wbtest.client.perspective.ListPerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.SimplePerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.StaticPerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity;
+import org.uberfire.wbtest.client.resize.ResizeTestScreenActivity;
 
 
 public class WorkbenchResizeTest extends AbstractSeleniumTest {
@@ -26,16 +27,14 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
 
     @Test
     public void testDefaultPerspectiveSize() throws Exception {
-        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "simplePerspectiveDefault" );
+        driver.get( baseUrl + "#" + ResizeTestScreenActivity.class.getName() + "?debugId=addedInDefaultPerspective" );
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "addedInDefaultPerspective" );
         assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getReportedSize() );
         assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getActualSize() );
     }
 
     @Test
     public void testSimplePerspectiveSize() throws Exception {
-        // the default perspective is SimplePerspectiveActivity, so we switch away and switch back
-        driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
-
         driver.get( baseUrl + "#" + SimplePerspectiveActivity.class.getName() );
 
         ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "simplePerspectiveDefault" );
@@ -83,8 +82,8 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
     public void ensureEmptyFooterIsNotAttachedToPage() throws Exception {
         driver.get( baseUrl + "?" + HeaderFooterActivator.DISABLE_PARAM + "=true" );
 
-        // this forces a delay until the new perspective is rendered
-        new ResizeWidgetWrapper( driver, "simplePerspectiveDefault" );
+        // the above is a full refresh of the app, so we have to wait for the bootstrap to finish
+        waitForDefaultPerspective();
 
         // since we aren't expecting to find anything and the above line has already proven we're on the right page,
         // a short timeout is safe here.
@@ -98,8 +97,8 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
     public void ensureEmptyHeaderIsNotAttachedToPage() throws Exception {
         driver.get( baseUrl + "?" + HeaderFooterActivator.DISABLE_PARAM + "=true" );
 
-        // this forces a delay until the new perspective is rendered
-        new ResizeWidgetWrapper( driver, "implePerspectiveDefault" );
+        // the above is a full refresh of the app, so we have to wait for the bootstrap to finish
+        waitForDefaultPerspective();
 
         // since we aren't expecting to find anything and the above line has already proven we're on the right page,
         // a short timeout is safe here.

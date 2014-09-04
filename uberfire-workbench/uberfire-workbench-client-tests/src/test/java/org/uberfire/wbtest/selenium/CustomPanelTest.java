@@ -15,7 +15,6 @@ public class CustomPanelTest extends AbstractSeleniumTest {
 
     @Before
     public void setupScreenObject() {
-        driver.get( baseUrl );
         driver.get( baseUrl + "#" + CustomPanelMakerScreen.class.getName() );
         screen = new CustomPanelScreenWrapper( driver );
     }

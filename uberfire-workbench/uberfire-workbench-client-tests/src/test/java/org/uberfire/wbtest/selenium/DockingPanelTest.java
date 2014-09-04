@@ -37,7 +37,6 @@ public class DockingPanelTest extends AbstractSeleniumTest {
 
     @Before
     public void goToDockingPerspective() {
-        driver.get( baseUrl );
         driver.get( baseUrl + "#" + NestedDockingPanelPerspective.class.getName() );
     }
 
