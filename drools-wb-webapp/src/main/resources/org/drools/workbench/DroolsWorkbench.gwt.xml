@@ -10,6 +10,7 @@
   <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
 
   <!-- Guvnor dependencies -->
+  <inherits name='org.guvnor.asset.management.GuvnorAssetMgmtClient'/>
   <inherits name='org.guvnor.structure.GuvnorStructureClient'/>
   <inherits name="org.guvnor.inbox.GuvnorInboxClient"/>
   <inherits name="org.guvnor.m2repo.GuvnorM2RepoEditorClient"/>

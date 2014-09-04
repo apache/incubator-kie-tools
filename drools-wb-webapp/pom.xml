@@ -92,6 +92,14 @@
     <!-- Guvnor -->
     <dependency>
       <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-asset-mgmt-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-asset-mgmt-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-backend</artifactId>
     </dependency>
 
@@ -594,7 +602,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-
+    
   </dependencies>
 
   <build>
@@ -623,6 +631,8 @@
           <compileSourcesArtifacts>
 
             <!-- Guvnor -->
+            <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.guvnor:guvnor-asset-mgmt-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-structure-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-structure-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-inbox-api</compileSourcesArtifact>

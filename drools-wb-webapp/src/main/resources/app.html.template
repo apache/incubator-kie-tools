@@ -7,7 +7,9 @@
     <title>Drools Workbench</title>
     <link rel="shortcut icon" href="images/drools.gif" type="image/gif"/>
     <link rel="icon" href="images/drools.gif" type="image/gif"/>
-
+    <script src="js/ZeroClipboard.min.js"></script>
+    <script src="js/ZeroClipboardLoader.js"></script>
+    <script src="js/uri.min.js"></script>
 </head>
 <body>
 <iframe id="__gwt_historyFrame" style="width: 0; height: 0; border: 0"></iframe>
