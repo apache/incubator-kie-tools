@@ -86,6 +86,10 @@ public class GuidedScoreCardEditor extends Composite {
     private TextBox tbInitialScore;
     private Grid scorecardPropertiesGrid;
 
+    private TextBox tbRuleFlowGroup;
+    private TextBox tbAgendaGroup;
+    private Grid ruleAttributesGrid;
+
     private ListBox dropDownFields = new ListBox();
     private ListBox dropDownFacts = new ListBox();
 
@@ -111,6 +115,11 @@ public class GuidedScoreCardEditor extends Composite {
         configPanel.setOpen( true );
         configPanel.add( getScorecardProperties() );
 
+        final DecoratedDisclosurePanel ruleAttributesPanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.ruleAttributes() );
+        ruleAttributesPanel.setWidth( "95%" );
+        ruleAttributesPanel.setOpen( false );
+        ruleAttributesPanel.add( getRuleAttributesPanel() );
+
         final DecoratedDisclosurePanel characteristicsPanel = new DecoratedDisclosurePanel( GuidedScoreCardConstants.INSTANCE.characteristics() );
         characteristicsPanel.setOpen( model.getCharacteristics().size() > 0 );
         characteristicsPanel.setWidth( "95%" );
@@ -118,6 +127,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         final VerticalPanel config = new VerticalPanel();
         config.setWidth( "100%" );
+        config.add( ruleAttributesPanel );
         config.add( configPanel );
         config.add( characteristicsPanel );
 
@@ -185,6 +195,9 @@ public class GuidedScoreCardEditor extends Composite {
 
             model.getCharacteristics().add( characteristic );
         }
+
+        model.setAgendaGroup(tbAgendaGroup.getValue());
+        model.setRuleFlowGroup(tbRuleFlowGroup.getValue());
 
         return model;
     }
@@ -270,6 +283,31 @@ public class GuidedScoreCardEditor extends Composite {
         scoreCardPropertyFactChanged( dropDownFacts,
                                       dropDownFields );
 
+    }
+
+    private Widget getRuleAttributesPanel() {
+        ruleAttributesGrid = new Grid( 2, 4 );
+        ruleAttributesGrid.setCellSpacing( 5 );
+        ruleAttributesGrid.setCellPadding( 5 );
+        ruleAttributesGrid.setText(0, 0, GuidedScoreCardConstants.INSTANCE.ruleFlowGroup());
+        ruleAttributesGrid.setText(0, 1, GuidedScoreCardConstants.INSTANCE.agendaGroup());
+
+        final String ruleFlowGroup = model.getRuleFlowGroup();
+        final String agendaGroup = model.getAgendaGroup();
+
+        tbRuleFlowGroup = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
+        if ( !( ruleFlowGroup == null || ruleFlowGroup.isEmpty() ) ) {
+            tbRuleFlowGroup.setText( ruleFlowGroup );
+        }
+        tbAgendaGroup = TextBoxFactory.getTextBox( DataType.TYPE_STRING );
+        if ( !( agendaGroup == null || agendaGroup.isEmpty() ) ) {
+            tbAgendaGroup.setText( agendaGroup );
+        }
+
+        ruleAttributesGrid.setWidget( 1, 0, tbRuleFlowGroup );
+        ruleAttributesGrid.setWidget( 1, 1, tbAgendaGroup );
+
+        return ruleAttributesGrid;
     }
 
     private Widget getScorecardProperties() {

@@ -89,4 +89,10 @@ public interface GuidedScoreCardConstants
     public String ScoreCardEditorTitle();
 
     String guidedScoreCardResourceTypeDescription();
+
+    public String ruleAttributes();
+
+    public String agendaGroup();
+
+    public String ruleFlowGroup();
 }
