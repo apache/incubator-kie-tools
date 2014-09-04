@@ -27,8 +27,14 @@ import javax.inject.Named;
 
 import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.guided.dtree.backend.GuidedDTreeXMLPersistence;
+import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeXMLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ConstraintNodeImpl;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
+import org.drools.workbench.models.guided.dtree.shared.model.values.impl.IntegerValue;
+import org.drools.workbench.models.guided.dtree.shared.model.values.impl.StringValue;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
@@ -122,7 +128,7 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             }
 
             ioService.write( nioPath,
-                             GuidedDTreeXMLPersistence.getInstance().marshal( content ),
+                             GuidedDecisionTreeXMLPersistence.getInstance().marshal( content ),
                              makeCommentedOption( comment ) );
 
             return newPath;
@@ -137,7 +143,22 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
-            return GuidedDTreeXMLPersistence.getInstance().unmarshal( content );
+            //Mock code testing marshalling
+            final GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( content );
+            final TypeNode type = new TypeNodeImpl( "Person" );
+            final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+                                                              "==",
+                                                              new StringValue( "Michael" ) );
+            final ConstraintNode c2 = new ConstraintNodeImpl( "age",
+                                                              "==",
+                                                              new IntegerValue( 41 ) );
+            model.setRoot( type );
+            type.getChildren().add( c1 );
+            type.getChildren().add( c2 );
+
+            return model;
+
+//            return GuidedDTreeXMLPersistence.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -203,7 +224,7 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             model.setPackageName( packageName );
 
             ioService.write( Paths.convert( resource ),
-                             GuidedDTreeXMLPersistence.getInstance().marshal( model ),
+                             GuidedDecisionTreeXMLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
@@ -273,7 +294,7 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
         try {
             return genericValidator.validate( path,
                                               new ByteArrayInputStream(
-                                                      GuidedDTreeXMLPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
+                                                      GuidedDecisionTreeXMLPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
                                               ),
                                               FILTER_JAVA,
                                               FILTER_DRL,

@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.guided.dtree.backend.GuidedDTreeXMLPersistence;
+import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeXMLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.CopyHelper;
@@ -62,7 +62,7 @@ public class GuidedDecisionTreeEditorCopyHelper implements CopyHelper {
         //Load existing file
         final org.uberfire.java.nio.file.Path _destination = Paths.convert( destination );
         final String content = ioService.readAllString( Paths.convert( destination ) );
-        final GuidedDecisionTree model = GuidedDTreeXMLPersistence.getInstance().unmarshal( content );
+        final GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( content );
 
         //Update tree name
         final String treeName = FileNameUtil.removeExtension( destination,
@@ -71,7 +71,7 @@ public class GuidedDecisionTreeEditorCopyHelper implements CopyHelper {
 
         //Save file
         ioService.write( _destination,
-                         GuidedDTreeXMLPersistence.getInstance().marshal( model ),
+                         GuidedDecisionTreeXMLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." ) );
     }
 

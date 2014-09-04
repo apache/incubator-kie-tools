@@ -19,7 +19,7 @@ package org.drools.workbench.screens.guided.dtree.backend.server;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.guided.dtree.backend.GuidedDTreeDRLPersistence;
+import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
@@ -45,7 +45,7 @@ public class GuidedDecisionTreeSourceService
     @Override
     public String getSource( final Path path,
                              final GuidedDecisionTree model ) {
-        return new StringBuilder().append( GuidedDTreeDRLPersistence.getInstance().marshal( model ) ).toString();
+        return new StringBuilder().append( GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ) ).toString();
     }
 
     @Override

@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.guided.dtree.backend.GuidedDTreeXMLPersistence;
+import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeXMLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
@@ -62,7 +62,7 @@ public class GuidedDecisionTreeFileIndexer implements Indexer {
 
         try {
             final String content = ioService.readAllString( path );
-            final GuidedDecisionTree model = GuidedDTreeXMLPersistence.getInstance().unmarshal( content );
+            final GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( content );
 
             final Project project = projectService.resolveProject( Paths.convert( path ) );
             final Package pkg = projectService.resolvePackage( Paths.convert( path ) );

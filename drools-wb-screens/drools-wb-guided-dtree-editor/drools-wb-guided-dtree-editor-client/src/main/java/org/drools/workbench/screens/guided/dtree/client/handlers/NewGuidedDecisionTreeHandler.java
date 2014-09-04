@@ -69,6 +69,7 @@ public class NewGuidedDecisionTreeHandler extends DefaultNewResourceHandler {
                         final String baseFileName,
                         final NewResourcePresenter presenter ) {
         final GuidedDecisionTree model = new GuidedDecisionTree();
+        model.setTreeName( baseFileName );
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         service.call( getSuccessCallback( presenter ),
                       new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( pkg.getPackageMainResourcesPath(),

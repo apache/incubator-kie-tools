@@ -20,6 +20,6 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:tree="urn:import:org.drools.workbench.screens.guided.dtree.client.widget">
 
-  <tree:DecisionTreeWidget text="The widget lives!"/>
+  <g:SimplePanel ui:field="container"/>
 
 </ui:UiBinder>
