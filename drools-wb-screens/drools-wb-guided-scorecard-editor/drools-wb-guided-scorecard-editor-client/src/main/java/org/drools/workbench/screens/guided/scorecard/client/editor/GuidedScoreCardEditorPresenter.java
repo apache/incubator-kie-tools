@@ -194,7 +194,7 @@ public class GuidedScoreCardEditorPresenter
                 updateSource( source );
             }
         } ).toSource( versionRecordManager.getCurrentPath(),
-                      model );
+                      view.getModel() );
     }
 
     @WorkbenchPartView
