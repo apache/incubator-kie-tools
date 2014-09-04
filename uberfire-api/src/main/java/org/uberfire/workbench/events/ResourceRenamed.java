@@ -10,17 +10,25 @@ public class ResourceRenamed implements UberFireEvent,
                                         ResourceChange {
 
     private Path destinationPath;
+    private String message;
 
     public ResourceRenamed() {
     }
 
-    public ResourceRenamed( final Path destinationPath ) {
+    public ResourceRenamed( final Path destinationPath,
+                            final String message ) {
         this.destinationPath = checkNotNull( "destinationPath", destinationPath );
+        this.message = message;
     }
 
     @Override
     public ResourceChangeType getType() {
         return ResourceChangeType.RENAME;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 
     public Path getDestinationPath() {

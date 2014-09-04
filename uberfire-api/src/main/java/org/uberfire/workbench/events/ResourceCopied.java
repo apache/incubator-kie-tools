@@ -10,18 +10,25 @@ public class ResourceCopied implements UberFireEvent,
                                        ResourceChange {
 
     private Path destinationPath;
+    private String message;
 
     public ResourceCopied() {
-        //Empty constructor for Errai marshalling
     }
 
-    public ResourceCopied( final Path destinationPath ) {
+    public ResourceCopied( final Path destinationPath,
+                           final String message ) {
         this.destinationPath = checkNotNull( "destinationPath", destinationPath );
+        this.message = message;
     }
 
     @Override
     public ResourceChangeType getType() {
         return ResourceChangeType.COPY;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 
     public Path getDestinationPath() {

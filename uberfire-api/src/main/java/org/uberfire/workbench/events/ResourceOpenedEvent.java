@@ -16,7 +16,6 @@ public class ResourceOpenedEvent implements UberFireEvent {
     private SessionInfo sessionInfo;
 
     public ResourceOpenedEvent() {
-        //Empty constructor for Errai marshalling
     }
 
     public ResourceOpenedEvent( final Path path,

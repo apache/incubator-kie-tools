@@ -359,6 +359,31 @@ public final class JGitUtil {
         }
     }
 
+    public static List<RevCommit> getCommits( final JGitFileSystem fs,
+                                              final String branch,
+                                              final ObjectId startRange,
+                                              final ObjectId endRange ) {
+        final List<RevCommit> list = new ArrayList<RevCommit>();
+        RevWalk rw = null;
+        try {
+            // resolve branch
+            rw = new RevWalk( fs.gitRepo().getRepository() );
+            rw.markStart( rw.parseCommit( endRange ) );
+            if ( startRange != null ) {
+                rw.markUninteresting( rw.parseCommit( startRange ) );
+            }
+            for ( RevCommit rev : rw ) {
+                list.add( rev );
+            }
+        } catch ( final Exception ignored ) {
+        } finally {
+            if ( rw != null ) {
+                rw.dispose();
+            }
+        }
+        return list;
+    }
+
     public static void commit( final Git git,
                                final String branchName,
                                final String name,
@@ -1055,6 +1080,25 @@ public final class JGitUtil {
         checkNotEmpty( "branchName", branchName );
 
         return getBranch( git, branchName ) != null;
+    }
+
+    public static RevCommit getLastCommit( final Git git,
+                                           final String branchName ) {
+
+        RevWalk walk = null;
+        RevCommit lastCommit = null;
+        try {
+            walk = new RevWalk( git.getRepository() );
+            final RevCommit head = walk.parseCommit( git.getRepository().resolve( branchName ) );
+            walk.markStart( head );
+            lastCommit = walk.next();
+        } catch ( final Exception ignored ) {
+        } finally {
+            if ( walk != null ) {
+                walk.dispose();
+            }
+        }
+        return lastCommit;
     }
 
     public static enum PathType {

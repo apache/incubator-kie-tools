@@ -33,7 +33,7 @@ public class BeforeClosePlaceEvent implements UberFireEvent {
      * Applications should not fire this event, so there is no reason to create instances of this class!
      * <p>
      * This constructor will be removed in UberFire 0.6.
-     * 
+     *
      * @deprecated Prior to UberFire 0.5, it was possible for an application to close a place by firing this event. This
      *             no longer works. Instead, use one of the PlaceManager.closeXXX methods.
      */
@@ -46,7 +46,7 @@ public class BeforeClosePlaceEvent implements UberFireEvent {
      * Applications should not fire this event, so there is no reason to create instances of this class!
      * <p>
      * This constructor will be removed in UberFire 0.6.
-     * 
+     *
      * @deprecated Prior to UberFire 0.5, it was possible for an application to close a place by firing this event. This
      *             no longer works. Instead, use one of the PlaceManager.closeXXX methods.
      */
@@ -58,7 +58,7 @@ public class BeforeClosePlaceEvent implements UberFireEvent {
 
     /**
      * Internal workbench API. Don't use! If you want to close a place, use {@link PlaceManager#closePlace(PlaceRequest)}.
-     * 
+     *
      * @param place The place that's about to be closed. Not null.
      * @param force Whether this will be a forced close operation.
      * @param frameworkInternal flag to differentiate from the deprecated/disabled constructors.

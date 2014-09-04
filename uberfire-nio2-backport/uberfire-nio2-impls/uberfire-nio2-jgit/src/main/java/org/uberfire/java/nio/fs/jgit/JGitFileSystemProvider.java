@@ -64,6 +64,7 @@ import org.eclipse.jgit.internal.storage.file.WindowCache;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.WindowCacheConfig;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PostReceiveHook;
@@ -392,7 +393,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                 return new ReceivePack( db ) {{
                     final ClusterService clusterService = clusterMap.get( db );
                     final JGitFileSystem fs = repoIndex.get( db );
-                    final Map<String, ObjectId> oldTreeRefs = new HashMap<String, ObjectId>();
+                    final Map<String, RevCommit> oldTreeRefs = new HashMap<String, RevCommit>();
 
                     setPreReceiveHook( new PreReceiveHook() {
                         @Override
@@ -401,8 +402,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                             if ( clusterService != null ) {
                                 clusterService.lock();
                             }
+
                             for ( final ReceiveCommand command : commands ) {
-                                oldTreeRefs.put( command.getRefName(), JGitUtil.getTreeRefObjectId( db, command.getRefName() ) );
+                                final RevCommit lastCommit = JGitUtil.getLastCommit( fs.gitRepo(), command.getRefName() );
+                                oldTreeRefs.put( command.getRefName(), lastCommit );
                             }
                         }
                     } );
@@ -412,8 +415,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                         public void onPostReceive( final ReceivePack rp,
                                                    final Collection<ReceiveCommand> commands ) {
                             final String userName = req.getUser().getName();
-                            for ( Map.Entry<String, ObjectId> oldTreeRef : oldTreeRefs.entrySet() ) {
-                                notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", userName, oldTreeRef.getValue(), JGitUtil.getTreeRefObjectId( db, oldTreeRef.getKey() ) );
+                            for ( Map.Entry<String, RevCommit> oldTreeRef : oldTreeRefs.entrySet() ) {
+                                final List<RevCommit> commits = JGitUtil.getCommits( fs, oldTreeRef.getKey(), oldTreeRef.getValue(), JGitUtil.getLastCommit( fs.gitRepo(), oldTreeRef.getKey() ) );
+                                for ( final RevCommit revCommit : commits ) {
+                                    notifyDiffs( fs, oldTreeRef.getKey(), "<ssh>", userName, revCommit.getFullMessage(), revCommit.getParent( 0 ).getTree(), revCommit.getTree() );
+                                }
                             }
 
                             if ( clusterService != null ) {
@@ -632,7 +638,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                 final Map<String, String> params = getQueryParams( uri );
                 syncRepository( fileSystem.gitRepo(), fileSystem.getCredential(), params.get( "sync" ), hasForceFlag( uri ) );
                 final ObjectId newHead = JGitUtil.getTreeRefObjectId( fileSystem.gitRepo().getRepository(), treeRef );
-                notifyDiffs( fileSystem, treeRef, "<system>", "<system>", oldHead, newHead );
+                notifyDiffs( fileSystem, treeRef, "<system>", "<system>", "", oldHead, newHead );
             } catch ( final Exception ex ) {
                 throw new IOException( ex );
             }
@@ -1705,31 +1711,19 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
     private boolean hasSyncFlag( final URI uri ) {
         checkNotNull( "uri", uri );
 
-        if ( uri.getQuery() != null ) {
-            return uri.getQuery().contains( "sync" );
-        }
-
-        return false;
+        return uri.getQuery() != null && uri.getQuery().contains( "sync" );
     }
 
     private boolean hasForceFlag( URI uri ) {
         checkNotNull( "uri", uri );
 
-        if ( uri.getQuery() != null ) {
-            return uri.getQuery().contains( "force" );
-        }
-
-        return false;
+        return uri.getQuery() != null && uri.getQuery().contains( "force" );
     }
 
     private boolean hasPushFlag( final URI uri ) {
         checkNotNull( "uri", uri );
 
-        if ( uri.getQuery() != null ) {
-            return uri.getQuery().contains( "push" );
-        }
-
-        return false;
+        return uri.getQuery() != null && uri.getQuery().contains( "push" );
     }
 
     //by spec, it should be a list of pairs, but here we're just uisng a map.
@@ -1837,7 +1831,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         if ( !batchState ) {
             final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
-            notifyDiffs( path.getFileSystem(), branchName, commitInfo.getSessionId(), commitInfo.getName(), oldHead, newHead );
+            notifyDiffs( path.getFileSystem(), branchName, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage(), oldHead, newHead );
         } else if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ||
                 !oldHeadsOfPendingDiffs.get( path.getFileSystem() ).containsKey( branchName ) ) {
 
@@ -1846,9 +1840,9 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
             }
 
             if ( fileSystem.getBatchCommitInfo() != null ) {
-                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, fileSystem.getBatchCommitInfo().getSessionId(), fileSystem.getBatchCommitInfo().getName() ) );
+                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, fileSystem.getBatchCommitInfo().getSessionId(), fileSystem.getBatchCommitInfo().getName(), fileSystem.getBatchCommitInfo().getMessage() ) );
             } else {
-                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName() ) );
+                oldHeadsOfPendingDiffs.get( path.getFileSystem() ).put( branchName, new NotificationModel( oldHead, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage() ) );
             }
         }
 
@@ -1865,6 +1859,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                              branchNameNotificationModelEntry.getKey(),
                              branchNameNotificationModelEntry.getValue().getSessionId(),
                              branchNameNotificationModelEntry.getValue().getUserName(),
+                             branchNameNotificationModelEntry.getValue().getMessage(),
                              branchNameNotificationModelEntry.getValue().getOriginalHead(),
                              newHead );
             }
@@ -1876,6 +1871,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                               final String _tree,
                               final String sessionId,
                               final String userName,
+                              final String message,
                               final ObjectId oldHead,
                               final ObjectId newHead ) {
 
@@ -1951,6 +1947,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                         }
 
                         @Override
+                        public String getMessage() {
+                            return message;
+                        }
+
+                        @Override
                         public String getUser() {
                             return userName;
                         }
@@ -1964,6 +1965,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                             ", oldPath=" + oldPath +
                             ", sessionId='" + sessionId + '\'' +
                             ", userName='" + userName + '\'' +
+                            ", message='" + message + '\'' +
                             ", changeType=" + diffEntry.getChangeType() +
                             '}';
                 }

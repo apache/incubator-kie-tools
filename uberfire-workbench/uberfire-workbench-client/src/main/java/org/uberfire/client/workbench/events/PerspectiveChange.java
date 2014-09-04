@@ -5,9 +5,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 
 /**
- * CDI event fired by the framework just after the
- * @author jfuerth
- *
+ * CDI event fired by the framework just after the current perspective has changed.
  */
 public class PerspectiveChange implements UberFireEvent {
 

@@ -1,10 +1,10 @@
 package org.uberfire.workbench.events;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been added
@@ -16,11 +16,12 @@ public class ResourceAddedEvent extends ResourceAdded implements ResourceEvent {
     private SessionInfo sessionInfo;
 
     public ResourceAddedEvent() {
-        //Empty constructor for Errai marshalling
     }
 
     public ResourceAddedEvent( final Path path,
+                               final String message,
                                final SessionInfo sessionInfo ) {
+        super( message );
         this.path = checkNotNull( "path", path );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
@@ -36,7 +37,10 @@ public class ResourceAddedEvent extends ResourceAdded implements ResourceEvent {
 
     @Override
     public String toString() {
-      return "ResourceAddedEvent [path=" + path + ", sessionInfo=" + sessionInfo + "]";
+        return "ResourceAddedEvent{" +
+                "path=" + path +
+                ", message=" + getMessage() +
+                ", sessionInfo=" + sessionInfo +
+                '}';
     }
-
 }

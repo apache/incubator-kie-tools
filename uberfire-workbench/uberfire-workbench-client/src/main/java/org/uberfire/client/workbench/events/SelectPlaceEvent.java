@@ -35,7 +35,7 @@ public class SelectPlaceEvent implements UberFireEvent {
 
     @Override
     public String toString() {
-      return "SelectPlaceEvent [place=" + place + "]";
+        return "SelectPlaceEvent [place=" + place + "]";
     }
 
 }

@@ -1,10 +1,10 @@
 package org.uberfire.workbench.events;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been renamed
@@ -21,8 +21,9 @@ public class ResourceRenamedEvent extends ResourceRenamed implements ResourceEve
 
     public ResourceRenamedEvent( final Path sourcePath,
                                  final Path destinationPath,
+                                 final String message,
                                  final SessionInfo sessionInfo ) {
-        super( destinationPath );
+        super( destinationPath, message );
         this.sourcePath = checkNotNull( "sourcePath", sourcePath );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
@@ -38,7 +39,7 @@ public class ResourceRenamedEvent extends ResourceRenamed implements ResourceEve
 
     @Override
     public String toString() {
-      return "ResourceRenamedEvent [sourcePath=" + sourcePath + ", sessionInfo=" + sessionInfo + "]";
+        return "ResourceRenamedEvent [sourcePath=" + sourcePath + ", sessionInfo=" + sessionInfo + "]";
     }
 
 }

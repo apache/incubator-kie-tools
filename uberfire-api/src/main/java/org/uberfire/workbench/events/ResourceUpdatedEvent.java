@@ -1,10 +1,10 @@
 package org.uberfire.workbench.events;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been updated
@@ -20,7 +20,9 @@ public class ResourceUpdatedEvent extends ResourceUpdated implements ResourceEve
     }
 
     public ResourceUpdatedEvent( final Path path,
+                                 final String message,
                                  final SessionInfo sessionInfo ) {
+        super( message );
         this.path = checkNotNull( "path", path );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
@@ -36,7 +38,7 @@ public class ResourceUpdatedEvent extends ResourceUpdated implements ResourceEve
 
     @Override
     public String toString() {
-      return "ResourceUpdatedEvent [path=" + path + ", sessionInfo=" + sessionInfo + "]";
+        return "ResourceUpdatedEvent [path=" + path + ", sessionInfo=" + sessionInfo + "]";
     }
 
 }

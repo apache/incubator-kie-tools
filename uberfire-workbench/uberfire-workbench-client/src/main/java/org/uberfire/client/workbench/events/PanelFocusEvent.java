@@ -17,7 +17,7 @@ public class PanelFocusEvent implements UberFireEvent {
 
     @Override
     public String toString() {
-      return "PanelFocusEvent [panel=" + panel + "]";
+        return "PanelFocusEvent [panel=" + panel + "]";
     }
 
 }

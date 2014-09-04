@@ -1,10 +1,10 @@
 package org.uberfire.workbench.events;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been deleted
@@ -16,11 +16,12 @@ public class ResourceDeletedEvent extends ResourceDeleted implements ResourceEve
     private SessionInfo sessionInfo;
 
     public ResourceDeletedEvent() {
-        //Empty constructor for Errai marshalling
     }
 
     public ResourceDeletedEvent( final Path path,
+                                 final String message,
                                  final SessionInfo sessionInfo ) {
+        super( message );
         this.path = checkNotNull( "path", path );
         this.sessionInfo = checkNotNull( "executedBy", sessionInfo );
     }
@@ -36,7 +37,10 @@ public class ResourceDeletedEvent extends ResourceDeleted implements ResourceEve
 
     @Override
     public String toString() {
-      return "ResourceDeletedEvent [path=" + path + ", sessionInfo=" + sessionInfo + "]";
+        return "ResourceDeletedEvent{" +
+                "path=" + path +
+                ", message=" + getMessage() +
+                ", sessionInfo=" + sessionInfo +
+                '}';
     }
-
 }

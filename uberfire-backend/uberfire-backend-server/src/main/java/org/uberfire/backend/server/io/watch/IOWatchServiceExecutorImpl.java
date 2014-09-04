@@ -107,7 +107,7 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
                     resourceDeletedEvent.fire( (ResourceDeletedEvent) toEvent( changes.keySet().iterator().next(), _event, firstContext ) );
                 }
             } else if ( changes.size() > 1 ) {
-                resourceBatchChanges.fire( new ResourceBatchChangesEvent( changes, sessionInfo( firstContext ) ) );
+                resourceBatchChanges.fire( new ResourceBatchChangesEvent( changes, message( firstContext ), sessionInfo( firstContext ) ) );
             }
         } else if ( events.size() == 1 ) {
             try {
@@ -129,6 +129,13 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
         }
     }
 
+    private String message( final WatchContext context ) {
+        if ( context == null ) {
+            return null;
+        }
+        return context.getMessage();
+    }
+
     private <T extends ResourceEvent> Pair<Path, T> buildEvent( final Class<T> clazz,
                                                                 final WatchEvent<?> event ) {
         final WatchContext context = (WatchContext) event.context();
@@ -137,16 +144,16 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
         final T result;
         if ( event.kind().equals( StandardWatchEventKind.ENTRY_MODIFY ) ) {
             _affectedPath = convert( context.getOldPath() );
-            result = (T) new ResourceUpdatedEvent( _affectedPath, sessionInfo( context ) );
+            result = (T) new ResourceUpdatedEvent( _affectedPath, context.getMessage(), sessionInfo( context ) );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_CREATE ) ) {
             _affectedPath = convert( context.getPath() );
-            result = (T) new ResourceAddedEvent( _affectedPath, sessionInfo( context ) );
+            result = (T) new ResourceAddedEvent( _affectedPath, context.getMessage(), sessionInfo( context ) );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
             _affectedPath = convert( context.getOldPath() );
-            result = (T) new ResourceRenamedEvent( _affectedPath, convert( context.getPath() ), sessionInfo( context ) );
+            result = (T) new ResourceRenamedEvent( _affectedPath, convert( context.getPath() ), context.getMessage(), sessionInfo( context ) );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
             _affectedPath = convert( context.getOldPath() );
-            result = (T) new ResourceDeletedEvent( _affectedPath, sessionInfo( context ) );
+            result = (T) new ResourceDeletedEvent( _affectedPath, context.getMessage(), sessionInfo( context ) );
         } else {
             _affectedPath = null;
             result = null;
@@ -171,7 +178,7 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
             result = new ResourceAdded();
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_RENAME ) ) {
             _affectedPath = convert( context.getOldPath() );
-            result = new ResourceRenamed( convert( context.getPath() ) );
+            result = new ResourceRenamed( convert( context.getPath() ), context.getMessage() );
         } else if ( event.kind().equals( StandardWatchEventKind.ENTRY_DELETE ) ) {
             _affectedPath = convert( context.getOldPath() );
             result = new ResourceDeleted();
@@ -190,13 +197,13 @@ public class IOWatchServiceExecutorImpl implements IOWatchServiceExecutor {
                                    final ResourceChange change,
                                    final WatchContext context ) {
         if ( change instanceof ResourceUpdated ) {
-            return new ResourceUpdatedEvent( path, sessionInfo( context ) );
+            return new ResourceUpdatedEvent( path, context.getMessage(), sessionInfo( context ) );
         } else if ( change instanceof ResourceAdded ) {
-            return new ResourceAddedEvent( path, sessionInfo( context ) );
+            return new ResourceAddedEvent( path, context.getMessage(), sessionInfo( context ) );
         } else if ( change instanceof ResourceRenamed ) {
-            return new ResourceRenamedEvent( path, ( (ResourceRenamed) change ).getDestinationPath(), sessionInfo( context ) );
+            return new ResourceRenamedEvent( path, ( (ResourceRenamed) change ).getDestinationPath(), context.getMessage(), sessionInfo( context ) );
         } else if ( change instanceof ResourceDeleted ) {
-            return new ResourceDeletedEvent( path, sessionInfo( context ) );
+            return new ResourceDeletedEvent( path, context.getMessage(), sessionInfo( context ) );
         }
         return null;
     }

@@ -1,10 +1,10 @@
 package org.uberfire.workbench.events;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * An Event indicating a Resource has been copied
@@ -16,13 +16,13 @@ public class ResourceCopiedEvent extends ResourceCopied implements ResourceEvent
     private SessionInfo sessionInfo;
 
     public ResourceCopiedEvent() {
-        //Empty constructor for Errai marshalling
     }
 
     public ResourceCopiedEvent( final Path sourcePath,
                                 final Path destinationPath,
+                                final String message,
                                 final SessionInfo sessionInfo ) {
-        super( destinationPath );
+        super( destinationPath, message );
         this.sourcePath = checkNotNull( "sourcePath", sourcePath );
         this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
     }
@@ -38,6 +38,11 @@ public class ResourceCopiedEvent extends ResourceCopied implements ResourceEvent
 
     @Override
     public String toString() {
-      return "ResourceCopiedEvent [sourcePath=" + sourcePath + ", sessionInfo=" + sessionInfo + "]";
+        return "ResourceCopiedEvent{" +
+                "sourcePath=" + sourcePath +
+                ", destinationPath=" + getDestinationPath() +
+                ", message=" + getMessage() +
+                ", sessionInfo=" + sessionInfo +
+                '}';
     }
 }
