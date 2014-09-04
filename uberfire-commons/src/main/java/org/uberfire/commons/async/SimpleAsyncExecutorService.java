@@ -20,6 +20,10 @@ import static javax.ejb.TransactionAttributeType.*;
 @TransactionAttribute(NOT_SUPPORTED)
 public class SimpleAsyncExecutorService {
 
+    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.watcher.quitetimeout", "3"));
+
+    private static Object lock = new Object();
+
     private final ExecutorService executorService;
 
     private static SimpleAsyncExecutorService instance;
@@ -29,39 +33,46 @@ public class SimpleAsyncExecutorService {
 
     private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
 
-    public static synchronized SimpleAsyncExecutorService getDefaultInstance() {
-        if ( instance == null ) {
-            SimpleAsyncExecutorService _executorManager = null;
-            try {
-                _executorManager = InitialContext.doLookup( "java:module/SimpleAsyncExecutorService" );
-            } catch ( final Exception ignored ) {
-            }
+    public static  SimpleAsyncExecutorService getDefaultInstance() {
+        synchronized (lock) {
+            if ( instance == null ) {
 
-            if ( _executorManager == null ) {
-                instance = new SimpleAsyncExecutorService( false );
-            } else {
-                instance = _executorManager;
+                SimpleAsyncExecutorService _executorManager = null;
+                try {
+                    _executorManager = InitialContext.doLookup( "java:module/SimpleAsyncExecutorService" );
+                } catch ( final Exception ignored ) {
+                }
+
+                if ( _executorManager == null ) {
+                    instance = new SimpleAsyncExecutorService( false );
+                } else {
+                    instance = _executorManager;
+                }
             }
         }
 
         return instance;
     }
 
-    public static synchronized SimpleAsyncExecutorService getUnmanagedInstance() {
-        if ( instance != null && instance.executorService != null ) {
-            return instance;
-        } else if ( unmanagedInstance == null ) {
-            unmanagedInstance = new SimpleAsyncExecutorService( false );
-        }
+    public static SimpleAsyncExecutorService getUnmanagedInstance() {
+        synchronized (lock) {
+            if ( instance != null && instance.executorService != null ) {
+                return instance;
+            } else if ( unmanagedInstance == null ) {
+                unmanagedInstance = new SimpleAsyncExecutorService( false );
+            }
         return unmanagedInstance;
+        }
     }
 
-    public static synchronized void shutdownInstances() {
-        if ( unmanagedInstance != null ) {
-            unmanagedInstance.shutdown();
+    public static void shutdownInstances() {
+        synchronized (lock) {
+            if ( unmanagedInstance != null ) {
+                unmanagedInstance.shutdown();
+            }
+            if ( instance != null && instance.executorService != null ) {
+                instance.shutdown();
         }
-        if ( instance != null && instance.executorService != null ) {
-            instance.shutdown();
         }
     }
 
@@ -94,10 +105,10 @@ public class SimpleAsyncExecutorService {
             executorService.shutdown(); // Disable new tasks from being submitted
             try {
                 // Wait a while for existing tasks to terminate
-                if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                if ( !executorService.awaitTermination( AWAIT_TERMINATION_TIMEOUT, TimeUnit.SECONDS ) ) {
                     executorService.shutdownNow(); // Cancel currently executing tasks
                     // Wait a while for tasks to respond to being cancelled
-                    if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                    if ( !executorService.awaitTermination( AWAIT_TERMINATION_TIMEOUT, TimeUnit.SECONDS ) ) {
                         System.err.println( "Pool did not terminate" );
                     }
                 }
