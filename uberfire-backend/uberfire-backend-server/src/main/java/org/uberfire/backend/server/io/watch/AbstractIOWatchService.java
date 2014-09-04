@@ -33,6 +33,7 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 public abstract class AbstractIOWatchService implements IOWatchService,
                                                         Filter<WatchEvent<?>> {
 
+    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.watcher.quitetimeout", "3"));
     private final ExecutorService executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
 
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
@@ -98,10 +99,10 @@ public abstract class AbstractIOWatchService implements IOWatchService,
         executorService.shutdown(); // Disable new tasks from being submitted
         try {
             // Wait a while for existing tasks to terminate
-            if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+            if ( !executorService.awaitTermination( AWAIT_TERMINATION_TIMEOUT, TimeUnit.SECONDS ) ) {
                 executorService.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if ( !executorService.awaitTermination( 60, TimeUnit.SECONDS ) ) {
+                if ( !executorService.awaitTermination( AWAIT_TERMINATION_TIMEOUT, TimeUnit.SECONDS ) ) {
                     System.err.println( "Pool did not terminate" );
                 }
             }
