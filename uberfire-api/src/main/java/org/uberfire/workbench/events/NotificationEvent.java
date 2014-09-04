@@ -18,7 +18,7 @@ package org.uberfire.workbench.events;
 /**
  * An event to show a notification pop-up in the Workbench
  */
-public class NotificationEvent extends UberFireEvent {
+public class NotificationEvent implements UberFireEvent {
 
     public static enum NotificationType {
         DEFAULT, ERROR, SUCCESS, INFO, WARNING
@@ -48,7 +48,7 @@ public class NotificationEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "NotificationEvent [notification=" + notification + ", type=" + type + "]";
+        return "NotificationEvent [notification=" + notification + ", type=" + type + "]";
     }
 
 }

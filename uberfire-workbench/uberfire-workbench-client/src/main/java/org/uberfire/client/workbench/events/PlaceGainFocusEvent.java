@@ -22,7 +22,7 @@ import org.uberfire.workbench.events.UberFireEvent;
  * A CDI event fired by the framework each time a workbench screen or editor is selected within a panel. Application
  * code may observe and react to this event, but must not fire the event.
  */
-public class PlaceGainFocusEvent extends UberFireEvent {
+public class PlaceGainFocusEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 

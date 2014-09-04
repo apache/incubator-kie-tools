@@ -2,7 +2,7 @@ package org.uberfire.client.workbench.events;
 
 import org.uberfire.workbench.events.UberFireEvent;
 
-public class NewPerspectiveEvent extends UberFireEvent {
+public class NewPerspectiveEvent implements UberFireEvent {
 
     private final String perspectiveName;
 
@@ -16,7 +16,7 @@ public class NewPerspectiveEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "NewPerspectiveEvent [perspectiveName=" + perspectiveName + "]";
+        return "NewPerspectiveEvent [perspectiveName=" + perspectiveName + "]";
     }
 
 }

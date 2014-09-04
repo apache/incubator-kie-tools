@@ -21,7 +21,7 @@ import org.uberfire.workbench.events.UberFireEvent;
 /**
  * An event when a WorkbenchPart is dropped as part of a DnD operation
  */
-public class DropPlaceEvent extends UberFireEvent {
+public class DropPlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
@@ -35,7 +35,7 @@ public class DropPlaceEvent extends UberFireEvent {
 
     @Override
     public String toString() {
-      return "DropPlaceEvent [place=" + place + "]";
+        return "DropPlaceEvent [place=" + place + "]";
     }
 
 }

@@ -22,7 +22,7 @@ import org.uberfire.workbench.events.UberFireEvent;
  * Fired by the framework each time a workbench editor or screen which was previously the selected/active part within a
  * panel has been hidden due to a different part in the same panel being selected.
  */
-public class PlaceLostFocusEvent extends UberFireEvent {
+public class PlaceLostFocusEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 

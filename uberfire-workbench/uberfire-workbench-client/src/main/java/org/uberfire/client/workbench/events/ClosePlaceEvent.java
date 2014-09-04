@@ -23,7 +23,7 @@ import org.uberfire.workbench.events.UberFireEvent;
  * removed from the workbench. Observers of this event should clean up any of their own state associated with the given
  * place being live. It is not possible for an observer of this event to cancel the close operation.
  */
-public class ClosePlaceEvent extends UberFireEvent {
+public class ClosePlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
