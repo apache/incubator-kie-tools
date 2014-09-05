@@ -1,6 +1,7 @@
 package org.kie.uberfire.social.activities.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,13 +57,15 @@ public class SocialUserTimelinePagedRepository extends SocialPageRepository impl
         } else {
             readCurrentFile( socialUser, socialPaged, events );
 
-            if ( !foundEnoughtEvents( socialPaged, events ) ) {
-                readMoreFiles( socialPaged, socialUser, events );
-            }
-
         }
-
+        if ( !foundEnoughtEvents( socialPaged, events ) && readSomething( socialPaged ) ) {
+            readMoreFiles( socialPaged, socialUser, events );
+        }
         return socialPaged;
+    }
+
+    private boolean readSomething( SocialPaged socialPaged ) {
+        return socialPaged.lastFileReaded() != null && !socialPaged.lastFileReaded().isEmpty();
     }
 
     private void readMoreFiles( SocialPaged socialPaged,
@@ -119,7 +122,7 @@ public class SocialUserTimelinePagedRepository extends SocialPageRepository impl
                                                SocialPaged socialPaged,
                                                List<SocialActivitiesEvent> events ) {
         List<SocialActivitiesEvent> freshEvents = getSocialTimelinePersistenceAPI().getRecentEvents( socialUser );
-
+        Collections.reverse( freshEvents );
         searchEvents( socialPaged, events, freshEvents );
         return socialPaged;
     }

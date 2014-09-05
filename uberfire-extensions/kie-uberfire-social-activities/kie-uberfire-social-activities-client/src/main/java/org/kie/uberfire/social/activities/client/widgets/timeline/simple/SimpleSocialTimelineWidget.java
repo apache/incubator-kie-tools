@@ -2,7 +2,6 @@ package org.kie.uberfire.social.activities.client.widgets.timeline.simple;
 
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
-import com.github.gwtbootstrap.client.ui.Legend;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,6 +42,9 @@ public class SimpleSocialTimelineWidget extends Composite {
 
     private void refreshTimelineWidget() {
         itemsPanel.clear();
+        createWidgets();
+    }
+    private void createWidgets() {
         pagination.clear();
         if ( model.isSocialTypeWidget() ) {
             createSociaTypelItemsWidget();
@@ -50,6 +52,7 @@ public class SimpleSocialTimelineWidget extends Composite {
             createUserTimelineItemsWidget();
         }
     }
+
 
     private void createUserTimelineItemsWidget() {
         MessageBuilder.createCall( new RemoteCallback<PagedSocialQuery>() {
@@ -143,7 +146,7 @@ public class SimpleSocialTimelineWidget extends Composite {
             @Override
             public void onClick( ClickEvent event ) {
                 model.getSocialPaged().forward();
-                refreshTimelineWidget();
+                createWidgets();
             }
         } );
     }

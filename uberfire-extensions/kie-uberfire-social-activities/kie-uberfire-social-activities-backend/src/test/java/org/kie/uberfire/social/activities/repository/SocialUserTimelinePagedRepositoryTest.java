@@ -193,9 +193,9 @@ public class SocialUserTimelinePagedRepositoryTest {
     }
 
     private void assertFreshEvents( PagedSocialQuery query ) {
-        assertEquals( "0", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
+        assertEquals( "2", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
         assertEquals( "1", query.socialEvents().get( 1 ).getAdditionalInfo()[ 0 ] );
-        assertEquals( "2", query.socialEvents().get( 2 ).getAdditionalInfo()[ 0 ] );
+        assertEquals( "0", query.socialEvents().get( 2 ).getAdditionalInfo()[ 0 ] );
     }
 
     @Test
@@ -205,13 +205,13 @@ public class SocialUserTimelinePagedRepositoryTest {
 
         SocialPaged socialPaged = new SocialPaged( 1 );
         PagedSocialQuery query = repository.getUserTimeline( socialUser, socialPaged );
-        assertEquals( "0", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
+        assertEquals( "2", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
 
         query = repository.getUserTimeline( socialUser, socialPaged );
         assertEquals( "1", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
 
         query = repository.getUserTimeline( socialUser, socialPaged );
-        assertEquals( "2", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
+        assertEquals( "0", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
 
     }
 

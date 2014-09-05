@@ -139,9 +139,9 @@ public class SocialTypeTimelinePagedRepositoryTest {
     }
 
     private void assertFreshEvents( PagedSocialQuery query ) {
-        assertEquals( "0", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
+        assertEquals( "2", query.socialEvents().get( 0 ).getAdditionalInfo()[ 0 ] );
         assertEquals( "1", query.socialEvents().get( 1 ).getAdditionalInfo()[ 0 ] );
-        assertEquals( "2", query.socialEvents().get( 2 ).getAdditionalInfo()[ 0 ] );
+        assertEquals( "0", query.socialEvents().get( 2 ).getAdditionalInfo()[ 0 ] );
     }
 
     private PagedSocialQuery queryAndAssertNumberOfEvents( int numberOfEvents,

@@ -1,6 +1,7 @@
 package org.kie.uberfire.social.activities.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,6 @@ public class SocialTypeTimelinePagedRepository extends SocialPageRepository impl
 
         List<SocialActivitiesEvent> typeEvents = new ArrayList<SocialActivitiesEvent>();
 
-
         if ( socialPaged.isANewQuery() ) {
             socialPaged = searchForRecentEvents( adapter.socialEventType(), socialPaged, typeEvents );
         }
@@ -66,7 +66,6 @@ public class SocialTypeTimelinePagedRepository extends SocialPageRepository impl
         }
 
         typeEvents = filterTimelineWithAdapters( commandsMap, typeEvents );
-
 
         checkIfICanGoForward( socialPaged, typeEvents );
 
@@ -82,14 +81,15 @@ public class SocialTypeTimelinePagedRepository extends SocialPageRepository impl
             readMostRecentFile( type, socialPaged, events );
         } else {
             readCurrentFile( type, socialPaged, events );
-
-            if ( !foundEnoughtEvents( socialPaged, events ) ) {
-                readMoreFiles( socialPaged, type, events );
-            }
-
         }
-
+        if ( !foundEnoughtEvents( socialPaged, events ) && readSomething( socialPaged ) ) {
+            readMoreFiles( socialPaged, type, events );
+        }
         return socialPaged;
+    }
+
+    private boolean readSomething( SocialPaged socialPaged ) {
+        return socialPaged.lastFileReaded() != null && !socialPaged.lastFileReaded().isEmpty();
     }
 
     private void readMoreFiles( SocialPaged socialPaged,
@@ -140,7 +140,7 @@ public class SocialTypeTimelinePagedRepository extends SocialPageRepository impl
                                                SocialPaged socialPaged,
                                                List<SocialActivitiesEvent> events ) {
         List<SocialActivitiesEvent> freshEvents = getSocialTimelinePersistenceAPI().getRecentEvents( type );
-
+        Collections.reverse( freshEvents );
         searchEvents( socialPaged, events, freshEvents );
         return socialPaged;
     }

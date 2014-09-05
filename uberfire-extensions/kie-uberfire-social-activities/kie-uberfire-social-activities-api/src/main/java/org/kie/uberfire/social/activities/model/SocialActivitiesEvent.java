@@ -101,6 +101,7 @@ public class SocialActivitiesEvent implements Serializable {
                 "timestamp=" + timestamp +
                 ", user=" + socialUser.getUserName() +
                 ", type=" + type +
+                ", add=" + getAdicionalInfos() +
                 '}';
     }
 
