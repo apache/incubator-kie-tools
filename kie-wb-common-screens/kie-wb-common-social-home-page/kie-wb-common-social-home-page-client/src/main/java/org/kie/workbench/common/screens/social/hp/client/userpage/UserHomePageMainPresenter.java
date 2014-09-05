@@ -109,7 +109,7 @@ public class UserHomePageMainPresenter {
     private void setupMain( String username ) {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
-                String title = !socialUser.getRealName().isEmpty() ? socialUser.getRealName() : socialUser.getUserName();
+                String title = (socialUser!=null&&socialUser.getRealName()!=null&&!socialUser.getRealName().isEmpty())  ? socialUser.getRealName() : socialUser.getUserName();
                 title += "'s Recent Activities";
                 changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( place, title ) );
                 SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, new SocialPaged( 2 ) ).withIcons( iconLocator.getResourceTypes() );

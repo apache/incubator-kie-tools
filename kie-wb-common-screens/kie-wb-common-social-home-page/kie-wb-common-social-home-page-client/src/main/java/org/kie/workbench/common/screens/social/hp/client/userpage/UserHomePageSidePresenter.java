@@ -157,18 +157,6 @@ public class UserHomePageSidePresenter {
 
     private void setupSearchPeopleMenu( SocialUser socialUser,
                                         List<String> userNames ) {
-        if ( !socialUser.getUserName().equalsIgnoreCase( loggedUser.getName() ) ) {
-            Anchor anchor = GWT.create( Anchor.class );
-            anchor.setText( "My Profile" );
-            anchor.addClickHandler( new ClickHandler() {
-                @Override
-                public void onClick( ClickEvent event ) {
-                    refreshPage( loggedUser.getName() );
-
-                }
-            } );
-            view.setupHomeLink( anchor );
-        }
         view.setupSearchPeopleMenu( userNames, new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
@@ -178,7 +166,7 @@ public class UserHomePageSidePresenter {
     }
 
     private void setupUserMenu( SocialUser userOnPage ) {
-        String userName = userOnPage.getRealName().isEmpty() ? userOnPage.getUserName() : userOnPage.getRealName();
+        String userName = (userOnPage!=null&&userOnPage.getRealName()!=null&&!userOnPage.getRealName().isEmpty()) ? userOnPage.getRealName() : userOnPage.getUserName();
         view.setupUserInfo( userName, setupSideUserInfoPresenter( userOnPage ) );
         String title = userName + "'s Profile";
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( this.place, title ) );
