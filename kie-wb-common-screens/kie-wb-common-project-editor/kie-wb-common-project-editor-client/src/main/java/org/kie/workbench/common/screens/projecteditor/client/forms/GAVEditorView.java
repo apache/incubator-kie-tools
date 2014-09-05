@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface GAVEditorView
         extends IsWidget {
 
+
     interface Presenter {
 
         void onGroupIdChange( String groupId );
@@ -24,4 +25,8 @@ public interface GAVEditorView
     void setReadOnly();
 
     void setVersion( String version );
+
+    void disableGroupID(String reason);
+
+    void disableArtifactID(String reason);
 }

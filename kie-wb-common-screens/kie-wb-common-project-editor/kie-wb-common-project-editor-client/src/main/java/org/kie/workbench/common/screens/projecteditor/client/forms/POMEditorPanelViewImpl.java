@@ -35,7 +35,6 @@ import org.kie.uberfire.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class POMEditorPanelViewImpl
-//        extends ResizeComposite
         extends Composite
         implements POMEditorPanelView {
 
@@ -118,6 +117,16 @@ public class POMEditorPanelViewImpl
     @Override
     public void setReadOnly() {
         gavEditor.setReadOnly();
+    }
+
+    @Override
+    public void disableGroupID(String reason) {
+        gavEditor.disableGroupID(reason);
+    }
+
+    @Override
+    public void disableArtifactID(String reason) {
+        gavEditor.disableArtifactID(reason);
     }
 
     @Override

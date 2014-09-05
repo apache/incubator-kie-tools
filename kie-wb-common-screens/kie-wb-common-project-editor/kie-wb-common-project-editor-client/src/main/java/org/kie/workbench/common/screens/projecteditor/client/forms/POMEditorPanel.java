@@ -108,4 +108,15 @@ public class POMEditorPanel
         return false;
     }
 
+    public void disableGroupID(String reason) {
+        view.disableGroupID(reason);
+    }
+
+    public void disableArtifactID(String reason) {
+        view.disableArtifactID(reason);
+    }
+
+    public POM getPom() {
+        return model;
+    }
 }

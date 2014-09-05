@@ -60,4 +60,9 @@ public interface POMEditorPanelView extends HasBusyIndicator,
     void addVersionChangeHandler( VersionChangeHandler changeHandler );
 
     void setReadOnly();
+
+    void disableGroupID(String reason);
+
+    void disableArtifactID(String reason);
+
 }

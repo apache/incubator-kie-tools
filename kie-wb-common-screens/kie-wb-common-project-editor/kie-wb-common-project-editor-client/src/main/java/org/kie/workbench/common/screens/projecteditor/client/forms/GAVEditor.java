@@ -74,4 +74,12 @@ public class GAVEditor
     public void setReadOnly() {
         view.setReadOnly();
     }
+
+    public void disableGroupID(String reason) {
+        view.disableGroupID(reason);
+    }
+
+    public void disableArtifactID(String reason) {
+        view.disableArtifactID(reason);
+    }
 }

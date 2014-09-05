@@ -15,10 +15,6 @@
  */
 package org.kie.workbench.common.widgets.client.search;
 
-/**
- *
- * @author salaboy
- */
 public class ClearSearchEvent {
     
 }

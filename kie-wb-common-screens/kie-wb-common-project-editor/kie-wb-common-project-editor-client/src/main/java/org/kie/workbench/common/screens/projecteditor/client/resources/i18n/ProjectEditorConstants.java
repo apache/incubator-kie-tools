@@ -258,6 +258,8 @@ public interface ProjectEditorConstants
 
     String ExceptionPackageAlreadyExists0( final String packageName );
 
-   String ProjectStructure();
+    String ProjectStructure();
+
+    String InheritedFromAParentPOM();
 
 }

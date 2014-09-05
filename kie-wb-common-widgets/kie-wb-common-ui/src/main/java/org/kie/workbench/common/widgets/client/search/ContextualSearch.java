@@ -20,9 +20,6 @@ import javax.enterprise.event.Observes;
 
 import org.uberfire.client.workbench.events.PerspectiveChange;
 
-/**
- * @author salaboy
- */
 @ApplicationScoped
 public class ContextualSearch {
 

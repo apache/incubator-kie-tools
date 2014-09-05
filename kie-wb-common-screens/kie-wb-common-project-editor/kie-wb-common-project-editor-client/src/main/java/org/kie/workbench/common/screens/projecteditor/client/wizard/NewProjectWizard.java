@@ -28,7 +28,9 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
-public class NewProjectWizard extends AbstractWizard implements ProjectWizard{
+public class NewProjectWizard
+        extends AbstractWizard
+        implements ProjectWizard{
 
     @Inject
     private PlaceManager placeManager;
@@ -94,10 +96,6 @@ public class NewProjectWizard extends AbstractWizard implements ProjectWizard{
     }
 
     public void setContent( final String projectName ) {
-        //Initially use an empty POM. The real POM is set asynchronously
-        pom = new POM();
-        gavWizardPage.setPom( pom );
-
         // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
         // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
         // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
@@ -110,10 +108,6 @@ public class NewProjectWizard extends AbstractWizard implements ProjectWizard{
     }
     
     public void setContent( final String projectName, final String groupId, final String version ) {
-        //Initially use an empty POM. The real POM is set asynchronously
-        pom = new POM();
-        gavWizardPage.setPom( pom );
-
         // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
         // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
         // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and

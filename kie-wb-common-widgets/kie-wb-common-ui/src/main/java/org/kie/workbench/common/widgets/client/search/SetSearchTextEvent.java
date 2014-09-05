@@ -15,9 +15,6 @@
  */
 package org.kie.workbench.common.widgets.client.search;
 
-/**
- * @author salaboy
- */
 public class SetSearchTextEvent {
 
     private String searchText;
