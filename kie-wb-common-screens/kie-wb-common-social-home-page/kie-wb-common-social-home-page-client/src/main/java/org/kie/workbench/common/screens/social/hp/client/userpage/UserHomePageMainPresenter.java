@@ -6,9 +6,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Image;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
+import com.github.gwtbootstrap.client.ui.NavLink;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -17,7 +15,8 @@ import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.S
 import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
-import org.kie.workbench.common.screens.social.hp.client.UserHomepageSelectedEvent;
+import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserEditedEvent;
+import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.MainPresenter;
 import org.kie.workbench.common.screens.social.hp.client.userpage.main.header.HeaderPresenter;
 import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
@@ -96,6 +95,11 @@ public class UserHomePageMainPresenter {
         setupMain( event.getSocialUserName() );
     }
 
+    public void watchUserHomepageSelectedEvent( @Observes UserEditedEvent event ) {
+        setupHeader( event.getSocialUserName() );
+        setupMain( event.getSocialUserName() );
+    }
+
     private void setupHeader( String username ) {
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
@@ -107,12 +111,13 @@ public class UserHomePageMainPresenter {
 
 
     private void setupMain( String username ) {
+        final SocialPaged socialPaged = new SocialPaged( 5 );
         socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
                 String title = (socialUser!=null&&socialUser.getRealName()!=null&&!socialUser.getRealName().isEmpty())  ? socialUser.getRealName() : socialUser.getUserName();
                 title += "'s Recent Activities";
                 changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( place, title ) );
-                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, new SocialPaged( 2 ) ).withIcons( iconLocator.getResourceTypes() );
+                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, socialPaged ).withIcons( iconLocator.getResourceTypes() ).withOnlyMorePagination( new NavLink( "(more...)" ) );
                 mainPresenter.setup( model );
             }
         } ).findSocialUser( username );

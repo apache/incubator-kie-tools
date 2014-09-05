@@ -1,10 +1,11 @@
-package org.kie.workbench.common.screens.social.hp.client;
+package org.kie.workbench.common.screens.social.hp.client.homepage.events;
 
-public class UserHomepageSelectedEvent {
+public class UserEditedEvent {
 
     private final String socialUserName;
 
-    public UserHomepageSelectedEvent( String socialUserName ) {
+    public UserEditedEvent( String socialUserName ) {
+
         this.socialUserName = socialUserName;
     }
 

@@ -19,7 +19,8 @@ import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
-import org.kie.workbench.common.screens.social.hp.client.UserHomepageSelectedEvent;
+import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserEditedEvent;
+import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.EditUserForm;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.SideUserInfoPresenter;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -63,6 +64,9 @@ public class UserHomePageSidePresenter {
 
     @Inject
     private View view;
+
+    @Inject
+    private Event<UserEditedEvent> userEditedEvent;
 
     @Inject
     private Event<UserHomepageSelectedEvent> selectedEvent;
@@ -236,6 +240,7 @@ public class UserHomePageSidePresenter {
                     public void execute( SocialUser socialUser ) {
                         socialUserService.call().update( socialUser );
                         refreshPage( socialUser.getUserName() );
+                        userEditedEvent.fire(new UserEditedEvent(socialUser.getUserName()));
                     }
                 } );
             }
