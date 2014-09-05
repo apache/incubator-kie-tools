@@ -149,12 +149,21 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             final ConstraintNode c1 = new ConstraintNodeImpl( "name",
                                                               "==",
                                                               new StringValue( "Michael" ) );
-            final ConstraintNode c2 = new ConstraintNodeImpl( "age",
+            final ConstraintNode c2 = new ConstraintNodeImpl( "name",
                                                               "==",
-                                                              new IntegerValue( 41 ) );
+                                                              new StringValue( "Fred" ) );
+            final ConstraintNode c3 = new ConstraintNodeImpl( "age",
+                                                              "==",
+                                                              new IntegerValue( 20 ) );
+            final ConstraintNode c4 = new ConstraintNodeImpl( "age",
+                                                              "==",
+                                                              new IntegerValue( 30 ) );
+
             model.setRoot( type );
             type.getChildren().add( c1 );
             type.getChildren().add( c2 );
+            c1.getChildren().add( c3 );
+            c1.getChildren().add( c4 );
 
             return model;
 

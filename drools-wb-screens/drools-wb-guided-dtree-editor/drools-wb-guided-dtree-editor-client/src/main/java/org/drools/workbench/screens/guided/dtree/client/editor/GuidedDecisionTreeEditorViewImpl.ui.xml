@@ -16,10 +16,8 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:tree="urn:import:org.drools.workbench.screens.guided.dtree.client.widget">
 
-  <g:SimplePanel ui:field="container"/>
+  <tree:DecisionTreeWidget ui:field="decisionTree"/>
 
 </ui:UiBinder>
