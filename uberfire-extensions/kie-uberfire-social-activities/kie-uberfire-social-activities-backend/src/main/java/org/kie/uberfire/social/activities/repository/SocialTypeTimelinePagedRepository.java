@@ -82,14 +82,14 @@ public class SocialTypeTimelinePagedRepository extends SocialPageRepository impl
         } else {
             readCurrentFile( type, socialPaged, events );
         }
-        if ( !foundEnoughtEvents( socialPaged, events ) && readSomething( socialPaged ) ) {
+        if ( !foundEnoughtEvents( socialPaged, events ) && shouldIReadMoreFiles( socialPaged ) ) {
             readMoreFiles( socialPaged, type, events );
         }
         return socialPaged;
     }
 
-    private boolean readSomething( SocialPaged socialPaged ) {
-        return socialPaged.lastFileReaded() != null && !socialPaged.lastFileReaded().isEmpty();
+    private boolean shouldIReadMoreFiles( SocialPaged socialPaged ) {
+        return socialPaged.lastFileReaded() != null && !socialPaged.lastFileReaded().isEmpty() && thereIsMoreFilesToRead( socialPaged.lastFileReaded() );
     }
 
     private void readMoreFiles( SocialPaged socialPaged,
