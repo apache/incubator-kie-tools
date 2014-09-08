@@ -217,11 +217,12 @@ public class HttpAuthenticationManager implements AuthenticationManager {
             storeProvider.cleanup( context );
         }
         final HttpSecurityContext httpContext = checkInstanceOf( "context", context, HttpSecurityContext.class );
-        httpContext.getRequest().getSession().invalidate();
         try {
             httpContext.getRequest().logout();
         } catch ( ServletException e ) {
             e.printStackTrace();
+        } finally {
+            httpContext.getRequest().getSession().invalidate();
         }
     }
 
