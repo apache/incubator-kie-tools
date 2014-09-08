@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -42,6 +43,7 @@ import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.api.errors.MultipleParentsNotAllowedException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheEditor;
@@ -329,6 +331,83 @@ public final class JGitUtil {
                 throw new RuntimeException( ex );
             }
         }
+    }
+
+    public static void cherryPick( final Repository repo,
+                                   final String targetBranch,
+                                   final String... _commits ) {
+        final String reflogPrefix = "cherry-pick:";
+
+        final Git git = new Git( repo );
+
+        RevCommit newHead = null;
+
+        final RevWalk revWalk = new RevWalk( repo );
+
+        final ObjectId[] commits = resolveObjectIds( git, _commits );
+
+        if ( _commits.length != commits.length ) {
+            throw new IOException( "Couldn't resolve some commits." );
+        }
+
+        try {
+            final Ref headRef = getBranch( git, targetBranch );
+            newHead = revWalk.parseCommit( headRef.getObjectId() );
+
+            // loop through all refs to be cherry-picked
+            for ( final ObjectId src : commits ) {
+                final RevCommit srcCommit = revWalk.parseCommit( src );
+
+                // get the parent of the commit to cherry-pick
+                if ( srcCommit.getParentCount() != 1 ) {
+                    throw new IOException( new MultipleParentsNotAllowedException(
+                            MessageFormat.format(
+                                    JGitText.get().canOnlyCherryPickCommitsWithOneParent,
+                                    srcCommit.name(),
+                                    Integer.valueOf( srcCommit.getParentCount() ) ) ) );
+                }
+
+                final RevCommit srcParent = srcCommit.getParent( 0 );
+                revWalk.parseHeaders( srcParent );
+
+                final RevCommit revCommit = revWalk.parseCommit( src );
+                final RefUpdate ru = git.getRepository().updateRef( "refs/heads/" + targetBranch );
+                if ( newHead == null ) {
+                    ru.setExpectedOldObjectId( ObjectId.zeroId() );
+                } else {
+                    ru.setExpectedOldObjectId( newHead );
+                }
+                ru.setNewObjectId( src );
+                ru.setRefLogMessage( reflogPrefix + " " + srcCommit.getShortMessage(), false );
+                final RefUpdate.Result rc = ru.forceUpdate();
+                switch ( rc ) {
+                    case NEW:
+                    case FORCED:
+                    case FAST_FORWARD:
+                        newHead = revCommit;
+                        break;
+                    case REJECTED:
+                    case LOCK_FAILURE:
+                        throw new ConcurrentRefUpdateException( JGitText.get().couldNotLockHEAD, ru.getRef(), rc );
+                    default:
+                        throw new JGitInternalException( MessageFormat.format( JGitText.get().updatingRefFailed, Constants.HEAD, src.toString(), rc ) );
+                }
+            }
+        } catch ( final java.io.IOException e ) {
+            throw new IOException( new JGitInternalException(
+                    MessageFormat.format(
+                            JGitText.get().exceptionCaughtDuringExecutionOfCherryPickCommand,
+                            e ), e ) );
+        } catch ( final Exception e ) {
+            throw new IOException( e );
+        } finally {
+            revWalk.release();
+        }
+    }
+
+    private static String calculateOurName( final Ref headRef ) {
+        final String targetRefName = headRef.getTarget().getName();
+        return Repository.shortenRefName( targetRefName );
     }
 
     public static ObjectId getTreeRefObjectId( final Repository repo,
@@ -792,25 +871,37 @@ public final class JGitUtil {
     public static ObjectId resolveObjectId( final Git git,
                                             final String name ) {
 
-        try {
-            final Ref refName = getBranch( git, name );
-            if ( refName != null ) {
-                return refName.getObjectId();
-            }
-
-            try {
-                final ObjectId id = ObjectId.fromString( name );
-                if ( git.getRepository().getObjectDatabase().has( id ) ) {
-                    return id;
-                }
-            } catch ( final IllegalArgumentException ex ) {
-            }
-
+        final ObjectId[] result = resolveObjectIds( git, name );
+        if ( result == null || result.length == 0 ) {
             return null;
-        } catch ( java.io.IOException e ) {
         }
 
-        return null;
+        return result[ 0 ];
+    }
+
+    public static ObjectId[] resolveObjectIds( final Git git,
+                                               final String... ids ) {
+        final Collection<ObjectId> result = new ArrayList<ObjectId>();
+        for ( final String id : ids ) {
+            try {
+                final Ref refName = getBranch( git, id );
+                if ( refName != null ) {
+                    result.add( refName.getObjectId() );
+                    continue;
+                }
+
+                try {
+                    final ObjectId _id = ObjectId.fromString( id );
+                    if ( git.getRepository().getObjectDatabase().has( _id ) ) {
+                        result.add( _id );
+                    }
+                } catch ( final IllegalArgumentException ignored ) {
+                }
+            } catch ( final java.io.IOException ignored ) {
+            }
+        }
+
+        return result.toArray( new ObjectId[ result.size() ] );
     }
 
     public static Ref getBranch( final Git git,
