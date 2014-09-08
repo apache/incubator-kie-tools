@@ -19,14 +19,10 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.client.*;
 import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.projecteditor.client.forms.ArtifactIdChangeHandler;
-import org.kie.workbench.common.screens.projecteditor.client.forms.GroupIdChangeHandler;
-import org.kie.workbench.common.screens.projecteditor.client.forms.NameChangeHandler;
-import org.kie.workbench.common.screens.projecteditor.client.forms.POMEditorPanel;
-import org.kie.workbench.common.screens.projecteditor.client.forms.VersionChangeHandler;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.uberfire.client.callbacks.Callback;

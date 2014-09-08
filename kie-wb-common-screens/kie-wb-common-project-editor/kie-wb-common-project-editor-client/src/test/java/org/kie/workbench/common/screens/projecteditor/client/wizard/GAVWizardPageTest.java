@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
+import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -23,7 +24,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
-import org.kie.workbench.common.screens.projecteditor.client.forms.POMEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 
 import javax.enterprise.event.Event;
