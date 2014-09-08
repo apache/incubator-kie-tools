@@ -31,6 +31,7 @@ import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
+import org.uberfire.commons.services.cdi.Startable;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.commons.services.cdi.Veto;
@@ -53,6 +54,10 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 public class SystemConfigProducer implements Extension {
 
     private static final Logger logger = LoggerFactory.getLogger( SystemConfigProducer.class );
+
+    private static final String CDI_METHOD = "cdi";
+
+    private static final String START_METHOD = System.getProperty( "org.uberfire.start.method", "cdi" );
 
     private final List<OrderedBean> startupEagerBeans = new LinkedList<OrderedBean>();
     private final List<OrderedBean> startupBootstrapBeans = new LinkedList<OrderedBean>();
@@ -82,18 +87,28 @@ public class SystemConfigProducer implements Extension {
                                                                 priority ) );
                     break;
             }
+        } else if ( event.getAnnotated().isAnnotationPresent( Named.class ) && ( event.getAnnotated().isAnnotationPresent( ApplicationScoped.class )
+                || event.getAnnotated().isAnnotationPresent( Singleton.class ) ) ) {
+            final Named namedAnnotation = event.getAnnotated().getAnnotation( Named.class );
+
+            if (namedAnnotation.value().endsWith("-startable")) {
+                final Bean<?> bean = event.getBean();
+                startupBootstrapBeans.add( new OrderedBean( bean, 10 ) );
+            }
         }
     }
 
     public void afterDeploymentValidation( final @Observes AfterDeploymentValidation event,
                                            final BeanManager manager ) {
-        //Force execution of Bootstrap bean's @PostConstruct methods first
-        runPostConstruct( manager,
-                          startupBootstrapBeans );
+        if (CDI_METHOD.equalsIgnoreCase(START_METHOD)) {
+            //Force execution of Bootstrap bean's @PostConstruct methods first
+            runPostConstruct( manager,
+                              startupBootstrapBeans );
 
-        //Followed by execution of remaining Eager bean's @PostConstruct methods
-        runPostConstruct( manager,
+            //Followed by execution of remaining Eager bean's @PostConstruct methods
+            runPostConstruct( manager,
                           startupEagerBeans );
+        }
     }
 
     private void runPostConstruct( final BeanManager manager,
@@ -145,6 +160,9 @@ public class SystemConfigProducer implements Extension {
             buildIOStrategy( abd, bm );
         }
 
+        if (!CDI_METHOD.equalsIgnoreCase(START_METHOD)) {
+            buildStartableBean(abd, bm);
+        }
     }
 
     private void buildSystemFS( final AfterBeanDiscovery abd,
@@ -329,6 +347,97 @@ public class SystemConfigProducer implements Extension {
         } );
     }
 
+    private void buildStartableBean( final AfterBeanDiscovery abd,
+            final BeanManager bm ) {
+
+        abd.addBean( new Bean<Startable>() {
+
+            @Override
+            public Class<?> getBeanClass() {
+                return Startable.class;
+            }
+
+            @Override
+            public Set<InjectionPoint> getInjectionPoints() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public String getName() {
+                return "startablebean";
+            }
+
+            @Override
+            public Set<Annotation> getQualifiers() {
+
+                return new HashSet<Annotation>() {{
+                    add( new AnnotationLiteral<Default>() {
+                    } );
+                    add( new AnnotationLiteral<Any>() {
+                    } );
+                }};
+            }
+
+            @Override
+            public Class<? extends Annotation> getScope() {
+                return ApplicationScoped.class;
+            }
+
+            @Override
+            public Set<Class<? extends Annotation>> getStereotypes() {
+                return Collections.emptySet();
+            }
+
+            @Override
+            public Set<Type> getTypes() {
+                return new HashSet<Type>() {{
+                    add( Startable.class );
+                    add( Object.class );
+                }};
+            }
+
+            @Override
+            public boolean isAlternative() {
+                return false;
+            }
+
+            @Override
+            public boolean isNullable() {
+                return false;
+            }
+
+            @Override
+            public Startable create( CreationalContext<Startable> ctx ) {
+
+
+                return new Startable() {
+                    @Override
+                    public int hashCode() {
+                        return super.hashCode();
+                    }
+
+                    @Override
+                    public void start() {
+                        //Force execution of Bootstrap bean's @PostConstruct methods first
+                        runPostConstruct( bm,
+                                startupBootstrapBeans );
+
+                        //Followed by execution of remaining Eager bean's @PostConstruct methods
+                        runPostConstruct( bm,
+                                startupEagerBeans );
+                    }
+                };
+            }
+
+            @Override
+            public void destroy( final Startable instance,
+                    final CreationalContext<Startable> ctx ) {
+
+                ctx.release();
+            }
+        } );
+    }
+
     public static class DummyFileSystem implements FileSystem {
 
         private FileSystemState state = FileSystemState.NORMAL;
@@ -396,6 +505,14 @@ public class SystemConfigProducer implements Extension {
 
         @Override
         public void dispose() {
+
+        }
+    }
+
+    private class DummyStarable implements Startable {
+
+        @Override
+        public void start() {
 
         }
     }
