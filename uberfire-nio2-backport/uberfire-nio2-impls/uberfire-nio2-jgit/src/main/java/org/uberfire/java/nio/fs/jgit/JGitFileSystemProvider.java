@@ -80,6 +80,7 @@ import org.uberfire.java.nio.base.FileSystemState;
 import org.uberfire.java.nio.base.SeekableByteChannelFileBasedImpl;
 import org.uberfire.java.nio.base.WatchContext;
 import org.uberfire.java.nio.base.dotfiles.DotFileOption;
+import org.uberfire.java.nio.base.options.CherryPickCopyOption;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.base.version.VersionAttributes;
@@ -1131,15 +1132,30 @@ public class JGitFileSystemProvider implements FileSystemProvider,
 
         final JGitPathImpl gSource = toPathImpl( source );
         final JGitPathImpl gTarget = toPathImpl( target );
+        final boolean isBranch = isBranch( gSource ) && isBranch( gTarget );
 
-        final boolean isSourceBranch = isBranch( gSource );
-        final boolean isTargetBranch = isBranch( gTarget );
-
-        if ( isSourceBranch && isTargetBranch ) {
-            copyBranch( gSource, gTarget );
-            return;
+        if ( options.length == 1 && options[ 0 ] instanceof CherryPickCopyOption ) {
+            if ( !isBranch ) {
+                throw new IOException( "Cherry pick needs source and target as root." );
+            }
+            final String[] commits = ( (CherryPickCopyOption) options[ 0 ] ).getCommits();
+            if ( commits == null || commits.length == 0 ) {
+                throw new IOException( "Cherry pick needs at least one commit id." );
+            }
+            cherryPick( gSource, gTarget, commits );
+        } else {
+            if ( isBranch ) {
+                copyBranch( gSource, gTarget );
+                return;
+            }
+            copyAsset( gSource, gTarget, options );
         }
-        copyAsset( gSource, gTarget, options );
+    }
+
+    private void cherryPick( final JGitPathImpl source,
+                             final JGitPathImpl target,
+                             final String... commits ) {
+        JGitUtil.cherryPick( source.getFileSystem().gitRepo().getRepository(), target.getRefTree(), commits );
     }
 
     private void copyBranch( final JGitPathImpl source,
@@ -1320,7 +1336,7 @@ public class JGitFileSystemProvider implements FileSystemProvider,
     }
 
     private boolean isRoot( final JGitPathImpl path ) {
-        return path.getPath().length() == 1 && path.getPath().equals( "/" );
+        return isBranch( path );
     }
 
     private boolean hasSameFileSystem( final JGitPathImpl source,
