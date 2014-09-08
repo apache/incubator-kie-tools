@@ -53,7 +53,7 @@ public class GAVWizardPageTest {
         page.setPom(new POM());
 
         verify(pomEditor, never()).disableGroupID(anyString());
-        verify(pomEditor, never()).disableArtifactID(anyString());
+        verify(pomEditor, never()).disableVersion(anyString());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class GAVWizardPageTest {
         page.setPom(pom);
 
         verify(pomEditor).disableGroupID("InheritedFromAParentPOM");
-        verify(pomEditor).disableArtifactID("InheritedFromAParentPOM");
+        verify(pomEditor).disableVersion("InheritedFromAParentPOM");
     }
 
     private class WizardPageStatusChangeEventMock

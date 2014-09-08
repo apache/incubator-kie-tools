@@ -110,7 +110,7 @@ public class ProjectServiceImpl
             if(parentExists){
               parent = pomService.load(parentPom);
               if(parent != null){
-                pom.setParent(parent);
+                pom.setParent(parent.getGav());
               }
             }
 

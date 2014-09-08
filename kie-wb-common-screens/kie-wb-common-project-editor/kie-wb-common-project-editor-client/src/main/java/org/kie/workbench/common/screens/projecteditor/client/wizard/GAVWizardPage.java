@@ -85,7 +85,7 @@ public class GAVWizardPage
     public void setPom(final POM pom) {
         if (hasParent(pom)) {
             pomEditor.disableGroupID(view.InheritedFromAParentPOM());
-            pomEditor.disableArtifactID(view.InheritedFromAParentPOM());
+            pomEditor.disableVersion(view.InheritedFromAParentPOM());
         }
 
         this.pomEditor.setPOM( pom,
