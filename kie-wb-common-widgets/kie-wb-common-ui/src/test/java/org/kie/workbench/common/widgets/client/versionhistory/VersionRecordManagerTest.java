@@ -50,11 +50,11 @@ public class VersionRecordManagerTest {
         setUpUtil();
         setUpVersions();
 
-        manager = new VersionRecordManager(
+        manager = spy(new VersionRecordManager(
                 dropDownButton,
                 restorePopup,
                 util,
-                new VersionServiceCallerMock(versions));
+                new VersionServiceCallerMock(versions)));
 
         manager.init(
                 null,
@@ -144,6 +144,15 @@ public class VersionRecordManagerTest {
         assertEquals(pathTo444, manager.getPathToLatest());
         assertEquals(pathTo444, manager.getCurrentPath());
         assertEquals("444", manager.getVersion());
+    }
+
+    @Test
+    public void testInitNeedsToClearTheState() throws Exception {
+
+        //clear the state before to init. This will cover the cases where the init method is invocked nultiple times.
+        //for example if KieEditor.init(...) method is invocked multiple times.
+
+        verify(manager).clear();
     }
 
     // init with null path
