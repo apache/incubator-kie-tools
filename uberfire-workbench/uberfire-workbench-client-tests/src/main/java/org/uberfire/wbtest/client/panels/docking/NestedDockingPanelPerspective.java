@@ -24,6 +24,7 @@ public class NestedDockingPanelPerspective extends AbstractTestPerspectiveActivi
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
         PerspectiveDefinition pd = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        pd.getRoot().setElementId( "root" );
         pd.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( NestingScreen.class.getName() ) ) );
         return pd;
     }

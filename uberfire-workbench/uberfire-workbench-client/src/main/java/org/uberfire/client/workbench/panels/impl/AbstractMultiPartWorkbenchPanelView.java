@@ -7,17 +7,14 @@ import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
-import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 public abstract class AbstractMultiPartWorkbenchPanelView<P extends AbstractMultiPartWorkbenchPanelPresenter>
-extends AbstractWorkbenchPanelView<P> {
+extends AbstractDockingWorkbenchPanelView<P> {
 
-    protected RequiresResizeFlowPanel container = new RequiresResizeFlowPanel();
     protected ContextPanel contextWidget = new ContextPanel();
     protected MultiPartWidget widget;
 
@@ -28,10 +25,8 @@ extends AbstractWorkbenchPanelView<P> {
         widget = setupWidget();
         widget.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
         Layouts.setToFillParent( widget.asWidget() );
-        Layouts.setToFillParent( container );
-        container.add( contextWidget );
-        container.add( widget );
-        initWidget( container );
+        getPartViewContainer().add( contextWidget );
+        getPartViewContainer().add( widget );
         dndManager.registerDropController( this, factory.newDropController( this ) );
     }
 
@@ -81,12 +76,5 @@ extends AbstractWorkbenchPanelView<P> {
     public void onResize() {
         presenter.onResize( getOffsetWidth(), getOffsetHeight() );
         super.onResize();
-    }
-
-    @Override
-    protected Widget getWidget() {
-        // overridden for the benefit of GwtMockito tests. does the same thing as the inherited method would do.
-        // (during GwtMockito unit tests, the inherited method returns a generic mock Widget, not the one given to initWidget())
-        return container;
     }
 }

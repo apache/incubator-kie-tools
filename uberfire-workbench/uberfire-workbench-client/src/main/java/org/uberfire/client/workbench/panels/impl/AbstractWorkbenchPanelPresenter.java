@@ -46,7 +46,7 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     protected final PerspectiveManager perspectiveManager;
     private PanelDefinition definition;
     private final Event<MaximizePlaceEvent> maximizePanelEvent;
-    private final Map<Position, WorkbenchPanelPresenter> childPanels = new HashMap<Position, WorkbenchPanelPresenter>();
+    protected final Map<Position, WorkbenchPanelPresenter> childPanels = new HashMap<Position, WorkbenchPanelPresenter>();
 
     public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
                                             final PerspectiveManager perspectiveManager,
@@ -122,9 +122,18 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         return definition.removePart( part );
     }
 
+    /**
+     * This base implementation should be sufficient for most panels. It modifies the panel definition and adds the
+     * child view to this panel's view. In case the requested position is already in use for this panel, this method
+     * will throw an {@link IllegalStateException}. Subclasses may override and implement some other collision avoidance
+     * strategy.
+     */
     @Override
     public void addPanel( final WorkbenchPanelPresenter child,
                           final Position position ) {
+        if ( childPanels.containsKey( position ) ) {
+            throw new IllegalStateException( "This panel already has a " + position + " child" );
+        }
         getPanelView().addPanel( child.getDefinition(), child.getPanelView(), position );
         definition.insertChild( position, child.getDefinition() );
         childPanels.put( position, child );
@@ -204,4 +213,16 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         getDefinition().setHeight( height == 0 ? null : height );
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder( getClass().getName() );
+        sb.append( "@" ).append(  System.identityHashCode( this ) );
+        if ( getDefinition() == null ) {
+            sb.append( " (no definition)" );
+        } else {
+            sb.append( " id=" ).append( getDefinition().getElementId() );
+        }
+
+        return sb.toString();
+    }
 }

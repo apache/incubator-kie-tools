@@ -8,7 +8,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.slf4j.Logger;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.mvp.PlaceRequest;
@@ -32,6 +34,8 @@ import com.google.gwt.user.client.ui.Panel;
 @Named("org.uberfire.wbtest.client.panels.docking.NestingScreen")
 public class NestingScreen extends AbstractTestScreenActivity {
 
+    @Inject Logger log;
+
     @Inject
     public NestingScreen( PlaceManager placeManager ) {
         super( placeManager );
@@ -46,6 +50,7 @@ public class NestingScreen extends AbstractTestScreenActivity {
     Button addEastPanelButton = new Button( "Add East Child" );
     Button addWestPanelButton = new Button( "Add West Child" );
     Button closeButton = new Button( "Close" );
+    Button dumpLayout = new Button( "Dump Layout Info" );
 
     Map<CompassPosition, Integer> childCounts = new HashMap<CompassPosition, Integer>();
 
@@ -98,12 +103,19 @@ public class NestingScreen extends AbstractTestScreenActivity {
                 placeManager.closePlace( getPlace() );
             }
         } );
+        dumpLayout.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                log.info( Layouts.getContainmentHierarchy( panel ) );
+            }
+        } );
 
         panel.add( addNorthPanelButton );
         panel.add( addSouthPanelButton );
         panel.add( addEastPanelButton );
         panel.add( addWestPanelButton );
         panel.add( closeButton );
+        panel.add( dumpLayout );
     }
 
     @Override
@@ -138,6 +150,8 @@ public class NestingScreen extends AbstractTestScreenActivity {
 
         PanelDefinition childPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         childPanel.setElementId( "NestingScreenPanel-" + childPositionTag );
+        childPanel.setWidth( 100 );
+        childPanel.setHeight( 100 );
         panelManager.addWorkbenchPanel( myParentPanel, childPanel, position );
 
         PlaceRequest childScreen = new DefaultPlaceRequest( getClass().getName() );

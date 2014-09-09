@@ -75,7 +75,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      *            specifies which edge of this panel will be shared with the nested panel. Must not be null.
      */
     void addPanel( final PanelDefinition panel,
-                   final WorkbenchPanelView view,
+                   final WorkbenchPanelView<?> view,
                    final Position position );
 
     /**

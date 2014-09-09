@@ -8,13 +8,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleWorkbenchPanelPresenterTest extends AbstractDockingWorkbenchPanelPresenterTest {
 
     @Mock(name="view")
-    protected WorkbenchPanelView<SimpleWorkbenchPanelPresenter> view;
+    protected DockingWorkbenchPanelView<SimpleWorkbenchPanelPresenter> view;
 
     @InjectMocks
     SimpleWorkbenchPanelPresenter presenter;

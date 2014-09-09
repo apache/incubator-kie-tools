@@ -3,7 +3,6 @@ package org.uberfire.client.workbench.panels.impl;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,15 +14,16 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class MultiListWorkbenchPanelViewTest {
+public class MultiListWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelViewTest {
 
     @Mock ListBarWidget listBar;
     @Mock MultiListWorkbenchPanelPresenter presenter;
 
     @InjectMocks MultiListWorkbenchPanelView view;
 
-    @Before
-    public void setup() {
+    @Override
+    protected AbstractDockingWorkbenchPanelView<?> getViewToTest() {
+        return view;
     }
 
     @Test

@@ -312,7 +312,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
     public String toString() {
         String fullName = getClass().getName();
         String simpleName = fullName.substring( fullName.lastIndexOf( '.' ) + 1 );
-        return simpleName + " [parts=" + parts + ", children=" + children + ", panelType=" + panelType
+        return simpleName + " [id=" + elementId + ", parts=" + parts + ", children=" + children + ", panelType=" + panelType
                 + ", contextDefinition=" + contextDefinition + ", contextDisplayMode=" + contextDisplayMode + "]";
     }
 

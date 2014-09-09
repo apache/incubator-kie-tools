@@ -27,17 +27,38 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface SplitPanel extends IsWidget, RequiresResize, ProvidesResize {
 
-    //The default initial size should the Panel not provide one
+    /**
+     * The default initial size for a fixed-size child.
+     */
     public static final int DEFAULT_SIZE = 64;
 
-    //The default minimum size should the Panel not provide one
+    /**
+     * The default minimum size for a fixed-size child.
+     */
     public static final int DEFAULT_MIN_SIZE = 32;
 
     public Widget getParent();
 
-    public void setup( final WorkbenchPanelView eastWidget,
-                       final WorkbenchPanelView westWidget,
-                       final CompassPosition position,
+    /**
+     * Sets up this split panel's contents and divider location.
+     *
+     * @param eastOrNorthWidget
+     *            the widget to place in the east side a horizontal panel or north side of a vertical panel.
+     * @param westOsSouthWidget
+     *            the widget to place in the west side a horizontal panel or south side of a vertical panel.
+     * @param fixedSizeComponent
+     *            the component that should not change size when the whole split panel grows or shrinks (eg. because the
+     *            browser window is being resized)
+     * @param preferredSize
+     *            the width or height that the fixed-size component should be given initially. If null, a default of
+     *            {@value #DEFAULT_SIZE} will be used.
+     * @param preferredMinSize
+     *            the minimum width or height of the fixed-size component. If null, a default of
+     *            {@value #DEFAULT_MIN_SIZE} will be used.
+     */
+    public void setup( final IsWidget eastOrNorthWidget,
+                       final IsWidget westOsSouthWidget,
+                       final CompassPosition fixedSizeComponent,
                        final Integer preferredSize,
                        final Integer preferredMinSize );
 
@@ -53,4 +74,15 @@ public interface SplitPanel extends IsWidget, RequiresResize, ProvidesResize {
      */
     public Widget getWidget( CompassPosition position );
 
+    /**
+     * Gets the current pixel size of the component that doesn't expand/contract when the whole split pane's container
+     * is resized.
+     */
+    public int getFixedWidgetSize();
+
+    /**
+     * Sets the pixel size of the component that doesn't expand/contract when the whole split pane's container
+     * is resized.
+     */
+    void setFixedWidgetSize( int newSize );
 }

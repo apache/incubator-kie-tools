@@ -23,25 +23,20 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
-import org.uberfire.client.workbench.widgets.panel.RequiresResizeFlowPanel;
 import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Supertype for both the DnD and non-DnD simple workbench panel views.
  */
 public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelPresenter>
-extends AbstractWorkbenchPanelView<P> {
+extends AbstractDockingWorkbenchPanelView<P> {
 
     @Inject
     protected ListBarWidget listBar;
-
-    @Inject
-    protected RequiresResizeFlowPanel container;
 
     @Inject
     protected ContextPanel contextWidget;
@@ -50,11 +45,8 @@ extends AbstractWorkbenchPanelView<P> {
     void setup() {
         setupListBarDragAndDrop();
 
-        container.add( contextWidget );
-        container.add( listBar );
-        initWidget( container );
-
-        Layouts.setToFillParent( getWidget() );
+        getPartViewContainer().add( contextWidget );
+        getPartViewContainer().add( listBar );
     }
 
     private void setupListBarDragAndDrop() {
@@ -64,12 +56,6 @@ extends AbstractWorkbenchPanelView<P> {
         addSelectionHandler( listBar );
         listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
         Layouts.setToFillParent( listBar );
-    }
-
-    // override is for unit test: super.getWidget() returns a new mock every time
-    @Override
-    public Widget getWidget() {
-        return container;
     }
 
     public void enableDnd() {

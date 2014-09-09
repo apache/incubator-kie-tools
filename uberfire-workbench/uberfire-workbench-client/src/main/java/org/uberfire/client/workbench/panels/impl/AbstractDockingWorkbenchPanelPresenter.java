@@ -1,11 +1,14 @@
 package org.uberfire.client.workbench.panels.impl;
 
+import static org.uberfire.client.workbench.panels.impl.AbstractDockingWorkbenchPanelView.*;
+
 import java.util.Map.Entry;
 
 import javax.enterprise.event.Event;
 
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.workbench.model.CompassPosition;
@@ -25,6 +28,29 @@ extends AbstractWorkbenchPanelPresenter<P>  {
         super( view,
                perspectiveManager,
                maximizePanelEvent );
+    }
+
+    /**
+     * Forwards requests to existing child panels in case there is already a child panel in the requested position.
+     * Otherwise behaves exactly like the superclass.
+     */
+    @Override
+    public void addPanel( WorkbenchPanelPresenter newChild,
+                          Position position ) {
+        WorkbenchPanelPresenter existingChild = getPanels().get( position );
+        if ( existingChild != null && newChild instanceof AbstractDockingWorkbenchPanelPresenter ) {
+            int existingChildSize = initialWidthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
+            int newChildSize = initialWidthOrHeight( (CompassPosition) position, newChild.getDefinition() );
+
+            removePanel( existingChild );
+            super.addPanel( newChild, position );
+            newChild.addPanel( existingChild, position );
+
+            getPanelView().setChildSize( (DockingWorkbenchPanelView<?>) newChild.getPanelView(),
+                                         newChildSize + existingChildSize );
+        } else {
+            super.addPanel( newChild, position );
+        }
     }
 
     /**
@@ -60,4 +86,8 @@ extends AbstractWorkbenchPanelPresenter<P>  {
         return false;
     }
 
+    @Override
+    public DockingWorkbenchPanelView<P> getPanelView() {
+        return (DockingWorkbenchPanelView<P>) super.getPanelView();
+    }
 }

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.ContextActivity;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
@@ -25,7 +26,7 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 public abstract class AbstractMultiPartWorkbenchPanelPresenterTest extends AbstractDockingWorkbenchPanelPresenterTest {
 
     @Mock(name="view")
-    protected WorkbenchPanelView<MultiListWorkbenchPanelPresenter> view;
+    protected DockingWorkbenchPanelView<MultiListWorkbenchPanelPresenter> view;
 
     /**
      * Narrowing return type to multi-part presenters.

@@ -1,5 +1,7 @@
 package org.uberfire.client.util;
 
+import org.uberfire.client.workbench.panels.SplitPanel;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
@@ -60,6 +62,7 @@ public class Layouts {
         try {
             widgetInfo = w.getOffsetWidth() + "x" + w.getOffsetHeight() + " - " +
                     w.getClass().getName() + "@" + System.identityHashCode( w ) +
+                    (w instanceof SplitPanel ? " divider at " + ((SplitPanel) w).getFixedWidgetSize() : "") +
                     (w instanceof RequiresResize ? " RequiresResize" : "") +
                     (w instanceof ProvidesResize ? " ProvidesResize" : "") +
                     " position: " + w.getElement().getStyle().getPosition() + "\n";

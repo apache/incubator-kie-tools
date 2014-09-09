@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -41,20 +40,8 @@ public class DockingPanelTest extends AbstractSeleniumTest {
     }
 
     /**
-     * Checks that newly added panels appear in the correct place.
-     */
-    @Test
-    public void testAddPanelRelativeToRoot() throws Exception {
-        NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
-
-        NestingScreenWrapper childScreen = root.addChild( direction );
-        assertTrue( childScreen.isStillInDom() );
-        assertTrue( childScreen.isPanelStillInDom() );
-        assertRelativePosition( direction, root, childScreen );
-    }
-
-    /**
-     * Tests that panels get removed from the layout when their only contained part is closed.
+     * Tests that panels appear in the correct place when added and get removed from the layout when their only
+     * contained part is closed. This is really two tests combined into one in order to save time.
      */
     @Test
     public void testAddAndRemovePanelRelativeToRoot() {
@@ -63,13 +50,14 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         NestingScreenWrapper childScreen = root.addChild( direction );
         assertTrue( childScreen.isStillInDom() );
         assertTrue( childScreen.isPanelStillInDom() );
+        assertRelativePosition( direction, root, childScreen );
 
         childScreen.close();
         assertFalse( childScreen.isStillInDom() );
         assertFalse( childScreen.isPanelStillInDom() );
     }
 
-    @Test @Ignore
+    @Test
     public void testAddTwoPanelsToRootRemovingOldestFirst() {
         NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
 
@@ -80,6 +68,11 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         assertTrue( childScreen1.isPanelStillInDom() );
         assertTrue( childScreen2.isStillInDom() );
         assertTrue( childScreen2.isPanelStillInDom() );
+
+        // each subsequent panel should be added at the edge of what remains of the parent panel
+        // so we want root < childScreen2 < childScreen1 < window edge
+        assertRelativePosition( direction, root, childScreen2 );
+        //assertRelativePosition( direction, childScreen2, childScreen1 );
 
         childScreen1.close();
         assertFalse( childScreen1.isStillInDom() );
@@ -94,7 +87,7 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         assertFalse( childScreen2.isPanelStillInDom() );
     }
 
-    @Test @Ignore
+    @Test
     public void testAddTwoPanelsToRootRemovingNewestFirst() {
         NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
 

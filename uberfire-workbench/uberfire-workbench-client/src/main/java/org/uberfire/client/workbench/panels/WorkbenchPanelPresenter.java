@@ -98,14 +98,16 @@ public interface WorkbenchPanelPresenter {
     public boolean removePart( final PartDefinition part );
 
     /**
-     * Adds the given panel as a subpanel of this one in the given position.
+     * Adds the given panel as a subpanel of this one in the given position. Panels typically only allow one child panel
+     * in each position, and may throw an exception or make alternative arrangements (for example, forward the request
+     * to a child panel) when you try to add a child panel to an already-occupied slot.
      * <p>
      * Subpanels are typically always visible, and take up space within the bounds of their parent panel.
      *
      * @param child
      *            the panel to add
      * @param position
-     *            the position to add the child at
+     *            the position to add the child at. Different panel implementations support different position types.
      */
     public void addPanel( final WorkbenchPanelPresenter child,
                           final Position position );

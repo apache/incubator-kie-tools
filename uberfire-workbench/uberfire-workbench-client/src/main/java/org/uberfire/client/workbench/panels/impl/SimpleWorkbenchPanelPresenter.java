@@ -22,6 +22,7 @@ import javax.inject.Named;
 
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 
 /**
@@ -47,7 +48,7 @@ public class SimpleWorkbenchPanelPresenter extends AbstractDockingWorkbenchPanel
     }
 
     @Override
-    public WorkbenchPanelView<SimpleWorkbenchPanelPresenter> getPanelView() {
+    public DockingWorkbenchPanelView<SimpleWorkbenchPanelPresenter> getPanelView() {
         return super.getPanelView();
     }
 }
