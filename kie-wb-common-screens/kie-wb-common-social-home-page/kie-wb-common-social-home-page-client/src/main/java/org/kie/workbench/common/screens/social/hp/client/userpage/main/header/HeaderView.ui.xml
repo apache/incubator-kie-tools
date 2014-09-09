@@ -23,9 +23,13 @@
 
   <!--<ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>-->
 
-  <g:HTMLPanel>
-    <span>Connections:</span>
-    <g:FlowPanel ui:field="friendsList"/>
-  </g:HTMLPanel>
+  <b:Well>
+    <b:Fieldset>
+    <b:Legend>
+      <small>Connections:</small>
+    </b:Legend>
+        <g:FlowPanel ui:field="friendsList"/>
+    </b:Fieldset>
+  </b:Well>
 
 </ui:UiBinder>

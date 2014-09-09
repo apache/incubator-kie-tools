@@ -265,3 +265,6 @@ input.search-query {
     top: 7px;
     right: 9px;
 }
+.cell-icon{
+    text-align: right;
+}

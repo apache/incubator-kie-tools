@@ -71,4 +71,7 @@ public interface ContainerCss extends
 
     @ClassName("icon-to-remove")
     String iconToRemove();
+
+    @ClassName("cell-icon")
+    String cellIcon();
 }

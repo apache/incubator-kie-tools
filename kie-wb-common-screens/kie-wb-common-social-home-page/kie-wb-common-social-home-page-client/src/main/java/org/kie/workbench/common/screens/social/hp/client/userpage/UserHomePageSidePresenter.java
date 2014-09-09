@@ -166,7 +166,7 @@ public class UserHomePageSidePresenter {
             public void execute( String parameter ) {
                 selectedEvent.fire( new UserHomepageSelectedEvent( parameter ) );
             }
-        }, "search users..." );
+        }, "user login..." );
     }
 
     private void setupUserMenu( SocialUser userOnPage ) {

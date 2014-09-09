@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.social.hp.client.userpage.main;
 
 import javax.enterprise.context.Dependent;
 
+import com.github.gwtbootstrap.client.ui.Well;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -45,9 +46,13 @@ public class MainView extends Composite
     @UiField
     FlowPanel timeline;
 
+    @UiField
+    Well well;
+
 
     public MainView() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        well.setHeight( "100%" );
     }
 
     @Override
@@ -55,5 +60,6 @@ public class MainView extends Composite
         timeline.clear();
         SimpleSocialTimelineWidget socialTimelineWidget = new SimpleSocialTimelineWidget(model);
         timeline.add( socialTimelineWidget );
+
     }
 }

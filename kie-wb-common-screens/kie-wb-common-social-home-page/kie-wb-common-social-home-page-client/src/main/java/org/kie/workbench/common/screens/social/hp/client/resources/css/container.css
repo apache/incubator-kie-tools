@@ -1,3 +1,4 @@
+
 .clickable {
     cursor: pointer;
     height: 100%;
@@ -264,4 +265,7 @@ input.search-query {
     position: absolute;
     top: 7px;
     right: 9px;
+}
+.cell-icon{
+    text-align: right;
 }

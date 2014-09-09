@@ -19,17 +19,19 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
+    >
 
   <!--<ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>-->
-
-  <b:Well ui:field="well">
+  <ui:style>
+    .margin {
+      padding-top: 20px;
+    }
+  </ui:style>
+  <g:HTMLPanel addStyleNames="{style.margin}">
     <b:Fieldset>
-    <b:Legend>
-      <small>Recent Activities:</small>
-    </b:Legend>
-    <g:FlowPanel ui:field="timeline"/>
+    <g:FlowPanel ui:field="panel"/>
     </b:Fieldset>
-  </b:Well>
+  </g:HTMLPanel>
 
 </ui:UiBinder>

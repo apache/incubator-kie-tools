@@ -3,7 +3,10 @@ package org.kie.workbench.common.screens.social.hp.client.userpage;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
+import com.github.gwtbootstrap.client.ui.Fieldset;
+import com.github.gwtbootstrap.client.ui.Legend;
 import com.github.gwtbootstrap.client.ui.Paragraph;
+import com.github.gwtbootstrap.client.ui.Well;
 import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -38,24 +41,20 @@ public class UserHomePageSideView extends Composite implements UserHomePageSideP
     @Override
     public void setupUserInfo( String userName,
                                SideUserInfoPresenter sideUserInfoPresenter ) {
-        userInfoPanel.add( sideUserInfoPresenter.getView() );
+        Well userWell = GWT.create( Well.class );
+        userWell.add( sideUserInfoPresenter.getView() );
+        userInfoPanel.add( userWell );
+
     }
 
     @Override
     public void setupSearchPeopleMenu( final List<String> users,
                                        final ParameterizedCommand<String> onSelect,
                                        final String suggestText ) {
-        final SuggestBox box = new SuggestBox( new MultiWordSuggestOracle() {{
-            addAll( users );
-        }} );
-        box.getElement().setAttribute( Constants.PLACEHOLDER, suggestText );
-        box.addSelectionHandler( new SelectionHandler<SuggestOracle.Suggestion>() {
-            @Override
-            public void onSelection( SelectionEvent<SuggestOracle.Suggestion> event ) {
-                onSelect.execute( event.getSelectedItem().getReplacementString() );
-            }
-        } );
-        userInfoPanel.add( box );
+
+        SearchWidget searchWidget = GWT.create( SearchWidget.class );
+        searchWidget.init( users,onSelect,suggestText );
+        userInfoPanel.add( searchWidget );
     }
 
     @Override
