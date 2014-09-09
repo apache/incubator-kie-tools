@@ -1,7 +1,10 @@
 package org.kie.uberfire.social.activities.client.widgets.timeline.simple;
 
+import com.github.gwtbootstrap.client.ui.Container;
+import com.github.gwtbootstrap.client.ui.Fieldset;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
+import com.github.gwtbootstrap.client.ui.NavList;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -28,10 +31,10 @@ public class SimpleSocialTimelineWidget extends Composite {
     private SimpleSocialTimelineWidgetModel model;
 
     @UiField
-    FluidContainer itemsPanel;
+    Container itemsPanel;
 
     @UiField
-    FlowPanel pagination;
+    Fieldset pagination;
 
     public SimpleSocialTimelineWidget( SimpleSocialTimelineWidgetModel model ) {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -103,24 +106,30 @@ public class SimpleSocialTimelineWidget extends Composite {
         MessageBuilder.createCall( new RemoteCallback<Path>() {
             public void callback( Path path ) {
                 SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() );
-                FluidRow row = SimpleItemWidget.createRow( rowModel );
-                itemsPanel.add( row );
+                SimpleItemWidget item = GWT.create( SimpleItemWidget.class );
+                item.init( rowModel );
+                itemsPanel.add( item );
             }
         }, VFSService.class ).get( event.getLinkTarget() );
     }
 
     private void createSimpleWidget( SocialActivitiesEvent event ) {
         SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getDescription(), event.getAdicionalInfos() );
-        FluidRow row = SimpleItemWidget.createRow( rowModel );
-        itemsPanel.add( row );
+        SimpleItemWidget item = GWT.create( SimpleItemWidget.class );
+        item.init( rowModel );
+        itemsPanel.add( item );
     }
 
     private void setupPaginationButtonsSocial() {
+        NavList list = GWT.create( NavList.class );
         if ( canICreateLessLink() ) {
-            pagination.add( model.getLess() );
+            list.add( model.getLess() );
         }
         if ( canICreateMoreLink() ) {
-            pagination.add( model.getMore() );
+            list.add( model.getMore() );
+        }
+        if(canICreateLessLink()||canICreateMoreLink()){
+            pagination.add( list );
         }
     }
 

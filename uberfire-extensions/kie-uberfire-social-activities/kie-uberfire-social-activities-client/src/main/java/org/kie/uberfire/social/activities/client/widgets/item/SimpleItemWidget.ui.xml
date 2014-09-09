@@ -1,0 +1,23 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+  <ui:style>
+    .right {
+      text-align: right
+    }
+    .center {
+      text-align: center
+    }
+    .left {
+      text-align: left
+    }
+  </ui:style>
+  <b:Row>
+    <b:Column size="1" ui:field="icon" addStyleNames="{style.right}">
+    </b:Column>
+    <b:Column size="2" ui:field="link" addStyleNames="{style.center}">
+    </b:Column>
+    <b:Column size="9" ui:field="desc" addStyleNames="{style.left}">
+    </b:Column>
+  </b:Row>
+</ui:UiBinder>

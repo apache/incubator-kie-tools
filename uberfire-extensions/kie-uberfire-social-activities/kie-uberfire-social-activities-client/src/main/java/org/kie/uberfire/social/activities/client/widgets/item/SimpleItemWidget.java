@@ -1,7 +1,6 @@
 package org.kie.uberfire.social.activities.client.widgets.item;
 
 import com.github.gwtbootstrap.client.ui.Column;
-import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.NavList;
@@ -11,7 +10,11 @@ import com.github.gwtbootstrap.client.ui.Thumbnails;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.item.model.SimpleItemWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
@@ -19,52 +22,61 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
-public class SimpleItemWidget {
+public class SimpleItemWidget extends Composite {
 
-    public static FluidRow createRow( SimpleItemWidgetModel model ) {
-        FluidRow row = GWT.create( FluidRow.class );
-        if ( !model.shouldIPrintIcon() ) {
-            row.add( createThumbNail( model.getSocialUser() ) );
-        } else {
-            row.add( createIcon( model ) );
-        }
+    @UiField
+    Column icon;
 
-        if ( model.getLinkText() != null ) {
-            row.add( createLink( model ) );
-        } else {
-            row.add( new Paragraph( model.getDescription() ) );
-        }
-        row.add( createText( model ) );
+    @UiField
+    Column link;
 
-        return row;
+    @UiField
+    Column desc;
+
+    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
+
+    interface MyUiBinder extends UiBinder<Widget, SimpleItemWidget> {
+
     }
 
-    private static Column createText( SimpleItemWidgetModel model ) {
-        Column column = new Column( 4 );
+    public void init( SimpleItemWidgetModel model ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        if ( !model.shouldIPrintIcon() ) {
+            createThumbNail( model.getSocialUser() );
+        } else {
+            createIcon( model );
+        }
+        createColumnContent( model ) ;
+    }
+
+    private void createColumnContent( SimpleItemWidgetModel model ) {
+        if ( model.getLinkText() != null ) {
+            link.add( createLink( model ) );
+        } else {
+            link.add( new Paragraph( model.getDescription() ) );
+        }
+        desc.add( createText( model ) );
+    }
+
+    private Paragraph createText( SimpleItemWidgetModel model ) {
         StringBuilder sb = new StringBuilder();
         sb.append( model.getItemDescription() );
         sb.append( SocialDateFormatter.format( model.getTimestamp() ) );
-        column.add( new Paragraph( sb.toString() ) );
-        return column;
+        return new Paragraph( sb.toString() );
     }
 
-    private static Column createIcon( final SimpleItemWidgetModel model ) {
-        final Column column = new Column( 2 );
+    private void createIcon( final SimpleItemWidgetModel model ) {
         for ( ClientResourceType type : model.getResourceTypes() ) {
             if ( type.accept( model.getLinkPath() ) ) {
-                com.google.gwt.user.client.ui.Image maybeAlreadyAttachedImage = ( com.google.gwt.user.client.ui.Image ) type.getIcon();
-                Image newImage = new Image( maybeAlreadyAttachedImage.getUrl(),maybeAlreadyAttachedImage.getOriginLeft(), maybeAlreadyAttachedImage.getOriginTop(),maybeAlreadyAttachedImage.getWidth(),maybeAlreadyAttachedImage.getHeight() );
-                column.add( newImage );
+                com.google.gwt.user.client.ui.Image maybeAlreadyAttachedImage = (com.google.gwt.user.client.ui.Image) type.getIcon();
+                Image newImage = new Image( maybeAlreadyAttachedImage.getUrl(), maybeAlreadyAttachedImage.getOriginLeft(), maybeAlreadyAttachedImage.getOriginTop(), maybeAlreadyAttachedImage.getWidth(), maybeAlreadyAttachedImage.getHeight() );
+                icon.add( newImage );
                 break;
             }
         }
-        return column;
     }
 
-    private static Column createLink( final SimpleItemWidgetModel model ) {
-        Column column = new Column( 4 );
-        SimplePanel panel = new SimplePanel();
-
+    private NavList createLink( final SimpleItemWidgetModel model ) {
         NavList list = new NavList();
         NavLink link = new NavLink();
         link.setText( model.getLinkText() );
@@ -76,13 +88,10 @@ public class SimpleItemWidget {
             }
         } );
         list.add( link );
-        panel.add( list );
-        column.add( panel );
-        return column;
+        return list;
     }
 
-    private static Column createThumbNail( SocialUser socialUser ) {
-        Column column = new Column( 2, 0 );
+    private void createThumbNail( SocialUser socialUser ) {
         Thumbnails tumThumbnails = new Thumbnails();
         Thumbnail t = new Thumbnail();
         Image userImage;
@@ -90,8 +99,7 @@ public class SimpleItemWidget {
         userImage.setSize( "30px", "30px" );
         t.add( userImage );
         tumThumbnails.add( t );
-        column.add( tumThumbnails );
-        return column;
+        icon.add( tumThumbnails );
     }
 
 }

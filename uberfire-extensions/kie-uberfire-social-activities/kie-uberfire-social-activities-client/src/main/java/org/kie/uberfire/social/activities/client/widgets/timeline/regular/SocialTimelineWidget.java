@@ -3,6 +3,7 @@ package org.kie.uberfire.social.activities.client.widgets.timeline.regular;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gwtbootstrap.client.ui.Container;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Paragraph;
@@ -29,7 +30,7 @@ import org.uberfire.backend.vfs.VFSService;
 public class SocialTimelineWidget extends Composite {
 
     @UiField
-    FluidContainer itemsPanel;
+    Container itemsPanel;
 
     public void init( SocialTimelineWidgetModel model ) {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -61,14 +62,16 @@ public class SocialTimelineWidget extends Composite {
                 MessageBuilder.createCall( new RemoteCallback<Path>() {
                     public void callback( Path path ) {
                         SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() );
-                        FluidRow row = SimpleItemWidget.createRow( rowModel );
-                        itemsPanel.add( row );
+                        SimpleItemWidget simple = GWT.create( SimpleItemWidget.class );
+                        simple.init( rowModel );
+                        itemsPanel.add( simple );
                     }
                 }, VFSService.class ).get( event.getLinkTarget() );
             } else {
                 SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getDescription(), event.getAdicionalInfos() );
-                FluidRow row = SimpleItemWidget.createRow( rowModel );
-                itemsPanel.add( row );
+                SimpleItemWidget simple = GWT.create( SimpleItemWidget.class );
+                simple.init( rowModel );
+                itemsPanel.add( simple );
             }
         }
     }
@@ -76,7 +79,6 @@ public class SocialTimelineWidget extends Composite {
     private void createDroolsQuerySocialItemsWidget( final SocialTimelineWidgetModel model ) {
         MessageBuilder.createCall( new RemoteCallback<List<SocialActivitiesEvent>>() {
             public void callback( List<SocialActivitiesEvent> events ) {
-
                 RecentUpdatesModel recentUpdatesModel = RecentUpdatesModel.generate( events );
                 Map<String, List<UpdateItem>> updateItems = recentUpdatesModel.getUpdateItems();
                 if ( updateItems.keySet().isEmpty() ) {
@@ -92,7 +94,7 @@ public class SocialTimelineWidget extends Composite {
                                             Map<String, List<UpdateItem>> updateItems,
                                             SocialTimelineWidgetModel model ) {
         for ( final String fileName : updateItems.keySet() ) {
-            SocialItemExpandedWidget.createItem( new SocialItemExpandedWidgetModel( itemsPanel, fileName, recentUpdatesModel.getUpdateItems( fileName ), model ) );
+           // SocialItemExpandedWidget.createItem( new SocialItemExpandedWidgetModel( itemsPanel, fileName, recentUpdatesModel.getUpdateItems( fileName ), model ) );
         }
     }
 

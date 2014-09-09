@@ -2,17 +2,7 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
   <ui:style>
-    .margin {margin-top:8px;
-      margin-bottom:8px;
-      margin-left:15px;
 
-    }
-    .container{
-      overflow-y: auto;
-    }
   </ui:style>
-
-  <g:HTMLPanel >
-    <b:FluidContainer ui:field="itemsPanel"/>
-  </g:HTMLPanel>
+  <b:Container ui:field="itemsPanel"/>
 </ui:UiBinder>
