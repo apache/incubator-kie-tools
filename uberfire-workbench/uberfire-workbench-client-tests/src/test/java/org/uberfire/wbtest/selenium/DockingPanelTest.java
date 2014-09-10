@@ -11,6 +11,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.uberfire.wbtest.client.panels.docking.NestedDockingPanelPerspective;
 import org.uberfire.workbench.model.CompassPosition;
 
@@ -112,6 +114,71 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         assertFalse( childScreen2.isPanelStillInDom() );
     }
 
+    @Test
+    public void testAddAndRemoveTwoPanelsAtOppositeEgdes() throws Exception {
+        NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
+        Dimension originalRootSize = root.getSize();
+        Point originalRootLocation = root.getLocation();
+
+        NestingScreenWrapper childScreen1 = root.addChild( direction );
+        NestingScreenWrapper childScreen2 = root.addChild( direction );
+        NestingScreenWrapper childScreen3 = root.addChild( opposite( direction ) );
+        NestingScreenWrapper childScreen4 = root.addChild( opposite( direction ) );
+
+        assertTrue( childScreen1.isStillInDom() );
+        assertTrue( childScreen1.isPanelStillInDom() );
+        assertTrue( childScreen2.isStillInDom() );
+        assertTrue( childScreen2.isPanelStillInDom() );
+        assertTrue( childScreen3.isStillInDom() );
+        assertTrue( childScreen3.isPanelStillInDom() );
+        assertTrue( childScreen4.isStillInDom() );
+        assertTrue( childScreen4.isPanelStillInDom() );
+
+        childScreen2.close();
+        assertTrue( childScreen1.isStillInDom() );
+        assertTrue( childScreen1.isPanelStillInDom() );
+        assertFalse( childScreen2.isStillInDom() );
+        assertFalse( childScreen2.isPanelStillInDom() );
+        assertTrue( childScreen3.isStillInDom() );
+        assertTrue( childScreen3.isPanelStillInDom() );
+        assertTrue( childScreen4.isStillInDom() );
+        assertTrue( childScreen4.isPanelStillInDom() );
+
+        childScreen1.close();
+        assertFalse( childScreen1.isStillInDom() );
+        assertFalse( childScreen1.isPanelStillInDom() );
+        assertFalse( childScreen2.isStillInDom() );
+        assertFalse( childScreen2.isPanelStillInDom() );
+        assertTrue( childScreen3.isStillInDom() );
+        assertTrue( childScreen3.isPanelStillInDom() );
+        assertTrue( childScreen4.isStillInDom() );
+        assertTrue( childScreen4.isPanelStillInDom() );
+
+        childScreen3.close();
+        assertFalse( childScreen1.isStillInDom() );
+        assertFalse( childScreen1.isPanelStillInDom() );
+        assertFalse( childScreen2.isStillInDom() );
+        assertFalse( childScreen2.isPanelStillInDom() );
+        assertFalse( childScreen3.isStillInDom() );
+        assertFalse( childScreen3.isPanelStillInDom() );
+        assertTrue( childScreen4.isStillInDom() );
+        assertTrue( childScreen4.isPanelStillInDom() );
+
+        childScreen4.close();
+        assertFalse( childScreen1.isStillInDom() );
+        assertFalse( childScreen1.isPanelStillInDom() );
+        assertFalse( childScreen2.isStillInDom() );
+        assertFalse( childScreen2.isPanelStillInDom() );
+        assertFalse( childScreen3.isStillInDom() );
+        assertFalse( childScreen3.isPanelStillInDom() );
+        assertFalse( childScreen4.isStillInDom() );
+        assertFalse( childScreen4.isPanelStillInDom() );
+
+        // finally, the root screen should be back to its original size and position
+        assertEquals( originalRootSize, root.getSize() );
+        assertEquals( originalRootLocation, root.getLocation() );
+    }
+
     /**
      * Checks that the given "checkMe" element is positioned correctly with respect to the given "anchor" element.
      *
@@ -148,4 +215,15 @@ public class DockingPanelTest extends AbstractSeleniumTest {
                 throw new IllegalArgumentException( "Not a valid relative position: " + expected );
         }
     }
+
+    static CompassPosition opposite( CompassPosition position ) {
+        switch ( position ) {
+            case NORTH: return CompassPosition.SOUTH;
+            case SOUTH: return CompassPosition.NORTH;
+            case EAST: return CompassPosition.WEST;
+            case WEST: return CompassPosition.EAST;
+            default: throw new IllegalArgumentException( "Position " + position + " has no opposite." );
+        }
+    }
+
 }

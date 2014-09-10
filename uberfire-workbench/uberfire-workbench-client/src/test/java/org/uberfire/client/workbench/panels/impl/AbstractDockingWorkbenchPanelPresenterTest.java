@@ -7,7 +7,6 @@ import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
@@ -22,10 +21,13 @@ import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.ContextDefinitionImpl;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * Tests behaviours required by all subclasses of AbstractDockingWorkbenchPanelPresenter.
@@ -81,10 +83,7 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest {
 
     @Test
     public void removingLastPartFromPanelShouldRemovePanelToo() throws Exception {
-        PanelDefinition westChildPanelDef = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         WorkbenchPanelPresenter westChildPanelPresenter = mock( SimpleWorkbenchPanelPresenter.class );
-
-        PanelDefinition parentPanelDef = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         WorkbenchPanelPresenter parentPanelPresenter = mock( SimpleWorkbenchPanelPresenter.class );
 
         AbstractDockingWorkbenchPanelPresenter<?> panelPresenter = getPresenterToTest();
@@ -97,16 +96,21 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest {
 
         // the now-empty panel should have removed itself from its parent
         verify( parentPanelPresenter ).removePanel( panelPresenter );
-
-        // the child panel should have been removed at the Definition and Presenter levels
-        // (this is the wrong place to test for view removal, since the panel manager doesn't deal directly with views)
-        assertEquals( "Removed panel still has children: " + panelPresenter.getPanels(),
-                      0, panelPresenter.getPanels().size() );
-        assertEquals( "Removed panel still has children: " + panelPresenter.getDefinition().getChildren(),
-                      0, panelPresenter.getDefinition().getChildren().size() );
-
-        InOrder inOrder = inOrder( parentPanelPresenter, westChildPanelPresenter );
-        inOrder.verify( westChildPanelPresenter ).setParent( null );
-        inOrder.verify( parentPanelPresenter ).addPanel( westChildPanelPresenter, CompassPosition.WEST );
     }
+
+    @Test
+    public void childrenOfRemovedPanelsShouldBeRescued() throws Exception {
+        WorkbenchPanelPresenter westChildPanelPresenter = mock( SimpleWorkbenchPanelPresenter.class );
+        WorkbenchPanelPresenter westChildChild = mock( SimpleWorkbenchPanelPresenter.class );
+
+        when( westChildPanelPresenter.getPanels() ).thenReturn( ImmutableMap.of( (Position) CompassPosition.WEST, westChildChild) );
+
+        AbstractDockingWorkbenchPanelPresenter<?> panelPresenter = getPresenterToTest();
+        panelPresenter.addPanel( westChildPanelPresenter, CompassPosition.WEST );
+        panelPresenter.removePanel( westChildPanelPresenter );
+
+        // the child of the removed child should have been placed into our WEST child slot
+        assertEquals( CompassPosition.WEST, panelPresenter.positionOf( westChildChild ) );
+    }
+
 }

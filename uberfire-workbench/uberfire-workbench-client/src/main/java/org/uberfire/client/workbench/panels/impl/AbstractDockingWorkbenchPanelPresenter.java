@@ -2,7 +2,9 @@ package org.uberfire.client.workbench.panels.impl;
 
 import static org.uberfire.client.workbench.panels.impl.AbstractDockingWorkbenchPanelView.*;
 
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.event.Event;
 
@@ -39,8 +41,14 @@ extends AbstractWorkbenchPanelPresenter<P>  {
                           Position position ) {
         WorkbenchPanelPresenter existingChild = getPanels().get( position );
         if ( existingChild != null && newChild instanceof AbstractDockingWorkbenchPanelPresenter ) {
-            int existingChildSize = initialWidthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
-            int newChildSize = initialWidthOrHeight( (CompassPosition) position, newChild.getDefinition() );
+            Integer existingChildSize = initialWidthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
+            Integer newChildSize = initialWidthOrHeight( (CompassPosition) position, newChild.getDefinition() );
+            if ( existingChildSize == null ) {
+                existingChildSize = 0;
+            }
+            if ( newChildSize == null ) {
+                newChildSize = 0;
+            }
 
             removePanel( existingChild );
             super.addPanel( newChild, position );
@@ -54,21 +62,47 @@ extends AbstractWorkbenchPanelPresenter<P>  {
     }
 
     /**
-     * Splices out this panel from the panel tree, preserving all child panels by reparenting them to our parent panel.
-     * Their Position in the parent panel will be the same as it was in this panel.
+     * Checks for existing child panels of the panel to be removed, and reparents them to this panel in the position of
+     * the child panel. Once the child panels are safely out of the way, the actual panel removal is done by a call to
+     * super.removePanel().
      */
-    private void spliceOutOfHierarchy() {
-        final WorkbenchPanelPresenter parent = getParent();
+    @Override
+    public boolean removePanel( WorkbenchPanelPresenter child ) {
+        if ( child instanceof AbstractDockingWorkbenchPanelPresenter ) {
 
-        parent.removePanel( this );
+            Position removedPosition = positionOf( child );
+            if ( removedPosition == null ) {
+                return false;
+            }
 
-        for ( Entry<Position, WorkbenchPanelPresenter> child : getPanels().entrySet() ) {
-            Position childPosition = child.getKey();
-            WorkbenchPanelPresenter childPresenter = child.getValue();
+            List<AbstractDockingWorkbenchPanelPresenter<?>> rescuedOrphans = new ArrayList<AbstractDockingWorkbenchPanelPresenter<?>>();
+            AbstractDockingWorkbenchPanelPresenter<?> dockingChild = (AbstractDockingWorkbenchPanelPresenter<?>) child;
+            for ( Map.Entry<Position, WorkbenchPanelPresenter> entry : dockingChild.getPanels().entrySet() ) {
+                dockingChild.removeWithoutOrphanRescue( entry.getValue() );
+                rescuedOrphans.add( (AbstractDockingWorkbenchPanelPresenter<?>) entry.getValue() );
+                // TODO multiple off-axis orphans need special treatment
+                // for example: if the NORTH panel has EAST and WEST children, we need to take the EAST one as a direct child
+                // to the NORTH of us, and reparent the other to the WEST of that one (or vice-versa)
+                // on the other hand, if there was only one EAST or WEST child, we can just stick it in as our new NORTH child
+            }
+            super.removePanel( dockingChild );
+            for ( AbstractDockingWorkbenchPanelPresenter<?> rescued : rescuedOrphans ) {
+                addPanel( rescued, removedPosition );
+            }
 
-            removePanel( childPresenter );
-            parent.addPanel( childPresenter, childPosition );
+            return true;
+
+        } else {
+            return super.removePanel( child );
         }
+    }
+
+    /**
+     * Removes the given child panel without modifying child attachments at all. This is used d
+     * @param child
+     */
+    private boolean removeWithoutOrphanRescue( WorkbenchPanelPresenter child ) {
+        return super.removePanel( child );
     }
 
     @Override
@@ -79,7 +113,7 @@ extends AbstractWorkbenchPanelPresenter<P>  {
             // if we are not the root and we have become empty, we remove ourselves from the panel hierarchy,
             // preserving all child panels
             if ( panelDef.getParts().isEmpty() && getParent() != null ) {
-                spliceOutOfHierarchy();
+                getParent().removePanel( this );
             }
             return true;
         }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -78,6 +79,13 @@ public class NestingScreenWrapper {
      */
     public Point getLocation() {
         return element.getLocation();
+    }
+
+    /**
+     * Returns the size of this nesting screen's view.
+     */
+    public Dimension getSize() {
+        return element.getSize();
     }
 
     /**

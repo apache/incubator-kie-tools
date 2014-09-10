@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,6 +14,8 @@
  * the License.
  */
 package org.uberfire.client.workbench.widgets.split;
+
+import org.uberfire.workbench.model.CompassPosition;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -60,6 +62,8 @@ import com.google.gwt.user.client.ui.Widget;
  * </p>
  */
 public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
+
+    private static final double DEFAULT_CHILD_SIZE = 100;
 
     class HSplitter extends Splitter {
         public HSplitter(Widget target,
@@ -302,7 +306,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
     /**
      * Construct a new {@link SplitLayoutPanel} with the specified splitter size
      * in pixels.
-     * 
+     *
      * @param splitterSize
      *            the size of the splitter in pixels
      */
@@ -336,7 +340,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
     /**
      * Return the size of the splitter in pixels.
-     * 
+     *
      * @return the splitter size
      */
     public int getSplitterSize() {
@@ -382,7 +386,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
      * it smaller than this size. This method has no effect for the
      * {@link DockLayoutPanel.Direction#CENTER} widget.
      * </p>
-     * 
+     *
      * @param child
      *            the child whose minimum size will be set
      * @param minSize
@@ -448,5 +452,63 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
                       layout.direction,
                       splitterSize,
                       before );
+    }
+
+    /**
+     * Adds the given widget as a child of this splitter.
+     *
+     * @param child
+     *            the widget to add
+     * @param position
+     *            the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
+     * @param size
+     *            the width or height to give the added child. If null or 0, the default value
+     *            {@value #DEFAULT_CHILD_SIZE} is used.
+     */
+    public void add( Widget child,
+                     CompassPosition position,
+                     Double size ) {
+        if ( size == null || size <= 0 ) {
+            size = DEFAULT_CHILD_SIZE;
+        }
+        switch ( position ) {
+            case NORTH:
+                addNorth( child, size );
+                break;
+            case SOUTH:
+                addSouth( child, size );
+                break;
+            case EAST:
+                addEast( child, size );
+                break;
+            case WEST:
+                addWest( child, size );
+                break;
+            default:
+                throw new IllegalArgumentException( "Bad child position: " + position );
+        }
+    }
+
+    /**
+     * Adds the given widget as a child of this splitter.
+     *
+     * @param child
+     *            the widget to add
+     * @param position
+     *            the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
+     * @param size
+     *            the width or height to give the added child. If null or 0, the default value
+     *            {@value #DEFAULT_CHILD_SIZE} is used.
+     */
+    public void add( Widget child,
+                     CompassPosition position,
+                     Integer size ) {
+        Double doubleSize;
+        if ( size == null ) {
+            doubleSize = null;
+        } else {
+            doubleSize = (double) size;
+        }
+        add( child, position, doubleSize );
     }
 }

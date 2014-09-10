@@ -4,6 +4,7 @@ import static org.uberfire.client.util.Layouts.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import java.util.IdentityHashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -91,27 +92,22 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
     public void addPanel( final PanelDefinition childPanelDef,
                           final WorkbenchPanelView<?> childPanelView,
                           final Position childPosition ) {
+
         checkNotNull( "childPanelView", childPanelView );
         CompassPosition position = (CompassPosition) checkNotNull( "childPosition", childPosition );
 
-        final WorkbenchSplitLayoutPanel splitPanel = new WorkbenchSplitLayoutPanel();
-        // TODO this can be moved into an add(CompassPosition, size) method on WorkbenchSplitLayoutPanel
-        switch ( position ) {
-            case NORTH:
-                splitPanel.addNorth( childPanelView, childPanelDef.getHeight() );
-                break;
-            case SOUTH:
-                splitPanel.addSouth( childPanelView, childPanelDef.getHeight() );
-                break;
-            case EAST:
-                splitPanel.addEast( childPanelView, childPanelDef.getWidth() );
-                break;
-            case WEST:
-                splitPanel.addWest( childPanelView, childPanelDef.getWidth() );
-                break;
-            default:
-                throw new IllegalArgumentException( "Bad child position: " + position );
+        System.out.println("view.addPanel(): this=" + asWidget().getElement().getId() +
+                           "; child=" + childPanelView.asWidget().getElement().getId() +
+                           "; position=" + childPosition);
+
+        if ( viewSplitters.get( position ) != null ) {
+            throw new IllegalStateException( "This panel already has a " + position + " child" );
         }
+
+        final WorkbenchSplitLayoutPanel splitPanel = new WorkbenchSplitLayoutPanel();
+        splitPanel.add( childPanelView.asWidget(),
+                        position,
+                        initialWidthOrHeight( position, childPanelDef ) );
 
         // now reparent all our existing contents into the split panel's resizable area
         // (note that it could contain other split panels already)
@@ -137,39 +133,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         scheduleResize( splitPanel );
     }
 
-//    private SplitPanel newSplitterPanel( final PanelDefinition panel,
-//                                         final WorkbenchPanelView<?> newView,
-//                                         final WorkbenchPanelView<?> targetView,
-//                                         final CompassPosition fixedSizePosition ) {
-//        switch ( fixedSizePosition ) {
-//            case NORTH:
-//                return factory.newVerticalSplitterPanel( newView,
-//                                                         targetView,
-//                                                         fixedSizePosition,
-//                                                         initialWidthOrHeight( fixedSizePosition, panel ),
-//                                                         minWidthOrHeight( fixedSizePosition, panel ) );
-//            case SOUTH:
-//                return factory.newVerticalSplitterPanel( targetView,
-//                                                         newView,
-//                                                         fixedSizePosition,
-//                                                         initialWidthOrHeight( fixedSizePosition, panel ),
-//                                                         minWidthOrHeight( fixedSizePosition, panel ) );
-//            case EAST:
-//                return factory.newHorizontalSplitterPanel( newView,
-//                                                           targetView,
-//                                                           fixedSizePosition,
-//                                                           initialWidthOrHeight( fixedSizePosition, panel ),
-//                                                           minWidthOrHeight( fixedSizePosition, panel ) );
-//            case WEST:
-//                return factory.newHorizontalSplitterPanel( targetView,
-//                                                           newView,
-//                                                           fixedSizePosition,
-//                                                           initialWidthOrHeight( fixedSizePosition, panel ),
-//                                                           minWidthOrHeight( fixedSizePosition, panel ) );
-//            default: throw new IllegalArgumentException( "Position " + fixedSizePosition + " has no horizontal or vertial aspect." );
-//        }
-//    }
-
     @Override
     public boolean removePanel( WorkbenchPanelView<?> childView ) {
         System.out.println("view.removePanel(): parent=" + asWidget().getElement().getId() +
@@ -177,25 +140,73 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
 
         CompassPosition removalPosition = positionOf( childView );
         if ( removalPosition == null ) {
+            System.out.println("  remove failed - no such child view");
             return false;
         }
 
         // FIXME this is cleanup for stuff subclasses set up on their own.
-        // there is no guarantee it is necessary or sufficient
+        // there is no guarantee it is necessary or sufficient.
+        // should move this down, or pull the subclass DnD setup up to here
         dndManager.unregisterDropController( childView );
 
         WorkbenchSplitLayoutPanel splitter = viewSplitters.remove( childView );
-        topLevelWidget.setWidget( partViewContainer );
+        splitter.remove( childView.asWidget() );
+        System.out.println("  dropping child panel id=" + childView.asWidget().getElement().getId() + " as requested");
+        System.out.println("   -> dropped panel's children: " + childView.getPresenter().getPanels());
 
-        if ( splitter.iterator().hasNext() ) {
-            System.out.println( "Warning: removed split panel still contains the following children:");
-            for ( Widget w : splitter ) {
-                System.out.println( "  - " + w );
+        // idea: search for 'splitter' in all remaining split panels in the map, plus topLevelWidget
+        // when found, transfer orphaned children to the same position as splitter was in in its old parent
+
+        Widget orphan = null;
+        for ( Widget w : splitter ) {
+            if ( orphan != null ) {
+                System.out.println("  splitter@" + System.identityHashCode( splitter ) + " LOSING ORPHAN: " + splitter.getWidgetDirection( w ) + " - " + w);
+            }
+            System.out.println("  splitter@" + System.identityHashCode( splitter ) + "  rescuing orphan: " + splitter.getWidgetDirection( w ) + " - " + w );
+            orphan = w;
+        }
+
+        if ( topLevelWidget.getWidget() == splitter ) {
+            if ( orphan != null ) {
+                topLevelWidget.setWidget( orphan );
+            }
+        } else {
+            for ( Map.Entry<WorkbenchPanelView<?>, WorkbenchSplitLayoutPanel> ent : viewSplitters.entrySet() ) {
+                WorkbenchSplitLayoutPanel sp = ent.getValue();
+                if ( sp.getWidgetIndex( splitter ) >= 0 ) {
+                    Direction d = sp.getWidgetDirection( splitter );
+                    Double size = sp.getWidgetSize( splitter );
+                    sp.remove( splitter );
+                    if ( orphan != null ) {
+                        sp.insert( orphan, d, size, null );
+                    }
+                }
             }
         }
+
         scheduleResize( partViewContainer );
 
         return true;
+    }
+
+    private static CompassPosition toPosition( Direction d ) {
+        if ( d == null ) {
+            return null;
+        }
+        switch ( d ) {
+            case NORTH:
+                return CompassPosition.NORTH;
+            case SOUTH:
+                return CompassPosition.SOUTH;
+            case EAST:
+            case LINE_START:
+                return CompassPosition.WEST;
+            case WEST:
+            case LINE_END:
+                return CompassPosition.EAST;
+            default:
+                throw new IllegalArgumentException( "Unknown direction: " + d );
+        }
     }
 
     private CompassPosition positionOf( WorkbenchPanelView<?> childView ) {
@@ -207,22 +218,7 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         if ( widgetDirection == null ) {
             throw new AssertionError( "Found child in splitter map but not in the splitter itself" );
         }
-        switch ( widgetDirection ) {
-            case NORTH:
-                return CompassPosition.NORTH;
-            case SOUTH:
-                return CompassPosition.SOUTH;
-            case LINE_END:
-            case EAST:
-                return CompassPosition.EAST;
-            case LINE_START:
-            case WEST:
-                return CompassPosition.WEST;
-            case CENTER:
-                throw new IllegalStateException( "Child panels can't end up in the center position" );
-            default:
-                throw new IllegalStateException( "Unknown direction for child widget: " + widgetDirection );
-        }
+        return toPosition( widgetDirection );
     }
 
     @Override
@@ -248,16 +244,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
             return true;
         }
         return false;
-    }
-
-    private static CompassPosition opposite( CompassPosition position ) {
-        switch ( position ) {
-            case NORTH: return CompassPosition.SOUTH;
-            case SOUTH: return CompassPosition.NORTH;
-            case EAST: return CompassPosition.WEST;
-            case WEST: return CompassPosition.EAST;
-            default: throw new IllegalArgumentException( "Position " + position + " has no opposite." );
-        }
     }
 
     static Integer initialWidthOrHeight( CompassPosition position, PanelDefinition definition ) {

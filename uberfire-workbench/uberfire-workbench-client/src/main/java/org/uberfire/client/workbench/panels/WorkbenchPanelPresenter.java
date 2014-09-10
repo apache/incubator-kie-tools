@@ -126,7 +126,9 @@ public interface WorkbenchPanelPresenter {
      * Returns the immediate child panels of this panel. Note that panels and parts are not the same thing; this method
      * only returns the panels.
      *
-     * @return an unmodifiable view of the immediate child panels nested within this one. Never null.
+     * @return an unmodifiable snapshot of the immediate child panels nested within this one. Never null, and will not
+     *         update to reflect subsequent changes to this panel's children. Safe to iterate over when adding or
+     *         removing child panels.
      */
     public Map<Position, WorkbenchPanelPresenter> getPanels();
 

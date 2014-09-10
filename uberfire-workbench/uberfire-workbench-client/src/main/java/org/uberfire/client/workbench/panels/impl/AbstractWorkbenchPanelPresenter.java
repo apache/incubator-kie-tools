@@ -15,7 +15,6 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +30,7 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -155,10 +155,10 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
 
     @Override
     public Map<Position, WorkbenchPanelPresenter> getPanels() {
-        return Collections.unmodifiableMap( childPanels );
+        return ImmutableMap.copyOf( childPanels );
     }
 
-    private Position positionOf( WorkbenchPanelPresenter child ) {
+    protected Position positionOf( WorkbenchPanelPresenter child ) {
         for ( Map.Entry<Position, WorkbenchPanelPresenter> entry : childPanels.entrySet() ) {
             if ( child == entry.getValue() ) {
                 return entry.getKey();
