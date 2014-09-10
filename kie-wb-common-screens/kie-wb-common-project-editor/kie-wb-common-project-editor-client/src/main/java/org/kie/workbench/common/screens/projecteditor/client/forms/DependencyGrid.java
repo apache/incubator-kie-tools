@@ -28,9 +28,12 @@ public class DependencyGrid
         implements IsWidget,
                    DependencyGridView.Presenter {
 
-    private final DependencyGridView view;
+    private DependencyGridView view;
     private List<Dependency> dependencies;
-    private final DependencySelectorPopup dependencySelectorPopup;
+    private DependencySelectorPopup dependencySelectorPopup;
+
+    public DependencyGrid() {
+    }
 
     @Inject
     public DependencyGrid( DependencySelectorPopup dependencySelectorPopup,
