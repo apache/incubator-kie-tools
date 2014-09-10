@@ -81,6 +81,9 @@ public class ProjectScreenViewImpl
     @UiField
     DeckPanel deckPanel;
 
+    public ProjectScreenViewImpl() {
+    }
+
     @Inject
     public ProjectScreenViewImpl(POMEditorPanel pomEditorPanel,
                                  DependencyGrid dependencyGrid,
