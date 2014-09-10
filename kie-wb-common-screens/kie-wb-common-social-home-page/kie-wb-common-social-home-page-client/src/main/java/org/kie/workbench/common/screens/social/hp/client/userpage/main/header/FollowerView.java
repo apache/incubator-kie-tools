@@ -19,7 +19,11 @@ package org.kie.workbench.common.screens.social.hp.client.userpage.main.header;
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Image;
+import com.github.gwtbootstrap.client.ui.NavLink;
+import com.github.gwtbootstrap.client.ui.NavList;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -29,36 +33,39 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.mvp.Command;
 
 @Dependent
-public class HeaderView extends Composite
-        implements HeaderPresenter.View {
+public class FollowerView extends Composite {
 
     interface HeaderViewBinder
             extends
-            UiBinder<Widget, HeaderView> {
+            UiBinder<Widget, FollowerView> {
 
     }
 
     private static HeaderViewBinder uiBinder = GWT.create( HeaderViewBinder.class );
 
     @UiField
-    FlowPanel friendsList;
+    FlowPanel followerPanel;
 
-    public HeaderView() {
+    public void init( SocialUser follower,
+                      Image connections,
+                      Command command ) {
         initWidget( uiBinder.createAndBindUi( this ) );
+        followerPanel.add( connections );
+        followerPanel.add( createLink( follower, command ) );
     }
 
-
-    @Override
-    public void addConnection( SocialUser follower,
-                               Image connection, Command command ) {
-        FollowerView followerView = GWT.create( FollowerView.class );
-        followerView.init( follower,connection, command );
-        friendsList.add( followerView.asWidget() );
+    private NavList createLink( SocialUser follower,
+                                final Command command ) {
+        NavList list = new NavList();
+        NavLink link = new NavLink();
+        link.setText( follower.getUserName() );
+        link.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                command.execute();
+            }
+        } );
+        list.add( link );
+        return list;
     }
-
-    @Override
-    public void clear() {
-        friendsList.clear();
-    }
-
 }

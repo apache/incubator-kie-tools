@@ -123,7 +123,7 @@ public class UserHomePageSidePresenter {
                                         addClickHandler( new ClickHandler() {
                                             @Override
                                             public void onClick( ClickEvent event ) {
-                                                refreshPage( loggedUser.getName() );
+                                                selectedEvent.fire( new UserHomepageSelectedEvent( loggedUser.getName() ) );
                                             }
                                         } );
                                     }

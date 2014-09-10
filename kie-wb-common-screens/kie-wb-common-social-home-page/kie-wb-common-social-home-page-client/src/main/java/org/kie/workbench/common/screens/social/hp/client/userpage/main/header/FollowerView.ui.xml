@@ -18,19 +18,16 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
-    >
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+
 
   <ui:style>
-    .margin {
-      padding-top: 20px;
+    .userBox {
+      float:left;
+      text-align:center;
+      margin-left: 10px;
     }
   </ui:style>
-  <g:HTMLPanel addStyleNames="{style.margin}">
-    <b:Fieldset>
-    <g:FlowPanel ui:field="panel"/>
-    </b:Fieldset>
-  </g:HTMLPanel>
+  <g:FlowPanel ui:field="followerPanel" addStyleNames="{style.userBox}"/>
 
 </ui:UiBinder>

@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.NavLink;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
@@ -29,6 +31,7 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Identity;
 
@@ -68,6 +71,9 @@ public class UserHomePageMainPresenter {
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Event<UserHomepageSelectedEvent> userHomepageSelectedEvent;
 
     @AfterInitialization
     public void loadContent() {
@@ -127,9 +133,20 @@ public class UserHomePageMainPresenter {
         header.clear();
         for ( final String follower : socialUser.getFollowingName() ) {
             socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
-                public void callback( SocialUser socialUser ) {
+                public void callback( final SocialUser socialUser ) {
                     Image followerImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
-                    header.addConnection( followerImage );
+                    followerImage.addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( ClickEvent event ) {
+                            userHomepageSelectedEvent.fire( new UserHomepageSelectedEvent( socialUser.getUserName() ) );
+                        }
+                    } );
+                    header.addConnection( socialUser, followerImage, new Command() {
+                        @Override
+                        public void execute() {
+                            userHomepageSelectedEvent.fire( new UserHomepageSelectedEvent( socialUser.getUserName() ) );
+                        }
+                    } );
                 }
             } ).findSocialUser( follower );
         }

@@ -21,7 +21,6 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
-  <!--<ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>-->
 
   <b:Well ui:field="well">
     <b:Fieldset>
