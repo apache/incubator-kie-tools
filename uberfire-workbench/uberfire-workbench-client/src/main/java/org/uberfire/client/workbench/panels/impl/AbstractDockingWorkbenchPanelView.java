@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -32,14 +33,14 @@ import com.google.gwt.user.client.ui.Widget;
  * SOUTH, EAST, and WEST compass positions.
  * <p>
  * <h2>Information for subclassers</h2>
- * The top-level widget of an {@link AbstractDockingWorkbenchPanelView} is always a container for child panels, even if
- * this panel doesn't currently have any child panels. This is done so child panels can be inserted and removed without
- * making any assumptions about the parent widget this view is located in (if any!).
+ * The top-level widget of an {@link AbstractDockingWorkbenchPanelView} is always {@link #topLevelWidget}, a container
+ * for child panels, even if this panel doesn't currently have any child panels. This is done so child panels can be
+ * inserted and removed without making any assumptions about the parent panel this view is located in (if any!).
  * <p>
- * This means you need to put your part view UI into the widget returned from {@link #getPartViewContainer()}. This
- * container's contents will never be inspected or disturbed, but the container itself will be shuffled around between
- * intermediate parent panels as necessary to accommodate child panels being inserted and removed. <b>You must not
- * insert your part view UI directly into the top-level widget of this view!</b>
+ * This means you must always put your part view UI into the widget returned from {@link #getPartViewContainer()}. The
+ * <i>contents</i> of this container will never be inspected or modified, but the container itself will be reparented as
+ * necessary to accommodate child panels being inserted and removed around it. Put another way, <b>do not insert your
+ * part view UI directly into the top-level widget of this view! It will get wiped out!</b>
  * <p>
  * This also means you must not call {@link #initWidget(Widget)}. That will always be done by this superclass.
  *
@@ -107,7 +108,7 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         final WorkbenchSplitLayoutPanel splitPanel = new WorkbenchSplitLayoutPanel();
         splitPanel.add( childPanelView.asWidget(),
                         position,
-                        initialWidthOrHeight( position, childPanelDef ) );
+                        widthOrHeight( position, childPanelDef ) );
 
         // now reparent all our existing contents into the split panel's resizable area
         // (note that it could contain other split panels already)
@@ -246,15 +247,37 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         return false;
     }
 
-    static Integer initialWidthOrHeight( CompassPosition position, PanelDefinition definition ) {
+    /**
+     * Retrieves the application-requested initial size for a child panel, or calculates a good default based on the
+     * available space.
+     *
+     * @param position
+     *            the position the panel will be added within its parent.
+     * @param definition
+     *            the new panel's definition.
+     * @param parent
+     *            the widget whose space will be used up by the insertion of the new panel.
+     */
+    static int initialWidthOrHeight( CompassPosition position, PanelDefinition definition, Widget parent ) {
+        Integer requestedSize;
+        int availableSize;
         switch ( position ) {
             case NORTH:
             case SOUTH:
-                return definition.getHeight();
+                requestedSize = definition.getHeight();
+                availableSize = parent.getOffsetHeight();
+                break;
             case EAST:
             case WEST:
-                return definition.getWidth();
+                requestedSize = definition.getWidth();
+                availableSize = parent.getOffsetWidth();
+                break;
             default: throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
+        }
+        if ( requestedSize == null || requestedSize <= 0 ) {
+            return availableSize / 2;
+        } else {
+            return requestedSize;
         }
     }
 

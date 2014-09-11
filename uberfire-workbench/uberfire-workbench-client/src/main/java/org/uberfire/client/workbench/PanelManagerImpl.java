@@ -208,9 +208,6 @@ public class PanelManagerImpl implements PanelManager {
         if ( !toRemove.getParts().isEmpty() ) {
             throw new IllegalStateException( "Panel still contains parts: " + toRemove.getParts() );
         }
-        if ( !toRemove.getChildren().isEmpty() ) {
-            throw new IllegalStateException( "Panel still contains child panels: " + toRemove.getChildren() );
-        }
 
         final WorkbenchPanelPresenter presenterToRemove = mapPanelDefinitionToPresenter.remove( toRemove );
         if ( presenterToRemove == null ) {
@@ -228,6 +225,12 @@ public class PanelManagerImpl implements PanelManager {
             }
 
             parentPresenter.removePanel( presenterToRemove );
+        }
+
+        // we do this check last because some panel types (eg. docking panels) can "rescue" orphaned child panels
+        // during the PanelPresenter.remove() call
+        if ( !toRemove.getChildren().isEmpty() ) {
+            throw new IllegalStateException( "Panel still contains child panels: " + toRemove.getChildren() );
         }
 
         getBeanFactory().destroy( presenterToRemove );

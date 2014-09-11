@@ -1,14 +1,16 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import static org.uberfire.client.workbench.panels.impl.AbstractDockingWorkbenchPanelView.*;
+import static org.uberfire.client.util.Layouts.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -41,8 +43,8 @@ extends AbstractWorkbenchPanelPresenter<P>  {
                           Position position ) {
         WorkbenchPanelPresenter existingChild = getPanels().get( position );
         if ( existingChild != null && newChild instanceof AbstractDockingWorkbenchPanelPresenter ) {
-            Integer existingChildSize = initialWidthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
-            Integer newChildSize = initialWidthOrHeight( (CompassPosition) position, newChild.getDefinition() );
+            Integer existingChildSize = widthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
+            Integer newChildSize = widthOrHeight( (CompassPosition) position, newChild.getDefinition() );
             if ( existingChildSize == null ) {
                 existingChildSize = 0;
             }
@@ -105,6 +107,9 @@ extends AbstractWorkbenchPanelPresenter<P>  {
         return super.removePanel( child );
     }
 
+    @Inject
+    private PanelManager panelManager;
+
     @Override
     public boolean removePart( PartDefinition part ) {
         if ( super.removePart( part ) ) {
@@ -113,7 +118,7 @@ extends AbstractWorkbenchPanelPresenter<P>  {
             // if we are not the root and we have become empty, we remove ourselves from the panel hierarchy,
             // preserving all child panels
             if ( panelDef.getParts().isEmpty() && getParent() != null ) {
-                getParent().removePanel( this );
+                panelManager.removeWorkbenchPanel( this.getDefinition() );
             }
             return true;
         }

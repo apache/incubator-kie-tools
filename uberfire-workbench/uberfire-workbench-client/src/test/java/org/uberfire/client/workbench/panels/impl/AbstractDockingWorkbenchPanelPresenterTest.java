@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -40,6 +41,7 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest {
     @Mock protected View mockPartView;
     @Mock protected WorkbenchPartPresenter mockPartPresenter;
     @Mock protected ContextActivity perspectiveContextActivity;
+    @Mock protected PanelManager panelManager;
 
     protected final PerspectiveDefinition panelManagerPerspectiveDefinition = new PerspectiveDefinitionImpl();
     protected final PartDefinition partPresenterPartDefinition = new PartDefinitionImpl( new DefaultPlaceRequest( "belongs_to_mockPartPresenter" ) );
@@ -87,6 +89,7 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest {
         WorkbenchPanelPresenter parentPanelPresenter = mock( SimpleWorkbenchPanelPresenter.class );
 
         AbstractDockingWorkbenchPanelPresenter<?> panelPresenter = getPresenterToTest();
+        panelPresenter.setDefinition( panelPresenterPanelDefinition );
 
         panelPresenter.setParent( parentPanelPresenter );
         panelPresenter.addPanel( westChildPanelPresenter, CompassPosition.WEST );
@@ -94,8 +97,8 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest {
 
         panelPresenter.removePart( mockPartPresenter.getDefinition() );
 
-        // the now-empty panel should have removed itself from its parent
-        verify( parentPanelPresenter ).removePanel( panelPresenter );
+        // the now-empty panel should have removed itself
+        verify( panelManager ).removeWorkbenchPanel( panelPresenterPanelDefinition );
     }
 
     @Test

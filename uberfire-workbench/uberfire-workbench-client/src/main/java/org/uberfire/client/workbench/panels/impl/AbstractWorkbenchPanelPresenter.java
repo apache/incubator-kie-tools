@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import static org.uberfire.debug.Debug.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -216,7 +218,7 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder( getClass().getName() );
-        sb.append( "@" ).append(  System.identityHashCode( this ) );
+        sb.append( objectId( this ) );
         if ( getDefinition() == null ) {
             sb.append( " (no definition)" );
         } else {
