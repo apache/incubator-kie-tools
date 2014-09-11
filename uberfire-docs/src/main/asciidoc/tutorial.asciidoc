@@ -204,7 +204,7 @@ using. Add this inside the `<project>` element, after the
     <uberfire.version>0.5.0-SNAPSHOT</uberfire.version>
     <errai.version>3.0.3-SNAPSHOT</errai.version>
     <errai.devmode.version>${errai.version}</errai.devmode.version>
-    <errai.jboss.home>${user.home}/wildfly-8.0.0.Final</errai.jboss.home>
+    <errai.jboss.home>${user.home}/wildfly-8.1.0.Final</errai.jboss.home>
     <jboss.spec.version>3.0.2.Final</jboss.spec.version>
     <slf4j.version>1.7.2</slf4j.version>
   </properties>
@@ -212,9 +212,9 @@ using. Add this inside the `<project>` element, after the
 
 .Location of App Server
 NOTE: this setup assumes you have downloaded and unzipped WildFly
-8.0.0.Final into your home directory. If you have a different JBoss
-app server on hand (JBoss AS 7.1.1, EAP 6, or a different version of
-WildFly) then change the `errai.jboss.home` property accordingly.
+8.1.0.Final into your home directory. If you have a different JBoss
+app server on hand (JBoss EAP 6 or a different version of WildFly)
+then change the `errai.jboss.home` property accordingly.
 
 Now, after the properties section, we'll import four Maven _BOM_
 files. BOM (short for Bill Of Materials) is a Maven technique (usage
@@ -2451,9 +2451,11 @@ public class HorizontalPerspective {
     p.getRoot().addPart(
             new PartDefinitionImpl(
                     new DefaultPlaceRequest(HelloWorldScreen.class.getName())));
+    p.getRoot().setElementId("horizontal-rootPanel");
 
     PanelDefinitionImpl northPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
     p.getRoot().insertChild(CompassPosition.NORTH, northPanel);
+    northPanel.setElementId("horizontal-northPanel");
     northPanel.setHeight(300);
     northPanel.addPart(
             new PartDefinitionImpl(
