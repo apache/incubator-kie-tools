@@ -59,6 +59,7 @@ public class ProjectScreenViewImpl
     private static final int IMPORTS_METADATA_PANEL_INDEX = 6;
 
     private POMEditorPanel pomEditorPanel;
+
     private MetadataWidget pomMetadataWidget;
     private Presenter presenter;
     private KModuleEditorPanel kModuleEditorPanel;

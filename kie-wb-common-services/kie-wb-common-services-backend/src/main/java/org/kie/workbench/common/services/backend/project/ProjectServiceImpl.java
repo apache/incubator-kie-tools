@@ -121,7 +121,7 @@ public class ProjectServiceImpl
             
             if(parentExists && parent != null){
               parent.setMultiModule(true);
-              parent.getModules().add(pom.getGav().getArtifactId());
+              parent.getModules().add(pom.getName());
               pomService.save(parentPom, parent, null, "Adding child module "+pom.getName());
             }
 

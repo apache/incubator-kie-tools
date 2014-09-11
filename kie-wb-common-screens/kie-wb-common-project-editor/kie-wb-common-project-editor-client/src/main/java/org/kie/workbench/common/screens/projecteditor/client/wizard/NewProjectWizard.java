@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -58,6 +59,7 @@ public class NewProjectWizard
 
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
     private POM pom = new POM();
+    private Callback<Project> projectCallback;
 
     @PostConstruct
     public void setupPages() {
@@ -134,6 +136,18 @@ public class NewProjectWizard
                                                                                                                baseUrl );
     }
 
+    @Override
+    public void close() {
+        super.close();
+        invokeCallback( null );
+    }
+
+    @Override
+    public void start( Callback<Project> callback ) {
+        this.projectCallback = callback;
+        super.start();
+    }
+
     private RemoteCallback<KieProject> getSuccessCallback() {
         return new RemoteCallback<KieProject>() {
 
@@ -141,9 +155,17 @@ public class NewProjectWizard
             public void callback( final KieProject project ) {
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+                invokeCallback( project );
                 placeManager.goTo( "projectScreen" );
             }
         };
+    }
+
+    private void invokeCallback( Project project ) {
+        if ( projectCallback != null ) {
+            projectCallback.callback( project );
+            projectCallback = null;
+        }
     }
 
 }
