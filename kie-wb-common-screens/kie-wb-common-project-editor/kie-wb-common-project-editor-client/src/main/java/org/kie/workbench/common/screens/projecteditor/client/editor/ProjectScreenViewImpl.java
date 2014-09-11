@@ -58,17 +58,13 @@ public class ProjectScreenViewImpl
     private static final int IMPORTS_PANEL_INDEX = 5;
     private static final int IMPORTS_METADATA_PANEL_INDEX = 6;
 
-    @Inject
     private POMEditorPanel pomEditorPanel;
     private MetadataWidget pomMetadataWidget;
     private Presenter presenter;
-    @Inject
     private KModuleEditorPanel kModuleEditorPanel;
     private MetadataWidget kModuleMetaDataPanel;
-    @Inject
     private ImportsWidgetPresenter importsWidgetPresenter;
     private MetadataWidget importsPageMetadata;
-    @Inject
     private DependencyGrid dependencyGrid;
 
     interface ProjectScreenViewImplBinder
@@ -87,10 +83,22 @@ public class ProjectScreenViewImpl
 
     @Inject
     BusyIndicatorView busyIndicatorView;
-    
+
     public ProjectScreenViewImpl() {
+    }
+
+    @Inject
+    public ProjectScreenViewImpl(POMEditorPanel pomEditorPanel,
+                                 KModuleEditorPanel kModuleEditorPanel,
+                                 ImportsWidgetPresenter importsWidgetPresenter,
+                                 DependencyGrid dependencyGrid) {
 
         initWidget(uiBinder.createAndBindUi(this));
+
+        this.pomEditorPanel = pomEditorPanel;
+        this.kModuleEditorPanel = kModuleEditorPanel;
+        this.importsWidgetPresenter = importsWidgetPresenter;
+        this.dependencyGrid = dependencyGrid;
 
         deckPanel.add(pomEditorPanel);
 
