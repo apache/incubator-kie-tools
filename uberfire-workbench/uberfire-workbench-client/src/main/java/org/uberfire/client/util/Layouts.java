@@ -1,6 +1,9 @@
 package org.uberfire.client.util;
 
 import org.uberfire.client.workbench.panels.SplitPanel;
+import org.uberfire.debug.Debug;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.PanelDefinition;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -46,11 +49,31 @@ public class Layouts {
      * @return information about w and its ancestors, one widget per line.
      */
     public static String getContainmentHierarchy( Widget w ) {
+        return getContainmentHierarchy( w, false );
+    }
+
+    /**
+     * Returns a multi-line string detailing layout information about the given widget and each of its ancestors in the
+     * widget tree, optionally setting debug IDs on each widget to assist in locating them in browser DOM explorer
+     * tools.
+     *
+     * @param w
+     *            the widget to start at. Null is permitted, and results in this method returning an empty string.
+     * @param setDebugIds
+     *            if true, the element and each of its ancestors will have its ID set to
+     *            <code>"gwt-debug-containment-parent-<i>depth</i>"</code>, where depth is 0 for the given widget, 1 for
+     *            its parent, 2 for its grandparent, and so on. This ID will replace any ID that was previously set on
+     *            the element, so it may break some CSS and even javascript functionality. Use with caution.
+     * @return information about w and its ancestors, one widget per line.
+     */
+    public static String getContainmentHierarchy( Widget w, boolean setDebugIds ) {
         StringBuilder sb = new StringBuilder();
         int depth = 0;
         while ( w != null ) {
+            if ( setDebugIds ) {
+                w.ensureDebugId( "containment-parent-" + depth );
+            }
             sb.append( "  " + depth + " - " + widgetInfo( w ) );
-            w.ensureDebugId( "containment-parent-" + depth );
             w = w.getParent();
             depth++;
         }
@@ -60,15 +83,17 @@ public class Layouts {
     private static String widgetInfo( Widget w ) {
         String widgetInfo;
         try {
+            String id = w.getElement().getId();
             widgetInfo = w.getOffsetWidth() + "x" + w.getOffsetHeight() + " - " +
-                    w.getClass().getName() + "@" + System.identityHashCode( w ) +
+                    Debug.objectId( w ) +
+                    (id != null && id.length() > 0 ? " id=" + id : "" ) +
                     (w instanceof SplitPanel ? " divider at " + ((SplitPanel) w).getFixedWidgetSize() : "") +
                     (w instanceof RequiresResize ? " RequiresResize" : "") +
                     (w instanceof ProvidesResize ? " ProvidesResize" : "") +
                     " position: " + w.getElement().getStyle().getPosition() + "\n";
         } catch ( Throwable t ) {
             widgetInfo = "?x? - " +
-                    w.getClass().getName() + "@" + System.identityHashCode( w ) +
+                    Debug.objectId( w ) +
                     ": " + t.toString() + "\n";
         }
         return widgetInfo;
@@ -131,5 +156,26 @@ public class Layouts {
     private static native Widget extractWidget( Composite composite ) /*-{
         return composite.@com.google.gwt.user.client.ui.Composite::widget;
     }-*/;
+
+    /**
+     * Returns the current width or height of the given panel definition.
+     *
+     * @param position
+     *            determines which dimension (width or height) to return.
+     * @param definition
+     *            the definition to get the size information from.
+     * @return the with if position is EAST or WEST; the height if position is NORTH or SOUTH. May be null.
+     */
+    public static Integer widthOrHeight( CompassPosition position, PanelDefinition definition ) {
+        switch ( position ) {
+            case NORTH:
+            case SOUTH:
+                return definition.getHeight();
+            case EAST:
+            case WEST:
+                return definition.getWidth();
+            default: throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
+        }
+    }
 
 }

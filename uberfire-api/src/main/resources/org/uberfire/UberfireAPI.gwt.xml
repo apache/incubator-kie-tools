@@ -25,6 +25,7 @@
   <script src="js/uri.min.js"/>
 
   <source path='backend'/>
+  <source path='debug'/>
   <source path='lifecycle'/>
   <source path='mvp'/>
   <source path='paging'/>
