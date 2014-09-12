@@ -16,29 +16,18 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.view.client.AsyncDataProvider;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
-import java.util.List;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public interface VersionHistoryPresenterView
-        extends IsWidget {
+public class Helper {
 
-
-
-    interface Presenter {
-
-        void onSelect(VersionRecord record);
-
+    public static VersionRecord getVersionRecord(String version) {
+        VersionRecord versionRecord = mock(VersionRecord.class);
+        when(versionRecord.id()).thenReturn(version);
+        when(versionRecord.uri()).thenReturn("hehe//" + version);
+        return versionRecord;
     }
-
-    void refreshGrid();
-
-    void setup(String version, AsyncDataProvider<VersionRecord> dataProvider);
-
-    void setPresenter(Presenter presenter);
-
-    void showLoading();
 
 }

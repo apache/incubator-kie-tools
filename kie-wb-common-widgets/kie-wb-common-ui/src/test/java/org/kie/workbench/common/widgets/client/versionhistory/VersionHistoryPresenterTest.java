@@ -83,8 +83,9 @@ public class VersionHistoryPresenterTest {
         VersionRecord versionRecord3 = getVersionRecord("333");
         records.add(versionRecord3);
 
-        screen.init(path333, "333");
+        screen.init(path333);
 
+        screen.refresh("333");
 
         verify(view).setup(eq("333"), any(AsyncDataProvider.class));
     }
@@ -96,7 +97,7 @@ public class VersionHistoryPresenterTest {
         VersionRecord versionRecord2 = getVersionRecord("222");
         records.add(versionRecord2);
 
-        screen.init(path222, "222");
+        screen.init(path222);
 
         screen.onSelect(versionRecord1);
 
@@ -114,7 +115,9 @@ public class VersionHistoryPresenterTest {
         VersionRecord versionRecord2 = getVersionRecord("222");
         records.add(versionRecord2);
 
-        screen.init(path222, "222");
+        screen.init(path222);
+
+        screen.refresh("222");
 
         verify(view).setup(eq("222"), any(AsyncDataProvider.class));
 
@@ -132,7 +135,9 @@ public class VersionHistoryPresenterTest {
         VersionRecord versionRecord2 = getVersionRecord("222");
         records.add(versionRecord2);
 
-        screen.init(path222, "222");
+        screen.init(path222);
+
+        screen.refresh("222");
 
         verify(view).setup(eq("222"), any(AsyncDataProvider.class));
 
@@ -159,7 +164,7 @@ public class VersionHistoryPresenterTest {
         private VersionServiceMock() {
 
             service = new VersionService() {
-                public List<VersionRecord> getVersion(final Path path) {
+                public List<VersionRecord> getVersions(final Path path) {
                     callback.callback(records);
                     return null;
                 }

@@ -16,54 +16,153 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 
-public class VersionMenuDropDownButton
-        implements IsWidget {
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-    private DropdownButton button = new DropdownButton(ToolsMenuConstants.INSTANCE.LatestVersion());
+public class VersionMenuDropDownButton
+        implements VersionMenuDropDownButtonView.Presenter, IsWidget {
+
+    private List<VersionRecord> versions;
+    private Callback<VersionRecord> selectionCallback;
+    private Command showMore;
+    private String version;
+    private VersionMenuDropDownButtonView view;
 
     public VersionMenuDropDownButton() {
-        button.setRightDropdown(true);
-        button.getTriggerWidget().addStyleName("btn-mini");
+    }
+
+    @Inject
+    public VersionMenuDropDownButton(VersionMenuDropDownButtonView view) {
+        this.view = view;
+        view.setPresenter(this);
     }
 
     @Override
     public Widget asWidget() {
-        return button;
+        return view.asWidget();
     }
 
-    public void clear() {
-        button.clear();
+    public void setItems(List<VersionRecord> versions) {
+        if (this.versions == null || (versions.size() > this.versions.size())) {
+            this.versions = versions;
+        }
+        updateTitle();
     }
 
-    public void setTextToLatest() {
-        button.setText(ToolsMenuConstants.INSTANCE.LatestVersion());
+    @Override
+    public void onMenuOpening() {
+
+        PortablePreconditions.checkNotNull("version", version);
+        PortablePreconditions.checkNotNull("versions", versions);
+
+        view.clear();
+
+        boolean currentHasBeenAdded = false;
+        int versionIndex = versions.size();
+
+        ArrayList<VersionRecord> reversedList = new ArrayList<VersionRecord>(versions);
+        Collections.reverse(reversedList);
+
+        for (final VersionRecord versionRecord : reversedList) {
+
+            boolean isSelected = isSelected(versionRecord);
+
+            if (isSelected) {
+                currentHasBeenAdded = true;
+            }
+
+            if (versionIndex > (versions.size() - 7) || versions.size() <= 7) {
+
+                view.addLabel(versionRecord, isSelected, versionIndex);
+
+            } else {
+
+                if (!currentHasBeenAdded) {
+                    view.addLabel(getCurrentVersionRecord(), true, getCurrentVersionIndex());
+                }
+
+                addShowMoreLabel(versionIndex);
+
+                break;
+
+            }
+
+            versionIndex--;
+        }
     }
 
-    public void addLabel(VersionRecord versionRecord, int versionIndex, boolean isSelected, Command selectionCommand) {
-        VersionMenuItemLabel widget = new VersionMenuItemLabel(
-                versionRecord,
-                versionIndex,
-                isSelected,
-                selectionCommand);
-        widget.setWidth("400px");
-        button.add(widget);
+    private void updateTitle() {
+        if (versions != null && version != null) {
+            if (!versions.isEmpty() && version.equals(versions.get(versions.size() - 1).id())) {
+                view.setTextToLatest();
+            } else {
+                view.setTextToVersion(getCurrentVersionIndex());
+            }
+        }
     }
 
-    public void addViewAllLabel(int index, Command command) {
-        button.add(
-                new ViewAllLabel(
-                        index,
-                        command));
+
+    private VersionRecord getCurrentVersionRecord() {
+        for (VersionRecord versionRecord : versions) {
+            if (versionRecord.id().equals(version)) {
+                return versionRecord;
+            }
+        }
+        return null;
     }
 
-    public void setTextToVersion(int versionIndex) {
-        button.setText(ToolsMenuConstants.INSTANCE.Version(versionIndex));
+    private int getCurrentVersionIndex() {
+        for (int i = 0; i < versions.size(); i++) {
+            if (versions.get(i).id().equals(version)) {
+                return i + 1;
+            }
+        }
+        return -1;
     }
+
+    private boolean isSelected(VersionRecord versionRecord) {
+        return versionRecord.id().equals(version);
+    }
+
+    private void addShowMoreLabel(int versionIndex) {
+        view.addViewAllLabel(
+                versions.size() - versionIndex,
+                new Command() {
+                    @Override
+                    public void execute() {
+                        showMore.execute();
+                    }
+                });
+    }
+
+    public void addSelectionCallback(Callback<VersionRecord> selectionCallback) {
+        this.selectionCallback = selectionCallback;
+    }
+
+    public void setShowMoreCommand(Command showMore) {
+        this.showMore = showMore;
+    }
+
+    public void setVersion(String version) {
+
+        this.version = version;
+        updateTitle();
+    }
+
+    @Override
+    public void onVersionRecordSelected(VersionRecord result) {
+        if (selectionCallback != null) {
+            selectionCallback.callback(result);
+        }
+    }
+
 }

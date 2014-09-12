@@ -23,6 +23,7 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.view.client.AsyncDataProvider;
+import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.tables.PagedTable;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.java.nio.base.version.VersionRecord;
@@ -33,7 +34,7 @@ public class VersionHistoryPresenterViewImpl
         extends Composite
         implements VersionHistoryPresenterView {
 
-    private PagedTable table = new PagedTable(6);
+    private PagedTable table = new PagedTable(5);
 
     private Presenter presenter;
     private String version;
@@ -100,4 +101,8 @@ public class VersionHistoryPresenterViewImpl
         this.presenter = presenter;
     }
 
+    @Override
+    public void showLoading() {
+        BusyPopup.showMessage(CommonConstants.INSTANCE.Loading());
+    }
 }

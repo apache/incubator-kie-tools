@@ -113,8 +113,8 @@ public class OverviewWidgetViewImpl
     }
 
     @Override
-    public void setVersionHistory(Path path, String version) {
-        versionHistory.init(path, version);
+    public void setVersionHistory(Path path) {
+        versionHistory.init(path);
     }
 
     @Override
@@ -189,7 +189,7 @@ public class OverviewWidgetViewImpl
     }
 
     @Override
-    public void refresh() {
-        versionHistory.refresh();
+    public void refresh(String version) {
+        versionHistory.refresh(version);
     }
 }
