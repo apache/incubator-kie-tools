@@ -83,7 +83,22 @@ public class SimpleItemWidgetModel {
     }
 
     public String getLinkText() {
+        return cleanLinkText( linkText );
+    }
+
+    private String cleanLinkText( String linkText ) {
+        if ( hasExtension( linkText ) ) {
+            return removeExtension( linkText );
+        }
         return linkText;
+    }
+
+    private String removeExtension( String linkText ) {
+        return linkText.substring( 0, linkText.indexOf( "." ) );
+    }
+
+    private boolean hasExtension( String linkText ) {
+        return linkText.indexOf( '.' ) > 0;
     }
 
     public SocialUser getSocialUser() {

@@ -1,74 +1,83 @@
 package org.kie.uberfire.social.activities.client.widgets.item;
 
 import com.github.gwtbootstrap.client.ui.Column;
-import com.github.gwtbootstrap.client.ui.FluidRow;
+import com.github.gwtbootstrap.client.ui.Container;
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.NavList;
-import com.github.gwtbootstrap.client.ui.Paragraph;
-import com.github.gwtbootstrap.client.ui.Thumbnail;
-import com.github.gwtbootstrap.client.ui.Thumbnails;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.item.model.SocialItemExpandedWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.UpdateItem;
-import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
-public class SocialItemExpandedWidget {
+public class SocialItemExpandedWidget extends Composite {
 
-    private final static DateTimeFormat FORMATTER = DateTimeFormat.getFormat( "dd/MM/yyyy HH:mm:ss" );
+    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
 
-    public static void createItem( SocialItemExpandedWidgetModel model ) {
-        model.getItemsPanel().add( createFirstRow( model ) );
+    @UiField
+    Column icon;
+
+    @UiField
+    Column file;
+
+    @UiField
+    Container table;
+
+    interface MyUiBinder extends UiBinder<Widget, SocialItemExpandedWidget> {
+
+    }
+
+    public void init( SocialItemExpandedWidgetModel model ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        createItem( model );
+    }
+
+    public void createItem( SocialItemExpandedWidgetModel model ) {
+        createFirstRow( model );
         for ( UpdateItem updateItem : model.getUpdateItems() ) {
-            model.getItemsPanel().add( createSecondRow( updateItem ) );
+            createSecondRow( model, updateItem );
         }
 
     }
 
-    public static FluidRow createFirstRow(
+    public void createFirstRow(
             SocialItemExpandedWidgetModel model ) {
-        FluidRow row = GWT.create( FluidRow.class );
+        createIcon( model );
+        createLink( model );
 
-        row.add( createIcon( model ) );
-        row.add( createLink( model ) );
-
-        return row;
     }
 
-    private static Column createIcon( final SocialItemExpandedWidgetModel model ) {
-        final Column column = new Column( 1 );
+    private void createIcon( final SocialItemExpandedWidgetModel model ) {
 
         MessageBuilder.createCall( new RemoteCallback<Path>() {
             public void callback( Path path ) {
                 for ( ClientResourceType type : model.getModel().getResourceTypes() ) {
                     if ( type.accept( path ) ) {
-                        com.google.gwt.user.client.ui.Image maybeAlreadyAttachedImage = ( com.google.gwt.user.client.ui.Image ) type.getIcon();
-                        Image newImage = new Image( maybeAlreadyAttachedImage.getUrl(),maybeAlreadyAttachedImage.getOriginLeft(), maybeAlreadyAttachedImage.getOriginTop(),maybeAlreadyAttachedImage.getWidth(),maybeAlreadyAttachedImage.getHeight() );
-                        column.add( newImage);
+                        com.google.gwt.user.client.ui.Image maybeAlreadyAttachedImage = (com.google.gwt.user.client.ui.Image) type.getIcon();
+                        Image newImage = new Image( maybeAlreadyAttachedImage.getUrl(), maybeAlreadyAttachedImage.getOriginLeft(), maybeAlreadyAttachedImage.getOriginTop(), maybeAlreadyAttachedImage.getWidth(), maybeAlreadyAttachedImage.getHeight() );
+                        icon.add( newImage );
                         break;
                     }
                 }
             }
         }, VFSService.class ).get( model.getUpdateItems().get( 0 ).getEvent().getLinkTarget() );
-        return column;
     }
 
-    private static Column createLink( final SocialItemExpandedWidgetModel model ) {
+    private void createLink( final SocialItemExpandedWidgetModel model ) {
         final UpdateItem updateItem = model.getUpdateItems().get( 0 );
-        Column column = new Column( 11 );
-        SimplePanel panel = new SimplePanel();
         NavList list = new NavList();
         NavLink link = new NavLink();
         link.setText( updateItem.getEvent().getLinkLabel() );
@@ -84,54 +93,22 @@ public class SocialItemExpandedWidget {
             }
         } );
         list.add( link );
-        panel.add( list );
-        column.add( panel );
-        return column;
+        file.add( list );
     }
 
-    public static FluidRow createSecondRow( UpdateItem updateItem ) {
-        FluidRow row = GWT.create( FluidRow.class );
-        row.add( createThumbNail( updateItem.getEvent().getSocialUser() ) );
-        row.add( createSocialUserName( updateItem.getEvent() ) );
-        row.add( createAdditionalInfo( updateItem.getEvent() ) );
+    public void createSecondRow( final SocialItemExpandedWidgetModel model,
+                                 final UpdateItem updateItem ) {
 
-        return row;
-    }
+        MessageBuilder.createCall( new RemoteCallback<SocialUser>() {
+            public void callback( SocialUser socialUser ) {
+                CommentRowWidget row = GWT.create( CommentRowWidget.class );
+                updateItem.setSocialUser(socialUser);
+                updateItem.setUserClickCommand(model.getModel().getUserClickCommand());
+                row.init( updateItem );
+                table.add( row );
+            }
+        }, SocialUserRepositoryAPI.class ).findSocialUser( updateItem.getEvent().getSocialUser().getUserName() );
 
-    private static Column createAdditionalInfo( SocialActivitiesEvent event ) {
-        Column column;
-        column = new Column( 10 );
-        StringBuilder comment = new StringBuilder();
-        comment.append( event.getAdicionalInfos() );
-        comment.append( " " );
-        comment.append( FORMATTER.format( event.getTimestamp() ) );
-        comment.append( " " );
-        if ( !event.getDescription().isEmpty() ) {
-            comment.append( "\"" + event.getDescription() + "\"" );
-        }
-        column.add( new Paragraph( comment.toString() ) );
-        return column;
-    }
-
-    private static Column createSocialUserName( SocialActivitiesEvent event ) {
-        Column column = new Column( 1 );
-        NavList list = new NavList();
-        NavLink link = new NavLink();
-        link.setText( event.getSocialUser().getUserName() );
-        list.add( link );
-        column.add( list );
-        return column;
-    }
-
-    private static Column createThumbNail( SocialUser socialUser ) {
-        Column column = new Column( 1 );
-        Thumbnails tumThumbnails = new Thumbnails();
-        Thumbnail t = new Thumbnail();
-        Image userImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
-        t.add( userImage );
-        tumThumbnails.add( t );
-        column.add( tumThumbnails );
-        return column;
     }
 
 }

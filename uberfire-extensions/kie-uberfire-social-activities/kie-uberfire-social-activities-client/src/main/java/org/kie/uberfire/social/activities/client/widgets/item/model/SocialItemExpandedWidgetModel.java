@@ -8,23 +8,16 @@ import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.
 
 public class SocialItemExpandedWidgetModel {
 
-    private final FluidContainer itemsPanel;
     private final String fileName;
     private final List<UpdateItem> updateItems;
     private final SocialTimelineWidgetModel model;
 
-    public SocialItemExpandedWidgetModel( FluidContainer itemsPanel,
-                                          String fileName,
+    public SocialItemExpandedWidgetModel( String fileName,
                                           List<UpdateItem> updateItems,
                                           SocialTimelineWidgetModel model ) {
-        this.itemsPanel = itemsPanel;
         this.fileName = fileName;
         this.updateItems = updateItems;
         this.model = model;
-    }
-
-    public FluidContainer getItemsPanel() {
-        return itemsPanel;
     }
 
     public String getFileName() {

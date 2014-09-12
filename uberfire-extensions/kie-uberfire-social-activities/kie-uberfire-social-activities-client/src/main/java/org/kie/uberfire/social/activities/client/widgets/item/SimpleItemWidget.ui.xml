@@ -15,7 +15,7 @@
   <b:Row>
     <b:Column size="1" ui:field="icon" addStyleNames="{style.right}">
     </b:Column>
-    <b:Column size="2" ui:field="link" addStyleNames="{style.center}">
+    <b:Column size="2" ui:field="link" addStyleNames="{style.left}">
     </b:Column>
     <b:Column size="9" ui:field="desc" addStyleNames="{style.left}">
     </b:Column>

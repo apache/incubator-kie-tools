@@ -3,10 +3,12 @@ package org.kie.uberfire.social.activities.client.widgets.timeline.regular.model
 import java.util.List;
 import java.util.Map;
 
+import org.kie.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class SocialTimelineWidgetModel {
 
@@ -19,6 +21,8 @@ public class SocialTimelineWidgetModel {
     private Map<String, String> globals;
     private String drlName;
 
+    private ParameterizedCommand<String> userClickCommand;
+
     public SocialTimelineWidgetModel( SocialUser socialUser,
                                       PlaceManager placeManager, List<ClientResourceType> resourceTypes ) {
         this.socialUser = socialUser;
@@ -27,6 +31,10 @@ public class SocialTimelineWidgetModel {
     }
 
 
+    public SocialTimelineWidgetModel withUserClickCommand( ParameterizedCommand<String> parameterizedCommand){
+        userClickCommand = parameterizedCommand;
+        return this;
+    }
     public SocialTimelineWidgetModel(SocialEventType socialEventType,
                                       SocialUser socialUser,
                                       PlaceManager placeManager ) {
@@ -73,5 +81,9 @@ public class SocialTimelineWidgetModel {
 
     public List<ClientResourceType> getResourceTypes() {
         return resourceTypes;
+    }
+
+    public ParameterizedCommand<String> getUserClickCommand() {
+        return userClickCommand;
     }
 }

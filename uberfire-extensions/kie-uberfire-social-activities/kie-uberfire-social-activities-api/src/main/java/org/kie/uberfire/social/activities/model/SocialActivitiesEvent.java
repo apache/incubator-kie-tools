@@ -165,4 +165,8 @@ public class SocialActivitiesEvent implements Serializable {
     public String getType() {
         return type;
     }
+
+    public void updateSocialUser( SocialUser updatedSocialUser ) {
+        this.socialUser = updatedSocialUser;
+    }
 }

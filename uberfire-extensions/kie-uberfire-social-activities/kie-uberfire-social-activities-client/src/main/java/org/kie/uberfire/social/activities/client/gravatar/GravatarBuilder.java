@@ -8,7 +8,7 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 public class GravatarBuilder {
 
     public enum SIZE {
-        SMALL, BIG
+        SMALL, BIG, MICRO
     }
 
     public static Image generate( SocialUser socialUser,
@@ -24,9 +24,11 @@ public class GravatarBuilder {
 
                                                 SIZE size ) {
         Image gravatarImage;
-        if ( size == SIZE.SMALL ) {
+        if ( size == SIZE.MICRO ) {
+            gravatarImage = new Image( new GravatarImage( socialUser.getEmail(), 15 ).getUrl() );
+        } else if ( size == SIZE.SMALL ) {
             gravatarImage = new Image( new GravatarImage( socialUser.getEmail(), 30 ).getUrl() );
-        } else {
+        } else   {
             gravatarImage = new Image( new GravatarImage( socialUser.getEmail(), 200 ).getUrl() );
         }
 
@@ -35,7 +37,10 @@ public class GravatarBuilder {
 
     private static Image generateDefaultImage( SIZE size ) {
         Image userImage;
-        if ( size == SIZE.SMALL ) {
+        if ( size == SIZE.MICRO ) {
+            ImageResource imageResource = AppResource.INSTANCE.images().genericAvatar15px();
+            userImage = new Image( imageResource );
+        } else if ( size == SIZE.SMALL ) {
             ImageResource imageResource = AppResource.INSTANCE.images().genericAvatar30px();
             userImage = new Image( imageResource );
 

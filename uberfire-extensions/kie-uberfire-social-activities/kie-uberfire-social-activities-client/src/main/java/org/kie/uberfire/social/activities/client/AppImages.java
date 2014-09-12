@@ -32,4 +32,6 @@ public interface AppImages
     @Source("images/generic-avatar.png")
     ImageResource genericAvatar();
 
+    @Source("images/generic-avatar-15px.png")
+    ImageResource genericAvatar15px();
 }
