@@ -11,6 +11,7 @@ import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
 
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -37,6 +38,7 @@ public class MultiListWorkbenchPanelViewTest extends AbstractDockingWorkbenchPan
     @Test
     public void shouldPropagateOnResize() {
         view.onResize();
-        verify( listBar, times( 1 ) ).onResize();
+        RequiresResize viewChild = (RequiresResize) view.getWidget();
+        verify( viewChild, times( 1 ) ).onResize();
     }
 }

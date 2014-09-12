@@ -48,13 +48,4 @@ extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
         addSelectionHandler( listBar );
         return listBar;
     }
-
-    @Override
-    public void onResize() {
-        int width = getOffsetWidth();
-        int height = getOffsetHeight();
-        listBar.setPixelSize( width, height );
-        listBar.onResize();
-        super.onResize();
-    }
 }
