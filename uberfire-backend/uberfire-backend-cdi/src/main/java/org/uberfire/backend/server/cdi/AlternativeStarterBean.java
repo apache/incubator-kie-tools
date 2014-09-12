@@ -20,13 +20,17 @@ public class AlternativeStarterBean {
     private static final String START_METHOD = System.getProperty( "org.uberfire.start.method", "cdi" );
 
     @Inject
-    private Startable startableBean;
+    private Instance<Startable> startableBeans;
 
     @PostConstruct
     public void configure() {
         if (EJB_METHOD.equals(START_METHOD)) {
             logger.debug("Starting all beans defined as startable...");
-            startableBean.start();
+            if (!startableBeans.isUnsatisfied()) {
+                for (Startable startableBean : startableBeans) {
+                    startableBean.start();
+                }
+            }
             logger.info("All startable beans properly started");
         }
     }
