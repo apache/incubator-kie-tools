@@ -24,19 +24,15 @@ import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.mvp.Command;
 
 public class VersionMenuItemLabel
         extends Composite {
 
-    private Command onSelectCommand;
+    private final Callback<VersionRecord> selectionCallback;
+    private VersionRecord versionRecord;
 
     public interface VersionMenuItemStyle
             extends CssResource {
@@ -91,22 +87,28 @@ public class VersionMenuItemLabel
             VersionRecord versionRecord,
             Integer number,
             boolean isSelected,
-            Command onSelectCommand) {
+            Callback<VersionRecord> selectionCallback) {
+
+        this.versionRecord = versionRecord;
         initWidget(uiBinder.createAndBindUi(this));
 
         if (isSelected) {
-            panel.addStyleName(style.selected());
-            panel.removeStyleName(style.normal());
-            authorContainer.addClassName(style.authorSelected());
-            authorContainer.removeClassName(style.author());
+            setSelected();
         }
 
-        this.onSelectCommand = onSelectCommand;
+        this.selectionCallback = selectionCallback;
         this.number.setText(number.toString());
         author.setText(versionRecord.author());
         date.setText(DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(versionRecord.date()));
         comment.setText(snip(versionRecord.comment()));
         base.setTitle(versionRecord.comment());
+    }
+
+    private void setSelected() {
+        panel.addStyleName(style.selected());
+        panel.removeStyleName(style.normal());
+        authorContainer.addClassName(style.authorSelected());
+        authorContainer.removeClassName(style.author());
     }
 
     private String snip(String comment) {
@@ -119,8 +121,8 @@ public class VersionMenuItemLabel
 
     @UiHandler("base")
     public void handleClick(ClickEvent event) {
-        if (onSelectCommand != null) {
-            onSelectCommand.execute();
+        if (selectionCallback != null) {
+            selectionCallback.callback(versionRecord);
         }
     }
 }

@@ -17,28 +17,30 @@
 package org.kie.workbench.common.widgets.client.versionhistory;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.view.client.AsyncDataProvider;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.Command;
 
-import java.util.List;
-
-public interface VersionHistoryPresenterView
+public interface VersionMenuDropDownButtonView
         extends IsWidget {
-
-
 
     interface Presenter {
 
-        void onSelect(VersionRecord record);
+        void onVersionRecordSelected(VersionRecord result);
+
+        void onMenuOpening();
 
     }
 
-    void refreshGrid();
-
-    void setup(String version, AsyncDataProvider<VersionRecord> dataProvider);
-
     void setPresenter(Presenter presenter);
 
-    void showLoading();
+    void clear();
+
+    void setTextToLatest();
+
+    void setTextToVersion(int versionIndex);
+
+    void addLabel(VersionRecord versionRecord, boolean isSelected, int versionIndex);
+
+    void addViewAllLabel(int index, Command command);
 
 }

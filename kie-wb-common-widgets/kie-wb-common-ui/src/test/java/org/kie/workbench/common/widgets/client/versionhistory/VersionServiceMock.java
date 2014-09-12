@@ -35,7 +35,7 @@ class VersionServiceMock
         this.versions = versions;
     }
 
-    @Override public List<VersionRecord> getVersion(Path path) {
+    @Override public List<VersionRecord> getVersions(Path path) {
         callback.callback(versions);
         return null;
     }

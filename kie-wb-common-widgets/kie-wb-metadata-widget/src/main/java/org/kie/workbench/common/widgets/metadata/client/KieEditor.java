@@ -216,7 +216,7 @@ public abstract class KieEditor {
                         CommonConstants.INSTANCE.Overview()) {
                     @Override
                     public void onFocus() {
-                        overviewWidget.refresh();
+                        overviewWidget.refresh(versionRecordManager.getVersion());
                         onOverviewSelected();
                     }
 

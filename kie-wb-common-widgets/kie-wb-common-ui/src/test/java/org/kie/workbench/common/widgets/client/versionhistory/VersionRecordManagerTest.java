@@ -16,19 +16,17 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.any;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.kie.workbench.common.widgets.client.versionhistory.Helper.getVersionRecord;
 import static org.mockito.Mockito.*;
 
 public class VersionRecordManagerTest {
@@ -41,6 +39,7 @@ public class VersionRecordManagerTest {
     private ObservablePath pathTo111;
     private ObservablePath pathTo222;
     private ObservablePath pathTo333;
+    private VersionSelectedEventMock versionSelectedEvent;
 
     @Before
     public void setUp() throws Exception {
@@ -50,10 +49,19 @@ public class VersionRecordManagerTest {
         setUpUtil();
         setUpVersions();
 
+        versionSelectedEvent = spy(
+                new VersionSelectedEventMock(
+                        new Callback<VersionSelectedEvent>() {
+                            @Override
+                            public void callback(VersionSelectedEvent result) {
+                                manager.onVersionSelectedEvent(result);
+                            }
+                        }));
         manager = spy(new VersionRecordManager(
                 dropDownButton,
                 restorePopup,
                 util,
+                versionSelectedEvent,
                 new VersionServiceCallerMock(versions)));
 
         manager.init(
@@ -89,11 +97,7 @@ public class VersionRecordManagerTest {
     @Test
     public void testSimple() throws Exception {
 
-        verify(dropDownButton).addLabel(eq(versions.get(0)), eq(1), eq(false), any(Command.class));
-        verify(dropDownButton).addLabel(eq(versions.get(1)), eq(2), eq(false), any(Command.class));
-        verify(dropDownButton).addLabel(eq(versions.get(2)), eq(3), eq(true), any(Command.class));
-
-        verify(dropDownButton).setTextToLatest();
+        verify(dropDownButton).setItems(versions);
         assertEquals(pathTo333, manager.getCurrentPath());
         assertEquals(pathTo333, manager.getPathToLatest());
         assertEquals("333", manager.getVersion());
@@ -114,7 +118,6 @@ public class VersionRecordManagerTest {
 
         manager.onVersionSelectedEvent(new VersionSelectedEvent(pathTo333, getVersionRecord("111")));
 
-        verify(dropDownButton).setTextToVersion(1);
         assertEquals(pathTo111, manager.getCurrentPath());
         assertEquals("111", manager.getVersion());
     }
@@ -140,7 +143,6 @@ public class VersionRecordManagerTest {
 
         manager.reloadVersions(pathTo444);
 
-        verify(dropDownButton, atLeastOnce()).setTextToLatest();
         assertEquals(pathTo444, manager.getPathToLatest());
         assertEquals(pathTo444, manager.getCurrentPath());
         assertEquals("444", manager.getVersion());
@@ -157,10 +159,5 @@ public class VersionRecordManagerTest {
 
     // init with null path
 
-    private VersionRecord getVersionRecord(String version) {
-        VersionRecord versionRecord = mock(VersionRecord.class);
-        when(versionRecord.id()).thenReturn(version);
-        when(versionRecord.uri()).thenReturn("hehe//" + version);
-        return versionRecord;
-    }
+
 }

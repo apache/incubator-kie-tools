@@ -70,17 +70,12 @@ public class VersionHistoryPresenter
 
     }
 
-    public void init(final Path path, String version) {
-
+    public void init(final Path path) {
         this.path = path;
-        this.version = version;
-
-        loadContent();
-
     }
 
     private void loadContent() {
-        versionService.call(getRemoteCallback()).getVersion(path);
+        versionService.call(getRemoteCallback()).getVersions(path);
     }
 
     private RemoteCallback<List<VersionRecord>> getRemoteCallback() {
@@ -90,14 +85,15 @@ public class VersionHistoryPresenter
                 view.setup(version, dataProvider);
                 Collections.reverse(records);
                 VersionHistoryPresenter.this.records = records;
+                view.refreshGrid();
             }
         };
     }
 
-
     @Override
     public void onSelect(VersionRecord record) {
         if (!record.id().equals(version)) {
+            view.showLoading();
             versionSelectedEvent.fire(
                     new VersionSelectedEvent(
                             path,
@@ -120,7 +116,8 @@ public class VersionHistoryPresenter
         return view.asWidget();
     }
 
-    public void refresh() {
-        view.refreshGrid();
+    public void refresh(String version) {
+        this.version = version;
+        loadContent();
     }
 }

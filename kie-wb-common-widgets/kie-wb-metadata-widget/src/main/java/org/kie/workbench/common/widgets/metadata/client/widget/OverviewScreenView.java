@@ -37,11 +37,11 @@ public interface OverviewScreenView
 
     void setPresenter(Presenter presenter);
 
-    void refresh();
+    void refresh(String version);
 
     void setReadOnly(boolean isReadOnly);
 
-    void setVersionHistory(Path path, String version);
+    void setVersionHistory(Path path);
 
     void setDescription(String description);
 

@@ -16,16 +16,18 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
-import java.util.ArrayList;
-
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * This happens when an editor is opened and the path has the version parameter pointing to an older version.
@@ -54,6 +56,13 @@ public class VersionRecordManagerOpenOlderVersionTest {
                 dropDownButton,
                 restorePopup,
                 util,
+                new VersionSelectedEventMock(
+                        new Callback<VersionSelectedEvent>() {
+                            @Override
+                            public void callback(VersionSelectedEvent result) {
+                                manager.onVersionSelectedEvent(result);
+                            }
+                        }),
                 new VersionServiceCallerMock(versions));
 
     }
@@ -90,7 +99,6 @@ public class VersionRecordManagerOpenOlderVersionTest {
                     }
                 });
 
-        verify(dropDownButton).setTextToVersion(2);
         assertEquals(pathTo222, manager.getCurrentPath());
         assertEquals(pathTo333, manager.getPathToLatest());
         assertEquals("222", manager.getVersion());
