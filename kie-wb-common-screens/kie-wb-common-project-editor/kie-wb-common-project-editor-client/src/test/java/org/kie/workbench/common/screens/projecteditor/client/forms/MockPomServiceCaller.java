@@ -59,6 +59,11 @@ public class MockPomServiceCaller
                 return null;
             }
 
+            @Override
+            public Path save(Path path, POM content, Metadata metadata, String comment, boolean updateModules) {
+                return null;
+            }
+
         };
     }
 
