@@ -32,10 +32,6 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     public void onStartup( PlaceRequest place ) {
         this.place = place;
         nativePlugin.onStartup( place );
-
-        if ( nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase( "angularjs" ) ) {
-            bind();
-        }
     }
 
     @Override
@@ -105,6 +101,9 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     @Override
     public void onOpen() {
+        if ( nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase( "angularjs" ) ) {
+            bind();
+        }
         nativePlugin.onOpen();
         placeManager.executeOnOpenCallback( this.place );
     }
