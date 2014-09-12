@@ -61,7 +61,7 @@ public class Layouts {
      *            the widget to start at. Null is permitted, and results in this method returning an empty string.
      * @param setDebugIds
      *            if true, the element and each of its ancestors will have its ID set to
-     *            <code>"gwt-debug-containment-parent-<i>depth</i>"</code>, where depth is 0 for the given widget, 1 for
+     *            <code>"containment-parent-<i>depth</i>"</code>, where depth is 0 for the given widget, 1 for
      *            its parent, 2 for its grandparent, and so on. This ID will replace any ID that was previously set on
      *            the element, so it may break some CSS and even javascript functionality. Use with caution.
      * @return information about w and its ancestors, one widget per line.
@@ -71,7 +71,7 @@ public class Layouts {
         int depth = 0;
         while ( w != null ) {
             if ( setDebugIds ) {
-                w.ensureDebugId( "containment-parent-" + depth );
+                w.getElement().setId( "containment-parent-" + depth );
             }
             sb.append( "  " + depth + " - " + widgetInfo( w ) );
             w = w.getParent();
