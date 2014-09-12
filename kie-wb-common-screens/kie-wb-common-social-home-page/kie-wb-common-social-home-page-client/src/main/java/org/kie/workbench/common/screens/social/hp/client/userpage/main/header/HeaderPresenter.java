@@ -8,6 +8,7 @@ import com.github.gwtbootstrap.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class HeaderPresenter {
@@ -23,12 +24,18 @@ public class HeaderPresenter {
         view.clear();
     }
 
+    public void noConnection() {
+        view.noConnection();
+    }
+
     public interface View extends IsWidget {
 
         void addConnection( SocialUser follower,
-                            Image connections,  Command command );
+                            Image connections,  ParameterizedCommand<String> command );
 
         void clear();
+
+        void noConnection();
     }
 
     @PostConstruct
@@ -36,7 +43,7 @@ public class HeaderPresenter {
     }
 
     public void addConnection( SocialUser follower,
-                               Image connection,  Command command ) {
+                               Image connection,  ParameterizedCommand<String>  command ) {
         view.addConnection( follower, connection, command );
     }
 

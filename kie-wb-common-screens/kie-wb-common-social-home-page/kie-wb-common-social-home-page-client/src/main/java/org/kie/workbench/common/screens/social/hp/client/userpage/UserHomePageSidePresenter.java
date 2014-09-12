@@ -19,6 +19,7 @@ import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
+import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserEditedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.EditUserForm;
@@ -30,7 +31,6 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -92,14 +92,14 @@ public class UserHomePageSidePresenter {
     @Inject
     EditUserForm editUserForm;
 
-    @OnOpen
-    public void onOpen() {
-        refreshPage( loggedUser.getName() );
-    }
+    //control race conditions due to assync system (cdi x UF lifecycle)
+    private String lastUserOnpage;
 
     @OnStartup
     public void onStartup( final PlaceRequest place ) {
         this.place = place;
+        this.lastUserOnpage = loggedUser.getName();
+        refreshPage( loggedUser.getName() );
     }
 
     @WorkbenchMenu
@@ -135,32 +135,50 @@ public class UserHomePageSidePresenter {
     }
 
     public void watchUserHomepageSelectedEvent( @Observes UserHomepageSelectedEvent event ) {
+        this.lastUserOnpage = event.getSocialUserName();
         refreshPage( event.getSocialUserName() );
+    }
+
+    public void watchLoadUserPageEvent( @Observes LoadUserPageEvent event ) {
+        this.lastUserOnpage = event.getSocialUserName();
+        refreshPage( event.getSocialUserName() );
+    }
+
+    private boolean isThisUserStillCurrentActiveUser( String socialUser ) {
+        return socialUser.equalsIgnoreCase( lastUserOnpage );
     }
 
     private void refreshPage( final String username ) {
         view.clear();
         socialUserRepositoryAPI.call( new RemoteCallback<List<SocialUser>>() {
             public void callback( List<SocialUser> users ) {
-                List<String> userNames = new ArrayList<String>();
-                SocialUser userOnPage = null;
-                for ( SocialUser user : users ) {
-                    userNames.add( user.getUserName() );
-                    if ( user.getUserName().equalsIgnoreCase( username ) ) {
-                        userOnPage = user;
-                    }
-                }
-                setupSearchPeopleMenu( userOnPage, userNames );
-                if ( userOnPage != null ) {
-                    setupUserMenu( userOnPage );
+                if ( isThisUserStillCurrentActiveUser( username ) ) {
+                    refreshPageWidgets( users, username );
                 }
 
             }
         } ).findAllUsers();
     }
 
+    private void refreshPageWidgets( List<SocialUser> users,
+                                     String username ) {
+        List<String> userNames = new ArrayList<String>();
+        SocialUser userOnPage = null;
+        for ( SocialUser user : users ) {
+            userNames.add( user.getUserName() );
+            if ( user.getUserName().equalsIgnoreCase( username ) ) {
+                userOnPage = user;
+            }
+        }
+        setupSearchPeopleMenu( userOnPage, userNames );
+        if ( userOnPage != null ) {
+            setupUserMenu( userOnPage );
+        }
+    }
+
     private void setupSearchPeopleMenu( SocialUser socialUser,
                                         List<String> userNames ) {
+        view.clear();
         view.setupSearchPeopleMenu( userNames, new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
@@ -170,7 +188,7 @@ public class UserHomePageSidePresenter {
     }
 
     private void setupUserMenu( SocialUser userOnPage ) {
-        String userName = (userOnPage!=null&&userOnPage.getRealName()!=null&&!userOnPage.getRealName().isEmpty()) ? userOnPage.getRealName() : userOnPage.getUserName();
+        String userName = ( userOnPage != null && userOnPage.getRealName() != null && !userOnPage.getRealName().isEmpty() ) ? userOnPage.getRealName() : userOnPage.getUserName();
         view.setupUserInfo( userName, setupSideUserInfoPresenter( userOnPage ) );
         String title = userName + "'s Profile";
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( this.place, title ) );
@@ -240,7 +258,7 @@ public class UserHomePageSidePresenter {
                     public void execute( SocialUser socialUser ) {
                         socialUserService.call().update( socialUser );
                         refreshPage( socialUser.getUserName() );
-                        userEditedEvent.fire(new UserEditedEvent(socialUser.getUserName()));
+                        userEditedEvent.fire( new UserEditedEvent( socialUser.getUserName() ) );
                     }
                 } );
             }

@@ -19,14 +19,17 @@ package org.kie.workbench.common.screens.social.hp.client.userpage.main.header;
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Image;
+import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class HeaderView extends Composite
@@ -50,8 +53,8 @@ public class HeaderView extends Composite
 
     @Override
     public void addConnection( SocialUser follower,
-                               Image connection, Command command ) {
-        FollowerView followerView = GWT.create( FollowerView.class );
+                               Image connection, ParameterizedCommand<String> command ) {
+        UserBoxView followerView = GWT.create( UserBoxView.class );
         followerView.init( follower,connection, command );
         friendsList.add( followerView.asWidget() );
     }
@@ -59,6 +62,11 @@ public class HeaderView extends Composite
     @Override
     public void clear() {
         friendsList.clear();
+    }
+
+    @Override
+    public void noConnection() {
+        friendsList.add( new Paragraph( "There are no social connections...yet!" ) );
     }
 
 }

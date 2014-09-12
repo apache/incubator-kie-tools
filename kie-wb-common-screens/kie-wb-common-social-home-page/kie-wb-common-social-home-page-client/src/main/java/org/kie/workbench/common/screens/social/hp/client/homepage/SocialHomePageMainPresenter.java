@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.shared.GWT;
@@ -20,6 +21,8 @@ import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialEventTypeRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
+import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.header.HeaderPresenter;
 import org.kie.workbench.common.screens.social.hp.client.homepage.main.MainPresenter;
 import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
@@ -30,6 +33,7 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.security.Identity;
 
@@ -46,6 +50,13 @@ public class SocialHomePageMainPresenter {
 
     @Inject
     private View view;
+
+
+    @Inject
+    private Event<UserHomepageSelectedEvent> selectedEvent;
+
+    @Inject
+    private Event<LoadUserPageEvent> loadUserPageEvent;
 
     @Inject
     private HeaderPresenter header;
@@ -122,13 +133,19 @@ public class SocialHomePageMainPresenter {
     }
 
     private void updateMainTimeline( String param,
-                                     SocialUser socialUser ) {
-        if ( param.contains( "Latest" ) ) {
+                                     final SocialUser socialUser ) {
+        if ( param.contains( "All Repositories" ) ) {
             param = "";
         }
         SocialTimelineWidget socialTimelineWidget = GWT.create( SocialTimelineWidget.class );
         List<ClientResourceType> resourceTypes = iconLocator.getResourceTypes();
-        SocialTimelineWidgetModel model = new SocialTimelineWidgetModel(  socialUser, placeManager, resourceTypes );
+        SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( socialUser, placeManager, resourceTypes ).withUserClickCommand( new ParameterizedCommand<String>() {
+            @Override
+            public void execute( final String parameter ) {
+                placeManager.goTo( "UserHomePagePerspective");
+                loadUserPageEvent.fire( new LoadUserPageEvent( parameter ) );
+            }
+        } );
         Map<String, String> globals = new HashMap();
         globals.put( "filter", param );
         model.droolsQuery( globals, "filterTimelineRecentAssets", "10" );
@@ -138,7 +155,7 @@ public class SocialHomePageMainPresenter {
 
     private void createHeaderMenuList() {
         final List<String> reposNames = new ArrayList<String>();
-        reposNames.add( "Latest Changes" );
+        reposNames.add( "All Repositories" );
         repositoryService.call( new RemoteCallback<Collection<Repository>>() {
             public void callback( Collection<Repository> repositories ) {
                 for ( Repository repository : repositories ) {

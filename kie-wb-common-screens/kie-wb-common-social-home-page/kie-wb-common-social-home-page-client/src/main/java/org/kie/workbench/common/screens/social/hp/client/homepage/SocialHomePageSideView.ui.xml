@@ -22,15 +22,6 @@
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'
     >
 
-  <ui:style>
-    .margin {
-      padding-top: 20px;
-    }
-  </ui:style>
-  <g:HTMLPanel addStyleNames="{style.margin}">
-    <b:Fieldset>
-    <g:FlowPanel ui:field="panel"/>
-    </b:Fieldset>
-  </g:HTMLPanel>
-
+  <b:Well ui:field="panel">
+  </b:Well>
 </ui:UiBinder>

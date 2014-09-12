@@ -23,8 +23,8 @@ public class SocialHomePagePerspective {
         p.setTransient( true );
         p.setName( "Social Home Page Perspective" );
         final PanelDefinition west = new PanelDefinitionImpl( PanelType.SIMPLE );
-        west.setWidth( 400 );
-        west.setMinWidth( 350 );
+        west.setWidth( 450 );
+        west.setMinWidth( 450 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "SocialHomePageSidePresenter" ) ) );
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "SocialHomePageMainPresenter" ) ) );
         p.getRoot().insertChild( Position.WEST,

@@ -1,10 +1,14 @@
 package org.kie.workbench.common.screens.social.hp.client.userpage;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.security.Identity;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PanelType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -23,7 +27,7 @@ public class UserHomePagePerspective {
         p.setTransient( true );
         p.setName( "People Perspective" );
         final PanelDefinition west = new PanelDefinitionImpl( PanelType.SIMPLE );
-        west.setWidth( 400 );
+        west.setWidth( 350 );
         west.setMinWidth( 350 );
         west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "UserHomePageSidePresenter" ) ) );
         p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "UserHomePageMainPresenter" ) ) );

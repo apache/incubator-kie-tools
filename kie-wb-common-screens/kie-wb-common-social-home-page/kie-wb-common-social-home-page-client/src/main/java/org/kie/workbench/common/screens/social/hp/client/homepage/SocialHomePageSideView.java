@@ -3,6 +3,7 @@ package org.kie.workbench.common.screens.social.hp.client.homepage;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Well;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -26,7 +27,7 @@ public class SocialHomePageSideView extends Composite implements SocialHomePageS
     private static SocialHomePageSideViewBinder uiBinder = GWT.create( SocialHomePageSideViewBinder.class );
 
     @UiField
-    FlowPanel panel;
+    Well panel;
 
     private SocialHomePageSidePresenter presenter = null;
 
