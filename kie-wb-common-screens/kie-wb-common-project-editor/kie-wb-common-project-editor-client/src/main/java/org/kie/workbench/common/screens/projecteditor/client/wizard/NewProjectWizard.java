@@ -60,6 +60,7 @@ public class NewProjectWizard
     private ArrayList<WizardPage> pages = new ArrayList<WizardPage>();
     private POM pom = new POM();
     private Callback<Project> projectCallback;
+    boolean openEditor = true;
 
     @PostConstruct
     public void setupPages() {
@@ -143,8 +144,16 @@ public class NewProjectWizard
     }
 
     @Override
-    public void start( Callback<Project> callback ) {
+    public void start() {
+        this.openEditor = true;
+        this.projectCallback = null;
+        super.start();
+    }
+
+    @Override
+    public void start( Callback<Project> callback, boolean openEditor ) {
         this.projectCallback = callback;
+        this.openEditor = openEditor;
         super.start();
     }
 
@@ -156,7 +165,9 @@ public class NewProjectWizard
                 busyIndicatorView.hideBusyIndicator();
                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
                 invokeCallback( project );
-                placeManager.goTo( "projectScreen" );
+                if ( openEditor ) {
+                    placeManager.goTo( "projectScreen" );
+                }
             }
         };
     }
