@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.FillGradient;
@@ -144,6 +145,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     }
 
     public abstract BoundingBox getBoundingBox();
+    
+    public BoundingPoints getBoundingPoints()
+    {
+        return new BoundingPoints(getBoundingBox());
+    }
 
     protected final void setWasFilledFlag(boolean fill)
     {
