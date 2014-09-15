@@ -33,7 +33,6 @@ import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 
-@Ignore
 @RunWith(Arquillian.class)
 public class ProjectDataModelConcurrencyTest {
 
@@ -57,6 +56,7 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.guvnor.common.services.shared.metadata" )
                 .addPackage( "org.guvnor.common.services.shared.config" )
                 .addPackage( "org.guvnor.common.services.shared.rulenames" )
+                .addPackage( "org.guvnor.common.services.backend.util" )
                 .addPackage( "javax.servlet" )
                 .addPackage( "javax.servlet.http" )
                 .addPackage( "org.guvnor.structure.repositories" )
