@@ -18,6 +18,7 @@ package org.uberfire.mvp.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ PlaceRequest {
     /**
      * Creates a place request for the given place ID, with the given state parameters for that place, and the given
      * preference of whether or not the browser's location bar should be updated.
-     * 
+     *
      * @param identifier
      *            The place ID, or an empty string for the default place.
      * @param parameters
@@ -66,6 +67,79 @@ PlaceRequest {
         this.identifier = identifier;
         this.parameters.putAll( parameters );
         this.updateLocationBar = updateLocationBar;
+    }
+
+    /**
+     * Creates a new place request from a string that encodes a place ID and optional parameters in standard URL query
+     * syntax.
+     * <p>
+     * For example, the following returns a PlaceRequest with identifier {@code MyPlaceID} and two parameters,
+     * {@code param1} and {@code param2}.
+     * <pre>
+     *   DefaultPlaceRequest.parse("MyPlaceID?param1=val1&amp;param2=val2")
+     * </pre>
+     *
+     * @param partNameAndParams
+     *            specification of the place ID and optional parameter map. Special characters in the identifier, key
+     *            name, or key value can be escaped using URL encoding: for '%' use '%25'; for '&amp;' use '%26'; for
+     *            '=' use '%3d'; for '?' use '%3f'.
+     * @return a new PlaceRequest configured according to the given string.
+     */
+    public static PlaceRequest parse( CharSequence partNameAndParams ) {
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
+
+        StringBuilder nextToken = new StringBuilder( 50 );
+        String foundPartName = null;
+        String key = null;
+        for ( int i = 0; i < partNameAndParams.length(); i++ ) {
+            char ch = partNameAndParams.charAt( i );
+            switch ( ch ) {
+                case '%':
+                    StringBuilder hexVal = new StringBuilder( 2 );
+                    hexVal.append( partNameAndParams.charAt( i + 1 ) );
+                    hexVal.append( partNameAndParams.charAt( i + 2 ) );
+                    nextToken.append( (char) Integer.parseInt( hexVal.toString(), 16 ) );
+                    i += 2;
+                    break;
+
+                case '?':
+                    if ( foundPartName == null ) {
+                        foundPartName = nextToken.toString();
+                        nextToken = new StringBuilder( 50 );
+                    } else {
+                        nextToken.append( '?' );
+                    }
+                    break;
+
+                case '=':
+                    if ( foundPartName == null ) {
+                        nextToken.append( '=' );
+                    } else {
+                        key = nextToken.toString();
+                        nextToken = new StringBuilder( 50 );
+                    }
+                    break;
+
+                case '&':
+                    parameters.put( key, nextToken.toString() );
+                    nextToken = new StringBuilder( 50 );
+                    key = null;
+                    break;
+
+                default:
+                    nextToken.append( ch );
+            }
+        }
+
+        if ( foundPartName == null ) {
+            foundPartName = nextToken.toString();
+        } else if ( key != null ) {
+            parameters.put( key, nextToken.toString() );
+        } else if ( nextToken.length() > 0 ) {
+            parameters.put( nextToken.toString(), "" );
+        }
+
+        return new DefaultPlaceRequest( foundPartName, parameters );
     }
 
     @Override

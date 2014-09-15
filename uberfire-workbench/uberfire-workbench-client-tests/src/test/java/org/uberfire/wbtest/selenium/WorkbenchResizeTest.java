@@ -9,12 +9,14 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
+import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
 import org.uberfire.wbtest.client.headfoot.HeaderFooterActivator;
 import org.uberfire.wbtest.client.perspective.ListPerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.SimplePerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.StaticPerspectiveActivity;
 import org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity;
 import org.uberfire.wbtest.client.resize.ResizeTestScreenActivity;
+import org.uberfire.workbench.model.CompassPosition;
 
 
 public class WorkbenchResizeTest extends AbstractSeleniumTest {
@@ -43,6 +45,29 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
         ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "listPerspectiveDefault" );
         assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getReportedSize() );
         assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getActualSize() );
+    }
+
+    @Test
+    public void testListPerspectiveSizeWithNestedPanels() throws Exception {
+        driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "listPerspectiveDefault" );
+
+        TopHeaderWrapper topHeaderWrapper = new TopHeaderWrapper( driver );
+        topHeaderWrapper.addPanelToRoot( CompassPosition.WEST,
+                                         MultiListWorkbenchPanelPresenter.class,
+                                         ResizeTestScreenActivity.class,
+                                         "id", "resize1" );
+
+        Dimension sizeAfterWestPanelAdded = widgetWrapper.getActualSize();
+        topHeaderWrapper.addPanelToRoot( CompassPosition.EAST,
+                                         MultiListWorkbenchPanelPresenter.class,
+                                         ResizeTestScreenActivity.class,
+                                         "id", "resize2" );
+
+        Dimension sizeAfterBothPanelsAdded = widgetWrapper.getActualSize();
+
+        assertTrue( sizeAfterWestPanelAdded.width < WINDOW_WIDTH );
+        assertTrue( sizeAfterBothPanelsAdded.width < sizeAfterWestPanelAdded.width );
     }
 
     @Test

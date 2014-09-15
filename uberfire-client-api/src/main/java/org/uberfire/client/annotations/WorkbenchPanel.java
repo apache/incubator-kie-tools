@@ -46,7 +46,7 @@ public @interface WorkbenchPanel {
      * To specify a PlaceRequest with parameters, use standard URL query syntax:
      *
      * <pre>
-     *   {@code @WorkbenchPanel(parts = "MyPlaceID?param1=val1&param2=val2")}
+     *   {@code @WorkbenchPanel(parts = "MyPlaceID?param1=val1&amp;param2=val2")}
      * </pre>
      *
      * Special characters can be escaped using URL encoding: for '%' use '%25'; for '&amp;' use '%26'; for '=' use '%3d';
