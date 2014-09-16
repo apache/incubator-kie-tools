@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
 import org.kie.uberfire.social.activities.model.SocialUser;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -50,12 +49,14 @@ public class HeaderView extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-
     @Override
     public void addConnection( SocialUser follower,
-                               Image connection, ParameterizedCommand<String> command ) {
+                               UserBoxView.RelationType relationType,
+                               Image connection,
+                               ParameterizedCommand<String> clickCommand,
+                               final ParameterizedCommand<String> followUnfollowCommand ) {
         UserBoxView followerView = GWT.create( UserBoxView.class );
-        followerView.init( follower,connection, command );
+        followerView.init( follower, relationType, connection, clickCommand, followUnfollowCommand );
         friendsList.add( followerView.asWidget() );
     }
 

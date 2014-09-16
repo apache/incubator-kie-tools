@@ -24,7 +24,13 @@
   <!--<ui:with field="res" type="org.kie.workbench.common.screens.server.management.client.resources.ContainerResources"/>-->
 
   <g:HTMLPanel>
-    <g:FlowPanel ui:field="userPanel" />
+    <b:Fieldset>
+      <g:FlowPanel ui:field="userPanel"/>
+      <b:Legend><small>User Info</small></b:Legend>
+      <b:Paragraph ui:field="userName"></b:Paragraph>
+      <b:Paragraph ui:field="email"></b:Paragraph>
+      <g:FlowPanel ui:field="action"/>
+    </b:Fieldset>
   </g:HTMLPanel>
 
 </ui:UiBinder>

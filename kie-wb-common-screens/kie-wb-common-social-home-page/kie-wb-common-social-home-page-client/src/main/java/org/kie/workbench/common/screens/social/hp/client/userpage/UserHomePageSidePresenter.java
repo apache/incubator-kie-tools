@@ -8,7 +8,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -195,33 +197,36 @@ public class UserHomePageSidePresenter {
     }
 
     private SideUserInfoPresenter setupSideUserInfoPresenter( SocialUser socialUser ) {
-        Anchor anchor = generateActionLink( socialUser );
-        sideUserInfoPresenter.setup( socialUser, GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.BIG ), anchor );
+        Button followUnfollow = generateActionLink( socialUser );
+        sideUserInfoPresenter.setup( socialUser, GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.BIG ), followUnfollow );
         return sideUserInfoPresenter;
     }
 
-    private Anchor generateActionLink( final SocialUser socialUser ) {
-        Anchor anchor = GWT.create( Anchor.class );
+    private Button generateActionLink( final SocialUser socialUser ) {
+        Button followUnfollow = GWT.create( Button.class );
+        followUnfollow.setType( ButtonType.INFO );
+        followUnfollow.setSize( ButtonSize.DEFAULT );
+
         if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getName() ) ) {
-            createLoggedUserActionLink( socialUser, anchor );
+            createLoggedUserActionLink( socialUser, followUnfollow );
         } else {
-            createAnotherUserActionLink( socialUser, anchor );
+            createAnotherUserActionLink( socialUser, followUnfollow );
         }
-        return anchor;
+        return followUnfollow;
     }
 
     private void createAnotherUserActionLink( final SocialUser socialUser,
-                                              Anchor button ) {
+                                              Button followUnfollow ) {
         if ( loggedUserFollowSelectedUser( socialUser ) ) {
-            generateUnFollowButton( socialUser, button );
+            generateUnFollowButton( socialUser, followUnfollow );
         } else {
-            generateFollowButton( socialUser, button );
+            generateFollowButton( socialUser, followUnfollow );
         }
     }
 
     private void generateFollowButton( final SocialUser socialUser,
-                                       Anchor button ) {
-        button.setText( "Follow this user" );
+                                       Button button ) {
+        button.setText( "Follow" );
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -232,8 +237,8 @@ public class UserHomePageSidePresenter {
     }
 
     private void generateUnFollowButton( final SocialUser socialUser,
-                                         Anchor button ) {
-        button.setText( "Unfollow this user" );
+                                         Button button ) {
+        button.setText( "Unfollow" );
         button.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -248,9 +253,9 @@ public class UserHomePageSidePresenter {
     }
 
     private void createLoggedUserActionLink( final SocialUser socialUser,
-                                             Anchor anchor ) {
-        anchor.setText( "Edit my infos" );
-        anchor.addClickHandler( new ClickHandler() {
+                                             final Button followUnfollow ) {
+        followUnfollow.setText( "Edit" );
+        followUnfollow.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
                 editUserForm.show( socialUser, new ParameterizedCommand<SocialUser>() {

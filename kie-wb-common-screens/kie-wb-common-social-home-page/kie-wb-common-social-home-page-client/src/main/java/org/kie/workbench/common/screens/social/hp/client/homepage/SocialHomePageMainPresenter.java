@@ -21,6 +21,7 @@ import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialEventTypeRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.header.HeaderPresenter;
@@ -33,7 +34,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.security.Identity;
 
@@ -50,7 +50,6 @@ public class SocialHomePageMainPresenter {
 
     @Inject
     private View view;
-
 
     @Inject
     private Event<UserHomepageSelectedEvent> selectedEvent;
@@ -85,6 +84,9 @@ public class SocialHomePageMainPresenter {
     @Inject
     private PlaceManager placeManager;
 
+    @Inject
+    private Caller<SocialUserServiceAPI> socialUserService;
+
     @AfterInitialization
     public void init() {
         view.setHeader( header );
@@ -93,6 +95,10 @@ public class SocialHomePageMainPresenter {
 
     @OnOpen
     public void onOpen() {
+        setupPage();
+    }
+
+    private void setupPage() {
         initHeader();
         initMain();
     }
@@ -139,18 +145,47 @@ public class SocialHomePageMainPresenter {
         }
         SocialTimelineWidget socialTimelineWidget = GWT.create( SocialTimelineWidget.class );
         List<ClientResourceType> resourceTypes = iconLocator.getResourceTypes();
-        SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( socialUser, placeManager, resourceTypes ).withUserClickCommand( new ParameterizedCommand<String>() {
-            @Override
-            public void execute( final String parameter ) {
-                placeManager.goTo( "UserHomePagePerspective");
-                loadUserPageEvent.fire( new LoadUserPageEvent( parameter ) );
-            }
-        } );
+        SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( socialUser, placeManager, resourceTypes )
+                .withUserClickCommand( generateUserClickCommand() )
+                .withFollowUnfollowCommand( generateFollowUnfollowCommand() );
+
         Map<String, String> globals = new HashMap();
         globals.put( "filter", param );
         model.droolsQuery( globals, "filterTimelineRecentAssets", "10" );
         socialTimelineWidget.init( model );
         main.setSocialWidget( socialTimelineWidget );
+    }
+
+    private boolean loggedUserFollowSelectedUser( SocialUser socialUser ) {
+        return socialUser.getFollowersName().contains( loggedUser.getName() );
+    }
+
+    private ParameterizedCommand<String> generateFollowUnfollowCommand() {
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( final String parameter ) {
+                socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
+                    public void callback( SocialUser socialUser ) {
+                        if ( loggedUserFollowSelectedUser( socialUser ) ) {
+                            socialUserService.call().userUnfollowAnotherUser( loggedUser.getName(), socialUser.getUserName() );
+                        } else {
+                            socialUserService.call().userFollowAnotherUser( loggedUser.getName(), socialUser.getUserName() );
+                        }
+                        setupPage();
+                    }
+                } ).findSocialUser( parameter );
+            }
+        };
+    }
+
+    private ParameterizedCommand<String> generateUserClickCommand() {
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( final String parameter ) {
+                placeManager.goTo( "UserHomePagePerspective" );
+                loadUserPageEvent.fire( new LoadUserPageEvent( parameter ) );
+            }
+        };
     }
 
     private void createHeaderMenuList() {

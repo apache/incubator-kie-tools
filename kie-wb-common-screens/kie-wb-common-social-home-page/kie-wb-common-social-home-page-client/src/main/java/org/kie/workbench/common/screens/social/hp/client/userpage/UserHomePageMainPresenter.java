@@ -12,9 +12,11 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
+import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
 import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserEditedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
@@ -63,6 +65,9 @@ public class UserHomePageMainPresenter {
 
     @Inject
     Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
+
+    @Inject
+    Caller<SocialUserServiceAPI> socialUserServiceAPI;
 
     @Inject
     private Identity loggedUser;
@@ -164,12 +169,43 @@ public class UserHomePageMainPresenter {
 
     private void setupFollowerWidget( SocialUser socialUser ) {
         Image followerImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.SMALL );
-        header.addConnection( socialUser, followerImage, new ParameterizedCommand<String>() {
+
+        UserBoxView.RelationType relationType = findRelationTypeWithLoggedUser( socialUser );
+
+        header.addConnection( socialUser, relationType, followerImage, onClickEvent(), generateFollowUnfollowCommand( relationType ) );
+    }
+
+    private ParameterizedCommand<String> onClickEvent() {
+        return new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
                 userHomepageSelectedEvent.fire( new UserHomepageSelectedEvent( parameter ) );
             }
-        } );
+        };
+    }
+
+    private ParameterizedCommand<String> generateFollowUnfollowCommand( final UserBoxView.RelationType relationType ) {
+
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( final String parameter ) {
+                if ( relationType == UserBoxView.RelationType.CAN_FOLLOW ) {
+                    socialUserServiceAPI.call().userFollowAnotherUser( loggedUser.getName(), parameter );
+                } else {
+                    socialUserServiceAPI.call().userUnfollowAnotherUser( loggedUser.getName(), parameter );
+                }
+                userHomepageSelectedEvent.fire( new UserHomepageSelectedEvent( lastUserOnpage ) );
+            }
+        };
+    }
+
+    private UserBoxView.RelationType findRelationTypeWithLoggedUser( SocialUser socialUser ) {
+        if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getName() ) ) {
+            return UserBoxView.RelationType.ME;
+        } else {
+            return socialUser.getFollowersName().contains( loggedUser.getName() ) ?
+                    UserBoxView.RelationType.UNFOLLOW : UserBoxView.RelationType.CAN_FOLLOW;
+        }
     }
 
     private boolean thereIsNoFollowers( SocialUser socialUser ) {

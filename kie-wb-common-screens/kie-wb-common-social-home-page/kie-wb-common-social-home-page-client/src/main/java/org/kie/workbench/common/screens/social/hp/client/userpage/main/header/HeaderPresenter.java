@@ -6,8 +6,8 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
 import org.kie.uberfire.social.activities.model.SocialUser;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -31,7 +31,10 @@ public class HeaderPresenter {
     public interface View extends IsWidget {
 
         void addConnection( SocialUser follower,
-                            Image connections,  ParameterizedCommand<String> command );
+                            UserBoxView.RelationType relationType,
+                            Image connection,
+                            ParameterizedCommand<String> clickCommand,
+                            ParameterizedCommand<String> followUnfollowCommand );
 
         void clear();
 
@@ -43,8 +46,11 @@ public class HeaderPresenter {
     }
 
     public void addConnection( SocialUser follower,
-                               Image connection,  ParameterizedCommand<String>  command ) {
-        view.addConnection( follower, connection, command );
+                               UserBoxView.RelationType relationType,
+                               Image connection,
+                               ParameterizedCommand<String> clickCommand,
+                               ParameterizedCommand<String> followUnfollowCommand ) {
+        view.addConnection( follower, relationType, connection, clickCommand, followUnfollowCommand );
     }
 
 }

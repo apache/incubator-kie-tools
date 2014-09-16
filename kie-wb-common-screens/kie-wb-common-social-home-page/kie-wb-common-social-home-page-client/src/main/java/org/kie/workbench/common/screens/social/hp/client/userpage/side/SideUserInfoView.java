@@ -18,14 +18,16 @@ package org.kie.workbench.common.screens.social.hp.client.userpage.side;
 
 import javax.enterprise.context.Dependent;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Image;
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.social.activities.model.SocialUser;
 
@@ -38,6 +40,15 @@ public class SideUserInfoView extends Composite
             UiBinder<Widget, SideUserInfoView> {
 
     }
+
+    @UiField
+    Paragraph userName;
+
+    @UiField
+    Paragraph email;
+
+    @UiField
+    FlowPanel action;
 
     @UiField
     FlowPanel userPanel;
@@ -55,17 +66,20 @@ public class SideUserInfoView extends Composite
 
     @Override
     public void setUserInfo( SocialUser socialUser ) {
-        userPanel.add( new Paragraph( "User name:" + socialUser.getUserName() ) );
-        userPanel.add( new Paragraph( "E-mail:" + socialUser.getEmail() ) );
+        userName.setText( "User name: " + socialUser.getUserName() );
+        email.setText( "E-mail: " + socialUser.getEmail() );
     }
 
     @Override
-    public void setupLink( Anchor action ) {
-        userPanel.add(action );
+    public void setupLink( Button followUnfollow ) {
+        action.add( followUnfollow );
     }
 
     @Override
     public void clear() {
         userPanel.clear();
+        action.clear();
+        userName.clear();
+        email.clear();
     }
 }
