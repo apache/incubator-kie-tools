@@ -214,6 +214,10 @@ public class MetaDataArray
         {
             return JsArrayMixed.createArray().cast();
         }
+        
+        protected MetaDataArrayJSO()
+        {
+        }
 
         final native NativeInternalType typeOf(int index)
         /*-{
