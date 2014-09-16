@@ -68,7 +68,9 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.FillGradient;
+import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
@@ -228,7 +230,9 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
                 }
                 else
                 {
-                    m_meta = new MetaData(mjso);
+                    NFastStringMapMixedJSO jso = mjso.cast();
+
+                    m_meta = new MetaData(jso);
                 }
             }
         }

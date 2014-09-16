@@ -22,6 +22,7 @@ import java.util.Collection;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.json.client.JSONObject;
 
 public final class NFastStringMapMixedJSO extends JavaScriptObject
 {
@@ -235,5 +236,10 @@ public final class NFastStringMapMixedJSO extends JavaScriptObject
             return njso.getString(name);
         }
         return null;
+    }
+    
+    public final String toJSONString()
+    {
+        return new JSONObject(this).toString();
     }
 }

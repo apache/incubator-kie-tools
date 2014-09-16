@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.types;
 
+import com.google.gwt.json.client.JSONArray;
+
 /**
  * A native implementation of an array wrapped by a {@link DashArrayJSO}
  * This class is used in {@link Line} to create Dashed Lines.
@@ -92,5 +94,16 @@ public final class DashArray
     public final NFastDoubleArrayJSO getJSO()
     {
         return m_jso;
+    }
+
+    public final String toJSONString()
+    {
+        return new JSONArray(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
     }
 }

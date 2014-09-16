@@ -233,10 +233,15 @@ public class Point2DArray implements Iterable<Point2D>
         return m_jso;
     }
 
+    public final String toJSONString()
+    {
+        return new JSONArray(m_jso).toString();
+    }
+
     @Override
     public String toString()
     {
-        return new JSONArray(getJSO()).toString();
+        return toJSONString();
     }
 
     @Override

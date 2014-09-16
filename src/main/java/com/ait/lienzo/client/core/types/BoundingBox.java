@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 public final class BoundingBox
 {
@@ -55,6 +56,17 @@ public final class BoundingBox
     public final BoundingBoxJSO getJSO()
     {
         return m_jso;
+    }
+
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
     }
 
     public final static class BoundingBoxJSO extends JavaScriptObject

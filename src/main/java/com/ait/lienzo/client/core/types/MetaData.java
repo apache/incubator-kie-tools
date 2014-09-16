@@ -14,13 +14,10 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.shape;
+package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
-import com.ait.lienzo.client.core.types.NativeInternalType;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.core.client.JsArray;
-import com.google.gwt.core.client.JsArrayMixed;
+import com.ait.lienzo.client.core.types.MetaDataArray.MetaDataArrayJSO;
+import com.google.gwt.json.client.JSONObject;
 
 public class MetaData
 {
@@ -31,9 +28,9 @@ public class MetaData
         m_jso = NFastStringMapMixedJSO.make();
     }
 
-    public MetaData(JavaScriptObject valu)
+    public MetaData(NFastStringMapMixedJSO valu)
     {
-        if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
+        if (null != valu)
         {
             m_jso = valu.cast();
         }
@@ -76,14 +73,20 @@ public class MetaData
         return this;
     }
 
-    public final MetaData put(String name, JavaScriptObject value)
+    public final MetaData put(String name, MetaData value)
     {
-        m_jso.put(name, value);
-
+        if (null != value)
+        {
+            m_jso.put(name, value.getJSO());
+        }
+        else
+        {
+            m_jso.delete(name);
+        }
         return this;
     }
-
-    public final MetaData put(String name, MetaData value)
+    
+    public final MetaData put(String name, MetaDataArray value)
     {
         if (null != value)
         {
@@ -137,40 +140,24 @@ public class MetaData
         return false;
     }
 
-    public final JavaScriptObject getObject(String name)
+    public final MetaData getMetaData(String name)
     {
         if (m_jso.typeOf(name) == NativeInternalType.OBJECT)
         {
-            return m_jso.getObject(name);
+            NFastStringMapMixedJSO jso = m_jso.getObject(name).cast();
+        
+            return new MetaData(jso);
         }
         return null;
     }
 
-    public final MetaData getMetaData(String name)
-    {
-        JavaScriptObject meta = getObject(name);
-
-        if (null != meta)
-        {
-            return new MetaData(meta);
-        }
-        return null;
-    }
-
-    public final JsArray<JavaScriptObject> getArrayOfJSO(String name)
+    public final MetaDataArray getMetaDataArray(String name)
     {
         if (m_jso.typeOf(name) == NativeInternalType.ARRAY)
         {
-            return m_jso.getArrayOfJSO(name);
-        }
-        return null;
-    }
-
-    public final JsArrayMixed getArray(String name)
-    {
-        if (m_jso.typeOf(name) == NativeInternalType.ARRAY)
-        {
-            return m_jso.getArray(name);
+            MetaDataArrayJSO jso = m_jso.getArray(name).cast();
+            
+            return new MetaDataArray(jso);
         }
         return null;
     }
@@ -198,5 +185,16 @@ public class MetaData
             return m_jso.typeOf(name);
         }
         return NativeInternalType.UNDEFINED;
+    }
+
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
     }
 }

@@ -296,16 +296,15 @@ public final class Point2D
         return m_jso;
     }
 
-    /**
-     * Returns a string representation for debugging purposes, 
-     * e.g. "(1.1, 2.2)"
-     * 
-     * @return String
-     */
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
     @Override
     public String toString()
     {
-        return new JSONObject(getJSO()).toString();
+        return toJSONString();
     }
 
     public final double dot(Point2D p)

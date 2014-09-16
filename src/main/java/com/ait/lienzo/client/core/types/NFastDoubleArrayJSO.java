@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONArray;
 
 public class NFastDoubleArrayJSO extends JavaScriptObject
 {
@@ -40,6 +41,11 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
             array[i] = get(i);
         }
         return array;
+    }
+    
+    public final String toJSONString()
+    {
+        return new JSONArray(this).toString();
     }
 
     public final native int size()

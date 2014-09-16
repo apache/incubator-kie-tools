@@ -75,10 +75,15 @@ public final class BoundingPoints implements Iterable<Point2D>
         return Collections.unmodifiableCollection(list);
     }
 
+    public final String toJSONString()
+    {
+        return m_array.toJSONString();
+    }
+
     @Override
     public final String toString()
     {
-        return m_array.toString();
+        return toJSONString();
     }
 
     @Override
