@@ -18,6 +18,9 @@ package org.uberfire.workbench.model;
 import java.util.List;
 import java.util.Set;
 
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
+
 /**
  * Describes a physical region within a Workbench Perspective. Panels have a set physical size that they occupy, which
  * is divided up between any panel decorations (a tab bar or dropdown list is common), one or more Parts (generally
@@ -49,12 +52,31 @@ public interface PanelDefinition {
     public String getElementId();
 
     /**
-     * Add a Part to the Panel
-     * If the part is linked to an existing panel,
-     * it will be removed from this panel by a call to removePart(part)
-     * @param part The Part to add
+     * Specifies content that should be put in this panel's main display area when it is materialized. The content to
+     * add is specified by a PartDefinition, at the core of which is a {@link PlaceRequest} that identifies a
+     * WorkbenchActivity (either a screen or an editor).
+     * <p>
+     * If the given part already belongs to an existing panel, it will be removed from that panel by a call to
+     * removePart(part).
+     *
+     * @param part
+     *            The Part to add. Must not be null. The part's place must specify a WorkbenchActivity bean.
      */
     public void addPart( final PartDefinition part );
+
+    /**
+     * Specifies content that should be put in this panel's main display area when it is materialized.
+     * <p>
+     * This is a convenience method equivalent to
+     * <tt>addPart(new&nbsp;PartDefinitionImpl(DefaultPlaceRequest.parse(partSpec)))</tt>.
+     *
+     * @param partSpec
+     *            An PlaceRequest ID with optional parameters, encoded as specified in
+     *            {@link DefaultPlaceRequest#parse(CharSequence)}. Must not be null. The place ID must specify a
+     *            WorkbenchActivity bean (either a screen or an editor).
+     * @return the PartDefinition object that was created and added to this panel definition.
+     */
+    public PartDefinition addPart( final String partSpec );
 
     /**
      * Removes the given part definition from this panel definition.

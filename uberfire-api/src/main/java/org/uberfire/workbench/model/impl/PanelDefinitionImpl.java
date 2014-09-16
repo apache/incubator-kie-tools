@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDefinition;
 import org.uberfire.workbench.model.ContextDisplayMode;
@@ -95,6 +96,13 @@ public class PanelDefinitionImpl implements PanelDefinition {
         }
         this.parts.add( part );
         part.setParentPanel( this );
+    }
+
+    @Override
+    public PartDefinition addPart( String partSpec ) {
+        PartDefinition pd = new PartDefinitionImpl( DefaultPlaceRequest.parse( partSpec ) );
+        addPart( pd );
+        return pd;
     }
 
     @Override
