@@ -16,15 +16,29 @@
 package org.kie.workbench.common.screens.contributors.client.screens;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.dashbuilder.dataset.events.DataSetModifiedEvent;
+import org.kie.workbench.common.screens.contributors.client.resources.i18n.ContributorsConstants;
+import org.kie.workbench.common.screens.contributors.model.ContributorsDataSets;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.workbench.events.NotificationEvent;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.*;
 
 @Dependent
 @WorkbenchScreen(identifier = "ContributorsScreen")
 public class ContributorsScreen {
+
+
+    @Inject
+    private Event<NotificationEvent> workbenchNotification;
 
     ContributorsView contributorsView = new ContributorsView();
 
@@ -36,5 +50,18 @@ public class ContributorsScreen {
     @WorkbenchPartView
     public IsWidget getView() {
         return contributorsView;
+    }
+
+    /**
+     * Catch any changes on the contributors data set and update the dashboard properly.
+     */
+    private void onContributorsDataSetOutdated(@Observes DataSetModifiedEvent event) {
+        checkNotNull("event", event);
+
+        String targetUUID = event.getDataSetMetadata().getUUID();
+        if (ContributorsDataSets.ALL.equals(targetUUID)) {
+            workbenchNotification.fire(new NotificationEvent(ContributorsConstants.INSTANCE.contributorsDataSetOutdated(), INFO));
+            contributorsView.redraw();
+        }
     }
 }

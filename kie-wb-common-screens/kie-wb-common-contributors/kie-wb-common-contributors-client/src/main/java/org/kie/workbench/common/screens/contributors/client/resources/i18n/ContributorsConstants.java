@@ -28,4 +28,5 @@ public interface ContributorsConstants
     ContributorsConstants INSTANCE = GWT.create(ContributorsConstants.class);
 
     String contributorsPerspectiveName();
+    String contributorsDataSetOutdated();
 }
