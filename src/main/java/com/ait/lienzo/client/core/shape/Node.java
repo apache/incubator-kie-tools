@@ -397,7 +397,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         {
             context.save();
 
-            Transform xfrm = getCombinedTransform();
+            Transform xfrm = getNodeTransform();
 
             context.transform(xfrm);
 
@@ -436,7 +436,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
         list.add(this);
 
-        Node<?> parent = this.getParent();
+        Node<?> parent = getParent();
 
         while (null != parent)
         {
@@ -448,12 +448,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
         for (int i = size - 1; i >= 0; i--)
         {
-            xfrm.multiply(list.get(i).getCombinedTransform());
+            xfrm.multiply(list.get(i).getNodeTransform());
         }
         return xfrm;
     }
 
-    protected Transform getCombinedTransform()
+    public Transform getNodeTransform()
     {
         Transform xfrm = new Transform();
 
