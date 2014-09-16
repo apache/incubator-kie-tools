@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -38,12 +38,11 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A pop-up "compass" widget that appears centralised on it's parent Drop Target
- * and permits drop events on the compass points.
+ * A pop-up widget with arrows in the four cardinal directions, each of which is a separate drop target. The center of
+ * the widget is a fifth drop target representing the parent widget itself. The compass centers itself over its parent's
+ * Drop Target when displayed.
  */
-public class CompassWidget extends PopupPanel
-implements
-DropController {
+public class CompassWidget extends PopupPanel implements DropController {
 
     private static CompassWidget instance;
 
@@ -87,26 +86,22 @@ DropController {
             Document.get().getBody().appendChild( dropTargetHighlight );
         }
 
-        //Setup Compass images
         northWidget.getElement().getStyle().setOpacity( 0.75 );
         southWidget.getElement().getStyle().setOpacity( 0.75 );
         eastWidget.getElement().getStyle().setOpacity( 0.75 );
         westWidget.getElement().getStyle().setOpacity( 0.75 );
-        container.setWidget( 0,
-                             1,
-                             northWidget );
-        container.setWidget( 1,
-                             0,
-                             westWidget );
-        container.setWidget( 1,
-                             1,
-                             centreWidget );
-        container.setWidget( 1,
-                             2,
-                             eastWidget );
-        container.setWidget( 2,
-                             1,
-                             southWidget );
+
+        northWidget.ensureDebugId( "CompassWidget-north" );
+        southWidget.ensureDebugId( "CompassWidget-south" );
+        eastWidget.ensureDebugId( "CompassWidget-east" );
+        westWidget.ensureDebugId( "CompassWidget-west" );
+        centreWidget.ensureDebugId( "CompassWidget-centre" );
+
+        container.setWidget( 0, 1, northWidget );
+        container.setWidget( 1, 0, westWidget );
+        container.setWidget( 1, 1, centreWidget );
+        container.setWidget( 1, 2, eastWidget );
+        container.setWidget( 2, 1, southWidget );
 
         setWidget( container );
     }

@@ -43,11 +43,10 @@ public interface PanelManager {
 
     /**
      * Adds an empty child panel of the target panel's default child type at the given position within the target panel.
-     * The new child panel will have the given dimensions and minimum sizes set on it. Only the presenters and views are
-     * manipulated; it is assumed the caller will add the new child panel definition to the target after this method
-     * returns.
+     * The new child panel will have the given dimensions and minimum sizes set on it.
      * <p>
-     * TODO: the usefulness of this method to callers is questionable. candidate for deletion.
+     * TODO: the usefulness of this method to callers is questionable (versus creating a new child panel definition and
+     * calling {@link #addWorkbenchPanel(PanelDefinition, PanelDefinition, Position)}). candidate for deletion.
      */
     PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                        final Position position,

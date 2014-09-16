@@ -136,8 +136,8 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         if ( childPanels.containsKey( position ) ) {
             throw new IllegalStateException( "This panel already has a " + position + " child" );
         }
-        getPanelView().addPanel( child.getDefinition(), child.getPanelView(), position );
         definition.insertChild( position, child.getDefinition() );
+        getPanelView().addPanel( child.getDefinition(), child.getPanelView(), position );
         childPanels.put( position, child );
         child.setParent( this );
     }

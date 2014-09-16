@@ -105,7 +105,9 @@ public interface WorkbenchPanelPresenter {
      * Subpanels are typically always visible, and take up space within the bounds of their parent panel.
      *
      * @param child
-     *            the panel to add
+     *            the panel to add. The presenter, its view, and its definition must not belong to any parent. As a side
+     *            effect of this call (if the call is successful), the given presenter, its view, and its definition
+     *            will get attached to their new parents.
      * @param position
      *            the position to add the child at. Different panel implementations support different position types.
      */

@@ -86,6 +86,16 @@ import com.google.gwt.user.client.ui.Widget;
 public class ListBarWidget
 extends ResizeComposite implements MultiPartWidget {
 
+    /**
+     * When a part is added to the list bar, a special title widget is created for it. This title widget is draggable.
+     * To promote testability, the draggable title widget is given a predictable debug ID of the form
+     * {@code DEBUG_ID_PREFIX + DEBUG_TITLE_PREFIX + partName}.
+     * <p>
+     * Note that debug IDs are only assigned when the app inherits the GWT Debug module. See
+     * {@link Widget#ensureDebugId(com.google.gwt.dom.client.Element, String)} for details.
+     */
+    public static final String DEBUG_TITLE_PREFIX = "ListBar-title-";
+
     interface ListBarWidgetBinder
     extends
     UiBinder<ResizeFocusPanel, ListBarWidget> {
@@ -261,6 +271,7 @@ extends ResizeComposite implements MultiPartWidget {
 
         final Widget title = buildTitle( view.getPresenter().getTitle() );
         partTitle.put( partDefinition, title );
+        title.ensureDebugId( DEBUG_TITLE_PREFIX + view.getPresenter().getTitle() );
 
         if ( isDndEnabled ) {
             dndManager.makeDraggable( view, title );
