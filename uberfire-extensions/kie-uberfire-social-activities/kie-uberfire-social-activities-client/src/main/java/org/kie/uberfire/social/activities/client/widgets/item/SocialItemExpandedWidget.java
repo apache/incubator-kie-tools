@@ -102,8 +102,10 @@ public class SocialItemExpandedWidget extends Composite {
         MessageBuilder.createCall( new RemoteCallback<SocialUser>() {
             public void callback( SocialUser socialUser ) {
                 CommentRowWidget row = GWT.create( CommentRowWidget.class );
-                updateItem.setSocialUser(socialUser);
-                updateItem.setUserClickCommand(model.getModel().getUserClickCommand());
+                updateItem.setSocialUser( socialUser );
+                updateItem.setUserClickCommand( model.getModel().getUserClickCommand() );
+                updateItem.setFollowUnfollowCommand( model.getModel().getFollowUnfollowCommand() );
+                updateItem.setLoggedUser( model.getModel().getSocialUser() );
                 row.init( updateItem );
                 table.add( row );
             }

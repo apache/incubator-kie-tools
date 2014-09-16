@@ -23,6 +23,8 @@ public class SocialTimelineWidgetModel {
 
     private ParameterizedCommand<String> userClickCommand;
 
+    private ParameterizedCommand<String> followUnfollowCommand;
+
     public SocialTimelineWidgetModel( SocialUser socialUser,
                                       PlaceManager placeManager, List<ClientResourceType> resourceTypes ) {
         this.socialUser = socialUser;
@@ -30,6 +32,10 @@ public class SocialTimelineWidgetModel {
         this.resourceTypes = resourceTypes;
     }
 
+    public SocialTimelineWidgetModel withFollowUnfollowCommand( ParameterizedCommand<String> parameterizedCommand){
+        followUnfollowCommand = parameterizedCommand;
+        return this;
+    }
 
     public SocialTimelineWidgetModel withUserClickCommand( ParameterizedCommand<String> parameterizedCommand){
         userClickCommand = parameterizedCommand;
@@ -85,5 +91,9 @@ public class SocialTimelineWidgetModel {
 
     public ParameterizedCommand<String> getUserClickCommand() {
         return userClickCommand;
+    }
+
+    public ParameterizedCommand<String> getFollowUnfollowCommand() {
+        return followUnfollowCommand;
     }
 }

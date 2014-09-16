@@ -7,7 +7,21 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class UpdateItem {
 
     private final SocialActivitiesEvent event;
+
     private ParameterizedCommand<String> userClickCommand;
+
+
+    private ParameterizedCommand<String> followUnfollowCommand;
+
+    private SocialUser loggedUser;
+
+    public ParameterizedCommand<String> getFollowUnfollowCommand() {
+        return followUnfollowCommand;
+    }
+
+    public void setFollowUnfollowCommand( ParameterizedCommand<String> followUnfollowCommand ) {
+        this.followUnfollowCommand = followUnfollowCommand;
+    }
 
     public UpdateItem( SocialActivitiesEvent event ) {
         this.event = event;
@@ -27,5 +41,13 @@ public class UpdateItem {
 
     public ParameterizedCommand<String> getUserClickCommand() {
         return userClickCommand;
+    }
+
+    public void setLoggedUser( SocialUser loggedUser ) {
+        this.loggedUser = loggedUser;
+    }
+
+    public SocialUser getLoggedUser() {
+        return loggedUser;
     }
 }

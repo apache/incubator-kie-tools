@@ -8,6 +8,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.UpdateItem;
@@ -59,8 +60,18 @@ public class CommentRowWidget extends Composite {
         UserBoxView followerView = GWT.create( UserBoxView.class );
         SocialUser socialUser = updateItem.getEvent().getSocialUser();
         Image userImage = GravatarBuilder.generate( socialUser, GravatarBuilder.SIZE.MICRO );
-        followerView.init( socialUser, userImage, updateItem.getUserClickCommand() );
+        UserBoxView.RelationType relationType = findRelationTypeWithLoggedUser( socialUser, updateItem.getLoggedUser() );
+        followerView.init( socialUser, relationType, userImage, updateItem.getUserClickCommand(), updateItem.getFollowUnfollowCommand() );
         thumbnail.add( followerView );
+    }
+    private UserBoxView.RelationType findRelationTypeWithLoggedUser( SocialUser socialUser,
+                                                                     SocialUser loggedUser ) {
+        if ( socialUser.getUserName().equalsIgnoreCase( loggedUser.getUserName() ) ) {
+            return UserBoxView.RelationType.ME;
+        } else {
+            return socialUser.getFollowersName().contains( loggedUser.getUserName() ) ?
+                    UserBoxView.RelationType.UNFOLLOW : UserBoxView.RelationType.CAN_FOLLOW;
+        }
     }
 
 }
