@@ -2,6 +2,8 @@ package org.uberfire.client.mvp;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
+import java.util.ArrayList;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -146,7 +148,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         }
 
         private void setupPanelRecursively( final PanelDefinition panel ) {
-            for ( PartDefinition part : panel.getParts() ) {
+            for ( PartDefinition part : new ArrayList<PartDefinition>( panel.getParts() ) ) {
                 final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
                 part.setPlace( place );
                 placeManager.goTo( part, panel );
