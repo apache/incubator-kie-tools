@@ -69,6 +69,8 @@ public class ContributorsView extends Composite {
     @UiField(provided = true)
     Displayer topAuthorSelector;
 
+    DisplayerCoordinator dashboard = new DisplayerCoordinator();
+
     public ContributorsView() {
 
         // Create the chart definitions
@@ -208,22 +210,25 @@ public class ContributorsView extends Composite {
                 .buildSettings());
 
         // Make the displayers interact among them
-        DisplayerCoordinator viewerCoordinator = new DisplayerCoordinator();
-        viewerCoordinator.addDisplayer(areaChartByDate);
-        viewerCoordinator.addDisplayer(pieChartYears);
-        viewerCoordinator.addDisplayer(pieChartQuarters);
-        viewerCoordinator.addDisplayer(barChartDayOfWeek);
-        viewerCoordinator.addDisplayer(bubbleChartByOrg);
-        viewerCoordinator.addDisplayer(tableAll);
-        viewerCoordinator.addDisplayer(repoSelector);
-        viewerCoordinator.addDisplayer(orgSelector);
-        viewerCoordinator.addDisplayer(authorSelector);
-        viewerCoordinator.addDisplayer(topAuthorSelector);
+        dashboard.addDisplayer(areaChartByDate);
+        dashboard.addDisplayer(pieChartYears);
+        dashboard.addDisplayer(pieChartQuarters);
+        dashboard.addDisplayer(barChartDayOfWeek);
+        dashboard.addDisplayer(bubbleChartByOrg);
+        dashboard.addDisplayer(tableAll);
+        dashboard.addDisplayer(repoSelector);
+        dashboard.addDisplayer(orgSelector);
+        dashboard.addDisplayer(authorSelector);
+        dashboard.addDisplayer(topAuthorSelector);
 
         // Init the dashboard from the UI Binder template
         initWidget(uiBinder.createAndBindUi(this));
 
         // Draw the charts
-        viewerCoordinator.drawAll();
+        dashboard.drawAll();
+    }
+
+    public void redraw() {
+        dashboard.redrawAll();
     }
 }

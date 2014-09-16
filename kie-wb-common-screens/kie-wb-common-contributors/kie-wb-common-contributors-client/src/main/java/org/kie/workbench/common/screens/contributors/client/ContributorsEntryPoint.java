@@ -51,17 +51,18 @@ public class ContributorsEntryPoint {
         dataSetLookupClient.setLookupService(dataSetLookupService);
 
         // Set the default renderer lib for each displayer type.
-        rendererLibLocator.setDefaultRenderer( DisplayerType.BARCHART, GoogleRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.PIECHART, GoogleRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.AREACHART, GoogleRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.LINECHART, GoogleRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.BUBBLECHART, GoogleRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.METERCHART, GoogleRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.MAP, GoogleRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.TABLE, TableRenderer.UUID);
-        rendererLibLocator.setDefaultRenderer( DisplayerType.SELECTOR, SelectorRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.BARCHART, GoogleRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.PIECHART, GoogleRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.AREACHART, GoogleRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.LINECHART, GoogleRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.BUBBLECHART, GoogleRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.METERCHART, GoogleRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.MAP, GoogleRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.TABLE, TableRenderer.UUID);
+        rendererLibLocator.setDefaultRenderer(DisplayerType.SELECTOR, SelectorRenderer.UUID);
 
-        // Disable dataset push as the contributors datasets are constantly changing on the server.
-        dataSetLookupClient.setPushRemoteDataSetEnabled(false);
+        // Enable the ability to push and handle on client data sets smaller than 2 Mb
+        dataSetLookupClient.setPushRemoteDataSetEnabled(true);
+        dataSetLookupClient.setPushRemoteDataSetMaxSize(2024);
     }
 }
