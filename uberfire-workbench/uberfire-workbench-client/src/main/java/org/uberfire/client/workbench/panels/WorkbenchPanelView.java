@@ -25,6 +25,7 @@ import org.uberfire.workbench.model.Position;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Manages the Widget and DOM interaction of a panel. Part of the UberFire MVC system for panels. For a full explanation
@@ -135,5 +136,17 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      *            the element ID to set. If null, the ID value will be cleared.
      */
     void setElementId( String elementId );
+
+    /**
+     * Returns the widget that defines the boundaries of this panel view for purposes of drag-and-drop.
+     *
+     * @return the widget whose boundaries define the region where workbench parts can be dropped into this panel. For
+     *         simple panel types that do not support child panels, this will typically be the same widget returned by
+     *         {@link #asWidget()}. For fancier panels, this will typically be some child panel within the view's
+     *         internal structure.
+     *         <p>
+     *         If the return value is null, parts will not be droppable on this view.
+     */
+    Widget getPartDropRegion();
 
 }

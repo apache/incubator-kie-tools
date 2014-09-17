@@ -36,6 +36,8 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Corresponding view to {@link SplitLayoutPanelPresenter}. Only supports panels, not parts.
  * Enforces lifecycle callbacks on center parts.
+ * <p>
+ * Since this panel cannot hold parts, it also does not support drag-and-drop of parts.
  */
 @Dependent
 @Named("SplitLayoutPanelView")
@@ -120,6 +122,11 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     @Override
     public boolean selectPart( final PartDefinition part ) {
         throw new IllegalArgumentException("Presenter doesn't manage parts!");
+    }
+
+    @Override
+    public Widget getPartDropRegion() {
+        return null;
     }
 
     @Override

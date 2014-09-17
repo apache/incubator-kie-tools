@@ -1,6 +1,7 @@
 package org.uberfire.wbtest.selenium;
 
 import static org.junit.Assert.*;
+import static org.uberfire.wbtest.selenium.UberAssertions.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.wbtest.client.dnd.DragAndDropPerspective;
+import org.uberfire.workbench.model.CompassPosition;
 
 /**
  * Tests for drag-and-drop movement of parts.
@@ -44,7 +46,45 @@ public class DragAndDropTest extends AbstractSeleniumTest {
 
         // to prove it worked, we should ensure DnD-2 is south of DnD-1
         assertTrue( dnd1Screen.isDisplayed() );
-        assertTrue( dnd1Screen.getLocation().y < dnd2Screen.getLocation().y );
-
+        assertRelativePosition( CompassPosition.SOUTH, dnd1Screen, dnd2Screen );
     }
+
+    @Test
+    public void dragCompassShouldBeCenteredOverRootListTargetPanel() throws Exception {
+        WebElement listDragHandle = driver.findElement( By.id( "gwt-debug-" + ListBarWidget.DEBUG_TITLE_PREFIX + "DnD-2" ) );
+
+        // make sure we're grabbing the right thing
+        assertEquals( "DnD-2", listDragHandle.getText() );
+
+        // get the compass to appear over the root panel (which is a MultiList panel)
+        WebElement listPanel = driver.findElement( By.id( "DragAndDropPerspective-list" ) );
+        Actions dragAndDrop = new Actions( driver );
+        dragAndDrop.clickAndHold( listDragHandle );
+        dragAndDrop.moveToElement( listPanel );
+        dragAndDrop.perform();
+
+        // now find the south point of the compass and drop on it
+        WebElement compassCenter = driver.findElement( By.id( "gwt-debug-CompassWidget-centre" ) );
+        assertCentered( listPanel, compassCenter );
+    }
+
+    @Test
+    public void dragCompassShouldBeCenteredOverWestTabbedTargetPanel() throws Exception {
+        WebElement listDragHandle = driver.findElement( By.id( "gwt-debug-" + ListBarWidget.DEBUG_TITLE_PREFIX + "DnD-2" ) );
+
+        // make sure we're grabbing the right thing
+        assertEquals( "DnD-2", listDragHandle.getText() );
+
+        // get the compass to appear over the west panel (a MultiTab panel)
+        WebElement tabPanel = driver.findElement( By.id( "DragAndDropPerspective-tab" ) );
+        Actions dragAndDrop = new Actions( driver );
+        dragAndDrop.clickAndHold( listDragHandle );
+        dragAndDrop.moveToElement( tabPanel );
+        dragAndDrop.perform();
+
+        // now find the south point of the compass and drop on it
+        WebElement compassCenter = driver.findElement( By.id( "gwt-debug-CompassWidget-centre" ) );
+        assertCentered( tabPanel, compassCenter );
+    }
+
 }

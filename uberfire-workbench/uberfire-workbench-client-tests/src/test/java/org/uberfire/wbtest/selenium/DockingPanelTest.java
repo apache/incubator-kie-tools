@@ -1,6 +1,7 @@
 package org.uberfire.wbtest.selenium;
 
 import static org.junit.Assert.*;
+import static org.uberfire.wbtest.selenium.UberAssertions.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +53,7 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         NestingScreenWrapper childScreen = root.addChild( direction );
         assertTrue( childScreen.isStillInDom() );
         assertTrue( childScreen.isPanelStillInDom() );
-        assertRelativePosition( direction, root, childScreen );
+        assertRelativePosition( direction, root.getWebElement(), childScreen.getWebElement() );
 
         childScreen.close();
         assertFalse( childScreen.isStillInDom() );
@@ -73,7 +74,7 @@ public class DockingPanelTest extends AbstractSeleniumTest {
 
         // each subsequent panel should be added at the edge of what remains of the parent panel
         // so we want root < childScreen2 < childScreen1 < window edge
-        assertRelativePosition( direction, root, childScreen2 );
+        assertRelativePosition( direction, root.getWebElement(), childScreen2.getWebElement() );
         //assertRelativePosition( direction, childScreen2, childScreen1 );
 
         childScreen1.close();
@@ -177,43 +178,6 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         // finally, the root screen should be back to its original size and position
         assertEquals( originalRootSize, root.getSize() );
         assertEquals( originalRootLocation, root.getLocation() );
-    }
-
-    /**
-     * Checks that the given "checkMe" element is positioned correctly with respect to the given "anchor" element.
-     *
-     * @param expected
-     *            the position on the page that the checkMe element should have relative to the anchor.
-     * @param anchor
-     *            the reference element
-     * @param checkMe
-     *            the element to check
-     */
-    static void assertRelativePosition( CompassPosition expected, NestingScreenWrapper anchor, NestingScreenWrapper checkMe ) {
-        switch( expected ) {
-            case NORTH:
-                if ( checkMe.getLocation().y >= anchor.getLocation().y ) {
-                    fail( "checkMe is not NORTH of anchor. anchor.y = " + anchor.getLocation().y + "; checkMe.y " + checkMe.getLocation().y );
-                }
-                break;
-            case SOUTH:
-                if ( checkMe.getLocation().y <= anchor.getLocation().y ) {
-                    fail( "checkMe is not SOUTH of anchor. anchor.y = " + anchor.getLocation().y + "; checkMe.y " + checkMe.getLocation().y );
-                }
-                break;
-            case EAST:
-                if ( checkMe.getLocation().x <= anchor.getLocation().x ) {
-                    fail( "checkMe is not EAST of anchor. anchor.x = " + anchor.getLocation().x + "; checkMe.x " + checkMe.getLocation().x );
-                }
-                break;
-            case WEST:
-                if ( checkMe.getLocation().x >= anchor.getLocation().x ) {
-                    fail( "checkMe is not WEST of anchor. anchor.x = " + anchor.getLocation().x + "; checkMe.x " + checkMe.getLocation().x );
-                }
-                break;
-            default:
-                throw new IllegalArgumentException( "Not a valid relative position: " + expected );
-        }
     }
 
     static CompassPosition opposite( CompassPosition position ) {

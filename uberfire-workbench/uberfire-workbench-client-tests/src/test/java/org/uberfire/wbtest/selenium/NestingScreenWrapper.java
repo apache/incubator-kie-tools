@@ -94,4 +94,11 @@ public class NestingScreenWrapper {
     public void close() {
         element.findElement( By.className( "close" ) ).click();
     }
+
+    /**
+     * Returns the Selenium WebElement that this object wraps.
+     */
+    public WebElement getWebElement() {
+        return element;
+    }
 }

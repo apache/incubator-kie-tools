@@ -5,6 +5,7 @@ import java.util.IdentityHashMap;
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
+import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.TemplatedActivity;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
@@ -19,6 +20,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The view component of the templated panel system. This view supports an arbitrary number of child panel views, each
+ * identified by a {@link NamedPosition}.
+ * <p>
+ * This view does not support having parts added to it directly, so it also does not support drag-and-drop of parts.
+ *
+ * @see TemplatedWorkbenchPanelPresenter
+ * @see WorkbenchPanel
+ */
 @Dependent
 @Named("TemplatedWorkbenchPanelView")
 public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<TemplatedWorkbenchPanelPresenter> {
@@ -58,7 +68,7 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
 
     @Override
     public void addPanel( PanelDefinition panel,
-                          WorkbenchPanelView view,
+                          WorkbenchPanelView<?> view,
                           Position p ) {
         NamedPosition position = (NamedPosition) p;
         HasWidgets panelContainer = activity.resolvePosition( position );
@@ -108,6 +118,11 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
     @Override
     public boolean removePart( PartDefinition part ) {
         throw new UnsupportedOperationException("This view doesn't support parts");
+    }
+
+    @Override
+    public Widget getPartDropRegion() {
+        return null;
     }
 
     @Override

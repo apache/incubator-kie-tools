@@ -2,7 +2,6 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -16,12 +15,12 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Implements focus and selection handling.
- * @author jfuerth
  *
- * @param <P>
+ * @param <P> the type of presenter this view goes with
  */
 public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresenter>
 extends ResizeComposite
@@ -29,9 +28,6 @@ implements WorkbenchPanelView<P> {
 
     @Inject
     protected PanelManager panelManager;
-
-    @Inject
-    protected BeanFactory factory;
 
     protected P presenter;
 
@@ -96,4 +92,12 @@ implements WorkbenchPanelView<P> {
         return sb.toString();
     }
 
+    /**
+     * This implementation returns null, meaning this panel does not support parts being dropped on it. Subclasses that
+     * want to support Drag-and-Drop can override.
+     */
+    @Override
+    public Widget getPartDropRegion() {
+        return null;
+    }
 }

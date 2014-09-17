@@ -1,7 +1,6 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
@@ -21,18 +20,12 @@ extends AbstractDockingWorkbenchPanelView<P> {
     protected abstract MultiPartWidget setupWidget();
 
     @PostConstruct
-    private void setupDragAndDrop() {
+    private void setupMultiPartPanel() {
         widget = setupWidget();
         widget.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
         Layouts.setToFillParent( widget.asWidget() );
         getPartViewContainer().add( contextWidget );
         getPartViewContainer().add( widget );
-        dndManager.registerDropController( this, factory.newDropController( this ) );
-    }
-
-    @PreDestroy
-    private void tearDownDragAndDrop() {
-        dndManager.unregisterDropController( this );
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import org.uberfire.client.workbench.BeanFactory;
@@ -64,11 +65,21 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
     private ResizeFlowPanel partViewContainer;
 
     @PostConstruct
-    void setupWidgetLayout() {
+    void setupDockingPanel() {
         initWidget( topLevelWidget );
         topLevelWidget.add( partViewContainer );
         setToFillParent( topLevelWidget );
         setToFillParent( partViewContainer );
+        if ( getPartDropRegion() != null ) {
+            dndManager.registerDropController( this, factory.newDropController( this ) );
+        }
+    }
+
+    @PreDestroy
+    private void tearDownDockingPanel() {
+        if ( getPartDropRegion() != null ) {
+            dndManager.unregisterDropController( this );
+        }
     }
 
     /**
@@ -86,6 +97,27 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
      */
     protected ResizeFlowPanel getPartViewContainer() {
         return partViewContainer;
+    }
+
+    /**
+     * Returns the partViewContainer, which appears to be the "real" on-screen boundary of this widget.
+     */
+    @Override
+    public Widget getPartDropRegion() {
+        return getPartViewContainer();
+    }
+
+    /**
+     * Overridden to attach the ID to the part container rather than the top-level widget, which may contain sub-panels
+     * and be larger and further up the DOM tree than desired.
+     */
+    @Override
+    public void setElementId( String elementId ) {
+        if ( elementId == null ) {
+            getPartViewContainer().getElement().removeAttribute( "id" );
+        } else {
+            getPartViewContainer().getElement().setAttribute( "id", elementId );
+        }
     }
 
     @Override
@@ -143,11 +175,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
             System.out.println("  remove failed - no such child view");
             return false;
         }
-
-        // FIXME this is cleanup for stuff subclasses set up on their own.
-        // there is no guarantee it is necessary or sufficient.
-        // should move this down, or pull the subclass DnD setup up to here
-        dndManager.unregisterDropController( childView );
 
         WorkbenchSplitLayoutPanel splitter = viewSplitters.remove( childView );
         splitter.remove( childView.asWidget() );
