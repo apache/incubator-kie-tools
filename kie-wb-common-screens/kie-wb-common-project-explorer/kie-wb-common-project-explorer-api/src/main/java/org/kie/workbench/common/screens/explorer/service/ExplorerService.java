@@ -35,12 +35,7 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface ExplorerService {
 
-    ProjectExplorerContent getContent( final OrganizationalUnit organizationalUnit,
-                                       final Repository repository,
-                                       final Project project,
-                                       final Package pkg,
-                                       final FolderItem item,
-                                       final Set<Option> options );
+    ProjectExplorerContent getContent( final ProjectExplorerContentQuery query );
 
     URIStructureExplorerModel getURIStructureExplorerModel( Path uri );
 

@@ -12,6 +12,8 @@ import org.kie.workbench.common.screens.explorer.service.Option;
 
 public class UserExplorerLastData {
 
+    public static final UserExplorerLastData EMPTY = new UserExplorerLastData();
+
     private LastPackage lastPackage = null;
     private LastFolderItem lastFolderItem = null;
     private Set<Option> options = new HashSet<Option>();

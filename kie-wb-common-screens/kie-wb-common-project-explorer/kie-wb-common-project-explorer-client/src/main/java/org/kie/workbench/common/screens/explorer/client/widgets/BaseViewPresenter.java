@@ -37,6 +37,7 @@ import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -51,6 +52,7 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
+import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.services.shared.validation.Validator;
 import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
@@ -133,36 +135,32 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     protected abstract View getView();
 
     @Override
-    public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit ) {
-        doInitialiseViewForActiveContext( organizationalUnit,
-                                          null,
-                                          null,
-                                          null,
-                                          null,
-                                          true );
+    public void initialiseViewForActiveContext(final OrganizationalUnit organizationalUnit) {
+        doInitialiseViewForActiveContext(
+                new ProjectExplorerContentQuery(organizationalUnit),
+                true);
     }
 
     @Override
-    public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
-                                                final Repository repository ) {
-        doInitialiseViewForActiveContext( organizationalUnit,
-                                          repository,
-                                          null,
-                                          null,
-                                          null,
-                                          true );
+    public void initialiseViewForActiveContext(final OrganizationalUnit organizationalUnit,
+                                               final Repository repository) {
+        doInitialiseViewForActiveContext(
+                new ProjectExplorerContentQuery(
+                        organizationalUnit,
+                        repository),
+                true);
     }
 
     @Override
     public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
                                                 final Repository repository,
                                                 final Project project ) {
-        doInitialiseViewForActiveContext( organizationalUnit,
-                                          repository,
-                                          project,
-                                          null,
-                                          null,
-                                          true );
+        doInitialiseViewForActiveContext(
+                new ProjectExplorerContentQuery(
+                        organizationalUnit,
+                        repository,
+                        project),
+                true);
     }
 
     @Override
@@ -170,12 +168,13 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                 final Repository repository,
                                                 final Project project,
                                                 final Package pkg ) {
-        doInitialiseViewForActiveContext( organizationalUnit,
-                                          repository,
-                                          project,
-                                          pkg,
-                                          null,
-                                          true );
+        doInitialiseViewForActiveContext(
+                new ProjectExplorerContentQuery(
+                        organizationalUnit,
+                        repository,
+                        project,
+                        pkg),
+                true);
     }
 
     @Override
@@ -329,59 +328,46 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private void refresh( boolean showLoadingIndicator ) {
-        doInitialiseViewForActiveContext( activeOrganizationalUnit,
-                                          activeRepository,
-                                          activeProject,
-                                          activePackage,
-                                          activeFolderItem,
-                                          showLoadingIndicator );
+    private void refresh(boolean showLoadingIndicator) {
+        doInitialiseViewForActiveContext(
+                new ProjectExplorerContentQuery(
+                        activeOrganizationalUnit,
+                        activeRepository,
+                        activeProject,
+                        activePackage,
+                        activeFolderItem),
+                showLoadingIndicator);
     }
 
-    private void doInitialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
-                                                   final Repository repository,
-                                                   final Project project,
-                                                   final Package pkg,
-                                                   final FolderItem folderItem,
+    private void doInitialiseViewForActiveContext( final ProjectExplorerContentQuery query,
                                                    final boolean showLoadingIndicator ) {
 
         if ( showLoadingIndicator ) {
             getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         }
 
-        explorerService.call( new RemoteCallback<ProjectExplorerContent>() {
+        query.setOptions(getActiveOptions());
+
+        explorerService.call(
+                getContentCallback(),
+                new HasBusyIndicatorDefaultErrorCallback(getView())).getContent(query);
+    }
+
+    private RemoteCallback<ProjectExplorerContent> getContentCallback() {
+        return new RemoteCallback<ProjectExplorerContent>() {
             @Override
             public void callback( final ProjectExplorerContent content ) {
 
                 boolean signalChange = false;
                 boolean buildSelectedProject = false;
 
-                if ( Utils.hasOrganizationalUnitChanged( content.getOrganizationalUnit(),
-                                                         activeOrganizationalUnit ) ) {
-                    signalChange = true;
-                    activeOrganizationalUnit = content.getOrganizationalUnit();
-                }
-                if ( Utils.hasRepositoryChanged( content.getRepository(),
-                                                 activeRepository ) ) {
-                    signalChange = true;
-                    activeRepository = content.getRepository();
-                }
-                if ( Utils.hasProjectChanged( content.getProject(),
-                                              activeProject ) ) {
+                signalChange = setActiveOrganizationalUnit(content);
+                signalChange = setActiveRepository(content);
+                if(setActiveProject(content)){
                     signalChange = true;
                     buildSelectedProject = true;
-                    activeProject = content.getProject();
                 }
-                if ( Utils.hasFolderItemChanged( content.getFolderListing().getItem(),
-                                                 activeFolderItem ) ) {
-                    signalChange = true;
-                    activeFolderItem = content.getFolderListing().getItem();
-                    if ( activeFolderItem != null && activeFolderItem.getItem() != null && activeFolderItem.getItem() instanceof Package ) {
-                        activePackage = (Package) activeFolderItem.getItem();
-                    } else if ( activeFolderItem == null || activeFolderItem.getItem() == null ) {
-                        activePackage = null;
-                    }
-                }
+                signalChange = setActiveFolderAndPackage(content);
 
                 if ( signalChange ) {
                     fireContextChangeEvent();
@@ -406,12 +392,55 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 getView().hideBusyIndicator();
             }
 
-        }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getContent( organizationalUnit,
-                                                                               repository,
-                                                                               project,
-                                                                               pkg,
-                                                                               folderItem,
-                                                                               getActiveOptions() );
+        };
+    }
+
+    private boolean setActiveProject(ProjectExplorerContent content) {
+        if (Utils.hasProjectChanged(content.getProject(),
+                activeProject)) {
+            activeProject = content.getProject();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean setActiveFolderAndPackage(ProjectExplorerContent content) {
+        if ( Utils.hasFolderItemChanged(content.getFolderListing().getItem(),
+                activeFolderItem) ) {
+
+            activeFolderItem = content.getFolderListing().getItem();
+            if ( activeFolderItem != null && activeFolderItem.getItem() != null && activeFolderItem.getItem() instanceof Package) {
+                activePackage = (Package) activeFolderItem.getItem();
+            } else if ( activeFolderItem == null || activeFolderItem.getItem() == null ) {
+                activePackage = null;
+            }
+
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private boolean setActiveRepository(ProjectExplorerContent content) {
+        if ( Utils.hasRepositoryChanged(content.getRepository(),
+                activeRepository) ) {
+            activeRepository = content.getRepository();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean setActiveOrganizationalUnit(ProjectExplorerContent content) {
+
+        if ( Utils.hasOrganizationalUnitChanged(content.getOrganizationalUnit(),
+                activeOrganizationalUnit) ) {
+            activeOrganizationalUnit = content.getOrganizationalUnit();
+            return true;
+        }else{
+            return false;
+        }
     }
 
     private void fireContextChangeEvent() {
@@ -469,6 +498,21 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                  activeOrganizationalUnit ) ) {
             getView().getExplorer().clear();
             initialiseViewForActiveContext( organizationalUnit );
+        }
+    }
+
+    @Override
+    public void branchChanged(final String branch) {
+        if (activeRepository instanceof GitRepository) {
+            ((GitRepository) activeRepository).changeBranch(branch);
+            getView().getExplorer().clear();
+            ProjectExplorerContentQuery query = new ProjectExplorerContentQuery(
+                    activeOrganizationalUnit,
+                    activeRepository);
+            query.setBranchChangeFlag(true);
+            doInitialiseViewForActiveContext(
+                    query,
+                    true);
         }
     }
 
@@ -609,12 +653,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
         if ( authorizationManager.authorize( project,
                                              identity ) ) {
-            doInitialiseViewForActiveContext( activeOrganizationalUnit,
-                                              activeRepository,
-                                              project,
-                                              null,
-                                              null,
-                                              false );
+            doInitialiseViewForActiveContext(
+                    new ProjectExplorerContentQuery(
+                            activeOrganizationalUnit,
+                            activeRepository,
+                            project),
+                    false);
         }
     }
 
@@ -628,12 +672,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
         if ( authorizationManager.authorize( event.getOldProject(),
                                              identity ) ) {
-            doInitialiseViewForActiveContext( activeOrganizationalUnit,
-                                              activeRepository,
-                                              event.getNewProject(),
-                                              null,
-                                              null,
-                                              true );
+            doInitialiseViewForActiveContext(
+                    new ProjectExplorerContentQuery(
+                            activeOrganizationalUnit,
+                            activeRepository,
+                            event.getNewProject()),
+                    true);
         }
     }
 
@@ -650,12 +694,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             if ( activeProject != null && activeProject.equals( event.getProject() ) ) {
                 activeProject = null;
             }
-            doInitialiseViewForActiveContext( activeOrganizationalUnit,
-                                              activeRepository,
-                                              null,
-                                              null,
-                                              null,
-                                              true );
+            doInitialiseViewForActiveContext(
+                    new ProjectExplorerContentQuery(
+                            activeOrganizationalUnit,
+                            activeRepository),
+                    true);
         }
     }
 
@@ -672,12 +715,13 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             return;
         }
 
-        doInitialiseViewForActiveContext( activeOrganizationalUnit,
-                                          activeRepository,
-                                          activeProject,
-                                          pkg,
-                                          null,
-                                          false );
+        doInitialiseViewForActiveContext(
+                new ProjectExplorerContentQuery(
+                        activeOrganizationalUnit,
+                        activeRepository,
+                        activeProject,
+                        pkg),
+                false);
     }
 
     // Refresh when a Resource has been added, if it exists in the active package
