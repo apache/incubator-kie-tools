@@ -8,6 +8,7 @@ import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class SocialTimelineWidgetModel {
@@ -24,6 +25,7 @@ public class SocialTimelineWidgetModel {
     private ParameterizedCommand<String> userClickCommand;
 
     private ParameterizedCommand<String> followUnfollowCommand;
+    private ParameterizedCommand<String> linkCommand;
 
     public SocialTimelineWidgetModel( SocialUser socialUser,
                                       PlaceManager placeManager, List<ClientResourceType> resourceTypes ) {
@@ -39,6 +41,11 @@ public class SocialTimelineWidgetModel {
 
     public SocialTimelineWidgetModel withUserClickCommand( ParameterizedCommand<String> parameterizedCommand){
         userClickCommand = parameterizedCommand;
+        return this;
+    }
+
+    public SocialTimelineWidgetModel withLinkCommand( ParameterizedCommand<String> linkCommand ) {
+        this.linkCommand = linkCommand;
         return this;
     }
     public SocialTimelineWidgetModel(SocialEventType socialEventType,
@@ -96,4 +103,18 @@ public class SocialTimelineWidgetModel {
     public ParameterizedCommand<String> getFollowUnfollowCommand() {
         return followUnfollowCommand;
     }
+
+    public ParameterizedCommand<String> getLinkCommand() {
+        if(linkCommand==null){
+            return new ParameterizedCommand<String>() {
+                @Override
+                public void execute( String parameter ) {
+
+                }
+            };
+        }
+        return linkCommand;
+    }
+
+
 }

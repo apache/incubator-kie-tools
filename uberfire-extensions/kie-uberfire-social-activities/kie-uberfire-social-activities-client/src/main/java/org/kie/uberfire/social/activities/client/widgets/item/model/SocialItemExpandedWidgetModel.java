@@ -2,9 +2,9 @@ package org.kie.uberfire.social.activities.client.widgets.item.model;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.FluidContainer;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.UpdateItem;
+import org.uberfire.mvp.Command;
 
 public class SocialItemExpandedWidgetModel {
 

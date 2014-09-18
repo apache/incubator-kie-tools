@@ -59,7 +59,7 @@ public abstract class SocialUserCachePersistence implements SocialUserPersistenc
     }
 
     @Override
-    public SocialUser getSocialUser( String userName ) {
+    public synchronized SocialUser getSocialUser( String userName ) {
         syncUserNamesCacheAndFile( userName );
         return usersCache.get( userName );
     }

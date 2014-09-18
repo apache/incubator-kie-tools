@@ -25,6 +25,7 @@ import org.kie.uberfire.social.activities.service.SocialTypeTimelinePagedReposit
 import org.kie.uberfire.social.activities.service.SocialUserTimelinePagedRepositoryAPI;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class SimpleSocialTimelineWidget extends Composite {
 
@@ -105,7 +106,8 @@ public class SimpleSocialTimelineWidget extends Composite {
     private void createSimpleWidgetWithFileLink( final SocialActivitiesEvent event ) {
         MessageBuilder.createCall( new RemoteCallback<Path>() {
             public void callback( Path path ) {
-                SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() );
+                SimpleItemWidgetModel rowModel = new SimpleItemWidgetModel( model, event.getTimestamp(), event.getLinkLabel(), path, event.getAdicionalInfos() )
+                            .withLinkCommand( model.getLinkCommand() );
                 SimpleItemWidget item = GWT.create( SimpleItemWidget.class );
                 item.init( rowModel );
                 itemsPanel.add( item );
@@ -169,6 +171,7 @@ public class SimpleSocialTimelineWidget extends Composite {
             }
         } );
     }
+
 
     interface MyUiBinder extends UiBinder<Widget, SimpleSocialTimelineWidget> {
 

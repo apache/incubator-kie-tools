@@ -9,6 +9,8 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class SimpleItemWidgetModel {
 
@@ -22,6 +24,7 @@ public class SimpleItemWidgetModel {
     private String title;
     private boolean withFileIcon;
     private List<ClientResourceType> resourceTypes;
+    private ParameterizedCommand<String> linkCommand;
 
     public SimpleItemWidgetModel( SimpleSocialTimelineWidgetModel model,
                                   Date timestamp,
@@ -132,4 +135,22 @@ public class SimpleItemWidgetModel {
     public List<ClientResourceType> getResourceTypes() {
         return resourceTypes;
     }
+
+    public SimpleItemWidgetModel withLinkCommand( ParameterizedCommand<String> linkCommand ) {
+        this.linkCommand = linkCommand;
+        return this;
+    }
+
+    public ParameterizedCommand<String> getLinkCommand() {
+        if(linkCommand==null){
+            return new ParameterizedCommand<String>() {
+                @Override
+                public void execute( String parameter ) {
+
+                }
+            };
+        }
+        return linkCommand;
+    }
+
 }

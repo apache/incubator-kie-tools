@@ -2,7 +2,6 @@ package org.kie.uberfire.social.activities.service;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.uberfire.social.activities.model.SocialUser;
 
 public interface SocialUserPersistenceAPI {

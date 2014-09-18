@@ -20,7 +20,6 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 public class SocialItemExpandedWidget extends Composite {
@@ -80,16 +79,12 @@ public class SocialItemExpandedWidget extends Composite {
         final UpdateItem updateItem = model.getUpdateItems().get( 0 );
         NavList list = new NavList();
         NavLink link = new NavLink();
-        link.setText( updateItem.getEvent().getLinkLabel() );
+        final String linkLabel = updateItem.getEvent().getLinkLabel();
+        link.setText( linkLabel );
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                MessageBuilder.createCall( new RemoteCallback<Path>() {
-                    public void callback( Path path ) {
-                        PlaceManager placeManager = model.getModel().getPlaceManager();
-                        placeManager.goTo( path );
-                    }
-                }, VFSService.class ).get( updateItem.getEvent().getLinkTarget() );
+                model.getModel().getLinkCommand().execute( updateItem.getEvent().getLinkTarget() );
             }
         } );
         list.add( link );

@@ -83,8 +83,7 @@ public class SimpleItemWidget extends Composite {
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                PlaceManager placeManager = model.getPlaceManager();
-                placeManager.goTo( model.getLinkPath() );
+                model.getLinkCommand().execute( model.getLinkPath().toURI() );
             }
         } );
         list.add( link );

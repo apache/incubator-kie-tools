@@ -3,6 +3,7 @@ package org.kie.uberfire.social.activities.client.widgets.timeline.simple.model;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.NavLink;
+import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.kie.uberfire.social.activities.model.SocialEventType;
 import org.kie.uberfire.social.activities.model.SocialPaged;
@@ -10,6 +11,7 @@ import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialPredicate;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class SimpleSocialTimelineWidgetModel {
 
@@ -21,6 +23,7 @@ public class SimpleSocialTimelineWidgetModel {
     private NavLink less;
     private NavLink more;
     private List<ClientResourceType> resourceTypes;
+    private ParameterizedCommand<String> linkCommand;
 
     public SimpleSocialTimelineWidgetModel( SocialEventType socialEventType,
                                             SocialPredicate<SocialActivitiesEvent> predicate,
@@ -46,6 +49,11 @@ public class SimpleSocialTimelineWidgetModel {
                                                            NavLink more ) {
         this.less = less;
         this.more = more;
+        return this;
+    }
+
+    public SimpleSocialTimelineWidgetModel withLinkCommand( ParameterizedCommand<String> linkCommand ) {
+        this.linkCommand = linkCommand;
         return this;
     }
 
@@ -99,4 +107,17 @@ public class SimpleSocialTimelineWidgetModel {
     public List<ClientResourceType> getResourceTypes() {
         return resourceTypes;
     }
+
+    public ParameterizedCommand<String> getLinkCommand() {
+        if(linkCommand==null){
+            return new ParameterizedCommand<String>() {
+                @Override
+                public void execute( String parameter ) {
+
+                }
+            };
+        }
+        return linkCommand;
+    }
+
 }
