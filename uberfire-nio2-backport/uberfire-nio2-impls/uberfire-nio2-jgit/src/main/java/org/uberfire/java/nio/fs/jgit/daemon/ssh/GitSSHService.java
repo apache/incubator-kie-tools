@@ -77,7 +77,7 @@ public class GitSSHService {
         try {
             sshd.start();
         } catch ( IOException e ) {
-            throw new RuntimeException( e );
+            throw new RuntimeException( "Couldn't start SSH daemon at " + sshd.getHost() + ":" + sshd.getPort(), e );
         }
     }
 
