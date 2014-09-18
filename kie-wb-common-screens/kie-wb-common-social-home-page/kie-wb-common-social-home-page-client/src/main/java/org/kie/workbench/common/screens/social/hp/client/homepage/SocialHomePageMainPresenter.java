@@ -18,6 +18,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
+import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialEventTypeRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
@@ -87,6 +88,9 @@ public class SocialHomePageMainPresenter {
     @Inject
     private Caller<SocialUserServiceAPI> socialUserService;
 
+    @Inject
+    private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
+
     @AfterInitialization
     public void init() {
         view.setHeader( header );
@@ -147,13 +151,23 @@ public class SocialHomePageMainPresenter {
         List<ClientResourceType> resourceTypes = iconLocator.getResourceTypes();
         SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( socialUser, placeManager, resourceTypes )
                 .withUserClickCommand( generateUserClickCommand() )
-                .withFollowUnfollowCommand( generateFollowUnfollowCommand() );
-
+                .withFollowUnfollowCommand( generateFollowUnfollowCommand() )
+                .withLinkCommand( generateLinkCommand() );
         Map<String, String> globals = new HashMap();
         globals.put( "filter", param );
         model.droolsQuery( globals, "filterTimelineRecentAssets", "10" );
         socialTimelineWidget.init( model );
         main.setSocialWidget( socialTimelineWidget );
+    }
+
+    private ParameterizedCommand<String> generateLinkCommand() {
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( String parameter ) {
+                placeManager.goTo( "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective" );
+                socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameter ) );
+            }
+        };
     }
 
     private boolean loggedUserFollowSelectedUser( SocialUser socialUser ) {

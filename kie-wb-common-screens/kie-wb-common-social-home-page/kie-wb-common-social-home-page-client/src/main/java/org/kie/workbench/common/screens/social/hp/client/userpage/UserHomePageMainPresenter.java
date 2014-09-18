@@ -13,6 +13,7 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
+import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
@@ -52,6 +53,9 @@ public class UserHomePageMainPresenter {
     private IconLocator iconLocator;
 
     @Inject
+    private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
+    
+    @Inject
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     @Inject
@@ -77,6 +81,7 @@ public class UserHomePageMainPresenter {
 
     @Inject
     private Event<UserHomepageSelectedEvent> userHomepageSelectedEvent;
+
 
     //control race conditions due to assync system (cdi x UF lifecycle)
     private String lastUserOnpage;
@@ -147,8 +152,21 @@ public class UserHomePageMainPresenter {
         String title = ( socialUser != null && socialUser.getRealName() != null && !socialUser.getRealName().isEmpty() ) ? socialUser.getRealName() : socialUser.getUserName();
         title += "'s Recent Activities";
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( place, title ) );
-        SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, socialPaged ).withIcons( iconLocator.getResourceTypes() ).withOnlyMorePagination( new NavLink( "(more...)" ) );
+        SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser, new UserTimeLineOnlyUserActivityPredicate( socialUser ), placeManager, socialPaged )
+                    .withIcons( iconLocator.getResourceTypes() )
+                    .withOnlyMorePagination( new NavLink( "(more...)" ) )
+                    .withLinkCommand( generateLinkCommand() );
         mainPresenter.setup( model );
+    }
+
+    private ParameterizedCommand<String> generateLinkCommand() {
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( String parameter ) {
+                placeManager.goTo( "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective" );
+                socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameter ) );
+            }
+        };
     }
 
     private void generateConnectionsList( final SocialUser socialUser ) {

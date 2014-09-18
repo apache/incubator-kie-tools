@@ -49,6 +49,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-social-activities-api</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

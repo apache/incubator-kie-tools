@@ -26,6 +26,8 @@ import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
+import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Service definition for Explorer editor
@@ -39,6 +41,8 @@ public interface ExplorerService {
                                        final Package pkg,
                                        final FolderItem item,
                                        final Set<Option> options );
+
+    URIStructureExplorerModel getURIStructureExplorerModel( Path uri );
 
     FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
                                     final Repository repository,

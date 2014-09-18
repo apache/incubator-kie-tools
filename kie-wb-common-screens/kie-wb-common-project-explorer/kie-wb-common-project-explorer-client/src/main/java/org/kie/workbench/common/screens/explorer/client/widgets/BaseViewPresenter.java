@@ -42,11 +42,13 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
+import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
@@ -60,6 +62,7 @@ import org.kie.workbench.common.widgets.client.popups.file.FileNameAndCommitMess
 import org.kie.workbench.common.widgets.client.popups.file.RenamePopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.Identity;
@@ -83,6 +86,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Inject
     protected Caller<BuildService> buildService;
+
+    @Inject
+    protected Caller<VFSService> vfsService;
 
     @Inject
     private Caller<ValidationService> validationService;
@@ -751,6 +757,37 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                           activeFolderItem,
                                                           getActiveOptions() );
     }
+
+    public void onSocialFileSelected( @Observes final SocialFileSelectedEvent event ) {
+        vfsService.call( new RemoteCallback<Path>() {
+            @Override
+            public void callback( Path path ) {
+                openSelectedFileOnEditor( path );
+                setupActiveContextFor( path );
+            }
+        } ).get( event.getUri() );
+    }
+
+    private void openSelectedFileOnEditor( Path path ) {
+        placeManager.goTo( path );
+    }
+
+    private void setupActiveContextFor( final Path path ) {
+
+        explorerService.call( new RemoteCallback<URIStructureExplorerModel>() {
+            @Override
+            public void callback( URIStructureExplorerModel model ) {
+                doInitialiseViewForActiveContext( model.getOrganizationalUnit(),
+                                                  model.getRepository(),
+                                                  model.getProject(),
+                                                  null,
+                                                  null,
+                                                  true );
+            }
+        } ).getURIStructureExplorerModel( path );
+
+    }
+
 
     // Refresh when a Resource has been renamed, if it exists in the active package
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {

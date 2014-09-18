@@ -48,14 +48,17 @@ import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
+import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +101,9 @@ public class ExplorerServiceImpl
 
     @Inject
     private KieProjectService projectService;
+
+    @Inject
+    private RepositoryService repositoryService;
 
     @Inject
     private DeleteService deleteService;
@@ -608,6 +614,38 @@ public class ExplorerServiceImpl
     }
 
     @Override
+    public URIStructureExplorerModel getURIStructureExplorerModel( Path originalURI) {
+        Project project = getURIProject( originalURI );
+        Repository repository = getURIRepository( originalURI );
+        OrganizationalUnit ou = getURIOrganizationalUnits( repository );
+        Package aPackage = getURIPackage( originalURI );
+        return new URIStructureExplorerModel(ou,repository,project, aPackage, toFolderItem( aPackage ));
+    }
+
+    private Package getURIPackage( Path originalURI ) {
+        return projectService.resolvePackage( originalURI );
+    }
+
+    private OrganizationalUnit getURIOrganizationalUnits( Repository repository ) {
+        for ( OrganizationalUnit organizationalUnit : getOrganizationalUnits() ) {
+            if ( organizationalUnit.getRepositories().contains( repository ) ) {
+                return organizationalUnit;
+            }
+
+        }
+        throw new OrganizationalUnitNotFoundForURI();
+    }
+
+    private Repository getURIRepository( Path originalURI ) {
+        org.uberfire.java.nio.file.Path ufPath = Paths.convert( originalURI );
+        return repositoryService.getRepository( Paths.convert( ufPath.getRoot() ) );
+    }
+
+    private KieProject getURIProject( Path originalURI ) {
+        return projectService.resolveProject( originalURI );
+    }
+
+    @Override
     public FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
                                            final Repository repository,
                                            final Project project,
@@ -826,7 +864,7 @@ public class ExplorerServiceImpl
 
         try {
             if ( paths.size() > 1 ) {
-                ioService.startBatch( new FileSystem[]{Paths.convert( paths.iterator().next() ).getFileSystem()} );
+                ioService.startBatch( new FileSystem[]{ Paths.convert( paths.iterator().next() ).getFileSystem() } );
             }
 
             for ( final Path path : paths ) {
@@ -855,7 +893,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as RenameHelpers may be involved with the rename operation
-            ioService.startBatch( new FileSystem[]{Paths.convert( paths.iterator().next() ).getFileSystem()} );
+            ioService.startBatch( new FileSystem[]{ Paths.convert( paths.iterator().next() ).getFileSystem() } );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -905,7 +943,7 @@ public class ExplorerServiceImpl
 
         try {
             //Always use a batch as CopyHelpers may be involved with the rename operation
-            ioService.startBatch( new FileSystem[]{Paths.convert( paths.iterator().next() ).getFileSystem()} );
+            ioService.startBatch( new FileSystem[]{ Paths.convert( paths.iterator().next() ).getFileSystem() } );
 
             for ( final Path path : paths ) {
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
@@ -979,4 +1017,7 @@ public class ExplorerServiceImpl
         }
     }
 
+    private class OrganizationalUnitNotFoundForURI extends RuntimeException {
+
+    }
 }
