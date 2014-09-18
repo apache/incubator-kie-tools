@@ -47,6 +47,8 @@ import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
+import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
+import org.kie.workbench.common.screens.explorer.client.widgets.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
@@ -81,6 +83,10 @@ public class BusinessViewWidget extends Composite implements View {
 
     @UiField
     WellNavList itemsContainer;
+
+    @UiField(provided = true)
+    @Inject
+    BranchSelector branchSelector;
 
     @Inject
     Classifier classifier;
@@ -125,7 +131,10 @@ public class BusinessViewWidget extends Composite implements View {
                               repositories, repository,
                               projects, project );
         explorer.loadContent( folderListing, siblings );
-        setItems( folderListing );
+
+        branchSelector.setRepository(repository);
+
+        setItems(folderListing);
     }
 
     @Override
@@ -226,6 +235,10 @@ public class BusinessViewWidget extends Composite implements View {
 
     private String getCollapseId( ClientResourceType resourceType ) {
         return resourceType != null ? resourceType.getShortName().replaceAll( ID_CLEANUP_PATTERN, "" ) : "";
+    }
+
+    public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
+        branchSelector.addBranchChangeHandler(branchChangeHandler);
     }
 
     @Override

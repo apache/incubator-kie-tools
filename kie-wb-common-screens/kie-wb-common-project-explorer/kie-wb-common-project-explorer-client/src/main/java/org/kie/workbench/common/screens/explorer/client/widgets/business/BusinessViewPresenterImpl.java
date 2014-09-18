@@ -22,6 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.explorer.client.widgets.BaseViewPresenter;
+import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.service.Option;
 
@@ -49,5 +50,9 @@ public class BusinessViewPresenterImpl extends BaseViewPresenter {
     @Override
     protected View getView() {
         return view;
+    }
+
+    public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
+        view.addBranchChangeHandler(branchChangeHandler);
     }
 }

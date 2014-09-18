@@ -10,6 +10,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.data.Triple;
 
@@ -46,7 +47,7 @@ public class UserExplorerData {
             return null;
         }
 
-        final Object obj = content.get( Pair.newPair( organizationalUnit.getName(), repository.getAlias() ).toString() );
+        final Object obj = content.get( Pair.newPair( organizationalUnit.getName(), repository.getRoot() ).toString() );
         if ( obj != null && obj instanceof Project ) {
             return (Project) obj;
         }
@@ -60,7 +61,7 @@ public class UserExplorerData {
             return null;
         }
 
-        final Object obj = content.get( new FolderItemKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString() );
+        final Object obj = content.get( new FolderItemKey( organizationalUnit.getName(), repository.getRoot(), project.getPomXMLPath().toURI() ).toString() );
         if ( obj != null && obj instanceof FolderItem ) {
             return (FolderItem) obj;
         }
@@ -74,7 +75,7 @@ public class UserExplorerData {
             return null;
         }
 
-        final Object obj = content.get( new PackageKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString() );
+        final Object obj = content.get( new PackageKey( organizationalUnit.getName(), repository.getRoot(), project.getPomXMLPath().toURI() ).toString() );
         if ( obj != null && obj instanceof Package ) {
             return (Package) obj;
         }
@@ -95,7 +96,7 @@ public class UserExplorerData {
     public void addProject( final OrganizationalUnit organizationalUnit,
                             final Repository repository,
                             final Project project ) {
-        final String key = Pair.newPair( organizationalUnit.getName(), repository.getAlias() ).toString();
+        final String key = Pair.newPair( organizationalUnit.getName(), repository.getRoot() ).toString();
         content.put( key, project );
 
         indexOrganizationalUnit( organizationalUnit, key );
@@ -106,7 +107,7 @@ public class UserExplorerData {
                                final Repository repository,
                                final Project project,
                                final FolderItem item ) {
-        final String key = new FolderItemKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString();
+        final String key = new FolderItemKey( organizationalUnit.getName(), repository.getRoot(), project.getPomXMLPath().toURI() ).toString();
         content.put( key, item );
 
         indexOrganizationalUnit( organizationalUnit, key );
@@ -118,7 +119,7 @@ public class UserExplorerData {
                             final Repository repository,
                             final Project project,
                             final Package pkg ) {
-        final String key = new PackageKey( organizationalUnit.getName(), repository.getAlias(), project.getPomXMLPath().toURI() ).toString();
+        final String key = new PackageKey( organizationalUnit.getName(), repository.getRoot(), project.getPomXMLPath().toURI() ).toString();
         content.put( key, pkg );
 
         indexOrganizationalUnit( organizationalUnit, key );
@@ -197,10 +198,9 @@ public class UserExplorerData {
 
     private static class FolderItemKey extends Triple<String, String, String> {
 
-        public FolderItemKey( final String s,
-                              final String s2,
-                              final String s3 ) {
-            super( s, s2, s3 );
+
+        public FolderItemKey(String name, Path root, String s3) {
+            super(name, root.toURI(), s3);
         }
 
         @Override
@@ -228,10 +228,10 @@ public class UserExplorerData {
 
     private static class PackageKey extends Triple<String, String, String> {
 
-        public PackageKey( final String s,
-                           final String s2,
-                           final String s3 ) {
-            super( s, s2, s3 );
+        public PackageKey(String name,
+                          Path root,
+                          String s3) {
+            super(name, root.toURI(), s3);
         }
 
         @Override

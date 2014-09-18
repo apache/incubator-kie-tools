@@ -49,6 +49,8 @@ public interface ViewPresenter extends HasVisibility {
 
     void organizationalUnitSelected( final OrganizationalUnit organizationalUnit );
 
+    void branchChanged( final String branch );
+
     void repositorySelected( final Repository repository );
 
     void projectSelected( final Project project );

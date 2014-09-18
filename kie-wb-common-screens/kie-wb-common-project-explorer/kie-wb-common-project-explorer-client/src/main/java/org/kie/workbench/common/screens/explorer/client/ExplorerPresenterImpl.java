@@ -30,11 +30,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
+import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
@@ -82,12 +84,14 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     private final NavLink techView = new NavLink( ProjectExplorerConstants.INSTANCE.repositoryView() );
     private final NavLink treeExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsFolders() );
     private final NavLink breadcrumbExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsLinks() );
-//    private final NavLink hiddenFiles = new NavLink( "Display hidden items" );
 
     private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS ) );
 
     @AfterInitialization
     public void init() {
+
+        addBranchChangeHandlers();
+
         explorerService.call( new RemoteCallback<Set<Option>>() {
                                   @Override
                                   public void callback( Set<Option> o ) {
@@ -106,6 +110,20 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                   }
                               }
                             ).getLastUserOptions();
+    }
+
+    private void addBranchChangeHandlers() {
+        BranchChangeHandler branchChangeHandler = new BranchChangeHandler() {
+
+            @Override
+            public void onBranchSelected(String branch) {
+                businessViewPresenter.branchChanged(branch);
+                technicalViewPresenter.branchChanged(branch);
+            }
+        };
+
+        businessViewPresenter.addBranchChangeHandler(branchChangeHandler);
+        technicalViewPresenter.addBranchChangeHandler(branchChangeHandler);
     }
 
     private void config() {
@@ -132,19 +150,6 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                 }
             }
         } );
-
-//        hiddenFiles.setIconSize( IconSize.SMALL );
-//        hiddenFiles.addClickHandler( new ClickHandler() {
-//            @Override
-//            public void onClick( ClickEvent clickEvent ) {
-//                if ( options.contains( Option.EXCLUDE_HIDDEN_ITEMS ) ) {
-//                    includeHiddenItems();
-//                } else {
-//                    excludeHiddenItems();
-//                }
-//                update();
-//            }
-//        } );
 
         treeExplorer.setIconSize( IconSize.SMALL );
         treeExplorer.addClickHandler( new ClickHandler() {
@@ -216,7 +221,6 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         options.add( Option.TECHNICAL_CONTENT );
         techView.setIcon( IconType.ASTERISK );
         businessView.setIcon( null );
-//        hiddenFiles.setDisabled( false );
     }
 
     private void activateBusinessView() {
@@ -224,19 +228,16 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
         options.remove( Option.TECHNICAL_CONTENT );
         businessView.setIcon( IconType.ASTERISK );
         techView.setIcon( null );
-//        hiddenFiles.setDisabled( true );
     }
 
     private void includeHiddenItems() {
         options.add( Option.INCLUDE_HIDDEN_ITEMS );
         options.remove( Option.EXCLUDE_HIDDEN_ITEMS );
-//        hiddenFiles.setIcon( IconType.CHECK );
     }
 
     private void excludeHiddenItems() {
         options.remove( Option.INCLUDE_HIDDEN_ITEMS );
         options.add( Option.EXCLUDE_HIDDEN_ITEMS );
-//        hiddenFiles.setIcon( null );
     }
 
     @WorkbenchPartView

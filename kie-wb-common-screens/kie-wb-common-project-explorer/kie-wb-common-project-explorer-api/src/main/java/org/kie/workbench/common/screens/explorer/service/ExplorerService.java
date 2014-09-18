@@ -33,12 +33,7 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 @Remote
 public interface ExplorerService {
 
-    ProjectExplorerContent getContent( final OrganizationalUnit organizationalUnit,
-                                       final Repository repository,
-                                       final Project project,
-                                       final Package pkg,
-                                       final FolderItem item,
-                                       final Set<Option> options );
+    ProjectExplorerContent getContent( final ProjectExplorerContentQuery query );
 
     FolderListing getFolderListing( final OrganizationalUnit organizationalUnit,
                                     final Repository repository,
