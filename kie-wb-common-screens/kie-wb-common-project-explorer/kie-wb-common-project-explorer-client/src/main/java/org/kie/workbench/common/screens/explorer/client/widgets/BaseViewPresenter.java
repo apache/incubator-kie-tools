@@ -821,12 +821,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         explorerService.call( new RemoteCallback<URIStructureExplorerModel>() {
             @Override
             public void callback( URIStructureExplorerModel model ) {
-                doInitialiseViewForActiveContext( model.getOrganizationalUnit(),
+                initialiseViewForActiveContext( model.getOrganizationalUnit(),
                                                   model.getRepository(),
-                                                  model.getProject(),
-                                                  null,
-                                                  null,
-                                                  true );
+                                                  model.getProject());
             }
         } ).getURIStructureExplorerModel( path );
 
