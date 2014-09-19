@@ -363,12 +363,15 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 boolean buildSelectedProject = false;
 
                 signalChange = setActiveOrganizationalUnit(content);
-                signalChange = setActiveRepository(content);
-                if(setActiveProject(content)){
+
+                signalChange = signalChange || setActiveRepository(content);
+
+                if( setActiveProject(content) ){
                     signalChange = true;
                     buildSelectedProject = true;
                 }
-                signalChange = setActiveFolderAndPackage(content);
+
+                signalChange = signalChange || setActiveFolderAndPackage(content);
 
                 if ( signalChange ) {
                     fireContextChangeEvent();
