@@ -879,4 +879,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             refresh( false );
         }
     }
+
+    @Override
+    public void onRefresh() {
+        refresh(false);
+    }
 }

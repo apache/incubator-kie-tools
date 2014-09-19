@@ -26,18 +26,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Collapse;
-import com.github.gwtbootstrap.client.ui.CollapseTrigger;
-import com.github.gwtbootstrap.client.ui.Divider;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.NavList;
-import com.github.gwtbootstrap.client.ui.WellNavList;
+import com.github.gwtbootstrap.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -87,6 +82,9 @@ public class BusinessViewWidget extends Composite implements View {
     @UiField(provided = true)
     @Inject
     BranchSelector branchSelector;
+
+    @UiField
+    Button refresh;
 
     @Inject
     Classifier classifier;
@@ -239,6 +237,11 @@ public class BusinessViewWidget extends Composite implements View {
 
     public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
         branchSelector.addBranchChangeHandler(branchChangeHandler);
+    }
+
+    @UiHandler("refresh")
+    public void handleClick(ClickEvent event) {
+        presenter.onRefresh();
     }
 
     @Override
