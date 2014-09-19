@@ -118,7 +118,8 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             @Override
             public void onBranchSelected(String branch) {
                 businessViewPresenter.branchChanged(branch);
-                technicalViewPresenter.branchChanged(branch);
+                // WM technical view does not have the branches selector yet.
+                // technicalViewPresenter.branchChanged(branch);
             }
         };
 

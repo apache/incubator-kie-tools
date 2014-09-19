@@ -37,11 +37,13 @@ public class BranchSelector
     public void setRepository(Repository repository) {
         view.clear();
 
-        view.setCurrentBranch(repository.getCurrentBranch());
+        if ( repository != null ) {
+            view.setCurrentBranch(repository.getCurrentBranch());
 
-        for (String branch : repository.getBranches()) {
-            if (!branch.equals(repository.getCurrentBranch()) && !branch.equals("origin")) {
-                view.addBranch(branch);
+            for (String branch : repository.getBranches()) {
+                if (!branch.equals(repository.getCurrentBranch()) && !branch.equals("origin")) {
+                    view.addBranch(branch);
+                }
             }
         }
     }
