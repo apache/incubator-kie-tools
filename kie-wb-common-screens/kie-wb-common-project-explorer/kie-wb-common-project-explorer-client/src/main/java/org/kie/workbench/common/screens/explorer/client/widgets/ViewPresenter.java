@@ -74,6 +74,4 @@ public interface ViewPresenter extends HasVisibility {
 
     void copyItem( FolderItem folderItem );
 
-    void onRefresh();
-
 }

@@ -34,6 +34,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
+import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
@@ -127,7 +128,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     @Override
     public void update( final Set<Option> options ) {
         setOptions( new HashSet<Option>( options ) );
-        getView().setOptions( options );
+        getView().setOptions(options);
     }
 
     protected abstract void setOptions( final Set<Option> options );
@@ -179,7 +180,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Override
     public void refresh() {
-        refresh( true );
+        refresh(true);
     }
 
     @Override
@@ -190,11 +191,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( FolderListing fl ) {
                 getView().getExplorer().loadContent( fl, null );
             }
-        } ).getFolderListing( activeOrganizationalUnit,
-                              activeRepository,
-                              activeProject,
-                              item,
-                              options );
+        } ).getFolderListing(activeOrganizationalUnit,
+                activeRepository,
+                activeProject,
+                item,
+                options);
     }
 
     @Override
@@ -301,9 +302,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                             }
                         },
                         new HasBusyIndicatorDefaultErrorCallback( getView() )
-                                    ).copyItem( folderItem,
-                                                details.getNewFileName(),
-                                                details.getCommitMessage() );
+                                    ).copyItem(folderItem,
+                        details.getNewFileName(),
+                        details.getCommitMessage());
             }
         }
         );
@@ -521,15 +522,15 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( Utils.hasRepositoryChanged( repository,
                                          activeRepository ) ) {
             getView().getExplorer().clear();
-            initialiseViewForActiveContext( activeOrganizationalUnit,
-                                            repository );
+            initialiseViewForActiveContext(activeOrganizationalUnit,
+                    repository);
         }
     }
 
     @Override
     public void projectSelected( final Project project ) {
-        if ( Utils.hasProjectChanged( project,
-                                      activeProject ) ) {
+        if ( Utils.hasProjectChanged(project,
+                activeProject) ) {
             getView().getExplorer().clear();
             initialiseViewForActiveContext( activeOrganizationalUnit,
                                             activeRepository,
@@ -544,7 +545,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             fireContextChangeEvent();
 
             //Show busy popup. Once Items are loaded it is closed
-            getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+            getView().showBusyIndicator(CommonConstants.INSTANCE.Loading());
             explorerService.call( new RemoteCallback<FolderListing>() {
                 @Override
                 public void callback( final FolderListing folderListing ) {
@@ -554,11 +555,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                     getView().hideBusyIndicator();
                     isOnLoading = false;
                 }
-            }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing( activeOrganizationalUnit,
-                                                                                         activeRepository,
-                                                                                         activeProject,
-                                                                                         item,
-                                                                                         getActiveOptions() );
+            }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing(activeOrganizationalUnit,
+                    activeRepository,
+                    activeProject,
+                    item,
+                    getActiveOptions());
         }
     }
 
@@ -571,7 +572,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( folderItem.getType().equals( FolderItemType.FILE ) && _item instanceof Path ) {
             placeManager.goTo( (Path) _item );
         } else {
-            activeFolderItemSelected( folderItem );
+            activeFolderItemSelected(folderItem);
         }
     }
 
@@ -733,8 +734,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( !Utils.isInFolderItem( activeFolderItem,
-                                    resource ) ) {
+        if ( !Utils.isInFolderItem(activeFolderItem,
+                resource) ) {
             return;
         }
 
@@ -743,11 +744,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( final FolderListing folderListing ) {
                 getView().setItems( folderListing );
             }
-        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
-                                                          activeRepository,
-                                                          activeProject,
-                                                          activeFolderItem,
-                                                          getActiveOptions() );
+        }, new DefaultErrorCallback() ).getFolderListing(activeOrganizationalUnit,
+                activeRepository,
+                activeProject,
+                activeFolderItem,
+                getActiveOptions());
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
@@ -809,11 +810,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 openSelectedFileOnEditor( path );
                 setupActiveContextFor( path );
             }
-        } ).get( event.getUri() );
+        } ).get(event.getUri());
     }
 
     private void openSelectedFileOnEditor( Path path ) {
-        placeManager.goTo( path );
+        placeManager.goTo(path);
     }
 
     private void setupActiveContextFor( final Path path ) {
@@ -825,7 +826,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                   model.getRepository(),
                                                   model.getProject());
             }
-        } ).getURIStructureExplorerModel( path );
+        } ).getURIStructureExplorerModel(path);
 
     }
 
@@ -853,11 +854,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 public void callback( final FolderListing folderListing ) {
                     getView().setItems( folderListing );
                 }
-            }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
-                                                              activeRepository,
-                                                              activeProject,
-                                                              activeFolderItem,
-                                                              getActiveOptions() );
+            }, new DefaultErrorCallback() ).getFolderListing(activeOrganizationalUnit,
+                    activeRepository,
+                    activeProject,
+                    activeFolderItem,
+                    getActiveOptions());
         }
     }
 
@@ -880,8 +881,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    @Override
-    public void onRefresh() {
+    public void onBranchCreated(@Observes NewBranchEvent event){
         refresh(false);
     }
+
 }

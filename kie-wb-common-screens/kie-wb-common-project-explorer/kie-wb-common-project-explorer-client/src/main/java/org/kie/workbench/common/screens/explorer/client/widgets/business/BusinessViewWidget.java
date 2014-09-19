@@ -83,9 +83,6 @@ public class BusinessViewWidget extends Composite implements View {
     @Inject
     BranchSelector branchSelector;
 
-    @UiField
-    Button refresh;
-
     @Inject
     Classifier classifier;
 
@@ -237,11 +234,6 @@ public class BusinessViewWidget extends Composite implements View {
 
     public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
         branchSelector.addBranchChangeHandler(branchChangeHandler);
-    }
-
-    @UiHandler("refresh")
-    public void handleClick(ClickEvent event) {
-        presenter.onRefresh();
     }
 
     @Override

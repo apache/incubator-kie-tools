@@ -41,7 +41,6 @@
         <hr/>
         <div class='{style.branch}'>
           <selector:BranchSelector ui:field="branchSelector" />
-          <bootstrap:Button ui:field="refresh" text="Refresh" />
         </div>
         <div style="clear:both;" />
         <bootstrap:WellNavList ui:field="itemsContainer"/>
