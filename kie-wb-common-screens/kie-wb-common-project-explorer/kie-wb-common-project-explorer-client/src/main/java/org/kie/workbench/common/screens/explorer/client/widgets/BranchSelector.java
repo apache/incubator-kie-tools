@@ -27,7 +27,6 @@ public class BranchSelector
 
     private BranchSelectorView view;
     private BranchChangeHandler branchChangeHandler;
-    private Repository repository;
 
     @Inject
     public BranchSelector(BranchSelectorView view) {
@@ -36,13 +35,12 @@ public class BranchSelector
     }
 
     public void setRepository(Repository repository) {
-        this.repository = repository;
         view.clear();
 
         view.setCurrentBranch(repository.getCurrentBranch());
 
         for (String branch : repository.getBranches()) {
-            if (!branch.equals(repository.getCurrentBranch())) {
+            if (!branch.equals(repository.getCurrentBranch()) && !branch.equals("origin")) {
                 view.addBranch(branch);
             }
         }
