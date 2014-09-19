@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.backend.vfs.Path;
@@ -64,6 +65,14 @@ import static org.uberfire.workbench.model.PanelType.*;
 public class Workbench
         extends Composite
         implements RequiresResize {
+
+    /**
+     * List of classes who want to do stuff (often server communication) before the workbench shows up.
+     */
+    private final Set<Class<?>> startupBlockers = new HashSet<Class<?>>();
+
+    @Inject
+    private Event<ApplicationReadyEvent> appReady;
 
     private final FlowPanel container = new FlowPanel();
 
@@ -109,6 +118,47 @@ public class Workbench
 
     private boolean isStandaloneMode = false;
     private final Set<String> headersToKeep = new HashSet<String>();
+
+    /**
+     * Requests that the workbench does not attempt to create any UI parts until the given responsible party has
+     * been removed as a startup blocker. Blockers are tracked as a set, so adding the same class more than once has no
+     * effect.
+     * @param responsibleParty any Class object; typically it will be the class making the call to this method.
+     * Must not be null.
+     */
+    public void addStartupBlocker( Class<?> responsibleParty ) {
+        startupBlockers.add( responsibleParty );
+        System.out.println( responsibleParty.getName() + " is blocking workbench startup." );
+    }
+
+    /**
+     * Causes the given responsible party to no longer block workbench initialization.
+     * If the given responsible party was not already in the blocking set (either because
+     * it was never added, or it has already been removed) then the method call has no effect.
+     * <p/>
+     * After removing the blocker, if there are no more blockers left in the blocking set, the workbench UI is
+     * bootstrapped immediately. If there are still one or more blockers left in the blocking set, the workbench UI
+     * remains uninitialized.
+     * @param responsibleParty any Class object that was previously passed to {@link #addStartupBlocker(Class)}.
+     * Must not be null.
+     */
+    public void removeStartupBlocker( Class<?> responsibleParty ) {
+        if ( startupBlockers.remove( responsibleParty ) ) {
+            System.out.println( responsibleParty.getName() + " is no longer blocking startup." );
+        } else {
+            System.out.println( responsibleParty.getName() + " tried to unblock startup, but it wasn't blocking to begin with!" );
+        }
+        startIfNotBlocked();
+    }
+
+    // package-private so tests can call in
+    @AfterInitialization
+    void startIfNotBlocked() {
+        System.out.println( startupBlockers.size() + " workbench startup blockers remain." );
+        if ( startupBlockers.isEmpty() ) {
+            bootstrap();
+        }
+    }
 
     @PostConstruct
     public void setup() {
@@ -158,9 +208,10 @@ public class Workbench
         container.add( headers );
     }
 
-    @SuppressWarnings("unused")
-    private void bootstrap( @Observes ApplicationReadyEvent event ) {
+    private void bootstrap() {
         setupHeaders();
+
+        appReady.fire( new ApplicationReadyEvent() );
 
         //Container panels for workbench
         workbenchContainer = dragController.getBoundaryPanel();
