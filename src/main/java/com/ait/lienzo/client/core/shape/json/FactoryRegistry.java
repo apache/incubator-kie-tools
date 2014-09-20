@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.shape.json;
 import com.ait.lienzo.client.core.config.ILienzoPlugin;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.types.NFastStringMap;
-import com.ait.lienzo.client.core.util.Console;
 
 /**
  * This class is a central repository for all {@link IJSONSerializable} factories.  
@@ -55,7 +54,7 @@ public final class FactoryRegistry
         }
         else
         {
-            Console.log("WARNING: IFactory for " + type + " was already registered. Try prefixing your type names e.g. with 'foo_' to avoid conflicts with the built-in Lienzo nodes.");
+            LienzoCore.get().log("WARNING: IFactory for " + type + " was already registered. Try prefixing your type names e.g. with 'foo_' to avoid conflicts with the built-in Lienzo nodes.");
         }
         return this;
     }

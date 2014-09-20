@@ -23,7 +23,6 @@ import java.util.Collections;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.IColor;
@@ -89,7 +88,7 @@ public final class LienzoCore
     {
         if (GWT.isScript())
         {
-            Console.log("Lienzo adding plugin: " + plugin.getNameSpace());
+            log("Lienzo adding plugin: " + plugin.getNameSpace());
         }
         else
         {
@@ -102,6 +101,20 @@ public final class LienzoCore
     {
         return Collections.unmodifiableCollection(m_plugins);
     }
+
+    public native void log(String message)
+    /*-{
+        if ($wnd.console) {
+            $wnd.console.log(message);
+        }
+    }-*/;
+
+    public native void error(String message)
+    /*-{
+        if ($wnd.console) {
+            $wnd.console.error(message);
+        }
+    }-*/;
 
     public final String getUserAgent()
     {

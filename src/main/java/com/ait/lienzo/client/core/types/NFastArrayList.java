@@ -19,8 +19,6 @@ package com.ait.lienzo.client.core.types;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.JavaScriptObject;
-
 /**
  * A facade implementation in JavaScript for fast Lists.
  */
@@ -67,7 +65,7 @@ public final class NFastArrayList<M>
      */
     public final int size()
     {
-        return m_jso.length();
+        return m_jso.size();
     }
 
     /**
@@ -118,7 +116,7 @@ public final class NFastArrayList<M>
      */
     public final void clear()
     {
-        m_jso.removeAll();
+        m_jso.clear();
     }
 
     /**
@@ -241,21 +239,16 @@ public final class NFastArrayList<M>
         return list;
     }
 
-    private static final class FastArrayListJSO<M> extends JavaScriptObject
+    private static final class FastArrayListJSO<M> extends NBaseNativeArrayJSO<FastArrayListJSO<M>>
     {
         protected FastArrayListJSO()
         {
         }
 
-        public static final JavaScriptObject make()
+        public static final FastArrayListJSO<?> make()
         {
-            return JavaScriptObject.createArray();
+            return NBaseNativeArrayJSO.make().cast();
         }
-
-        public final native int length()
-        /*-{
-        	return this.length;
-        }-*/;
 
         public final native M get(int indx)
         /*-{
@@ -280,11 +273,6 @@ public final class NFastArrayList<M>
         		}
         	}
         	return false;
-        }-*/;
-
-        public final native void removeAll()
-        /*-{
-        	this.length = 0;
         }-*/;
 
         public final native void remove(M value)
@@ -345,11 +333,6 @@ public final class NFastArrayList<M>
         	this.splice(beg, removed, value);
         }-*/;
 
-        public final native void splice(int beg, int removed)
-        /*-{
-        	this.splice(beg, removed);
-        }-*/;
-
         public final native M shift()
         /*-{
         	return this.shift();
@@ -363,31 +346,6 @@ public final class NFastArrayList<M>
         public final native void push(M value)
         /*-{
         	this[this.length] = value;
-        }-*/;
-
-        public final native void reverse()
-        /*-{
-        	this.reverse();
-        }-*/;
-
-        public final native FastArrayListJSO<M> concat(FastArrayListJSO<M> value)
-        /*-{
-        	return this.concat(value);
-        }-*/;
-
-        public final native FastArrayListJSO<M> copy()
-        /*-{
-        	return this.concat();
-        }-*/;
-
-        public final native FastArrayListJSO<M> slice(int beg)
-        /*-{
-        	return this.slice(beg);
-        }-*/;
-
-        public final native FastArrayListJSO<M> slice(int beg, int end)
-        /*-{
-        	return this.slice(beg, end);
         }-*/;
     }
 }

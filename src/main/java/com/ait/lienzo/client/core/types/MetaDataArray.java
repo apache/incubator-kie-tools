@@ -16,10 +16,9 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.google.gwt.core.client.JsArrayMixed;
 import com.google.gwt.json.client.JSONArray;
 
-public class MetaDataArray
+public final class MetaDataArray
 {
     private final MetaDataArrayJSO m_jso;
 
@@ -42,45 +41,45 @@ public class MetaDataArray
 
     public final int size()
     {
-        return m_jso.length();
+        return m_jso.size();
     }
 
-    public final MetaDataArray add(String value)
+    public final MetaDataArray push(String value)
     {
         m_jso.push(value);
 
         return this;
     }
 
-    public final MetaDataArray add(int value)
+    public final MetaDataArray push(int value)
     {
         m_jso.push(value);
 
         return this;
     }
 
-    public final MetaDataArray add(double value)
+    public final MetaDataArray push(double value)
     {
         m_jso.push(value);
 
         return this;
     }
 
-    public final MetaDataArray add(boolean value)
+    public final MetaDataArray push(boolean value)
     {
         m_jso.push(value);
 
         return this;
     }
 
-    public final MetaDataArray add(MetaData value)
+    public final MetaDataArray push(MetaData value)
     {
         m_jso.push(value.getJSO());
 
         return this;
     }
 
-    public final MetaDataArray add(MetaDataArray value)
+    public final MetaDataArray push(MetaDataArray value)
     {
         m_jso.push(value.getJSO());
 
@@ -131,7 +130,7 @@ public class MetaDataArray
 
     public final int getInteger(int index)
     {
-        if (m_jso.typeOf(index) == NativeInternalType.NUMBER)
+        if (m_jso.getNativeTypeOf(index) == NativeInternalType.NUMBER)
         {
             return m_jso.getInteger(index);
         }
@@ -140,16 +139,16 @@ public class MetaDataArray
 
     public final double getDouble(int index)
     {
-        if (m_jso.typeOf(index) == NativeInternalType.NUMBER)
+        if (m_jso.getNativeTypeOf(index) == NativeInternalType.NUMBER)
         {
-            return m_jso.getNumber(index);
+            return m_jso.getDouble(index);
         }
         return 0;
     }
 
     public final String getString(int index)
     {
-        if (m_jso.typeOf(index) == NativeInternalType.STRING)
+        if (m_jso.getNativeTypeOf(index) == NativeInternalType.STRING)
         {
             return m_jso.getString(index);
         }
@@ -158,7 +157,7 @@ public class MetaDataArray
 
     public final boolean getBoolean(int index)
     {
-        if (m_jso.typeOf(index) == NativeInternalType.BOOLEAN)
+        if (m_jso.getNativeTypeOf(index) == NativeInternalType.BOOLEAN)
         {
             return m_jso.getBoolean(index);
         }
@@ -167,7 +166,7 @@ public class MetaDataArray
 
     public final MetaData getMetaData(int index)
     {
-        if (m_jso.typeOf(index) == NativeInternalType.OBJECT)
+        if (m_jso.getNativeTypeOf(index) == NativeInternalType.OBJECT)
         {
             NFastStringMapMixedJSO jso = m_jso.getObject(index).cast();
 
@@ -178,7 +177,7 @@ public class MetaDataArray
 
     public final MetaDataArray getMetaDataArray(int index)
     {
-        if (m_jso.typeOf(index) == NativeInternalType.ARRAY)
+        if (m_jso.getNativeTypeOf(index) == NativeInternalType.ARRAY)
         {
             MetaDataArrayJSO jso = m_jso.getArray(index).cast();
 
@@ -186,10 +185,15 @@ public class MetaDataArray
         }
         return null;
     }
-
-    public final NativeInternalType typeOf(int index)
+    
+    public final boolean is(int index, NativeInternalType type)
     {
-        return m_jso.typeOf(index);
+        return (type == getNativeTypeOf(index));
+    }
+
+    public final NativeInternalType getNativeTypeOf(int index)
+    {
+        return m_jso.getNativeTypeOf(index);
     }
 
     public final MetaDataArrayJSO getJSO()
@@ -208,50 +212,99 @@ public class MetaDataArray
         return toJSONString();
     }
 
-    public final static class MetaDataArrayJSO extends JsArrayMixed
+    public final static class MetaDataArrayJSO extends NBaseNativeArrayJSO<MetaDataArrayJSO>
     {
-        static final MetaDataArrayJSO make()
+        public static final MetaDataArrayJSO make()
         {
-            return JsArrayMixed.createArray().cast();
+            return NBaseNativeArrayJSO.make().cast();
         }
-        
+
         protected MetaDataArrayJSO()
         {
         }
 
-        final native NativeInternalType typeOf(int index)
-        /*-{
-            if ((index >= 0) && (index < this.length) {
-
-                var valu = this[index];
-
-                var type = typeof valu;
-
-                switch (type) {
-                case 'string': {
-                    return @com.ait.lienzo.client.core.types.NativeInternalType::STRING;
-                }
-                case 'boolean': {
-                    return @com.ait.lienzo.client.core.types.NativeInternalType::BOOLEAN;
-                }
-                case 'number': {
-                    if (isFinite(valu)) {
-                        return @com.ait.lienzo.client.core.types.NativeInternalType::NUMBER;
-                    }
-                    return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
-                }
-                case 'object': {
-                    if ((valu instanceof Array) || (valu instanceof $wnd.Array)) {
-                        return @com.ait.lienzo.client.core.types.NativeInternalType::ARRAY;
-                    }
-                    return @com.ait.lienzo.client.core.types.NativeInternalType::OBJECT;
-                }
-                case 'function': {
-                    return @com.ait.lienzo.client.core.types.NativeInternalType::FUNCTION;
-                }
-                }
+        final void push(String value)
+        {
+            if (null != value)
+            {
+                push0(value.substring(0));
             }
-            return @com.ait.lienzo.client.core.types.NativeInternalType::UNDEFINED;
+            else
+            {
+                push0(value);
+            }
+        }
+
+        final native void push0(String value)
+        /*-{
+            this[this.length] = value;
+        }-*/;
+
+        final native void push(int value)
+        /*-{
+            this[this.length] = value;
+        }-*/;
+
+        final native void push(double value)
+        /*-{
+            this[this.length] = value;
+        }-*/;
+
+        final native void push(boolean value)
+        /*-{
+            this[this.length] = value;
+        }-*/;
+
+        final native void set(int index, int value)
+        /*-{
+            this[index] = value;
+        }-*/;
+
+        final native void set(int index, double value)
+        /*-{
+            this[index] = value;
+        }-*/;
+
+        final native void set(int index, boolean value)
+        /*-{
+            this[index] = value;
+        }-*/;
+
+        final void set(int index, String value)
+        {
+            if (null != value)
+            {
+                set0(index, value.substring(0));
+            }
+            else
+            {
+                set0(index, value);
+            }
+        };
+
+        final native void set0(int index, String value)
+        /*-{
+            this[index] = value;
+        }-*/;
+        
+        final native void set(int index, MetaDataArrayJSO value)
+        /*-{
+            this[index] = value;
+        }-*/;
+        
+        final native void set(int index, NFastStringMapMixedJSO value)
+        /*-{
+            this[index] = value;
+        }-*/;
+
+        final native void push(MetaDataArrayJSO value)
+        /*-{
+            this[this.length] = value;
+        }-*/;
+
+        final native void push(NFastStringMapMixedJSO value)
+        /*-{
+            this[this.length] = value;
         }-*/;
 
         final native int getInteger(int index)
@@ -259,9 +312,30 @@ public class MetaDataArray
             return Math.round(this[index]);
         }-*/;
 
-        final native JsArrayMixed getArray(int index)
+        final native MetaDataArrayJSO getArray(int index)
         /*-{
             returnthis[index];
         }-*/;
+
+        final native double getDouble(int index)
+        /*-{
+            return this[index];
+        }-*/;
+
+        final native String getString(int index)
+        /*-{
+            return this[index];
+        }-*/;
+
+        final native boolean getBoolean(int index)
+        /*-{
+            return this[index];
+        }-*/;
+
+        final native NFastStringMapMixedJSO getObject(int index)
+        /*-{
+            return this[index];
+        }-*/;
+
     }
 }

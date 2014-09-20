@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
 import com.ait.lienzo.client.core.image.SpriteOnRollHandler;
@@ -29,12 +30,10 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
-import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
-//import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -83,7 +82,7 @@ public class Sprite extends Shape<Sprite>
             @Override
             public void onError(String message)
             {
-                Console.log("Sprite could not load URL " + url + " " + message);
+                LienzoCore.get().log("Sprite could not load URL " + url + " " + message);
             }
         };
     }
@@ -110,7 +109,7 @@ public class Sprite extends Shape<Sprite>
             @Override
             public void onError(String message)
             {
-                Console.log("Sprite could not load resource " + resource.getName() + " " + message);
+                LienzoCore.get().log("Sprite could not load resource " + resource.getName() + " " + message);
             }
         };
     }
@@ -132,6 +131,42 @@ public class Sprite extends Shape<Sprite>
     public Sprite(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SPRITE, node, ctx);
+    }
+
+    Sprite load()
+    {
+        if (isLoaded())
+        {
+            if (null != m_loaded)
+            {
+                m_loaded.onSpriteLoaded(this);
+            }
+        }
+        else
+        {
+            final String url = getURL();
+
+            new ImageLoader(url)
+            {
+                @Override
+                public void onLoad(ImageElement sprite)
+                {
+                    m_sprite = sprite;
+
+                    if (null != m_loaded)
+                    {
+                        m_loaded.onSpriteLoaded(Sprite.this);
+                    }
+                }
+
+                @Override
+                public void onError(String message)
+                {
+                    LienzoCore.get().log("Sprite could not load URL " + url + " " + message);
+                }
+            };
+        }
+        return this;
     }
 
     @Override
@@ -484,6 +519,8 @@ public class Sprite extends Shape<Sprite>
 
             if (false == self.isLoaded())
             {
+                self.load();
+
                 self.onLoaded(new SpriteLoadedHandler()
                 {
                     @Override

@@ -37,7 +37,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.MovieEndedHandler;
 import com.ait.lienzo.client.core.types.TextMetrics;
-import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -359,7 +358,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
                     m_xorig = true;
 
-                    Console.log("ERROR: In Movie filtering " + m_video.getSrc() + " " + e.getMessage());
+                    LienzoCore.get().log("ERROR: In Movie filtering " + m_video.getSrc() + " " + e.getMessage());
                 }
             }
             else
@@ -741,7 +740,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
                             @Override
                             public void onError(String message)
                             {
-                                Console.log("ERROR: Getting video poster url[" + url + "] " + message);
+                                LienzoCore.get().log("ERROR: Getting video poster url[" + url + "] " + message);
                             }
                         };
                     }

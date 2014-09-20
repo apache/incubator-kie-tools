@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -74,7 +75,6 @@ import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.client.core.util.Console;
 import com.ait.lienzo.client.core.util.UUID;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -197,7 +197,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
                                     @Override
                                     public void onError(String message)
                                     {
-                                        Console.log(message);
+                                        LienzoCore.get().log(message);
                                     }
                                 };
                             }

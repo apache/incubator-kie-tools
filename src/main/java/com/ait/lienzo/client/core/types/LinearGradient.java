@@ -110,6 +110,4 @@ public final class LinearGradient implements FillGradient
 			});
         }-*/;
     }
-
-    
 }

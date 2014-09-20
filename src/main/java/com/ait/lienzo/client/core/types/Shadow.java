@@ -224,7 +224,6 @@ public final class Shadow
 
         protected ShadowJSO()
         {
-
         }
 
         public final native String getColor()

@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.types;
 import com.ait.lienzo.client.core.types.MetaDataArray.MetaDataArrayJSO;
 import com.google.gwt.json.client.JSONObject;
 
-public class MetaData
+public final class MetaData
 {
     private final NFastStringMapMixedJSO m_jso;
 

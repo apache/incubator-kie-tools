@@ -1706,6 +1706,8 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
             if (false == self.isLoaded())
             {
+                self.getImageProxy().load(self.getURL());
+                
                 self.onLoaded(new PictureLoadedHandler()
                 {
                     @Override

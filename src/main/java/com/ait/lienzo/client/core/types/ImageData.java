@@ -26,7 +26,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  *
  * @see <a href="http://www.w3.org/TR/2dcontext/#imagedata">HTML Canvas 2D ImageData</a>
  */
-public class ImageData extends JavaScriptObject
+public final class ImageData extends JavaScriptObject
 {
     /**
      * Number of colors at each location in the array.

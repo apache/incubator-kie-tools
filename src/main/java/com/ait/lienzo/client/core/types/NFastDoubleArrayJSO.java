@@ -16,10 +16,9 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONArray;
 
-public class NFastDoubleArrayJSO extends JavaScriptObject
+public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO>
 {
     protected NFastDoubleArrayJSO()
     {
@@ -27,7 +26,7 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
 
     public static NFastDoubleArrayJSO make()
     {
-        return JavaScriptObject.createArray().cast();
+        return NBaseNativeArrayJSO.make().cast();
     }
 
     public final double[] toArray()
@@ -42,16 +41,11 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
         }
         return array;
     }
-    
+
     public final String toJSONString()
     {
         return new JSONArray(this).toString();
     }
-
-    public final native int size()
-    /*-{
-        return this.length;
-    }-*/;
 
     public final native double get(int indx)
     /*-{
@@ -71,16 +65,6 @@ public class NFastDoubleArrayJSO extends JavaScriptObject
     public final native double shift()
     /*-{
         return this.shift();
-    }-*/;
-
-    public final native void clear()
-    /*-{
-        this.length = 0;
-    }-*/;
-
-    public final native NFastDoubleArrayJSO copy()
-    /*-{
-        return this.slice();
     }-*/;
 
     public final native NFastDoubleArrayJSO sort()
