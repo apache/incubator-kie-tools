@@ -243,12 +243,6 @@ public interface MessageConstants extends Constants
     @DefaultStringValue("Text font style. e.g., bold, italic, normal, etc.")
     public String fontStyleDescription();
 
-    @DefaultStringValue("Text Padding")
-    public String textPaddingLabel();
-
-    @DefaultStringValue("Amount of padding in pixels that surrounds the text.")
-    public String textPaddingDescription();
-
     @DefaultStringValue("Points")
     public String pointsLabel();
 

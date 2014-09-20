@@ -809,11 +809,6 @@ public class Attributes
         return TextAlign.lookup(getString(Attribute.TEXT_ALIGN.getProperty()));
     }
 
-    public final void setTextPadding(double padding)
-    {
-        put(Attribute.TEXT_PADDING.getProperty(), padding);
-    }
-
     public final void setShadow(Shadow shadow)
     {
         if (null != shadow)

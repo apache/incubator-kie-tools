@@ -91,8 +91,6 @@ public class Attribute implements IAttribute
 
     public static final Attribute           FONT_STYLE                       = new Attribute("fontStyle", MESSAGES.fontStyleLabel(), MESSAGES.fontStyleDescription(), AttributeType.STRING_TYPE);
 
-    public static final Attribute           TEXT_PADDING                     = new Attribute("textPadding", MESSAGES.textPaddingLabel(), MESSAGES.textPaddingDescription(), AttributeType.NUMBER_TYPE);
-
     public static final Attribute           POINTS                           = new Attribute("points", MESSAGES.pointsLabel(), MESSAGES.pointsDescription(), AttributeType.POINT2D_ARRAY_TYPE);
 
     public static final Attribute           STAR_POINTS                      = new Attribute("starPoints", MESSAGES.starPointsLabel(), MESSAGES.starPointsDescription(), AttributeType.NUMBER_TYPE);
