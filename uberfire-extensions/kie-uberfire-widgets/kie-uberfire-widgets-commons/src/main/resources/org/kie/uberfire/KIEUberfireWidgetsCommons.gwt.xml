@@ -12,4 +12,6 @@
   
   <inherits name="org.kie.uberfire.KieUberfireWidgetsServicesAPI"/>
 
+  <source path="client"/>
+
 </module>

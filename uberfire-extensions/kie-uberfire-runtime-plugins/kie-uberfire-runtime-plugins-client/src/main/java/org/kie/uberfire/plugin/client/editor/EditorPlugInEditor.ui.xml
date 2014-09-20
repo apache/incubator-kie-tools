@@ -1,0 +1,58 @@
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+
+  <ui:style>
+    .block {
+      padding-top: 20px;
+    }
+  </ui:style>
+
+  <g:FlowPanel ui:field="htmlPanel">
+    <g:FlowPanel addStyleNames="{style.block}" ui:field="formArea">
+      <b:Fieldset>
+        <b:FluidContainer>
+          <b:FluidRow>
+            <b:Column size="4">
+              <b:ControlGroup ui:field="frameworkGroup">
+                <b:Controls>
+                  <b:ListBox b:id="framework" ui:field="framework" selectedIndex="0">
+                    <g:item>(Framework)</g:item>
+                    <g:item>Angular</g:item>
+                    <g:item>Knockout</g:item>
+                  </b:ListBox>
+                </b:Controls>
+              </b:ControlGroup>
+            </b:Column>
+            <b:Column size="4">
+              <b:ControlGroup ui:field="languageGroup">
+                <b:Controls>
+                  <b:ListBox b:id="language" ui:field="language" selectedIndex="0">
+                    <g:item>JavaScript</g:item>
+                  </b:ListBox>
+                </b:Controls>
+              </b:ControlGroup>
+            </b:Column>
+          </b:FluidRow>
+        </b:FluidContainer>
+      </b:Fieldset>
+    </g:FlowPanel>
+  </g:FlowPanel>
+</ui:UiBinder>
