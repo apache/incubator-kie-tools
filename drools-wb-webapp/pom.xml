@@ -505,6 +505,16 @@
       <artifactId>drools-wb-workitems-editor-backend</artifactId>
     </dependency>
 
+    <!-- UberFire PlugIn Extension -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-runtime-plugins-backend</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-runtime-plugins-client</artifactId>
+    </dependency>
+
     <!-- UberFire Extension -->
     <dependency>
       <groupId>org.kie.uberfire</groupId>
@@ -711,6 +721,9 @@
             <compileSourcesArtifact>org.drools:drools-wb-scorecard-xls-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-client</compileSourcesArtifact>
+
+            <!-- UberFire Extensions -->
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-runtime-plugins-client</compileSourcesArtifact>
 
             <!-- Dashbuilder -->
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>

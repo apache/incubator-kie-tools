@@ -68,6 +68,20 @@
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>PluginMediaServlet</servlet-name>
+    <servlet-class>org.kie.uberfire.plugin.backend.PluginMediaServlet</servlet-class>
+    <init-param>
+      <param-name>url-pattern</param-name>
+      <param-value>/plugins/</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>PluginMediaServlet</servlet-name>
+    <url-pattern>/plugins/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
 with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
 (perhaps under src/integration-test-settings/web.xml and alter the integration-test
