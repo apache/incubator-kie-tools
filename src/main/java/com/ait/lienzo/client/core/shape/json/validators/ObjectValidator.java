@@ -101,7 +101,7 @@ public class ObjectValidator implements IAttributeTypeValidator
                 {
                     ctx.addInvalidAttributeError(m_typeName);
                 }
-                else
+                else if (false == (validator instanceof IgnoreTypeValidator))
                 {
                     JSONValue aval = jobj.get(attrName);
 

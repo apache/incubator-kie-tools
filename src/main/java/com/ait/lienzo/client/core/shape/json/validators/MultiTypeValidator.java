@@ -44,14 +44,18 @@ public class MultiTypeValidator implements IAttributeTypeValidator
         {
             boolean valid = true;
 
+            ValidationContext test = new ValidationContext().setStopOnError(false);
+
             try
             {
-                type.validate(jval, new ValidationContext().setStopOnError(true));
+                type.validate(jval, test);
             }
             catch (ValidationException e)
             {
-                // exception occurred in type.validate()
-
+                valid = false;
+            }
+            if (test.getErrorCount() > 0)
+            {
                 valid = false;
             }
             if (valid)

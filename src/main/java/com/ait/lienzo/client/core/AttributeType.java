@@ -27,7 +27,6 @@ import com.ait.lienzo.client.core.shape.json.validators.BooleanValidator;
 import com.ait.lienzo.client.core.shape.json.validators.ColorValidator;
 import com.ait.lienzo.client.core.shape.json.validators.DragBoundsValidator;
 import com.ait.lienzo.client.core.shape.json.validators.EnumValidator;
-import com.ait.lienzo.client.core.shape.json.validators.ImageTypeValidator;
 import com.ait.lienzo.client.core.shape.json.validators.LinearGradientValidator;
 import com.ait.lienzo.client.core.shape.json.validators.MultiTypeValidator;
 import com.ait.lienzo.client.core.shape.json.validators.NumberValidator;
@@ -84,8 +83,6 @@ public class AttributeType
     public static AttributeType     PATTERN_GRADIENT_TYPE     = new AttributeType(PatternGradientValidator.INSTANCE);
 
     public static AttributeType     RADIAL_GRADIENT_TYPE      = new AttributeType(RadialGradientValidator.INSTANCE);
-
-    public static AttributeType     IMAGE_TYPE                = new AttributeType(ImageTypeValidator.INSTANCE);
 
     public static AttributeType     SHADOW_TYPE               = new AttributeType(ShadowValidator.INSTANCE);
 

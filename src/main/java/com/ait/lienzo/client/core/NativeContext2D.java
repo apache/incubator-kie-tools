@@ -252,8 +252,7 @@ public final class NativeContext2D extends JavaScriptObject
 
     private final native void setFillGradient(RadialGradientJSO grad)
     /*-{
-    	var that = this.createRadialGradient(grad.start.x, grad.start.y,
-    			grad.start.radius, grad.end.x, grad.end.y, grad.end.radius);
+    	var that = this.createRadialGradient(grad.start.x, grad.start.y, grad.start.radius, grad.end.x, grad.end.y, grad.end.radius);
 
     	var list = grad.colorStops;
 

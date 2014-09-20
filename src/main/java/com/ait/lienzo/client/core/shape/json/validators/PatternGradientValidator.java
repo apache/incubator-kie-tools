@@ -32,7 +32,9 @@ public class PatternGradientValidator extends ObjectValidator
 
         addAttribute("repeat", new EnumValidator<FillRepeat>("FillRepeat", FillRepeat.values()), true); // default: "repeat"
 
-        addAttribute("image", ImageTypeValidator.INSTANCE, true);
+        addAttribute("src", StringValidator.INSTANCE, true);
+        
+        addAttribute("image", IgnoreTypeValidator.INSTANCE, false);
     }
 
     @Override
