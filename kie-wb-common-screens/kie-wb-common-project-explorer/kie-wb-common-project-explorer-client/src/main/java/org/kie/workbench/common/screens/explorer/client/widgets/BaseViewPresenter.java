@@ -885,10 +885,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     }
 
     public void onBranchCreated(@Observes NewBranchEvent event) {
-        Repository repository = event.getRepository();
-        if (isTheSameRepo(repository) && currentHasLessBranches(repository)) {
-            activeRepository = repository;
-            refresh(false);
+        if (isTheSameRepo(event.getAlias())) {
+            if (activeRepository instanceof GitRepository) {
+                ((GitRepository) activeRepository).addBranch(event.getBranchName(), event.getBranchPath());
+                refresh(false);
+            }
         }
     }
 
@@ -896,8 +897,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         return activeRepository.getBranches().size() < repository.getBranches().size();
     }
 
-    private boolean isTheSameRepo(Repository repository) {
-        return activeRepository != null && activeRepository.getAlias().equals(repository.getAlias());
+    private boolean isTheSameRepo(String alias) {
+        return activeRepository != null && activeRepository.getAlias().equals(alias);
     }
 
 }
