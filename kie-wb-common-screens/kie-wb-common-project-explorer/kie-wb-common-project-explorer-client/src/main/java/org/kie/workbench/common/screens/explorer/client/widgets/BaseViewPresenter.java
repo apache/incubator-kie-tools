@@ -885,10 +885,19 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     }
 
     public void onBranchCreated(@Observes NewBranchEvent event) {
-        if (activeRepository != null && activeRepository.getAlias().equals(event.getRepository().getAlias())) {
-            activeRepository = event.getRepository();
+        Repository repository = event.getRepository();
+        if (isTheSameRepo(repository) && currentHasLessBranches(repository)) {
+            activeRepository = repository;
             refresh(false);
         }
+    }
+
+    private boolean currentHasLessBranches(Repository repository) {
+        return activeRepository.getBranches().size() < repository.getBranches().size();
+    }
+
+    private boolean isTheSameRepo(Repository repository) {
+        return activeRepository != null && activeRepository.getAlias().equals(repository.getAlias());
     }
 
 }
