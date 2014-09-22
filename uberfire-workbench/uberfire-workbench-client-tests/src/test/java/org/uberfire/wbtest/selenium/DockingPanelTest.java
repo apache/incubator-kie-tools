@@ -75,7 +75,7 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         // each subsequent panel should be added at the edge of what remains of the parent panel
         // so we want root < childScreen2 < childScreen1 < window edge
         assertRelativePosition( direction, root.getWebElement(), childScreen2.getWebElement() );
-        //assertRelativePosition( direction, childScreen2, childScreen1 );
+        assertRelativePosition( direction, childScreen2.getWebElement(), childScreen1.getWebElement() );
 
         childScreen1.close();
         assertFalse( childScreen1.isStillInDom() );
@@ -180,6 +180,22 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         assertEquals( originalRootLocation, root.getLocation() );
     }
 
+    @Test
+    public void testLastOffAxisPanelSitsBetweenExistingPanels() throws Exception {
+        NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
+        NestingScreenWrapper onAxisChild1 = root.addChild( direction );
+        NestingScreenWrapper onAxisChild2 = root.addChild( opposite( direction ) );
+        NestingScreenWrapper offAxisChild1 = root.addChild( next( direction ) );
+        NestingScreenWrapper offAxisChild2 = root.addChild( next( opposite( direction ) ) );
+
+        // the off-axis children should be sandwiched between the on-axis children
+        // (because the on-axis children were added first, they get more space)
+        assertRelativePosition( direction, offAxisChild1.getWebElement(), onAxisChild1.getWebElement() );
+        assertRelativePosition( direction, offAxisChild2.getWebElement(), onAxisChild1.getWebElement() );
+        assertRelativePosition( opposite( direction ), offAxisChild1.getWebElement(), onAxisChild2.getWebElement() );
+        assertRelativePosition( opposite( direction ), offAxisChild2.getWebElement(), onAxisChild2.getWebElement() );
+    }
+
     static CompassPosition opposite( CompassPosition position ) {
         switch ( position ) {
             case NORTH: return CompassPosition.SOUTH;
@@ -187,6 +203,16 @@ public class DockingPanelTest extends AbstractSeleniumTest {
             case EAST: return CompassPosition.WEST;
             case WEST: return CompassPosition.EAST;
             default: throw new IllegalArgumentException( "Position " + position + " has no opposite." );
+        }
+    }
+
+    static CompassPosition next( CompassPosition position ) {
+        switch ( position ) {
+            case NORTH: return CompassPosition.EAST;
+            case EAST: return CompassPosition.SOUTH;
+            case SOUTH: return CompassPosition.WEST;
+            case WEST: return CompassPosition.NORTH;
+            default: throw new IllegalArgumentException( "Position " + position + " is not a cardinal direction." );
         }
     }
 

@@ -24,6 +24,7 @@ import org.uberfire.workbench.model.Position;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.DockLayoutPanel.Direction;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -141,11 +142,10 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
                         position,
                         widthOrHeight( position, childPanelDef ) );
 
-        // now reparent all our existing contents into the split panel's resizable area
-        // (note that it could contain other split panels already)
-        Widget previousContents = topLevelWidget.getWidget();
-        splitPanel.add( previousContents );
-        topLevelWidget.setWidget( splitPanel );
+        // now reparent our existing part container into the split panel's resizable area
+        Widget partContainerParent = partViewContainer.getParent();
+        splitPanel.add( partViewContainer );
+        ((HasWidgets) partContainerParent).add( splitPanel ); // this is either a WorkbenchSplitLayoutPanel or topLevelWidget (a SimpleLayoutPanel)
 
         Integer childMinSize = minWidthOrHeight( position, childPanelDef );
         if ( childMinSize != null ) {
@@ -153,7 +153,7 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         }
         Integer myMinSize = minWidthOrHeight( position, getPresenter().getDefinition() );
         if ( myMinSize != null ) {
-            splitPanel.setWidgetMinSize( previousContents, myMinSize );
+            splitPanel.setWidgetMinSize( splitPanel, myMinSize );
         }
 
         viewSplitters.put( childPanelView, splitPanel );
