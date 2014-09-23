@@ -81,4 +81,9 @@ public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO
             return a;
         },[]);
     }-*/;
+    
+    public final native boolean contains(double value)
+    /*-{
+        return (value in this);
+    }-*/;
 }
