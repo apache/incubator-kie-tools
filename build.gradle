@@ -15,10 +15,13 @@
 */
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.7
 
 version = '2.0.11-SNAPSHOT'
+
+group = 'com.ahome-it'
 
 jar {
     manifest {
@@ -52,10 +55,22 @@ test {
     systemProperties 'property': 'value'
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
 uploadArchives {
     repositories {
-       flatDir {
-           dirs 'repos'
-       }
+        maven {
+            credentials {
+                username "${sonatype_user}"
+                password "${sonatype_password}"
+            }
+            url "${sonatype_snapshotURL}"
+        }
     }
 }
