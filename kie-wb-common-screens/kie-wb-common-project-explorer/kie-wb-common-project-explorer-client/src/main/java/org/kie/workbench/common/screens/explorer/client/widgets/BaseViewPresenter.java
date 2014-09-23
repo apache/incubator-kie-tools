@@ -885,7 +885,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     }
 
     public void onBranchCreated(@Observes NewBranchEvent event) {
-        if (isTheSameRepo(event.getAlias())) {
+        if (isTheSameRepo(event.getRepositoryAlias())) {
             if (activeRepository instanceof GitRepository) {
                 ((GitRepository) activeRepository).addBranch(event.getBranchName(), event.getBranchPath());
                 refresh(false);
