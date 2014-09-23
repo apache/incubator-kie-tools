@@ -37,6 +37,8 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
 
     private TemplatedActivity activity;
 
+    private String elementId;
+
     private final IdentityHashMap<WorkbenchPanelView<?>, NamedPosition> childPanelPositions = new IdentityHashMap<WorkbenchPanelView<?>, NamedPosition>();
 
     @Override
@@ -46,10 +48,16 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
 
     public void setActivity( TemplatedActivity activity) {
         this.activity = PortablePreconditions.checkNotNull( "activity", activity );
+
+        // ensure the new activity's widget gets its ID set
+        setElementId( elementId );
     }
 
     @Override
     public Widget asWidget() {
+        if ( activity == null ) {
+            return null;
+        }
         return activity.getRootWidget().asWidget();
     }
 
@@ -124,12 +132,22 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
         return null;
     }
 
+    /**
+     * Will set, but not clear, the ID of the activity's root element. Clearing is disabled because the templating
+     * system may be relying on the element's ID to find it. Of course, setting a different ID will also interfere with
+     * templating, but the expectation is that this feature would only be used with templated panels for debugging
+     * purposes.
+     */
     @Override
     public void setElementId( String elementId ) {
-        if ( elementId == null ) {
-            asWidget().getElement().removeAttribute( "id" );
-        } else {
-            asWidget().getElement().setAttribute( "id", elementId );
+        this.elementId = elementId;
+
+        // this call may come in before the activity has been set; if so, the stored ID will be applied to the
+        // element when the activity is set.
+        if ( asWidget() != null ) {
+            if ( elementId != null ) {
+                asWidget().getElement().setAttribute( "id", elementId );
+            }
         }
     }
 }
