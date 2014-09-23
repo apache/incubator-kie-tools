@@ -129,15 +129,6 @@ public class PanelManagerImpl implements PanelManager {
                                   final PartDefinition part,
                                   final PanelDefinition panel,
                                   final Menus menus,
-                                  final UIPart uiPart ) {
-        addWorkbenchPart( place, part, panel, menus, uiPart, null );
-    }
-
-    @Override
-    public void addWorkbenchPart( final PlaceRequest place,
-                                  final PartDefinition part,
-                                  final PanelDefinition panel,
-                                  final Menus menus,
                                   final UIPart uiPart,
                                   final String contextId ) {
         checkNotNull( "panel", panel );

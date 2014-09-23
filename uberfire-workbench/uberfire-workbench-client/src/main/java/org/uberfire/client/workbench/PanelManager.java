@@ -3,6 +3,9 @@ package org.uberfire.client.workbench;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
+import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -28,12 +31,24 @@ public interface PanelManager {
      */
     PanelDefinition getRoot();
 
-    void addWorkbenchPart( final PlaceRequest place,
-                           final PartDefinition part,
-                           final PanelDefinition panel,
-                           final Menus menus,
-                           final UIPart uiPart );
-
+    /**
+     * Adds the given part to the given panel, which must already be part of the visible workbench layout. Fires a
+     * {@link SelectPlaceEvent} with the given {@link PlaceRequest} once the part has been added.
+     *
+     * @param place
+     *            the PlaceRequest that resolved to the part being added
+     * @param part
+     *            definition of the part to create and add
+     * @param panel
+     *            definition of the panel to add the part to (must describe a panel that is already present in the
+     *            layout)
+     * @param menus
+     *            menus to associate with the part
+     * @param uiPart
+     *            the part's UI content widget and its title string and optional title decoration
+     * @param contextId
+     *            context ID to associate with the new part. Can be null.
+     */
     void addWorkbenchPart( final PlaceRequest place,
                            final PartDefinition part,
                            final PanelDefinition panel,
@@ -56,9 +71,20 @@ public interface PanelManager {
                                        final Integer minWidth );
 
     /**
-     * Adds the given child panel to the given target panel at the given position within the target. Only the presenters
-     * and views are manipulated; it is assumed the child panel definition is already attached to the parent panel
-     * definition (or the caller will attach it later).
+     * Adds the given child panel to the given target panel at the given position within the target. Upon successful
+     * completion of this method, the child panel will have a new parent panel. Its {@link PanelDefinition},
+     * {@link WorkbenchPanelPresenter}, and {@link WorkbenchPanelView} and those of its new parent will be updated to
+     * reflect the new relationship. Note that the given target panel will not necessarily be the new parent: panel
+     * implementations may choose to avoid collisions (more than one child panel in the same position) by redirecting
+     * requests to add children.
+     *
+     * @throws IllegalStateException
+     *             if {@code targetPanel} already has a child at {@code position} and it doesn't have any special
+     *             collision avoidance logic
+     * @throws UnsupportedOperationException
+     *             if {@code targetPanel} doesn't support child panels.
+     * @throws IllegalArgumentException
+     *             if {@code targetPanel} doesn't understand the given {@code position} value.
      */
     PanelDefinition addWorkbenchPanel( final PanelDefinition targetPanel,
                                        final PanelDefinition childPanel,

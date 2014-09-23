@@ -51,10 +51,16 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends UberView<P>, RequiresResize {
 
+    /**
+     * Returns this view's presenter.
+     *
+     * @return the presenter that this view is bound to. Will return null if invoked before the presenter calls
+     *         {@link #init(Object)}; afterward, the return value is never null.
+     */
     P getPresenter();
 
     /**
-     * Adds the given view to this panel if this panel does not already contain a view that handles the same
+     * Adds the given part view to this panel if this panel does not already contain a view that handles the same
      * {@link PlaceRequest} as the given one. If this panel does already contain such a part, the existing one is
      * {@link #selectPart(PartDefinition) selected} and the given one is not added.
      *
@@ -63,17 +69,24 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
     void addPart( final WorkbenchPartPresenter.View view );
 
     /**
-     * Nests the given WorkbenchPanelView inside this one at the given position. If there is already a nested panel view
-     * in the target position, it will be replaced with the given panel. (TODO: what happens to the old panel's parts and
-     * child panels? is the old panel bean properly destroyed?)
+     * Nests the given WorkbenchPanelView inside this one at the given position, which must be unoccupied. This is an
+     * optional feature of WorkbenchPanelView: not all implementations support nested child panels. Additionally,
+     * different panels support different {@link Position} types. Implementations should document whether or not they
+     * support child panels, and if so, what types of Positions they understand.
      *
      * @param panel
-     *            specifies the size that should be imposed on the nested view. Must not be null.
-     *            FIXME: is this sensible/correct?
+     *            specifies the size that should be imposed on the nested view. Must not be null. FIXME: is this
+     *            sensible/correct?
      * @param view
      *            the panel to nest inside this one. Must not be null.
      * @param position
      *            specifies which edge of this panel will be shared with the nested panel. Must not be null.
+     * @throws IllegalStateException
+     *             if the given position is already occupied by a child panel.
+     * @throws IllegalArgumentException
+     *             if the given child position is not understood by this type of panel.
+     * @throws UnsupportedOperationException
+     *             if this panel does not support child panels at all.
      */
     void addPanel( final PanelDefinition panel,
                    final WorkbenchPanelView<?> view,
@@ -81,7 +94,7 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
 
     /**
      * Removes the view widget associated with the given child from this panel, freeing any resources that were
-     * allocated when the panel was added to this one.
+     * allocated by this panel when the child was added.
      */
     boolean removePanel( WorkbenchPanelView<?> child );
 
@@ -119,11 +132,11 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
     boolean removePart( final PartDefinition part );
 
     /**
-     * Requests or releases keyboard focus for the currently-visible part within this panel.
+     * Informs this view that it has gained or lost keyboard focus. Focused views may respond by updating their style to
+     * look more prominent than unfocused views.
      *
      * @param hasFocus
-     *            if true, this panel will attempt to give keyboard focus to its currently-visible part. If false, this
-     *            panel will attempt to release keyboard focus.
+     *            if true, this panel now has focus. If false, this panel does not have focus.
      */
     void setFocus( boolean hasFocus );
 

@@ -73,10 +73,9 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
         NamedPosition position = (NamedPosition) p;
         HasWidgets panelContainer = activity.resolvePosition( position );
 
-        // FIXME the current addPanel() contract says we have to replace the existing panel if there is one,
-        // but the following line will leak a managed bean if the given position already contains a
-        // WorkbenchPanelView
-        panelContainer.clear();
+        if ( panelContainer.iterator().hasNext() ) {
+            throw new IllegalStateException( "Child position " + position + " is already occupied" );
+        }
 
         panelContainer.add( view.asWidget() );
         childPanelPositions.put(view, position);
