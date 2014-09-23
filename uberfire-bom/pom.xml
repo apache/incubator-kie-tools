@@ -318,29 +318,6 @@
         <artifactId>uberfire-all</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <!-- Panel Managers -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-panel-manager-nswe</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-panel-manager-nswe</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-panel-manager-template</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-panel-manager-template</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- User Management Widget -->
       <dependency>
         <groupId>org.uberfire</groupId>
