@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Curves;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -65,7 +66,7 @@ public class BezierCurve extends Shape<BezierCurve>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getControlPoints().getBoundingBox();
+        return Curves.getBoundingBox(this);
     }
 
     /**

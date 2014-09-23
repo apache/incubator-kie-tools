@@ -145,10 +145,16 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     }
 
     public abstract BoundingBox getBoundingBox();
-    
+
     public BoundingPoints getBoundingPoints()
     {
-        return new BoundingPoints(getBoundingBox());
+        BoundingBox bbox = getBoundingBox();
+
+        if (null != bbox)
+        {
+            return new BoundingPoints(bbox);
+        }
+        return null;
     }
 
     protected final void setWasFilledFlag(boolean fill)

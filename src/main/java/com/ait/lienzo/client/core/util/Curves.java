@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.util;
 
+import com.ait.lienzo.client.core.shape.BezierCurve;
+import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -29,8 +31,36 @@ public final class Curves
     {
     }
 
+    public static final BoundingBox getBoundingBox(final QuadraticCurve curve)
+    {
+        if (curve == null)
+        {
+            return null;
+        }
+        return getBoundingBox(curve.getControlPoints());
+    }
+
+    public static final BoundingBox getBoundingBox(final BezierCurve curve)
+    {
+        if (curve == null)
+        {
+            return null;
+        }
+        return getBoundingBox(curve.getControlPoints());
+    }
+
     public static final BoundingBox getBoundingBox(final Point2DArray points)
     {
+        if (null == points)
+        {
+            return null;
+        }
+        int size = points.size();
+
+        if (size < 3)
+        {
+            return null;
+        }
         double minx = Double.MAX_VALUE;
 
         double miny = Double.MAX_VALUE;
@@ -38,8 +68,6 @@ public final class Curves
         double maxx = Double.MIN_VALUE;
 
         double maxy = Double.MIN_VALUE;
-
-        int size = points.size();
 
         final NFastDoubleArrayJSO xval = NFastDoubleArrayJSO.make();
 
