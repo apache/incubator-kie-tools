@@ -44,6 +44,11 @@ public final class BoundingPoints implements Iterable<Point2D>
         m_array.push(new Point2D(x + 0, y + h));
     }
 
+    public final Point2DArray getArray()
+    {
+        return m_array;
+    }
+
     public final BoundingPoints transform(Transform transform)
     {
         int leng = m_array.size();
