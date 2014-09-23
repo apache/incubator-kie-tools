@@ -26,6 +26,14 @@ import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.commons.validation.PortablePreconditions;
 
+/**
+ * Implements stateful, thread-local authentication of a user via the JAAS API (
+ * {@code javax.security.auth.login.LoginContext}).
+ * <p>
+ * <b>Do not use this module for authenticating web requests!</b> Upon login, it associates the current thread with the
+ * authenticated user. This association is only undone upon a call to {@link #logout()}. This is appropriate for use
+ * with the Git SSH daemon, but would cause serious security issues if used for authenticating HTTP requests.
+ */
 @ApplicationScoped @Alternative
 public class JAASAuthenticationService implements AuthenticationService {
 
