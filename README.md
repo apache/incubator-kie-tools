@@ -16,20 +16,6 @@ Lienzo provides an amazingly large number of features out the box:
 
 Downloading artifacts
 
-DIRECT DOWNLOAD LATEST SNAPSHOT:
-
-http://www.lienzo-core.com/lienzo-core-2.0.10.SNAPSHOT.jar
-
-RELEASE:
-
-```xml
-<dependency>
-    <groupId>com.ait</groupId>
-    <artifactId>lienzo-core</artifactId>
-    <version>2.0.RELEASE</version>
-</dependency>
-```
-
 SNAPSHOT:
 
 ```xml
@@ -41,9 +27,9 @@ SNAPSHOT:
 </repositories>
 
 <dependency>
-  <groupId>com.ait</groupId>
+  <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.0.SNAPSHOT</version>
+  <version>2.0.11-SNAPSHOT</version>
 </dependency>﻿
 ```
 
