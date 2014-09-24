@@ -58,6 +58,13 @@
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- conflicts with GWT's htmlunit -->
+        <exclusion>
+          <artifactId>selenium-htmlunit-driver</artifactId>
+          <groupId>org.seleniumhq.selenium</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     
     <!-- Required but not declared by selenium -->
@@ -66,7 +73,12 @@
       <artifactId>commons-exec</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>test</scope>
+    </dependency>    
   </dependencies>
 
 
@@ -188,7 +200,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <includes>
-            <include>**/*.java</include>
+            <include>org/uberfire/wbtest/selenium/**/*.java</include>
           </includes>
         </configuration>
         <executions>
@@ -205,8 +217,26 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-         <!-- all tests are integration tests, handled by the failsafe plugin -->
-         <skipTests>true</skipTests>
+          <includes>
+            <include>org/uberfire/wbtest/gwttest/**/*.java</include>
+          </includes>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${basedir}/${profile.testOutputDirectory}/</additionalClasspathElement>
+            <additionalClasspathElement>${basedir}/src/test/java/</additionalClasspathElement>
+          </additionalClasspathElements>
+          <useManifestOnlyJar>false</useManifestOnlyJar>
+          <forkMode>pertest</forkMode>
+          <!-- DO NOT REMOVE THE errai.ioc.experimental.infer_dependent_by_reachability 
+            flag or the testsuite WILL fail. -->
+          <argLine>-Xmx1500m -Derrai.devel.nocache=true -Dgwt.args='-testBeginTimeout 5' -Derrai.hosted_mode_testing=true -Derrai.ioc.experimental.infer_dependent_by_reachability=true -Dorg.jboss.errai.bus.do_long_poll=false</argLine>
+
+          <systemProperties>
+            <!-- Must disable long polling for automated tests to succeed -->
+            <property>
+              <name>errai.hosted_mode_testing</name>
+              <value>true</value>
+            </property>
+          </systemProperties>
         </configuration>
       </plugin>
 

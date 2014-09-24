@@ -25,6 +25,12 @@ public class DefaultScreenActivity extends AbstractTestScreenActivity {
 
     public static final String DEBUG_ID = "DefaultScreenActivity";
 
+    /**
+     * Gets incremented every time a new instance of this class is created. Tests that want to assert on how many
+     * instances have been created by a specific operation are free to reset this to 0.
+     */
+    public static int instanceCount;
+
     private final VerticalPanel perspectives = new VerticalPanel();
 
     @Inject private SyncBeanManager bm;
@@ -33,6 +39,7 @@ public class DefaultScreenActivity extends AbstractTestScreenActivity {
     @Inject
     public DefaultScreenActivity( PlaceManager pm ) {
         super( pm );
+        instanceCount++;
     }
 
     @Override

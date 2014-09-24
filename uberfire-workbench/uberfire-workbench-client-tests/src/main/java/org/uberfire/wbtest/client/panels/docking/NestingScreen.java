@@ -34,11 +34,18 @@ import com.google.gwt.user.client.ui.Panel;
 @Named("org.uberfire.wbtest.client.panels.docking.NestingScreen")
 public class NestingScreen extends AbstractTestScreenActivity {
 
+    /**
+     * Gets incremented every time a new instance of this class is created. Tests that want to assert on how many
+     * instances have been created by a specific operation are free to reset this to 0.
+     */
+    public static int instanceCount;
+
     @Inject Logger log;
 
     @Inject
     public NestingScreen( PlaceManager placeManager ) {
         super( placeManager );
+        instanceCount++;
     }
 
     @Inject PlaceManager placeManager;
