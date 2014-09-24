@@ -44,6 +44,7 @@ import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -111,15 +112,19 @@ public class PlaceManagerTest {
         reset( kansasActivity );
 
         when( kansasActivity.onMayClose() ).thenReturn( true );
+        when( kansasActivity.preferredWidth() ).thenReturn( 123 );
+        when( kansasActivity.preferredHeight() ).thenReturn( 456 );
 
         // arrange for the mock PerspectiveManager to invoke the doWhenFinished callbacks
         doAnswer( new Answer<Void>(){
+            @SuppressWarnings({"rawtypes", "unchecked"})
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
-                Command callback = (Command) invocation.getArguments()[1];
-                callback.execute();
+                ParameterizedCommand callback = (ParameterizedCommand) invocation.getArguments()[1];
+                PerspectiveActivity perspectiveActivity = (PerspectiveActivity) invocation.getArguments()[0];
+                callback.execute( perspectiveActivity.getDefaultPerspectiveLayout() );
                 return null;
-            }} ).when( perspectiveManager ).switchToPerspective( any( PerspectiveActivity.class ), any( Command.class ) );
+            }} ).when( perspectiveManager ).switchToPerspective( any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
         doAnswer( new Answer<Void>(){
             @Override
             public Void answer( InvocationOnMock invocation ) throws Throwable {
@@ -159,6 +164,8 @@ public class PlaceManagerTest {
     public void testGoToNewPlaceById() throws Exception {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
         WorkbenchScreenActivity ozActivity = mock( WorkbenchScreenActivity.class );
+        when( ozActivity.preferredWidth() ).thenReturn( null );
+        when( ozActivity.preferredHeight() ).thenReturn( null );
         when( activityManager.getActivities( oz ) ).thenReturn( singleton( (Activity) ozActivity ) );
 
         placeManager.goTo( oz, (PanelDefinition) null );
@@ -282,7 +289,7 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( Command.class) );
+        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
         verify( ozPerspectiveActivity ).onOpen();
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
         assertTrue( placeManager.getActivePlaceRequests().contains( ozPerspectivePlace ) );
@@ -335,7 +342,7 @@ public class PlaceManagerTest {
         // verify no side effects (should stay put)
         verify( ozPerspectiveActivity, never() ).onOpen();
         verify( perspectiveManager, never() ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager, never() ).switchToPerspective( any( PerspectiveActivity.class ), any( Command.class ) );
+        verify( perspectiveManager, never() ).switchToPerspective( any( PerspectiveActivity.class ), any( ParameterizedCommand.class ) );
     }
 
     /**
@@ -361,7 +368,7 @@ public class PlaceManagerTest {
 
         // verify perspective changed to oz
         verify( perspectiveManager ).savePerspectiveState( any( Command.class ) );
-        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( Command.class) );
+        verify( perspectiveManager ).switchToPerspective( eq( ozPerspectiveActivity ), any( ParameterizedCommand.class) );
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
 
         // verify perspective opened before the activity that launches inside it
@@ -377,6 +384,8 @@ public class PlaceManagerTest {
     public void testPerspectiveLaunchWithSplashScreen() throws Exception {
         final PlaceRequest perspectivePlace = new DefaultPlaceRequest( "Somewhere" );
         final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
+        final PerspectiveDefinition perspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        when( perspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( perspectiveDef );
         when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
 
         final SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
@@ -404,6 +413,8 @@ public class PlaceManagerTest {
     public void testProperSplashScreenShutdownOnPerspectiveSwitch() throws Exception {
         final PlaceRequest perspectivePlace = new DefaultPlaceRequest( "Somewhere" );
         final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
+        final PerspectiveDefinition perspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        when( perspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( perspectiveDef );
         when( activityManager.getActivities( perspectivePlace ) ).thenReturn( singleton( (Activity) perspectiveActivity ) );
 
         // first splash screen: linked to the perspective itself
@@ -424,6 +435,8 @@ public class PlaceManagerTest {
         // now switch to another perspective and ensure both kinds of splash screens got closed
         final PlaceRequest otherPerspectivePlace = new DefaultPlaceRequest( "Elsewhere" );
         final PerspectiveActivity otherPerspectiveActivity = mock( PerspectiveActivity.class );
+        final PerspectiveDefinition otherPerspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        when( otherPerspectiveActivity.getDefaultPerspectiveLayout() ).thenReturn( otherPerspectiveDef );
         when( activityManager.getActivities( otherPerspectivePlace ) ).thenReturn( singleton( (Activity) otherPerspectiveActivity ) );
 
         placeManager.goTo( otherPerspectivePlace );
@@ -590,6 +603,8 @@ public class PlaceManagerTest {
 
         PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
         WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( null );
         when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
 
         HasWidgets customContainer = mock( HasWidgets.class );
@@ -602,7 +617,9 @@ public class PlaceManagerTest {
                                                  eq( customPanelDef ),
                                                  isNull( Menus.class ),
                                                  any( UIPart.class ),
-                                                 isNull( String.class ) );
+                                                 isNull( String.class ),
+                                                 eq( (Integer) 555 ),
+                                                 isNull( Integer.class ) );
         assertNull( customPanelDef.getParent() );
     }
 
@@ -643,17 +660,20 @@ public class PlaceManagerTest {
         verify( activityManager, times( 1 ) ).getActivities( placeRequest );
 
         // contract between PlaceManager and PanelManager
+        Integer preferredWidth = activity.preferredWidth();
+        Integer preferredHeight = activity.preferredHeight();
         if ( expectedPanel == null ) {
             PanelDefinition rootPanel = panelManager.getRoot();
-            verify( panelManager ).addWorkbenchPanel( rootPanel, null,
-                                                      activity.preferredHeight(), activity.preferredWidth(), null, null );
+            verify( panelManager ).addWorkbenchPanel( rootPanel, null, preferredHeight, preferredWidth, null, null );
         }
         verify( panelManager ).addWorkbenchPart( eq( placeRequest ),
                                                  eq( new PartDefinitionImpl( placeRequest ) ),
                                                  expectedPanel == null ? any( PanelDefinition.class ) : eq( expectedPanel ),
                                                  isNull( Menus.class ),
                                                  any( UIPart.class ),
-                                                 isNull( String.class ) );
+                                                 isNull( String.class ),
+                                                 eq( preferredWidth ),
+                                                 eq( preferredHeight ) );
 
         // contract between PlaceManager and PlaceHistoryHandler
         verify( placeHistoryHandler ).onPlaceChange( placeRequest );

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import javax.enterprise.event.Event;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
@@ -45,7 +46,8 @@ public class PerspectiveManagerTest {
     // useful mocks provided by setup method
     private PerspectiveDefinition ozDefinition;
     private PerspectiveActivity oz;
-    private Command doWhenFinished;
+    private ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
+    private Command doWhenFinishedSave;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -57,7 +59,8 @@ public class PerspectiveManagerTest {
         when( oz.getIdentifier() ).thenReturn( "oz_perspective" );
         when( oz.isTransient() ).thenReturn( true );
 
-        doWhenFinished = mock( Command.class );
+        doWhenFinished = mock( ParameterizedCommand.class );
+        doWhenFinishedSave = mock( Command.class );
 
         // simulate "finished saving" callback on wbServices.save()
         doAnswer( new Answer<Void>() {
@@ -113,9 +116,9 @@ public class PerspectiveManagerTest {
         when( kansas.isTransient() ).thenReturn( false );
 
         perspectiveManager.switchToPerspective( kansas, doWhenFinished );
-        perspectiveManager.savePerspectiveState( doWhenFinished );
+        perspectiveManager.savePerspectiveState( doWhenFinishedSave );
 
-        verify( wbServices ).save( eq( "kansas_perspective" ), eq( kansasDefinition ), eq( doWhenFinished ) );
+        verify( wbServices ).save( eq( "kansas_perspective" ), eq( kansasDefinition ), eq( doWhenFinishedSave ) );
     }
 
     @Test
@@ -128,7 +131,7 @@ public class PerspectiveManagerTest {
         when( kansas.isTransient() ).thenReturn( true );
 
         perspectiveManager.switchToPerspective( kansas, doWhenFinished );
-        perspectiveManager.savePerspectiveState( doWhenFinished );
+        perspectiveManager.savePerspectiveState( doWhenFinishedSave );
 
         verify( wbServices, never() ).save( any( String.class ), eq( kansasDefinition ), any( Command.class ) );
     }
@@ -157,7 +160,7 @@ public class PerspectiveManagerTest {
     public void shouldExecuteCallbackWhenDoneLaunchingPerspective() throws Exception {
         perspectiveManager.switchToPerspective( oz, doWhenFinished );
 
-        verify( doWhenFinished ).execute();
+        verify( doWhenFinished ).execute( ozDefinition );
     }
 
     @Test
@@ -222,7 +225,7 @@ public class PerspectiveManagerTest {
         verify( panelManager, never() ).removeWorkbenchPanel( rootPanel );
     }
 
-    @Test
+    @Test @Ignore // TODO this is PlaceManager's job now
     public void shouldLaunchPartsFoundInPanels() throws Exception {
         PartDefinitionImpl rootPart1 = new PartDefinitionImpl( new DefaultPlaceRequest( "rootPart1" ) );
         PartDefinitionImpl southPart1 = new PartDefinitionImpl( new DefaultPlaceRequest( "southPart1" ) );

@@ -181,7 +181,7 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         System.out.println("  dropping child panel id=" + childView.asWidget().getElement().getId() + " as requested");
         System.out.println("   -> dropped panel's children: " + childView.getPresenter().getPanels());
 
-        // idea: search for 'splitter' in all remaining split panels in the map, plus topLevelWidget
+        // now search for 'splitter' in all remaining split panels in the map, plus topLevelWidget
         // when found, transfer orphaned children to the same position as splitter was in in its old parent
 
         Widget orphan = null;
@@ -249,7 +249,7 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
     }
 
     @Override
-    public boolean setChildSize( DockingWorkbenchPanelView<?> childPanel, int size ) {
+    public boolean setChildSize( WorkbenchPanelView<?> childPanel, int size ) {
         WorkbenchSplitLayoutPanel splitPanel = viewSplitters.get( childPanel );
         if ( splitPanel != null ) {
             PanelDefinition definition = getPresenter().getDefinition();
@@ -339,5 +339,4 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
             }
         } );
     }
-
 }

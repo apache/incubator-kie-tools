@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
@@ -24,7 +25,7 @@ import org.uberfire.workbench.model.Position;
  * Implements the behaviour for panel presenters that support adding child panels in {@link CompassPosition} positions.
  */
 public abstract class AbstractDockingWorkbenchPanelPresenter<P extends AbstractWorkbenchPanelPresenter<P>>
-extends AbstractWorkbenchPanelPresenter<P>  {
+extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPresenter {
 
     public AbstractDockingWorkbenchPanelPresenter( WorkbenchPanelView<P> view,
                                                    PerspectiveManager perspectiveManager,
@@ -56,7 +57,7 @@ extends AbstractWorkbenchPanelPresenter<P>  {
             super.addPanel( newChild, position );
             newChild.addPanel( existingChild, position );
 
-            getPanelView().setChildSize( (DockingWorkbenchPanelView<?>) newChild.getPanelView(),
+            getPanelView().setChildSize( newChild.getPanelView(),
                                          newChildSize + existingChildSize );
         } else {
             super.addPanel( newChild, position );
@@ -105,6 +106,29 @@ extends AbstractWorkbenchPanelPresenter<P>  {
      */
     private boolean removeWithoutOrphanRescue( WorkbenchPanelPresenter child ) {
         return super.removePanel( child );
+    }
+
+    @Override
+    public boolean setChildSize( WorkbenchPanelPresenter child,
+                                 Integer pixelWidth,
+                                 Integer pixelHeight ) {
+        for ( Map.Entry<Position, WorkbenchPanelPresenter> e : getPanels().entrySet() ) {
+            if ( e.getValue() == child ) {
+                Integer size;
+                if ( e.getKey() == CompassPosition.NORTH || e.getKey() == CompassPosition.SOUTH ) {
+                    size = pixelHeight;
+                } else if ( e.getKey() == CompassPosition.EAST || e.getKey() == CompassPosition.WEST ) {
+                    size = pixelWidth;
+                } else {
+                    throw new AssertionError( "Unexpected child position: " + e.getKey() );
+                }
+                if ( size != null ) {
+                    getPanelView().setChildSize( child.getPanelView(), size );
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     @Inject

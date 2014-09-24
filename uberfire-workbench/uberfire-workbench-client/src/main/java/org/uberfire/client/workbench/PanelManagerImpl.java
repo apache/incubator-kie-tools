@@ -23,6 +23,7 @@ import org.uberfire.client.workbench.events.PanelFocusEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.PlaceRequest;
@@ -130,7 +131,9 @@ public class PanelManagerImpl implements PanelManager {
                                   final PanelDefinition panel,
                                   final Menus menus,
                                   final UIPart uiPart,
-                                  final String contextId ) {
+                                  final String contextId,
+                                  final Integer preferredWidth,
+                                  final Integer preferredHeight ) {
         checkNotNull( "panel", panel );
 
         final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
@@ -147,6 +150,10 @@ public class PanelManagerImpl implements PanelManager {
         }
 
         panelPresenter.addPart( partPresenter, contextId );
+        if ( panelPresenter.getParent() instanceof DockingWorkbenchPanelPresenter ) {
+            DockingWorkbenchPanelPresenter parent = (DockingWorkbenchPanelPresenter) panelPresenter.getParent();
+            parent.setChildSize( panelPresenter, preferredWidth, preferredHeight );
+        }
 
         //The model for a Perspective is already fully populated. Don't go adding duplicates.
         if ( !panel.getParts().contains( part ) ) {

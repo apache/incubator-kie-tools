@@ -44,11 +44,13 @@ import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
@@ -559,7 +561,9 @@ implements PlaceManager {
                                        panel,
                                        activity.getMenus(),
                                        uiPart,
-                                       activity.contextId() );
+                                       activity.contextId(),
+                                       activity.preferredWidth(),
+                                       activity.preferredHeight() );
         if ( splashScreen != null ) {
             launchSplashScreen( place,
                                 splashScreen );
@@ -592,11 +596,10 @@ implements PlaceManager {
             return;
         }
 
+//<<<<<<< Updated upstream
         perspectiveManager.savePerspectiveState( new Command() {
             @Override
             public void execute() {
-                // XXX there is a layering problem here: PerspectiveManager directs us to open activities, but we are cleaning them up.
-                // both operations must be the responsibility of the same manager (probably PerspectiveManager)
                 if ( closeAllCurrentPanels() ) {
 
                     closeAllSplashScreens();
@@ -605,22 +608,38 @@ implements PlaceManager {
                         launchSplashScreen( place, splashScreen );
                     }
 
-                    Command closeOldActivityAndExecuteChainedCallback = new Command() {
+                    ParameterizedCommand<PerspectiveDefinition> closeOldPerspectiveOpenPartsAndExecuteChainedCallback = new ParameterizedCommand<PerspectiveDefinition>() {
                         @Override
-                        public void execute() {
+                        public void execute( PerspectiveDefinition perspectiveDef ) {
                             if ( oldPerspectiveActivity != null ) {
                                 oldPerspectiveActivity.onClose();
                                 existingWorkbenchActivities.remove( oldPerspectiveActivity.getPlace() );
                                 activityManager.destroyActivity( oldPerspectiveActivity );
                             }
+                            openPartsRecursively( perspectiveDef.getRoot() );
                             doWhenFinished.execute();
                         }
                     };
                     activity.onOpen();
-                    perspectiveManager.switchToPerspective( activity, closeOldActivityAndExecuteChainedCallback );
+                    perspectiveManager.switchToPerspective( activity, closeOldPerspectiveOpenPartsAndExecuteChainedCallback );
                 }
             }
         } );
+    }
+
+    /**
+     * Opens all the parts of the given panel and its subpanels. This is a subroutine of the perspective switching
+     * process.
+     */
+    private void openPartsRecursively( PanelDefinition panel ) {
+        for ( PartDefinition part : new ArrayList<PartDefinition>( panel.getParts() ) ) {
+            final PlaceRequest place = part.getPlace().clone();
+            part.setPlace( place );
+            goTo( part, panel );
+        }
+        for ( PanelDefinition child : panel.getChildren() ) {
+            openPartsRecursively( child );
+        }
     }
 
     private void closePlace( final PlaceRequest place, final boolean force ) {

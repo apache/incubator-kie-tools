@@ -136,7 +136,9 @@ public class CompassDropController implements DropController {
                                        targetPanel,
                                        menus,
                                        uiPart,
-                                       workbenchContext.getContextId() );
+                                       workbenchContext.getContextId(),
+                                       null,
+                                       null );
     }
 
     void firePartDroppedEvent( PlaceRequest place ) {

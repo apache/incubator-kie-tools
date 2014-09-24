@@ -5,6 +5,7 @@ import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 /**
@@ -47,19 +48,21 @@ public interface PerspectiveManager {
      * This method should only be invoked by PlaceManager. To launch a perspective within an UberFire app, pass a
      * PlaceRequest for that perspective to {@link PlaceManager#goTo(org.uberfire.mvp.PlaceRequest)}.
      * <p>
-     * Closes all current panels in the PanelManager, then builds up the new panel arrangement based on the
-     * {@link PerspectiveDefinition} associated with the given perspective activity. If the given perspective is
-     * transient, its default perspective definition will always be used. Otherwise, the PerspectiveManager will first
-     * attempt to retrieve the current user's saved PerspectiveDefinition from the server, falling back on the default
-     * if none is found.
+     * Closes all current panels in the PanelManager (they must have already had their parts removed), then builds up
+     * the new panel arrangement based on the {@link PerspectiveDefinition} associated with the given perspective
+     * activity. If the given perspective is transient, its default perspective definition will always be used.
+     * Otherwise, the PerspectiveManager will first attempt to retrieve the current user's saved PerspectiveDefinition
+     * from the server, falling back on the default if none is found.
      *
      * @param perspective
      *            the perspective to switch to. Must not be null.
      * @param doWhenFinished
-     *            The command to execute once the new perspective's panels and parts have been launched. Must not be
-     *            null.
+     *            The command to execute once the new perspective's panels have been created. Must not be null.
+     *            <p>
+     *            When the callback is invoked, the panels will be set up in their correct positions, but no parts will
+     *            have been added.
      */
     void switchToPerspective( final PerspectiveActivity perspective,
-                              final Command doWhenFinished );
+                              final ParameterizedCommand<PerspectiveDefinition> doWhenFinished );
 
 }

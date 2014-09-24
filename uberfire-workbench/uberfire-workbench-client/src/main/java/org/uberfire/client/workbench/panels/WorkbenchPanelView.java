@@ -161,5 +161,4 @@ public interface WorkbenchPanelView<P extends WorkbenchPanelPresenter> extends U
      *         If the return value is null, parts will not be droppable on this view.
      */
     Widget getPartDropRegion();
-
 }

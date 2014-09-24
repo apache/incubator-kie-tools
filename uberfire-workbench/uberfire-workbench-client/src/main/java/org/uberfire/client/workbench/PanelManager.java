@@ -36,25 +36,35 @@ public interface PanelManager {
      * {@link SelectPlaceEvent} with the given {@link PlaceRequest} once the part has been added.
      *
      * @param place
-     *            the PlaceRequest that resolved to the part being added
+     *            The PlaceRequest that the part was resolved from. Not null.
      * @param part
-     *            definition of the part to create and add
+     *            The description of the part to add. Not null.
      * @param panel
      *            definition of the panel to add the part to (must describe a panel that is already present in the
-     *            layout)
+     *            layout). Not null.
      * @param menus
-     *            menus to associate with the part
+     *            The menus to display for the given part. Null means no menus.
      * @param uiPart
-     *            the part's UI content widget and its title string and optional title decoration
+     *            The part's title and physical view. Not null.
      * @param contextId
-     *            context ID to associate with the new part. Can be null.
+     *            part of a removed framework feature (TODO: remove this?)
+     * @param preferredWidth
+     *            preferred pixel width of the part's activity, or null if there is no preferred width. The target panel
+     *            will expand to the preferred width if the panel is not already at least as wide, and only if it
+     *            supports resizing on the horizontal axis.
+     * @param preferredHeight
+     *            preferred pixel height of the part's activity, or null if there is no preferred height. The target panel
+     *            will expand to the preferred height if the panel is not already at least as tall, and only if it
+     *            supports resizing on the vertical axis.
      */
     void addWorkbenchPart( final PlaceRequest place,
                            final PartDefinition part,
                            final PanelDefinition panel,
                            final Menus menus,
                            final UIPart uiPart,
-                           final String contextId );
+                           final String contextId,
+                           final Integer preferredWidth,
+                           final Integer preferredHeight );
 
     /**
      * Adds an empty child panel of the target panel's default child type at the given position within the target panel.

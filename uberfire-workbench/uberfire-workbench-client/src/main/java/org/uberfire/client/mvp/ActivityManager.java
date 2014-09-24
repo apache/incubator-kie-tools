@@ -36,7 +36,7 @@ import org.uberfire.security.authz.AuthorizationManager;
  * Most Activity-related tasks can be accomplished at arm's length through a {@link PlaceManager}.
  * <p>
  * If you do need an instance of ActivityManager in your application, obtain it using {@code @Inject}.
- * 
+ *
  * @see PlaceManager
  * @see Activity
  */
@@ -45,7 +45,7 @@ public interface ActivityManager {
     /**
      * Obtains the set of activity instances which implement the given type, are {@link ActivatedBy active}, and that
      * the current user {@link AuthorizationManager has permission to access}.
-     * 
+     *
      * @param abstractScreenActivityClass
      *            the type of activities to enumerate. Must not be null. Passing in {@code Activity.class} will yield
      *            all possible activity types.
@@ -64,7 +64,7 @@ public interface ActivityManager {
      * Returns the splash screen activity that should appear upon navigation to the given place, if such a splash screen
      * exists. In case multiple splash screens would intercept the given place request, one of them is chosen at random.
      * TODO (UF-93) : make this deterministic.
-     * 
+     *
      * @param placeRequest
      *            the place request to look up a splash screen for.
      * @return a splash screen which should be displayed upon navigation to the given place, or null if no such
@@ -77,7 +77,7 @@ public interface ActivityManager {
      * <i>started</i> state (see {@link Activity} for details on the activity lifecycle). If the PlaceRequest is for a
      * certain place ID, this method will return a set with at most one activity in it. If the PlaceRequest is for a
      * certain path, the returned set can contain any number of activities.
-     * 
+     *
      * @param placeRequest
      *            the PlaceRequest to resolve activities for. Although null is permitted for convenience, it always
      *            resolves to the empty set.
@@ -91,7 +91,7 @@ public interface ActivityManager {
      * Returns an active, accessible activity that can handle the given PlaceRequest. In case there are multiple
      * activities that can handle the given place request, one of them is chosen at random. TODO (UF-92) : make this
      * deterministic.
-     * 
+     *
      * @param clazz
      *            the type of activity that you expect to find.
      * @param placeRequest
@@ -101,14 +101,33 @@ public interface ActivityManager {
      */
     boolean containsActivity( final PlaceRequest placeRequest );
 
+    /**
+     * Finds an activity that can handle the given PlaceRequest, creating and starting a new one if necessary.
+     *
+     * @param placeRequest
+     *            the place the resolved activity should handle
+     * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
+     *         is non-null, it will be an activity in the <i>started</i> or <i>open</i> state.
+     */
     Activity getActivity( final PlaceRequest placeRequest );
 
+    /**
+     * Works like {@link #getActivity(PlaceRequest)} but performs an unsafe cast to treat the return value as an
+     * instance of the given class. Only use this method if you are absolutely sure which activity type matches the
+     * request. If you are wrong, there will not be a ClassCastException as a result of this call. The safer approach is
+     * to use {@link #getActivity(PlaceRequest)} and cast its return value explicitly.
+     *
+     * @param placeRequest
+     *            the place the resolved activity should handle
+     * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
+     *         is non-null, it will be an activity in the <i>started</i> or <i>open</i> state.
+     */
     <T extends Activity> T getActivity( final Class<T> clazz,
                                         final PlaceRequest placeRequest );
 
     /**
      * Destroys the given Activity bean instance, making it eligible for garbage collection.
-     * 
+     *
      * @param activity
      *            the activity instance to destroy. <b>Warning: do not use with instances of SplashScreenActivity. These
      *            are ApplicationScoped and cannot be destroyed.

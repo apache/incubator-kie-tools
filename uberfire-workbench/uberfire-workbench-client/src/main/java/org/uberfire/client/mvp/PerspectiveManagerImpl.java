@@ -2,8 +2,6 @@ package org.uberfire.client.mvp;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-import java.util.ArrayList;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -13,9 +11,7 @@ import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
-import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
 @ApplicationScoped
@@ -23,15 +19,6 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
 
     @Inject
     private PanelManager panelManager;
-
-    @Inject
-    private ActivityManager activityManager;
-
-    // FIXME this is a circular dependency!
-    // would be better modularity if the PerspectiveManager would return a list of activities to launch
-    // once the panels have been arranged, instead of calling PlaceManager.goTo() explicitly
-    @Inject
-    private PlaceManager placeManager;
 
     @Inject
     private WorkbenchServicesProxy wbServices;
@@ -44,7 +31,8 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     private PerspectiveDefinition livePerspectiveDef;
 
     @Override
-    public void switchToPerspective( final PerspectiveActivity activity, final Command doWhenFinished ) {
+    public void switchToPerspective( final PerspectiveActivity activity,
+                                     final ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
 
         // switching perspectives is a chain of async operations. they're declared here
         // in reverse order (last to first):
@@ -116,8 +104,7 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     }
 
     /**
-     * Builds up a perspective in both the PanelManager and PlaceManager based on the structure described in a given
-     * {@link PerspectiveDefinition}.
+     * Builds up the panels of a perspective based on the structure described in a given {@link PerspectiveDefinition}.
      */
     class BuildPerspectiveFromDefinitionCommand implements ParameterizedCommand<PerspectiveDefinition> {
 
@@ -148,56 +135,27 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         }
 
         private void setupPanelRecursively( final PanelDefinition panel ) {
-            for ( PartDefinition part : new ArrayList<PartDefinition>( panel.getParts() ) ) {
-                final PlaceRequest place = clonePlaceAndMergeParameters( part.getPlace() );
-                part.setPlace( place );
-                placeManager.goTo( part, panel );
-            }
             for ( PanelDefinition child : panel.getChildren() ) {
                 final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
                                                                                child,
                                                                                child.getPosition() );
-                overrideStoredPanelSizesWithActivityPreferredSizes( target );
                 setupPanelRecursively( target );
             }
-        }
-
-        private void overrideStoredPanelSizesWithActivityPreferredSizes( final PanelDefinition panel ) {
-            if ( panel.getParts().isEmpty() ) {
-                return;
-            }
-            for ( final PartDefinition partDefinition : panel.getParts() ) {
-                final Activity currentActivity = activityManager.getActivity( partDefinition.getPlace() );
-                if ( currentActivity instanceof WorkbenchActivity ) {
-                    final Integer width = ( (WorkbenchActivity) currentActivity ).preferredWidth();
-                    final Integer height = ( (WorkbenchActivity) currentActivity ).preferredHeight();
-                    if ( width != null || height != null ) {
-                        panel.setHeight( height );
-                        panel.setWidth( width );
-                        break;
-                    }
-                }
-            }
-        }
-
-        // TODO (UF-88) when PlaceRequest is an immutable value type, cloning will no longer be a sensible operation
-        private PlaceRequest clonePlaceAndMergeParameters( final PlaceRequest _place ) {
-            return _place.clone();
         }
     }
 
     class NotifyOthersOfPerspectiveChangeCommand implements ParameterizedCommand<PerspectiveDefinition> {
 
-        private final Command doWhenFinished;
+        private final ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
 
-        public NotifyOthersOfPerspectiveChangeCommand( Command doWhenFinished ) {
+        public NotifyOthersOfPerspectiveChangeCommand( ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
             this.doWhenFinished = checkNotNull( "doWhenFinished", doWhenFinished );
         }
 
         @Override
         public void execute( PerspectiveDefinition perspectiveDef ) {
             perspectiveChangeEvent.fire( new PerspectiveChange( perspectiveDef, currentPerspective.getMenus(), currentPerspective.getIdentifier() ) );
-            doWhenFinished.execute();
+            doWhenFinished.execute( perspectiveDef );
         }
     }
 }

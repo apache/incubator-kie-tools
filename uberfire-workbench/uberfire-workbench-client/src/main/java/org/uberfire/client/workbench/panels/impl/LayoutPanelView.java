@@ -131,5 +131,4 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
             asWidget().getElement().setAttribute( "id", elementId );
         }
     }
-
 }

@@ -1,7 +1,5 @@
 package org.uberfire.client.workbench.panels;
 
-
-
 /**
  * Interface for workbench panel views that support "docking" nested panels along their edges.
  */
@@ -19,5 +17,5 @@ public interface DockingWorkbenchPanelView <P extends WorkbenchPanelPresenter> e
      * @return true if the child was found and its size was adjusted (even if the requested amount was out of range);
      *         false if the given child was not found as a child of this panel.
      */
-    boolean setChildSize( DockingWorkbenchPanelView<?> childPanel, int size );
+    boolean setChildSize( WorkbenchPanelView<?> childPanel, int size );
 }

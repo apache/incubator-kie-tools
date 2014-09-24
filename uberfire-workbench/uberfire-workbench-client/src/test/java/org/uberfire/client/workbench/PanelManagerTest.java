@@ -110,13 +110,20 @@ public class PanelManagerTest {
         PartDefinition rootPart = new PartDefinitionImpl( rootPartPlace );
         Menus rootPartMenus = MenuFactory.newContributedMenu( "RootPartMenu" ).endMenu().build();
         UIPart rootUiPart = new UIPart( "RootUiPart", null, mock(IsWidget.class) );
-        panelManager.addWorkbenchPart( rootPartPlace, rootPart, panelManager.getRoot(), rootPartMenus, rootUiPart, "rootContextId" );
+        panelManager.addWorkbenchPart( rootPartPlace,
+                                       rootPart,
+                                       panelManager.getRoot(),
+                                       rootPartMenus,
+                                       rootUiPart,
+                                       "rootContextId",
+                                       100,
+                                       200 );
 
         // the presenter should have been created and configured for the rootPart
         verify( partPresenter ).setWrappedWidget( rootUiPart.getWidget() );
         verify( partPresenter ).setContextId( "rootContextId" );
 
-        // the part's new presenter should have been added to the root panel presenter
+        // the part's new presenter should have been added to the root panel presenter and preferred sizes communicated
         verify( testPerspectiveRootPanelPresenter ).addPart( partPresenter, "rootContextId" );
 
         // the root panel's definition should have been updated to include the new part
@@ -143,7 +150,14 @@ public class PanelManagerTest {
         // pre-adding the part def to the panel def to simulate perspective building operation
         panelManager.getRoot().addPart( rootPart );
 
-        panelManager.addWorkbenchPart( rootPartPlace, rootPart, panelManager.getRoot(), rootPartMenus, rootUiPart, "rootContextId" );
+        panelManager.addWorkbenchPart( rootPartPlace,
+                                       rootPart,
+                                       panelManager.getRoot(),
+                                       rootPartMenus,
+                                       rootUiPart,
+                                       "rootContextId",
+                                       null,
+                                       null );
 
         // the presenter should have been created and configured for the rootPart
         verify( partPresenter ).setWrappedWidget( rootUiPart.getWidget() );
@@ -171,7 +185,14 @@ public class PanelManagerTest {
         PanelDefinition randomUnattachedPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
 
         try {
-            panelManager.addWorkbenchPart( partPlace, part, randomUnattachedPanel, partMenus, uiPart, "contextId" );
+            panelManager.addWorkbenchPart( partPlace,
+                                           part,
+                                           randomUnattachedPanel,
+                                           partMenus,
+                                           uiPart,
+                                           "contextId",
+                                           null,
+                                           null );
             fail();
         } catch ( IllegalArgumentException e ) {
             assertEquals( "Target panel is not part of the layout", e.getMessage() );
@@ -195,7 +216,14 @@ public class PanelManagerTest {
         PartDefinition rootPart = new PartDefinitionImpl( rootPartPlace );
         Menus rootPartMenus = MenuFactory.newContributedMenu( "RootPartMenu" ).endMenu().build();
         UIPart rootUiPart = new UIPart( "RootUiPart", null, mock(IsWidget.class) );
-        panelManager.addWorkbenchPart( rootPartPlace, rootPart, panelManager.getRoot(), rootPartMenus, rootUiPart, "rootContextId" );
+        panelManager.addWorkbenchPart( rootPartPlace,
+                                       rootPart,
+                                       panelManager.getRoot(),
+                                       rootPartMenus,
+                                       rootUiPart,
+                                       "rootContextId",
+                                       null,
+                                       null );
 
         panelManager.removePartForPlace( rootPartPlace );
 
