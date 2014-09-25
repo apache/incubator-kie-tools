@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-parent-with-dependencies</artifactId>
-    <version>0.4.2.CR2</version>
+    <version>0.4.2-SNAPSHOT</version>
     <relativePath>../uberfire-parent-with-dependencies/pom.xml</relativePath>
   </parent>
 
