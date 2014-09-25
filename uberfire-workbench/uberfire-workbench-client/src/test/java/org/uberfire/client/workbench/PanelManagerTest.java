@@ -123,57 +123,15 @@ public class PanelManagerTest {
         verify( partPresenter ).setWrappedWidget( rootUiPart.getWidget() );
         verify( partPresenter ).setContextId( "rootContextId" );
 
-        // the part's new presenter should have been added to the root panel presenter and preferred sizes communicated
-        verify( testPerspectiveRootPanelPresenter ).addPart( partPresenter, "rootContextId" );
-
-        // the root panel's definition should have been updated to include the new part
-        assertEquals( rootPart, testPerspectiveDef.getRoot().getParts().iterator().next() );
-
         // the panel manager should be aware of the place/part mapping for the added part
         assertEquals( rootPart, panelManager.getPartForPlace( rootPartPlace ) );
 
         // the panel manager should select the place, firing a general notification
         verify( selectPlaceEvent ).fire( refEq( new SelectPlaceEvent( rootPartPlace ) ) );
-    }
 
-    /**
-     * Tests that PanelManager avoids duplicating PartDefinitions inside already-populated PanelDefinitions when
-     * building up a perspective.
-     */
-    @Test
-    public void addPartThatIsAlreadyInPanelDefShouldNotChangePanelDef() throws Exception {
-        PlaceRequest rootPartPlace = new DefaultPlaceRequest( "rootPartPlace" );
-        PartDefinition rootPart = new PartDefinitionImpl( rootPartPlace );
-        Menus rootPartMenus = MenuFactory.newContributedMenu( "RootPartMenu" ).endMenu().build();
-        UIPart rootUiPart = new UIPart( "RootUiPart", null, mock(IsWidget.class) );
-
-        // pre-adding the part def to the panel def to simulate perspective building operation
-        panelManager.getRoot().addPart( rootPart );
-
-        panelManager.addWorkbenchPart( rootPartPlace,
-                                       rootPart,
-                                       panelManager.getRoot(),
-                                       rootPartMenus,
-                                       rootUiPart,
-                                       "rootContextId",
-                                       null,
-                                       null );
-
-        // the presenter should have been created and configured for the rootPart
-        verify( partPresenter ).setWrappedWidget( rootUiPart.getWidget() );
-        verify( partPresenter ).setContextId( "rootContextId" );
-
-        // the part's new presenter should have been added to the root panel presenter
-        verify( testPerspectiveRootPanelPresenter ).addPart( partPresenter, "rootContextId" );
-
-        // there should still only be 1 part
-        assertEquals( 1, testPerspectiveDef.getRoot().getParts().size() );
-
-        // the panel manager should be aware of the place/part mapping for the added part
-        assertEquals( rootPart, panelManager.getPartForPlace( rootPartPlace ) );
-
-        // the panel manager should select the place, firing a general notification
-        verify( selectPlaceEvent ).fire( refEq( new SelectPlaceEvent( rootPartPlace ) ) );
+        // the panel manager should have modified the panel or part definitions (this is the responsibility of the parent panel)
+        assertEquals( null, rootPart.getParentPanel() );
+        assertFalse( panelManager.getRoot().getParts().contains( rootPart ) );
     }
 
     @Test

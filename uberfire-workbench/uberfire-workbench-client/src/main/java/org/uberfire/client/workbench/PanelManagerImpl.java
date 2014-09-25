@@ -127,37 +127,32 @@ public class PanelManagerImpl implements PanelManager {
 
     @Override
     public void addWorkbenchPart( final PlaceRequest place,
-                                  final PartDefinition part,
-                                  final PanelDefinition panel,
+                                  final PartDefinition partDef,
+                                  final PanelDefinition panelDef,
                                   final Menus menus,
                                   final UIPart uiPart,
                                   final String contextId,
                                   final Integer preferredWidth,
                                   final Integer preferredHeight ) {
-        checkNotNull( "panel", panel );
+        checkNotNull( "panel", panelDef );
 
-        final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panel );
+        final WorkbenchPanelPresenter panelPresenter = mapPanelDefinitionToPresenter.get( panelDef );
         if ( panelPresenter == null ) {
             throw new IllegalArgumentException( "Target panel is not part of the layout" );
         }
 
-        WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( part );
+        WorkbenchPartPresenter partPresenter = mapPartDefinitionToPresenter.get( partDef );
         if ( partPresenter == null ) {
-            partPresenter = getBeanFactory().newWorkbenchPart( menus, uiPart.getTitle(), uiPart.getTitleDecoration(), part );
+            partPresenter = getBeanFactory().newWorkbenchPart( menus, uiPart.getTitle(), uiPart.getTitleDecoration(), partDef );
             partPresenter.setWrappedWidget( uiPart.getWidget() );
             partPresenter.setContextId( contextId );
-            mapPartDefinitionToPresenter.put( part, partPresenter );
+            mapPartDefinitionToPresenter.put( partDef, partPresenter );
         }
 
         panelPresenter.addPart( partPresenter, contextId );
         if ( panelPresenter.getParent() instanceof DockingWorkbenchPanelPresenter ) {
             DockingWorkbenchPanelPresenter parent = (DockingWorkbenchPanelPresenter) panelPresenter.getParent();
             parent.setChildSize( panelPresenter, preferredWidth, preferredHeight );
-        }
-
-        //The model for a Perspective is already fully populated. Don't go adding duplicates.
-        if ( !panel.getParts().contains( part ) ) {
-            panel.addPart( part );
         }
 
         //Select newly inserted part

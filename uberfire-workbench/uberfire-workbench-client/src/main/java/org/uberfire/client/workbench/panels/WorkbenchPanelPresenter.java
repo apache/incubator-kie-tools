@@ -65,26 +65,28 @@ public interface WorkbenchPanelPresenter {
      * Adds the given part to this panel's content area, updating this panel's definition and the part's definition to
      * reflect the new part ownership.
      * <p>
-     * Panels each implement their own policy and user interface for part management. Some panels allow only a single
-     * part, and others can hold multiple parts at a time. Either way, panels typically display one part at a time, and
-     * those that support multiple parts include UI widgets (eg. tabs or a dropdown list) that let the user select which
-     * one to display.
+     * Panels each implement their own policy and user interface for part management. Some panels do not support parts
+     * at all; others allow only a single part; still others can hold multiple parts at a time. Either way, panels that
+     * do display parts typically display them one at a time. Those that support multiple parts include UI widgets
+     * (eg. tabs or a dropdown list) that let the user select which one to display.
      * <p>
      * After the panel's border decorations, part switcher UI, title bar, and subpanel space has been accounted for, the
      * part's view typically occupies all remaining space within its parent panel.
      *
      * @param part
      *            the part to add. Must not be null, and must not currently belong to any panel.
+     * @throws UnsupportedOperationException if this panel does not support parts
      */
     public void addPart( final WorkbenchPartPresenter part );
 
     /**
-     * Adds the given part with the given context ID, updating this panel's definition and the part's definition to
-     * reflect the new part ownership.
+     * Adds the given part to this panel with the given context ID, updating this panel's definition and the part's
+     * definition to reflect the new part ownership.
      *
      * @param part
      *            the part to add. Must not be null, and must not currently belong to any panel.
-     * @see #addPart(org.uberfire.client.workbench.part.WorkbenchPartPresenter.View)
+     * @see #addPart(WorkbenchPartPresenter)
+     * @throws UnsupportedOperationException if this panel does not support parts
      */
     public void addPart( final WorkbenchPartPresenter part,
                          final String contextId );
@@ -93,7 +95,8 @@ public interface WorkbenchPanelPresenter {
      * Removes the given part from this panel, updating this panel's definition and the part's definition to reflect
      * that the part no longer belongs to this panel.
      *
-     * @see #addPart(org.uberfire.client.workbench.part.WorkbenchPartPresenter.View)
+     * @return true if the given part was found and removed; false if this call had no effect
+     * @see #addPart(WorkbenchPartPresenter)
      */
     public boolean removePart( final PartDefinition part );
 

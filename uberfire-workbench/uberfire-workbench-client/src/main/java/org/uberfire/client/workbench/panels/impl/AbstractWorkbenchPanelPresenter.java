@@ -114,7 +114,12 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     @Override
     public void addPart( final WorkbenchPartPresenter part,
                          final String contextId ) {
-        definition.addPart( part.getDefinition() );
+
+        // special case: when new perspectives are being built up based on definitions,
+        // our definition will already say it contains the given part! We should not try to add it again.
+        if ( !definition.getParts().contains( part.getDefinition() ) ) {
+            definition.addPart( part.getDefinition() );
+        }
         getPanelView().addPart( part.getPartView() );
     }
 
