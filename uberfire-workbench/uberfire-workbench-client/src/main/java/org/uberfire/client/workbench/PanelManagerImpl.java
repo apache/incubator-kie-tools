@@ -341,8 +341,14 @@ public class PanelManagerImpl implements PanelManager {
                                                targetPanelPresenter );
         }
 
+        String defaultChildType = targetPanelPresenter.getDefaultChildType();
+        if ( defaultChildType == null ) {
+            throw new IllegalArgumentException( "Target panel (type " + targetPanelPresenter.getClass().getName() + ")"
+                    + " does not allow child panels" );
+        }
+
         if ( childPanel.getPanelType().equals( PanelDefinition.PARENT_CHOOSES_TYPE ) ) {
-            childPanel.setPanelType( targetPanelPresenter.getDefaultChildType() );
+            childPanel.setPanelType( defaultChildType );
         }
 
         PanelDefinition newPanel;

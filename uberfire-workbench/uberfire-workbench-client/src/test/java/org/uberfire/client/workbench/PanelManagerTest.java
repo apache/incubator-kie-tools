@@ -84,6 +84,7 @@ public class PanelManagerTest {
                                         eq( testPerspectiveDef.getRoot() ) )).thenReturn( testPerspectiveRootPanelPresenter );
         when( testPerspectiveRootPanelPresenter.getDefinition() ).thenReturn( testPerspectiveDef.getRoot() );
         when( testPerspectiveRootPanelPresenter.getPanelView() ).thenReturn( mock( WorkbenchPanelView.class ) );
+        when( testPerspectiveRootPanelPresenter.getDefaultChildType() ).thenReturn( SimpleWorkbenchPanelPresenter.class.getName() );
 
         partPresenter = mock( WorkbenchPartPresenter.class);
         when( beanFactory.newWorkbenchPart( any( Menus.class ),
