@@ -119,6 +119,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     protected Package activePackage = null;
     protected FolderListing activeContent = null;
     private boolean isOnLoading = false;
+    private Set<Repository> repositories;
 
     @PostConstruct
     public void init() {
@@ -387,9 +388,10 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 activeContent = content.getFolderListing();
 
                 getView().getExplorer().clear();
+                repositories = content.getRepositories();
                 getView().setContent( content.getOrganizationalUnits(),
                                       activeOrganizationalUnit,
-                                      content.getRepositories(),
+                                      repositories,
                                       activeRepository,
                                       content.getProjects(),
                                       activeProject,
@@ -890,14 +892,22 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     public void onBranchCreated(@Observes NewBranchEvent event) {
         if (isTheSameRepo(event.getRepositoryAlias())) {
             if (activeRepository instanceof GitRepository) {
-                ((GitRepository) activeRepository).addBranch(event.getBranchName(), event.getBranchPath());
-                refresh(false);
+                addBranch(activeRepository, event.getBranchName(), event.getBranchPath());
+            }
+        }
+
+        if (repositories != null) {
+            for (Repository repository : repositories) {
+                if (repository.getAlias().equals(event.getRepositoryAlias())) {
+                    addBranch(repository, event.getBranchName(), event.getBranchPath());
+                }
             }
         }
     }
 
-    private boolean currentHasLessBranches(Repository repository) {
-        return activeRepository.getBranches().size() < repository.getBranches().size();
+    private void addBranch(Repository repository, String branchName, Path branchPath) {
+        ((GitRepository) repository).addBranch(branchName, branchPath);
+        refresh(false);
     }
 
     private boolean isTheSameRepo(String alias) {
