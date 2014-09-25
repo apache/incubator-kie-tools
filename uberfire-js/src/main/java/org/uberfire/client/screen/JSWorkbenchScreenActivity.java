@@ -8,7 +8,6 @@ import org.uberfire.client.mvp.AcceptItem;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.client.plugin.JSNativePlugin;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
@@ -23,9 +22,9 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     private Command callback;
 
-    private JSNativePlugin nativePlugin;
+    private JSNativeScreen nativePlugin;
 
-    public JSWorkbenchScreenActivity( final JSNativePlugin nativePlugin,
+    public JSWorkbenchScreenActivity( final JSNativeScreen nativePlugin,
                                       final PlaceManager placeManager ) {
         this.nativePlugin = nativePlugin;
         this.placeManager = placeManager;
