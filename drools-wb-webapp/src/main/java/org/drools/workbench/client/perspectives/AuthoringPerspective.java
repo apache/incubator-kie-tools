@@ -56,7 +56,7 @@ import org.uberfire.workbench.model.toolbar.impl.DefaultToolBarItem;
  * set of Perspectives for which to show the Problems Panel
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective")
+@WorkbenchPerspective(identifier = "AuthoringPerspective")
 public class AuthoringPerspective {
 
     @Inject
