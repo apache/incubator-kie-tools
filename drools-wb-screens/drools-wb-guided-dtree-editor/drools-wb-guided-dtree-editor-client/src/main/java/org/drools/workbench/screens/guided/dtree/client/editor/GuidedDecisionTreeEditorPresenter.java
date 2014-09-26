@@ -16,12 +16,20 @@
 package org.drools.workbench.screens.guided.dtree.client.editor;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.screens.guided.dtree.client.type.GuidedDTreeResourceType;
+import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditActionRetractPopup;
+import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditConstraintPopup;
+import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditTypePopup;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -94,6 +102,13 @@ public class GuidedDecisionTreeEditorPresenter
         view = baseView;
     }
 
+    @PostConstruct
+    public void init() {
+        //KieEditorView (the base view of all KieEditors and extended here) does not implement UberView.
+        //We therefore need to manually set-up the Presenter for our  widgets nested in KieEditorView
+        view.init( this );
+    }
+
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
@@ -135,18 +150,15 @@ public class GuidedDecisionTreeEditorPresenter
                                           model.getImports(),
                                           isReadOnly );
 
+                view.setContent( versionRecordManager.getCurrentPath(),
+                                 model,
+                                 oracle,
+                                 ruleNameService,
+                                 isReadOnly );
+
                 view.hideBusyIndicator();
             }
         };
-    }
-
-    @Override
-    protected void onEditTabSelected() {
-        view.setContent( versionRecordManager.getCurrentPath(),
-                         model,
-                         oracle,
-                         ruleNameService,
-                         isReadOnly );
     }
 
     @Override
@@ -236,6 +248,41 @@ public class GuidedDecisionTreeEditorPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void editModelNode( final Node node,
+                               final Command callback ) {
+        if ( node instanceof TypeNode ) {
+            final EditTypePopup popup = new EditTypePopup( (TypeNode) node,
+                                                           new com.google.gwt.user.client.Command() {
+                                                               @Override
+                                                               public void execute() {
+                                                                   callback.execute();
+                                                               }
+                                                           } );
+            popup.show();
+
+        } else if ( node instanceof ConstraintNode ) {
+            final EditConstraintPopup popup = new EditConstraintPopup( (ConstraintNode) node,
+                                                                       oracle,
+                                                                       new com.google.gwt.user.client.Command() {
+                                                                           @Override
+                                                                           public void execute() {
+                                                                               callback.execute();
+                                                                           }
+                                                                       } );
+            popup.show();
+
+        } else if ( node instanceof ActionRetractNode ) {
+            final EditActionRetractPopup popup = new EditActionRetractPopup( (ActionRetractNode) node,
+                                                                             new com.google.gwt.user.client.Command() {
+                                                                                 @Override
+                                                                                 public void execute() {
+                                                                                     callback.execute();
+                                                                                 }
+                                                                             } );
+            popup.show();
+        }
     }
 
 }

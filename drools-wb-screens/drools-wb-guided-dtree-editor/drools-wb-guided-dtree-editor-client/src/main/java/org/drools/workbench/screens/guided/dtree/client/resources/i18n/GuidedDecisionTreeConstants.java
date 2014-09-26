@@ -31,4 +31,42 @@ public interface GuidedDecisionTreeConstants
 
     public String newGuidedDecisionTreeDescription();
 
+    public String confirmDeleteDecisionTree();
+
+    public String confirmDeleteDecisionTreeNode();
+
+    public String popupTitleEditConstraint();
+
+    public String popupTitleEditType();
+
+    public String popupTitleEditActionRetract();
+
+    public String classNameColon();
+
+    public String fieldNameColon();
+
+    public String bindingColon();
+
+    public String operatorColon();
+
+    public String valueColon();
+
+    public String actionRetractColon();
+
+    public String noBindings();
+
+    public String bindingHeader();
+
+    public String bindingDescription();
+
+    public String bindingIsNotUnique();
+
+    public String bindingIsUsed();
+
+    public String noOperator();
+
+    public String dataTypeNotSupported0( final String dataType );
+
+    public String actionsPaletteGroup();
+
 }

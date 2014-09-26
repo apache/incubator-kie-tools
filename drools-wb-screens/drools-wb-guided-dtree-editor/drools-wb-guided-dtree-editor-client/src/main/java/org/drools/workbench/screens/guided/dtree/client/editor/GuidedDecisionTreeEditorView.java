@@ -15,19 +15,19 @@
 */
 package org.drools.workbench.screens.guided.dtree.client.editor;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberView;
 
 /**
  * Guided Decision Tree Editor View definition
  */
 public interface GuidedDecisionTreeEditorView extends KieEditorView,
-                                                      IsWidget {
+                                                      UberView<GuidedDecisionTreeEditorPresenter> {
 
     void setContent( final Path path,
                      final GuidedDecisionTree model,
@@ -35,14 +35,8 @@ public interface GuidedDecisionTreeEditorView extends KieEditorView,
                      final Caller<RuleNamesService> ruleNamesService,
                      final boolean isReadOnly );
 
-    GuidedDecisionTree getModel();
-
     boolean isDirty();
 
-    void setNotDirty();
-
     boolean confirmClose();
-
-    void alertReadOnly();
 
 }

@@ -1,0 +1,78 @@
+<!--
+  ~ Copyright 2014 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:kie="urn:import:org.drools.workbench.screens.guided.dtree.client.widget.popups">
+
+  <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants"/>
+
+  <b:Well>
+
+    <b:ControlGroup ui:field="classNameGroup">
+      <b:ControlLabel for="className">
+        <gwt:Label text="{i18n.classNameColon}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:Label ui:field="classNameLabel"/>
+      </b:Controls>
+    </b:ControlGroup>
+
+    <b:ControlGroup ui:field="fieldNameGroup">
+      <b:ControlLabel for="fieldName">
+        <gwt:Label text="{i18n.fieldNameColon}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:Label ui:field="fieldNameLabel"/>
+      </b:Controls>
+    </b:ControlGroup>
+
+    <b:ControlGroup ui:field="bindingGroup">
+      <b:ControlLabel for="binding">
+        <gwt:Label text="{i18n.bindingColon}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <kie:BindingTextBox ui:field="bindingTextBox"/>
+        <b:Popover placement="RIGHT" trigger="HOVER" heading="{i18n.bindingHeader}" text="{i18n.bindingDescription}">
+          <b:Icon type="QUESTION_SIGN" addStyleNames="help-inline"></b:Icon>
+        </b:Popover>
+        <b:HelpInline ui:field="bindingHelpInline"/>
+      </b:Controls>
+    </b:ControlGroup>
+
+    <b:ControlGroup ui:field="operatorGroup">
+      <b:ControlLabel for="operator">
+        <gwt:Label text="{i18n.operatorColon}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:ListBox ui:field="operatorListBox"/>
+      </b:Controls>
+    </b:ControlGroup>
+
+    <b:ControlGroup ui:field="valueGroup">
+      <b:ControlLabel for="value">
+        <gwt:Label text="{i18n.valueColon}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <gwt:SimplePanel ui:field="valueHolder"/>
+      </b:Controls>
+    </b:ControlGroup>
+
+  </b:Well>
+
+</ui:UiBinder>

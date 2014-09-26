@@ -140,9 +140,6 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
     @Override
     public GuidedDecisionTree load( final Path path ) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
-
-            //Mock code testing marshalling
             final String drl = ioService.readAllString( Paths.convert( path ) );
             final String baseFileName = FileNameUtil.removeExtension( path,
                                                                       resourceType );

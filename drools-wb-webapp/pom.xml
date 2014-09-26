@@ -745,6 +745,11 @@
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-client</compileSourcesArtifact>
 
+            <!-- Wires -->
+            <compileSourcesArtifact>org.kie:wires-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:wires-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie:wires-trees</compileSourcesArtifact>
+
             <!-- UberFire Extensions -->
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-runtime-plugins-client</compileSourcesArtifact>
 

@@ -33,6 +33,8 @@
 
   <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
 
+  <inherits name="org.kie.wires.core.trees.WiresCoreTrees"/>
+
   <source path="client"/>
 
 </module>

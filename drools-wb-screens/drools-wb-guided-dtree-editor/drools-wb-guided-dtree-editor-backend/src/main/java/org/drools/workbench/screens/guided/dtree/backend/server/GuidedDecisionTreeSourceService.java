@@ -45,7 +45,13 @@ public class GuidedDecisionTreeSourceService
     @Override
     public String getSource( final Path path,
                              final GuidedDecisionTree model ) {
-        return new StringBuilder().append( GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ) ).toString();
+        try {
+            return new StringBuilder().append( GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ) ).toString();
+
+        } catch ( Exception e ) {
+            System.out.println( e.getMessage() );
+        }
+        return "An error occurred please see the server log.";
     }
 
     @Override
