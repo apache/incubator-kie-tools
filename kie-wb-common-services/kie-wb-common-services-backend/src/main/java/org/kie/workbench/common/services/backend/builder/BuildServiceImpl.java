@@ -91,6 +91,11 @@ public class BuildServiceImpl
 
     @Override
     public BuildResults buildAndDeploy( final Project project ) {
+        return buildAndDeploy(project, false);
+    }
+
+    @Override
+    public BuildResults buildAndDeploy( final Project project, boolean suppressHandlers ) {
         try {
             //Build
             final BuildResults results = doBuild( project );
@@ -102,13 +107,15 @@ public class BuildServiceImpl
                 final InternalKieModule kieModule = (InternalKieModule) builder.getKieModule();
                 final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
                 m2RepoService.deployJar( input,
-                                         pom.getGav() );
+                        pom.getGav() );
 
-                for ( PostBuildHandler handler : handlers ) {
-                    try {
-                        handler.process( results );
-                    } catch ( Exception e ) {
-                        logger.warn( "PostBuildHandler {} failed due to {}", handler, e.getMessage() );
+                if (!suppressHandlers) {
+                    for ( PostBuildHandler handler : handlers ) {
+                        try {
+                            handler.process( results );
+                        } catch ( Exception e ) {
+                            logger.warn( "PostBuildHandler {} failed due to {}", handler, e.getMessage() );
+                        }
                     }
                 }
             }

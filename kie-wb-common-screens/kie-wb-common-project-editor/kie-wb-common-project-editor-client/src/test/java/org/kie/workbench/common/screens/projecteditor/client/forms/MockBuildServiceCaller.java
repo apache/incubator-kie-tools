@@ -55,6 +55,11 @@ public class MockBuildServiceCaller
             }
 
             @Override
+            public BuildResults buildAndDeploy( Project project, boolean suppressHandlers ) {
+                return build(project);
+            }
+
+            @Override
             public boolean isBuilt( Project project ) {
                 return false;
             }
