@@ -80,7 +80,7 @@ public class SocialHomePageSidePresenter {
         return new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
-                placeManager.goTo( "org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective" );
+                placeManager.goTo( "AuthoringPerspective" );
                 socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameter ) );
             }
         };

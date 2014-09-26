@@ -30,9 +30,7 @@ public class MessageConsoleWhiteListImpl
     private List<String> allowedPerspectives = new ArrayList<String>();
 
     public MessageConsoleWhiteListImpl() {
-        allowedPerspectives.add("org.kie.workbench.drools.client.perspectives.DroolsAuthoringPerspective");
-        allowedPerspectives.add("org.kie.workbench.client.perspectives.DroolsAuthoringPerspective");
-        allowedPerspectives.add("org.drools.workbench.client.perspectives.AuthoringPerspective");
+        allowedPerspectives.add("AuthoringPerspective");
     }
 
     @Override
