@@ -148,18 +148,24 @@ public class ActivityManagerImpl implements ActivityManager {
         }
     }
 
+    @Override
+    public boolean isStarted( final Activity activity ) {
+        return startedActivities.containsKey( activity );
+    }
+
     /**
-     * Returns the scope of the given activity bean, first by checking with the activity cache (the only way to look up
-     * the BeanDef for a runtime plugin activity) and then falling back on the Errai bean manager. Beans that are not
-     * started (or were started but have been shut down) will cause an NPE.
+     * Returns the scope of the given activity bean, first in the Errai bean manager and then falling back on checking
+     * with the activity cache (the only way to look up the BeanDef for a runtime plugin activity). Beans that are not
+     * started (or were started but have been shut down) will cause an NPE if the fallback to the activity beans cache
+     * happens.
      *
      * @param startedActivity
      *            an activity that is in the <i>started</i> or <i>open</i> state.
      */
     private Class<?> getBeanScope( Activity startedActivity ) {
-        IOCBeanDef<?> beanDef = activityBeansCache.getActivity( startedActivity.getPlace().getIdentifier() );
+        IOCBeanDef<?> beanDef = iocManager.lookupBean( startedActivity.getClass() );
         if ( beanDef == null ) {
-            beanDef = iocManager.lookupBean( startedActivity.getClass() );
+            beanDef = activityBeansCache.getActivity( startedActivity.getPlace().getIdentifier() );
         }
         return beanDef.getScope();
     }

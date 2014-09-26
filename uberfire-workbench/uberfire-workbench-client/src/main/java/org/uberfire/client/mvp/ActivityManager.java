@@ -136,4 +136,14 @@ public interface ActivityManager {
      */
     void destroyActivity( final Activity activity );
 
+    /**
+     * Returns true if the given Activity instance is currently in the <i>started</i> or <i>open</i> state and managed
+     * by this ActivityManager.
+     *
+     * @param activity
+     *            the activity to check
+     * @return true if the activity is started; false if it is uninitialized.
+     */
+    boolean isStarted( final Activity activity );
+
 }

@@ -19,7 +19,6 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -158,10 +157,35 @@ public class ActivityManagerLifecycleTest {
 
         when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
 
-
         SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
         activityManager.destroyActivity( splashScreenActivity );
         verify( expectedSplashScreenActivity, times( 1 ) ).onShutdown();
+        assertFalse( activityManager.isStarted( expectedSplashScreenActivity ) );
+
+        // never try to destroy singleton beans!
+        verify( iocManager, never() ).destroyBean( expectedSplashScreenActivity );
+    }
+
+    @Test
+    public void shouldNotGetConfusedAboutSplashScreensWithSamePlaceAsTheirScreen() throws Exception {
+
+        List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
+        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts( kansas );
+        when( expectedSplashScreenActivity.getPlace() ).thenReturn( kansas );
+        splashScreenList.add( expectedSplashScreenActivity );
+
+        when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
+
+        // this loads the regular kansas activity (not the splash screen) into the activityBeansCache
+        activityManager.getActivity( kansas );
+
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
+
+        // this must not get confused even though expectedSplashScreenActivity and kansasActivity both have the same PlaceRequest
+        activityManager.destroyActivity( splashScreenActivity );
+
+        verify( expectedSplashScreenActivity, times( 1 ) ).onShutdown();
+        assertFalse( activityManager.isStarted( expectedSplashScreenActivity ) );
 
         // never try to destroy singleton beans!
         verify( iocManager, never() ).destroyBean( expectedSplashScreenActivity );
@@ -209,17 +233,7 @@ public class ActivityManagerLifecycleTest {
         Activity retrievedActivity = activityManager.getActivity( Activity.class, new DefaultPlaceRequest( myPerspectiveId ) );
         activityManager.destroyActivity( retrievedActivity );
 
-        // we mustn't call getPlace() after onShutdown because onShutdown sets place to null!
-        InOrder inOrder = inOrder( activityBeansCache, activity );
-        inOrder.verify( activity ).getPlace();
-        inOrder.verify( activity ).onShutdown();
-
-        // a call like this would fail for activities registered via the JavaScript API, because the
-        // actual activity class of JSWorkbenchPerspectiveActivity is not an IOC bean type.
-        // the lookup has to happen instead via the ActivityBeansCache, which is mocked & verified above.
-        verify( iocManager, never() ).lookupBean( activity.getClass() );
-
-        // and it's a singleton, so we should not try to destroy it.
+        // it's a singleton, so we should not try to destroy it.
         verify( iocManager, never() ).destroyBean( activity );
     }
 

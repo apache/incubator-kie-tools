@@ -445,8 +445,9 @@ public class PlaceManagerTest {
         verify( splashScreenActivity1).onClose();
         verify( splashScreenActivity2).onClose();
 
-        // we don't destroy splash screens because they are supposed to be Application Scoped
-        verify( activityManager, never() ).destroyActivity( splashScreenActivity1 );
+        // splash screens are Application Scoped, but we still "destroy" them (activity manager will call their onShutdown)
+        verify( activityManager ).destroyActivity( splashScreenActivity1 );
+        verify( activityManager ).destroyActivity( splashScreenActivity2 );
     }
 
     @Test
@@ -483,8 +484,8 @@ public class PlaceManagerTest {
         assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
         verify( lollipopGuildActivity).onClose();
 
-        // we don't destroy splash screens because they are supposed to be Application Scoped
-        verify( activityManager, never() ).destroyActivity( lollipopGuildActivity );
+        // splash screens are Application Scoped, but we still "destroy" them (activity manager will call their onShutdown)
+        verify( activityManager ).destroyActivity( lollipopGuildActivity );
     }
 
     /**

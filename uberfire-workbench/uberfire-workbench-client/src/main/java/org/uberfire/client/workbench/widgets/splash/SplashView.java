@@ -15,6 +15,9 @@
  */
 package org.uberfire.client.workbench.widgets.splash;
 
+import org.uberfire.client.workbench.widgets.common.Modal;
+import org.uberfire.mvp.ParameterizedCommand;
+
 import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.github.gwtbootstrap.client.ui.event.HideEvent;
 import com.github.gwtbootstrap.client.ui.event.HideHandler;
@@ -25,8 +28,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
-import org.uberfire.client.workbench.widgets.common.Modal;
-import org.uberfire.mvp.ParameterizedCommand;
 
 /**
  * Skeleton for splash screen
@@ -52,8 +53,9 @@ public class SplashView
     } );
 
     public SplashView() {
-        final SimplePanel panel = new SimplePanel( modal );
+        modal.addHideHandler( createHideHandler() );
 
+        final SimplePanel panel = new SimplePanel( modal );
         initWidget( panel );
     }
 
@@ -67,6 +69,7 @@ public class SplashView
         }
     }
 
+    @Override
     public void setTitle( final String title ) {
         modal.setTitle( title );
     }
@@ -77,7 +80,6 @@ public class SplashView
 
     public void show() {
         modal.show();
-        modal.addHideHandler( createHideHandler() );
     }
 
     private HideHandler createHideHandler() {
@@ -85,19 +87,14 @@ public class SplashView
             @Override
             public void onHide( final HideEvent hideEvent ) {
                 showAgain = footer.getShowAgain();
-                cleanup();
+                CloseEvent.fire( SplashView.this, SplashView.this, false );
+                ( (DivWidget) modal.getWidget( 1 ) ).clear();
             }
         };
     }
 
     public void hide() {
         modal.hide();
-        cleanup();
-    }
-
-    void cleanup() {
-        CloseEvent.fire( this, this, false );
-        ( (DivWidget) modal.getWidget( 1 ) ).clear();
     }
 
     @Override

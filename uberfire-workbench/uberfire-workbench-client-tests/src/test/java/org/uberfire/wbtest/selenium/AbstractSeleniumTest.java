@@ -28,11 +28,22 @@ public class AbstractSeleniumTest {
     public final void setUp() throws Exception {
       driver = new FirefoxDriver();
       baseUrl = "http://localhost:8080/index.html";
-      driver.manage().timeouts().implicitlyWait( 30, TimeUnit.SECONDS );
+      setNormalTimeout();
       driver.manage().window().setSize( new Dimension( AbstractSeleniumTest.WINDOW_WIDTH, AbstractSeleniumTest.WINDOW_HEIGHT ) );
 
       driver.get( baseUrl );
       waitForDefaultPerspective();
+    }
+
+    /**
+     * Sets the WebDriver implicit timeout to a "normal" amount (currently 30 seconds). Tests that need to set the
+     * timeout shorter temporarily can call this method to set it back to normal.
+     * <p>
+     * Also, tests that want a different implicit timeout can override this method (it is used from this base class's
+     * setUp() method).
+     */
+    protected void setNormalTimeout() {
+        driver.manage().timeouts().implicitlyWait( 30, TimeUnit.SECONDS );
     }
 
     protected void waitForDefaultPerspective() {

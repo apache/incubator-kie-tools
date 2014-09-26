@@ -471,6 +471,7 @@ implements PlaceManager {
         SplashScreenActivity splashScreenActivity = activeSplashScreens.remove( place.getIdentifier() );
         if ( splashScreenActivity != null ) {
             splashScreenActivity.onClose();
+            activityManager.destroyActivity( splashScreenActivity );
         }
     }
 
