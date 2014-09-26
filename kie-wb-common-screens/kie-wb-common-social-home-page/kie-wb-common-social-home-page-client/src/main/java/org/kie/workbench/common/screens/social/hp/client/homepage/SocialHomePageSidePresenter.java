@@ -14,6 +14,7 @@ import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
+import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.social.hp.client.util.IconLocator;
 import org.kie.workbench.common.screens.social.hp.predicate.UserTimeLineFileChangesPredicate;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -86,7 +87,7 @@ public class SocialHomePageSidePresenter {
     }
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Recent Assets";
+        return Constants.INSTANCE.RecentAssets();
     }
 
     @WorkbenchPartView

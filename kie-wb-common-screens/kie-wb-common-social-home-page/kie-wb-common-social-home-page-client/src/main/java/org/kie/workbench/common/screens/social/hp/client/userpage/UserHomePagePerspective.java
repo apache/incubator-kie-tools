@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -25,7 +26,7 @@ public class UserHomePagePerspective {
     public PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinition p = new PerspectiveDefinitionImpl( PanelType.ROOT_LIST );
         p.setTransient( true );
-        p.setName( "People Perspective" );
+        p.setName(Constants.INSTANCE.PeoplePerspective() );
         final PanelDefinition west = new PanelDefinitionImpl( PanelType.SIMPLE );
         west.setWidth( 350 );
         west.setMinWidth( 350 );
