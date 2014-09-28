@@ -26,22 +26,12 @@
   <ui:with field="i18n"
            type="org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants"/>
 
-  <ui:style>
-    .branch {
-      float: right;
-      height: 50px;
-      padding-left: 30px;
-    }
-  </ui:style>
-
   <gwt:HTMLPanel visible="true">
     <div ui:field="businessView">
       <bootstrap:Well styleName="{resources.CSS.viewContainer}">
         <w:Explorer ui:field="explorer"/>
         <hr/>
-        <div class='{style.branch}'>
-          <selector:BranchSelector ui:field="branchSelector" />
-        </div>
+        <selector:BranchSelector ui:field="branchSelector" />
         <div style="clear:both;" />
         <bootstrap:WellNavList ui:field="itemsContainer"/>
       </bootstrap:Well>

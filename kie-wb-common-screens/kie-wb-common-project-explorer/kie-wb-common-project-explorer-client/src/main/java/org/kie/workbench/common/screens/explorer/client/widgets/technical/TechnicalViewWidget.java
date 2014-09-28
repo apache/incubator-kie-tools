@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,6 +30,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
+import org.kie.workbench.common.screens.explorer.client.widgets.BranchSelector;
 import org.kie.workbench.common.screens.explorer.client.widgets.View;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Explorer;
@@ -54,6 +57,11 @@ public class TechnicalViewWidget extends Composite implements View {
 
     @UiField
     Explorer explorer;
+
+
+    @UiField(provided = true)
+    @Inject
+    BranchSelector branchSelector;
 
     private final NavigatorOptions techOptions = new NavigatorOptions() {{
         showFiles( true );
@@ -93,6 +101,8 @@ public class TechnicalViewWidget extends Composite implements View {
                               projects, activeProject );
         explorer.loadContent( folderListing, siblings );
 
+        branchSelector.setRepository(activeRepository);
+
     }
 
     @Override
@@ -127,4 +137,7 @@ public class TechnicalViewWidget extends Composite implements View {
         return explorer;
     }
 
+    public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
+        branchSelector.addBranchChangeHandler(branchChangeHandler);
+    }
 }

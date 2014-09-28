@@ -37,7 +37,7 @@ public class BranchSelector
     public void setRepository(Repository repository) {
         view.clear();
 
-        if ( repository != null ) {
+        if (repository != null) {
             view.setCurrentBranch(repository.getCurrentBranch());
 
             for (String branch : repository.getBranches()) {
@@ -45,7 +45,17 @@ public class BranchSelector
                     view.addBranch(branch);
                 }
             }
+
+            if (repository.getBranches().size() > 2) {
+                view.show();
+            } else {
+                view.hide();
+            }
+
+        } else {
+            view.hide();
         }
+
     }
 
     @Override

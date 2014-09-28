@@ -53,6 +53,6 @@ public class TechnicalViewPresenterImpl extends BaseViewPresenter {
     }
 
     public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
-
+        view.addBranchChangeHandler(branchChangeHandler);
     }
 }

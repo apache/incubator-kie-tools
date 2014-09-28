@@ -35,4 +35,7 @@ public interface BranchSelectorView
 
     void setPresenter(Presenter presenter);
 
+    void show();
+
+    void hide();
 }

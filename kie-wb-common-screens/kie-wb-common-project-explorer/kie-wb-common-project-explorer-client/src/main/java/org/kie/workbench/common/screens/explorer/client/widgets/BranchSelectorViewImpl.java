@@ -18,14 +18,34 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.github.gwtbootstrap.client.ui.NavLink;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
 public class BranchSelectorViewImpl
-        extends DropdownButton
+        extends Composite
         implements BranchSelectorView {
 
+    interface Binder
+            extends
+            UiBinder<Widget, BranchSelectorViewImpl> {
+
+    }
+
+    private static Binder uiBinder = GWT.create(Binder.class);
+
     private Presenter presenter;
+
+    @UiField
+    DropdownButton button;
+
+    public BranchSelectorViewImpl() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
 
     @Override
     public void setPresenter(Presenter presenter) {
@@ -34,7 +54,7 @@ public class BranchSelectorViewImpl
 
     @Override
     public void setCurrentBranch(String currentBranch) {
-        setText(currentBranch);
+        button.setText(currentBranch);
     }
 
     @Override
@@ -46,6 +66,21 @@ public class BranchSelectorViewImpl
                 presenter.onBranchSelected(branch);
             }
         });
-        add(widget);
+        button.add(widget);
+    }
+
+    @Override
+    public void clear() {
+        button.clear();
+    }
+
+    @Override
+    public void show() {
+        setVisible(true);
+    }
+
+    @Override
+    public void hide() {
+        setVisible(false);
     }
 }
