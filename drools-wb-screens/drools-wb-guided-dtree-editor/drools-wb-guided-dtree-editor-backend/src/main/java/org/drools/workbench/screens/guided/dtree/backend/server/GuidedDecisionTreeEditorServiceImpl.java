@@ -146,16 +146,20 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             //Mock code testing marshalling
             final GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( content );
             final TypeNode type = new TypeNodeImpl( "Person" );
-            final ConstraintNode c1 = new ConstraintNodeImpl( "name",
+            final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
+                                                              "name",
                                                               "==",
                                                               new StringValue( "Michael" ) );
-            final ConstraintNode c2 = new ConstraintNodeImpl( "name",
+            final ConstraintNode c2 = new ConstraintNodeImpl( "Person",
+                                                              "name",
                                                               "==",
                                                               new StringValue( "Fred" ) );
-            final ConstraintNode c3 = new ConstraintNodeImpl( "age",
+            final ConstraintNode c3 = new ConstraintNodeImpl( "Person",
+                                                              "age",
                                                               "==",
                                                               new IntegerValue( 20 ) );
-            final ConstraintNode c4 = new ConstraintNodeImpl( "age",
+            final ConstraintNode c4 = new ConstraintNodeImpl( "Person",
+                                                              "age",
                                                               "==",
                                                               new IntegerValue( 30 ) );
 
