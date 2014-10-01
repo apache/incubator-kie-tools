@@ -16,9 +16,6 @@
 
 package com.ait.lienzo.shared.java.util.function;
 
-import com.ait.lienzo.shared.java.lang.FunctionalInterface;
-
-@FunctionalInterface
 public interface Predicate<T>
 {
     public boolean test(T value);
