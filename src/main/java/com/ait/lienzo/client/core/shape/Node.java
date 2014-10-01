@@ -426,6 +426,15 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     {
     }
 
+    public Point2D getAbsoluteLocation()
+    {
+        Point2D p = new Point2D(0, 0);
+
+        getAbsoluteTransform().transform(p, p);
+
+        return p;
+    }
+
     /**
      * Returns the absolute transform by concatenating the transforms
      * of all its ancestors from the Viewport down to this node's parent.
