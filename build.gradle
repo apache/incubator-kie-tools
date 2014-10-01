@@ -15,11 +15,10 @@
 */
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.7
 
-version = '2.0.11-SNAPSHOT'
+version = '2.0.12-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -35,11 +34,11 @@ repositories {
 }
 
 sourceSets {
-  main {
-    resources {
-      source java
+    main {
+        resources {
+            source java
+        }
     }
-  }
 }
 
 dependencies {
@@ -49,28 +48,18 @@ dependencies {
 
 task documents(type: Javadoc) {
     source = sourceSets.main.allJava
- }
+}
 
 test {
     systemProperties 'property': 'value'
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-}
-
 uploadArchives {
     repositories {
-        maven {
-            credentials {
-                username "${sonatype_user}"
-                password "${sonatype_password}"
+        mavenDeployer {
+            repository(url: "${sonatype_snapshotURL}") {
+                authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
             }
-            url "${sonatype_snapshotURL}"
         }
     }
 }
