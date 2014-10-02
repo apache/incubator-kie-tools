@@ -31,7 +31,7 @@ public final class NFastArrayList<M>
         m_jso = FastArrayListJSO.make().cast();
     }
 
-    @SafeVarargs
+    @SuppressWarnings("unchecked")
     public NFastArrayList(M value, M... values)
     {
         this();
