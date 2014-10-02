@@ -18,7 +18,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '2.0.15-SNAPSHOT'
+version = '2.0.16-SNAPSHOT'
 
 group = 'com.ahome-it'
 
