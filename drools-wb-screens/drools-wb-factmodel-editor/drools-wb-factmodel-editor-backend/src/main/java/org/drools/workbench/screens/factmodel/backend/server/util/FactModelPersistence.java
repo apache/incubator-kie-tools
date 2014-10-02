@@ -146,10 +146,8 @@ public class FactModelPersistence {
                 mm.getFields().add( fm );
             }
 
-            final Map<String, AnnotationDescr> annotations = td.getAnnotations();
-            for ( final Map.Entry<String, AnnotationDescr> en : annotations.entrySet() ) {
-                final String annotationName = en.getKey();
-                final AnnotationDescr descr = en.getValue();
+            for ( final AnnotationDescr descr : td.getAnnotations() ) {
+                final String annotationName = descr.getName();
                 final Map<String, String> values = descr.getValues();
                 final AnnotationMetaModel am = new AnnotationMetaModel( annotationName,
                                                                         values );
