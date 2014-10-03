@@ -17,11 +17,6 @@
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-social-home-page-api</artifactId>
-      
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.uberfire</groupId>
@@ -37,8 +32,6 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
-
-
 
     <dependency>
       <groupId>javax.enterprise</groupId>
