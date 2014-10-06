@@ -36,6 +36,7 @@
     <module>kie-uberfire-widgets</module>
     <module>kie-uberfire-social-activities</module>
     <module>kie-uberfire-runtime-plugins</module>
+    <module>kie-uberfire-perspective-editor</module>
   </modules>
 
   <repositories>
