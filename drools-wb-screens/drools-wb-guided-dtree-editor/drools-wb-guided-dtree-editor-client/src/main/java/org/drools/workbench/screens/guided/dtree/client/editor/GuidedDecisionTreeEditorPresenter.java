@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtree.client.editor;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -38,9 +39,10 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
+import org.kie.workbench.common.widgets.client.datamodel.ImportAddedEvent;
+import org.kie.workbench.common.widgets.client.datamodel.ImportRemovedEvent;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
@@ -74,9 +76,6 @@ public class GuidedDecisionTreeEditorPresenter
 
     @Inject
     private Caller<GuidedDecisionTreeEditorService> service;
-
-    @Inject
-    private Caller<RuleNamesService> ruleNameService;
 
     @Inject
     private Event<NotificationEvent> notification;
@@ -150,11 +149,11 @@ public class GuidedDecisionTreeEditorPresenter
                                           model.getImports(),
                                           isReadOnly );
 
-                view.setContent( versionRecordManager.getCurrentPath(),
-                                 model,
-                                 oracle,
-                                 ruleNameService,
-                                 isReadOnly );
+                view.setNotDirty();
+                view.setModel( model,
+                               isReadOnly );
+                view.setDataModel( oracle,
+                                   isReadOnly );
 
                 view.hideBusyIndicator();
             }
@@ -248,6 +247,22 @@ public class GuidedDecisionTreeEditorPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.setDataModel( oracle,
+                           isReadOnly );
+    }
+
+    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
+        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+            return;
+        }
+        view.setDataModel( oracle,
+                           isReadOnly );
     }
 
     public void editModelNode( final Node node,
