@@ -104,13 +104,4 @@ public interface PlaceManager {
 
     Collection<SplashScreenActivity> getActiveSplashScreens();
 
-    /**
-     * Closes the splash screen associated with the given place request, if any. It is safe to call this method even if
-     * no splash screen is associated with the given place.
-     *
-     * @param place
-     *            the place whose opening triggered the splash screen to launch. Must not be null.
-     */
-    public void closeSplashScreen( final PlaceRequest place );
-
 }

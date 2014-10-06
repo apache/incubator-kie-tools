@@ -25,8 +25,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -51,12 +49,6 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     @PostConstruct
     private void initialize() {
         this.splashFilter = getFilter();
-        splash.addCloseHandler( new CloseHandler<SplashView>() {
-            @Override
-            public void onClose( final CloseEvent<SplashView> event ) {
-                placeManager.closeSplashScreen( getPlace() );
-            }
-        } );
     }
 
     @Override
@@ -68,17 +60,11 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
                 if ( response != null ) {
                     splashFilter = response;
                 }
-                init();
-
+                if ( splashFilter.displayNextTime() ) {
+                    forceShow();
+                }
             }
         } );
-    }
-
-    public void init() {
-        if ( !splashFilter.displayNextTime() ) {
-            return;
-        }
-        forceShow();
     }
 
     @Override

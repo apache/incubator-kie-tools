@@ -34,6 +34,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.menu.MenuSplashList;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
@@ -96,7 +97,12 @@ implements PlaceManager {
     @Inject
     private PerspectiveManager perspectiveManager;
 
-    private final Map<String, SplashScreenActivity> activeSplashScreens = new HashMap<String, SplashScreenActivity>();
+    /**
+     * Splash screens that have intercepted some other activity which is currently part of the workbench. Each of these
+     * splash screens may or may not be visible (they manage their own "show next time" preferences).
+     */
+    private final Map<String, SplashScreenActivity> availableSplashScreens = new HashMap<String, SplashScreenActivity>();
+
     private final Map<String, PopupActivity> activePopups = new HashMap<String, PopupActivity>();
     private final Map<PlaceRequest, Activity> onMayCloseList = new HashMap<PlaceRequest, Activity>();
 
@@ -450,28 +456,41 @@ implements PlaceManager {
     }
 
     /**
-     * Launches the given splash screen, associating it with the given place in {@link #activeSplashScreens} for later
-     * disposal. For every call to this method, you must call {@link #closeSplashScreen(PlaceRequest)} with the same
-     * PlaceRequest at some point in the future, or call {@link #closeAllSplashScreens()}.
+     * Finds and opens the splash screen for the given place, if such a splash screen exists. The splash screen may not
+     * actually display; each splash screen keeps track of its own preference setting for whether or not the user wants
+     * to see it.
+     * <p>
+     * Whether or not it chooses to display itself, the splash screen will be recorded in
+     * {@link #availableSplashScreens} for lookup (for example, see {@link MenuSplashList}) and later disposal.
+     * Internally, this method should be called every time any part or perspective is added to the workbench, and called
+     * again when that part or perspective is removed.
      *
      * @param place
-     *            the place that wanted the splash screen to launch.
-     * @param splashScreen
-     *            the splash screen to launch. Must be in the initialized but not started state.
+     *            the place that has just been added to the workbench. Must not be null.
      */
-    private void launchSplashScreen( final PlaceRequest place,
-                                     final SplashScreenActivity splashScreen ) {
-        activeSplashScreens.put( place.getIdentifier(), splashScreen );
-        splashScreen.onOpen();
-        newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+    private void addSplashScreenFor( final PlaceRequest place ) {
+        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
+        if ( splashScreen != null ) {
+            availableSplashScreens.put( place.getIdentifier(), splashScreen );
+            splashScreen.onOpen();
+            newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
+        }
     }
 
-    @Override
-    public void closeSplashScreen( final PlaceRequest place ) {
-        SplashScreenActivity splashScreenActivity = activeSplashScreens.remove( place.getIdentifier() );
+    /**
+     * Closes the splash screen associated with the given place request, if any. Internally, this method should be
+     * invoked every time a part or perspective is removed from the workbench (cleaning up after the corresponding
+     * earlier call to {@link #addSplashScreenFor(PlaceRequest)}.
+     *
+     * @param place
+     *            the place whose opening may have triggered a splash screen to launch. Must not be null.
+     */
+    private void closeSplashScreen( final PlaceRequest place ) {
+        SplashScreenActivity splashScreenActivity = availableSplashScreens.remove( place.getIdentifier() );
         if ( splashScreenActivity != null ) {
             splashScreenActivity.onClose();
             activityManager.destroyActivity( splashScreenActivity );
+            newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
         }
     }
 
@@ -479,14 +498,14 @@ implements PlaceManager {
      * Closes all splash screens that are currently known to be open.
      */
     private void closeAllSplashScreens() {
-        for ( String placeId : new ArrayList<String>( activeSplashScreens.keySet() ) ) {
+        for ( String placeId : new ArrayList<String>( availableSplashScreens.keySet() ) ) {
             closeSplashScreen( new DefaultPlaceRequest( placeId ) );
         }
     }
 
     @Override
     public Collection<SplashScreenActivity> getActiveSplashScreens() {
-        return unmodifiableCollection( activeSplashScreens.values() );
+        return unmodifiableCollection( availableSplashScreens.values() );
     }
 
     /**
@@ -553,8 +572,6 @@ implements PlaceManager {
         visibleWorkbenchParts.put( place, part );
         getPlaceHistoryHandler().onPlaceChange( place );
 
-        final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
-
         UIPart uiPart = new UIPart( activity.getTitle(), activity.getTitleDecoration(), activity.getWidget() );
 
         panelManager.addWorkbenchPart( place,
@@ -565,11 +582,7 @@ implements PlaceManager {
                                        activity.contextId(),
                                        activity.preferredWidth(),
                                        activity.preferredHeight() );
-        if ( splashScreen != null ) {
-            launchSplashScreen( place,
-                                splashScreen );
-        }
-
+        addSplashScreenFor( place );
         activity.onOpen();
     }
 
@@ -597,17 +610,13 @@ implements PlaceManager {
             return;
         }
 
-//<<<<<<< Updated upstream
         perspectiveManager.savePerspectiveState( new Command() {
             @Override
             public void execute() {
                 if ( closeAllCurrentPanels() ) {
 
                     closeAllSplashScreens();
-                    final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
-                    if ( splashScreen != null ) {
-                        launchSplashScreen( place, splashScreen );
-                    }
+                    addSplashScreenFor( place );
 
                     ParameterizedCommand<PerspectiveDefinition> closeOldPerspectiveOpenPartsAndExecuteChainedCallback = new ParameterizedCommand<PerspectiveDefinition>() {
                         @Override
