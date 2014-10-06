@@ -11,7 +11,7 @@
   <artifactId>kie-uberfire-social-activities</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE Uberfire Properties Editor Widget</name>
+  <name>KIE Uberfire Social Activities</name>
 
   <modules>
     <module>kie-uberfire-social-activities-api</module>
