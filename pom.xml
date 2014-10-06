@@ -45,25 +45,9 @@
         </property>
       </activation>
       <modules>
-        <!-- No need to build this module every time. It is basically static content and will be shortly removed
-             anyway (with the introduction of asset management). -->
-        <!-- <module>drools-wb-rest-defaultapprover</module> -->
-        <module>drools-wb-rest</module>
         <module>drools-wb-screens</module>
         <module>drools-wb-webapp</module>
         <module>drools-wb-jcr2vfs-migration</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>approver</id>
-      <activation>
-        <property>
-          <name>approver</name>
-        </property>
-      </activation>
-      <modules>
-        <module>drools-wb-rest-defaultapprover</module>
       </modules>
     </profile>
 
@@ -75,8 +59,6 @@
         </property>
       </activation>
       <modules>
-        <module>drools-wb-rest-defaultapprover</module>
-        <module>drools-wb-rest</module>
         <module>drools-wb-screens</module>
         <module>drools-wb-webapp</module>
         <module>drools-wb-jcr2vfs-migration</module>
