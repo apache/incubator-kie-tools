@@ -44,6 +44,7 @@ public class UserCookieTest extends AbstractSeleniumTest {
 
         // now go to the app with the cookie in place
         driver.get( baseUrl );
+        waitForDefaultPerspective();
         driver.get( baseUrl + "#" + SecurityContextInfoScreen.class.getName() );
 
         WebElement userLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-userLabel" ) );
@@ -70,6 +71,7 @@ public class UserCookieTest extends AbstractSeleniumTest {
 
         // now go to the app with the cookie in place
         driver.get( baseUrl );
+        waitForDefaultPerspective();
         driver.get( baseUrl + "#" + InjectedUserScreen.class.getName() );
 
         WebElement userLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-userLabel" ) );
