@@ -47,11 +47,12 @@ public class ActionInsertNodeFactory extends BaseGuidedDecisionTreeNodeFactory<C
     @Override
     public WiresBaseShape getShape( final FactoryHelper helper ) {
         final ActionInsertFactoryHelper anHelper = (ActionInsertFactoryHelper) helper;
+        final ActionInsertNode node = anHelper.getContext();
 
         //The ActionUpdateNode associated with the FactoryHelper is used to show the action's description on the
         //drag proxy. We need to create a new instance of the TypeNode for use in the Decision Tree Widget
         return new ActionInsertShape( makeShape(),
-                                      new ActionInsertNodeImpl(),
+                                      new ActionInsertNodeImpl( node.getClassName() ),
                                       anHelper.isReadOnly() );
     }
 

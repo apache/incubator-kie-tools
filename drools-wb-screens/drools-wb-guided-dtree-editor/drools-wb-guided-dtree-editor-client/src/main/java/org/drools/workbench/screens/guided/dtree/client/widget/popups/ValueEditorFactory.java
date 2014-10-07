@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.drools.workbench.models.guided.dtree.shared.model.values.HasValue;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.HasValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;

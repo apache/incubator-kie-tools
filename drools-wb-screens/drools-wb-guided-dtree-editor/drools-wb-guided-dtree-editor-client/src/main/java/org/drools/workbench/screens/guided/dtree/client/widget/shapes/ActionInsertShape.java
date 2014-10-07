@@ -18,7 +18,7 @@ package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 import com.emitrom.lienzo.client.core.shape.Circle;
 import com.emitrom.lienzo.shared.core.types.Color;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
-import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionUpdateNodeFactory;
+import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionInsertNodeFactory;
 import org.kie.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
 public class ActionInsertShape extends BaseGuidedDecisionTreeShape<ActionInsertNode> {
@@ -42,7 +42,7 @@ public class ActionInsertShape extends BaseGuidedDecisionTreeShape<ActionInsertN
     @Override
     public String getNodeLabel() {
         final StringBuilder sb = new StringBuilder();
-        sb.append( ActionUpdateNodeFactory.DESCRIPTION );
+        sb.append( ActionInsertNodeFactory.DESCRIPTION );
         final String className = getModelNode().getClassName();
         if ( className != null ) {
             sb.append( " " ).append( className );

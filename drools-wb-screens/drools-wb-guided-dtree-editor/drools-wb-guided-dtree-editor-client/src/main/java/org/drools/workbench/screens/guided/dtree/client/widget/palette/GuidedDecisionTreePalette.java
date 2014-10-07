@@ -86,12 +86,15 @@ public class GuidedDecisionTreePalette extends Accordion {
         group.setHeading( GuidedDecisionTreeConstants.INSTANCE.actionsPaletteGroup() );
         final GuidedDecisionTreePaletteGroup paletteGroup = new GuidedDecisionTreePaletteGroup();
 
-        final ActionInsertNode an1 = new ActionInsertNodeImpl();
-        paletteGroup.addStencil( actionInsertNodeFactory,
-                                 stencilBuilder,
-                                 new ActionInsertFactoryHelper( an1,
-                                                                isReadOnly ),
-                                 isReadOnly );
+        if ( oracle.getFactTypes().length > 0 ) {
+            final String className = oracle.getFactTypes()[ 0 ];
+            final ActionInsertNode an1 = new ActionInsertNodeImpl( className );
+            paletteGroup.addStencil( actionInsertNodeFactory,
+                                     stencilBuilder,
+                                     new ActionInsertFactoryHelper( an1,
+                                                                    isReadOnly ),
+                                     isReadOnly );
+        }
 
         final ActionUpdateNode an2 = new ActionUpdateNodeImpl();
         paletteGroup.addStencil( actionUpdateNodeFactory,
