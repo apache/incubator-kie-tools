@@ -30,6 +30,7 @@ import com.emitrom.lienzo.client.core.animation.IAnimationHandle;
 import com.emitrom.lienzo.client.core.types.Point2D;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
@@ -37,8 +38,9 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.screens.guided.dtree.client.editor.GuidedDecisionTreeEditorPresenter;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
-import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionUpdateNodeFactory;
+import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionInsertNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionRetractNodeFactory;
+import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionUpdateNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ConstraintNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.shapes.BaseGuidedDecisionTreeShape;
@@ -86,10 +88,13 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
     private ConstraintNodeFactory constraintNodeFactory;
 
     @Inject
-    private ActionRetractNodeFactory actionRetractNodeFactory;
+    private ActionInsertNodeFactory actionInsertNodeFactory;
 
     @Inject
     private ActionUpdateNodeFactory actionUpdateNodeFactory;
+
+    @Inject
+    private ActionRetractNodeFactory actionRetractNodeFactory;
 
     private GuidedDecisionTreeDropContext dropContext = new GuidedDecisionTreeDropContext();
 
@@ -328,13 +333,17 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                 uiChildNode = constraintNodeFactory.getShape( (ConstraintNode) child,
                                                               isReadOnly );
 
-            } else if ( child instanceof ActionRetractNode ) {
-                uiChildNode = actionRetractNodeFactory.getShape( (ActionRetractNode) child,
-                                                                 isReadOnly );
+            } else if ( child instanceof ActionInsertNode ) {
+                uiChildNode = actionInsertNodeFactory.getShape( (ActionInsertNode) child,
+                                                                isReadOnly );
 
             } else if ( child instanceof ActionUpdateNode ) {
                 uiChildNode = actionUpdateNodeFactory.getShape( (ActionUpdateNode) child,
                                                                 isReadOnly );
+
+            } else if ( child instanceof ActionRetractNode ) {
+                uiChildNode = actionRetractNodeFactory.getShape( (ActionRetractNode) child,
+                                                                 isReadOnly );
             }
 
             if ( uiChildNode != null ) {

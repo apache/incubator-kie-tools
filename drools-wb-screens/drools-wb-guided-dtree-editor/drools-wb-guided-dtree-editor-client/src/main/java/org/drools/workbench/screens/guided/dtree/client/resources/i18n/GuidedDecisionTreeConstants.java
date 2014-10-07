@@ -43,6 +43,8 @@ public interface GuidedDecisionTreeConstants
 
     public String popupTitleEditActionUpdate();
 
+    public String popupTitleEditActionInsert();
+
     public String className();
 
     public String fieldName();
@@ -68,6 +70,14 @@ public interface GuidedDecisionTreeConstants
     public String addFieldValue();
 
     public String removeFieldValue();
+
+    public String actionInsert();
+
+    public String actionInsertLogical();
+
+    public String actionInsertLogicalHeader();
+
+    public String actionInsertLogicalDescription();
 
     public String noFields();
 
