@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public interface FormDisplayerView {
     Map<String, Object> getOutputMap();
-    void setInputMap(Map<String, Object> params);
+    void setInputMap(Map<String, String> params);
     void setReadOnly(boolean readOnly);
     boolean isReadOnly();
 }
