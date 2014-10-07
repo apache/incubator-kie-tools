@@ -302,6 +302,7 @@ public class GuidedDecisionTreeEditorPresenter
 
         } else if ( node instanceof ActionUpdateNode ) {
             final EditActionUpdatePopup popup = new EditActionUpdatePopup( (ActionUpdateNode) node,
+                                                                           oracle,
                                                                            new com.google.gwt.user.client.Command() {
                                                                                @Override
                                                                                public void execute() {

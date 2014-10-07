@@ -65,6 +65,12 @@ public interface GuidedDecisionTreeConstants
 
     public String actionUpdateDescription();
 
+    public String addFieldValue();
+
+    public String removeFieldValue();
+
+    public String noFields();
+
     public String noBindings();
 
     public String bindingHeader();

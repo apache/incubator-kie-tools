@@ -17,10 +17,17 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:kie="urn:import:org.kie.uberfire.client.tables">
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants"/>
+
+  <ui:style>
+    .fieldValues {
+      width: 100%;
+      height: 200px;
+      border-width: 1px;
+    }
+  </ui:style>
 
   <b:Well>
 
@@ -49,7 +56,12 @@
         <gwt:Label text="{i18n.actionFieldValues}:"/>
       </b:ControlLabel>
       <b:Controls>
-        <kie:SimpleTable ui:field="tableFieldValues"/>
+        <b:Well>
+          <gwt:ScrollPanel styleName="{style.fieldValues}">
+            <gwt:VerticalPanel ui:field="containerFieldValues"/>
+          </gwt:ScrollPanel>
+          <b:Button ui:field="addFieldValueButton" icon="PLUS_SIGN" type="DEFAULT" text="{i18n.addFieldValue}"></b:Button>
+        </b:Well>
       </b:Controls>
     </b:ControlGroup>
 

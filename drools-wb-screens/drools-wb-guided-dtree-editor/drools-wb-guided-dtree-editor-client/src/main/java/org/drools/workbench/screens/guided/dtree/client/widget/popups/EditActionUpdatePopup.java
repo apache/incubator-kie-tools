@@ -21,17 +21,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
@@ -44,7 +48,8 @@ import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDec
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
 import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
-import org.kie.uberfire.client.tables.SimpleTable;
+import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.popups.file.CommandWithPayload;
 
 public class EditActionUpdatePopup extends KieBaseModal {
 
@@ -59,6 +64,20 @@ public class EditActionUpdatePopup extends KieBaseModal {
     private final ActionUpdateNode node;
     private final ActionUpdateNode clone;
     private final Command callback;
+
+    private final AsyncPackageDataModelOracle oracle;
+
+    private final CommandWithPayload<ActionFieldValue> onDeleteCallback = new CommandWithPayload<ActionFieldValue>() {
+        @Override
+        public void execute( final ActionFieldValue afv ) {
+            if ( clone.getFieldValues() == null ) {
+                return;
+            }
+            final int index = clone.getFieldValues().indexOf( afv );
+            clone.getFieldValues().remove( index );
+            containerFieldValues.remove( index );
+        }
+    };
 
     private final Command okCommand = new Command() {
         @Override
@@ -87,7 +106,10 @@ public class EditActionUpdatePopup extends KieBaseModal {
     CheckBox modifyCheckBox;
 
     @UiField
-    SimpleTable tableFieldValues;
+    VerticalPanel containerFieldValues;
+
+    @UiField
+    Button addFieldValueButton;
 
     /**
      * Edit the given ActionModifytNode. A clone is taken whilst editing is in progress to preserve the state
@@ -96,18 +118,22 @@ public class EditActionUpdatePopup extends KieBaseModal {
      * @param callback Callback to execute when the User commits changes
      */
     public EditActionUpdatePopup( final ActionUpdateNode node,
+                                  final AsyncPackageDataModelOracle oracle,
                                   final Command callback ) {
         setTitle( GuidedDecisionTreeConstants.INSTANCE.popupTitleEditActionUpdate() );
+        setWidth( "700px" );
 
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
 
         this.node = node;
         this.clone = cloneNode( node );
+        this.oracle = oracle;
         this.callback = callback;
 
         initialiseModify();
         initialiseBoundTypes();
+        initialiseFieldValues();
     }
 
     //Clone node whilst editing to preserve original node should User cancel the edit
@@ -183,10 +209,37 @@ public class EditActionUpdatePopup extends KieBaseModal {
             public void onChange( final ChangeEvent event ) {
                 final String binding = bindingListBox.getItemText( bindingListBox.getSelectedIndex() );
                 clone.setBoundNode( bindings.get( binding ) );
+                clone.getFieldValues().clear();
+                initialiseFieldValues();
             }
         } );
 
         bindingListBox.setSelectedIndex( selectedIndex );
+    }
+
+    private void initialiseFieldValues() {
+        containerFieldValues.clear();
+        addFieldValueButton.setEnabled( true );
+        for ( ActionFieldValue afv : clone.getFieldValues() ) {
+            final ActionFieldValueEditor afvEditor = new ActionFieldValueEditor( clone.getBoundNode().getClassName(),
+                                                                                 afv,
+                                                                                 clone.getFieldValues(),
+                                                                                 oracle,
+                                                                                 onDeleteCallback );
+            containerFieldValues.add( afvEditor );
+        }
+    }
+
+    @UiHandler("addFieldValueButton")
+    void onAddFieldValueButtonClick( final ClickEvent event ) {
+        final ActionFieldValue afv = new ActionFieldValueImpl();
+        final ActionFieldValueEditor afvEditor = new ActionFieldValueEditor( clone.getBoundNode().getClassName(),
+                                                                             afv,
+                                                                             clone.getFieldValues(),
+                                                                             oracle,
+                                                                             onDeleteCallback );
+        containerFieldValues.add( afvEditor );
+        clone.getFieldValues().add( afv );
     }
 
     private void onOKButtonClick() {
