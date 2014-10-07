@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.uberfire.wbtest.client.main.DefaultPerspectiveActivity;
+import org.uberfire.wbtest.client.splash.HasJsSplashOne;
 import org.uberfire.wbtest.client.splash.SplashyPerspective;
 import org.uberfire.wbtest.client.splash.SplashyPerspectiveSplashScreen;
 import org.uberfire.wbtest.client.splash.SplashyScreen;
@@ -63,6 +64,10 @@ public class SplashScreenTest extends AbstractSeleniumTest {
         assertEquals( 0, splashLabels.size() );
     }
 
+    /**
+     * This tests for JavaScript (runtime plugin) splash screens as well as the functionality of the MenuSplashList
+     * widget.
+     */
     @Test
     public void splashListShouldStayUpToDate() throws Exception {
 
@@ -73,19 +78,27 @@ public class SplashScreenTest extends AbstractSeleniumTest {
         driver.findElement( By.id( "gwt-debug-SplashModalFooter-close" ) ).click();
         waitUntilGone( 5000, By.id( "SplashyPerspectiveSplashScreen-1" ) );
 
-        // add another screen that has its own splash screen, and dismiss that too
+        // add a screen with a JavaScript-based splash screen, and dismiss that too
+        driver.get( baseUrl + "#" + HasJsSplashOne.class.getName() );
+        WebElement jsSplashScreenSplashLabel = driver.findElement( By.id( "js-splash-one" ) );
+        waitUntilDisplayed( 5000, jsSplashScreenSplashLabel );
+        driver.findElement( By.id( "gwt-debug-SplashModalFooter-close" ) ).click();
+        waitUntilGone( 5000, By.id( "js-splash-one" ) );
+
+        // add another screen that has its own (non-js) splash screen, and dismiss that too
         driver.get( baseUrl + "#" + SplashyScreen.class.getName() + "?debugId=1" );
         WebElement screenSplashLabel = driver.findElement( By.id( "SplashyScreenSplashScreen-1" ) );
         waitUntilDisplayed( 5000, screenSplashLabel );
         driver.findElement( By.id( "gwt-debug-SplashModalFooter-close" ) ).click();
         waitUntilGone( 5000, By.id( "SplashyScreenSplashScreen-1" ) );
 
-        // now verify both splash screens are in the list
+        // now verify all splash screens are in the list widget
         SplashListWrapper splashList = new SplashListWrapper( driver, "SplashyScreen-1-SplashList" );
         List<String> contents = splashList.getContents();
         assertTrue( contents.contains( SplashyPerspectiveSplashScreen.class.getName() ) );
+        assertTrue( contents.contains( "Splash One" ) );
         assertTrue( contents.contains( SplashyScreenSplashScreen.class.getName() ) );
-        assertEquals( 2, contents.size() );
+        assertEquals( 3, contents.size() );
     }
 
     /**

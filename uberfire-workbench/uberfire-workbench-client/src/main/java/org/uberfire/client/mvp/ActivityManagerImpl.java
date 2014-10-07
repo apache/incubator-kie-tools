@@ -163,6 +163,18 @@ public class ActivityManagerImpl implements ActivityManager {
      *            an activity that is in the <i>started</i> or <i>open</i> state.
      */
     private Class<?> getBeanScope( Activity startedActivity ) {
+
+//        // splash screens are tracked separately
+//        if ( startedActivity instanceof SplashScreenActivity ) {
+//            // FIXME this is an assumption based on convention. should modify bean cache to keep bean defs for splash screens too.
+//            return ApplicationScoped.class;
+//        }
+//
+//        final IOCBeanDef<?> beanDef = activityBeansCache.getActivity( startedActivity.getPlace().getIdentifier() );
+//        if ( beanDef == null ) {
+//            return Dependent.class;
+//        }
+//        return beanDef.getScope();
         IOCBeanDef<?> beanDef = iocManager.lookupBean( startedActivity.getClass() );
         if ( beanDef == null ) {
             beanDef = activityBeansCache.getActivity( startedActivity.getPlace().getIdentifier() );
