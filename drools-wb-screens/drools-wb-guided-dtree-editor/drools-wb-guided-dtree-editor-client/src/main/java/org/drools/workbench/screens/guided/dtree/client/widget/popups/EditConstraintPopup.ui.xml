@@ -26,7 +26,7 @@
 
     <b:ControlGroup ui:field="classNameGroup">
       <b:ControlLabel for="className">
-        <gwt:Label text="{i18n.classNameColon}"/>
+        <gwt:Label text="{i18n.className}:"/>
       </b:ControlLabel>
       <b:Controls>
         <b:Label ui:field="classNameLabel"/>
@@ -35,7 +35,7 @@
 
     <b:ControlGroup ui:field="fieldNameGroup">
       <b:ControlLabel for="fieldName">
-        <gwt:Label text="{i18n.fieldNameColon}"/>
+        <gwt:Label text="{i18n.fieldName}:"/>
       </b:ControlLabel>
       <b:Controls>
         <b:Label ui:field="fieldNameLabel"/>
@@ -44,7 +44,7 @@
 
     <b:ControlGroup ui:field="bindingGroup">
       <b:ControlLabel for="binding">
-        <gwt:Label text="{i18n.bindingColon}"/>
+        <gwt:Label text="{i18n.binding}:"/>
       </b:ControlLabel>
       <b:Controls>
         <kie:BindingTextBox ui:field="bindingTextBox"/>
@@ -57,7 +57,7 @@
 
     <b:ControlGroup ui:field="operatorGroup">
       <b:ControlLabel for="operator">
-        <gwt:Label text="{i18n.operatorColon}"/>
+        <gwt:Label text="{i18n.operator}:"/>
       </b:ControlLabel>
       <b:Controls>
         <b:ListBox ui:field="operatorListBox"/>
@@ -66,7 +66,7 @@
 
     <b:ControlGroup ui:field="valueGroup">
       <b:ControlLabel for="value">
-        <gwt:Label text="{i18n.valueColon}"/>
+        <gwt:Label text="{i18n.value}:"/>
       </b:ControlLabel>
       <b:Controls>
         <gwt:SimplePanel ui:field="valueHolder"/>

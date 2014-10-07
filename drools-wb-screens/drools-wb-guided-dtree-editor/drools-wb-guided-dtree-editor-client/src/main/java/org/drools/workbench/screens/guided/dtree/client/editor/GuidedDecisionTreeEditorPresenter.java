@@ -24,11 +24,13 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.screens.guided.dtree.client.type.GuidedDTreeResourceType;
 import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditActionRetractPopup;
+import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditActionUpdatePopup;
 import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditConstraintPopup;
 import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditTypePopup;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
@@ -297,7 +299,18 @@ public class GuidedDecisionTreeEditorPresenter
                                                                                  }
                                                                              } );
             popup.show();
+
+        } else if ( node instanceof ActionUpdateNode ) {
+            final EditActionUpdatePopup popup = new EditActionUpdatePopup( (ActionUpdateNode) node,
+                                                                           new com.google.gwt.user.client.Command() {
+                                                                               @Override
+                                                                               public void execute() {
+                                                                                   callback.execute();
+                                                                               }
+                                                                           } );
+            popup.show();
         }
+
     }
 
 }

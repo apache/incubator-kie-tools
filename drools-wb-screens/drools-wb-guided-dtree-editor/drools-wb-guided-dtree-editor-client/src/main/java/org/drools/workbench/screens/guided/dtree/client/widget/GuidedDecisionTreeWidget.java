@@ -31,11 +31,13 @@ import com.emitrom.lienzo.client.core.types.Point2D;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.screens.guided.dtree.client.editor.GuidedDecisionTreeEditorPresenter;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
+import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionUpdateNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionRetractNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ConstraintNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeNodeFactory;
@@ -85,6 +87,9 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
 
     @Inject
     private ActionRetractNodeFactory actionRetractNodeFactory;
+
+    @Inject
+    private ActionUpdateNodeFactory actionUpdateNodeFactory;
 
     private GuidedDecisionTreeDropContext dropContext = new GuidedDecisionTreeDropContext();
 
@@ -326,6 +331,10 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
             } else if ( child instanceof ActionRetractNode ) {
                 uiChildNode = actionRetractNodeFactory.getShape( (ActionRetractNode) child,
                                                                  isReadOnly );
+
+            } else if ( child instanceof ActionUpdateNode ) {
+                uiChildNode = actionUpdateNodeFactory.getShape( (ActionUpdateNode) child,
+                                                                isReadOnly );
             }
 
             if ( uiChildNode != null ) {

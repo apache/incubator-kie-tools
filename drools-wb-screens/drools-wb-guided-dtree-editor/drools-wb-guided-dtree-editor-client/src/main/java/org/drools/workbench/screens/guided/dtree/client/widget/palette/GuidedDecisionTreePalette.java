@@ -22,15 +22,19 @@ import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionRetractNodeImpl;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionUpdateNodeImpl;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ConstraintNodeImpl;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.StringValue;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionRetractFactoryHelper;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionRetractNodeFactory;
+import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionUpdateFactoryHelper;
+import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionUpdateNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ConstraintFactoryHelper;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ConstraintNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeFactoryHelper;
@@ -49,6 +53,9 @@ public class GuidedDecisionTreePalette extends Accordion {
 
     @Inject
     private ActionRetractNodeFactory actionRetractNodeFactory;
+
+    @Inject
+    private ActionUpdateNodeFactory actionUpdateNodeFactory;
 
     @Inject
     private GuidedDecisionTreeStencilPaletteBuilder stencilBuilder;
@@ -72,12 +79,20 @@ public class GuidedDecisionTreePalette extends Accordion {
         group.setHeading( GuidedDecisionTreeConstants.INSTANCE.actionsPaletteGroup() );
         final GuidedDecisionTreePaletteGroup paletteGroup = new GuidedDecisionTreePaletteGroup();
 
-        final ActionRetractNode an = new ActionRetractNodeImpl();
+        final ActionRetractNode an1 = new ActionRetractNodeImpl();
         paletteGroup.addStencil( actionRetractNodeFactory,
                                  stencilBuilder,
-                                 new ActionRetractFactoryHelper( an,
+                                 new ActionRetractFactoryHelper( an1,
                                                                  isReadOnly ),
                                  isReadOnly );
+
+        final ActionUpdateNode an2 = new ActionUpdateNodeImpl();
+        paletteGroup.addStencil( actionUpdateNodeFactory,
+                                 stencilBuilder,
+                                 new ActionUpdateFactoryHelper( an2,
+                                                                isReadOnly ),
+                                 isReadOnly );
+
         group.add( paletteGroup );
         add( group );
     }

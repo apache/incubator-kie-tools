@@ -17,36 +17,62 @@ package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 
 import com.emitrom.lienzo.client.core.shape.Circle;
 import com.emitrom.lienzo.shared.core.types.Color;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
+import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionUpdateNodeFactory;
 import org.kie.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
-public class TypeShape extends BaseGuidedDecisionTreeShape<TypeNode> {
+public class ActionUpdateShape extends BaseGuidedDecisionTreeShape<ActionUpdateNode> {
 
-    public TypeShape( final Circle shape,
-                      final TypeNode node,
-                      final boolean isReadOnly ) {
+    public ActionUpdateShape( final Circle shape,
+                              final ActionUpdateNode node,
+                              final boolean isReadOnly ) {
         super( shape,
                node,
                isReadOnly );
         setNodeLabel( getNodeLabel() );
 
         plus.setFillColor( Color.rgbToBrowserHexColor( 150,
-                                                       0,
+                                                       150,
                                                        0 ) );
         plus.setStrokeColor( Color.rgbToBrowserHexColor( 200,
-                                                         0,
+                                                         200,
                                                          0 ) );
     }
 
     @Override
     public String getNodeLabel() {
         final StringBuilder sb = new StringBuilder();
-        if ( node.isBound() ) {
-            sb.append( node.getBinding() ).append( " : " );
+        sb.append( ActionUpdateNodeFactory.DESCRIPTION );
+        final TypeNode boundNode = getModelNode().getBoundNode();
+        if ( boundNode != null ) {
+            if ( boundNode.isBound() ) {
+                sb.append( " " ).append( boundNode.getBinding() );
+            }
         }
-        sb.append( node.getClassName() );
         return sb.toString();
+    }
+
+    @Override
+    public void setParentNode( final WiresBaseTreeNode parent ) {
+        super.setParentNode( parent );
+
+        //Set binding to first bound parent TypeNode
+        if ( parent instanceof BaseGuidedDecisionTreeShape ) {
+            Node node = ( (BaseGuidedDecisionTreeShape) parent ).getModelNode();
+            while ( node != null ) {
+                if ( node instanceof TypeNode ) {
+                    final TypeNode tn = (TypeNode) node;
+                    if ( tn.isBound() ) {
+                        getModelNode().setBoundNode( tn );
+                        setNodeLabel( getNodeLabel() );
+                        break;
+                    }
+                }
+                node = node.getParent();
+            }
+        }
     }
 
     @Override
@@ -55,16 +81,8 @@ public class TypeShape extends BaseGuidedDecisionTreeShape<TypeNode> {
             return false;
         }
 
-        //Constraints can only be added TypeNodes for the same class
-        if ( child instanceof ConstraintShape ) {
-            final ConstraintShape cs = (ConstraintShape) child;
-            if ( !node.getClassName().equals( cs.getModelNode().getClassName() ) ) {
-                return false;
-            }
-        }
-
-        //ActionRetractNodes and ActionModifyNodes can only be added to paths containing a bound type
-        if ( child instanceof ActionRetractShape || child instanceof ActionUpdateShape ) {
+        //ActionModifyNodes can only be added to paths containing a bound type
+        if ( child instanceof ActionUpdateShape ) {
             Node node = this.getModelNode();
             while ( node != null ) {
                 if ( node instanceof TypeNode ) {
@@ -77,7 +95,7 @@ public class TypeShape extends BaseGuidedDecisionTreeShape<TypeNode> {
             return false;
         }
 
-        return true;
+        return false;
     }
 
 }

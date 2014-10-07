@@ -81,7 +81,7 @@ public class ActionRetractShape extends BaseGuidedDecisionTreeShape<ActionRetrac
             return false;
         }
 
-        //ActionRetractNodes an only be added to paths containing a bound type
+        //ActionRetractNodes can only be added to paths containing a bound type
         if ( child instanceof ActionRetractShape ) {
             Node node = this.getModelNode();
             while ( node != null ) {

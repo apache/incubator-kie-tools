@@ -41,17 +41,29 @@ public interface GuidedDecisionTreeConstants
 
     public String popupTitleEditActionRetract();
 
-    public String classNameColon();
+    public String popupTitleEditActionUpdate();
 
-    public String fieldNameColon();
+    public String className();
 
-    public String bindingColon();
+    public String fieldName();
 
-    public String operatorColon();
+    public String binding();
 
-    public String valueColon();
+    public String operator();
 
-    public String actionRetractColon();
+    public String value();
+
+    public String actionRetract();
+
+    public String actionUpdate();
+
+    public String actionFieldValues();
+
+    public String actionUpdateEngineWithChanges();
+
+    public String actionUpdateHeader();
+
+    public String actionUpdateDescription();
 
     public String noBindings();
 

@@ -25,7 +25,7 @@
 
     <b:ControlGroup ui:field="bindingGroup">
       <b:ControlLabel for="binding">
-        <gwt:Label text="{i18n.actionRetractColon}"/>
+        <gwt:Label text="{i18n.actionRetract}:"/>
       </b:ControlLabel>
       <b:Controls>
         <b:ListBox ui:field="bindingListBox"/>

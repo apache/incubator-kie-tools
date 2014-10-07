@@ -19,18 +19,18 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.emitrom.lienzo.client.core.shape.Circle;
 import com.emitrom.lienzo.shared.core.types.Color;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionRetractNodeImpl;
-import org.drools.workbench.screens.guided.dtree.client.widget.shapes.ActionRetractShape;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionUpdateNodeImpl;
+import org.drools.workbench.screens.guided.dtree.client.widget.shapes.ActionUpdateShape;
 import org.drools.workbench.screens.guided.dtree.client.widget.shapes.TypeShape;
 import org.kie.wires.core.api.factories.FactoryHelper;
 import org.kie.wires.core.api.shapes.WiresBaseShape;
 import org.kie.wires.core.client.util.ShapesUtils;
 
 @ApplicationScoped
-public class ActionRetractNodeFactory extends BaseGuidedDecisionTreeNodeFactory<Circle> {
+public class ActionUpdateNodeFactory extends BaseGuidedDecisionTreeNodeFactory<Circle> {
 
-    public static final String DESCRIPTION = "Retract";
+    public static final String DESCRIPTION = "Update";
 
     private static final int SHAPE_RADIUS = 25;
 
@@ -46,13 +46,13 @@ public class ActionRetractNodeFactory extends BaseGuidedDecisionTreeNodeFactory<
      */
     @Override
     public WiresBaseShape getShape( final FactoryHelper helper ) {
-        final ActionRetractFactoryHelper anHelper = (ActionRetractFactoryHelper) helper;
+        final ActionUpdateFactoryHelper anHelper = (ActionUpdateFactoryHelper) helper;
 
-        //The ActionRetractNode associated with the FactoryHelper is used to show the action's description on the
+        //The ActionUpdateNode associated with the FactoryHelper is used to show the action's description on the
         //drag proxy. We need to create a new instance of the TypeNode for use in the Decision Tree Widget
-        return new ActionRetractShape( makeShape(),
-                                       new ActionRetractNodeImpl(),
-                                       anHelper.isReadOnly() );
+        return new ActionUpdateShape( makeShape(),
+                                      new ActionUpdateNodeImpl(),
+                                      anHelper.isReadOnly() );
     }
 
     /**
@@ -61,11 +61,11 @@ public class ActionRetractNodeFactory extends BaseGuidedDecisionTreeNodeFactory<
      * @param isReadOnly
      * @return
      */
-    public ActionRetractShape getShape( final ActionRetractNode node,
-                                        final boolean isReadOnly ) {
-        return new ActionRetractShape( makeShape(),
-                                       node,
-                                       isReadOnly );
+    public ActionUpdateShape getShape( final ActionUpdateNode node,
+                                       final boolean isReadOnly ) {
+        return new ActionUpdateShape( makeShape(),
+                                      node,
+                                      isReadOnly );
     }
 
     @Override

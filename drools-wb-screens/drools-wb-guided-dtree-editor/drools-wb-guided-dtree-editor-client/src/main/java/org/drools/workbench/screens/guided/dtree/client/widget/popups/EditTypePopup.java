@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionUpdateNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
@@ -167,7 +168,13 @@ public class EditTypePopup extends KieBaseModal {
                 if ( arn.getBoundNode().equals( node ) ) {
                     return true;
                 }
+            } else if ( n instanceof ActionUpdateNode ) {
+                final ActionUpdateNode aun = (ActionUpdateNode) n;
+                if ( aun.getBoundNode().equals( node ) ) {
+                    return true;
+                }
             }
+
             if ( hasBoundChildren( n ) ) {
                 return true;
             }

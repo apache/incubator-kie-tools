@@ -111,4 +111,47 @@ public class ValueUtilities {
         return null;
     }
 
+    /**
+     * Clone a Value object from the given Value.
+     * @param value The Value to clone
+     * @return A cloned Value
+     */
+    public static Value clone( final Value value ) {
+        if ( value instanceof StringValue ) {
+            return new StringValue( ( (StringValue) value ).getValue() );
+
+        } else if ( value instanceof BigDecimalValue ) {
+            return new BigDecimalValue( ( (BigDecimalValue) value ).getValue() );
+
+        } else if ( value instanceof BigIntegerValue ) {
+            return new BigIntegerValue( ( (BigIntegerValue) value ).getValue() );
+
+        } else if ( value instanceof ByteValue ) {
+            return new ByteValue( ( (ByteValue) value ).getValue() );
+
+        } else if ( value instanceof DoubleValue ) {
+            return new DoubleValue( ( (DoubleValue) value ).getValue() );
+
+        } else if ( value instanceof FloatValue ) {
+            return new FloatValue( ( (FloatValue) value ).getValue() );
+
+        } else if ( value instanceof IntegerValue ) {
+            return new IntegerValue( ( (IntegerValue) value ).getValue() );
+
+        } else if ( value instanceof LongValue ) {
+            return new LongValue( ( (LongValue) value ).getValue() );
+
+        } else if ( value instanceof ShortValue ) {
+            return new ShortValue( ( (ShortValue) value ).getValue() );
+
+        } else if ( value instanceof BooleanValue ) {
+            return new BooleanValue( ( (BooleanValue) value ).getValue() );
+
+        } else if ( value instanceof DateValue ) {
+            return new DateValue( ( (DateValue) value ).getValue() );
+
+        }
+        return null;
+    }
+
 }

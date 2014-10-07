@@ -18,31 +18,38 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-             xmlns:kie="urn:import:org.drools.workbench.screens.guided.dtree.client.widget.popups">
+             xmlns:kie="urn:import:org.kie.uberfire.client.tables">
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants"/>
 
   <b:Well>
 
-    <b:ControlGroup ui:field="classNameGroup">
-      <b:ControlLabel for="className">
-        <gwt:Label text="{i18n.className}:"/>
+    <b:ControlGroup ui:field="bindingGroup">
+      <b:ControlLabel for="binding">
+        <gwt:Label text="{i18n.actionUpdate}:"/>
       </b:ControlLabel>
       <b:Controls>
-        <b:Label ui:field="classNameLabel"/>
+        <b:ListBox ui:field="bindingListBox"/>
       </b:Controls>
     </b:ControlGroup>
 
-    <b:ControlGroup ui:field="bindingGroup">
+    <b:ControlGroup ui:field="modifyGroup">
+      <b:Controls>
+        <gwt:HorizontalPanel>
+          <b:CheckBox ui:field="modifyCheckBox" text="{i18n.actionUpdateEngineWithChanges}"/>
+          <b:Popover placement="RIGHT" trigger="HOVER" heading="{i18n.actionUpdateHeader}" text="{i18n.actionUpdateDescription}">
+            <b:Icon type="QUESTION_SIGN" addStyleNames="help-inline"></b:Icon>
+          </b:Popover>
+        </gwt:HorizontalPanel>
+      </b:Controls>
+    </b:ControlGroup>
+
+    <b:ControlGroup ui:field="fieldValuesGroup">
       <b:ControlLabel for="binding">
-        <gwt:Label text="{i18n.binding}:"/>
+        <gwt:Label text="{i18n.actionFieldValues}:"/>
       </b:ControlLabel>
       <b:Controls>
-        <kie:BindingTextBox ui:field="bindingTextBox"/>
-        <b:Popover placement="RIGHT" trigger="HOVER" heading="{i18n.bindingHeader}" text="{i18n.bindingDescription}">
-          <b:Icon type="QUESTION_SIGN" addStyleNames="help-inline"></b:Icon>
-        </b:Popover>
-        <b:HelpInline ui:field="bindingHelpInline"/>
+        <kie:SimpleTable ui:field="tableFieldValues"/>
       </b:Controls>
     </b:ControlGroup>
 
