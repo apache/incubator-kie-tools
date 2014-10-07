@@ -6,16 +6,16 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class ScreenEditorJSON {
+public class ScreenEditor {
 
 
     private List<ScreenParameter> parameters = new ArrayList<ScreenParameter>(  );
 
-    public ScreenEditorJSON() {
+    public ScreenEditor() {
 
     }
 
-    public ScreenEditorJSON( List<ScreenParameter> parameters ) {
+    public ScreenEditor( List<ScreenParameter> parameters ) {
         this.parameters = parameters;
     }
 

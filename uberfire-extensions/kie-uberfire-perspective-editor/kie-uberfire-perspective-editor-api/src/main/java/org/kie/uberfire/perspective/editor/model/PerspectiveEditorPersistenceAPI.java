@@ -9,7 +9,7 @@ public interface PerspectiveEditorPersistenceAPI {
 
     Collection<String> listPerspectives( );
 
-    PerspectiveEditorJSON load( String perspectiveName );
+    PerspectiveEditor load( String perspectiveName );
 
-    void save( PerspectiveEditorJSON perspective );
+    void save( PerspectiveEditor perspective );
 }

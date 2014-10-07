@@ -6,26 +6,26 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class PerspectiveEditorJSON {
+public class PerspectiveEditor {
 
     private String name;
 
-    private List<RowEditorJSON> rows = new ArrayList<RowEditorJSON>(  );
+    private List<RowEditor> rows = new ArrayList<RowEditor>(  );
 
-    public PerspectiveEditorJSON(){
+    public PerspectiveEditor(){
 
     }
 
-    public PerspectiveEditorJSON( String name ) {
+    public PerspectiveEditor( String name ) {
         this.name = name;
     }
 
 
-    public void addRowJSON( RowEditorJSON rowEditorJSON ) {
-        rows.add(rowEditorJSON);
+    public void addRowJSON( RowEditor rowEditor ) {
+        rows.add(rowEditor);
     }
 
-    public List<RowEditorJSON> getRows() {
+    public List<RowEditor> getRows() {
         return rows;
     }
 

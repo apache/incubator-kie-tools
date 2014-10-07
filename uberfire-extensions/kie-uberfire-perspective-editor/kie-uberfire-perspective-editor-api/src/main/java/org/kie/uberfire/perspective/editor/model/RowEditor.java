@@ -6,25 +6,25 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class RowEditorJSON {
+public class RowEditor {
 
     private List<String> rowSpam = new ArrayList<String>();
 
-    private List<ColumnEditorJSON> columnEditorsJSON = new ArrayList<ColumnEditorJSON>();
+    private List<ColumnEditor> columnEditorsJSON = new ArrayList<ColumnEditor>();
 
-    public RowEditorJSON() {
+    public RowEditor() {
 
     }
 
-    public RowEditorJSON( List<String> rowSpam ) {
+    public RowEditor( List<String> rowSpam ) {
         this.rowSpam = rowSpam;
     }
 
-    public List<ColumnEditorJSON> getColumnEditorsJSON() {
+    public List<ColumnEditor> getColumnEditorsJSON() {
         return columnEditorsJSON;
     }
 
-    public void add( ColumnEditorJSON columnEditor ) {
+    public void add( ColumnEditor columnEditor ) {
         columnEditorsJSON.add( columnEditor );
     }
 

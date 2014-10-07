@@ -10,7 +10,7 @@ import javax.inject.Named;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.uberfire.perspective.editor.model.PerspectiveEditorJSON;
+import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditorPersistenceAPI;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
@@ -75,15 +75,15 @@ public class PerspectiveEditorPersistence implements PerspectiveEditorPersistenc
     }
 
     @Override
-    public PerspectiveEditorJSON load( String perspectiveName ) {
+    public PerspectiveEditor load( String perspectiveName ) {
         Path perspectiveFile = resolvePerspectivePath( perspectiveName );
         String fileContent = ioService.readAllString( perspectiveFile );
-        PerspectiveEditorJSON perspectiveEditorJSON = gson.fromJson( fileContent, PerspectiveEditorJSON.class );
+        PerspectiveEditor perspectiveEditorJSON = gson.fromJson( fileContent, PerspectiveEditor.class );
         return perspectiveEditorJSON;
     }
 
     @Override
-    public void save( PerspectiveEditorJSON perspectiveContent ) {
+    public void save( PerspectiveEditor perspectiveContent ) {
         Path perspectiveFile = resolvePerspectivePath( perspectiveContent.getName() );
         String json = gson.toJson( perspectiveContent );
         ioService.write( perspectiveFile, json );
@@ -91,9 +91,6 @@ public class PerspectiveEditorPersistence implements PerspectiveEditorPersistenc
 
     private Path resolvePerspectivePath( String perspectiveFile ) {
         Path perspectivePath = fileSystem.getPath( PERSPECTIVE_EDITOR );
-        if ( !ioService.exists( perspectivePath ) ) {
-            perspectivePath = ioService.createDirectories( perspectivePath );
-        }
         return perspectivePath.resolve( perspectiveFile );
     }
 

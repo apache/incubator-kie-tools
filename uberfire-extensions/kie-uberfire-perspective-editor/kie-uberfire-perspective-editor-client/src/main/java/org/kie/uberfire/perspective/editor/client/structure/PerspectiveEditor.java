@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import org.kie.uberfire.perspective.editor.model.PerspectiveEditorJSON;
 import org.kie.uberfire.perspective.editor.model.ScreenParameter;
 import org.kie.uberfire.perspective.editor.client.util.PerspectiveEditorJSONAdapter;
 import org.kie.uberfire.properties.editor.model.PropertyEditorChangeEvent;
@@ -54,7 +53,7 @@ public class PerspectiveEditor implements EditorWidget {
         rowEditors.remove( editorWidget );
     }
 
-    public PerspectiveEditorJSON toJSONStructure() {
+    public org.kie.uberfire.perspective.editor.model.PerspectiveEditor toJSONStructure() {
         PerspectiveEditorJSONAdapter adapter = new PerspectiveEditorJSONAdapter( this );
         return adapter.convertToJSON();
     }

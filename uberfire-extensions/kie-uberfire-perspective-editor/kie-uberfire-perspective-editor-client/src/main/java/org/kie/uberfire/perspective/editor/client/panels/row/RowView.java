@@ -16,19 +16,17 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.perspective.editor.model.ColumnEditorJSON;
-import org.kie.uberfire.perspective.editor.model.RowEditorJSON;
-import org.kie.uberfire.perspective.editor.model.ScreenEditorJSON;
+import org.kie.uberfire.perspective.editor.model.ColumnEditor;
+import org.kie.uberfire.perspective.editor.model.RowEditor;
+import org.kie.uberfire.perspective.editor.model.ScreenEditor;
 import org.kie.uberfire.perspective.editor.client.panels.components.ScreenView;
 import org.kie.uberfire.perspective.editor.client.panels.dnd.DropColumnPanel;
-import org.kie.uberfire.perspective.editor.client.structure.ColumnEditor;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor;
-import org.kie.uberfire.perspective.editor.client.structure.RowEditor;
 
 public class RowView extends Composite {
 
-    private RowEditor row;
+    private org.kie.uberfire.perspective.editor.client.structure.RowEditor row;
 
     @UiField
     FluidContainer fluidContainer;
@@ -46,7 +44,7 @@ public class RowView extends Composite {
     public RowView( PerspectiveEditor parent ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.editorWidget = parent;
-        this.row = new RowEditor( parent, fluidContainer, "12" );
+        this.row = new org.kie.uberfire.perspective.editor.client.structure.RowEditor( parent, fluidContainer, "12" );
         build();
     }
 
@@ -54,47 +52,47 @@ public class RowView extends Composite {
                     String rowSpamString ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.editorWidget = parent;
-        this.row = new RowEditor( parent, fluidContainer, rowSpamString );
+        this.row = new org.kie.uberfire.perspective.editor.client.structure.RowEditor( parent, fluidContainer, rowSpamString );
         build();
     }
 
-    public RowView( ColumnEditor parent,
+    public RowView( org.kie.uberfire.perspective.editor.client.structure.ColumnEditor parent,
                     String rowSpamString ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.editorWidget = parent;
-        this.row = new RowEditor( parent, fluidContainer, rowSpamString );
+        this.row = new org.kie.uberfire.perspective.editor.client.structure.RowEditor( parent, fluidContainer, rowSpamString );
         build();
 
     }
 
     public RowView( PerspectiveEditor parent,
-                    RowEditorJSON rowEditor ) {
+                    RowEditor rowEditor ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.editorWidget = parent;
-        this.row = new RowEditor( parent, fluidContainer, rowEditor.getRowSpam() );
+        this.row = new org.kie.uberfire.perspective.editor.client.structure.RowEditor( parent, fluidContainer, rowEditor.getRowSpam() );
         reload( rowEditor.getColumnEditorsJSON() );
     }
 
-    private RowView( ColumnEditor parent,
+    private RowView( org.kie.uberfire.perspective.editor.client.structure.ColumnEditor parent,
                      List<String> rowSpans ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.editorWidget = parent;
-        this.row = new RowEditor( parent, fluidContainer, rowSpans );
+        this.row = new org.kie.uberfire.perspective.editor.client.structure.RowEditor( parent, fluidContainer, rowSpans );
         build();
 
     }
 
-    private FluidRow generateColumns( List<ColumnEditorJSON> columnEditors ) {
+    private FluidRow generateColumns( List<ColumnEditor> columnEditors ) {
         FluidRow rowWidget = new FluidRow();
         rowWidget.getElement().getStyle().setProperty( "marginBottom", "15px" );
 
-        for ( ColumnEditorJSON columnEditor : columnEditors ) {
+        for ( ColumnEditor columnEditor : columnEditors ) {
             Column column = createColumn( columnEditor.getSpan() );
-            ColumnEditor parent = new ColumnEditor( row, column, columnEditor.getSpan() );
-            for ( RowEditorJSON editor : columnEditor.getRows() ) {
+            org.kie.uberfire.perspective.editor.client.structure.ColumnEditor parent = new org.kie.uberfire.perspective.editor.client.structure.ColumnEditor( row, column, columnEditor.getSpan() );
+            for ( RowEditor editor : columnEditor.getRows() ) {
                 column.add( new RowView( parent, editor.getRowSpam() ) );
             }
-            for ( ScreenEditorJSON editor : columnEditor.getScreens() ) {
+            for ( ScreenEditor editor : columnEditor.getScreens() ) {
                 //ederign bug puting a drop panel
                 column.add( new ScreenView( parent, editor.getParameters() ) );
             }
@@ -103,7 +101,7 @@ public class RowView extends Composite {
         return rowWidget;
     }
 
-    private void reload( List<ColumnEditorJSON> columnEditors ) {
+    private void reload( List<ColumnEditor> columnEditors ) {
         row.getWidget().add( generateHeaderRow() );
         row.getWidget().add( generateColumns( columnEditors ) );
     }
@@ -126,7 +124,7 @@ public class RowView extends Composite {
     private Column createColumn( String span ) {
         Column column = new Column( Integer.valueOf( span ) );
         column.add( generateLabel( "Column" ) );
-        ColumnEditor columnEditor = new ColumnEditor( row, column, span );
+        org.kie.uberfire.perspective.editor.client.structure.ColumnEditor columnEditor = new org.kie.uberfire.perspective.editor.client.structure.ColumnEditor( row, column, span );
         column.add( new DropColumnPanel( columnEditor ) );
         setCSS( column );
         return column;

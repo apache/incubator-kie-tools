@@ -4,56 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.uberfire.perspective.editor.model.ColumnEditorJSON;
-import org.kie.uberfire.perspective.editor.model.PerspectiveEditorJSON;
-import org.kie.uberfire.perspective.editor.model.RowEditorJSON;
-import org.kie.uberfire.perspective.editor.model.ScreenEditorJSON;
+import org.kie.uberfire.perspective.editor.model.ColumnEditor;
+import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
+import org.kie.uberfire.perspective.editor.model.RowEditor;
+import org.kie.uberfire.perspective.editor.model.ScreenEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenParameter;
-import org.kie.uberfire.perspective.editor.client.structure.ColumnEditor;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
-import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor;
-import org.kie.uberfire.perspective.editor.client.structure.RowEditor;
-import org.kie.uberfire.perspective.editor.client.structure.ScreenEditor;
 
 public class PerspectiveEditorJSONAdapter {
 
-    private final PerspectiveEditor perspectiveEditor;
+    private final org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor perspectiveEditor;
 
-    public PerspectiveEditorJSONAdapter( PerspectiveEditor perspectiveEditor ) {
+    public PerspectiveEditorJSONAdapter( org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor perspectiveEditor ) {
         this.perspectiveEditor = perspectiveEditor;
     }
 
-    public PerspectiveEditorJSON convertToJSON() {
-        PerspectiveEditorJSON perspectiveJSON = new PerspectiveEditorJSON( perspectiveEditor.getName());
+    public PerspectiveEditor convertToJSON() {
+        PerspectiveEditor perspectiveJSON = new PerspectiveEditor( perspectiveEditor.getName());
         extractRows( perspectiveEditor, perspectiveJSON );
         return perspectiveJSON;
     }
 
-    private void extractRows( PerspectiveEditor perspectiveEditor,
-                              PerspectiveEditorJSON perspectiveJSON ) {
+    private void extractRows( org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor perspectiveEditor,
+                              PerspectiveEditor perspectiveJSON ) {
         for ( EditorWidget genericEditor : perspectiveEditor.getRowEditors() ) {
-            RowEditor rowEditor = (RowEditor) genericEditor;
-            RowEditorJSON rowJSON = new RowEditorJSON( rowEditor.getRowSpans() );
+            org.kie.uberfire.perspective.editor.client.structure.RowEditor rowEditor = (org.kie.uberfire.perspective.editor.client.structure.RowEditor) genericEditor;
+            RowEditor rowJSON = new RowEditor( rowEditor.getRowSpans() );
             extractColumns( rowEditor, rowJSON );
             perspectiveJSON.addRowJSON( rowJSON );
         }
     }
 
-    private void extractRows( ColumnEditor columnEditor,
-                              ColumnEditorJSON columnEditorJSON ) {
+    private void extractRows( org.kie.uberfire.perspective.editor.client.structure.ColumnEditor columnEditor,
+                              ColumnEditor columnEditorJSON ) {
         for ( EditorWidget genericEditor : columnEditor.getChilds() ) {
-            RowEditor rowEditor = (RowEditor) genericEditor;
-            RowEditorJSON rowJSON = new RowEditorJSON( rowEditor.getRowSpans() );
+            org.kie.uberfire.perspective.editor.client.structure.RowEditor rowEditor = (org.kie.uberfire.perspective.editor.client.structure.RowEditor) genericEditor;
+            RowEditor rowJSON = new RowEditor( rowEditor.getRowSpans() );
             extractColumns( rowEditor, rowJSON );
             columnEditorJSON.addRowJSON( rowJSON );
         }
     }
 
-    private void extractColumns( RowEditor rowEditor,
-                                 RowEditorJSON rowJSON ) {
+    private void extractColumns( org.kie.uberfire.perspective.editor.client.structure.RowEditor rowEditor,
+                                 RowEditor rowJSON ) {
         for ( EditorWidget genericEditor : rowEditor.getColumnEditors() ) {
-            ColumnEditor columnEditor = (ColumnEditor) genericEditor;
-            ColumnEditorJSON columnEditorJSON = new ColumnEditorJSON( columnEditor.getSpan() );
+            org.kie.uberfire.perspective.editor.client.structure.ColumnEditor columnEditor = (org.kie.uberfire.perspective.editor.client.structure.ColumnEditor) genericEditor;
+            ColumnEditor columnEditorJSON = new ColumnEditor( columnEditor.getSpan() );
             if ( !columnEditor.getChilds().isEmpty() ) {
                 extractChilds( columnEditor, columnEditorJSON );
             }
@@ -61,28 +57,28 @@ public class PerspectiveEditorJSONAdapter {
         }
     }
 
-    private void extractChilds( ColumnEditor columnEditor,
-                                ColumnEditorJSON columnEditorJSON ) {
+    private void extractChilds( org.kie.uberfire.perspective.editor.client.structure.ColumnEditor columnEditor,
+                                ColumnEditor columnEditorJSON ) {
         //ederign
-        if ( columnEditor.getChilds().get( 0 ) instanceof RowEditor ) {
+        if ( columnEditor.getChilds().get( 0 ) instanceof org.kie.uberfire.perspective.editor.client.structure.RowEditor ) {
             extractRows( columnEditor, columnEditorJSON );
         }
-        if ( columnEditor.getChilds().get( 0 ) instanceof ScreenEditor ) {
+        if ( columnEditor.getChilds().get( 0 ) instanceof org.kie.uberfire.perspective.editor.client.structure.ScreenEditor ) {
             extractScreens( columnEditor, columnEditorJSON );
         }
     }
 
-    private void extractScreens( ColumnEditor columnEditor,
-                                 ColumnEditorJSON columnEditorJSON ) {
+    private void extractScreens( org.kie.uberfire.perspective.editor.client.structure.ColumnEditor columnEditor,
+                                 ColumnEditor columnEditorJSON ) {
         for ( EditorWidget genericEditor : columnEditor.getChilds() ) {
-            ScreenEditor screenEditor = (ScreenEditor) genericEditor;
+            org.kie.uberfire.perspective.editor.client.structure.ScreenEditor screenEditor = (org.kie.uberfire.perspective.editor.client.structure.ScreenEditor) genericEditor;
             List<ScreenParameter> parameteres = getScreenParameters(screenEditor);
-            ScreenEditorJSON screenEditorJSON = new ScreenEditorJSON( parameteres );
+            ScreenEditor screenEditorJSON = new ScreenEditor( parameteres );
             columnEditorJSON.addScreenJSON( screenEditorJSON );
         }
     }
 
-    public List<ScreenParameter> getScreenParameters( ScreenEditor screenEditor ) {
+    public List<ScreenParameter> getScreenParameters( org.kie.uberfire.perspective.editor.client.structure.ScreenEditor screenEditor ) {
 
         List<ScreenParameter> screenParameters  = new ArrayList<ScreenParameter>(  );
         Map<String, String> screenProperties = perspectiveEditor.getScreenProperties( screenEditor.hashCode() + "" );

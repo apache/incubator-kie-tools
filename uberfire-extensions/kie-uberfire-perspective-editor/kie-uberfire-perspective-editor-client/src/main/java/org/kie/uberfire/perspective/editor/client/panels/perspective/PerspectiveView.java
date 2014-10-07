@@ -9,11 +9,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.perspective.editor.model.PerspectiveEditorJSON;
-import org.kie.uberfire.perspective.editor.model.RowEditorJSON;
+import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
+import org.kie.uberfire.perspective.editor.model.RowEditor;
 import org.kie.uberfire.perspective.editor.client.panels.dnd.DropRowPanel;
 import org.kie.uberfire.perspective.editor.client.panels.row.RowView;
-import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor;
 
 @Dependent
 public class PerspectiveView extends Composite  {
@@ -24,7 +23,7 @@ public class PerspectiveView extends Composite  {
     private PerspectivePresenter presenter;
 
     @Inject
-    private PerspectiveEditor perspectiveEditor;
+    private org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor perspectiveEditor;
 
     public void init( PerspectivePresenter presenter ) {
         this.presenter = presenter;
@@ -37,18 +36,18 @@ public class PerspectiveView extends Composite  {
         container.add( new DropRowPanel( perspectiveEditor ) );
     }
 
-    public void loadPerspective( PerspectiveEditorJSON perspectiveEditorJSON ) {
+    public void loadPerspective( PerspectiveEditor perspectiveEditorJSON ) {
         container.clear();
         perspectiveEditor.setName( perspectiveEditorJSON.getName() );
         perspectiveEditor.setup( container );
-        for ( RowEditorJSON row : perspectiveEditorJSON.getRows() ) {
+        for ( RowEditor row : perspectiveEditorJSON.getRows() ) {
             container.add( new RowView( perspectiveEditor, row ) );
         }
         container.add( new DropRowPanel( perspectiveEditor ) );
 
     }
 
-    public PerspectiveEditor getPerspectiveEditor() {
+    public org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor getPerspectiveEditor() {
         return perspectiveEditor;
     }
 

@@ -14,7 +14,7 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "PerspectiveEditorPerspective", isDefault = true)
+@WorkbenchPerspective(identifier = "PerspectiveEditorPerspective", isDefault = false)
 public class PerspectiveEditorPerspective {
 
     @Perspective
