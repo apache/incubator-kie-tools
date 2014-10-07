@@ -152,7 +152,7 @@ public class PerspectiveEditorMainPresenter {
                                 addClickHandler( new ClickHandler() {
                                     @Override
                                     public void onClick( ClickEvent event ) {
-                                        perspectivePresenter.load( "file" );
+                                        perspectivePresenter.loadPopup();
                                     }
                                 } );
                             }
