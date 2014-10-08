@@ -73,6 +73,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-asset-mgmt-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>

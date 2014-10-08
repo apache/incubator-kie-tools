@@ -78,6 +78,10 @@ public interface ProjectEditorConstants
 
     String SaveSuccessful(String fileName);
 
+    String Build();
+
+    String BuildAndInstall();
+
     String BuildAndDeploy();
 
     String SaveBeforeBuildAndDeploy();
@@ -261,5 +265,15 @@ public interface ProjectEditorConstants
     String ProjectStructure();
 
     String InheritedFromAParentPOM();
+
+    String BuildProcessStarted();
+
+    String UserName();
+
+    String Password();
+
+    String ServerURL();
+
+    String FieldMandatory0( final String fieldName );
 
 }

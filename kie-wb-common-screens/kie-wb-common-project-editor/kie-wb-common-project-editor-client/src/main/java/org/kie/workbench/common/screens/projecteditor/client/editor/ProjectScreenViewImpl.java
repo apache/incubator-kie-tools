@@ -21,28 +21,33 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.model.Dependency;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.kie.uberfire.client.common.BusyIndicatorView;
+import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+
+import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 
 @ApplicationScoped
 public class ProjectScreenViewImpl
@@ -67,6 +72,7 @@ public class ProjectScreenViewImpl
     private ImportsWidgetPresenter importsWidgetPresenter;
     private MetadataWidget importsPageMetadata;
     private DependencyGrid dependencyGrid;
+    private Boolean supportDeployToRuntime = Boolean.TRUE;
 
     interface ProjectScreenViewImplBinder
             extends
@@ -84,6 +90,9 @@ public class ProjectScreenViewImpl
 
     @Inject
     BusyIndicatorView busyIndicatorView;
+
+    @Inject
+    DeploymentScreenPopupViewImpl deploymentScreenPopupView;
 
     public ProjectScreenViewImpl() {
     }
@@ -261,5 +270,55 @@ public class ProjectScreenViewImpl
     @Override
     public void showABuildIsAlreadyRunning() {
         ErrorPopup.showMessage(ProjectEditorResources.CONSTANTS.ABuildIsAlreadyRunning());
+    }
+
+    @Override
+    public DropdownButton getBuildOptionsButton() {
+        return new DropdownButton( ProjectEditorResources.CONSTANTS.BuildAndDeploy() ) {{
+            setSize( MINI );
+            setRightDropdown( true );
+            add( new NavLink( ProjectEditorResources.CONSTANTS.Build() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        ((ProjectScreenPresenter)presenter).triggerBuild();
+                    }
+                } );
+            }} );
+
+            add( new NavLink( ProjectEditorResources.CONSTANTS.BuildAndInstall() ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        ((ProjectScreenPresenter)presenter).triggerBuildAndInstall();
+                    }
+                } );
+            }} );
+            if (supportDeployToRuntime) {
+                add( new NavLink( ProjectEditorResources.CONSTANTS.BuildAndDeploy() ) {{
+                    addClickHandler( new ClickHandler() {
+                        @Override
+                        public void onClick( ClickEvent event ) {
+                            deploymentScreenPopupView.configure(new Command() {
+                                @Override
+                                public void execute() {
+                                    String username = deploymentScreenPopupView.getUsername();
+                                    String password = deploymentScreenPopupView.getPassword();
+                                    String serverURL = deploymentScreenPopupView.getServerURL();
+                                    ((ProjectScreenPresenter) presenter).triggerBuildAndDeploy(username, password, serverURL);
+                                    deploymentScreenPopupView.hide();
+                                }
+                            });
+                            deploymentScreenPopupView.show();
+                        }
+                    } );
+                }} );
+            }
+        }};
+    }
+
+    @Override
+    public void setDeployToRuntimeSetting(Boolean supports) {
+        this.supportDeployToRuntime = supports;
     }
 }

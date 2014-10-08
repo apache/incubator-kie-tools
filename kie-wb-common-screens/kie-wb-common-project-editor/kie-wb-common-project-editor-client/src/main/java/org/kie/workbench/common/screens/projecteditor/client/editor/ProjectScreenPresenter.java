@@ -20,27 +20,33 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
+import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.security.KieWorkbenchACL;
+import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
 import org.kie.workbench.common.widgets.client.popups.file.CommandWithFileNameAndCommitMessage;
@@ -63,7 +69,9 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.*;
@@ -79,6 +87,8 @@ public class ProjectScreenPresenter
 
     private ProjectNameValidator projectNameValidator;
 
+    private Repository repository;
+    private String branch = "master";
     private Project project;
     private ObservablePath pathToPomXML;
 
@@ -99,6 +109,10 @@ public class ProjectScreenPresenter
 
     private KieWorkbenchACL kieACL;
 
+    private Caller<AssetManagementService> assetManagementServices;
+
+    private DropdownButton buildOptions;
+
     public ProjectScreenPresenter() {
     }
 
@@ -113,9 +127,11 @@ public class ProjectScreenPresenter
                                    final ProjectNameValidator projectNameValidator,
                                    final PlaceManager placeManager,
                                    final BusyIndicatorView busyIndicatorView,
-                                   final KieWorkbenchACL kieACL ) {
+                                   final KieWorkbenchACL kieACL,
+                                   final Caller<AssetManagementService> assetManagementServices) {
         this.view = view;
         view.setPresenter( this );
+        view.setDeployToRuntimeSetting(ApplicationPreferences.getBooleanPref("support.runtime.deploy"));
 
         this.projectScreenService = projectScreenService;
         this.buildServiceCaller = buildServiceCaller;
@@ -124,12 +140,27 @@ public class ProjectScreenPresenter
         this.changeTitleWidgetEvent = changeTitleWidgetEvent;
         this.projectNameValidator = projectNameValidator;
         this.placeManager = placeManager;
+        this.assetManagementServices = assetManagementServices;
 
         this.busyIndicatorView = busyIndicatorView;
         this.kieACL = kieACL;
+        this.repository = workbenchContext.getActiveRepository();
+        this.buildOptions = view.getBuildOptionsButton();
+
         showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
 
         makeMenuBar();
+        adjustBuildOptions();
+    }
+
+    private boolean isRepositoryManaged(Repository repository) {
+        Boolean isRepositoryManaged = Boolean.FALSE;
+
+        if (repository.getEnvironment().containsKey("managed")) {
+            isRepositoryManaged = (Boolean) repository.getEnvironment().get("managed");
+        }
+
+        return isRepositoryManaged;
     }
 
     @OnStartup
@@ -139,6 +170,23 @@ public class ProjectScreenPresenter
 
     public void selectedPathChanged( @Observes final ProjectContextChangeEvent event ) {
         showCurrentProjectInfoIfAny( event.getProject() );
+        this.repository = event.getRepository();
+        if (event.getBranch() != null) {
+            this.branch = event.getBranch();
+        } else {
+            this.branch = repository.getCurrentBranch();
+        }
+        adjustBuildOptions();
+    }
+
+    private void adjustBuildOptions() {
+        if(isRepositoryManaged(repository)) {
+            buildOptions.getMenuWiget().getWidget(1).setVisible(true);
+            buildOptions.getMenuWiget().getWidget(2).setVisible(true);
+        } else {
+            buildOptions.getMenuWiget().getWidget(1).setVisible(false);
+            buildOptions.getMenuWiget().getWidget(2).setVisible(false);
+        }
     }
 
     private void showCurrentProjectInfoIfAny( final Project project ) {
@@ -151,7 +199,6 @@ public class ProjectScreenPresenter
 
     private void init() {
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-
         projectScreenService.call(
                 new RemoteCallback<ProjectScreenModel>() {
                     @Override
@@ -180,12 +227,12 @@ public class ProjectScreenPresenter
     }
 
     private void updateEditorTitle() {
-        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
+        changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(
                 placeRequest,
                 ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
                         model.getPOM().getGav().getArtifactId() + ":" +
                                 model.getPOM().getGav().getGroupId() + ":" +
-                                model.getPOM().getGav().getVersion() ) ) );
+                                model.getPOM().getGav().getVersion())));
     }
 
     private void setupPathToPomXML() {
@@ -247,10 +294,10 @@ public class ProjectScreenPresenter
     }
 
     private void disableMenus() {
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled(false);
+        menus.getItemsMap().get(FileMenuBuilder.MenuItems.RENAME).setEnabled(false);
         menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled(false);
     }
 
     private void reload() {
@@ -262,24 +309,36 @@ public class ProjectScreenPresenter
     private void makeMenuBar() {
         menus = MenuFactory
                 .newTopLevelMenu( CommonConstants.INSTANCE.Save() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_SAVE ) )
-                .respondsWith( getSaveCommand() )
+                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_SAVE))
+                .respondsWith(getSaveCommand())
                 .endMenu()
-                .newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_DELETE ) )
-                .respondsWith( getDeleteCommand() )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Delete())
+                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_DELETE))
+                .respondsWith(getDeleteCommand())
                 .endMenu()
-                .newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_RENAME ) )
-                .respondsWith( getRenameCommand() )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Rename())
+                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_RENAME))
+                .respondsWith(getRenameCommand())
                 .endMenu()
-                .newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_COPY ) )
-                .respondsWith( getCopyCommand() )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Copy())
+                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_COPY))
+                .respondsWith(getCopyCommand())
                 .endMenu()
-                .newTopLevelMenu( ProjectEditorResources.CONSTANTS.BuildAndDeploy() )
-                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_BUILDANDDEPLOY ) )
-                .respondsWith( getBuildCommand() ).endMenu().build();
+                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
+                    @Override
+                    public void push(MenuFactory.CustomMenuBuilder element) {
+                    }
+
+                    @Override
+                    public MenuItem build() {
+                        return new BaseMenuCustom<IsWidget>() {
+                            @Override
+                            public IsWidget build() {
+                                return buildOptions;
+                            }
+                        };
+                    }
+                }).endMenu().build();
     }
 
     private Command getDeleteCommand() {
@@ -417,7 +476,11 @@ public class ProjectScreenPresenter
             @Override
             public void execute() {
                 view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                build();
+                if (isRepositoryManaged(repository)) {
+                    buildOnly();
+                } else {
+                    build();
+                }
             }
         };
     }
@@ -432,8 +495,11 @@ public class ProjectScreenPresenter
                         view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
                         notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
                                                                        NotificationEvent.NotificationType.SUCCESS ) );
-
-                        build();
+                        if (isRepositoryManaged(repository)) {
+                            buildOnly();
+                        } else {
+                            build();
+                        }
                     }
                 } );
             }
@@ -444,6 +510,56 @@ public class ProjectScreenPresenter
         building = true;
         buildServiceCaller.call( getBuildSuccessCallback(),
                                  new BuildFailureErrorCallback( view ) ).buildAndDeploy( project );
+    }
+
+    private void buildOnly() {
+        building = true;
+        buildServiceCaller.call( getBuildSuccessCallback(),
+                new BuildFailureErrorCallback( view ) ).build( project );
+    }
+
+    public void triggerBuild() {
+        getBuildCommand().execute();
+    }
+
+    public void triggerBuildAndInstall() {
+        building = true;
+
+        assetManagementServices.call(new RemoteCallback<Long>() {
+                                         @Override
+                                         public void callback(Long taskId) {
+                                             notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                     NotificationEvent.NotificationType.SUCCESS));
+                                             view.hideBusyIndicator();
+                                             building = false;
+                                         }
+                                     }, new ErrorCallback<Message>() {
+                                         @Override
+                                         public boolean error(Message message, Throwable throwable) {
+                                             ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+                                             return true;
+                                         }
+                                     }).buildProject(repository.getAlias(), branch, project.getProjectName(), null, null, null, false);
+    }
+
+    public void triggerBuildAndDeploy(String username, String password, String serverURL) {
+        building = true;
+
+        assetManagementServices.call(new RemoteCallback<Long>() {
+                                         @Override
+                                         public void callback(Long taskId) {
+                                             notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                     NotificationEvent.NotificationType.SUCCESS));
+                                             view.hideBusyIndicator();
+                                             building = false;
+                                         }
+                                     }, new ErrorCallback<Message>() {
+                                         @Override
+                                         public boolean error(Message message, Throwable throwable) {
+                                             ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+                                             return true;
+                                         }
+                                     }).buildProject(repository.getAlias(), branch, project.getProjectName(), username, password, serverURL, true);
     }
 
     private Command getSaveCommand() {

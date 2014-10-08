@@ -18,13 +18,14 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.DropdownButton;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Dependency;
-import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,
@@ -82,4 +83,8 @@ public interface ProjectScreenView
     void switchBusyIndicator(String newMessage);
 
     void showABuildIsAlreadyRunning();
+
+    DropdownButton getBuildOptionsButton();
+
+    void setDeployToRuntimeSetting(Boolean supports);
 }

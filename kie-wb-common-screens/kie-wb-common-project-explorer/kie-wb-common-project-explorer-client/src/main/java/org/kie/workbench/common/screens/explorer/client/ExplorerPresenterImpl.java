@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Divider;
@@ -30,6 +31,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -80,6 +82,9 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     @Inject
     protected Caller<ExplorerService> explorerService;
 
+    @Inject
+    protected Event<ProjectContextChangeEvent> contextChangedEvent;
+
     private final NavLink businessView = new NavLink( ProjectExplorerConstants.INSTANCE.projectView() );
     private final NavLink techView = new NavLink( ProjectExplorerConstants.INSTANCE.repositoryView() );
     private final NavLink treeExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsFolders() );
@@ -119,6 +124,10 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
             public void onBranchSelected(String branch) {
                 businessViewPresenter.branchChanged(branch);
                 technicalViewPresenter.branchChanged(branch);
+
+                ProjectContextChangeEvent event = new ProjectContextChangeEvent(context.getActiveOrganizationalUnit(), context.getActiveRepository(), context.getActiveProject(), branch);
+
+                contextChangedEvent.fire(event);
             }
         };
 

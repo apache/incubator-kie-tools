@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.explorer.client.widgets;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.structure.repositories.Repository;
-
-import javax.inject.Inject;
 
 public class BranchSelector
         implements IsWidget, BranchSelectorView.Presenter {
