@@ -31,17 +31,23 @@
   <description>Kie Workbench - Common - Refactoring Support API</description>
 
   <dependencies>
-
     <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
