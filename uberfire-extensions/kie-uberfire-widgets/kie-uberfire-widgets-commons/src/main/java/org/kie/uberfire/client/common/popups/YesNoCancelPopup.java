@@ -63,7 +63,7 @@ public class YesNoCancelPopup extends KieBaseModal {
                                                 noCommand, noButtonText, noButtonType, noButtonIconType,
                                                 cancelCommand, cancelButtonText, cancelButtonType, cancelButtonIconType ) );
 
-        message.setHTML( SafeHtmlUtils.fromTrustedString( content ) );
+        message.setHTML( SafeHtmlUtils.fromTrustedString( content != null ? content : "" ) );
     }
 
     protected YesNoCancelPopup( final String title,
