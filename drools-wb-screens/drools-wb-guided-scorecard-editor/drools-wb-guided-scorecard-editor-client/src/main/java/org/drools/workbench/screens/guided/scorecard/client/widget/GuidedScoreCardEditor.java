@@ -700,14 +700,21 @@ public class GuidedScoreCardEditor extends Composite {
                                    String selectedField = "";
                                    if ( characteristic != null ) {
                                        selectedField = characteristic.getField();
-                                       selectedField = selectedField + " : " + characteristic.getDataType();
+                                       selectedField = selectedField + " : ";// + characteristic.getDataType();
                                    }
 
                                    dropDownFields.clear();
                                    for ( final String field : eligibleFieldsForSelectedFactType ) {
                                        dropDownFields.addItem( field );
                                    }
-                                   final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( selectedField );
+                                   int selectedFieldIndex = -1;
+                                   for (String availableFactType : eligibleFieldsForSelectedFactType ){
+                                       selectedFieldIndex++;
+                                       //availableFactType is in format "fieldname : dataType"
+                                       if (availableFactType.toLowerCase().startsWith(selectedField.toLowerCase())) {
+                                           break;
+                                       }
+                                   }
                                    dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
                                }
                            } );
