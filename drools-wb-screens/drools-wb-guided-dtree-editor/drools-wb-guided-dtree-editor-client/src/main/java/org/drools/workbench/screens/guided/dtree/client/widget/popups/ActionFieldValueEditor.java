@@ -87,7 +87,7 @@ public class ActionFieldValueEditor extends Composite {
                                    final ActionFieldValue afv,
                                    final List<ActionFieldValue> afvs,
                                    final AsyncPackageDataModelOracle oracle,
-                                   final CommandWithPayload<ActionFieldValue> onDeleteCallback) {
+                                   final CommandWithPayload<ActionFieldValue> onDeleteCallback ) {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         this.className = className;
@@ -152,10 +152,11 @@ public class ActionFieldValueEditor extends Composite {
                                                                  afv.getFieldName(),
                                                                  afv,
                                                                  oracle,
-                                                                 false,
                                                                  false );
+        valueHolder.clear();
         if ( editor != null ) {
             valueHolder.setWidget( editor );
+            //This is a hack to ensure multiple rows have the same spacing
             editor.getElement().getStyle().setMarginBottom( 10,
                                                             Style.Unit.PX );
         }

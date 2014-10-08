@@ -28,13 +28,12 @@ public abstract class ValueEditorFactory {
                                   final String fieldName,
                                   final HasValue hasValue,
                                   final AsyncPackageDataModelOracle oracle,
-                                  final boolean isList,
                                   final boolean isMultipleSelect ) {
         String dataType = oracle.getFieldType( className,
                                                fieldName );
 
         //Operators "contained in" and "not contained in" fallback to Strings
-        if ( isList ) {
+        if ( isMultipleSelect ) {
             dataType = DataType.TYPE_STRING;
         }
 

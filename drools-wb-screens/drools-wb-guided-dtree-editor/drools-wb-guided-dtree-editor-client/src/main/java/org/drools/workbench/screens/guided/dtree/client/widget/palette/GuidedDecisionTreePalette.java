@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.Accordion;
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
@@ -145,15 +146,18 @@ public class GuidedDecisionTreePalette extends Accordion {
                                                                      isReadOnly );
 
                                             for ( ModelField mf : mfs ) {
-                                                final ConstraintNode cn = new ConstraintNodeImpl( className,
-                                                                                                  mf.getName(),
-                                                                                                  "",
-                                                                                                  new StringValue( "" ) );
-                                                paletteGroup.addStencil( constraintNodeFactory,
-                                                                         stencilBuilder,
-                                                                         new ConstraintFactoryHelper( cn,
-                                                                                                      isReadOnly ),
-                                                                         isReadOnly );
+                                                final String fieldName = mf.getName();
+                                                if ( !fieldName.equals( DataType.TYPE_THIS ) ) {
+                                                    final ConstraintNode cn = new ConstraintNodeImpl( className,
+                                                                                                      fieldName,
+                                                                                                      "",
+                                                                                                      new StringValue( "" ) );
+                                                    paletteGroup.addStencil( constraintNodeFactory,
+                                                                             stencilBuilder,
+                                                                             new ConstraintFactoryHelper( cn,
+                                                                                                          isReadOnly ),
+                                                                             isReadOnly );
+                                                }
                                             }
                                         }
                                     } );
