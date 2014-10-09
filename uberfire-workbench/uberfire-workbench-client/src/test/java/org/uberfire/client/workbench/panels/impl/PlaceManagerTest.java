@@ -635,6 +635,50 @@ public class PlaceManagerTest {
         verify( selectWorkbenchPartEvent ).fire( refEq( new SelectPlaceEvent( kansas ) ) );
     }
 
+    @Test
+    public void testClosingActivityInCustomPanel() throws Exception {
+        PanelDefinition customPanelDef = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        when( panelManager.addCustomPanel( any( HasWidgets.class ),
+                                               eq( StaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
+        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( null );
+        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+
+        HasWidgets customContainer = mock( HasWidgets.class );
+
+        placeManager.goTo( emeraldCityPlace, customContainer );
+        placeManager.closePlace( emeraldCityPlace );
+
+        assertTrue( customPanelDef.getParts().isEmpty() );
+        verify( panelManager ).removeWorkbenchPanel( customPanelDef );
+    }
+
+    @Test
+    public void testClosingAllPlacesIncludesCustomPanels() throws Exception {
+        PanelDefinition customPanelDef = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        when( panelManager.addCustomPanel( any( HasWidgets.class ),
+                                               eq( StaticWorkbenchPanelPresenter.class.getName() ) ) ).thenReturn( customPanelDef );
+
+        PlaceRequest emeraldCityPlace = new DefaultPlaceRequest( "emerald_city" );
+        WorkbenchScreenActivity emeraldCityActivity = mock( WorkbenchScreenActivity.class );
+        when( emeraldCityActivity.onMayClose() ).thenReturn( true );
+        when( emeraldCityActivity.preferredWidth() ).thenReturn( 555 );
+        when( emeraldCityActivity.preferredHeight() ).thenReturn( null );
+        when( activityManager.getActivities( emeraldCityPlace ) ).thenReturn( singleton( (Activity) emeraldCityActivity ) );
+
+        HasWidgets customContainer = mock( HasWidgets.class );
+
+        placeManager.goTo( emeraldCityPlace, customContainer );
+        placeManager.closeAllPlaces();
+
+        assertTrue( customPanelDef.getParts().isEmpty() );
+        verify( panelManager ).removeWorkbenchPanel( customPanelDef );
+    }
+
     // TODO test going to an unresolvable/unknown place
 
     // TODO test going to a place with a specific target panel (part of the PerspectiveManager/PlaceManager contract)

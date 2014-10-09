@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.wbtest.client.panels.custom.CustomPanelMakerScreen;
+import org.uberfire.wbtest.client.perspective.ListPerspectiveActivity;
 
 
 public class CustomPanelTest extends AbstractSeleniumTest {
@@ -47,6 +48,35 @@ public class CustomPanelTest extends AbstractSeleniumTest {
         assertFalse( screen.customPopupExistsInDom( id ) );
         assertEquals( 0, screen.getLiveInstanceCount() );
         assertEquals( 1, screen.getTotalInstanceCount() );
+    }
+
+    @Test
+    public void liveCustomPanelsShouldNotBreakPerspectiveSwitching() throws Exception {
+        screen.createCustomPopup();
+
+        driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
+
+        // if this times out, the perspective switch failed
+        driver.manage().timeouts().implicitlyWait( 2, TimeUnit.SECONDS );
+        new ResizeWidgetWrapper( driver, "listPerspectiveDefault" ).find();
+
+        // TODO activity lifecycle bulletproofing (coming soon!) will defeat this test.
+        // all tests should check for errors in their teardown (this should be done in the abstract UF test class)
+    }
+
+    @Test
+    public void removedCustomPanelsShouldNotBreakPerspectiveSwitching() throws Exception {
+        screen.createCustomPopup();
+        screen.closeLatestPopupUsingPlaceManager();
+
+        driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
+
+        // if this times out, the perspective switch failed
+        driver.manage().timeouts().implicitlyWait( 2, TimeUnit.SECONDS );
+        new ResizeWidgetWrapper( driver, "listPerspectiveDefault" ).find();
+
+        // TODO activity lifecycle bulletproofing (coming soon!) will defeat this test.
+        // all tests should check for errors in their teardown (this should be done in the abstract UF test class)
     }
 
 }

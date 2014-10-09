@@ -69,6 +69,9 @@ implements PlaceManager {
     /** Places that are currently open in the current perspective. */
     private final Map<PlaceRequest, PartDefinition> visibleWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
 
+    /** Custom panels we have opened but not yet closed. */
+    private final Map<PlaceRequest, PanelDefinition> customPanels = new HashMap<PlaceRequest, PanelDefinition>();
+
     private final Map<PlaceRequest, Command> onOpenCallbacks = new HashMap<PlaceRequest, Command>();
 
     private EventBus tempBus = null;
@@ -173,6 +176,7 @@ implements PlaceManager {
             goTo( place, null, Commands.DO_NOTHING );
         } else {
             PanelDefinition adoptedPanel = panelManager.addCustomPanel( addTo, StaticWorkbenchPanelPresenter.class.getName() );
+            customPanels.put( place, adoptedPanel );
             goTo( place, adoptedPanel, Commands.DO_NOTHING );
         }
     }
@@ -689,6 +693,13 @@ implements PlaceManager {
         visibleWorkbenchParts.remove( place );
 
         activityManager.destroyActivity( activity );
+
+        // currently, we force all custom panels as Static panels, so they can only ever contain the one part we put in them.
+        // we are responsible for cleaning them up when their place closes.
+        PanelDefinition customPanelDef = customPanels.remove( place );
+        if ( customPanelDef != null ) {
+            panelManager.removeWorkbenchPanel( customPanelDef );
+        }
 
         if ( place instanceof PathPlaceRequest ) {
             ( (PathPlaceRequest) place ).getPath().dispose();

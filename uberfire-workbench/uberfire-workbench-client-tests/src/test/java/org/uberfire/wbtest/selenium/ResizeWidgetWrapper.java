@@ -23,7 +23,11 @@ public class ResizeWidgetWrapper {
         this.id = id;
     }
 
-    private WebElement find() {
+    /**
+     * Searches the DOM for the resize widget having the ID this wrapper cares about. Throws a timeout exception if the
+     * widget is not found within the driver's current implicit wait period.
+     */
+    public WebElement find() {
         return driver.findElement( By.id( "gwt-debug-ResizeTestWidget-" + id ) );
     }
 
