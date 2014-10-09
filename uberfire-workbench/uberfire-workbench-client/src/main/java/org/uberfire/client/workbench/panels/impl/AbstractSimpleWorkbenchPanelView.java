@@ -65,6 +65,7 @@ extends AbstractDockingWorkbenchPanelView<P> {
     @Override
     public void init( final P presenter ) {
         this.presenter = presenter;
+        listBar.setPresenter( presenter );
     }
 
     @Override

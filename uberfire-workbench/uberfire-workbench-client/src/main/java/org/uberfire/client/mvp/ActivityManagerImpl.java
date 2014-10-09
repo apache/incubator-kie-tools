@@ -33,6 +33,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -51,6 +52,9 @@ public class ActivityManagerImpl implements ActivityManager {
 
     @Inject
     private User identity;
+
+    @Inject
+    private ActivityLifecycleErrorHandler lifecycleErrorHandler;
 
     /**
      * Activities in this set have had their {@link Activity#onStartup(PlaceRequest)} method called and have not been
@@ -139,7 +143,11 @@ public class ActivityManagerImpl implements ActivityManager {
     public void destroyActivity( final Activity activity ) {
         if ( startedActivities.remove( activity ) != null ) {
             boolean isDependentScope = getBeanScope( activity ) == Dependent.class;
-            activity.onShutdown();
+            try {
+                activity.onShutdown();
+            } catch ( Exception ex ) {
+                lifecycleErrorHandler.handle( activity, LifecyclePhase.SHUTDOWN, ex );
+            }
             if ( isDependentScope ) {
                 iocManager.destroyBean( activity );
             }
@@ -210,18 +218,36 @@ public class ActivityManagerImpl implements ActivityManager {
 
     private <T extends Activity> T startIfNecessary( T activity, PlaceRequest place ) {
         if (activity == null) return null;
-        if ( !startedActivities.containsKey( activity ) ) {
-            activity.onStartup( place );
-            startedActivities.put( activity, place );
+        try {
+            if ( !startedActivities.containsKey( activity ) ) {
+                startedActivities.put( activity, place );
+                activity.onStartup( place );
+            }
+            return activity;
+        } catch ( Exception ex ) {
+            lifecycleErrorHandler.handle( activity, LifecyclePhase.STARTUP, ex );
+            destroyActivity( activity );
+            return null;
         }
-        return activity;
     }
 
+    /**
+     * Starts the activities in the given set. If any are null or throw an exception from their <code>onStartup()</code>
+     * method, they will not appear in the returned set.
+     *
+     * @param activities
+     * @param place
+     * @return
+     */
     private Set<Activity> startIfNecessary( Set<Activity> activities, PlaceRequest place ) {
+        Set<Activity> validatedActivities = new HashSet<Activity>();
         for ( Activity activity : activities ) {
-            startIfNecessary( activity, place );
+            Activity validated = startIfNecessary( activity, place );
+            if ( validated != null ) {
+                validatedActivities.add( validated );
+            }
         }
-        return activities;
+        return validatedActivities;
     }
 
     /**

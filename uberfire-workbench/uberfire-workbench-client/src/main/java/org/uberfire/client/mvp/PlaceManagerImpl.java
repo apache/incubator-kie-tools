@@ -35,6 +35,7 @@ import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.menu.MenuSplashList;
+import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
@@ -99,6 +100,9 @@ implements PlaceManager {
 
     @Inject
     private PerspectiveManager perspectiveManager;
+
+    @Inject
+    private ActivityLifecycleErrorHandler lifecycleErrorHandler;
 
     /**
      * Splash screens that have intercepted some other activity which is currently part of the workbench. Each of these
@@ -460,9 +464,9 @@ implements PlaceManager {
     }
 
     /**
-     * Finds and opens the splash screen for the given place, if such a splash screen exists. The splash screen may not
-     * actually display; each splash screen keeps track of its own preference setting for whether or not the user wants
-     * to see it.
+     * Finds and opens the splash screen for the given place, if such a splash screen exists. The splash screen might
+     * not actually display; each splash screen keeps track of its own preference setting for whether or not the user
+     * wants to see it.
      * <p>
      * Whether or not it chooses to display itself, the splash screen will be recorded in
      * {@link #availableSplashScreens} for lookup (for example, see {@link MenuSplashList}) and later disposal.
@@ -476,7 +480,14 @@ implements PlaceManager {
         final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
         if ( splashScreen != null ) {
             availableSplashScreens.put( place.getIdentifier(), splashScreen );
-            splashScreen.onOpen();
+            try {
+                splashScreen.onOpen();
+            } catch ( Exception ex ) {
+                availableSplashScreens.remove( place.getIdentifier() );
+                lifecycleErrorHandler.handle( splashScreen, LifecyclePhase.OPEN, ex );
+                activityManager.destroyActivity( splashScreen );
+                return;
+            }
             newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
         }
     }
@@ -492,7 +503,11 @@ implements PlaceManager {
     private void closeSplashScreen( final PlaceRequest place ) {
         SplashScreenActivity splashScreenActivity = availableSplashScreens.remove( place.getIdentifier() );
         if ( splashScreenActivity != null ) {
-            splashScreenActivity.onClose();
+            try {
+                splashScreenActivity.onClose();
+            } catch ( Exception ex ) {
+                lifecycleErrorHandler.handle( splashScreenActivity, LifecyclePhase.CLOSE, ex );
+            }
             activityManager.destroyActivity( splashScreenActivity );
             newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
         }
@@ -587,7 +602,13 @@ implements PlaceManager {
                                        activity.preferredWidth(),
                                        activity.preferredHeight() );
         addSplashScreenFor( place );
-        activity.onOpen();
+
+        try {
+            activity.onOpen();
+        } catch ( Exception ex ) {
+            lifecycleErrorHandler.handle( activity, LifecyclePhase.OPEN, ex );
+            closePlace( place );
+        }
     }
 
     private void launchPopupActivity( final PlaceRequest place,
@@ -600,7 +621,13 @@ implements PlaceManager {
         getPlaceHistoryHandler().onPlaceChange( place );
 
         activePopups.put( place.getIdentifier(), activity );
-        activity.onOpen();
+
+        try {
+            activity.onOpen();
+        } catch ( Exception ex ) {
+            activePopups.remove( place.getIdentifier() );
+            lifecycleErrorHandler.handle( activity, LifecyclePhase.OPEN, ex );
+        }
     }
 
     private void launchPerspectiveActivity( final PlaceRequest place,
@@ -617,6 +644,23 @@ implements PlaceManager {
         perspectiveManager.savePerspectiveState( new Command() {
             @Override
             public void execute() {
+
+                // first try to open the new perspective, so we can avoid leaving the user on a blank screen
+                // if the onOpen() method fails
+                try {
+                    activity.onOpen();
+                } catch ( Exception ex ) {
+                    lifecycleErrorHandler.handle( activity, LifecyclePhase.OPEN, ex );
+                    try {
+                        activity.onClose();
+                    } catch ( Exception ex2 ) {
+                        // not unexpected; probably happened because onOpen failed to complete
+                    }
+                    existingWorkbenchActivities.remove( place );
+                    activityManager.destroyActivity( activity );
+                    return;
+                }
+
                 if ( closeAllCurrentPanels() ) {
 
                     closeAllSplashScreens();
@@ -626,7 +670,11 @@ implements PlaceManager {
                         @Override
                         public void execute( PerspectiveDefinition perspectiveDef ) {
                             if ( oldPerspectiveActivity != null ) {
-                                oldPerspectiveActivity.onClose();
+                                try {
+                                    oldPerspectiveActivity.onClose();
+                                } catch ( Exception ex ) {
+                                    lifecycleErrorHandler.handle( oldPerspectiveActivity, LifecyclePhase.CLOSE, ex );
+                                }
                                 existingWorkbenchActivities.remove( oldPerspectiveActivity.getPlace() );
                                 activityManager.destroyActivity( oldPerspectiveActivity );
                             }
@@ -634,8 +682,18 @@ implements PlaceManager {
                             doWhenFinished.execute();
                         }
                     };
-                    activity.onOpen();
+
                     perspectiveManager.switchToPerspective( activity, closeOldPerspectiveOpenPartsAndExecuteChainedCallback );
+
+                } else {
+
+                    // some panels didn't want to close, so not going to launch new perspective. clean up its activity.
+                    try {
+                        activity.onClose();
+                    } catch ( Exception ex ) {
+                        lifecycleErrorHandler.handle( activity, LifecyclePhase.OPEN, ex );
+                    }
+                    activityManager.destroyActivity( activity );
                 }
             }
         } );
@@ -674,24 +732,32 @@ implements PlaceManager {
             WorkbenchActivity activity1 = (WorkbenchActivity) activity;
             if ( force || onMayCloseList.containsKey( place ) || activity1.onMayClose() ) {
                 onMayCloseList.remove( place );
-                activity1.onClose();
+                try {
+                    activity1.onClose();
+                } catch ( Exception ex ) {
+                    lifecycleErrorHandler.handle( activity1, LifecyclePhase.CLOSE, ex );
+                }
             } else {
                 return;
             }
         } else if ( activity instanceof PopupActivity ) {
             PopupActivity activity1 = (PopupActivity) activity;
             if ( force || activity1.onMayClose() ) {
-                activity1.onClose();
+                try {
+                    activity1.onClose();
+                } catch ( Exception ex ) {
+                    lifecycleErrorHandler.handle( activity1, LifecyclePhase.CLOSE, ex );
+                }
             } else {
                 return;
             }
         }
 
         workbenchPartCloseEvent.fire( new ClosePlaceEvent( place ) );
+
         panelManager.removePartForPlace( place );
         existingWorkbenchActivities.remove( place );
         visibleWorkbenchParts.remove( place );
-
         activityManager.destroyActivity( activity );
 
         // currently, we force all custom panels as Static panels, so they can only ever contain the one part we put in them.

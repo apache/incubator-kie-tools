@@ -13,7 +13,16 @@ import com.google.gwt.user.client.Timer;
 
 public abstract class AbstractUberFireGwtTest extends AbstractErraiCDITest {
 
-    boolean debugAsyncTesting = false;
+    /**
+     * If set to true (eg. by a subclass) then the async polling logic in the {@link #pollWhile(Predicate)} system will
+     * log status updates to System.out.
+     */
+    protected boolean debugAsyncTesting = false;
+
+    @Override
+    public String getModuleName() {
+        return "org.uberfire.wbtest.UberFireClientGwtTest";
+    }
 
     @Override
     protected void gwtSetUp() throws Exception {
@@ -63,7 +72,7 @@ public abstract class AbstractUberFireGwtTest extends AbstractErraiCDITest {
                                     schedule( 0 );
                                 } else if ( next instanceof Predicate ) {
                                     debugPrint("Testing intermediate predicate");
-                                    if ( predicate.apply( null ) ) {
+                                    if ( ((Predicate<?>) next).apply( null ) ) {
                                         debugPrint("Intermediate predicate is true. Will try again in 500ms.");
                                         chain.previous();
                                         schedule( 500 );

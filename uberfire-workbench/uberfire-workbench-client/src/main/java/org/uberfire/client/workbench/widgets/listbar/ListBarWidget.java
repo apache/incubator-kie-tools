@@ -161,7 +161,6 @@ extends ResizeComposite implements MultiPartWidget {
     Pair<PartDefinition, FlowPanel> currentPart;
 
     public ListBarWidget() {
-
         initWidget( uiBinder.createAndBindUi( this ) );
 
         setup( true, true );
@@ -267,6 +266,8 @@ extends ResizeComposite implements MultiPartWidget {
         Layouts.setToFillParent( panel );
         panel.add( view );
         content.add( panel );
+
+        // IMPORTANT! if you change what goes in this map, update the remove(PartDefinition) method
         partContentView.put( partDefinition, panel );
 
         final Widget title = buildTitle( view.getPresenter().getTitle() );
@@ -382,7 +383,11 @@ extends ResizeComposite implements MultiPartWidget {
         }
 
         boolean removed = parts.remove( part );
-        partContentView.remove( part );
+        FlowPanel view = partContentView.remove( part );
+        if ( view != null ) {
+            // FIXME null check should not be necessary, but sometimes the entry in partContentView is missing!
+            content.remove( view );
+        }
         partTitle.remove( part );
         setupDropdown();
 
