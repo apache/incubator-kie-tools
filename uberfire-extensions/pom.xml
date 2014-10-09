@@ -32,6 +32,7 @@
   <name>KIE Extensions to UberFire Framework</name>
 
   <modules>
+    <module>kie-uberfire-security</module>
     <module>kie-uberfire-metadata</module>
     <module>kie-uberfire-widgets</module>
     <module>kie-uberfire-social-activities</module>
