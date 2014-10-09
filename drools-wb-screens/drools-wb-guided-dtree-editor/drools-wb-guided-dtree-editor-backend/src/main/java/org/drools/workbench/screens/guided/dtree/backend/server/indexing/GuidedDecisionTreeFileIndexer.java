@@ -19,7 +19,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeXMLPersistence;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
@@ -27,6 +28,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.kie.uberfire.metadata.engine.Indexer;
 import org.kie.uberfire.metadata.model.KObject;
 import org.kie.uberfire.metadata.model.KObjectKey;
+import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -35,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.workbench.type.FileNameUtil;
 
 @ApplicationScoped
 public class GuidedDecisionTreeFileIndexer implements Indexer {
@@ -49,11 +52,14 @@ public class GuidedDecisionTreeFileIndexer implements Indexer {
     protected KieProjectService projectService;
 
     @Inject
-    protected GuidedDTreeResourceTypeDefinition type;
+    private DataModelService dataModelService;
+
+    @Inject
+    private GuidedDTreeResourceTypeDefinition resourceType;
 
     @Override
     public boolean supportsPath( final Path path ) {
-        return type.accept( Paths.convert( path ) );
+        return resourceType.accept( Paths.convert( path ) );
     }
 
     @Override
@@ -61,8 +67,15 @@ public class GuidedDecisionTreeFileIndexer implements Indexer {
         KObject index = null;
 
         try {
-            final String content = ioService.readAllString( path );
-            final GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( content );
+            final org.uberfire.backend.vfs.Path _path = Paths.convert( path );
+            final String drl = ioService.readAllString( path );
+            final String baseFileName = FileNameUtil.removeExtension( _path,
+                                                                      resourceType );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( _path );
+
+            final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                       baseFileName,
+                                                                                                       oracle );
 
             final Project project = projectService.resolveProject( Paths.convert( path ) );
             final Package pkg = projectService.resolvePackage( Paths.convert( path ) );

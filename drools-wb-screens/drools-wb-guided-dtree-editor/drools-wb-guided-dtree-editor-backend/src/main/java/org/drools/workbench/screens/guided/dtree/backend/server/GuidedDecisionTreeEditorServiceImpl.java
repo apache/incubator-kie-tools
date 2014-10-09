@@ -27,16 +27,11 @@ import javax.inject.Named;
 
 import com.google.common.base.Charsets;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeXMLPersistence;
+import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ConstraintNodeImpl;
-import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
-import org.drools.workbench.models.guided.dtree.shared.model.values.impl.IntegerValue;
-import org.drools.workbench.models.guided.dtree.shared.model.values.impl.StringValue;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
+import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
@@ -65,6 +60,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
+import org.uberfire.workbench.type.FileNameUtil;
 
 @Service
 @ApplicationScoped
@@ -82,6 +78,9 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    private GuidedDTreeResourceTypeDefinition resourceType;
 
     @Inject
     private MetadataService metadataService;
@@ -128,7 +127,7 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             }
 
             ioService.write( nioPath,
-                             GuidedDecisionTreeXMLPersistence.getInstance().marshal( content ),
+                             GuidedDecisionTreeDRLPersistence.getInstance().marshal( content ),
                              makeCommentedOption( comment ) );
 
             return newPath;
@@ -144,34 +143,14 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             final String content = ioService.readAllString( Paths.convert( path ) );
 
             //Mock code testing marshalling
-            final GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( content );
-            final TypeNode type = new TypeNodeImpl( "Person" );
-            final ConstraintNode c1 = new ConstraintNodeImpl( "Person",
-                                                              "name",
-                                                              "==",
-                                                              new StringValue( "Michael" ) );
-            final ConstraintNode c2 = new ConstraintNodeImpl( "Person",
-                                                              "name",
-                                                              "==",
-                                                              new StringValue( "Fred" ) );
-            final ConstraintNode c3 = new ConstraintNodeImpl( "Person",
-                                                              "age",
-                                                              "==",
-                                                              new IntegerValue( 20 ) );
-            final ConstraintNode c4 = new ConstraintNodeImpl( "Person",
-                                                              "age",
-                                                              "==",
-                                                              new IntegerValue( 30 ) );
-
-            model.setRoot( type );
-            type.getChildren().add( c1 );
-            type.getChildren().add( c2 );
-            c1.getChildren().add( c3 );
-            c1.getChildren().add( c4 );
-
+            final String drl = ioService.readAllString( Paths.convert( path ) );
+            final String baseFileName = FileNameUtil.removeExtension( path,
+                                                                      resourceType );
+            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                       baseFileName,
+                                                                                                       oracle );
             return model;
-
-//            return GuidedDTreeXMLPersistence.getInstance().unmarshal( content );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
@@ -237,7 +216,7 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             model.setPackageName( packageName );
 
             ioService.write( Paths.convert( resource ),
-                             GuidedDecisionTreeXMLPersistence.getInstance().marshal( model ),
+                             GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ),
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
@@ -307,7 +286,7 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
         try {
             return genericValidator.validate( path,
                                               new ByteArrayInputStream(
-                                                      GuidedDecisionTreeXMLPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
+                                                      GuidedDecisionTreeDRLPersistence.getInstance().marshal( content ).getBytes( Charsets.UTF_8 )
                                               ),
                                               FILTER_JAVA,
                                               FILTER_DRL,

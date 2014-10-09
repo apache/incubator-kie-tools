@@ -20,7 +20,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeXMLPersistence;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.backend.file.RenameHelper;
@@ -65,8 +66,14 @@ public class GuidedDecisionTreeEditorRenameHelper implements RenameHelper {
                              final Path destination ) {
         //Load existing file
         final org.uberfire.java.nio.file.Path _destination = Paths.convert( destination );
-        final String content = ioService.readAllString( Paths.convert( destination ) );
-        final GuidedDecisionTree model = GuidedDecisionTreeXMLPersistence.getInstance().unmarshal( content );
+        final String drl = ioService.readAllString( Paths.convert( destination ) );
+        final String baseFileName = FileNameUtil.removeExtension( source,
+                                                                  resourceType );
+        final PackageDataModelOracle oracle = dataModelService.getDataModel( source );
+
+        final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
+                                                                                                   baseFileName,
+                                                                                                   oracle );
 
         //Update tree name
         final String treeName = FileNameUtil.removeExtension( destination,
@@ -75,7 +82,7 @@ public class GuidedDecisionTreeEditorRenameHelper implements RenameHelper {
 
         //Save file
         ioService.write( _destination,
-                         GuidedDecisionTreeXMLPersistence.getInstance().marshal( model ),
+                         GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ),
                          makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
     }
 
