@@ -9,6 +9,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.kie.uberfire.perspective.editor.model.RowEditor;
 import org.kie.uberfire.perspective.editor.client.panels.dnd.DropRowPanel;
@@ -23,7 +24,7 @@ public class PerspectiveView extends Composite  {
     private PerspectivePresenter presenter;
 
     @Inject
-    private org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor perspectiveEditor;
+    private PerspectiveEditorUI perspectiveEditor;
 
     public void init( PerspectivePresenter presenter ) {
         this.presenter = presenter;
@@ -47,7 +48,7 @@ public class PerspectiveView extends Composite  {
 
     }
 
-    public org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor getPerspectiveEditor() {
+    public PerspectiveEditorUI getPerspectiveEditor() {
         return perspectiveEditor;
     }
 

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
-public class RowEditor implements EditorWidget {
+public class RowEditorWidgetUI implements EditorWidget {
 
     private final EditorWidget parent;
     private final FlowPanel container;
@@ -13,18 +13,18 @@ public class RowEditor implements EditorWidget {
 
     private List<EditorWidget> columnEditors = new ArrayList<EditorWidget>();
 
-    public RowEditor( EditorWidget parent,
-                      FlowPanel container,
-                      String rowSpamString ) {
+    public RowEditorWidgetUI( EditorWidget parent,
+                              FlowPanel container,
+                              String rowSpamString ) {
         this.parent = parent;
         this.container = container;
         parseRowSpanString( rowSpamString );
         parent.addChild( this );
     }
 
-    public RowEditor( EditorWidget parent,
-                      FlowPanel container,
-                      List<String> rowSpans ) {
+    public RowEditorWidgetUI( EditorWidget parent,
+                              FlowPanel container,
+                              List<String> rowSpans ) {
         this.parent = parent;
         this.container = container;
         this.rowSpans = rowSpans;

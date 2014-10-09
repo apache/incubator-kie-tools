@@ -10,15 +10,15 @@ import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.kie.uberfire.perspective.editor.client.panels.row.RowView;
-import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor;
+import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.client.util.DragType;
 
 public class DropRowPanel extends FlowPanel {
 
-    private final PerspectiveEditor parent;
+    private final PerspectiveEditorUI parent;
     private final int parentIndex;
 
-    public DropRowPanel( final PerspectiveEditor parent ) {
+    public DropRowPanel( final PerspectiveEditorUI parent ) {
         this.parent = parent;
         this.parentIndex = parent.getWidget().getWidgetIndex( this );
         setSize( "100%", "20px" );

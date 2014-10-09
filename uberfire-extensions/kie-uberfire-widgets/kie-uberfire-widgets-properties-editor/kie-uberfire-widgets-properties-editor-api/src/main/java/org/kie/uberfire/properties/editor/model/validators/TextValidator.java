@@ -7,7 +7,7 @@ public class TextValidator implements PropertyFieldValidator {
 
     @Override
     public boolean validate( Object value ) {
-        if ( value.toString().length() > 8 ) {
+        if ( value.toString().length() > 3 ) {
             return true;
         }
         return false;

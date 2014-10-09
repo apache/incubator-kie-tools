@@ -29,14 +29,15 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.model.ScreenParameter;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
-import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor;
 import org.kie.uberfire.properties.editor.client.PropertyEditorWidget;
 import org.kie.uberfire.properties.editor.model.PropertyEditorCategory;
 import org.kie.uberfire.properties.editor.model.PropertyEditorEvent;
 import org.kie.uberfire.properties.editor.model.PropertyEditorFieldInfo;
 import org.kie.uberfire.properties.editor.model.PropertyEditorType;
+import org.kie.uberfire.properties.editor.model.validators.PropertyFieldValidator;
 
 public class EditScreen
         extends PopupPanel {
@@ -88,35 +89,43 @@ public class EditScreen
     }
 
     private PropertyEditorCategory addProperty() {
-        PerspectiveEditor perspectiveEditor = getPerspectiveEditor();
+        PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
         perspectiveEditor.addParameter( parent.hashCode() + "", new ScreenParameter( key.getText(), value.getText() ) );
-
-
         return defaultScreenProperties();
     }
 
     private PropertyEditorCategory defaultScreenProperties() {
-        PerspectiveEditor perspectiveEditor = getPerspectiveEditor();
+        PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
         Map<String, String> screenProperties = perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
 
         PropertyEditorCategory category = new PropertyEditorCategory( "Screen Editors" );
         for ( String key : screenProperties.keySet() ) {
             category.withField(
                     new PropertyEditorFieldInfo( key, screenProperties.get( key ), PropertyEditorType.TEXT )
-                            .withKey( parent.hashCode() + "" ) );
+                            .withKey( parent.hashCode() + "" ).withValidators( new PropertyFieldValidator() {
+                        @Override
+                        public boolean validate( Object value ) {
+                            return true;
+                        }
+
+                        @Override
+                        public String getValidatorErrorMessage() {
+                            return "";
+                        }
+                    } ) );
         }
 
         return category;
     }
 
-    private PerspectiveEditor getPerspectiveEditor() {
+    private PerspectiveEditorUI getPerspectiveEditor() {
         SyncBeanManager beanManager = IOC.getBeanManager();
-        IOCBeanDef<PerspectiveEditor> perspectiveEditorIOCBeanDef = beanManager.lookupBean( PerspectiveEditor.class );
+        IOCBeanDef<PerspectiveEditorUI> perspectiveEditorIOCBeanDef = beanManager.lookupBean( PerspectiveEditorUI.class );
         return perspectiveEditorIOCBeanDef.getInstance();
     }
 
     private PropertyEditorEvent generateEvent( PropertyEditorCategory category ) {
-        PropertyEditorEvent event = new PropertyEditorEvent( PerspectiveEditor.PROPERTY_EDITOR_KEY, category );
+        PropertyEditorEvent event = new PropertyEditorEvent( PerspectiveEditorUI.PROPERTY_EDITOR_KEY, category );
         return event;
     }
 

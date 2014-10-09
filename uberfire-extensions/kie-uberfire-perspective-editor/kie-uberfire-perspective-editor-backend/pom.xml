@@ -20,56 +20,22 @@
       <artifactId>kie-uberfire-perspective-editor-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-javax-enterprise</artifactId>
-      <scope>provided</scope>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-api</artifactId>
+      <artifactId>uberfire-server</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-all</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-client-all</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-io</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>org.uberfire</groupId>
-    <artifactId>uberfire-backend-server</artifactId>
-  </dependency>
-
-  <!-- Errai Core -->
-  <dependency>
-    <groupId>org.jboss.errai</groupId>
-    <artifactId>errai-bus</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>javax.enterprise</groupId>
-    <artifactId>cdi-api</artifactId>
-  </dependency>
-
-  <dependency>
-    <groupId>com.google.gwt.gwtmockito</groupId>
-    <artifactId>gwtmockito</artifactId>
-    <scope>test</scope>
-  </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 </project>

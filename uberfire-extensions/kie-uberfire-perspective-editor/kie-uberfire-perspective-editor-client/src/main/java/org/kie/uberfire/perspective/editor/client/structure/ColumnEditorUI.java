@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
-public class ColumnEditor implements EditorWidget {
+public class ColumnEditorUI implements EditorWidget {
 
-    private final RowEditor parent;
+    private final RowEditorWidgetUI parent;
 
     private final String span;
 
@@ -15,9 +15,9 @@ public class ColumnEditor implements EditorWidget {
 
     private List<EditorWidget> childs = new ArrayList<EditorWidget>(  );
 
-    public ColumnEditor( RowEditor row,
-                         FlowPanel container,
-                         String span ) {
+    public ColumnEditorUI( RowEditorWidgetUI row,
+                           FlowPanel container,
+                           String span ) {
         this.container = container;
         this.parent = row;
         this.span = span;

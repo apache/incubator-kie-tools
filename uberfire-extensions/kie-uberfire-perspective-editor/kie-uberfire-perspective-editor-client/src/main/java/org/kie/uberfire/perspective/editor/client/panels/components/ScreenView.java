@@ -19,16 +19,16 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
+import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
+import org.kie.uberfire.perspective.editor.client.structure.ScreenEditorWidgetUI;
 import org.kie.uberfire.perspective.editor.model.ScreenParameter;
 import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditScreen;
-import org.kie.uberfire.perspective.editor.client.structure.ColumnEditor;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
-import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor;
-import org.kie.uberfire.perspective.editor.client.structure.ScreenEditor;
 
 public class ScreenView extends Composite {
 
-    private ScreenEditor screenEditor;
+    private ScreenEditorWidgetUI screenEditor;
 
     @UiField
     FluidContainer fluidContainer;
@@ -44,18 +44,18 @@ public class ScreenView extends Composite {
 
     private static ScreenEditorMainViewBinder uiBinder = GWT.create( ScreenEditorMainViewBinder.class );
 
-    public ScreenView( ColumnEditor parent ) {
+    public ScreenView( ColumnEditorUI parent ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
-        this.screenEditor = new ScreenEditor( parent, fluidContainer );
+        this.screenEditor = new ScreenEditorWidgetUI( parent, fluidContainer );
         build();
     }
 
-    public ScreenView( ColumnEditor parent,
+    public ScreenView( ColumnEditorUI parent,
                        List<ScreenParameter> parameters ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
-        this.screenEditor = new ScreenEditor( parent, fluidContainer );
+        this.screenEditor = new ScreenEditorWidgetUI( parent, fluidContainer );
         loadScreenParameters(this.screenEditor, parameters);
         build();
     }
@@ -124,15 +124,15 @@ public class ScreenView extends Composite {
         return label;
     }
 
-    private void loadScreenParameters( ScreenEditor parent,
+    private void loadScreenParameters( ScreenEditorWidgetUI parent,
                                        List<ScreenParameter> parameters ) {
-        PerspectiveEditor perspectiveEditor = getPerspectiveEditor();
+        PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
         perspectiveEditor.loadProperties(parent.hashCode()+"", parameters);
     }
 
-    private PerspectiveEditor getPerspectiveEditor() {
+    private PerspectiveEditorUI getPerspectiveEditor() {
         SyncBeanManager beanManager = IOC.getBeanManager();
-        IOCBeanDef<PerspectiveEditor> perspectiveEditorIOCBeanDef = beanManager.lookupBean( PerspectiveEditor.class );
+        IOCBeanDef<PerspectiveEditorUI> perspectiveEditorIOCBeanDef = beanManager.lookupBean( PerspectiveEditorUI.class );
         return perspectiveEditorIOCBeanDef.getInstance();
     }
 }

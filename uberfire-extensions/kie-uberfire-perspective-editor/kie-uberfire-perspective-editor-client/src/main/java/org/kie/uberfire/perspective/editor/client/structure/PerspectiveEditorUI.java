@@ -14,7 +14,7 @@ import org.kie.uberfire.properties.editor.model.PropertyEditorChangeEvent;
 import org.kie.uberfire.properties.editor.model.PropertyEditorFieldInfo;
 
 @ApplicationScoped
-public class PerspectiveEditor implements EditorWidget {
+public class PerspectiveEditorUI implements EditorWidget {
 
     private String name = "";
 
@@ -26,7 +26,7 @@ public class PerspectiveEditor implements EditorWidget {
 
     public Map<String, Map<String, String>> screenProperties = new HashMap<String, Map<String, String>>();
 
-    public PerspectiveEditor() {
+    public PerspectiveEditorUI() {
 
     }
 

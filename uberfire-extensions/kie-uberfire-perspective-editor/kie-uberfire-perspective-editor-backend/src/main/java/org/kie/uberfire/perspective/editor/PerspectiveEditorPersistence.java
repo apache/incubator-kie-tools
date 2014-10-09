@@ -2,14 +2,17 @@ package org.kie.uberfire.perspective.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.uberfire.perspective.editor.model.NewPerspectiveEditorEvent;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditorPersistenceAPI;
 import org.uberfire.io.IOService;
@@ -39,18 +42,32 @@ public class PerspectiveEditorPersistence implements PerspectiveEditorPersistenc
     @Named("systemFS")
     private FileSystem fileSystem;
 
+    @Inject
+    private Event<NewPerspectiveEditorEvent> newPerspectiveEventEvent;
+
     @PostConstruct
     public void setup() {
         gsonFactory();
     }
 
     @Override
+    public List<PerspectiveEditor> loadAll() {
+
+        List<PerspectiveEditor> list = new ArrayList<PerspectiveEditor>();
+        final Collection<String> perspectives = listPerspectives();
+        for ( String perspective : perspectives ) {
+            list.add( load( perspective ) );
+        }
+        return list;
+    }
+
+    @Override
     public Collection<String> listPerspectives() {
         final Collection<String> result = new ArrayList<String>();
-        final Path plugins = fileSystem.getPath( PERSPECTIVE_EDITOR );
+        final Path perspectivesDir = fileSystem.getPath( PERSPECTIVE_EDITOR );
 
-        if ( ioService.exists( plugins ) ) {
-            walkFileTree( checkNotNull( "root", plugins ),
+        if ( ioService.exists( perspectivesDir ) ) {
+            walkFileTree( checkNotNull( "root", perspectivesDir ),
                           new SimpleFileVisitor<Path>() {
                               @Override
                               public FileVisitResult visitFile( final Path file,
@@ -87,6 +104,7 @@ public class PerspectiveEditorPersistence implements PerspectiveEditorPersistenc
         Path perspectiveFile = resolvePerspectivePath( perspectiveContent.getName() );
         String json = gson.toJson( perspectiveContent );
         ioService.write( perspectiveFile, json );
+        newPerspectiveEventEvent.fire( new NewPerspectiveEditorEvent( perspectiveContent ) );
     }
 
     private Path resolvePerspectivePath( String perspectiveFile ) {

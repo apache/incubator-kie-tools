@@ -2,13 +2,13 @@ package org.kie.uberfire.perspective.editor.client.structure;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 
-public class ScreenEditor implements EditorWidget {
+public class ScreenEditorWidgetUI implements EditorWidget {
 
     private final EditorWidget parent;
     private final FlowPanel container;
 
-    public ScreenEditor( EditorWidget parent,
-                         FlowPanel container ) {
+    public ScreenEditorWidgetUI( EditorWidget parent,
+                                 FlowPanel container ) {
         this.parent = parent;
         this.container = container;
         parent.addChild( this );

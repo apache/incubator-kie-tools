@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.perspective.editor.client.panels.components.popup.LoadPerspective;
+import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditorPersistenceAPI;
 import org.kie.uberfire.perspective.editor.client.panels.components.popup.SavePerspective;
@@ -27,7 +28,7 @@ public class PerspectivePresenter extends Composite {
 
 
     public void save( String perspectiveName ) {
-        org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditor perspectiveEditor = view.getPerspectiveEditor();
+        PerspectiveEditorUI perspectiveEditor = view.getPerspectiveEditor();
         perspectiveEditor.setName( perspectiveName );
         PerspectiveEditor perspective = perspectiveEditor.toJSONStructure();
         perspectiveEditorPersistenceAPI.call().save( perspective );
