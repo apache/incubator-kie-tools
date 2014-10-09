@@ -147,6 +147,7 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
             final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
                                                                                                        baseFileName,
                                                                                                        oracle );
+
             return model;
 
         } catch ( Exception e ) {

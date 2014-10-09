@@ -83,7 +83,7 @@ public class ConstraintShape extends BaseGuidedDecisionTreeShape<ConstraintNode>
             }
         }
 
-        //ActionRetractNodes and ActionModifyNodes can only be added to paths containing a bound type
+        //ActionRetractNodes and ActionUpdateNodes can only be added to paths containing a bound type
         if ( child instanceof ActionRetractShape || child instanceof ActionUpdateShape ) {
             Node node = this.getModelNode();
             while ( node != null ) {

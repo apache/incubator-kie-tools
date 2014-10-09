@@ -18,6 +18,8 @@ package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 import com.emitrom.lienzo.client.core.shape.Circle;
 import com.emitrom.lienzo.shared.core.types.Color;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionInsertNodeFactory;
 import org.kie.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
@@ -56,9 +58,23 @@ public class ActionInsertShape extends BaseGuidedDecisionTreeShape<ActionInsertN
             return false;
         }
 
-        //ActionInsertNodes can only have other Actions as children
-        if ( child instanceof ActionRetractShape || child instanceof ActionUpdateShape || child instanceof ActionInsertShape ) {
+        //ActionInsertNodes can have other ActionInsertNodes as children
+        if ( child instanceof ActionInsertShape ) {
             return true;
+        }
+
+        //ActionRetractNodes and ActionUpdateNodes can only be added to paths containing a bound type
+        if ( child instanceof ActionRetractShape || child instanceof ActionUpdateShape ) {
+            Node node = this.getModelNode();
+            while ( node != null ) {
+                if ( node instanceof TypeNode ) {
+                    if ( ( (TypeNode) node ).isBound() ) {
+                        return true;
+                    }
+                }
+                node = node.getParent();
+            }
+            return false;
         }
 
         return false;

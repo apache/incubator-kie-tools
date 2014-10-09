@@ -81,8 +81,13 @@ public class ActionUpdateShape extends BaseGuidedDecisionTreeShape<ActionUpdateN
             return false;
         }
 
-        //ActionModifyNodes can only be added to paths containing a bound type
-        if ( child instanceof ActionUpdateShape ) {
+        //ActionUpdateNodes can have other ActionInsertNodes as children
+        if ( child instanceof ActionInsertShape ) {
+            return true;
+        }
+
+        //ActionRetractNodes and ActionUpdateNodes can only be added to paths containing a bound type
+        if ( child instanceof ActionRetractShape || child instanceof ActionUpdateShape ) {
             Node node = this.getModelNode();
             while ( node != null ) {
                 if ( node instanceof TypeNode ) {

@@ -43,6 +43,7 @@ public class GuidedDecisionTreeModelVisitor {
         final Set<String> factTypes = new HashSet<String>();
 
         //Extract Fact Types from model
+        //TODO
 
         //Convert Fact Types into Fully Qualified Class Names
         final Set<String> fullyQualifiedClassNames = new HashSet<String>();
