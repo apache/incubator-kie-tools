@@ -1,0 +1,510 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
+.guvnor-PopupTitleBar-bar {
+    background-color: #E3E3E3;
+    width: 100%;
+}
+
+.guvnor-PopupTitleBar-title {
+    padding: 2px 0px 0px 4px;
+}
+
+.guvnor-PopupTitleBar-close-button {
+    padding: 2px 4px 0px 0px;
+}
+
+.gwt-TextArea {
+	border: 0px !important;
+	padding: 0px !important;
+	margin: 0px !important;
+}
+
+/* Other styles */
+body {
+    font-family: tahoma, arial, helvetica, sans-serif;
+    line-height: 1.5em;
+    color: #444;
+    margin: 0;
+    padding: 0;
+    background: #FFF;
+}
+
+code {
+    font-size: small;
+}
+
+td, th {
+    margin: 0;
+    padding: 0;
+}
+
+.form-field {
+    margin: 0;
+    font: normal 12px tahoma, arial, helvetica, sans-serif;
+}
+
+.selectable-label:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.testErrorValue {
+    border: 1px solid #CC0000;
+    font-color: #CC000;
+    font-size: small;
+    font-style: italics;
+}
+
+.error-title {
+    font-size: small;
+}
+
+.error-long-message {
+    font-size: small;
+}
+
+.successBar {
+    border: 1px;
+    solid #aa9;
+}
+
+.model-builder-Background {
+    # -moz-border-radius: .7em;
+    # -webkit-border-radius: .7em;
+    # -khtml-border-radius: .7em;
+    # border-radius: .7em;
+    padding-left: .5em;
+    # border: 1px solid #ddd;
+    background: #FFF;
+}
+
+.analysis-Report {
+    padding-left: .5em;
+    background: #FFF;
+    font-size: smaller;
+}
+
+.model-builderInner-Background {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    # -moz-border-radius: .7em;
+    # -khtml-border-radius: .7em;
+    # -webkit-border-radius: .7em;
+    # border-radius: .7em;
+    background: #FFF;
+}
+
+.model-builderInnerInner-Background {
+    border-top: 0 solid #ccc;
+    border-bottom: 0 solid #ccc;
+    # -moz-border-radius: .7em;
+    # -webkit-border-radius: .7em;
+    # -khtml-border-radius: .7em;
+    # border-radius: .7em;
+    background: #FFF;
+}
+
+.modeller-fact-pattern-Widget {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+}
+
+.modeller-composite-Label {
+    font-style: italic;
+}
+
+.modeller-action-Label {
+    font-style: italic;
+}
+
+.ks-popups-Popup {
+    border: 6px solid #black;
+/ / # aa9;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .5em;
+    padding: 4px;
+    background: #FFF;
+}
+
+.decision-Table-upload {
+    # border: 1px solid #aa9;
+    background: #FFF;
+}
+
+.metadata-Widget {
+    color: #666;
+}
+
+.loading-Popup {
+    border: 2px solid #aa9;
+    font-color: #FFF !important;
+    padding: 4px;
+    background: #FFF;
+}
+
+.build-Results {
+    border: 1px solid #666;
+    font-size: small;
+    border-collapse: collapse;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
+    border-style: inset;
+    border-width: 1px;
+    background: #FFF;
+}
+
+.welcome-Page {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #ccc;
+}
+
+.bottom-panel {
+    background: #ccc;
+}
+
+.category-explorer-Tree {
+    width: 100%;
+}
+
+.category-explorer-Tree img {
+    vertical-align: middle;
+}
+
+.rule-breditor-Table {
+    border: 1px solid #aa9;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
+    padding: 4px;
+    background: #FFFFF0;
+}
+
+.new-asset-Icons {
+    border: 1px solid #aa9;
+    border-radius: .7em;
+    background: #FFFFF0;
+    width: 100%;
+}
+
+.version-browser-Border {
+    border: 1px solid #aa9;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
+}
+
+.highlight {
+    background: #FF0;
+}
+
+.dt-editor-Grid {
+    border: 1px solid #aa9;
+    border-spacing: 0;
+    border-collapse: collapse;
+    background: #FFFFF0;
+}
+
+.dt-editor-Cell {
+    border: 1px solid #aa9;
+    padding: 2px;
+    background: #FFF;
+}
+
+.dt-editor-Toolbar {
+    border: 1px solid #aa9;
+    padding: 2px;
+    background: #FFF;
+}
+
+.dt-editor-Cell-selected {
+    border: 2px solid #aa9;
+    padding: 0;
+    background: #FFF;
+}
+
+.dt-editor-Title {
+    font-size: larger;
+}
+
+.dt-field-TextBox {
+    border: none;
+    width: 100%;
+    padding: 0;
+}
+
+.rule-ListHeader {
+    color: #666;
+    padding-left: 1em !important;
+    font-weight: 700;
+    height: 2em;
+    background: #f6f6f6;
+}
+
+.rule-List {
+    border: 1px solid #aa9;
+    font-family: Arial, sans-serif;
+    cursor: hand;
+    border-spacing: 0;
+    border-collapse: collapse;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
+    background: #FFF;
+}
+
+.login-Form {
+    border: 4px solid #aa9;
+    background: #f6f6f6;
+}
+
+.resource-name-Label {
+    # font-weight: 700;
+}
+
+.infoProse {
+    margin: 8px;
+}
+
+.DatePicker .navbar {
+    width: 100%;
+    vertical-align: middle;
+    border-bottom: 1px solid #aa9;
+    background: #FFFFF0;
+}
+
+.DatePicker .navbar .gwt-Button {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.DatePicker .table {
+    text-align: center;
+}
+
+.DatePicker .weekheader .days {
+    width: 3em;
+}
+
+.DatePicker .cell {
+    cursor: pointer;
+}
+
+.DatePicker .cell .gwt-HTML span {
+    width: 100%;
+    height: 100%;
+    line-height: 2em;
+}
+
+.DatePicker .today .gwt-HTML {
+    background: #FFF;
+}
+
+.image-Button {
+    cursor: pointer !important;
+}
+
+.ks-info, .ks-List .ks-SinkItem-selected a, .sinkitem {
+    color: #FFF;
+}
+
+.editable-Surface, .package-Editor {
+    # border: 1px solid #aa9;
+    background: #white;
+}
+
+.dt-editor-DescriptionCell, .dt-editor-CountColumn {
+    padding: 3px;
+    background: #FFFFF0;
+}
+
+.dt-editor-DescriptionCell-selected, .dt-editor-CountColumn-selected {
+    color: #FFF;
+    padding: 3px;
+    background: #aa9;
+}
+
+.rule-viewer-Documentation, .dsl-text-Editor, .default-text-Area {
+    border: 1px solid #aa9;
+    background: #FFFFF0;
+}
+
+.rule-ListEvenRow, .DatePicker .weekheader {
+    background: #FFFFF0;
+}
+
+.discussion-header {
+    background: #FFFFF0;
+}
+
+.fact-model-fact-edit-selections {
+    border-bottom: 1px solid #aa9;
+}
+
+.DatePicker, .DatePicker .cell .gwt-HTML, .DatePicker .day .gwt-HTML {
+    border: 1px solid #aa9;
+}
+
+.editor-disabled-widget {
+    background-color: #F7F7F8;
+    color: #868686;
+}
+
+.guvnor-LazyStackPanel-row-header {
+    padding: 1px 0px 0px 5px;
+}
+
+.guvnor-LazyStackPanel-row-header-icon {
+    padding: 0px 5px 0px 0px;
+    cursor: pointer;
+}
+
+.guvnor-LazyStackPanel-row-header-title-icon {
+    padding: 0px 5px 0px 0px;
+}
+
+.guvnor-FormPanel {
+    background-color: #E3E3E3;
+    padding: 2px;
+    border-bottom: 1px solid #BBBBBB;
+}
+
+.guvnor-bold-label {
+    font-weight: bold;
+}
+
+.guvnor-lazyStackPanel {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.guvnor-modelview-button-bar {
+    background-color: #EBEBEB;
+    border: 1px solid #BBBBBB;
+    border-top: 0px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.guvnor-cursor {
+    cursor: pointer;
+}
+
+.snapshot-comparison-added {
+    background: blue;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.snapshot-comparison-archived {
+    background: purple;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.snapshot-comparison-deleted {
+    background: red;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.snapshot-comparison-restored {
+    background: orange;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.snapshot-comparison-updated {
+    background: green;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.missingGlobalsWarning {
+    width: 100%;
+    background-color: yellow;
+    text-align: center;
+}
+
+.paddedLabel {
+    padding-right: 2px;
+}
+
+.icon-bar {
+    width: 100%;
+    background-color: rgb(220, 220, 220);
+    border-top: 1px solid rgb(200, 200, 200);
+}
+
+.icon-bar-item {
+    margin-top: 4px;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-bottom: 4px;
+    padding: 2px;
+}
+
+.icon-bar-item:hover {
+    background-color: rgb(180, 180, 180);
+}
+
+.guvnor-repository-body {
+	margin-top: 9px;
+	width: 100%;
+	margin-left: -10px;
+	padding: 5px 10px 5px 10px;
+	border-top: 1px solid #eee;
+	background: #fafafa;
+	background: -moz-linear-gradient(#fafafa, #efefef);
+	background: -webkit-linear-gradient(#fafafa, #efefef);
+	-ms-filter:
+		"progid:DXImageTransform.Microsoft.gradient(startColorstr='#fafafa',endColorstr='#efefef')";
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+
+.guvnor-repository-li {
+	list-style-type: none;
+	margin: 0 0 10px 0;
+	padding: 8px 10px 0 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	overflow: hidden;
+}

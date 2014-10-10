@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+
+
+<!--
+	Bayesian network in XMLBIF v0.3 (BayesNet Interchange Format)
+	Produced by JavaBayes (http://www.cs.cmu.edu/~javabayes/
+	Output created Mon Nov 02 22:45:45 GMT-03:00 1998
+-->
+
+
+
+<!-- DTD for the XMLBIF 0.3 format -->
+<!DOCTYPE BIF [
+	<!ELEMENT BIF ( NETWORK )*>
+	      <!ATTLIST BIF VERSION CDATA #REQUIRED>
+	<!ELEMENT NETWORK ( NAME, ( PROPERTY | VARIABLE | DEFINITION )* )>
+	<!ELEMENT NAME (#PCDATA)>
+	<!ELEMENT VARIABLE ( NAME, ( OUTCOME |  PROPERTY )* ) >
+	      <!ATTLIST VARIABLE TYPE (nature|decision|utility) "nature">
+	<!ELEMENT OUTCOME (#PCDATA)>
+	<!ELEMENT DEFINITION ( FOR | GIVEN | TABLE | PROPERTY )* >
+	<!ELEMENT FOR (#PCDATA)>
+	<!ELEMENT GIVEN (#PCDATA)>
+	<!ELEMENT TABLE (#PCDATA)>
+	<!ELEMENT PROPERTY (#PCDATA)>
+]>
+
+
+<BIF VERSION="0.3">
+<NETWORK>
+<NAME>CarStarts</NAME>
+
+<!-- Variables -->
+<VARIABLE TYPE="nature">
+	<NAME>Alternator</NAME>
+	<OUTCOME>Ok</OUTCOME>
+	<OUTCOME>Faulted</OUTCOME>
+	<PROPERTY>position = (47, 42)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>FanBelt</NAME>
+	<OUTCOME>Ok</OUTCOME>
+	<OUTCOME>Slipping</OUTCOME>
+	<OUTCOME>Broken</OUTCOME>
+	<PROPERTY>position = (229, 45)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Leak</NAME>
+	<OUTCOME>Leak</OUTCOME>
+	<OUTCOME>NoLeak</OUTCOME>
+	<PROPERTY>position = (381, 46)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Charge</NAME>
+	<OUTCOME>Good</OUTCOME>
+	<OUTCOME>Low</OUTCOME>
+	<PROPERTY>position = (137, 175)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>BatteryAge</NAME>
+	<OUTCOME>New</OUTCOME>
+	<OUTCOME>Old</OUTCOME>
+	<PROPERTY>position = (642, 32)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>BatteryState</NAME>
+	<OUTCOME>Ok</OUTCOME>
+	<OUTCOME>Weak</OUTCOME>
+	<PROPERTY>position = (647, 155)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>BatteryPower</NAME>
+	<OUTCOME>Good</OUTCOME>
+	<OUTCOME>Poor</OUTCOME>
+	<PROPERTY>position = (508, 269)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>GasInTank</NAME>
+	<OUTCOME>Gas</OUTCOME>
+	<OUTCOME>NoGas</OUTCOME>
+	<PROPERTY>position = (843, 240)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>GasGauge</NAME>
+	<OUTCOME>Gas</OUTCOME>
+	<OUTCOME>NoGas</OUTCOME>
+	<PROPERTY>position = (844, 386)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Lights</NAME>
+	<OUTCOME>Work</OUTCOME>
+	<OUTCOME>NoLight</OUTCOME>
+	<PROPERTY>position = (100, 280)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Radio</NAME>
+	<OUTCOME>Works</OUTCOME>
+	<OUTCOME>Dead</OUTCOME>
+	<PROPERTY>position = (284, 376)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Starter</NAME>
+	<OUTCOME>Ok</OUTCOME>
+	<OUTCOME>Faulted</OUTCOME>
+	<PROPERTY>position = (210, 475)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Leak2</NAME>
+	<OUTCOME>True</OUTCOME>
+	<OUTCOME>False</OUTCOME>
+	<PROPERTY>position = (561, 410)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>EngineCranks</NAME>
+	<OUTCOME>Cranks</OUTCOME>
+	<OUTCOME>NoCrank</OUTCOME>
+	<PROPERTY>position = (274, 641)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>FuelPump</NAME>
+	<OUTCOME>Ok</OUTCOME>
+	<OUTCOME>Faulted</OUTCOME>
+	<PROPERTY>position = (575, 673)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Distributor</NAME>
+	<OUTCOME>Ok</OUTCOME>
+	<OUTCOME>Faulted</OUTCOME>
+	<PROPERTY>position = (747, 654)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>SparkPlugs</NAME>
+	<OUTCOME>Ok</OUTCOME>
+	<OUTCOME>Bad</OUTCOME>
+	<PROPERTY>position = (948, 645)</PROPERTY>
+</VARIABLE>
+
+<VARIABLE TYPE="nature">
+	<NAME>Starts</NAME>
+	<OUTCOME>Yes</OUTCOME>
+	<OUTCOME>No</OUTCOME>
+	<PROPERTY>position = (729, 507)</PROPERTY>
+</VARIABLE>
+
+
+<!-- Probability distributions -->
+<DEFINITION>
+	<FOR>Alternator</FOR>
+	<TABLE>0.9995 5.0E-4 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>FanBelt</FOR>
+	<TABLE>0.995 0.0020 0.0030 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Leak</FOR>
+	<TABLE>1.0E-4 0.9999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Charge</FOR>
+	<GIVEN>Alternator</GIVEN>
+	<GIVEN>FanBelt</GIVEN>
+	<GIVEN>Leak</GIVEN>
+	<TABLE>0.0 1.0 1.0 0.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 0.5 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>BatteryAge</FOR>
+	<TABLE>0.7 0.3 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>BatteryState</FOR>
+	<GIVEN>BatteryAge</GIVEN>
+	<TABLE>0.99 0.01 0.8 0.2 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>BatteryPower</FOR>
+	<GIVEN>Charge</GIVEN>
+	<GIVEN>BatteryState</GIVEN>
+	<TABLE>1.0 0.0 0.0 1.0 0.0 1.0 0.0 1.0 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>GasInTank</FOR>
+	<TABLE>0.5 0.5 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>GasGauge</FOR>
+	<GIVEN>BatteryPower</GIVEN>
+	<GIVEN>GasInTank</GIVEN>
+	<TABLE>1.0 0.0 0.0 1.0 0.2 0.8 0.0 1.0 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Lights</FOR>
+	<GIVEN>BatteryPower</GIVEN>
+	<TABLE>0.9 0.1 0.0 1.0 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Radio</FOR>
+	<GIVEN>BatteryPower</GIVEN>
+	<TABLE>0.9 0.1 0.1 0.9 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Starter</FOR>
+	<TABLE>0.99 0.01 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Leak2</FOR>
+	<TABLE>1.0E-4 0.9999 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>EngineCranks</FOR>
+	<GIVEN>BatteryPower</GIVEN>
+	<GIVEN>Starter</GIVEN>
+	<GIVEN>Leak2</GIVEN>
+	<TABLE>0.0 1.0 1.0 0.0 0.0 1.0 0.0 1.0 0.0 1.0 0.2 0.8 0.0 1.0 0.0 1.0 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>FuelPump</FOR>
+	<TABLE>0.999 0.0010 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Distributor</FOR>
+	<TABLE>0.999 0.0010 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>SparkPlugs</FOR>
+	<TABLE>0.9998 2.0E-4 </TABLE>
+</DEFINITION>
+
+<DEFINITION>
+	<FOR>Starts</FOR>
+	<GIVEN>EngineCranks</GIVEN>
+	<GIVEN>FuelPump</GIVEN>
+	<GIVEN>Distributor</GIVEN>
+	<GIVEN>SparkPlugs</GIVEN>
+	<TABLE>1.0 0.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 0.0 1.0 </TABLE>
+</DEFINITION>
+
+
+</NETWORK>
+</BIF>
