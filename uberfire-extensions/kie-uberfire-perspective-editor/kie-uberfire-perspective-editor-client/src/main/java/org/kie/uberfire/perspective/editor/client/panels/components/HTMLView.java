@@ -1,7 +1,5 @@
 package org.kie.uberfire.perspective.editor.client.panels.components;
 
-import java.util.List;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.FluidContainer;
@@ -16,54 +14,46 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditHTML;
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
-import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
-import org.kie.uberfire.perspective.editor.client.structure.ScreenEditorWidgetUI;
-import org.kie.uberfire.perspective.editor.model.ScreenEditor;
-import org.kie.uberfire.perspective.editor.model.ScreenParameter;
-import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditScreen;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
+import org.kie.uberfire.perspective.editor.client.structure.HTMLEditorWidgetUI;
 
-public class ScreenView extends Composite {
+public class HTMLView extends Composite {
 
-    private ScreenEditorWidgetUI screenEditor;
+    private HTMLEditorWidgetUI htmlEditor;
+
+    private static final String DEFAULT_HTML = "Add HTML Code to Display Content";
 
     @UiField
     FluidContainer fluidContainer;
 
     private EditorWidget parent;
 
-
-    interface ScreenEditorMainViewBinder
+    interface HTMLEditorMainViewBinder
             extends
-            UiBinder<Widget, ScreenView> {
+            UiBinder<Widget, HTMLView> {
 
     }
 
-    private static ScreenEditorMainViewBinder uiBinder = GWT.create( ScreenEditorMainViewBinder.class );
+    private static HTMLEditorMainViewBinder uiBinder = GWT.create( HTMLEditorMainViewBinder.class );
 
-    public ScreenView( ColumnEditorUI parent ) {
+    public HTMLView( ColumnEditorUI parent, String htmlCode ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
-        this.screenEditor = new ScreenEditorWidgetUI( parent, fluidContainer );
-        build();
+        this.htmlEditor = new HTMLEditorWidgetUI( parent, fluidContainer, htmlCode );
+        build(  );
     }
 
-    public ScreenView( ColumnEditorUI parent,
-                       ScreenEditor editor ) {
+    public HTMLView( ColumnEditorUI parent ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
-        this.screenEditor = new ScreenEditorWidgetUI( parent, fluidContainer );
-        loadScreenParameters(this.screenEditor, editor);
-        build();
+        this.htmlEditor = new HTMLEditorWidgetUI( parent, fluidContainer );
+        build(  );
     }
 
-
-    private void build() {
-        screenEditor.getWidget().add( generateMainRow() );
+    private void build(   ) {
+        htmlEditor.getWidget().add( generateMainRow( ) );
     }
 
     private FluidRow generateMainRow() {
@@ -73,10 +63,9 @@ public class ScreenView extends Composite {
         return row;
     }
 
-
     private Column generateRowLabelColumn() {
         Column column = new Column( 6 );
-        Label row1 = generateLabel( "Screen Component" );
+        Label row1 = generateLabel( "HTML Component" );
         column.add( row1 );
         return column;
     }
@@ -97,7 +86,7 @@ public class ScreenView extends Composite {
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                EditScreen editUserForm = new EditScreen( screenEditor );
+                EditHTML editUserForm = new EditHTML( htmlEditor );
                 editUserForm.show();
             }
         } );
@@ -112,8 +101,8 @@ public class ScreenView extends Composite {
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                parent.getWidget().remove( ScreenView.this );
-                screenEditor.removeFromParent();
+                parent.getWidget().remove( HTMLView.this );
+                htmlEditor.removeFromParent();
             }
         } );
         return remove;
@@ -123,18 +112,5 @@ public class ScreenView extends Composite {
         Label label = new Label( row );
         label.getElement().getStyle().setProperty( "marginLeft", "3px" );
         return label;
-    }
-
-    private void loadScreenParameters( ScreenEditorWidgetUI parent,
-                                       ScreenEditor editor ) {
-        PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
-        perspectiveEditor.loadProperties(parent.hashCode()+"", editor);
-
-    }
-
-    private PerspectiveEditorUI getPerspectiveEditor() {
-        SyncBeanManager beanManager = IOC.getBeanManager();
-        IOCBeanDef<PerspectiveEditorUI> perspectiveEditorIOCBeanDef = beanManager.lookupBean( PerspectiveEditorUI.class );
-        return perspectiveEditorIOCBeanDef.getInstance();
     }
 }

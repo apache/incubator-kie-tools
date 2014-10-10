@@ -63,7 +63,8 @@ public class PerspectiveEditorSidePresenter {
         AccordionGroup accordion = new AccordionGroup();
         accordion.setHeading( "Components" );
         accordion.setIcon( IconType.FOLDER_OPEN );
-        accordion.add( new DragGridElement( DragType.SCREEN, " " ) );
+        accordion.add( new DragGridElement( DragType.SCREEN, "Screen Component" ) );
+        accordion.add( new DragGridElement( DragType.HTML, "HTML Component" ) );
         return accordion;
     }
 

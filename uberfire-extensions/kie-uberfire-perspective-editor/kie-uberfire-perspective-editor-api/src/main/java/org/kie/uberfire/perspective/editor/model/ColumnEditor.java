@@ -14,6 +14,8 @@ public class ColumnEditor {
 
     private List<ScreenEditor> screens = new ArrayList<ScreenEditor>();
 
+    private List<HTMLEditor> htmls = new ArrayList<HTMLEditor>();
+
     public ColumnEditor() {
     }
 
@@ -21,12 +23,16 @@ public class ColumnEditor {
         this.span = span;
     }
 
-    public void addRowJSON( RowEditor rowEditorJSON ) {
-        rows.add( rowEditorJSON );
+    public void addRow( RowEditor rowEditor ) {
+        rows.add( rowEditor );
     }
 
-    public void addScreenJSON( ScreenEditor screenEditorJSON ) {
-        screens.add( screenEditorJSON );
+    public void addScreen( ScreenEditor screenEditor ) {
+        screens.add( screenEditor );
+    }
+
+    public void addHTML( HTMLEditor htmlEditor ) {
+        htmls.add( htmlEditor );
     }
 
     public String getSpan() {
@@ -39,5 +45,9 @@ public class ColumnEditor {
 
     public List<ScreenEditor> getScreens() {
         return screens;
+    }
+
+    public List<HTMLEditor> getHtmls() {
+        return htmls;
     }
 }

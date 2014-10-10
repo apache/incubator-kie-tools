@@ -8,8 +8,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import org.kie.uberfire.perspective.editor.model.ScreenParameter;
 import org.kie.uberfire.perspective.editor.client.util.PerspectiveEditorJSONAdapter;
+import org.kie.uberfire.perspective.editor.model.ScreenEditor;
+import org.kie.uberfire.perspective.editor.model.ScreenParameter;
 import org.kie.uberfire.properties.editor.model.PropertyEditorChangeEvent;
 import org.kie.uberfire.properties.editor.model.PropertyEditorFieldInfo;
 
@@ -76,18 +77,20 @@ public class PerspectiveEditorUI implements EditorWidget {
         Map<String, String> screenMap = this.screenProperties.get( hashcode );
         if ( screenMap == null ) {
             screenMap = new HashMap<String, String>();
-            screenMap.put( "Screen Name", " " );
+            screenMap.put( ScreenEditor.SCREEN_NAME, " " );
         }
         this.screenProperties.put( hashcode, screenMap );
         return screenMap;
     }
 
     public void loadProperties( String hashcode,
-                                List<ScreenParameter> parameters ) {
+                                ScreenEditor editor ) {
         Map<String, String> screenMap = this.screenProperties.get( hashcode );
         if ( screenMap == null ) {
             screenMap = new HashMap<String, String>();
         }
+        final List<ScreenParameter> parameters = editor.getParameters();
+        parameters.add( new ScreenParameter( ScreenEditor.SCREEN_NAME, editor.getScreenName() ) );
         for ( ScreenParameter parameter : parameters ) {
             screenMap.put( parameter.getKey(), parameter.getValue() );
         }

@@ -5,15 +5,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
+import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
+import org.kie.uberfire.perspective.editor.client.structure.HTMLEditorWidgetUI;
 import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.RowEditorWidgetUI;
 import org.kie.uberfire.perspective.editor.client.structure.ScreenEditorWidgetUI;
 import org.kie.uberfire.perspective.editor.model.ColumnEditor;
+import org.kie.uberfire.perspective.editor.model.HTMLEditor;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.kie.uberfire.perspective.editor.model.RowEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenParameter;
-import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 
 public class PerspectiveEditorJSONAdapter {
 
@@ -24,7 +26,7 @@ public class PerspectiveEditorJSONAdapter {
     }
 
     public PerspectiveEditor convertToJSON() {
-        PerspectiveEditor perspectiveJSON = new PerspectiveEditor( perspectiveEditor.getName());
+        PerspectiveEditor perspectiveJSON = new PerspectiveEditor( perspectiveEditor.getName() );
         extractRows( perspectiveEditor, perspectiveJSON );
         return perspectiveJSON;
     }
@@ -35,7 +37,7 @@ public class PerspectiveEditorJSONAdapter {
             RowEditorWidgetUI rowEditor = (RowEditorWidgetUI) genericEditor;
             RowEditor rowJSON = new RowEditor( rowEditor.getRowSpans() );
             extractColumns( rowEditor, rowJSON );
-            perspectiveJSON.addRowJSON( rowJSON );
+            perspectiveJSON.addRow( rowJSON );
         }
     }
 
@@ -45,7 +47,7 @@ public class PerspectiveEditorJSONAdapter {
             RowEditorWidgetUI rowEditor = (RowEditorWidgetUI) genericEditor;
             RowEditor rowJSON = new RowEditor( rowEditor.getRowSpans() );
             extractColumns( rowEditor, rowJSON );
-            columnEditorJSON.addRowJSON( rowJSON );
+            columnEditorJSON.addRow( rowJSON );
         }
     }
 
@@ -63,12 +65,24 @@ public class PerspectiveEditorJSONAdapter {
 
     private void extractChilds( ColumnEditorUI columnEditor,
                                 ColumnEditor columnEditorJSON ) {
-        //ederign
+        //ederign -> types can be mixed? refactoring
         if ( columnEditor.getChilds().get( 0 ) instanceof RowEditorWidgetUI ) {
             extractRows( columnEditor, columnEditorJSON );
         }
         if ( columnEditor.getChilds().get( 0 ) instanceof ScreenEditorWidgetUI ) {
             extractScreens( columnEditor, columnEditorJSON );
+        }
+        if ( columnEditor.getChilds().get( 0 ) instanceof HTMLEditorWidgetUI ) {
+            extractHTML( columnEditor, columnEditorJSON );
+        }
+    }
+
+    private void extractHTML( ColumnEditorUI columnEditor,
+                              ColumnEditor columnEditorJSON ) {
+        for ( EditorWidget genericEditor : columnEditor.getChilds() ) {
+            HTMLEditorWidgetUI htmlEditorUI = (HTMLEditorWidgetUI) genericEditor;
+            HTMLEditor htmlEditor = new HTMLEditor( htmlEditorUI.getHtmlCode() );
+            columnEditorJSON.addHTML( htmlEditor );
         }
     }
 
@@ -76,18 +90,23 @@ public class PerspectiveEditorJSONAdapter {
                                  ColumnEditor columnEditorJSON ) {
         for ( EditorWidget genericEditor : columnEditor.getChilds() ) {
             ScreenEditorWidgetUI screenEditor = (ScreenEditorWidgetUI) genericEditor;
-            List<ScreenParameter> parameteres = getScreenParameters(screenEditor);
-            ScreenEditor screenEditorJSON = new ScreenEditor( parameteres );
-            columnEditorJSON.addScreenJSON( screenEditorJSON );
+            ScreenEditor screenEditorJSON = new ScreenEditor();
+            List<ScreenParameter> parameters = getScreenParameters( screenEditor.hashCode() + "", screenEditorJSON );
+            columnEditorJSON.addScreen( screenEditorJSON );
         }
     }
 
-    public List<ScreenParameter> getScreenParameters( ScreenEditorWidgetUI screenEditor ) {
+    public List<ScreenParameter> getScreenParameters( String uiHashCode,
+                                                      ScreenEditor screenEditor ) {
 
-        List<ScreenParameter> screenParameters  = new ArrayList<ScreenParameter>(  );
-        Map<String, String> screenProperties = perspectiveEditor.getScreenProperties( screenEditor.hashCode() + "" );
+        List<ScreenParameter> screenParameters = new ArrayList<ScreenParameter>();
+        Map<String, String> screenProperties = perspectiveEditor.getScreenProperties( uiHashCode );
         for ( String key : screenProperties.keySet() ) {
-            screenParameters.add(new ScreenParameter(key, screenProperties.get(key) ));
+            if ( key.equals( ScreenEditor.SCREEN_NAME ) ) {
+                screenEditor.setScreenName( screenProperties.get( key ) );
+            } else {
+                screenParameters.add( new ScreenParameter( key, screenProperties.get( key ) ) );
+            }
         }
 
         return screenParameters;

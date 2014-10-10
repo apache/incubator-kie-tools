@@ -10,8 +10,11 @@ import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.Container;
 import com.github.gwtbootstrap.client.ui.Row;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.perspective.editor.model.ColumnEditor;
+import org.kie.uberfire.perspective.editor.model.HTMLEditor;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.kie.uberfire.perspective.editor.model.RowEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenEditor;
@@ -54,23 +57,37 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
         List<RowEditor> rows = this.editor.getRows();
         for ( RowEditor rowEditor : rows ) {
             Row row = new Row();
-            for ( ColumnEditor columnEditor : rowEditor.getColumnEditorsJSON() ) {
+            for ( ColumnEditor columnEditor : rowEditor.getColumnEditors() ) {
                 Column column = new Column( new Integer( columnEditor.getSpan() ) );
                 // ederign should also get nested rows in columns
-                for ( ScreenEditor screenEditor : columnEditor.getScreens() ) {
-                    //ederign ScreenEditor Should Write Screen Name in the JSON and not in Parameter
-                    for ( ScreenParameter screenParameter : screenEditor.getParameters() ) {
-                        if ( screenParameter.getKey().equals( "Screen Name" ) ) {
-                            FlowPanel panel = new FlowPanel();
-                            panel.getElement().setId( screenParameter.getValue() );
-                            column.add( panel );
-                            screensToLoad.put( screenParameter.getValue(), new Target( column, panel ) );
-                        }
-                    }
-                }
+                generateScreens( columnEditor, column );
+                generateHTML( columnEditor, column );
                 row.add( column );
             }
             mainPanel.add( row );
+        }
+    }
+
+    private void generateHTML( ColumnEditor columnEditor,
+                                  Column column ) {
+        for ( HTMLEditor htmlEditor : columnEditor.getHtmls() ) {
+            HTMLPanel panel = new HTMLPanel(htmlEditor.getHtmlCode());
+            column.add( panel );
+        }
+    }
+
+
+    private void generateScreens( ColumnEditor columnEditor,
+                                  Column column ) {
+        for ( ScreenEditor screenEditor : columnEditor.getScreens() ) {
+            FlowPanel panel = new FlowPanel();
+            panel.getElement().setId( screenEditor.getScreenName() );
+            column.add( panel );
+            Map<String, String> parameters  = new HashMap<String, String>(  );
+            for ( ScreenParameter screenParameter : screenEditor.getParameters() ) {
+                parameters.put( screenParameter.getKey(), screenParameter.getValue() );
+            }
+            screensToLoad.put( screenEditor.getScreenName(), new Target( column, panel, parameters  ) );
         }
     }
 
@@ -146,16 +163,13 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     @Override
     public void onOpen() {
-        //ederign ????
-//        placeManager.executeOnOpenCallback( this.place );
-
         for ( String key : screensToLoad.keySet() ) {
-            final Target widgets = screensToLoad.get( key );
-            final Column column = widgets.getColumn();
-            final FlowPanel panel = widgets.getPanel();
+            final Target target = screensToLoad.get( key );
+            final Column column = target.getColumn();
+            final FlowPanel panel = target.getPanel();
             final int height = 400;
             panel.setPixelSize( column.getElement().getClientWidth(), height );
-            placeManager.goTo( new DefaultPlaceRequest( key ), widgets.getPanel() );
+            placeManager.goTo( new DefaultPlaceRequest( key, target.getParameters() ), target.getPanel() );
         }
 
     }
@@ -202,12 +216,19 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
         private final Column column;
         private final FlowPanel panel;
+        private final Map<String, String> parameters;
 
         public Target( Column column,
-                       FlowPanel panel ) {
+                       FlowPanel panel,
+                       Map<String, String> parameters ) {
 
             this.column = column;
             this.panel = panel;
+            this.parameters = parameters;
+        }
+
+        public Map<String, String> getParameters() {
+            return parameters;
         }
 
         public FlowPanel getPanel() {

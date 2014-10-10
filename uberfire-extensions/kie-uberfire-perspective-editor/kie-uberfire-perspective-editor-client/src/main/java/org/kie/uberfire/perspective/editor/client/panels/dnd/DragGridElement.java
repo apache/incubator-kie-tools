@@ -23,11 +23,10 @@ public class DragGridElement extends Composite {
     public DragGridElement( DragType type,
                             final String dragText ) {
         initWidget( uiBinder.createAndBindUi( this ) );
-        if(type== DragType.GRID){
+        if ( type == DragType.GRID ) {
             createTextBox( dragText );
-        }
-        else{
-            createTextBox(  );
+        } else {
+            createComponentWidget( dragText );
         }
         createMoveIcon( type );
     }
@@ -48,12 +47,12 @@ public class DragGridElement extends Composite {
 
     private String extractText() {
         String EMPTY_SCREEN = " ";
-        return textBox.getText().isEmpty()? EMPTY_SCREEN :textBox.getText();
+        return textBox.getText().isEmpty() ? EMPTY_SCREEN : textBox.getText();
     }
 
-    private void createTextBox( ) {
+    private void createComponentWidget( String label ) {
         textBox = new TextBox();
-        textBox.setPlaceholder( "Screen Component..." );
+        textBox.setPlaceholder( label );
         textBox.setReadOnly( true );
         textBox.setAlternateSize( AlternateSize.MEDIUM );
         move.add( textBox );

@@ -10,7 +10,7 @@ public class RowEditor {
 
     private List<String> rowSpam = new ArrayList<String>();
 
-    private List<ColumnEditor> columnEditorsJSON = new ArrayList<ColumnEditor>();
+    private List<ColumnEditor> columnEditors = new ArrayList<ColumnEditor>();
 
     public RowEditor() {
 
@@ -20,12 +20,12 @@ public class RowEditor {
         this.rowSpam = rowSpam;
     }
 
-    public List<ColumnEditor> getColumnEditorsJSON() {
-        return columnEditorsJSON;
+    public List<ColumnEditor> getColumnEditors() {
+        return columnEditors;
     }
 
     public void add( ColumnEditor columnEditor ) {
-        columnEditorsJSON.add( columnEditor );
+        columnEditors.add( columnEditor );
     }
 
     public List<String> getRowSpam() {

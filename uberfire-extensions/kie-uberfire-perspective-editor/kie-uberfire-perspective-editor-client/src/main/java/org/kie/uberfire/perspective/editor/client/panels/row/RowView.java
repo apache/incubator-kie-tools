@@ -16,10 +16,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.uberfire.perspective.editor.client.panels.components.HTMLView;
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.RowEditorWidgetUI;
 import org.kie.uberfire.perspective.editor.model.ColumnEditor;
+import org.kie.uberfire.perspective.editor.model.HTMLEditor;
 import org.kie.uberfire.perspective.editor.model.RowEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenEditor;
 import org.kie.uberfire.perspective.editor.client.panels.components.ScreenView;
@@ -72,7 +74,7 @@ public class RowView extends Composite {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.editorWidget = parent;
         this.row = new RowEditorWidgetUI( parent, fluidContainer, rowEditor.getRowSpam() );
-        reload( rowEditor.getColumnEditorsJSON() );
+        reload( rowEditor.getColumnEditors() );
     }
 
     private RowView( ColumnEditorUI parent,
@@ -96,7 +98,11 @@ public class RowView extends Composite {
             }
             for ( ScreenEditor editor : columnEditor.getScreens() ) {
                 //ederign bug puting a drop panel
-                column.add( new ScreenView( parent, editor.getParameters() ) );
+                column.add( new ScreenView( parent, editor ) );
+            }
+            for ( HTMLEditor editor : columnEditor.getHtmls() ) {
+                //ederign bug puting a drop panel
+                column.add( new HTMLView( parent, editor.getHtmlCode() ) );
             }
             rowWidget.add( column );
         }

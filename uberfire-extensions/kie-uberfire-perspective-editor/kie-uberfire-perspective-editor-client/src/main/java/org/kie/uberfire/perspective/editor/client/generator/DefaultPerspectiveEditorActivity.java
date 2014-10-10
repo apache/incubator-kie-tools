@@ -95,7 +95,6 @@ public class DefaultPerspectiveEditorActivity implements PerspectiveActivity {
 
     @Override
     public boolean isTransient() {
-        //ederign ???
         return false;
     }
 

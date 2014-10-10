@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.DropEvent;
 import com.google.gwt.event.dom.client.DropHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import org.kie.uberfire.perspective.editor.client.panels.components.HTMLView;
 import org.kie.uberfire.perspective.editor.client.panels.components.ScreenView;
 import org.kie.uberfire.perspective.editor.client.panels.row.RowView;
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
@@ -47,14 +48,22 @@ public class DropColumnPanel extends FlowPanel {
                     handleGridDrop( gridData );
                 }
                 if ( isAScreenDrop( event ) ) {
-                    String screenData = event.getData( DragType.SCREEN.name() );
-                    handleScreenDrop( screenData );
+                    handleScreenDrop();
+                }
+                if ( isHtmlDrop( event ) ) {
+                    handleHTMLDrop();
                 }
             }
         } );
     }
 
-    private void handleScreenDrop( String screenID) {
+    private void handleHTMLDrop() {
+        parent.getWidget().remove( this );
+        parent.getWidget().add( new HTMLView( parent ) );
+        getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
+    }
+
+    private void handleScreenDrop() {
         parent.getWidget().remove( this );
         parent.getWidget().add( new ScreenView( parent ) );
         getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
@@ -74,7 +83,9 @@ public class DropColumnPanel extends FlowPanel {
         return !event.getData( DragType.GRID.name() ).isEmpty();
     }
 
-
+    private boolean isHtmlDrop( DropEvent event ) {
+        return !event.getData( DragType.HTML.name() ).isEmpty();
+    }
 
     private HandlerRegistration addDropHandler( DropHandler handler ) {
         return addBitlessDomHandler( handler, DropEvent.getType() );

@@ -21,7 +21,7 @@ public class PerspectiveEditor {
     }
 
 
-    public void addRowJSON( RowEditor rowEditor ) {
+    public void addRow( RowEditor rowEditor ) {
         rows.add(rowEditor);
     }
 
