@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.widget.factories.categories;
 
-import org.kie.wires.core.api.factories.categories.Category;
+import org.kie.uberfire.wires.core.api.factories.categories.Category;
 
 public class GuidedDecisionTreeEditorCategory extends Category {
 

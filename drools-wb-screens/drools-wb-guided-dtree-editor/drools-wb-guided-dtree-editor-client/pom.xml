@@ -60,18 +60,18 @@
 
     <!-- Guided Decision Trees -->
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>wires-core-api</artifactId>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>wires-core-client</artifactId>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-client</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>wires-trees</artifactId>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-trees</artifactId>
     </dependency>
 
     <dependency>

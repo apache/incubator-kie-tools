@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.guided.dtree.client.widget;
 
 import org.drools.workbench.screens.guided.dtree.client.widget.shapes.BaseGuidedDecisionTreeShape;
-import org.kie.wires.core.api.factories.ShapeDropContext;
+import org.kie.uberfire.wires.core.api.factories.ShapeDropContext;
 
 public class GuidedDecisionTreeDropContext implements ShapeDropContext<BaseGuidedDecisionTreeShape> {
 
