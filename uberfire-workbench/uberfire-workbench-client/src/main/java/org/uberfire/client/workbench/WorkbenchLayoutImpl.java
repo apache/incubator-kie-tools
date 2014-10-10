@@ -69,6 +69,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         perspectiveRootContainer.ensureDebugId( "perspectiveRootContainer" );
         headerPanel.ensureDebugId( "workbenchHeaderPanel" );
         footerPanel.ensureDebugId( "workbenchFooterPanel" );
+        dragController.getBoundaryPanel().ensureDebugId( "workbenchDragBoundary" );
     }
 
     @Override
@@ -112,7 +113,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         AbsolutePanel dragBoundary = dragController.getBoundaryPanel();
         dragBoundary.add( perspectiveRootContainer );
         Layouts.setToFillParent( perspectiveRootContainer );
-
+        Layouts.setToFillParent( dragBoundary );
         root.setContentWidget( dragBoundary );
     }
 
@@ -124,9 +125,6 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     @Override
     public void resizeTo(int width, int height) {
         root.setPixelSize( width, height );
-
-        int leftoverHeight = height - headerPanel.getOffsetHeight() - footerPanel.getOffsetHeight();
-        dragController.getBoundaryPanel().setPixelSize( width, leftoverHeight );
 
         // The dragBoundary can't be a LayoutPanel, so it doesn't support ProvidesResize/RequiresResize.
         // We start the cascade of onResize() calls at its immediate child.

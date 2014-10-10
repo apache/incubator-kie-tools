@@ -59,6 +59,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -199,6 +201,12 @@ extends ResizeComposite implements MultiPartWidget {
         if ( isPropertyListbarContextDisable() ) {
             contextDisplay.removeFromParent();
         }
+
+        content.getElement().getStyle().setPosition( Position.RELATIVE );
+        content.getElement().getStyle().setTop( 0.0, Unit.PX );
+        content.getElement().getStyle().setLeft( 0.0, Unit.PX );
+        content.getElement().getStyle().setWidth( 100.0, Unit.PCT );
+        // height is calculated and set in onResize()
     }
 
     boolean isPropertyListbarContextDisable() {
@@ -425,6 +433,9 @@ extends ResizeComposite implements MultiPartWidget {
     @Override
     public void onResize() {
         super.onResize();
+
+        int contentHeight = getOffsetHeight() - header.getOffsetHeight();
+        content.getElement().getStyle().setHeight( contentHeight, Unit.PX );
 
         // FIXME only need to do this for the one visible part .. need to call onResize() when switching parts anyway
         for ( int i = 0; i < content.getWidgetCount(); i++ ) {
