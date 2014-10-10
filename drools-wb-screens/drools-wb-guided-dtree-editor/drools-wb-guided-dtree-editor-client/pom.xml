@@ -58,6 +58,27 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- Guided Decision Trees -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-core-trees</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.emitrom</groupId>
+      <artifactId>lienzo-core</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>

@@ -40,7 +40,7 @@ public class GuidedDTreeResourceTypeDefinition implements ResourceTypeDefinition
 
     @Override
     public String getSuffix() {
-        return "dtree";
+        return "tdrl";
     }
 
     @Override

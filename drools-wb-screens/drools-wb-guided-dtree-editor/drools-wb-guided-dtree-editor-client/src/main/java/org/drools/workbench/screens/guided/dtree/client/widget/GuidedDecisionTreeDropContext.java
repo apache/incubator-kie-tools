@@ -13,24 +13,23 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.drools.workbench.screens.guided.dtree.client.widget.model;
+package org.drools.workbench.screens.guided.dtree.client.widget;
 
-public class Coordinate {
+import org.drools.workbench.screens.guided.dtree.client.widget.shapes.BaseGuidedDecisionTreeShape;
+import org.kie.uberfire.wires.core.api.factories.ShapeDropContext;
 
-    private double x;
-    private double y;
+public class GuidedDecisionTreeDropContext implements ShapeDropContext<BaseGuidedDecisionTreeShape> {
 
-    public Coordinate( final double x,
-                       final double y ) {
-        this.x = x;
-        this.y = y;
+    private BaseGuidedDecisionTreeShape context;
+
+    @Override
+    public BaseGuidedDecisionTreeShape getContext() {
+        return context;
     }
 
-    public double getX() {
-        return x;
+    @Override
+    public void setContext( final BaseGuidedDecisionTreeShape context ) {
+        this.context = context;
     }
 
-    public double getY() {
-        return y;
-    }
 }

@@ -25,5 +25,16 @@ public interface GuidedDecisionTreeImageResources
     @Source("BPM_FileIcons_guideddtree.png")
     ImageResource typeGuidedDecisionTree();
 
+    @Source("ctrlEdit.png")
+    ImageResource ctrlEdit();
+
+    @Source("ctrlDelete.png")
+    ImageResource ctrlDelete();
+
+    @Source("ctrlExpand.png")
+    ImageResource ctrlExpand();
+
+    @Source("ctrlCollapse.png")
+    ImageResource ctrlCollapse();
 
 }
