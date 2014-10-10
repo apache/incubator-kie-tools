@@ -15,9 +15,20 @@
   <description>Kie Workbench - Common - Display Sources Widgets</description>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.workbench.widgets</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-widgets-commons</artifactId>
     </dependency>
 
     <!-- GWT and GWT Extensions -->
