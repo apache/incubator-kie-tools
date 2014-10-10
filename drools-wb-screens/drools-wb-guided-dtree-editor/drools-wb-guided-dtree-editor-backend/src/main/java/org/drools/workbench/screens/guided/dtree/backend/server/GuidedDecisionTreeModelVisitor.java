@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.guided.dtree.backend.server;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,6 +59,9 @@ public class GuidedDecisionTreeModelVisitor {
     }
 
     private Set<String> visitNode( final Node node ) {
+        if ( node == null ) {
+            return Collections.EMPTY_SET;
+        }
         final Set<String> factTypes = new HashSet<String>();
         if ( node instanceof TypeNode ) {
             final TypeNode tn = (TypeNode) node;
