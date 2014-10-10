@@ -37,7 +37,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.emitrom</groupId>
+      <groupId>com.rht-emitrom</groupId>
       <artifactId>lienzo-core</artifactId>
     </dependency>
 
