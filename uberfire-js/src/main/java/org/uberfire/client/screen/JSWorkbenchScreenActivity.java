@@ -2,17 +2,15 @@ package org.uberfire.client.screen;
 
 import java.util.Collection;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.client.plugin.JSNativePlugin;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
-
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
 
 public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
@@ -20,9 +18,9 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     private PlaceRequest place;
 
-    private final JSNativePlugin nativePlugin;
+    private final JSNativeScreen nativePlugin;
 
-    public JSWorkbenchScreenActivity( final JSNativePlugin nativePlugin,
+    public JSWorkbenchScreenActivity( final JSNativeScreen nativePlugin,
                                       final PlaceManager placeManager ) {
         this.nativePlugin = nativePlugin;
         this.placeManager = placeManager;
