@@ -21,6 +21,9 @@ import java.util.Set;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
+import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -43,7 +46,7 @@ public class GuidedDecisionTreeModelVisitor {
         final Set<String> factTypes = new HashSet<String>();
 
         //Extract Fact Types from model
-        //TODO
+        factTypes.addAll( visitNode( model.getRoot() ) );
 
         //Convert Fact Types into Fully Qualified Class Names
         final Set<String> fullyQualifiedClassNames = new HashSet<String>();
@@ -52,6 +55,21 @@ public class GuidedDecisionTreeModelVisitor {
         }
 
         return fullyQualifiedClassNames;
+    }
+
+    private Set<String> visitNode( final Node node ) {
+        final Set<String> factTypes = new HashSet<String>();
+        if ( node instanceof TypeNode ) {
+            final TypeNode tn = (TypeNode) node;
+            factTypes.add( tn.getClassName() );
+        } else if ( node instanceof ActionInsertNode ) {
+            final ActionInsertNode an = (ActionInsertNode) node;
+            factTypes.add( an.getClassName() );
+        }
+        for ( Node child : node.getChildren() ) {
+            factTypes.addAll( visitNode( child ) );
+        }
+        return factTypes;
     }
 
     //Get the fully qualified class name of the fact type

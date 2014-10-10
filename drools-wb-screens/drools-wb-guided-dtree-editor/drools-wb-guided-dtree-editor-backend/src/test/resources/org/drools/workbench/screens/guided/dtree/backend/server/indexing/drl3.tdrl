@@ -1,0 +1,9 @@
+package org.drools.workbench.screens.guided.dtree.backend.server.indexing.classes;
+
+rule "myRule1"
+when
+  $a1 : Applicant( age == 10 )
+  $a2 : Applicant( age != 10 )
+then
+  insert(new Applicant());
+end;

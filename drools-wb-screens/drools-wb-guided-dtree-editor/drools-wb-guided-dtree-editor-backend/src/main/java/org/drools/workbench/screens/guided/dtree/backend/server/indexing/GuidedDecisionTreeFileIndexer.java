@@ -19,9 +19,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.guided.dtree.backend.GuidedDecisionTreeDRLPersistence;
-import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -30,6 +30,7 @@ import org.kie.uberfire.metadata.model.KObject;
 import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
+import org.kie.workbench.common.services.refactoring.backend.server.indexing.PackageDescrIndexVisitor;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -37,7 +38,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.workbench.type.FileNameUtil;
 
 @ApplicationScoped
 public class GuidedDecisionTreeFileIndexer implements Indexer {
@@ -55,11 +55,11 @@ public class GuidedDecisionTreeFileIndexer implements Indexer {
     private DataModelService dataModelService;
 
     @Inject
-    private GuidedDTreeResourceTypeDefinition resourceType;
+    protected GuidedDTreeResourceTypeDefinition type;
 
     @Override
     public boolean supportsPath( final Path path ) {
-        return resourceType.accept( Paths.convert( path ) );
+        return type.accept( Paths.convert( path ) );
     }
 
     @Override
@@ -67,23 +67,24 @@ public class GuidedDecisionTreeFileIndexer implements Indexer {
         KObject index = null;
 
         try {
-            final org.uberfire.backend.vfs.Path _path = Paths.convert( path );
             final String drl = ioService.readAllString( path );
-            final String baseFileName = FileNameUtil.removeExtension( _path,
-                                                                      resourceType );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( _path );
+            final DrlParser drlParser = new DrlParser();
+            final PackageDescr packageDescr = drlParser.parse( true,
+                                                               drl );
+            if ( packageDescr == null ) {
+                logger.error( "Unable to parse DRL for '" + path.toUri().toString() + "'." );
+                return index;
+            }
 
-            final GuidedDecisionTree model = GuidedDecisionTreeDRLPersistence.getInstance().unmarshal( drl,
-                                                                                                       baseFileName,
-                                                                                                       oracle );
-
+            final ProjectDataModelOracle dmo = getProjectDataModelOracle( path );
             final Project project = projectService.resolveProject( Paths.convert( path ) );
             final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
             final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
                                                                          pkg );
-            final GuidedDecisionTreeModelIndexVisitor visitor = new GuidedDecisionTreeModelIndexVisitor( builder,
-                                                                                                         model );
+            final PackageDescrIndexVisitor visitor = new PackageDescrIndexVisitor( dmo,
+                                                                                   builder,
+                                                                                   packageDescr );
             visitor.visit();
 
             index = KObjectUtil.toKObject( path,
@@ -100,6 +101,11 @@ public class GuidedDecisionTreeFileIndexer implements Indexer {
     @Override
     public KObjectKey toKObjectKey( final Path path ) {
         return KObjectUtil.toKObjectKey( path );
+    }
+
+    //Delegate resolution of DMO to method to assist testing
+    protected ProjectDataModelOracle getProjectDataModelOracle( final Path path ) {
+        return dataModelService.getProjectDataModel( Paths.convert( path ) );
     }
 
 }

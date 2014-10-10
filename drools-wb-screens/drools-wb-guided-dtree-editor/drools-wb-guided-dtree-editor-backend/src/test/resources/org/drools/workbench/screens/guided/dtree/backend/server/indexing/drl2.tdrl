@@ -1,0 +1,8 @@
+package org.drools.workbench.screens.guided.dtree.backend.server.indexing.classes;
+
+rule "myRule"
+when
+  Applicant( age == 10 )
+then
+  insert(new Applicant());
+end;
