@@ -370,6 +370,16 @@
       <artifactId>kie-remote-common</artifactId>
     </dependency>
 
+    <!-- Perspective Editor -->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-perspective-editor-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-perspective-editor-backend</artifactId>
+    </dependency>
+
     <!-- Drools Workbench Screens -->
     <dependency>
       <groupId>org.drools</groupId>

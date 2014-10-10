@@ -49,6 +49,7 @@ import org.kie.workbench.common.services.shared.security.KieWorkbenchSecuritySer
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
+import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.mvp.Command;
@@ -157,7 +158,7 @@ public class DroolsWorkbenchEntryPoint {
 
     private List<MenuItem> getPerspectives() {
         final List<MenuItem> perspectives = new ArrayList<MenuItem>();
-        for ( final AbstractWorkbenchPerspectiveActivity perspective : getPerspectiveActivities() ) {
+        for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
             final String name = perspective.getDefaultPerspectiveLayout().getName();
             final Command cmd = new Command() {
 
@@ -192,19 +193,19 @@ public class DroolsWorkbenchEntryPoint {
         return defaultPerspective;
     }
 
-    private List<AbstractWorkbenchPerspectiveActivity> getPerspectiveActivities() {
+    private List<PerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<AbstractWorkbenchPerspectiveActivity> activities = activityManager.getActivities( AbstractWorkbenchPerspectiveActivity.class );
+        final Set<PerspectiveActivity> activities = activityManager.getActivities( PerspectiveActivity.class );
 
         //Sort Perspective Providers so they're always in the same sequence!
-        List<AbstractWorkbenchPerspectiveActivity> sortedActivities = new ArrayList<AbstractWorkbenchPerspectiveActivity>( activities );
+        List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>( activities );
         Collections.sort( sortedActivities,
-                          new Comparator<AbstractWorkbenchPerspectiveActivity>() {
+                          new Comparator<PerspectiveActivity>() {
 
                               @Override
-                              public int compare( AbstractWorkbenchPerspectiveActivity o1,
-                                                  AbstractWorkbenchPerspectiveActivity o2 ) {
+                              public int compare( PerspectiveActivity o1,
+                                                  PerspectiveActivity o2 ) {
                                   return o1.getDefaultPerspectiveLayout().getName().compareTo( o2.getDefaultPerspectiveLayout().getName() );
                               }
 
