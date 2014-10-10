@@ -1,9 +1,8 @@
 package org.uberfire.client.exporter;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
-
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
@@ -12,9 +11,10 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.plugin.JSNativePlugin;
+import org.uberfire.client.screen.JSNativeScreen;
 import org.uberfire.client.screen.JSWorkbenchScreenActivity;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import static org.jboss.errai.ioc.client.QualifierUtil.*;
 
 @ApplicationScoped
 public class PluginJSExporter implements UberfireJSExporter {
@@ -35,7 +35,7 @@ public class PluginJSExporter implements UberfireJSExporter {
             final SyncBeanManager beanManager = IOC.getBeanManager();
             final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
 
-            final JSNativePlugin newNativePlugin = beanManager.lookupBean( JSNativePlugin.class ).getInstance();
+            final JSNativeScreen newNativePlugin = beanManager.lookupBean( JSNativeScreen.class ).getInstance();
             newNativePlugin.build( obj );
 
             final JSWorkbenchScreenActivity activity = new JSWorkbenchScreenActivity( newNativePlugin, beanManager.lookupBean( PlaceManager.class ).getInstance() );

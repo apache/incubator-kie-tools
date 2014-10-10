@@ -23,6 +23,8 @@ import java.io.OutputStream;
 import java.net.URI;
 
 import org.junit.Test;
+import org.uberfire.java.nio.base.options.CherryPickCopyOption;
+import org.uberfire.java.nio.base.version.VersionAttributes;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -115,7 +117,7 @@ public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
         final DirectoryStream<Path> stream = provider.newDirectoryStream( provider.getPath( URI.create( "git://user_branch@copyasset-test-repo/" ) ), null );
 
         for ( Path path1 : stream ) {
-            System.out.println("content: " + path1.toUri());
+            System.out.println( "content: " + path1.toUri() );
         }
 
         assertThat( stream ).isNotNull().hasSize( 3 );
@@ -326,4 +328,94 @@ public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
             }
         }
     }
+
+    @Test
+    public void testCherryPick() throws IOException, InterruptedException {
+        final URI newRepo = URI.create( "git://cherrypick-test-repo" );
+        provider.newFileSystem( newRepo, EMPTY_ENV );
+
+        {
+            final Path path = provider.getPath( URI.create( "git://master@cherrypick-test-repo/myfile1.txt" ) );
+
+            final OutputStream outStream = provider.newOutputStream( path );
+            outStream.write( "my cool content".getBytes() );
+            outStream.close();
+        }
+
+        {
+            final Path path2 = provider.getPath( URI.create( "git://user_branch@cherrypick-test-repo/other/path/myfile2.txt" ) );
+
+            final OutputStream outStream2 = provider.newOutputStream( path2 );
+            outStream2.write( "my cool content".getBytes() );
+            outStream2.close();
+        }
+        {
+            final Path path3 = provider.getPath( URI.create( "git://user_branch@cherrypick-test-repo/myfile3.txt" ) );
+
+            final OutputStream outStream3 = provider.newOutputStream( path3 );
+            outStream3.write( "my cool content".getBytes() );
+            outStream3.close();
+        }
+
+        String commit2CherryPick;
+        String cherryPickContent = "my 2nd cool content";
+        {
+            final Path path = provider.getPath( URI.create( "git://master@cherrypick-test-repo/myfile1.txt" ) );
+
+            final OutputStream outStream = provider.newOutputStream( path );
+            outStream.write( cherryPickContent.getBytes() );
+            outStream.close();
+
+            final VersionAttributes versionAttributes = provider.readAttributes( path, VersionAttributes.class );
+
+            assertThat( versionAttributes.history().records() ).isNotNull().hasSize( 2 );
+            commit2CherryPick = versionAttributes.history().records().get( 0 ).id();
+
+            final OutputStream outStream2 = provider.newOutputStream( path );
+            outStream2.write( "my 3rd cool content".getBytes() );
+            outStream2.close();
+        }
+
+        final Path source = provider.getPath( URI.create( "git://user_branch@cherrypick-test-repo" ) );
+        final Path target = provider.getPath( URI.create( "git://other_branch@cherrypick-test-repo" ) );
+
+        provider.copy( source, target );
+
+        String commit2CherryPick2;
+        String cherryPickContent2 = "my 4tn cool content";
+        {
+            final Path path = provider.getPath( URI.create( "git://master@cherrypick-test-repo/myfile1.txt" ) );
+
+            final OutputStream outStream = provider.newOutputStream( path );
+            outStream.write( cherryPickContent2.getBytes() );
+            outStream.close();
+
+            final VersionAttributes versionAttributes = provider.readAttributes( path, VersionAttributes.class );
+
+            commit2CherryPick2 = versionAttributes.history().records().get( 0 ).id();
+        }
+
+        final Path target2 = provider.getPath( URI.create( "git://other_branch2@cherrypick-test-repo" ) );
+        provider.copy( source, target2 );
+
+        {
+            provider.copy( source, target, new CherryPickCopyOption( commit2CherryPick ) );
+
+            String result = convertStreamToString( provider.newInputStream( provider.getPath( URI.create( "git://other_branch@cherrypick-test-repo/myfile1.txt" ) ) ) );
+            assertThat( result ).isEqualTo( cherryPickContent );
+        }
+
+        {
+            provider.copy( source, target2, new CherryPickCopyOption( commit2CherryPick, commit2CherryPick2 ) );
+
+            final String result = convertStreamToString( provider.newInputStream( provider.getPath( URI.create( "git://other_branch2@cherrypick-test-repo/myfile1.txt" ) ) ) );
+            assertThat( result ).isEqualTo( cherryPickContent2 );
+        }
+    }
+
+    static String convertStreamToString( java.io.InputStream is ) {
+        java.util.Scanner s = new java.util.Scanner( is ).useDelimiter( "\\A" );
+        return s.hasNext() ? s.next() : "";
+    }
+
 }
