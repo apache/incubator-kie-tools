@@ -97,4 +97,6 @@ public interface GuidedDecisionTreeConstants
 
     public String actionsPaletteGroup();
 
+    public String gettingStartedHint();
+
 }

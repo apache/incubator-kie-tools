@@ -27,7 +27,12 @@ import com.emitrom.lienzo.client.core.animation.AnimationTweener;
 import com.emitrom.lienzo.client.core.animation.IAnimation;
 import com.emitrom.lienzo.client.core.animation.IAnimationCallback;
 import com.emitrom.lienzo.client.core.animation.IAnimationHandle;
+import com.emitrom.lienzo.client.core.shape.Group;
+import com.emitrom.lienzo.client.core.shape.Rectangle;
+import com.emitrom.lienzo.client.core.shape.Text;
 import com.emitrom.lienzo.client.core.types.Point2D;
+import com.emitrom.lienzo.shared.core.types.TextAlign;
+import com.emitrom.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
@@ -55,6 +60,7 @@ import org.kie.uberfire.wires.core.api.layout.LayoutManager;
 import org.kie.uberfire.wires.core.api.layout.RequiresLayoutManager;
 import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
 import org.kie.uberfire.wires.core.client.canvas.WiresCanvas;
+import org.kie.uberfire.wires.core.client.util.ShapeFactoryUtil;
 import org.kie.uberfire.wires.core.trees.client.canvas.WiresTreeNodeConnector;
 import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
 import org.uberfire.client.mvp.UberView;
@@ -104,6 +110,9 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
     private GuidedDecisionTree model;
 
     private GuidedDecisionTreeEditorPresenter presenter;
+
+    private Group hint = null;
+    private boolean isGettingStartedHintVisible = false;
 
     @Override
     public void init( final GuidedDecisionTreeEditorPresenter presenter ) {
@@ -210,7 +219,6 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
             }
 
             addShape( uiChild );
-            layout();
 
             //Notify other Panels of a Shape being added
             shapeAddedEvent.fire( new ShapeAddedEvent( uiChild ) );
@@ -263,6 +271,9 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
 
     public void onShapeDeleted( @Observes ShapeDeletedEvent event ) {
         super.deleteShape( event.getShape() );
+        if ( getShapesInCanvas().isEmpty() ) {
+            showGettingStartedHint();
+        }
     }
 
     @Override
@@ -276,6 +287,12 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
         if ( shape instanceof BaseGuidedDecisionTreeShape ) {
             ( (BaseGuidedDecisionTreeShape) shape ).setPresenter( presenter );
         }
+
+        if ( !getShapesInCanvas().isEmpty() ) {
+            hideGettingStartedHint();
+        }
+
+        layout();
     }
 
     public void setModel( final GuidedDecisionTree model,
@@ -304,6 +321,10 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                 e.getKey().setX( e.getValue().getX() );
                 e.getKey().setY( e.getValue().getY() );
             }
+        }
+
+        if ( shapesInCanvas.isEmpty() ) {
+            showGettingStartedHint();
         }
 
         canvasLayer.draw();
@@ -438,6 +459,99 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                         } );
 
         canvasLayer.draw();
+    }
+
+    private void showGettingStartedHint() {
+        if ( isGettingStartedHintVisible ) {
+            return;
+        }
+        if ( hint == null ) {
+            hint = new Group();
+            final Rectangle hintRectangle = new Rectangle( 600,
+                                                           225,
+                                                           15 );
+            hintRectangle.setStrokeWidth( 2.0 );
+            hintRectangle.setStrokeColor( "#6495ED" );
+            hintRectangle.setFillColor( "#AFEEEE" );
+            hintRectangle.setAlpha( 0.75 );
+            hintRectangle.setX( ( canvasLayer.getWidth() - hintRectangle.getWidth() ) / 2 );
+            hintRectangle.setY( ( canvasLayer.getHeight() / 2 ) - hintRectangle.getHeight() );
+
+            final Text hintText = new Text( GuidedDecisionTreeConstants.INSTANCE.gettingStartedHint(),
+                                            ShapeFactoryUtil.FONT_FAMILY_DESCRIPTION,
+                                            18 );
+            hintText.setTextAlign( TextAlign.CENTER );
+            hintText.setTextBaseLine( TextBaseLine.MIDDLE );
+            hintText.setFillColor( "#6495ED" );
+            hintText.setX( canvasLayer.getWidth() / 2 );
+            hintText.setY( ( canvasLayer.getHeight() - hintRectangle.getHeight() ) / 2 );
+
+            hint.add( hintRectangle );
+            hint.add( hintText );
+        }
+
+        hint.animate( AnimationTweener.LINEAR,
+                      new AnimationProperties(),
+                      ANIMATION_DURATION,
+                      new IAnimationCallback() {
+
+                          @Override
+                          public void onStart( final IAnimation iAnimation,
+                                               final IAnimationHandle iAnimationHandle ) {
+                              hint.setAlpha( 0.0 );
+                              canvasLayer.add( hint );
+                              isGettingStartedHintVisible = true;
+                          }
+
+                          @Override
+                          public void onFrame( final IAnimation iAnimation,
+                                               final IAnimationHandle iAnimationHandle ) {
+                              //Lienzo's IAnimation.getPercent() passes values > 1.0
+                              final double pct = iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent();
+                              hint.setAlpha( pct );
+                              hint.getLayer().draw();
+                          }
+
+                          @Override
+                          public void onClose( final IAnimation iAnimation,
+                                               final IAnimationHandle iAnimationHandle ) {
+                              //Nothing to do
+                          }
+                      } );
+    }
+
+    private void hideGettingStartedHint() {
+        if ( !isGettingStartedHintVisible ) {
+            return;
+        }
+        hint.animate( AnimationTweener.LINEAR,
+                      new AnimationProperties(),
+                      ANIMATION_DURATION,
+                      new IAnimationCallback() {
+
+                          @Override
+                          public void onStart( final IAnimation iAnimation,
+                                               final IAnimationHandle iAnimationHandle ) {
+                              //Nothing to do
+                          }
+
+                          @Override
+                          public void onFrame( final IAnimation iAnimation,
+                                               final IAnimationHandle iAnimationHandle ) {
+                              //Lienzo's IAnimation.getPercent() passes values > 1.0
+                              final double pct = iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent();
+                              hint.setAlpha( 1 - pct );
+                              hint.getLayer().draw();
+                          }
+
+                          @Override
+                          public void onClose( final IAnimation iAnimation,
+                                               final IAnimationHandle iAnimationHandle ) {
+                              canvasLayer.remove( hint );
+                              isGettingStartedHintVisible = false;
+                          }
+                      } );
+
     }
 
 }

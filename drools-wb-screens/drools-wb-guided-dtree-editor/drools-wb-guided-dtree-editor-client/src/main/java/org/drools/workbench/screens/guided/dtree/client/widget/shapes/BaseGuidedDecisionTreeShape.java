@@ -45,8 +45,8 @@ public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresB
     private final Circle bounding;
 
     protected final Text plus = new Text( "+",
-                                        "normal",
-                                        50 );
+                                          "normal",
+                                          50 );
     protected NodeLabel nodeLabel = new NodeLabel();
 
     private Group ctrlGroupDeleteIcon;
@@ -232,8 +232,8 @@ public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresB
             remove( bounding );
             if ( !isReadOnly ) {
                 hideControls();
+            }
         }
-    }
     }
 
     @Override
