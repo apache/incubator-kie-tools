@@ -19,5 +19,7 @@ runMigration.log
 /org.drools
 
 # Doesn't exist in this branch anymore
-drools-wb-distribution/
-drools-wb-docs/
+/drools-wb-distribution/
+/drools-wb-docs/
+/drools-wb-rest/
+/drools-wb-rest-defaultapprover/
