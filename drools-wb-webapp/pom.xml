@@ -357,8 +357,8 @@
 
     <!-- Drools Workbench REST -->
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wb-rest</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-rest-backend</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
