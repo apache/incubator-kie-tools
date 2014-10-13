@@ -39,12 +39,31 @@
 
   <filter-mapping>
     <filter-name>UI Security Filter</filter-name>
-    <!--<url-pattern>/rest/*</url-pattern>-->
-    <!--<url-pattern>/maven2/*</url-pattern>-->
     <url-pattern>/drools-wb.html</url-pattern>
     <url-pattern>/uf_security_check</url-pattern>
     <url-pattern>*.erraiBus</url-pattern>
     <url-pattern>/org.drools.workbench.DroolsWorkbench/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>HTTP Basic Auth Filter</filter-name>
+    <filter-class>org.picketlink.authentication.web.AuthenticationFilter</filter-class>
+
+    <init-param>
+      <param-name>authType</param-name>
+      <param-value>org.picketlink.authentication.web.BasicAuthenticationScheme</param-value>
+    </init-param>
+
+    <init-param>
+      <param-name>realmName</param-name>
+      <param-value>Drools Workbench</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>HTTP Basic Auth Filter</filter-name>
+    <url-pattern>/rest/*</url-pattern>
+    <url-pattern>/maven2/*</url-pattern>
   </filter-mapping>
 
   <context-param>
