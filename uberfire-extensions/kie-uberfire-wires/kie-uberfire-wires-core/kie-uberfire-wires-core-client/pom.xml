@@ -15,21 +15,12 @@
   <description>Wires Core Client</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-wires-core-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>

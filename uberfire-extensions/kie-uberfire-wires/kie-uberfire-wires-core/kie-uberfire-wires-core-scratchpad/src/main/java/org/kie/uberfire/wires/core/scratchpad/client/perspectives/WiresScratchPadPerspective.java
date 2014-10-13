@@ -10,7 +10,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -40,49 +39,39 @@ public class WiresScratchPadPerspective {
 
         perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_CANVAS_SCREEN ) ) );
 
-        createPanelWithChild( perspective,
-                              CompassPosition.EAST );
+        final PanelDefinition layersPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        layersPanel.setMinWidth( MIN_WIDTH_PANEL );
+        layersPanel.setWidth( WIDTH_PANEL );
+        layersPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_LAYERS_SCREEN ) ) );
 
-        final PanelDefinition panel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        panel.setMinWidth( MIN_WIDTH_PANEL );
-        panel.setWidth( WIDTH_PANEL );
-        panel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_PALETTE_SCREEN ) ) );
-        PanelDefinition propertiesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        final PanelDefinition actionsPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        actionsPanel.setMinWidth( MIN_WIDTH_PANEL );
+        actionsPanel.setWidth( WIDTH_PANEL );
+        actionsPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_ACTIONS_SCREEN ) ) );
+
+        layersPanel.appendChild( CompassPosition.SOUTH,
+                                 actionsPanel );
+
+        perspective.getRoot().insertChild( CompassPosition.EAST,
+                                           layersPanel );
+
+        final PanelDefinition palettePanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        palettePanel.setMinWidth( MIN_WIDTH_PANEL );
+        palettePanel.setWidth( WIDTH_PANEL );
+        palettePanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_PALETTE_SCREEN ) ) );
+
+        final PanelDefinition propertiesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         propertiesPanel.setMinWidth( MIN_WIDTH_PANEL );
         propertiesPanel.setWidth( WIDTH_PANEL );
         propertiesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_PROPERTIES_SCREEN ) ) );
-        panel.appendChild( CompassPosition.SOUTH,
-                           propertiesPanel );
+
+        palettePanel.appendChild( CompassPosition.SOUTH,
+                                  propertiesPanel );
 
         perspective.getRoot().insertChild( CompassPosition.WEST,
-                                           panel );
+                                           palettePanel );
 
         return perspective;
     }
 
-    private void createPanelWithChild( final PerspectiveDefinition p,
-                                       final Position position ) {
-        final PanelDefinition actionsPanel = newPanel( p,
-                                                       WIRES_ACTIONS_SCREEN );
-        actionsPanel.setHeight( 150 );
-        actionsPanel.setMinHeight( 80 );
-
-        final PanelDefinition parentPanel = newPanel( p,
-                                                      WIRES_LAYERS_SCREEN );
-        parentPanel.setHeight( 180 );
-        parentPanel.setMinHeight( 150 );
-        parentPanel.appendChild( CompassPosition.SOUTH,
-                                 actionsPanel );
-        p.getRoot().insertChild( position,
-                                 parentPanel );
-    }
-
-    private PanelDefinition newPanel( final PerspectiveDefinition p,
-                                      final String identifierPanel ) {
-        final PanelDefinition panel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        panel.setWidth( WIDTH_PANEL );
-        panel.setMinWidth( MIN_WIDTH_PANEL );
-        panel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( identifierPanel ) ) );
-        return panel;
-    }
 }

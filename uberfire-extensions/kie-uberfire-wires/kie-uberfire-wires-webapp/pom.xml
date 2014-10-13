@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2014 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-<parent>
+  <parent>
     <groupId>org.kie.uberfire</groupId>
     <artifactId>kie-uberfire-wires</artifactId>
     <version>6.2.0-SNAPSHOT</version>
@@ -17,20 +32,34 @@
   <description>Wires WebApp</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.owasp.encoder</groupId>
-      <artifactId>encoder</artifactId>
-      <version>1.1</version>
-    </dependency>
 
     <!--Logs-->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+    </dependency>
+
+    <!-- This is a war file, so logback is not in scope test, but in scope compile -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+    </dependency>
+
+    <!-- We need com.google.inject.Inject -->
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guice</artifactId>
+      <classifier>no_aop</classifier>
     </dependency>
 
     <!--Wires-->
@@ -45,7 +74,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.emitrom</groupId>
+      <groupId>com.rht-emitrom</groupId>
       <artifactId>lienzo-core</artifactId>
     </dependency>
 
@@ -62,6 +91,11 @@
     </dependency>
 
     <!--Bayesian Network dependencies-->
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-wires-bayesian-parser-api</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-wires-bayesian-parser-backend</artifactId>
@@ -87,12 +121,23 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-all</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-picketlink</artifactId>
     </dependency>
 
     <!-- Errai AS -->
@@ -118,11 +163,6 @@
       <artifactId>errai-weld-integration</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-security-picketlink</artifactId>
-    </dependency>
-
     <!-- Weld Modules -->
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -141,41 +181,44 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.owasp.encoder</groupId>
+      <artifactId>encoder</artifactId>
+    </dependency>
+
     <!-- PicketLink has a hard dependency on JBoss Logging.
- Since this app deploys to Jetty, we include this as a runtime-scoped dependency.
- If deploying to JBoss AS or WildFly, you would set this to provided scope. -->
+     Since this app deploys to Jetty, we include this as a runtime-scoped dependency.
+     If deploying to JBoss AS or WildFly, you would set this to provided scope. -->
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>3.1.4.GA</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
 
   <build>
+
     <resources>
       <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
       <resource>
         <directory>src/main/java</directory>
       </resource>
-      <!-- Include module descriptors from src/main/resources in order not to
-        break the Intellij GWT plug-in -->
+      <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
       <resource>
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+
     <plugins>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>2.5.0</version>
         <configuration>
-          <module>org.kie.uberfire.wires.FastCompiledWiresShowcase</module>
+          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+          <localWorkers>1</localWorkers>
+          <module>org.kie.uberfire.wires.WiresShowcase</module>
           <logLevel>INFO</logLevel>
-          <runTarget>wires.html</runTarget>
-          <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
-          <soyc>false</soyc>
-          <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
           <compileSourcesArtifacts>
             <!-- UberFire -->
             <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
@@ -189,13 +232,17 @@
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-backend</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-backend-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.guvnor:guvnor-structure-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:wires-core-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:wires-core-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:wires-core-scratchpad</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:wires-trees</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:wires-bayesian-parser-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie:wires-bayesian-network-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-scratchpad</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-core-trees</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-bayesian-parser-api</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-wires-bayesian-network-client</compileSourcesArtifact>
           </compileSourcesArtifacts>
+          <runTarget>wires.html</runTarget>
+          <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
+          <!-- drools-compiler has dependency on org.eclipse.jdt.core.compiler:ecj:jar:3.5.1:compile, see http://code.google.com/p/google-web-toolkit/issues/detail?id=4479 -->
+          <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
         </configuration>
         <executions>
           <execution>
@@ -216,28 +263,25 @@
       </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
-        <version>2.4</version>
         <configuration>
-          <warName>${project.artifactId}</warName>
-          <outputFileNameMapping>@{artifactId}@-@{baseVersion}@@{dashClassifier?}@.@{extension}@</outputFileNameMapping>
-          <packagingExcludes>**/javax/**/*.*,**/client/**/*.class</packagingExcludes>
+          <packagingExcludes>**/javax/**/*.*,**/client/**/*.class,**/*.symbolMap</packagingExcludes>
           <archive>
             <addMavenDescriptor>false</addMavenDescriptor>
           </archive>
         </configuration>
       </plugin>
-      <!-- Tests are skipped by default because they require additional GWT
-        dependencies. Run mvn with -Pintegration-test to enable testing. -->
+
+      <!-- Tests are skipped by default because they require additional GWT dependencies. Run mvn with
+        -Pintegration-test to enable testing. -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.15</version>
         <configuration>
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>2.4.1</version>
         <configuration>
           <filesets>
             <fileset>
@@ -251,6 +295,7 @@
         </configuration>
       </plugin>
     </plugins>
+
     <pluginManagement>
       <plugins>
         <plugin>
@@ -273,19 +318,6 @@
                     <execute/>
                   </action>
                 </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jboss.errai</groupId>
-                    <artifactId>jacoco-gwt-maven-plugin</artifactId>
-                    <versionRange>[0.0,)</versionRange>
-                    <goals>
-                      <goal>prepare-agent</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore/>
-                  </action>
-                </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
@@ -293,14 +325,25 @@
       </plugins>
     </pluginManagement>
   </build>
+
   <profiles>
     <profile>
       <id>fullProfile</id>
+
       <activation>
         <property>
           <name>full</name>
         </property>
       </activation>
+
+      <dependencies>
+        <!-- Add back ANT when building full profile as it's needed by AS7 and Tomcat -->
+        <dependency>
+          <groupId>org.apache.ant</groupId>
+          <artifactId>ant</artifactId>
+        </dependency>
+      </dependencies>
+
       <build>
         <plugins>
           <plugin><!-- Keep in sync with soa profile -->
@@ -310,6 +353,8 @@
               <!-- Build all GWT permutations and optimize them -->
               <module>org.kie.uberfire.wires.WiresShowcase</module>
               <draftCompile>false</draftCompile>
+              <localWorkers>4</localWorkers>
+              <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
             </configuration>
           </plugin>
         </plugins>

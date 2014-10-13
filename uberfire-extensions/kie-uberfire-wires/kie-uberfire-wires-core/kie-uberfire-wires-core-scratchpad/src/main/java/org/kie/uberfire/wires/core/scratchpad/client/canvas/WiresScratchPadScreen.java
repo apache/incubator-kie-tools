@@ -207,12 +207,15 @@ public class WiresScratchPadScreen extends WiresCanvas implements ContainerManag
     @Override
     public void clear() {
         if ( Window.confirm( "Are you sure to clean the canvas?" ) ) {
-            super.clear();
             clearEvent.fire( new ClearEvent() );
-            menus.getItems().get( 0 ).setEnabled( false );
-            menus.getItems().get( 1 ).setEnabled( false );
-            menus.getItems().get( 2 ).setEnabled( false );
         }
+    }
+
+    public void onClear( @Observes ClearEvent event ) {
+        super.clear();
+        menus.getItems().get( 0 ).setEnabled( false );
+        menus.getItems().get( 1 ).setEnabled( false );
+        menus.getItems().get( 2 ).setEnabled( false );
     }
 
     @Override

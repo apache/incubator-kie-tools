@@ -16,22 +16,12 @@
   <description>Wires Bayesian Parser Backend</description>
 
   <dependencies>
+
     <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-wires-bayesian-parser-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Errai Core -->
-    <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-bus</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

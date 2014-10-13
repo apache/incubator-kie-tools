@@ -18,7 +18,7 @@
     <module>kie-uberfire-wires-core</module>
     <module>kie-uberfire-wires-bayesian-parser</module>
     <module>kie-uberfire-wires-bayesian-network</module>
-<!--<module>kie-uberfire-wires-webapp</module>-->
+    <module>kie-uberfire-wires-webapp</module>
   </modules>
 
 </project>

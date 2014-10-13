@@ -27,6 +27,7 @@ import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
 import com.emitrom.lienzo.client.core.shape.Layer;
 import com.emitrom.lienzo.client.core.shape.Picture;
 import com.emitrom.lienzo.client.widget.LienzoPanel;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.kie.uberfire.wires.core.api.events.ClearEvent;
 import org.kie.uberfire.wires.core.client.canvas.FocusableLienzoPanel;
@@ -90,7 +91,9 @@ public class ActionsGroup extends Composite {
         return new NodeMouseClickHandler() {
             @Override
             public void onNodeMouseClick( final NodeMouseClickEvent event ) {
-                clearEvent.fire( new ClearEvent() );
+                if ( Window.confirm( "Are you sure to clean the canvas?" ) ) {
+                    clearEvent.fire( new ClearEvent() );
+                }
             }
         };
     }

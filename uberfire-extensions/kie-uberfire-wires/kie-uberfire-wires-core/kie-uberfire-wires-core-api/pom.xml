@@ -15,11 +15,7 @@
   <description>Wires Core Api</description>
 
   <dependencies>
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <!-- <scope>provided</scope> -->
-    </dependency>
+
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>

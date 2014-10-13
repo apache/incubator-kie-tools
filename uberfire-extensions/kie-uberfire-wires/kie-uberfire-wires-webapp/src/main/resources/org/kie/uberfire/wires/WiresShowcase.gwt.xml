@@ -20,8 +20,8 @@
   <inherits name="org.kie.uberfire.wires.core.trees.WiresCoreTrees"/>
 
   <!-- Bayesian Network dependencies -->
-  <inherits name="com.bayesian.parser.BayesianAPI"/>
-  <inherits name="com.bayesian.network.BayesianNetworkClient"/>
+  <inherits name="org.kie.uberfire.wires.bayesian.network.parser.BayesianNetworkAPI"/>
+  <inherits name="org.kie.uberfire.wires.bayesian.network.BayesianNetworkClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <set-property name="user.agent" value="safari"/>

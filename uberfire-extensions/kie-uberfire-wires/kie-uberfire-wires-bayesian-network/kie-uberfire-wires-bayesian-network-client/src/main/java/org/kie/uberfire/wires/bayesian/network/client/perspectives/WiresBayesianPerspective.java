@@ -20,12 +20,11 @@ import javax.enterprise.context.ApplicationScoped;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
@@ -42,63 +41,43 @@ public class WiresBayesianPerspective {
     private static final String BAYESIAN_SCREEN = "BayesianScreen";
     private static final String WIRES_LAYERS_SCREEN = "WiresLayersScreen";
     private static final String WIRES_TEMPLATE_SCREEN = "BayesianTemplatesScreen";
-    private static final String BAYESIAN_SOUTH_SCREEN = "BayesianVariablesScreen";
+    private static final String BAYESIAN_VARIABLES_SCREEN = "BayesianVariablesScreen";
 
     private static final int MIN_WIDTH_PANEL = 200;
     private static final int WIDTH_PANEL = 300;
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         perspective.setName( WIRES );
 
         perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( BAYESIAN_SCREEN ) ) );
 
-        this.createPanelWithChild( perspective,
-                                   CompassPosition.EAST );
-        this.drawPanel( perspective,
-                        CompassPosition.SOUTH,
-                        BAYESIAN_SOUTH_SCREEN );
+        final PanelDefinition layersPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        layersPanel.setMinWidth( MIN_WIDTH_PANEL );
+        layersPanel.setWidth( WIDTH_PANEL );
+        layersPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_LAYERS_SCREEN ) ) );
+
+        final PanelDefinition templatesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        templatesPanel.setMinWidth( MIN_WIDTH_PANEL );
+        templatesPanel.setWidth( WIDTH_PANEL );
+        templatesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_TEMPLATE_SCREEN ) ) );
+
+        layersPanel.appendChild( CompassPosition.SOUTH,
+                                 templatesPanel );
+
+        perspective.getRoot().insertChild( CompassPosition.EAST,
+                                           layersPanel );
+
+        final PanelDefinition variablesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+        variablesPanel.setMinWidth( MIN_WIDTH_PANEL );
+        variablesPanel.setWidth( WIDTH_PANEL );
+        variablesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( BAYESIAN_VARIABLES_SCREEN ) ) );
+
+        perspective.getRoot().insertChild( CompassPosition.SOUTH,
+                                           variablesPanel );
 
         return perspective;
     }
 
-    private void drawPanel( final PerspectiveDefinition p,
-                            final Position position,
-                            final String identifierPanel ) {
-        p.getRoot().insertChild( position,
-                                 newPanel( p,
-                                           position,
-                                           identifierPanel ) );
-    }
-
-    private void createPanelWithChild( final PerspectiveDefinition p,
-                                       final Position position ) {
-        final PanelDefinition templatePanel = newPanel( p,
-                                                        position,
-                                                        WIRES_TEMPLATE_SCREEN );
-        templatePanel.setHeight( 380 );
-        templatePanel.setMinHeight( 250 );
-
-        final PanelDefinition parentPanel = newPanel( p,
-                                                      position,
-                                                      WIRES_LAYERS_SCREEN );
-        parentPanel.setHeight( 180 );
-        parentPanel.setMinHeight( 150 );
-        parentPanel.appendChild( CompassPosition.SOUTH,
-                                 templatePanel );
-
-        p.getRoot().insertChild( position,
-                                 parentPanel );
-    }
-
-    private PanelDefinition newPanel( final PerspectiveDefinition p,
-                                      final Position position,
-                                      final String identifierPanel ) {
-        final PanelDefinition panel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        panel.setWidth( WIDTH_PANEL );
-        panel.setMinWidth( MIN_WIDTH_PANEL );
-        panel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( identifierPanel ) ) );
-        return panel;
-    }
 }
