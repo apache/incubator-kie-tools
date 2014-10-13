@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.kie.uberfire</groupId>
     <artifactId>kie-uberfire-widgets-service</artifactId>
-    <version>6.2.0-SNAPSHOT</version>
+    <version>6.3.0-SNAPSHOT</version>
   </parent>
   <name>KIE UberFire Widgets Commons Services Backend</name>
   <description>KIE UberFire Widgets Commons Services Backend</description>
