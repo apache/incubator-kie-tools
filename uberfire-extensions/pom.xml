@@ -39,6 +39,7 @@
     <module>kie-uberfire-runtime-plugins</module>
     <module>kie-uberfire-perspective-editor</module>
     <module>kie-uberfire-wires</module>
+    <module>kie-uberfire-apps</module>
   </modules>
 
   <repositories>
