@@ -11,7 +11,7 @@
 
   <artifactId>kie-uberfire-apps-api</artifactId>
 
-  <name>KIE Uberfire kie-uberfire-appss API</name>
+  <name>KIE Uberfire kie-uberfire-apps API</name>
   <description>KIE Uberfire Apps API</description>
 
   <dependencies>

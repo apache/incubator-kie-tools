@@ -6,6 +6,6 @@
 
 
   <inherits name="org.kie.uberfire.apps.UberfireAppsAPI"/>
-
+  <inherits name="org.uberfire.UberfireClientAll"/>
 
 </module>

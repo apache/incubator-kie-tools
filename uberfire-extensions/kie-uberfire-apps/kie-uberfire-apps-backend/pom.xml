@@ -8,7 +8,7 @@
     <version>6.3.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-apps-editor-backend</artifactId>
+  <artifactId>kie-uberfire-apps-backend</artifactId>
   <packaging>jar</packaging>
 
   <name>KIE Uberfire Apps Backend</name>
