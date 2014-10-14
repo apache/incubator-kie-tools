@@ -2,6 +2,7 @@ package org.drools.workbench.screens.factmodel.backend.server.util;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,7 +115,7 @@ public class FactModelPersistence {
 
     private static List<FactMetaModel> toModel( String drl )
             throws DroolsParserException {
-        Preconditions.checkNotNull(drl, "The string representing DRL can't be null!");
+        Preconditions.checkNotNull( drl, "The string representing DRL can't be null!" );
 
         if ( drl.startsWith( "#advanced" ) || drl.startsWith( "//advanced" ) ) {
             throw new DroolsParserException( "Using advanced editor" );
@@ -148,7 +149,7 @@ public class FactModelPersistence {
 
             for ( final AnnotationDescr descr : td.getAnnotations() ) {
                 final String annotationName = descr.getName();
-                final Map<String, String> values = descr.getValues();
+                final Map<String, String> values = extractStringValues( descr );
                 final AnnotationMetaModel am = new AnnotationMetaModel( annotationName,
                                                                         values );
 
@@ -159,6 +160,15 @@ public class FactModelPersistence {
         }
 
         return list;
+    }
+
+    private static Map<String, String> extractStringValues( final AnnotationDescr descr ) {
+        final Map<String, String> values = new HashMap<String, String>();
+        for ( Map.Entry<String, Object> e : descr.getValues().entrySet() ) {
+            values.put( e.getKey(),
+                        descr.getValueAsString( e.getKey() ) );
+        }
+        return values;
     }
 
 }
