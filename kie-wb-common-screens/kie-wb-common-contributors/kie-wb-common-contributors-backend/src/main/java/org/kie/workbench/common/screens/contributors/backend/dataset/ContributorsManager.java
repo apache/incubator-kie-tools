@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.contributors.backend.dataset;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
@@ -71,15 +72,19 @@ public class ContributorsManager {
     private Properties authorMappings = new Properties();
 
     @PostConstruct
-    private void init() throws Exception {
+    private void init() {
         initAuthorMappings();
         initDataSets();
     }
 
-    private void initAuthorMappings() throws Exception {
+    private void initAuthorMappings() {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("author_mappings.properties");
         if (is != null) {
-            authorMappings.load(is);
+            try {
+                authorMappings.load(is);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
