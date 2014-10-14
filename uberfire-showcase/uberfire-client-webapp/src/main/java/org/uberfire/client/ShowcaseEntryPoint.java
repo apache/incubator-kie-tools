@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -37,6 +37,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.screen.JSWorkbenchScreenActivity;
@@ -44,6 +45,7 @@ import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -71,6 +73,9 @@ public class ShowcaseEntryPoint {
 
     @Inject
     private ActivityManager activityManager;
+
+    @Inject
+    private PerspectiveManager perspectiveManager;
 
     @Inject
     private ClientMessageBus bus;
@@ -137,7 +142,12 @@ public class ShowcaseEntryPoint {
                     .respondsWith( new Command() {
                         @Override
                         public void execute() {
-                            placeManager.goTo( new DefaultPlaceRequest( name ) );
+                            List<PanelDefinition> panelsUnderRoot = perspectiveManager.getLivePerspectiveDefinition().getRoot().getChildren();
+                            if ( panelsUnderRoot.isEmpty() ) {
+                                Window.alert( "Sorry, can't find anywhere to launch the requested screen" );
+                            } else {
+                                placeManager.goTo( new DefaultPlaceRequest( name ), panelsUnderRoot.get( 0 ) );
+                            }
                         }
                     } ).endMenu().build().getItems().get( 0 );
             screens.add( item );
