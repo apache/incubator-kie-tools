@@ -109,23 +109,10 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
         // a short timeout is safe here.
         driver.manage().timeouts().implicitlyWait( 1, TimeUnit.SECONDS );
         List<WebElement> footers = driver.findElements( By.id( "gwt-debug-workbenchFooterPanel" ) );
-
         assertTrue( footers.isEmpty() );
-    }
 
-    @Test
-    public void ensureEmptyHeaderIsNotAttachedToPage() throws Exception {
-        driver.get( baseUrl + "?" + HeaderFooterActivator.DISABLE_PARAM + "=true" );
-
-        // the above is a full refresh of the app, so we have to wait for the bootstrap to finish
-        waitForDefaultPerspective();
-
-        // since we aren't expecting to find anything and the above line has already proven we're on the right page,
-        // a short timeout is safe here.
-        driver.manage().timeouts().implicitlyWait( 1, TimeUnit.SECONDS );
-        List<WebElement> footers = driver.findElements( By.id( "gwt-debug-workbenchHeaderPanel" ) );
-
-        assertTrue( footers.isEmpty() );
+        List<WebElement> headers = driver.findElements( By.id( "gwt-debug-workbenchHeaderPanel" ) );
+        assertTrue( headers.isEmpty() );
     }
 
 }
