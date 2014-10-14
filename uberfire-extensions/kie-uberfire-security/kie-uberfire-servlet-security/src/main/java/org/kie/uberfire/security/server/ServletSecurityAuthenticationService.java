@@ -16,19 +16,28 @@
  */
 package org.kie.uberfire.security.server;
 
+import java.security.Principal;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
+import javax.security.auth.Subject;
+import javax.security.jacc.PolicyContext;
+import javax.security.jacc.PolicyContextException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
+import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.uberfire.security.server.adapter.GroupsAdapter;
 
@@ -43,7 +52,14 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
     @Override
     public User login( String username,
                        String password ) {
-        throw new UnsupportedOperationException( "Logins must be handled by the servlet container (use login-config in web.xml)." );
+        final HttpServletRequest request = getRequestForThread();
+
+        try {
+            request.login( username, password );
+            return getUser();
+        } catch ( final ServletException e ) {
+            throw new FailedAuthenticationException();
+        }
     }
 
     @Override
@@ -76,19 +92,54 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
                 }
             }
 
-            final Set<Group> userGroups = new HashSet<Group>();
+            final String name = request.getUserPrincipal().getName();
+
+            final Set<Group> userGroups = new HashSet<Group>( loadGroups( name ) );
             for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
-                final List<Group> groupRoles = adapter.getGroups( request.getUserPrincipal().getName() );
+                final List<Group> groupRoles = adapter.getGroups( name );
                 if ( groupRoles != null ) {
                     userGroups.addAll( groupRoles );
                 }
             }
 
-            user = new UserImpl( request.getUserPrincipal().getName(), userRoles, userGroups );
+            user = new UserImpl( name, userRoles, userGroups );
             session.setAttribute( USER_SESSION_ATTR_NAME, user );
         }
 
         return user;
+    }
+
+    private Set<Group> loadGroups( final String rolePrincipleName ) {
+
+        Subject subject;
+        try {
+            subject = (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
+        } catch ( final PolicyContextException e ) {
+            subject = null;
+        }
+        if ( subject == null ) {
+            return Collections.emptySet();
+        }
+
+        final Set<Group> result = new HashSet<Group>();
+
+        final Set<java.security.Principal> principals = subject.getPrincipals();
+
+        if ( principals != null && !principals.isEmpty() ) {
+            for ( java.security.Principal p : principals ) {
+                if ( p instanceof java.security.acl.Group && rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
+                    final Enumeration<? extends Principal> groups = ( (java.security.acl.Group) p ).members();
+
+                    while ( groups.hasMoreElements() ) {
+                        final java.security.Principal groupPrincipal = groups.nextElement();
+                        result.add( new GroupImpl( groupPrincipal.getName() ) );
+                    }
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     private HttpServletRequest getRequestForThread() {
