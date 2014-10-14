@@ -6,8 +6,14 @@ import javax.inject.Named;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.wbtest.client.api.AbstractTestScreenActivity;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 
@@ -15,9 +21,13 @@ import com.google.gwt.user.client.ui.Label;
 @Named( "org.uberfire.wbtest.client.panels.custom.CustomPanelContentScreen" )
 public class CustomPanelContentScreen extends AbstractTestScreenActivity {
 
-    private Label widget;
+    private final FlowPanel panel = new FlowPanel();
 
-    @Inject CustomPanelInstanceCounter instanceCounter;
+    @Inject
+    private CustomPanelInstanceCounter instanceCounter;
+
+    @Inject
+    private PlaceManager placeManager;
 
     @Inject
     public CustomPanelContentScreen( PlaceManager pm ) {
@@ -27,9 +37,24 @@ public class CustomPanelContentScreen extends AbstractTestScreenActivity {
     @Override
     public void onStartup( PlaceRequest place ) {
         super.onStartup( place );
-        String id = place.getParameter( "debugId", "" );
-        widget = new Label( "I'm in the custom widget!" );
-        widget.ensureDebugId( "CustomPanelContentScreen-" + id );
+
+        final String id = place.getParameter( "debugId", "" );
+        panel.ensureDebugId( "CustomPanelContentScreen-" + id );
+
+        Label label = new Label( "I'm in the custom widget! debugId=" + id );
+
+        Button closeButton = new Button( "Close with PlaceManager" );
+        closeButton.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                placeManager.closePlace( new DefaultPlaceRequest( CustomPanelContentScreen.class.getName(),
+                                                                  ImmutableMap.<String, String>of( "debugId", id ) ) );
+            }
+        } );
+
+        panel.add( label );
+        panel.add( closeButton );
         instanceCounter.instanceCreated();
     }
 
@@ -40,6 +65,6 @@ public class CustomPanelContentScreen extends AbstractTestScreenActivity {
 
     @Override
     public IsWidget getWidget() {
-        return widget;
+        return panel;
     }
 }

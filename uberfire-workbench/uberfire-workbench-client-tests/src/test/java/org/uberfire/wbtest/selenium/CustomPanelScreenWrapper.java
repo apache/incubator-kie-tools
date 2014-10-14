@@ -41,7 +41,7 @@ public class CustomPanelScreenWrapper {
         throw new IllegalStateException( "Couldn't find total instance count label on page" );
     }
 
-    public String createCustomPopup() {
+    public String createNewCustomPopup() {
         int previousTotalInstances = getTotalInstanceCount();
         WebElement button = findElement( "open" );
         button.click();
@@ -53,13 +53,29 @@ public class CustomPanelScreenWrapper {
         return !found.isEmpty();
     }
 
-    public void closeLatestPopupUsingPlaceManager() {
+    public void closeLatestNewPopupUsingPlaceManager() {
         WebElement button = findElement( "closeWithPlaceManager" );
         button.click();
     }
 
-    public void closeLatestPopupByRemovingFromDom() {
+    public void closeLatestNewPopupByRemovingFromDom() {
         WebElement button = findElement( "closeByRemovingFromDom" );
+        button.click();
+    }
+
+    public String createReusableCustomPopup() {
+        WebElement button = findElement( "openReusable" );
+        button.click();
+        return "CustomPanelContentScreen-reusable";
+    }
+
+    public void closeReusablePopupUsingPlaceManager() {
+        WebElement button = findElement( "closeReusableWithPlaceManager" );
+        button.click();
+    }
+
+    public void closeReusablePopupByRemovingFromDom() {
+        WebElement button = findElement( "closeReusableByRemovingFromDom" );
         button.click();
     }
 

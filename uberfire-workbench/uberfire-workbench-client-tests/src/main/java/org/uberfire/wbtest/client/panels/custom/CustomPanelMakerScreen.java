@@ -30,9 +30,15 @@ public class CustomPanelMakerScreen extends AbstractTestScreenActivity {
     private final Label totalCustomPanelInstances = new Label( "?" );
 
     /**
-     * The most recent popup that was shown (by clicking the "Open custom place" button).
+     * The most recent popup that was shown by clicking the "Open custom place in new popup" button.
+     * This popup will only be used one time.
      */
     private PopupPanel popup;
+
+    /**
+     * A popup that can show and hide multiple times, and can host different custom panels over its life.
+     */
+    private final PopupPanel reusablePopup = new PopupPanel( false );
 
     @Inject
     private PlaceManager placeManager;
@@ -46,7 +52,7 @@ public class CustomPanelMakerScreen extends AbstractTestScreenActivity {
 
     @PostConstruct
     private void setup() {
-        Button open = new Button("Open custom place");
+        Button open = new Button("Open Custom Place in New Popup");
         open.ensureDebugId( "CustomPanelMakerScreen-open" );
         open.addClickHandler( new ClickHandler() {
 
@@ -67,7 +73,7 @@ public class CustomPanelMakerScreen extends AbstractTestScreenActivity {
             }
         } );
 
-        Button closeWithPlaceManager = new Button("Close Latest with PlaceManager");
+        Button closeWithPlaceManager = new Button("Close Latest New Popup With PlaceManager");
         closeWithPlaceManager.ensureDebugId( "CustomPanelMakerScreen-closeWithPlaceManager" );
         closeWithPlaceManager.addClickHandler( new ClickHandler() {
             @Override
@@ -78,7 +84,7 @@ public class CustomPanelMakerScreen extends AbstractTestScreenActivity {
             }
         } );
 
-        Button closeByRemovingFromDom = new Button("Remove latest popup from DOM");
+        Button closeByRemovingFromDom = new Button("Remove Latest New Popup From DOM");
         closeByRemovingFromDom.ensureDebugId( "CustomPanelMakerScreen-closeByRemovingFromDom" );
         closeByRemovingFromDom.addClickHandler( new ClickHandler() {
             @Override
@@ -90,12 +96,53 @@ public class CustomPanelMakerScreen extends AbstractTestScreenActivity {
             }
         } );
 
+
+        final SimplePanel reusedCustomContainer = new SimplePanel();
+        reusedCustomContainer.setPixelSize( 200, 200 );
+        reusablePopup.setWidget( reusedCustomContainer );
+        reusablePopup.setPopupPosition( 400, 150 );
+
+        final DefaultPlaceRequest reusablePlace = new DefaultPlaceRequest( CustomPanelContentScreen.class.getName(),
+                                                                           ImmutableMap.of( "debugId", "reusable" ) );
+
+        Button openInReusablePopup = new Button("Open Custom Place in Reusable Popup");
+        openInReusablePopup.ensureDebugId( "CustomPanelMakerScreen-openReusable" );
+        openInReusablePopup.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                reusablePopup.show();
+                placeManager.goTo( reusablePlace, reusedCustomContainer );
+            }
+        } );
+
+        Button closeReusableWithPlaceManager = new Button("Close Reusable Popup with PlaceManager");
+        closeReusableWithPlaceManager.ensureDebugId( "CustomPanelMakerScreen-closeReusableWithPlaceManager" );
+        closeReusableWithPlaceManager.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                placeManager.closePlace( reusablePlace );
+            }
+        } );
+
+        Button closeReusableByRemovingFromDom = new Button("Remove Reusable Popup from DOM");
+        closeReusableByRemovingFromDom.ensureDebugId( "CustomPanelMakerScreen-closeReusableByRemovingFromDom" );
+        closeReusableByRemovingFromDom.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                reusablePopup.hide();
+            }
+        } );
+
         liveCustomPanelInstances.ensureDebugId( "CustomPanelMakerScreen-liveCustomPanelInstances" );
         totalCustomPanelInstances.ensureDebugId( "CustomPanelMakerScreen-totalCustomPanelInstances" );
 
         panel.add( open );
         panel.add( closeWithPlaceManager );
         panel.add( closeByRemovingFromDom );
+        panel.add( openInReusablePopup );
+        panel.add( closeReusableWithPlaceManager );
+        panel.add( closeReusableByRemovingFromDom );
         panel.add( liveCustomPanelInstances );
         panel.add( totalCustomPanelInstances );
 

@@ -22,7 +22,7 @@ public class CustomPanelTest extends AbstractSeleniumTest {
 
     @Test
     public void activitiesLaunchedInCustomPanelsShouldAppear() throws Exception {
-        String id = screen.createCustomPopup();
+        String id = screen.createNewCustomPopup();
         assertTrue( screen.customPopupExistsInDom( id ) );
         assertEquals( 1, screen.getLiveInstanceCount() );
         assertEquals( 1, screen.getTotalInstanceCount() );
@@ -30,8 +30,8 @@ public class CustomPanelTest extends AbstractSeleniumTest {
 
     @Test
     public void activitiesLaunchedInCustomPanelsShouldDisposeWhenPlaceClosed() throws Exception {
-        String id = screen.createCustomPopup();
-        screen.closeLatestPopupUsingPlaceManager();
+        String id = screen.createNewCustomPopup();
+        screen.closeLatestNewPopupUsingPlaceManager();
 
         driver.manage().timeouts().implicitlyWait( 1, TimeUnit.SECONDS );
         assertFalse( screen.customPopupExistsInDom( id ) );
@@ -41,8 +41,8 @@ public class CustomPanelTest extends AbstractSeleniumTest {
 
     @Test
     public void activitiesLaunchedInCustomPanelsShouldDisposeWhenRemovedFromDom() throws Exception {
-        String id = screen.createCustomPopup();
-        screen.closeLatestPopupByRemovingFromDom();
+        String id = screen.createNewCustomPopup();
+        screen.closeLatestNewPopupByRemovingFromDom();
 
         driver.manage().timeouts().implicitlyWait( 1, TimeUnit.SECONDS );
         assertFalse( screen.customPopupExistsInDom( id ) );
@@ -52,7 +52,7 @@ public class CustomPanelTest extends AbstractSeleniumTest {
 
     @Test
     public void liveCustomPanelsShouldNotBreakPerspectiveSwitching() throws Exception {
-        screen.createCustomPopup();
+        screen.createNewCustomPopup();
 
         driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
 
@@ -66,8 +66,8 @@ public class CustomPanelTest extends AbstractSeleniumTest {
 
     @Test
     public void removedCustomPanelsShouldNotBreakPerspectiveSwitching() throws Exception {
-        screen.createCustomPopup();
-        screen.closeLatestPopupUsingPlaceManager();
+        screen.createNewCustomPopup();
+        screen.closeLatestNewPopupUsingPlaceManager();
 
         driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
 
@@ -79,4 +79,24 @@ public class CustomPanelTest extends AbstractSeleniumTest {
         // all tests should check for errors in their teardown (this should be done in the abstract UF test class)
     }
 
+    @Test
+    public void customPanelContainersShouldBeReusable() throws Exception {
+        String id = screen.createReusableCustomPopup();
+        assertTrue( screen.customPopupExistsInDom( id ) );
+        assertEquals( 1, screen.getLiveInstanceCount() );
+        assertEquals( 1, screen.getTotalInstanceCount() );
+
+        screen.closeReusablePopupUsingPlaceManager();
+
+        driver.manage().timeouts().implicitlyWait( 1, TimeUnit.SECONDS );
+        assertFalse( screen.customPopupExistsInDom( id ) );
+        setNormalTimeout();
+        assertEquals( 0, screen.getLiveInstanceCount() );
+        assertEquals( 1, screen.getTotalInstanceCount() );
+
+        id = screen.createReusableCustomPopup();
+        assertTrue( screen.customPopupExistsInDom( id ) );
+        assertEquals( 1, screen.getLiveInstanceCount() );
+        assertEquals( 2, screen.getTotalInstanceCount() );
+    }
 }
