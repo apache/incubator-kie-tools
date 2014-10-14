@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss by Red Hat.
+ * Copyright 2012 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,29 @@
 package org.kie.uberfire.client.forms;
 
 import java.util.Map;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-/**
- *
- * This interface defines the requirements for a Form View
- * In order to use a screen attached to a process or a task form
- * you must implement this interface to notify the screen about the
- * required inputs and required outputs
- * 
- */
-public interface FormDisplayerView {
-    Map<String, Object> getOutputMap();
-    void setInputMap(Map<String, String> params);
-    void setReadOnly(boolean readOnly);
-    boolean isReadOnly();
+@Portable
+public class GetFormParamsEvent {
+    private String action;
+    private Map<String, Object> params;
+
+    public GetFormParamsEvent() {
+    }
+
+    public GetFormParamsEvent(String action, Map<String, Object> params) {
+        this.action = action;
+        this.params = params;
+    }
+
+    public Map<String, Object> getParams() {
+        return params;
+    }
+
+    public String getAction() {
+        return action;
+    }
+    
+    
+
 }
