@@ -23,6 +23,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.util.Layouts;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -63,6 +64,25 @@ public interface PlaceManager {
                final PlaceRequest place,
                final PanelDefinition panel );
 
+    /**
+     * Locates the Activity associated with the given place, and if that activity is not already part of the workbench,
+     * starts it and adds its view to the given widget container. If the activity is already part of the current
+     * workbench, it will be selected, and it will not be moved from its current location.
+     * <p>
+     * The activity will be properly shut down in any of the following scenarios:
+     * <ol>
+     *  <li>by a call to one of the PlaceManager methods for closing a place: {@link #closePlace(PlaceRequest)},
+     *      {@link #closePlace(String)}, or {@link #closeAllPlaces()}
+     *  <li>by switching to another perspective, which has the side effect of closing all places
+     *  <li>by removing the activity's view from the DOM, either using the GWT Widget API, or by direct DOM manipulation.
+     * </ol>
+     * @param place
+     * @param addTo
+     *            The container to add the widget's view to. Its corresponding DOM element must have a CSS
+     *            <tt>position</tt> setting of <tt>relative</tt> or <tt>absolute</tt> and an explicit size set. This can
+     *            be accomplished through direct use of CSS, or through the
+     *            {@link Layouts#setToFillParent(com.google.gwt.user.client.ui.Widget)} call.
+     */
     void goTo( final PlaceRequest place,
                final HasWidgets addTo );
 

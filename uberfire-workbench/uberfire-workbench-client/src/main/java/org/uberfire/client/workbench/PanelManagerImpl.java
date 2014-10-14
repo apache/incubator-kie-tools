@@ -26,6 +26,7 @@ import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.debug.Debug;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -380,30 +381,7 @@ public class PanelManagerImpl implements PanelManager {
         PanelDefinition panelDef = new PanelDefinitionImpl( panelType );
         final WorkbenchPanelPresenter panelPresenter = beanFactory.newWorkbenchPanel( panelDef );
         Widget panelViewWidget = panelPresenter.getPanelView().asWidget();
-        panelViewWidget.addAttachHandler( new AttachEvent.Handler() {
-            private boolean detaching;
-            @Override
-            public void onAttachOrDetach( AttachEvent event ) {
-                if ( !event.isAttached() && !detaching && mapPanelDefinitionToPresenter.containsKey( panelPresenter.getDefinition() ) ) {
-                    detaching = true;
-                    Scheduler.get().scheduleFinally( new ScheduledCommand() {
-                        @Override
-                        public void execute() {
-                            try {
-                                List<PartDefinition> parts = new ArrayList<PartDefinition>( panelPresenter.getDefinition()
-                                        .getParts() );
-                                for ( PartDefinition part : parts ) {
-                                    placeManager.get().closePlace( part.getPlace() );
-                                }
-                                removeWorkbenchPanel( panelPresenter.getDefinition() );
-                            } finally {
-                                detaching = false;
-                            }
-                        }
-                    } );
-                }
-            }
-        } );
+        panelViewWidget.addAttachHandler( new CustomPanelCleanupHandler( panelPresenter ) );
         container.add( panelViewWidget );
         mapPanelDefinitionToPresenter.put( panelDef,
                                            panelPresenter );
@@ -411,4 +389,50 @@ public class PanelManagerImpl implements PanelManager {
         onPanelFocus( panelDef );
         return panelDef;
     }
+
+    /**
+     * Cleanup handler for custom panels that are removed from the DOM before they are removed via PlaceManager.
+     *
+     * @see PanelManagerImpl#addCustomPanel(HasWidgets, String)
+     */
+    private final class CustomPanelCleanupHandler implements AttachEvent.Handler {
+
+        private final WorkbenchPanelPresenter panelPresenter;
+        private boolean detaching;
+
+        private CustomPanelCleanupHandler( WorkbenchPanelPresenter panelPresenter ) {
+            this.panelPresenter = panelPresenter;
+        }
+
+        @Override
+        public void onAttachOrDetach( AttachEvent event ) {
+            if ( event.isAttached() ) {
+                return;
+            }
+            if ( !detaching && mapPanelDefinitionToPresenter.containsKey( panelPresenter.getDefinition() ) ) {
+                System.out.println("Running cleanup for " + Debug.objectId( this ));
+                detaching = true;
+                Scheduler.get().scheduleFinally( new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        try {
+                            List<PartDefinition> parts = new ArrayList<PartDefinition>( panelPresenter.getDefinition().getParts() );
+                            for ( PartDefinition part : parts ) {
+                                placeManager.get().closePlace( part.getPlace() );
+                            }
+
+                            // in many cases, the panel will have cleaned itself up when we closed its last part in the loop above.
+                            // for other custom panel use cases, the panel may still be open. we can do the cleanup here.
+                            if ( mapPanelDefinitionToPresenter.containsKey( panelPresenter.getDefinition() ) ) {
+                                removeWorkbenchPanel( panelPresenter.getDefinition() );
+                            }
+                        } finally {
+                            detaching = false;
+                        }
+                    }
+                } );
+            }
+        }
+    }
+
 }

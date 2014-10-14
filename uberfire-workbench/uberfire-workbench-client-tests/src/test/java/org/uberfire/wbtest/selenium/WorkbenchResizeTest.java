@@ -100,6 +100,7 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
     @Test
     public void ensureEmptyFooterIsNotAttachedToPage() throws Exception {
         driver.get( baseUrl + "?" + HeaderFooterActivator.DISABLE_PARAM + "=true" );
+        skipUncaughtExceptionCheck = true;
 
         // the above is a full refresh of the app, so we have to wait for the bootstrap to finish
         waitForDefaultPerspective();
