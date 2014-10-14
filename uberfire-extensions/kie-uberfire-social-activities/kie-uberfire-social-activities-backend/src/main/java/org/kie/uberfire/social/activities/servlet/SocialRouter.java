@@ -4,7 +4,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 
 import org.kie.uberfire.social.activities.service.SocialAdapter;
 import org.kie.uberfire.social.activities.service.SocialAdapterRepositoryAPI;
@@ -18,7 +17,7 @@ public class SocialRouter {
     private Map<Class, SocialAdapter> socialAdapters;
 
     @PostConstruct
-    public void setup() throws ServletException {
+    public void setup() {
         socialAdapters = socialAdapterRepositoryAPI.getSocialAdapters();
     }
 
