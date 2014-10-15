@@ -1,7 +1,7 @@
 package org.kie.uberfire.apps.api;
 
-import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -18,14 +18,16 @@ public class Directory {
     public Directory() {
     }
 
-    public Directory( String name, String URI ) {
+    public Directory( String name,
+                      String URI ) {
         this.name = name;
         this.URI = URI;
         this.parent = null;
     }
 
-    public Directory( String name, String URI,
-                      Directory parent) {
+    public Directory( String name,
+                      String URI,
+                      Directory parent ) {
         this.name = name;
         this.parent = parent;
         this.URI = URI;
@@ -37,12 +39,6 @@ public class Directory {
 
     public List<Directory> getChildsDirectories() {
         return childsDirectories;
-    }
-
-    public List<String> getBreadCrumbs() {
-        List<String> breadcrumbs = new ArrayList<String>();
-        breadcrumbs.add( name );
-        return breadcrumbs;
     }
 
     public void addChildDirectory( Directory directory ) {
@@ -60,4 +56,6 @@ public class Directory {
     public String getURI() {
         return URI;
     }
+
+
 }

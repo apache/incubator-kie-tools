@@ -37,21 +37,21 @@ public class ThumbnailApp extends Composite {
         addClickPopUpHandler( clickCommand );
     }
 
-    public ThumbnailApp( String dirName,
+    public ThumbnailApp( String dirName, String dirURI,
                          IconType iconType,
                          final ParameterizedCommand<String> clickCommand ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         createLabel( dirName );
         createIcon( iconType );
-        addClickCommandHandler( clickCommand, dirName );
+        addClickCommandHandler( clickCommand, dirURI );
     }
 
     private void addClickCommandHandler( final ParameterizedCommand<String> clickCommand,
-                                         final String dirName ) {
+                                         final String dirURI ) {
         thumbLink.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                clickCommand.execute( dirName );
+                clickCommand.execute( dirURI );
             }
         } );
     }

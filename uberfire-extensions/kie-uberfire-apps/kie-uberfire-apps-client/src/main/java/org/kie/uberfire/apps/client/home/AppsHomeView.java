@@ -8,6 +8,8 @@ import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.Thumbnails;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -15,6 +17,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.uberfire.apps.api.Directory;
+import org.kie.uberfire.apps.api.DirectoryBreadCrumb;
 import org.kie.uberfire.apps.client.home.components.ThumbnailApp;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -56,9 +59,19 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     }
 
     @Override
-    public void setupBreadCrumbs( List<String> breadCrumbs ) {
-        for ( String breadCrumb : breadCrumbs ) {
-            dirs.add( new NavLink( breadCrumb ) );
+    public void setupBreadCrumbs( List<DirectoryBreadCrumb> breadCrumbs,
+                                  final ParameterizedCommand<String> breadCrumbAction ) {
+        dirs.clear();
+        for ( DirectoryBreadCrumb breadCrumb : breadCrumbs ) {
+            final NavLink bread = new NavLink( breadCrumb.getName() );
+            bread.setTarget( breadCrumb.getUri() );
+            bread.addClickHandler( new ClickHandler() {
+                @Override
+                public void onClick( ClickEvent event ) {
+                    breadCrumbAction.execute( bread.getTarget() );
+                }
+            } );
+            dirs.add( bread );
         }
     }
 
@@ -71,7 +84,7 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     public void setupChildsDirectories( List<Directory> childsDirectories, ParameterizedCommand<String> clickCommand ) {
         dirContent.clear();
         for ( Directory childsDirectory : childsDirectories ) {
-            final ThumbnailApp link = new ThumbnailApp( childsDirectory.getName(), IconType.FOLDER_OPEN, clickCommand );
+            final ThumbnailApp link = new ThumbnailApp( childsDirectory.getName(), childsDirectory.getURI(), IconType.FOLDER_OPEN, clickCommand );
             dirContent.add( link );
         }
     }

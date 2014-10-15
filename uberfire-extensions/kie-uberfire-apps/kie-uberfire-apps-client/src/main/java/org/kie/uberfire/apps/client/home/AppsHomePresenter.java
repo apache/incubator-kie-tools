@@ -10,6 +10,7 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.apps.api.AppsPersistenceAPI;
 import org.kie.uberfire.apps.api.Directory;
+import org.kie.uberfire.apps.api.DirectoryBreadCrumb;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -24,7 +25,8 @@ public class AppsHomePresenter {
 
     public interface View extends UberView<AppsHomePresenter> {
 
-        void setupBreadCrumbs( List<String> breadcrumbs );
+        void setupBreadCrumbs( List<DirectoryBreadCrumb> breadcrumbs,
+                               ParameterizedCommand<String> breadCrumbAction );
 
         void setupAddDir( ParameterizedCommand<String> clickCommand );
 
@@ -46,6 +48,8 @@ public class AppsHomePresenter {
 
     private Directory currentDirectory;
 
+    private Directory root;
+
     @PostConstruct
     public void init() {
     }
@@ -55,8 +59,9 @@ public class AppsHomePresenter {
         view.clear();
 
         appService.call( new RemoteCallback<Directory>() {
-            public void callback( Directory root ) {
-                currentDirectory = root;
+            public void callback( Directory root_ ) {
+                root = root_;
+                currentDirectory = root_;
                 setupView();
             }
         }, new ErrorCallback<Object>() {
@@ -68,13 +73,37 @@ public class AppsHomePresenter {
         } ).getRootDirectory();
     }
 
+    private ParameterizedCommand<String> generateBreadCrumbViewCommand() {
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( String parameter ) {
+                currentDirectory = searchForDirectory( parameter, root );
+                setupView();
+            }
+        };
+    }
+
+    private Directory searchForDirectory( String parameter,
+                                          Directory candidate ) {
+        if ( candidate.getURI().equalsIgnoreCase( parameter ) ) {
+            return candidate;
+        }
+        Directory target = null;
+        for ( Directory directory : candidate.getChildsDirectories() ) {
+            target =  searchForDirectory( parameter, directory );
+            if ( target != null ) {
+                break;
+            }
+        }
+        return target;
+    }
+
     private ParameterizedCommand<String> generateDirectoryViewCommand() {
         return new ParameterizedCommand<String>() {
             @Override
             public void execute( String parameter ) {
                 for ( Directory candidate : currentDirectory.getChildsDirectories() ) {
-                    //ederign URI?
-                    if ( candidate.getName().equalsIgnoreCase( parameter ) ) {
+                    if ( candidate.getURI().equalsIgnoreCase( parameter ) ) {
                         currentDirectory = candidate;
                         setupView();
                     }
@@ -85,7 +114,7 @@ public class AppsHomePresenter {
 
     private void setupView() {
         view.clear();
-        view.setupBreadCrumbs( currentDirectory.getBreadCrumbs() );
+        view.setupBreadCrumbs( DirectoryBreadCrumb.getBreadCrumbs(currentDirectory), generateBreadCrumbViewCommand() );
         view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand() );
         view.setupAddDir( generateAddDirCommand() );
     }
@@ -114,33 +143,6 @@ public class AppsHomePresenter {
             }
         };
     }
-
-//    private Directory searchForCurrentDirectory( String directoryName,
-//                                                 Directory root ) {
-//        if ( root.getName().equalsIgnoreCase( directoryName ) ) {
-//            return root;
-//        } else {
-//            return searchForChild( directoryName, root.getChildsDirectories() );
-//        }
-//    }
-//
-//    private Directory searchForChild( String directoryName,
-//                                      List<Directory> childs ) {
-//        Directory candidate = null;
-//        if ( candidate == null ) {
-//            for ( Directory current : childs ) {
-//                if ( current.getName().equalsIgnoreCase( directoryName ) ) {
-//                    candidate = current;
-//                    return candidate;
-//                } else {
-//                    if ( !current.getChildsDirectories().isEmpty() ) {
-//                       candidate = searchForChild( directoryName, current.getChildsDirectories() );
-//                    }
-//                }
-//            }
-//        }
-//        return candidate;
-//    }
 
     @WorkbenchPartTitle
     public String getTitle() {
