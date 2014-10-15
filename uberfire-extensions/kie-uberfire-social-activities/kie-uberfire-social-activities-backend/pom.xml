@@ -87,6 +87,7 @@
     <dependency>
       <groupId>org.apache.abdera</groupId>
       <artifactId>abdera-server</artifactId>
+      <optional>true</optional>
     </dependency>
 
   </dependencies>
