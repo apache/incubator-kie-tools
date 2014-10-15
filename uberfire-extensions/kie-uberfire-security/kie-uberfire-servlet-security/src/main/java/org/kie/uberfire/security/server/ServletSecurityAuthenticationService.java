@@ -81,29 +81,31 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
         if ( request.getUserPrincipal() == null ) {
             return null;
         }
-
+        User user = null;
         final HttpSession session = request.getSession( false );
-        User user = (User) session.getAttribute( USER_SESSION_ATTR_NAME );
-        if ( user == null ) {
-            final Set<Role> userRoles = new HashSet<Role>();
-            for ( final Role checkRole : RolesRegistry.get().getRegisteredRoles() ) {
-                if ( request.isUserInRole( checkRole.getName() ) ) {
-                    userRoles.add( checkRole );
+        if (session != null) {
+            user = (User) session.getAttribute( USER_SESSION_ATTR_NAME );
+            if ( user == null ) {
+                final Set<Role> userRoles = new HashSet<Role>();
+                for ( final Role checkRole : RolesRegistry.get().getRegisteredRoles() ) {
+                    if ( request.isUserInRole( checkRole.getName() ) ) {
+                        userRoles.add( checkRole );
+                    }
                 }
-            }
 
-            final String name = request.getUserPrincipal().getName();
+                final String name = request.getUserPrincipal().getName();
 
-            final Set<Group> userGroups = new HashSet<Group>( loadGroups( name ) );
-            for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
-                final List<Group> groupRoles = adapter.getGroups( name );
-                if ( groupRoles != null ) {
-                    userGroups.addAll( groupRoles );
+                final Set<Group> userGroups = new HashSet<Group>( loadGroups( name ) );
+                for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
+                    final List<Group> groupRoles = adapter.getGroups( name );
+                    if ( groupRoles != null ) {
+                        userGroups.addAll( groupRoles );
+                    }
                 }
-            }
 
-            user = new UserImpl( name, userRoles, userGroups );
-            session.setAttribute( USER_SESSION_ATTR_NAME, user );
+                user = new UserImpl( name, userRoles, userGroups );
+                session.setAttribute( USER_SESSION_ATTR_NAME, user );
+            }
         }
 
         return user;
@@ -142,7 +144,7 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
         return result;
     }
 
-    private HttpServletRequest getRequestForThread() {
+    protected static HttpServletRequest getRequestForThread() {
         HttpServletRequest request = SecurityIntegrationFilter.getRequest();
         if ( request == null ) {
             throw new IllegalStateException( "This service only works from threads that are handling HTTP servlet requests" );
