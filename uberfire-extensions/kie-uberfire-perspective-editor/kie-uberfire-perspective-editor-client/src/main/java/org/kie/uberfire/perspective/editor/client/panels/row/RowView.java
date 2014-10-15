@@ -91,8 +91,13 @@ public class RowView extends Composite {
         rowWidget.getElement().getStyle().setProperty( "marginBottom", "15px" );
 
         for ( ColumnEditor columnEditor : columnEditors ) {
-            Column column = createColumn( columnEditor.getSpan() );
+            Column column = createColumn( columnEditor);
             ColumnEditorUI parent = new ColumnEditorUI( row, column, columnEditor.getSpan() );
+
+            if(!columnEditor.hasElements()) {
+                generateDropColumnPanel( columnEditor, column, parent );
+            }
+
             for ( RowEditor editor : columnEditor.getRows() ) {
                 column.add( new RowView( parent, editor.getRowSpam() ) );
             }
@@ -127,6 +132,19 @@ public class RowView extends Composite {
     private void build() {
         row.getWidget().add( generateHeaderRow() );
         row.getWidget().add( generateColumns() );
+    }
+
+    private Column createColumn( ColumnEditor columnEditor ) {
+        Column column = new Column( Integer.valueOf( columnEditor.getSpan() ) );
+        column.add( generateLabel( "Column" ) );
+        setCSS( column );
+        return column;
+    }
+
+    private void generateDropColumnPanel( ColumnEditor columnEditor,
+                                          Column column,
+                                          ColumnEditorUI parent ) {
+        column.add( new DropColumnPanel( parent ) );
     }
 
     private Column createColumn( String span ) {

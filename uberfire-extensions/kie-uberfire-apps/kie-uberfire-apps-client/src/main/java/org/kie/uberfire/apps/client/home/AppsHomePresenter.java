@@ -35,6 +35,8 @@ public class AppsHomePresenter {
 
         void clear();
 
+        void setupChildComponents( List<String> childComponents,
+                                   ParameterizedCommand<String> stringParameterizedCommand );
     }
 
     @Inject
@@ -114,9 +116,20 @@ public class AppsHomePresenter {
 
     private void setupView() {
         view.clear();
-        view.setupBreadCrumbs( DirectoryBreadCrumb.getBreadCrumbs(currentDirectory), generateBreadCrumbViewCommand() );
+        view.setupBreadCrumbs( DirectoryBreadCrumb.getBreadCrumbs( currentDirectory ), generateBreadCrumbViewCommand() );
         view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand() );
+        view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
         view.setupAddDir( generateAddDirCommand() );
+    }
+
+    private ParameterizedCommand<String> generateComponentViewCommand() {
+
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( String parameter ) {
+                placeManager.goTo( parameter );
+            }
+        };
     }
 
     private ParameterizedCommand<String> generateAddDirCommand() {

@@ -11,6 +11,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.apps.client.home.components.popup.NewDirectory;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -19,6 +21,12 @@ public class ThumbnailApp extends Composite {
 
     @UiField
     ThumbnailLink thumbLink;
+
+    @UiField
+    Label label;
+
+    @UiField
+    Icon icon;
 
     private NewDirectory newDirectory = new NewDirectory();
 
@@ -34,24 +42,39 @@ public class ThumbnailApp extends Composite {
                          final ParameterizedCommand<String> clickCommand ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         createIcon( iconType );
+        displayNoneOnLabel();
         addClickPopUpHandler( clickCommand );
     }
 
-    public ThumbnailApp( String dirName, String dirURI,
+    private void displayNoneOnLabel() {
+        label.getElement().getStyle().setProperty("display", "none");
+    }
+
+    public ThumbnailApp( String componentName,
                          IconType iconType,
                          final ParameterizedCommand<String> clickCommand ) {
         initWidget( uiBinder.createAndBindUi( this ) );
-        createLabel( dirName );
         createIcon( iconType );
+        createLabel( componentName );
+        addClickCommandHandler( clickCommand, componentName );
+    }
+
+    public ThumbnailApp( String dirName,
+                         String dirURI,
+                         IconType iconType,
+                         final ParameterizedCommand<String> clickCommand ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        createIcon( iconType );
+        createLabel( dirName );
         addClickCommandHandler( clickCommand, dirURI );
     }
 
     private void addClickCommandHandler( final ParameterizedCommand<String> clickCommand,
-                                         final String dirURI ) {
+                                         final String parameter ) {
         thumbLink.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                clickCommand.execute( dirURI );
+                clickCommand.execute( parameter );
             }
         } );
     }
@@ -66,15 +89,13 @@ public class ThumbnailApp extends Composite {
     }
 
     private void createLabel( String name ) {
-        Label label = new Label( name );
-        thumbLink.add( label );
+        label.setText( name );
     }
 
     private void createIcon( IconType iconType
                            ) {
-        Icon icon = new Icon( iconType );
         icon.setIconSize( IconSize.LARGE );
-        thumbLink.add( icon );
+        icon.setType( iconType );
     }
 
 }

@@ -3,11 +3,10 @@
 
 <module>
   <source path='client'/>
-
-
   <inherits name="org.kie.uberfire.properties.editor.PropertiesEditorClient"/>
   <inherits name="org.kie.uberfire.properties.editor.PropertiesEditorAPI"/>
   <inherits name="org.kie.uberfire.perspective.editor.PerspectiveEditorAPI"/>
+  <inherits name="org.uberfire.UberfireClientAll"/>
 
 
 </module>

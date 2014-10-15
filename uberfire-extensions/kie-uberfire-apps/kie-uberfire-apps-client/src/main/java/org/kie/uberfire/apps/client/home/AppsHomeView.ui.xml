@@ -20,6 +20,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui" >
+
+
   <g:FlowPanel ui:field="mainPanel">
     <b:Breadcrumbs ui:field="dirs"/>
     <b:Thumbnails ui:field="dirContent"/>

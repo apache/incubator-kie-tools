@@ -15,6 +15,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditHTML;
+import org.kie.uberfire.perspective.editor.client.panels.dnd.DropColumnPanel;
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 import org.kie.uberfire.perspective.editor.client.structure.HTMLEditorWidgetUI;
@@ -101,11 +102,21 @@ public class HTMLView extends Composite {
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                parent.getWidget().remove( HTMLView.this );
-                htmlEditor.removeFromParent();
+                removeThisWidgetFromParent();
+                addDropColumnPanel();
             }
         } );
         return remove;
+    }
+
+    private void addDropColumnPanel() {
+        ColumnEditorUI columnEditorUIParent =(ColumnEditorUI) parent;
+        columnEditorUIParent.getWidget().add( new DropColumnPanel( columnEditorUIParent ) );
+    }
+
+    private void removeThisWidgetFromParent() {
+        parent.getWidget().remove( this );
+        htmlEditor.removeFromParent();
     }
 
     private Label generateLabel( String row ) {

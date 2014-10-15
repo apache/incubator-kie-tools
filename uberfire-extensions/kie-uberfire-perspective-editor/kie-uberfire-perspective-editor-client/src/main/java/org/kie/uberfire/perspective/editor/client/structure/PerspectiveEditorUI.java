@@ -8,7 +8,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import org.kie.uberfire.perspective.editor.client.util.PerspectiveEditorJSONAdapter;
+import org.kie.uberfire.perspective.editor.client.util.PerspectiveEditorAdapter;
+import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenParameter;
 import org.kie.uberfire.properties.editor.model.PropertyEditorChangeEvent;
@@ -17,8 +18,6 @@ import org.kie.uberfire.properties.editor.model.PropertyEditorFieldInfo;
 @ApplicationScoped
 public class PerspectiveEditorUI implements EditorWidget {
 
-    private String name = "";
-
     private FlowPanel container;
 
     private List<EditorWidget> rowEditors = new ArrayList<EditorWidget>();
@@ -26,6 +25,10 @@ public class PerspectiveEditorUI implements EditorWidget {
     public static String PROPERTY_EDITOR_KEY = "PerspectiveEditor";
 
     public Map<String, Map<String, String>> screenProperties = new HashMap<String, Map<String, String>>();
+
+    private List<String> tags;
+
+    private String name = "";
 
     public PerspectiveEditorUI() {
 
@@ -54,9 +57,9 @@ public class PerspectiveEditorUI implements EditorWidget {
         rowEditors.remove( editorWidget );
     }
 
-    public org.kie.uberfire.perspective.editor.model.PerspectiveEditor toJSONStructure() {
-        PerspectiveEditorJSONAdapter adapter = new PerspectiveEditorJSONAdapter( this );
-        return adapter.convertToJSON();
+    public PerspectiveEditor toPerspectiveEditor() {
+        PerspectiveEditorAdapter adapter = new PerspectiveEditorAdapter( this );
+        return adapter.convertToPerspectiveEditor();
     }
 
     public List<EditorWidget> getRowEditors() {
@@ -114,5 +117,19 @@ public class PerspectiveEditorUI implements EditorWidget {
 
     public String getName() {
         return name;
+    }
+
+    public void setTags( List<String> tags ) {
+        if ( tags == null ) {
+            tags = new ArrayList<String>();
+        }
+        this.tags = tags;
+    }
+
+    public List<String> getTags() {
+        if ( tags == null ) {
+            return new ArrayList<String>();
+        }
+        return tags;
     }
 }

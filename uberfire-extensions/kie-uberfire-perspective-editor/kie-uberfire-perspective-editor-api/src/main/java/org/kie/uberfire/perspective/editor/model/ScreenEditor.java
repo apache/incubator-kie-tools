@@ -34,4 +34,9 @@ public class ScreenEditor {
     public String getScreenName() {
         return screenName;
     }
+
+
+    public void setParameters( List<ScreenParameter> parameters ) {
+        this.parameters = parameters;
+    }
 }

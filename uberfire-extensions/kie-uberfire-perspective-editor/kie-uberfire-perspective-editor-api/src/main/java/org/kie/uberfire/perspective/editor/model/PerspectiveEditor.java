@@ -10,16 +10,18 @@ public class PerspectiveEditor {
 
     private String name;
 
+    private List<String> tags;
+
     private List<RowEditor> rows = new ArrayList<RowEditor>(  );
 
-    public PerspectiveEditor(){
+    public PerspectiveEditor( String name,
+                              List<String> tags ){
 
-    }
-
-    public PerspectiveEditor( String name ) {
         this.name = name;
+        this.tags = tags;
     }
 
+    public PerspectiveEditor(){}
 
     public void addRow( RowEditor rowEditor ) {
         rows.add(rowEditor);
@@ -35,5 +37,9 @@ public class PerspectiveEditor {
 
     public void setName( String name ) {
         this.name = name;
+    }
+
+    public List<String> getTags() {
+        return tags;
     }
 }

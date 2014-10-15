@@ -50,4 +50,8 @@ public class ColumnEditor {
     public List<HTMLEditor> getHtmls() {
         return htmls;
     }
+
+    public boolean hasElements() {
+        return !rows.isEmpty() || !screens.isEmpty() || !htmls.isEmpty();
+    }
 }

@@ -1,6 +1,7 @@
 package org.kie.uberfire.perspective.editor.client.panels.perspective;
 
 import java.util.Collection;
+import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -27,10 +28,12 @@ public class PerspectivePresenter extends Composite {
     private Caller<PerspectiveEditorPersistenceAPI> perspectiveEditorPersistenceAPI;
 
 
-    public void save( String perspectiveName ) {
+    public void save( String perspectiveName,
+                      List<String> tagsList ) {
         PerspectiveEditorUI perspectiveEditor = view.getPerspectiveEditor();
         perspectiveEditor.setName( perspectiveName );
-        PerspectiveEditor perspective = perspectiveEditor.toJSONStructure();
+        perspectiveEditor.setTags( tagsList );
+        PerspectiveEditor perspective = perspectiveEditor.toPerspectiveEditor();
         perspectiveEditorPersistenceAPI.call().save( perspective );
     }
 

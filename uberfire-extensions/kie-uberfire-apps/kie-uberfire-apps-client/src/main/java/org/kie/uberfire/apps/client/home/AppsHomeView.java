@@ -62,13 +62,12 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     public void setupBreadCrumbs( List<DirectoryBreadCrumb> breadCrumbs,
                                   final ParameterizedCommand<String> breadCrumbAction ) {
         dirs.clear();
-        for ( DirectoryBreadCrumb breadCrumb : breadCrumbs ) {
+        for ( final DirectoryBreadCrumb breadCrumb : breadCrumbs ) {
             final NavLink bread = new NavLink( breadCrumb.getName() );
-            bread.setTarget( breadCrumb.getUri() );
             bread.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
-                    breadCrumbAction.execute( bread.getTarget() );
+                    breadCrumbAction.execute(  breadCrumb.getUri() );
                 }
             } );
             dirs.add( bread );
@@ -81,8 +80,8 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     }
 
     @Override
-    public void setupChildsDirectories( List<Directory> childsDirectories, ParameterizedCommand<String> clickCommand ) {
-        dirContent.clear();
+    public void setupChildsDirectories( List<Directory> childsDirectories,
+                                        ParameterizedCommand<String> clickCommand ) {
         for ( Directory childsDirectory : childsDirectories ) {
             final ThumbnailApp link = new ThumbnailApp( childsDirectory.getName(), childsDirectory.getURI(), IconType.FOLDER_OPEN, clickCommand );
             dirContent.add( link );
@@ -92,6 +91,16 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     @Override
     public void clear() {
         dirContent.clear();
+    }
+
+    @Override
+    public void setupChildComponents( List<String> childComponents,
+                                      ParameterizedCommand<String> clickCommand ) {
+        for ( String childComponent : childComponents ) {
+            final ThumbnailApp link = new ThumbnailApp( childComponent, IconType.FILE, clickCommand );
+            dirContent.add( link );
+        }
+
     }
 
     private void generateCreateDirThumbNail( ParameterizedCommand<String> clickCommand ) {

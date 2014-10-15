@@ -1,7 +1,9 @@
 package org.kie.uberfire.apps.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,6 +12,8 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.uberfire.apps.api.AppsPersistenceAPI;
 import org.kie.uberfire.apps.api.Directory;
+import org.kie.uberfire.perspective.editor.PerspectiveEditorPersistence;
+import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
@@ -30,6 +34,9 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     @Named("systemFS")
     private FileSystem fileSystem;
 
+    @Inject
+    PerspectiveEditorPersistence perspectiveEditorPersistence;
+
     @PostConstruct
     public void setup() {
     }
@@ -37,9 +44,34 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     @Override
     public Directory getRootDirectory() {
 
+        final Map<String, List<String>> tagMap = generateTagMap();
+
+        Directory root = buildDirectories( tagMap );
+
+        return root;
+    }
+
+    private Map<String, List<String>> generateTagMap() {
+        Map<String, List<String>> tagsMap = new HashMap<String, List<String>>();
+        final List<PerspectiveEditor> perspectiveEditors = perspectiveEditorPersistence.loadAll();
+        for ( PerspectiveEditor perspectiveEditor : perspectiveEditors ) {
+            for ( String tag : perspectiveEditor.getTags() ) {
+                List<String> perspectives = tagsMap.get( tag.toUpperCase() );
+                if ( perspectives == null ) {
+                    perspectives = new ArrayList<String>();
+                }
+                perspectives.add( perspectiveEditor.getName() );
+                tagsMap.put( tag.toUpperCase(), perspectives );
+            }
+        }
+
+        return tagsMap;
+    }
+
+    private Directory buildDirectories( Map<String, List<String>> tagMap ) {
         Path homeDir = getHomeDir();
 
-        Directory root = new Directory( homeDir.getFileName().toString(), homeDir.toUri().toString() );
+        Directory root = new Directory( homeDir.getFileName().toString(), homeDir.toUri().toString(), tagMap );
 
         root.addChildDirectories( extractAllChildDirectories( root, homeDir ) );
 
@@ -79,7 +111,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
         if ( !ioService.exists( newDir ) ) {
             createDir( newDir );
         }
-        return getDirectory( name, newDir.toUri().toString(), parentDirectory);
+        return getDirectory( name, newDir.toUri().toString(), parentDirectory );
     }
 
     private Path recursiveSearchForDir( Path dir,

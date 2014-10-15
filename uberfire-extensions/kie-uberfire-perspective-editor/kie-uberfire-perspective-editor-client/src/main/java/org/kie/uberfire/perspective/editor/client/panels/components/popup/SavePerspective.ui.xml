@@ -34,12 +34,33 @@
 
       <b:ControlGroup>
         <b:ControlLabel>
-          Save Perspective
+          Perspective Name
         </b:ControlLabel>
         <b:Controls>
           <b:TextBox ui:field="name" placeholder="perspective name"/>
         </b:Controls>
 
+      </b:ControlGroup>
+
+      <b:ControlGroup>
+        <b:ControlLabel>
+          Tag Name
+        </b:ControlLabel>
+        <b:Controls>
+          <b:TextBox ui:field="tag" placeholder="tag name"/>
+          <b:Button icon="PLUS" type="PRIMARY" ui:field="addTag">
+            Add Tag
+          </b:Button>
+        </b:Controls>
+      </b:ControlGroup>
+
+      <b:ControlGroup>
+        <b:ControlLabel>
+          Tags
+        </b:ControlLabel>
+        <b:Controls>
+          <g:FlowPanel ui:field="tags"/>
+        </b:Controls>
       </b:ControlGroup>
 
       <b:ModalFooter>

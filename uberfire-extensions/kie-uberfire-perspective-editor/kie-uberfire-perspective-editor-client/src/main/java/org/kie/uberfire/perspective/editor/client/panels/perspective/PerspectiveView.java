@@ -40,6 +40,7 @@ public class PerspectiveView extends Composite  {
     public void loadPerspective( PerspectiveEditor perspectiveEditorJSON ) {
         container.clear();
         perspectiveEditor.setName( perspectiveEditorJSON.getName() );
+        perspectiveEditor.setTags( perspectiveEditorJSON.getTags() );
         perspectiveEditor.setup( container );
         for ( RowEditor row : perspectiveEditorJSON.getRows() ) {
             container.add( new RowView( perspectiveEditor, row ) );

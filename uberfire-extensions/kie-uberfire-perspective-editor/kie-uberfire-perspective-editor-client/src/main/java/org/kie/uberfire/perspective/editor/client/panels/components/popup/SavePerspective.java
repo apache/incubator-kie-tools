@@ -15,6 +15,10 @@
 */
 package org.kie.uberfire.perspective.editor.client.panels.components.popup;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
@@ -22,6 +26,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.perspective.editor.client.panels.perspective.PerspectivePresenter;
@@ -35,6 +40,14 @@ public class SavePerspective
 
     @UiField
     TextBox name;
+
+    @UiField
+    TextBox tag;
+
+    @UiField
+    FlowPanel tags;
+
+    List<String> tagsList = new ArrayList<String>();
 
     interface Binder
             extends
@@ -51,16 +64,35 @@ public class SavePerspective
     }
 
     public void show() {
+        loadPerspectiveName();
+        loadTags();
+        popup.show();
+    }
+
+    private void loadTags() {
+        tagsList = perspectivePresenter.getView().getPerspectiveEditor().getTags();
+        for ( String tag : tagsList ) {
+            tags.add( new Label( tag ) );
+        }
+    }
+
+    private void loadPerspectiveName() {
+        //needs refactoring ederign
         String perspectiveName = perspectivePresenter.getView().getPerspectiveEditor().getName();
         name.setText( perspectiveName );
-        popup.show();
     }
 
     @UiHandler("save")
     void save( final ClickEvent event ) {
-        perspectivePresenter.save( name.getText() );
+        perspectivePresenter.save( name.getText(), tagsList );
         popup.hide();
     }
 
+    @UiHandler("addTag")
+    void addTag( final ClickEvent event ) {
+        tagsList.add( tag.getText() );
+        tags.add( new Label( tag.getText() ) );
+        tag.setText( "" );
+    }
 
 }

@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.uberfire.perspective.editor.client.panels.dnd.DropColumnPanel;
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.ScreenEditorWidgetUI;
@@ -112,11 +113,21 @@ public class ScreenView extends Composite {
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                parent.getWidget().remove( ScreenView.this );
-                screenEditor.removeFromParent();
+                removeThisWidgetFromParent();
+                addDropColumnPanel();
             }
         } );
         return remove;
+    }
+
+    private void removeThisWidgetFromParent() {
+        parent.getWidget().remove( this );
+        screenEditor.removeFromParent();
+    }
+
+    private void addDropColumnPanel() {
+        ColumnEditorUI columnEditorUIParent =(ColumnEditorUI) parent;
+        columnEditorUIParent.getWidget().add( new DropColumnPanel( columnEditorUIParent ) );
     }
 
     private Label generateLabel( String row ) {
