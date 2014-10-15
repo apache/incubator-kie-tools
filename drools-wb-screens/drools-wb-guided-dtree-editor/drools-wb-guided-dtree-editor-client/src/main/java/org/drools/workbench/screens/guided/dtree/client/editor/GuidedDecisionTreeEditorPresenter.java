@@ -35,6 +35,7 @@ import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditAction
 import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditActionUpdatePopup;
 import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditConstraintPopup;
 import org.drools.workbench.screens.guided.dtree.client.widget.popups.EditTypePopup;
+import org.drools.workbench.screens.guided.dtree.client.widget.popups.ParserMessagesPopup;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -160,6 +161,12 @@ public class GuidedDecisionTreeEditorPresenter
                                    isReadOnly );
 
                 view.hideBusyIndicator();
+
+                //If there were any parsing errors give the User the option to remove the broken DRL or ignore it
+                if ( !model.getParserErrors().isEmpty() ) {
+                    final ParserMessagesPopup popup = new ParserMessagesPopup( model );
+                    popup.show();
+                }
             }
         };
     }

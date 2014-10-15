@@ -474,8 +474,6 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
             hintRectangle.setStrokeColor( "#6495ED" );
             hintRectangle.setFillColor( "#AFEEEE" );
             hintRectangle.setAlpha( 0.75 );
-            hintRectangle.setX( ( canvasLayer.getWidth() - hintRectangle.getWidth() ) / 2 );
-            hintRectangle.setY( ( canvasLayer.getHeight() / 2 ) - hintRectangle.getHeight() );
 
             final Text hintText = new Text( GuidedDecisionTreeConstants.INSTANCE.gettingStartedHint(),
                                             ShapeFactoryUtil.FONT_FAMILY_DESCRIPTION,
@@ -483,9 +481,11 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
             hintText.setTextAlign( TextAlign.CENTER );
             hintText.setTextBaseLine( TextBaseLine.MIDDLE );
             hintText.setFillColor( "#6495ED" );
-            hintText.setX( canvasLayer.getWidth() / 2 );
-            hintText.setY( ( canvasLayer.getHeight() - hintRectangle.getHeight() ) / 2 );
+            hintText.setX( hintRectangle.getWidth() / 2 );
+            hintText.setY( hintRectangle.getHeight() / 2 );
 
+            hint.setX( ( canvasLayer.getWidth() - hintRectangle.getWidth() ) / 2 );
+            hint.setY( ( canvasLayer.getHeight() / 3 ) - ( hintRectangle.getHeight() / 2 ) );
             hint.add( hintRectangle );
             hint.add( hintText );
         }
