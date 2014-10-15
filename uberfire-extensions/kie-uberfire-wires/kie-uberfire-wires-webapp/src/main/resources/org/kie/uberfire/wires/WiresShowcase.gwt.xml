@@ -6,9 +6,6 @@
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
 
-  <!-- Guvnor dependencies -->
-  <inherits name="org.guvnor.structure.GuvnorStructureClient"/>
-
   <!-- Wires dependencies -->
   <inherits name="com.emitrom.lienzo.Lienzo"/>
   <inherits name="org.kie.uberfire.wires.core.WiresCoreClient"/>
