@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -69,7 +70,7 @@ public class PluginServicesImpl implements PluginServices {
 
     @Inject
     @Named("MediaServletURI")
-    private MediaServletURI mediaServletURI;
+    private Instance<MediaServletURI> mediaServletURI;
 
     @Inject
     private transient SessionInfo sessionInfo;
@@ -95,7 +96,7 @@ public class PluginServicesImpl implements PluginServices {
 
     @Override
     public String getMediaServletURI() {
-        return mediaServletURI.getURI();
+        return mediaServletURI.get().getURI();
     }
 
     @Override

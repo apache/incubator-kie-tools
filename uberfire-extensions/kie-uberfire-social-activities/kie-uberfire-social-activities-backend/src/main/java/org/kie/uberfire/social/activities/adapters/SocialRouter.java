@@ -21,7 +21,7 @@ public class SocialRouter implements SocialRouterAPI {
     private Map<Class, SocialAdapter> socialAdapters;
 
     @PostConstruct
-    public void setup() throws ServletException {
+    public void setup() {
         socialAdapters = socialAdapterRepositoryAPI.getSocialAdapters();
     }
 

@@ -18,7 +18,7 @@ public class SocialAdapterRepository implements SocialAdapterRepositoryAPI {
 
     @Inject
     @Any
-    private Instance<SocialAdapter> services;
+    private Instance<SocialAdapter<?>> services;
 
     @PostConstruct
     public void setup() {
