@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Charsets;
 import org.apache.commons.codec.binary.Base64;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 
@@ -44,13 +45,19 @@ public class BasicAuthSecurityFilter implements Filter {
         final HttpServletRequest request = (HttpServletRequest) _request;
         final HttpServletResponse response = (HttpServletResponse) _response;
 
-        if ( authenticate( request ) ) {
-            chain.doFilter( request, response );
-            if ( response.isCommitted() ) {
-                authenticationService.logout();
+        final User user = authenticationService.getUser();
+
+        if ( user == null ) {
+            if ( authenticate( request ) ) {
+                chain.doFilter( request, response );
+                if ( response.isCommitted() ) {
+                    authenticationService.logout();
+                }
+            } else {
+                challengeClient( request, response );
             }
         } else {
-            challengeClient( request, response );
+            chain.doFilter( request, response );
         }
     }
 

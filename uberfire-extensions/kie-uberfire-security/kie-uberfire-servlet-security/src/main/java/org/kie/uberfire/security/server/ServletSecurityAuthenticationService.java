@@ -114,7 +114,7 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
         Subject subject;
         try {
             subject = (Subject) PolicyContext.getContext( "javax.security.auth.Subject.container" );
-        } catch ( final PolicyContextException e ) {
+        } catch ( final Exception e ) {
             subject = null;
         }
         if ( subject == null ) {
