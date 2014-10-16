@@ -181,11 +181,11 @@ public class ProjectScreenPresenter
 
     private void adjustBuildOptions() {
         if(isRepositoryManaged(repository)) {
-            buildOptions.getMenuWiget().getWidget(1).setVisible(true);
-            buildOptions.getMenuWiget().getWidget(2).setVisible(true);
+            enableBuildAndInstall( true );
+            enableBuildAndDeploy( true );
         } else {
-            buildOptions.getMenuWiget().getWidget(1).setVisible(false);
-            buildOptions.getMenuWiget().getWidget(2).setVisible(false);
+            enableBuildAndInstall( false );
+            enableBuildAndDeploy( false );
         }
     }
 
@@ -338,7 +338,8 @@ public class ProjectScreenPresenter
                             }
                         };
                     }
-                }).endMenu().build();
+                }).endMenu()
+                .build();
     }
 
     private Command getDeleteCommand() {
@@ -705,6 +706,22 @@ public class ProjectScreenPresenter
                               Throwable throwable ) {
             building = false;
             return super.error( message, throwable );
+        }
+    }
+
+    private void enableBuild( boolean enabled ) {
+        buildOptions.getMenuWiget().getWidget( 0 ).setVisible( enabled );
+    }
+
+    private void enableBuildAndInstall( boolean enabled ) {
+        buildOptions.getMenuWiget().getWidget( 1 ).setVisible( enabled );
+    }
+
+    private void enableBuildAndDeploy( boolean enabled ) {
+        if ( Boolean.TRUE.equals( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) ) &&
+                buildOptions.getMenuWiget().getWidgetCount() > 1 ) {
+            buildOptions.getMenuWiget().getWidget( 2 ).setVisible( enabled );
+
         }
     }
 }
