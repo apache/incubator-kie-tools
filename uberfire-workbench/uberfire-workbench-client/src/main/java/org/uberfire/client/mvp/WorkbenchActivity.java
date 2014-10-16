@@ -54,7 +54,7 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      * Returns the PlaceRequest for the perspective that this activity should always be displayed in. When the
      * PlaceManager is asked to go to this activity, it will switching to the owning perspective first, and then show
      * this activity in it.
-     * 
+     *
      * @return the owning perspective's place request, or null if this activity can appear in any perspective.
      */
     PlaceRequest getOwningPlace();
@@ -75,7 +75,23 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
 
     String contextId();
 
+    /**
+     * Returns the amount of space that should be allocated to this activity if a new Workbench Panel is created when
+     * first displaying it. Has no effect when the activity is added to a pre-existing panel, including the case where
+     * the activity is added to a panel as part of a default perspective layout.
+     *
+     * @return the height, in pixels, that should be allocated for a new panel created to house this activity. Null
+     *         means no particular height is preferred, and the framework can choose a default height.
+     */
     Integer preferredHeight();
 
+    /**
+     * Returns the amount of space that should be allocated to this activity if a new Workbench Panel is created when
+     * first displaying it. Has no effect when the activity is added to a pre-existing panel, including the case where
+     * the activity is added to a panel as part of a default perspective layout.
+     *
+     * @return the width, in pixels, that should be allocated for a new panel created to house this activity. Null
+     *         means no particular width is preferred, and the framework can choose a default width.
+     */
     Integer preferredWidth();
 }

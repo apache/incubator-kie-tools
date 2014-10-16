@@ -603,8 +603,8 @@ implements PlaceManager {
                                        activity.getMenus(),
                                        uiPart,
                                        activity.contextId(),
-                                       activity.preferredWidth(),
-                                       activity.preferredHeight() );
+                                       panel.getWidth(),
+                                       panel.getHeight() );
         addSplashScreenFor( place );
 
         try {

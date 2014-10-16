@@ -88,6 +88,9 @@ public class PlaceManagerTest {
     /** The setup method links this activity with the kansas PlaceRequest. */
     private final WorkbenchScreenActivity kansasActivity = mock( WorkbenchScreenActivity.class );
 
+    /** This panel will always be returned from panelManager.getRoot(). */
+    private final PanelDefinition rootPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
+
     @Before
     public void setup() {
         IOC.getBeanManager().destroyAllBeans();
@@ -109,6 +112,8 @@ public class PlaceManagerTest {
 
         // every test starts in Kansas, with no side effect interactions recorded
         when( activityManager.getActivities( kansas ) ).thenReturn( singleton( (Activity) kansasActivity ) );
+
+        setupPanelManagerMock();
         placeManager.goTo( kansas, (PanelDefinition) null );
         resetInjectedMocks();
         reset( kansasActivity );
@@ -152,6 +157,24 @@ public class PlaceManagerTest {
         reset( panelManager );
         reset( perspectiveManager );
         reset( workbenchLayout );
+
+        setupPanelManagerMock();
+    }
+
+    private void setupPanelManagerMock() {
+        when( panelManager.getRoot() ).thenReturn( rootPanel );
+        when( panelManager.addWorkbenchPanel( any( PanelDefinition.class ),
+                                              any( Position.class),
+                                              any( Integer.class ),
+                                              any( Integer.class ),
+                                              any( Integer.class ),
+                                              any( Integer.class ) ) )
+            .thenAnswer( new Answer<PanelDefinition>() {
+                @Override
+                public PanelDefinition answer( InvocationOnMock invocation ) throws Throwable {
+                    return (PanelDefinition) invocation.getArguments()[0];
+                }
+            } );
     }
 
     @Test
@@ -624,7 +647,7 @@ public class PlaceManagerTest {
                                                  isNull( Menus.class ),
                                                  any( UIPart.class ),
                                                  isNull( String.class ),
-                                                 eq( (Integer) 555 ),
+                                                 isNull( Integer.class ),
                                                  isNull( Integer.class ) );
         assertNull( customPanelDef.getParent() );
     }
@@ -712,9 +735,16 @@ public class PlaceManagerTest {
         // contract between PlaceManager and PanelManager
         Integer preferredWidth = activity.preferredWidth();
         Integer preferredHeight = activity.preferredHeight();
+        Integer expectedPartWidth;
+        Integer expectedPartHeight;
         if ( expectedPanel == null ) {
             PanelDefinition rootPanel = panelManager.getRoot();
             verify( panelManager ).addWorkbenchPanel( rootPanel, null, preferredHeight, preferredWidth, null, null );
+            expectedPartWidth = null;
+            expectedPartHeight = null;
+        } else {
+            expectedPartWidth = expectedPanel.getWidth();
+            expectedPartHeight = expectedPanel.getHeight();
         }
         verify( panelManager ).addWorkbenchPart( eq( placeRequest ),
                                                  eq( new PartDefinitionImpl( placeRequest ) ),
@@ -722,8 +752,8 @@ public class PlaceManagerTest {
                                                  isNull( Menus.class ),
                                                  any( UIPart.class ),
                                                  isNull( String.class ),
-                                                 eq( preferredWidth ),
-                                                 eq( preferredHeight ) );
+                                                 eq( expectedPartWidth ),
+                                                 eq( expectedPartHeight ) );
 
         // contract between PlaceManager and PlaceHistoryHandler
         verify( placeHistoryHandler ).onPlaceChange( placeRequest );

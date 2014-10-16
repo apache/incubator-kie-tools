@@ -48,14 +48,14 @@ public interface PanelManager {
      *            The part's title and physical view. Not null.
      * @param contextId
      *            part of a removed framework feature (TODO: remove this?)
-     * @param preferredWidth
-     *            preferred pixel width of the part's activity, or null if there is no preferred width. The target panel
-     *            will expand to the preferred width if the panel is not already at least as wide, and only if it
+     * @param minInitialWidth
+     *            minimum pixel width of the part's activity, or null if there is no known minimum width. The target
+     *            panel will expand to the this width if the panel is not already at least as wide, and only if it
      *            supports resizing on the horizontal axis.
-     * @param preferredHeight
-     *            preferred pixel height of the part's activity, or null if there is no preferred height. The target panel
-     *            will expand to the preferred height if the panel is not already at least as tall, and only if it
-     *            supports resizing on the vertical axis.
+     * @param minInitialHeight
+     *            minimum pixel height of the part's activity, or null if there is no known minimum height. The target
+     *            panel will expand to this height if the panel is not already at least as tall, and only if it supports
+     *            resizing on the vertical axis.
      */
     void addWorkbenchPart( final PlaceRequest place,
                            final PartDefinition part,
@@ -63,8 +63,8 @@ public interface PanelManager {
                            final Menus menus,
                            final UIPart uiPart,
                            final String contextId,
-                           final Integer preferredWidth,
-                           final Integer preferredHeight );
+                           final Integer minInitialWidth,
+                           final Integer minInitialHeight );
 
     /**
      * Adds an empty child panel of the target panel's default child type at the given position within the target panel.
