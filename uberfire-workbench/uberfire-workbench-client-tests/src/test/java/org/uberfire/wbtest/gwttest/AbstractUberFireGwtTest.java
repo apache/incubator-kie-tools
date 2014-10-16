@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
+import org.uberfire.wbtest.client.api.UncaughtExceptionAlerter;
 
 import com.github.gwtbootstrap.client.Bootstrap;
 import com.google.common.base.Predicate;
@@ -26,6 +27,7 @@ public abstract class AbstractUberFireGwtTest extends AbstractErraiCDITest {
 
     @Override
     protected void gwtSetUp() throws Exception {
+        UncaughtExceptionAlerter.disable();
 
         disableBus = true;
 
