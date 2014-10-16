@@ -45,14 +45,6 @@ dependencies {
     compile 'com.google.gwt:gwt-user:2.6.1'
 }
 
-task documents(type: Javadoc) {
-    source = sourceSets.main.allJava
-}
-
-test {
-    systemProperties 'property': 'value'
-}
-
 uploadArchives {
     repositories {
         mavenDeployer {
