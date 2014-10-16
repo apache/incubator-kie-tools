@@ -4,7 +4,6 @@ import static javax.ejb.TransactionAttributeType.*;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory;
 @Singleton
 @Startup
 @TransactionAttribute(NOT_SUPPORTED)
-public class SimpleAsyncExecutorService implements Executor {
+public class SimpleAsyncExecutorService {
 
     private static final Logger LOG = LoggerFactory.getLogger( SimpleAsyncExecutorService.class );
 
@@ -91,7 +90,6 @@ public class SimpleAsyncExecutorService implements Executor {
         executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
     }
 
-    @Override
     @Asynchronous
     public void execute( final Runnable r ) {
         if ( executorService != null ) {

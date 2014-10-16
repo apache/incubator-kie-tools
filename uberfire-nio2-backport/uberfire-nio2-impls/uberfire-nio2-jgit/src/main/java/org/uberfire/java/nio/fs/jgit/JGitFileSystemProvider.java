@@ -51,6 +51,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.httpclient.URIException;
@@ -463,7 +464,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
     void buildAndStartDaemon() {
         if ( daemonService == null || !daemonService.isRunning() ) {
             daemonService = new Daemon( new InetSocketAddress( daemonHostAddr, daemonPort ),
-                                        SimpleAsyncExecutorService.getUnmanagedInstance() );
+                                        new ExecutorWrapper( SimpleAsyncExecutorService.getUnmanagedInstance() ) );
             daemonService.setRepositoryResolver( new RepositoryResolverImpl<DaemonClient>() );
             try {
                 daemonService.start();
@@ -1990,6 +1991,26 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         if ( !events.isEmpty() ) {
             fs.publishEvents( root, events );
         }
+    }
+
+    /**
+     * Adapts a {@link SimpleAsyncExecutorService} to an {@link Executor} because SimpleAsyncExecutorService can't
+     * implement Executor directly due to bugs in some older CDI implementations.
+     */
+    private static class ExecutorWrapper implements Executor {
+
+        private final SimpleAsyncExecutorService simpleAsyncExecutor;
+
+        public ExecutorWrapper( SimpleAsyncExecutorService simpleAsyncExecutor ) {
+            this.simpleAsyncExecutor = checkNotNull( "simpleAsyncExecutor",
+                                                     simpleAsyncExecutor );
+        }
+
+        @Override
+        public void execute( Runnable command ) {
+            simpleAsyncExecutor.execute( command );
+        }
+
     }
 
 }
