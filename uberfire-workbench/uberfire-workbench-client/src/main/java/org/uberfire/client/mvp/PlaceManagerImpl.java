@@ -37,6 +37,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.menu.MenuSplashList;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
@@ -103,6 +104,9 @@ implements PlaceManager {
 
     @Inject
     private ActivityLifecycleErrorHandler lifecycleErrorHandler;
+
+    @Inject
+    private WorkbenchLayout workbenchLayout;
 
     /**
      * Splash screens that have intercepted some other activity which is currently part of the workbench. Each of these
@@ -680,6 +684,7 @@ implements PlaceManager {
                             }
                             openPartsRecursively( perspectiveDef.getRoot() );
                             doWhenFinished.execute();
+                            workbenchLayout.onResize();
                         }
                     };
 

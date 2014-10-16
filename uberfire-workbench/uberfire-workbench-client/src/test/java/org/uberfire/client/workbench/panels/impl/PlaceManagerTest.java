@@ -38,6 +38,7 @@ import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
@@ -71,6 +72,7 @@ public class PlaceManagerTest {
     @Mock Event<SelectPlaceEvent> selectWorkbenchPartEvent;
     @Mock PanelManager panelManager;
     @Mock PerspectiveManager perspectiveManager;
+    @Mock WorkbenchLayout workbenchLayout;
 
     /**
      * This is the thing we're testing. Weeee!
@@ -149,6 +151,7 @@ public class PlaceManagerTest {
         reset( selectWorkbenchPartEvent );
         reset( panelManager );
         reset( perspectiveManager );
+        reset( workbenchLayout );
     }
 
     @Test
@@ -294,6 +297,7 @@ public class PlaceManagerTest {
         assertEquals( PlaceStatus.OPEN, placeManager.getStatus( ozPerspectivePlace ) );
         assertTrue( placeManager.getActivePlaceRequests().contains( ozPerspectivePlace ) );
         assertEquals( ozPerspectiveActivity, placeManager.getActivity( ozPerspectivePlace ) );
+        verify( workbenchLayout ).onResize();
     }
 
     @Test
@@ -313,7 +317,7 @@ public class PlaceManagerTest {
         placeManager.goTo( ozPerspectivePlace );
 
         // verify proper shutdown of kansasPerspective and its contents
-        InOrder inOrder = inOrder( activityManager, kansasPerspectiveActivity, kansasActivity );
+        InOrder inOrder = inOrder( activityManager, kansasPerspectiveActivity, kansasActivity, workbenchLayout );
 
         // shut down the screens first
         inOrder.verify( kansasActivity ).onClose();
@@ -322,6 +326,7 @@ public class PlaceManagerTest {
         // then the perspective
         inOrder.verify( kansasPerspectiveActivity ).onClose();
         inOrder.verify( activityManager ).destroyActivity( kansasPerspectiveActivity );
+        inOrder.verify( workbenchLayout ).onResize();
     }
 
     @Test
