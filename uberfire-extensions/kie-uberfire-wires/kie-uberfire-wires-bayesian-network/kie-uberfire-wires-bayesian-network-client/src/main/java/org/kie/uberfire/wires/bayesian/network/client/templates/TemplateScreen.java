@@ -9,7 +9,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -19,7 +18,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
 @WorkbenchScreen(identifier = "BayesianTemplatesScreen")
-public class TemplateScreen extends Composite implements RequiresResize {
+public class TemplateScreen extends Composite {
 
     interface ViewBinder extends UiBinder<Widget, TemplateScreen> {
 
@@ -48,13 +47,6 @@ public class TemplateScreen extends Composite implements RequiresResize {
     @WorkbenchPartView
     public IsWidget getView() {
         return this;
-    }
-
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        super.setPixelSize( width, height );
     }
 
 }

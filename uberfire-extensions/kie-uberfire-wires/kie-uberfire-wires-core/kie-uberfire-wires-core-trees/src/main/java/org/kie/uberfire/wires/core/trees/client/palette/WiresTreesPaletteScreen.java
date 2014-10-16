@@ -24,7 +24,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -33,7 +32,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
 @WorkbenchScreen(identifier = "WiresTreesPaletteScreen")
-public class WiresTreesPaletteScreen extends Composite implements RequiresResize {
+public class WiresTreesPaletteScreen extends Composite {
 
     interface ViewBinder extends UiBinder<Widget, WiresTreesPaletteScreen> {
 
@@ -62,13 +61,6 @@ public class WiresTreesPaletteScreen extends Composite implements RequiresResize
     @WorkbenchPartView
     public IsWidget getView() {
         return this;
-    }
-
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        super.setPixelSize( width, height );
     }
 
 }

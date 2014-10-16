@@ -13,7 +13,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.properties.editor.client.PropertyEditorWidget;
 import org.kie.uberfire.properties.editor.model.PropertyEditorCategory;
@@ -27,7 +26,7 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
 @WorkbenchScreen(identifier = "WiresPropertiesScreen")
-public class PropertiesScreen extends Composite implements RequiresResize {
+public class PropertiesScreen extends Composite {
 
     interface ViewBinder extends UiBinder<Widget, PropertiesScreen> {
 
@@ -62,13 +61,6 @@ public class PropertiesScreen extends Composite implements RequiresResize {
     @WorkbenchPartView
     public IsWidget getView() {
         return this;
-    }
-
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        super.setPixelSize( width, height );
     }
 
     public void onShapeSelectedEvent( @Observes ShapeSelectedEvent event ) {

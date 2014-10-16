@@ -26,8 +26,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RequiresResize;
-
 import org.kie.uberfire.wires.core.client.resources.AppResource;
 import org.uberfire.client.workbench.widgets.menu.PespectiveContextMenusPresenter;
 
@@ -36,8 +34,7 @@ import org.uberfire.client.workbench.widgets.menu.PespectiveContextMenusPresente
  */
 public class ComplementNavAreaView
         extends Composite
-        implements RequiresResize,
-                   ComplementNavAreaPresenter.View {
+        implements ComplementNavAreaPresenter.View {
 
     interface ViewBinder
             extends
@@ -61,13 +58,6 @@ public class ComplementNavAreaView
         logo = new Image( AppResource.INSTANCE.images().wiresUserLogo() );
         initWidget( uiBinder.createAndBindUi( this ) );
         contextMenuArea.add( contextMenu.getView() );
-    }
-
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-//        panel.setPixelSize( width, height );
     }
 
 }
