@@ -72,7 +72,7 @@ public class UncaughtExceptionAlerter implements IsWidget, UncaughtExceptionHand
     }
 
     public static void disable() {
-        if ( alreadyInitialized ) {
+        if ( alreadyInitialized && !disabled ) {
             throw new IllegalStateException( "Too late. Already initialized." );
         }
         disabled = true;
