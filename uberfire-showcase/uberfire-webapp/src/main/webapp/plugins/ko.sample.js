@@ -16,7 +16,7 @@ $registerPlugin({
     title: function () {
         return "ko " + Math.floor(Math.random() * 10);
     },
-    on_reveal: function () {
+    on_open: function () {
         ko.applyBindings(new ViewModel("Planet", "Earth"));
     }
 });
