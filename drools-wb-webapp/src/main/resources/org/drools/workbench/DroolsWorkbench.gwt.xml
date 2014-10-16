@@ -73,6 +73,10 @@
   <!-- Perspective Editor-->
   <inherits name="org.kie.uberfire.perspective.editor.PerspectiveEditorClient"/>
 
+  <!-- Uberfire Apps-->
+  <inherits name="org.kie.uberfire.apps.UberfireAppsClient"/>
+
+
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>
 

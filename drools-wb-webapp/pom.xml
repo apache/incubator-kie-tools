@@ -379,6 +379,16 @@
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-perspective-editor-backend</artifactId>
     </dependency>
+    <!-- Uberfire Apps -->
+
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-apps-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-apps-backend</artifactId>
+    </dependency>
 
     <!-- Drools Workbench Screens -->
     <dependency>
@@ -757,6 +767,8 @@
 
             <!-- UberFire Extensions -->
             <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-runtime-plugins-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-perspective-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-apps-client</compileSourcesArtifact>
 
             <!-- Dashbuilder -->
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>
