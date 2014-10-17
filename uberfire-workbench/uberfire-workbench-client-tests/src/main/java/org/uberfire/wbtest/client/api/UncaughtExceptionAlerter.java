@@ -50,10 +50,17 @@ public class UncaughtExceptionAlerter implements IsWidget, UncaughtExceptionHand
         statusLabel.setText( uncaughtExceptionCount + " uncaught exceptions" );
         statusLabel.getElement().getStyle().setColor( "red" );
 
+        GWT.log( "Uncaught Exception", e );
         StringBuilder newStackTrace = new StringBuilder();
-        newStackTrace.append( e.toString() );
-        for ( StackTraceElement ste : e.getStackTrace() ) {
-            newStackTrace.append( "\n   ").append( ste.toString() );
+        while ( e != null ) {
+            if ( newStackTrace.length() > 0 ) {
+                newStackTrace.append( "\nCaused by: " );
+            }
+            newStackTrace.append( e.toString() );
+            for ( StackTraceElement ste : e.getStackTrace() ) {
+                newStackTrace.append( "\n   " ).append( ste.toString() );
+            }
+            e = e.getCause();
         }
         exceptionLog.setText( exceptionLog.getText() + "\n" + newStackTrace );
     }
