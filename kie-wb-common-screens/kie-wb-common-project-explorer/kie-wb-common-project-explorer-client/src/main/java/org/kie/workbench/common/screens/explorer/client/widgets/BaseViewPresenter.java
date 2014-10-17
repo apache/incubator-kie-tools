@@ -38,6 +38,7 @@ import org.guvnor.structure.repositories.NewBranchEvent;
 import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -639,6 +640,21 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             return;
         }
         refresh( false );
+    }
+
+    public void onRepositoryUpdatedEvent( @Observes RepositoryUpdatedEvent event ) {
+        if (repositories != null) {
+            for (Repository repository : repositories) {
+                if (repository.getAlias().equals(event.getRepository().getAlias())) {
+                    if ( activeRepository != null && activeRepository.getAlias().equals( event.getRepository().getAlias() )) {
+                        refresh(false);
+                    } else {
+                        repository.getEnvironment().clear();
+                        repository.getEnvironment().putAll( event.getUpdatedRepository().getEnvironment() );
+                    }
+                }
+            }
+        }
     }
 
     public void onProjectAdded( @Observes final NewProjectEvent event ) {

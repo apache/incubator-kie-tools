@@ -268,6 +268,8 @@ public class ProjectExplorerContentResolver {
         repositories = getRepositories(selectedOrganizationalUnit);
         if (selectedRepository == null || !repositories.containsKey(selectedRepository.getAlias())) {
             selectedRepository = (repositories.isEmpty() ? null : repositories.values().iterator().next());
+        } else if ( !selectedRepository.equals( repositories.get( selectedRepository.getAlias() ) ) ) {
+            selectedRepository = repositories.get( selectedRepository.getAlias() );
         }
     }
 
