@@ -196,6 +196,56 @@ public class DockingPanelTest extends AbstractSeleniumTest {
         assertRelativePosition( opposite( direction ), offAxisChild2.getWebElement(), onAxisChild2.getWebElement() );
     }
 
+    @Test
+    public void testPanelMakesRoomForChildOnSameAxis() throws Exception {
+        NestingScreenWrapper root = new NestingScreenWrapper( driver, "root" );
+
+        NestingScreenWrapper onAxisChild1 = root.addChild( direction );
+        Point child1PositionBefore = onAxisChild1.getLocation();
+
+        NestingScreenWrapper onAxisChild2 = onAxisChild1.addChild( direction );
+        Point child1PositionAfter = onAxisChild1.getLocation();
+
+        // fudge factor for margins, dividers, padding, headers, etc.
+        final int fudge = 10;
+
+        // checking with inequalities here because there is some extra space for
+        int expected;
+        switch( direction ) {
+            case NORTH:
+                expected = child1PositionBefore.y + onAxisChild2.getSize().height - fudge;
+                assertTrue( "First child panel didn't move far enough south."
+                                + " Expected y > " + expected + "; got y = " + child1PositionAfter.y,
+                            expected <= child1PositionAfter.y );
+                break;
+            case SOUTH:
+                expected = child1PositionBefore.y - onAxisChild2.getSize().height + fudge;
+                assertTrue( "First child panel didn't move far enough north."
+                                + " Expected y < " + expected + "; got y = " + child1PositionAfter.y,
+                            expected >= child1PositionAfter.y );
+                break;
+            case WEST:
+                expected = child1PositionBefore.x + onAxisChild2.getSize().width - fudge;
+                assertTrue( "First child panel didn't move far enough east."
+                                + " Expected x > " + expected + "; got x = " + child1PositionAfter.x,
+                            expected <= child1PositionAfter.x );
+                break;
+            case EAST:
+                expected = child1PositionBefore.x - onAxisChild2.getSize().width + fudge;
+                assertTrue( "First child panel didn't move far enough west."
+                                + " Expected x < " + expected + "; got x = " + child1PositionAfter.x,
+                            expected >= child1PositionAfter.x );
+                break;
+            default:
+                throw new IllegalStateException( "Unknown position " + direction );
+        }
+
+        assertRelativePosition( direction, root.getWebElement(), onAxisChild1.getWebElement() );
+
+        // this is a redundant check, since we already verified child1 moved by child2's size
+        assertRelativePosition( direction, onAxisChild1.getWebElement(), onAxisChild2.getWebElement() );
+    }
+
     static CompassPosition opposite( CompassPosition position ) {
         switch ( position ) {
             case NORTH: return CompassPosition.SOUTH;

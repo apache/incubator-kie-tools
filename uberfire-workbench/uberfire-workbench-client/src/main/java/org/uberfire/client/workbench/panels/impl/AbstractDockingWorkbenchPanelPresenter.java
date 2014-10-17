@@ -42,6 +42,14 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
     @Override
     public void addPanel( WorkbenchPanelPresenter newChild,
                           Position position ) {
+        if ( getParent() instanceof DockingWorkbenchPanelPresenter ) {
+            DockingWorkbenchPanelPresenter dockingParent = (DockingWorkbenchPanelPresenter) getParent();
+            if ( dockingParent.getPanels().get( position ) == this ) {
+                dockingParent.setChildSize( this,
+                                            widthOrDefault( newChild.getDefinition(), 100 ) + widthOrDefault( getDefinition(), 100 ),
+                                            heightOrDefault( newChild.getDefinition(), 100 ) + heightOrDefault( getDefinition(), 100 ) );
+            }
+        }
         WorkbenchPanelPresenter existingChild = getPanels().get( position );
         if ( existingChild != null && newChild instanceof AbstractDockingWorkbenchPanelPresenter ) {
             Integer existingChildSize = widthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
@@ -62,6 +70,14 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
         } else {
             super.addPanel( newChild, position );
         }
+    }
+
+    private int heightOrDefault( PanelDefinition def, int heightIfNull ) {
+        return def.getHeight() == null ? heightIfNull : def.getHeight();
+    }
+
+    private int widthOrDefault( PanelDefinition def, int widthIfNull ) {
+        return def.getWidth() == null ? widthIfNull : def.getWidth();
     }
 
     /**
