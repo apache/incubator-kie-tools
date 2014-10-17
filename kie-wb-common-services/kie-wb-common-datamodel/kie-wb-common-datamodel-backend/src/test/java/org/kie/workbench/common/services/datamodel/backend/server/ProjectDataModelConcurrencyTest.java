@@ -20,7 +20,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -34,7 +33,6 @@ import org.uberfire.rpc.SessionInfo;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
-@Ignore
 public class ProjectDataModelConcurrencyTest {
 
     @Deployment()
@@ -74,6 +72,9 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.uberfire.backend.server.cluster" )
                 .addPackage( "org.kie.workbench.common.services.backend.project" )
                 .addPackage( "org.kie.workbench.common.services.backend.builder" )
+                .addPackage( "org.picketlink.internal" )
+                .addPackage( "org.picketlink.producer" )
+                .addPackage( "org.picketlink.credential" )
                 .addAsManifestResource( "META-INF/beans.xml",
                                         ArchivePaths.create( "beans.xml" ) );
     }
