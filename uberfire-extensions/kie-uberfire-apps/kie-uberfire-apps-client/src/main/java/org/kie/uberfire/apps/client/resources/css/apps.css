@@ -1,0 +1,124 @@
+.tile {
+    background: rgba(76, 98, 154, 0.52) none repeat scroll 0% 0% / auto padding-box border-box;
+    border-collapse: collapse;
+    box-shadow: rgb(255, 255, 204) 0px 0px 1px 0px inset;
+    box-sizing: border-box;
+    cursor: pointer;
+    float: left;
+    height: 160px;
+    position: relative;
+    width: 160px;
+    perspective-origin: 80px 80px;
+    transform-origin: 80px 80px;
+    font: normal normal normal normal 16px/normal 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+    margin: 0px 10px 10px 0px;
+    overflow: hidden;
+}
+
+.blueTile {
+    background: rgba(76, 98, 154, 0.52) none repeat scroll 0% 0% / auto padding-box border-box; !important;
+}
+
+.redTile {
+    background: rgba(154, 11, 8, 0.60) none repeat scroll 0% 0% / auto padding-box border-box !important;
+}
+
+.greenTile {
+    background: rgba(67, 154, 99, 0.60) none repeat scroll 0% 0% / auto padding-box border-box; !important;
+}
+
+.tileContent {
+    text-align: center;
+    margin-top: 50px;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 160px;
+    justify-self: stretch;
+    left: 0px;
+    right: 2px;
+    position: absolute;
+    top: 0px;
+    width: 160px;
+    align-self: stretch;
+    perspective-origin: 80px 80px;
+    transform-origin: 80px 80px;
+    font: normal normal normal normal 16px/normal 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+    overflow: hidden;
+}
+
+.tileIcon {
+    font-size: 46px;
+    color: rgb(255, 255, 255)
+}
+
+.tileIcon:before {
+    border-collapse: collapse;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    speak: none;
+    text-align: center;
+    text-decoration: none solid rgb(255, 255, 255);
+    border: 0px none rgb(255, 255, 255);
+    font: normal normal normal normal 48px/56px iconFont;
+    outline: rgb(255, 255, 255) none 0px;
+}
+
+.tileStatus {
+    border-collapse: collapse;
+    bottom: 15px;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 29px;
+    justify-self: stretch;
+    left: 6px;
+    min-height: 29px;
+    position: absolute;
+    right: 0px;
+    text-align: center;
+    width: 149px;
+    align-self: stretch;
+    perspective-origin: 80px 14.5px;
+    transform-origin: 80px 14.5px;
+    font: normal normal normal normal 17px/normal 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+}
+
+.tileStatus:after {
+    border-collapse: collapse;
+    clear: both;
+    cursor: pointer;
+    display: table;
+    width: 1px;
+    perspective-origin: 0.5px 0px;
+    transform-origin: 0.5px 0px;
+    content: '';
+    font: normal normal normal normal 17px/normal 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+}
+
+.tileStatus:before {
+    border-collapse: collapse;
+    cursor: pointer;
+    display: table;
+    width: 1px;
+    perspective-origin: 0.5px 0px;
+    transform-origin: 0.5px 0px;
+    content: '';
+    font: normal normal normal normal 16px/normal 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+}
+
+.tileName {
+    border-collapse: collapse;
+    box-sizing: border-box;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    display: block;
+    #height: 18px;
+    text-decoration: none solid rgb(255, 255, 255);
+    width:152px;
+    #perspective-origin: 47.5px 9px;
+    #transform-origin: 47.5px 9px;
+    border: 0px none rgb(255, 255, 255);
+    font: normal normal normal normal 14px/normal 'Segoe UI_', 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+    margin: 53px 53px 53px 53px;
+    outline: rgb(255, 255, 255) none 0px;
+}

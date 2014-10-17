@@ -24,6 +24,6 @@
 
   <g:FlowPanel ui:field="mainPanel">
     <b:Breadcrumbs ui:field="dirs"/>
-    <b:Thumbnails ui:field="dirContent"/>
+    <g:FlowPanel ui:field="dirContent"/>
   </g:FlowPanel>
 </ui:UiBinder>

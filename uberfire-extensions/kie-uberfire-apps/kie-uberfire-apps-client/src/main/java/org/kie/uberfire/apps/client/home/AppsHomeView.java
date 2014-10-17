@@ -5,7 +5,6 @@ import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Breadcrumbs;
 import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.Thumbnails;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,7 +32,7 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     Breadcrumbs dirs;
 
     @UiField
-    Thumbnails dirContent;
+    FlowPanel dirContent;
 
     interface AppsHomeViewBinder
             extends
@@ -83,7 +82,7 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     public void setupChildsDirectories( List<Directory> childsDirectories,
                                         ParameterizedCommand<String> clickCommand ) {
         for ( Directory childsDirectory : childsDirectories ) {
-            final ThumbnailApp link = new ThumbnailApp( childsDirectory.getName(), childsDirectory.getURI(), IconType.FOLDER_OPEN, clickCommand );
+            final ThumbnailApp link = new ThumbnailApp( childsDirectory.getName(), childsDirectory.getURI(), ThumbnailApp.TYPE.DIR, clickCommand );
             dirContent.add( link );
         }
     }
@@ -97,14 +96,14 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     public void setupChildComponents( List<String> childComponents,
                                       ParameterizedCommand<String> clickCommand ) {
         for ( String childComponent : childComponents ) {
-            final ThumbnailApp link = new ThumbnailApp( childComponent, IconType.FILE, clickCommand );
+            final ThumbnailApp link = new ThumbnailApp( childComponent, ThumbnailApp.TYPE.COMPONENT, clickCommand );
             dirContent.add( link );
         }
 
     }
 
     private void generateCreateDirThumbNail( ParameterizedCommand<String> clickCommand ) {
-        final ThumbnailApp link = new ThumbnailApp( IconType.PLUS_SIGN, clickCommand );
+        final ThumbnailApp link = new ThumbnailApp( ThumbnailApp.TYPE.ADD, clickCommand );
         dirContent.add( link );
     }
 

@@ -144,6 +144,7 @@ public class AppsHomePresenter {
                         currentDirectory.addChildDirectory( newDir );
                         view.clear();
                         view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand() );
+                        view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
                         view.setupAddDir( generateAddDirCommand() );
                     }
                 }, new ErrorCallback<Object>() {

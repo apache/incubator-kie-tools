@@ -20,15 +20,17 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:style>
-    .icon {
-      margin-right: 10px;
-    }
-  </ui:style>
+  <ui:with field='res' type='org.kie.uberfire.apps.client.resources.WebAppResource'/>
 
-  <b:ThumbnailLink size="3" ui:field="thumbLink">
-    <b:Icon type="FILE" ui:field="icon" styleName="{style.icon}"/>
-    <b:Label ui:field="label"/>
-  </b:ThumbnailLink>
+  <g:FocusPanel ui:field="clickTile">
+    <g:FlowPanel  ui:field="tilePanel" styleName="{res.CSS.tile}" >
+      <g:FlowPanel styleName="{res.CSS.tileContent}">
+        <b:Icon type="FILE" ui:field="icon" styleName="{res.CSS.tileIcon}"/>
+      </g:FlowPanel>
+      <g:FlowPanel styleName="{res.CSS.tileStatus}">
+        <b:Label styleName="{res.CSS.tileName}" ui:field="label"/>
+      </g:FlowPanel>
+    </g:FlowPanel>
+  </g:FocusPanel>
 
 </ui:UiBinder>
