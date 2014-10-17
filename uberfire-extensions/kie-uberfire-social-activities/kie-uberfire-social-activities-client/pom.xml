@@ -63,6 +63,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.googlecode.gwt-crypto</groupId>
       <artifactId>gwt-crypto</artifactId>
     </dependency>
