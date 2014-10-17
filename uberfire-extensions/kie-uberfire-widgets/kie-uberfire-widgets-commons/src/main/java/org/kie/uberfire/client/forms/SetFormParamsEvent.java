@@ -17,17 +17,18 @@
 package org.kie.uberfire.client.forms;
 
 import java.util.Map;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Portable
+//This class is not @Portable since we only want it client-side
 public class SetFormParamsEvent {
+
     private Map<String, String> params;
     private boolean readOnly;
 
     public SetFormParamsEvent() {
     }
 
-    public SetFormParamsEvent(Map<String, String> params, boolean readOnly) {
+    public SetFormParamsEvent( Map<String, String> params,
+                               boolean readOnly ) {
         this.params = params;
         this.readOnly = readOnly;
     }

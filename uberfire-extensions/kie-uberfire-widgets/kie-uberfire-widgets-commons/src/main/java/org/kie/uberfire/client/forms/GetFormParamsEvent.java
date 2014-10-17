@@ -17,17 +17,18 @@
 package org.kie.uberfire.client.forms;
 
 import java.util.Map;
-import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Portable
+//This class is not @Portable since we only want it client-side
 public class GetFormParamsEvent {
+
     private String action;
     private Map<String, Object> params;
 
     public GetFormParamsEvent() {
     }
 
-    public GetFormParamsEvent(String action, Map<String, Object> params) {
+    public GetFormParamsEvent( String action,
+                               Map<String, Object> params ) {
         this.action = action;
         this.params = params;
     }
@@ -39,7 +40,5 @@ public class GetFormParamsEvent {
     public String getAction() {
         return action;
     }
-    
-    
 
 }

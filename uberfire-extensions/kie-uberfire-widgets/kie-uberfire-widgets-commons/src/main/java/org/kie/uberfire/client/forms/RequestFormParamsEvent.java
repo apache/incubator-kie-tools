@@ -16,25 +16,20 @@
 
 package org.kie.uberfire.client.forms;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
+//This class is not @Portable since we only want it client-side
 public class RequestFormParamsEvent {
-    
+
     private String action;
-    
+
     public RequestFormParamsEvent() {
     }
 
-    public RequestFormParamsEvent(String action) {
+    public RequestFormParamsEvent( String action ) {
         this.action = action;
     }
 
     public String getAction() {
         return action;
     }
-
-    
-  
 
 }
