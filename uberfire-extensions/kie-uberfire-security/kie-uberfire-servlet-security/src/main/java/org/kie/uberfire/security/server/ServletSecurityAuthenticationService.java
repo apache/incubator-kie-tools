@@ -26,7 +26,6 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
-import javax.security.jacc.PolicyContextException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -45,9 +44,19 @@ import org.kie.uberfire.security.server.adapter.GroupsAdapter;
 @ApplicationScoped
 public class ServletSecurityAuthenticationService implements AuthenticationService {
 
-    private ServiceLoader<GroupsAdapter> groupsAdapterServiceLoader = ServiceLoader.load( GroupsAdapter.class );
-
     private static final String USER_SESSION_ATTR_NAME = "kie.uf.security.user";
+    private static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
+
+    private final ServiceLoader<GroupsAdapter> groupsAdapterServiceLoader = ServiceLoader.load( GroupsAdapter.class );
+
+    private String[] rolePrincipleNames = new String[]{ DEFAULT_ROLE_PRINCIPLE_NAME };
+
+    public ServletSecurityAuthenticationService() {
+        final String value = System.getProperty( "org.kie.uberfire.security.principal.names", "" );
+        if ( value != null && !value.trim().isEmpty() ) {
+            rolePrincipleNames = value.split( "," );
+        }
+    }
 
     @Override
     public User login( String username,
@@ -83,7 +92,7 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
         }
         User user = null;
         final HttpSession session = request.getSession( false );
-        if (session != null) {
+        if ( session != null ) {
             user = (User) session.getAttribute( USER_SESSION_ATTR_NAME );
             if ( user == null ) {
                 final Set<Role> userRoles = new HashSet<Role>();
@@ -95,7 +104,7 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
 
                 final String name = request.getUserPrincipal().getName();
 
-                final Set<Group> userGroups = new HashSet<Group>( loadGroups( name ) );
+                final Set<Group> userGroups = new HashSet<Group>( loadGroups() );
                 for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
                     final List<Group> groupRoles = adapter.getGroups( name );
                     if ( groupRoles != null ) {
@@ -111,7 +120,7 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
         return user;
     }
 
-    private Set<Group> loadGroups( final String rolePrincipleName ) {
+    private Set<Group> loadGroups() {
 
         Subject subject;
         try {
@@ -129,14 +138,17 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
 
         if ( principals != null && !principals.isEmpty() ) {
             for ( java.security.Principal p : principals ) {
-                if ( p instanceof java.security.acl.Group && rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
-                    final Enumeration<? extends Principal> groups = ( (java.security.acl.Group) p ).members();
+                if ( p instanceof java.security.acl.Group ) {
+                    for ( final String rolePrincipleName : rolePrincipleNames ) {
+                        if ( rolePrincipleName.equalsIgnoreCase( p.getName() ) ) {
+                            final Enumeration<? extends Principal> groups = ( (java.security.acl.Group) p ).members();
 
-                    while ( groups.hasMoreElements() ) {
-                        final java.security.Principal groupPrincipal = groups.nextElement();
-                        result.add( new GroupImpl( groupPrincipal.getName() ) );
+                            while ( groups.hasMoreElements() ) {
+                                final java.security.Principal groupPrincipal = groups.nextElement();
+                                result.add( new GroupImpl( groupPrincipal.getName() ) );
+                            }
+                        }
                     }
-                    break;
                 }
             }
         }
