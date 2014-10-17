@@ -17,6 +17,52 @@
 
   <dependencies>
 
+    <!-- dependencies added because of new illegal transitive dependency check -->
+    <dependency>
+      <groupId>com.github.gwtbootstrap</groupId>
+      <artifactId>gwt-bootstrap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ioc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-widgets-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-client-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-drl-text-editor-api</artifactId>
