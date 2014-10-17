@@ -20,11 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.http.client.URL;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+
+import com.google.gwt.http.client.URL;
 
 public class PlaceRequestHistoryMapperImpl
         implements
@@ -32,7 +33,8 @@ public class PlaceRequestHistoryMapperImpl
 
     @Override
     public PlaceRequest getPlaceRequest( String fullIdentifier ) {
-        final String identifier = fullIdentifier.contains( "?" ) ? fullIdentifier.substring( 0, fullIdentifier.indexOf( "?" ) ) : fullIdentifier;
+        final String encodedIdentifier = fullIdentifier.contains( "?" ) ? fullIdentifier.substring( 0, fullIdentifier.indexOf( "?" ) ) : fullIdentifier;
+        final String identifier = urlDecode( encodedIdentifier );
         final String query = fullIdentifier.contains( "?" ) ? fullIdentifier.substring( fullIdentifier.indexOf( "?" ) + 1 ) : "";
         final Map<String, String> parameters = getParameters( query );
 

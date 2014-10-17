@@ -2,7 +2,9 @@ package org.uberfire.client.mvp;
 
 import static org.junit.Assert.*;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +21,8 @@ import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.backend.vfs.impl.ObservablePathImpl;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+
+import com.google.common.collect.ImmutableMap;
 
 public class PlaceRequestHistoryMapperImplTest {
 
@@ -91,7 +95,11 @@ public class PlaceRequestHistoryMapperImplTest {
         placeRequestHistoryMapper = new PlaceRequestHistoryMapperImpl() {
             @Override
             String urlDecode( String value ) {
-                return value;
+                try {
+                    return URLDecoder.decode( value, "UTF-8" );
+                } catch ( UnsupportedEncodingException e ) {
+                    throw new RuntimeException( e );
+                }
             }
         };
     }
@@ -130,4 +138,10 @@ public class PlaceRequestHistoryMapperImplTest {
         assertTrue( placeRequest.getParameters().isEmpty() );
     }
 
+    @Test
+    public void identifierAndParametersShouldBeUrlDecoded() throws Exception {
+        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest( "place%20id?par%26am%201=value%201" );
+        assertEquals( "place id", placeRequest.getIdentifier() );
+        assertEquals( ImmutableMap.of( "par&am 1", "value 1" ), placeRequest.getParameters() );
+    }
 }
