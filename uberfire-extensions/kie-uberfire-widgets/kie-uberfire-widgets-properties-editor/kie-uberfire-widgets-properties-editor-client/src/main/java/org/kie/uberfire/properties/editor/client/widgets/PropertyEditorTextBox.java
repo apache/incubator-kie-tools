@@ -2,6 +2,7 @@ package org.kie.uberfire.properties.editor.client.widgets;
 
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -34,6 +35,10 @@ public class PropertyEditorTextBox extends AbstractPropertyEditorWidget {
 
     public void addKeyDownHandler( KeyDownHandler keyDownHandler ) {
         textBox.addKeyDownHandler( keyDownHandler );
+    }
+
+    public void addBlurHandler( BlurHandler blurHandler ) {
+        textBox.addBlurHandler( blurHandler );
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorTextBox> {

@@ -2,6 +2,7 @@ package org.kie.uberfire.properties.editor.client.widgets;
 
 import com.github.gwtbootstrap.client.ui.PasswordTextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -24,7 +25,7 @@ public class PropertyEditorPasswordTextBox extends AbstractPropertyEditorWidget 
         } );
     }
 
-    public void setText(String text){
+    public void setText( String text ) {
         passwordTextBox.setText( text );
     }
 
@@ -34,6 +35,10 @@ public class PropertyEditorPasswordTextBox extends AbstractPropertyEditorWidget 
 
     public void addKeyDownHandler( KeyDownHandler keyDownHandler ) {
         passwordTextBox.addKeyDownHandler( keyDownHandler );
+    }
+
+    public void addBlurHandler( BlurHandler blurHandler ) {
+        passwordTextBox.addBlurHandler( blurHandler );
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorPasswordTextBox> {

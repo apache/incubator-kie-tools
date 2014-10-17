@@ -5,6 +5,8 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -24,7 +26,28 @@ public class TextField extends AbstractField {
         final PropertyEditorTextBox textBox = GWT.create( PropertyEditorTextBox.class );
         textBox.setText( property.getCurrentStringValue() );
         addEnterKeyHandler( property, textBox );
+        addLostFocusHandler( property, textBox );
         return textBox;
+    }
+
+    private void addLostFocusHandler( final PropertyEditorFieldInfo property,
+                                      final PropertyEditorTextBox textBox ) {
+
+        textBox.addBlurHandler( new BlurHandler() {
+            @Override
+            public void onBlur( BlurEvent event ) {
+                if ( validate( property, textBox.getText() ) ) {
+                    textBox.clearOldValidationErrors();
+                    property.setCurrentStringValue( textBox.getText() );
+                    propertyEditorChangeEventEvent.fire( new PropertyEditorChangeEvent( property, textBox.getText() ) );
+                } else {
+                    textBox.setValidationError( getValidatorErrorMessage( property, textBox.getText() ) );
+                    textBox.setText( property.getCurrentStringValue() );
+                }
+
+            }
+
+        } );
     }
 
     private void addEnterKeyHandler( final PropertyEditorFieldInfo property,
