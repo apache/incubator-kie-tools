@@ -11,10 +11,12 @@ import org.mockito.Mock;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.mvp.Command;
 
 import com.github.gwtbootstrap.client.ui.DropdownTab;
 import com.github.gwtbootstrap.client.ui.Tab;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMock;
@@ -72,5 +74,19 @@ public class UberTabPanelTest {
         verify(uberTabPanel.tabPanelSpy).add( any(DropdownTab.class) );
     }
 
+    @Test
+    public void shouldFireFocusEventWhenClickedWhenUnfocused() throws Exception {
+        uberTabPanel.setFocus( false );
 
+        final int[] focusEventCount = new int[1];
+        uberTabPanel.addOnFocusHandler( new Command() {
+            @Override
+            public void execute() {
+                focusEventCount[0]++;
+            }
+        } );
+
+        uberTabPanel.onClick( mock( ClickEvent.class ) );
+        assertEquals( 1, focusEventCount[0] );
+    }
 }

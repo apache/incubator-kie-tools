@@ -3,6 +3,7 @@ package org.uberfire.client.workbench.widgets.tab;
 import static com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     final Map<TabLink, WorkbenchPartPresenter.View> tabInvertedIndex = new HashMap<TabLink, WorkbenchPartPresenter.View>();
     final Map<PartDefinition, TabLink> partTabIndex = new HashMap<PartDefinition, TabLink>();
     private boolean hasFocus = false;
-    private Command addOnFocusHandler;
+    private final List<Command> focusGainedHandlers = new ArrayList<Command>();
 
     private final PanelManager panelManager;
 
@@ -270,7 +271,7 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     /**
      * The GwtBootstrap TabPanel doesn't support the RequiresResize/ProvidesResize contract, and UberTabPanel fills in
      * the gap. This helper method allows us to call onResize() on the widgets that need it.
-     * 
+     *
      * @param widget the widget that has just been resized
      */
     private void resizeIfNeeded( final Widget widget ) {
@@ -547,7 +548,7 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     @Override
     public void onClick( final ClickEvent event ) {
         if ( !hasFocus ) {
-            addOnFocusHandler.execute();
+            fireFocusGained();
 
             for ( int i = 0; i < getTabs().getWidgetCount(); i++ ) {
                 final Widget _widget = getTabs().getWidget( i );
@@ -574,9 +575,15 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
         }
     }
 
+    private void fireFocusGained() {
+        for ( int i = focusGainedHandlers.size() - 1; i >= 0; i-- ) {
+            focusGainedHandlers.get( i ).execute();
+        }
+    }
+
     @Override
-    public void addOnFocusHandler( final Command command ) {
-        this.addOnFocusHandler = command;
+    public void addOnFocusHandler( final Command doWhenFocused ) {
+        focusGainedHandlers.add( checkNotNull( "doWhenFocused", doWhenFocused ) );
     }
 
     @Override
