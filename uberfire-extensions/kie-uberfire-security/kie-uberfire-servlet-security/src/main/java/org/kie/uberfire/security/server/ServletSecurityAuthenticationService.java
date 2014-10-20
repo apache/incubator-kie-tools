@@ -80,6 +80,11 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
     @Override
     public void logout() {
         HttpServletRequest request = getRequestForThread();
+        try {
+            request.logout();
+        } catch (Exception e) {
+
+        }
         request.getSession().invalidate();
     }
 
