@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
@@ -191,9 +192,10 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         explorerService.call( new RemoteCallback<FolderListing>() {
             @Override
             public void callback( FolderListing fl ) {
-                getView().getExplorer().loadContent( fl, null );
+                getView().getExplorer().loadContent( fl );
             }
-        } ).getFolderListing(activeOrganizationalUnit,
+        } ).getFolderListing(
+                activeOrganizationalUnit,
                 activeRepository,
                 activeProject,
                 item,
@@ -312,6 +314,20 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         );
 
         popup.show();
+    }
+
+    @Override
+    public void uploadArchivedFolder(FolderItem folderItem) {
+
+
+
+        if (folderItem.getItem() instanceof Package) {
+//            final Package pkg = ((Package) item.getItem());
+//
+//            Window.open(URLHelper.getDownloadUrl(folderItem.path),
+//                    "downloading",
+//                    "resizable=no,scrollbars=yes,status=no");
+        }
     }
 
     private Path getFolderItemPath( final FolderItem folderItem ) {

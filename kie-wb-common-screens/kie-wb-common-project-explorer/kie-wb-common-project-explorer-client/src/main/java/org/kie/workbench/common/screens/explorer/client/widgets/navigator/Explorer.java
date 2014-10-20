@@ -223,6 +223,10 @@ public class Explorer extends Composite {
         }
     }
 
+    public void loadContent(FolderListing folderListing) {
+        this.loadContent(folderListing, null);
+    }
+
     public void loadContent( final FolderListing content,
                              final Map<FolderItem, List<FolderItem>> siblings ) {
         if ( content != null ) {

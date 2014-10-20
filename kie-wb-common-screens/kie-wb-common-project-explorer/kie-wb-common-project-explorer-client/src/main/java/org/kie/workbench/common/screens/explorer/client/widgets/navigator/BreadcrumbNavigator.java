@@ -216,9 +216,24 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         } );
         deleteContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
 
+
         iconContainer.add( copyContainer );
         iconContainer.add( renameContainer );
         iconContainer.add( deleteContainer );
+
+        if (folderItem.getType().equals(FolderItemType.FOLDER)) {
+
+            final InlineHTML archiveContainer = new InlineHTML("<i class=\"icon-archive\"></i>");
+            archiveContainer.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    presenter.uploadArchivedFolder( folderItem );
+                }
+            });
+            archiveContainer.getElement().getStyle().setPaddingLeft(10, Style.Unit.PX);
+            iconContainer.add(archiveContainer);
+
+        }
 
         new Tooltip() {{
             setWidget( copyContainer );

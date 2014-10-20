@@ -14,6 +14,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.structure.client.resources.NavigatorResources;
+import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -28,7 +29,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 @Dependent
 public class TreeNavigator extends Composite implements Navigator {
 
-    private static final String LAZY_LOAD = "Loading...";
+    private static final String LAZY_LOAD = ProjectExplorerConstants.INSTANCE.LoadingDotDotDot();
 
     @Inject
     private DotResourceTypeDefinition hiddenTypeDef;

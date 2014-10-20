@@ -21,6 +21,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
 import java.lang.annotation.Annotation;
 
 public class VersionSelectedEventMock
@@ -45,6 +46,11 @@ public class VersionSelectedEventMock
 
     @Override
     public <U extends VersionSelectedEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
+        return null;
+    }
+
+    @Override
+    public <U extends VersionSelectedEvent> Event<U> select(TypeLiteral<U> uTypeLiteral, Annotation... annotations) {
         return null;
     }
 }

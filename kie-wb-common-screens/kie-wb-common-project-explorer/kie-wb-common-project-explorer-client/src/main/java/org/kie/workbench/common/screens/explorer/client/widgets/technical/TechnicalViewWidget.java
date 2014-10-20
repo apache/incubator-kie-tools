@@ -107,7 +107,7 @@ public class TechnicalViewWidget extends Composite implements View {
 
     @Override
     public void setItems( final FolderListing activeFolderListing ) {
-        explorer.loadContent( activeFolderListing, null );
+        explorer.loadContent( activeFolderListing );
     }
 
     @Override

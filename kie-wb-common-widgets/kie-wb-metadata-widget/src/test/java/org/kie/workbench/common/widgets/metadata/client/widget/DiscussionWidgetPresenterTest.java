@@ -20,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
 
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
@@ -190,6 +191,11 @@ public class DiscussionWidgetPresenterTest {
 
         @Override
         public <U extends CommentAddedEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
+            return null;
+        }
+
+        @Override
+        public <U extends CommentAddedEvent> Event<U> select(TypeLiteral<U> uTypeLiteral, Annotation... annotations) {
             return null;
         }
     }
