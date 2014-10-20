@@ -66,29 +66,21 @@ public class ProjectExplorerContentResolver {
 
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
 
-    @Inject
-    @Named("ioStrategy")
     private IOService ioService;
 
-    @Inject
     private KieProjectService projectService;
 
-    @Inject
     private UserServicesImpl userServices;
 
-    @Inject
     private ExplorerServiceHelper helper;
 
-    @Inject
-//    @AppResourcesAuthz
     private AuthorizationManager authorizationManager;
 
-    @Inject
     private OrganizationalUnitService organizationalUnitService;
 
     @Inject
     @SessionScoped
-    private User identity;
+    protected User identity;
 
     private OrganizationalUnit selectedOrganizationalUnit;
     private Repository selectedRepository;
@@ -102,12 +94,32 @@ public class ProjectExplorerContentResolver {
     private Map<String, Repository> repositories;
     private Set<Project> projects;
 
+    public ProjectExplorerContentResolver() {
+
+    }
+
+    @Inject
+    public ProjectExplorerContentResolver(
+            @Named("ioStrategy") IOService ioService,
+            KieProjectService projectService,
+            UserServicesImpl userServices,
+            ExplorerServiceHelper helper,
+            AuthorizationManager authorizationManager,
+            OrganizationalUnitService organizationalUnitService) {
+        this.ioService = ioService;
+        this.projectService = projectService;
+        this.userServices = userServices;
+        this.helper = helper;
+        this.authorizationManager = authorizationManager;
+        this.organizationalUnitService = organizationalUnitService;
+    }
+
     public ProjectExplorerContent resolve(final ProjectExplorerContentQuery query) {
 
         setupSelectedItems(query);
 
         setSelectedOrganizationalUnit();
-        setSelectedRepository();
+        setSelectedRepository(query.isBranchChangeFlag());
         setSelectedProject();
 
         if (selectedOrganizationalUnit == null || selectedRepository == null || selectedProject == null) {
@@ -262,14 +274,16 @@ public class ProjectExplorerContentResolver {
         if (!projects.contains(selectedProject)) {
             selectedProject = (projects.isEmpty() ? null : projects.iterator().next());
         }
-    }
+        }
 
-    private void setSelectedRepository() {
+    private void setSelectedRepository(boolean branchChangeFlag) {
         repositories = getRepositories(selectedOrganizationalUnit);
         if (selectedRepository == null || !repositories.containsKey(selectedRepository.getAlias())) {
             selectedRepository = (repositories.isEmpty() ? null : repositories.values().iterator().next());
-        } else if ( !selectedRepository.equals( repositories.get( selectedRepository.getAlias() ) ) ) {
-            selectedRepository = repositories.get( selectedRepository.getAlias() );
+        } else if (selectedRepository != null && branchChangeFlag) {
+            selectedRepository = selectedRepository;
+        } else if (!selectedRepository.equals(repositories.get(selectedRepository.getAlias()))) {
+            selectedRepository = repositories.get(selectedRepository.getAlias());
         }
     }
 
@@ -484,7 +498,8 @@ public class ProjectExplorerContentResolver {
             return authorizedProjects;
         }
         final Path repositoryRoot = repository.getRoot();
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream(Paths.convert(repositoryRoot));
+        org.uberfire.java.nio.file.Path convert = Paths.convert(repositoryRoot);
+        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream(convert);
         for (org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths) {
             if (Files.isDirectory(nioRepositoryPath)) {
                 final org.uberfire.backend.vfs.Path projectPath = Paths.convert(nioRepositoryPath);
