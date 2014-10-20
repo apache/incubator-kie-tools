@@ -5,7 +5,6 @@ import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Breadcrumbs;
 import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -17,7 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.uberfire.apps.api.Directory;
 import org.kie.uberfire.apps.api.DirectoryBreadCrumb;
-import org.kie.uberfire.apps.client.home.components.ThumbnailApp;
+import org.kie.uberfire.apps.client.home.components.TilesApp;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -66,7 +65,7 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
             bread.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
-                    breadCrumbAction.execute(  breadCrumb.getUri() );
+                    breadCrumbAction.execute( breadCrumb.getUri() );
                 }
             } );
             dirs.add( bread );
@@ -80,9 +79,10 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
 
     @Override
     public void setupChildsDirectories( List<Directory> childsDirectories,
-                                        ParameterizedCommand<String> clickCommand ) {
+                                        ParameterizedCommand<String> clickCommand,
+                                        ParameterizedCommand<String> deleteCommand ) {
         for ( Directory childsDirectory : childsDirectories ) {
-            final ThumbnailApp link = new ThumbnailApp( childsDirectory.getName(), childsDirectory.getURI(), ThumbnailApp.TYPE.DIR, clickCommand );
+            final TilesApp link = TilesApp.directoryTiles( childsDirectory.getName(), childsDirectory.getURI(), TilesApp.TYPE.DIR, clickCommand, deleteCommand );
             dirContent.add( link );
         }
     }
@@ -96,14 +96,14 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     public void setupChildComponents( List<String> childComponents,
                                       ParameterizedCommand<String> clickCommand ) {
         for ( String childComponent : childComponents ) {
-            final ThumbnailApp link = new ThumbnailApp( childComponent, ThumbnailApp.TYPE.COMPONENT, clickCommand );
+            final TilesApp link = TilesApp.componentTiles( childComponent, TilesApp.TYPE.COMPONENT, clickCommand );
             dirContent.add( link );
         }
 
     }
 
     private void generateCreateDirThumbNail( ParameterizedCommand<String> clickCommand ) {
-        final ThumbnailApp link = new ThumbnailApp( ThumbnailApp.TYPE.ADD, clickCommand );
+        final TilesApp link = TilesApp.createDirTiles( TilesApp.TYPE.ADD, clickCommand );
         dirContent.add( link );
     }
 

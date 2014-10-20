@@ -65,4 +65,7 @@ public class PerspectivePresenter extends Composite {
 
     }
 
+    public String getPerspectiveName() {
+        return getView().getPerspectiveEditor().getName();
+    }
 }

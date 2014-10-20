@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -31,7 +32,7 @@ public class AppsHomePresenter {
         void setupAddDir( ParameterizedCommand<String> clickCommand );
 
         void setupChildsDirectories( List<Directory> childsDirectories,
-                                     ParameterizedCommand<String> clickCommand );
+                                     ParameterizedCommand<String> clickCommand, ParameterizedCommand<String> deleteCommand  );
 
         void clear();
 
@@ -100,6 +101,31 @@ public class AppsHomePresenter {
         return target;
     }
 
+
+    private ParameterizedCommand<String> generateDeleteDirectoryViewCommand() {
+        return new ParameterizedCommand<String>() {
+            @Override
+            public void execute( final String uri ) {
+                appService.call( new RemoteCallback<Boolean>() {
+                    public void callback( Boolean deleted ) {
+                        currentDirectory.removeChildDirectoryByURI( uri );
+                        view.clear();
+                        view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand(), generateDeleteDirectoryViewCommand() );
+                        view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
+                        view.setupAddDir( generateAddDirCommand() );
+                    }
+                }, new ErrorCallback<Object>() {
+                    @Override
+                    public boolean error( Object o,
+                                          Throwable throwable ) {
+                        return false;
+                    }
+                } ).deleteDirectory( uri );
+            }
+        };
+    }
+
+
     private ParameterizedCommand<String> generateDirectoryViewCommand() {
         return new ParameterizedCommand<String>() {
             @Override
@@ -117,7 +143,7 @@ public class AppsHomePresenter {
     private void setupView() {
         view.clear();
         view.setupBreadCrumbs( DirectoryBreadCrumb.getBreadCrumbs( currentDirectory ), generateBreadCrumbViewCommand() );
-        view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand() );
+        view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand(), generateDeleteDirectoryViewCommand() );
         view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
         view.setupAddDir( generateAddDirCommand() );
     }
@@ -143,7 +169,7 @@ public class AppsHomePresenter {
 
                         currentDirectory.addChildDirectory( newDir );
                         view.clear();
-                        view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand() );
+                        view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand(), generateDeleteDirectoryViewCommand() );
                         view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
                         view.setupAddDir( generateAddDirCommand() );
                     }

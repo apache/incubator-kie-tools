@@ -11,4 +11,6 @@ public interface AppsPersistenceAPI {
 
     Directory createDirectory( Directory parentDirectory,
                                String parameter );
+
+    Boolean deleteDirectory( String uri );
 }

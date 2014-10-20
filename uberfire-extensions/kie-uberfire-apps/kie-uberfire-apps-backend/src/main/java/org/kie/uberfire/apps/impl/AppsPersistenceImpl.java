@@ -19,6 +19,7 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.StandardDeleteOption;
 
 @Service
 @ApplicationScoped
@@ -71,7 +72,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     private Directory buildDirectories( Map<String, List<String>> tagMap ) {
         Path homeDir = getHomeDir();
 
-        Directory root = new Directory( homeDir.getFileName().toString(), homeDir.toUri().toString(), tagMap );
+        Directory root = new Directory( homeDir.getFileName().toString(), homeDir.toString(), homeDir.toUri().toString(), tagMap );
 
         root.addChildDirectories( extractAllChildDirectories( root, homeDir ) );
 
@@ -87,7 +88,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
             final DirectoryStream<Path> paths = ioService.newDirectoryStream( dir );
             for ( Path childPath : paths ) {
                 if ( Files.isDirectory( childPath ) ) {
-                    final Directory child = getDirectory( childPath.getFileName().toString(), childPath.toUri().toString(), parent );
+                    final Directory child = getDirectory( childPath.getFileName().toString(),childPath.toString(), childPath.toUri().toString(), parent );
                     final List<Directory> childsOfChilds = extractAllChildDirectories( child, childPath );
                     child.addChildDirectories( childsOfChilds );
                     childs.add( child );
@@ -98,26 +99,34 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     }
 
     private Directory getDirectory( String name,
+                                    String fullpath,
                                     String uri,
                                     Directory parent ) {
-        return new Directory( name, uri, parent );
+        return new Directory( name, fullpath, uri, parent );
     }
 
     @Override
     public Directory createDirectory( Directory parentDirectory,
                                       String name ) {
         final Path parentDir = recursiveSearchForDir( getHomeDir(), parentDirectory );
-        final Path newDir = parentDir.resolve( name );
+        Path newDir = parentDir.resolve( name );
         if ( !ioService.exists( newDir ) ) {
             createDir( newDir );
         }
-        return getDirectory( name, newDir.toUri().toString(), parentDirectory );
+        newDir = ioService.get( newDir.toUri());
+        return getDirectory( name, newDir.toString(), newDir.toUri().toString(), parentDirectory );
+    }
+
+    @Override
+    public Boolean deleteDirectory( String uri ) {
+        Path dir = ioService.get( uri );
+        return ioService.deleteIfExists( dir, StandardDeleteOption.NON_EMPTY_DIRECTORIES );
     }
 
     private Path recursiveSearchForDir( Path dir,
                                         Directory parentDirectory ) {
         if ( ioService.exists( dir ) && Files.isDirectory( dir ) ) {
-            if ( dir.toUri().toString().equals( parentDirectory.getURI() ) ) {
+            if ( isThisPathRelativeToThisDir( dir, parentDirectory ) ) {
                 return dir;
             } else {
                 Path desiredPath = null;
@@ -135,6 +144,11 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
 
         }
         return null;
+    }
+
+    private boolean isThisPathRelativeToThisDir( Path dir,
+                                                 Directory parentDirectory ) {
+        return dir.getFileName().toString().equals( parentDirectory.getName() );
     }
 
     private Path getHomeDir() {

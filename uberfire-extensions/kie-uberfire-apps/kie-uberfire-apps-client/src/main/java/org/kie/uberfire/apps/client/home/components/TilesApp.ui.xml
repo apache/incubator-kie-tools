@@ -21,16 +21,16 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
   <ui:with field='res' type='org.kie.uberfire.apps.client.resources.WebAppResource'/>
-
-  <g:FocusPanel ui:field="clickTile">
-    <g:FlowPanel  ui:field="tilePanel" styleName="{res.CSS.tile}" >
-      <g:FlowPanel styleName="{res.CSS.tileContent}">
+  <g:FlowPanel ui:field="outerPanel" styleName="{res.CSS.tile}">
+    <g:FlowPanel ui:field="deletePanel" styleName="{res.CSS.deletePanel}"/>
+    <g:FlowPanel ui:field="tilePanel" styleName="{res.CSS.tileContent}">
+      <g:FlowPanel styleName="{res.CSS.iconPanel}">
         <b:Icon type="FILE" ui:field="icon" styleName="{res.CSS.tileIcon}"/>
       </g:FlowPanel>
-      <g:FlowPanel styleName="{res.CSS.tileStatus}">
-        <b:Label styleName="{res.CSS.tileName}" ui:field="label"/>
-      </g:FlowPanel>
     </g:FlowPanel>
-  </g:FocusPanel>
+    <g:FlowPanel styleName="{res.CSS.tileStatus}">
+      <b:Label styleName="{res.CSS.tileName}" ui:field="label"/>
+    </g:FlowPanel>
+  </g:FlowPanel>
 
 </ui:UiBinder>

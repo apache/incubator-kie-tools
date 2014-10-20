@@ -11,6 +11,8 @@ public class Directory {
 
     private String name;
     private Map<String, List<String>> tagMap;
+
+    private String fullPath;
     private Directory parent;
     private String URI;
 
@@ -21,9 +23,11 @@ public class Directory {
     }
 
     public Directory( String name,
+                      String fullPath,
                       String URI,
                       Directory parent ) {
         this.name = name;
+        this.fullPath = fullPath;
         this.parent = parent;
         this.URI = URI;
         this.tagMap = parent.getTagMap();
@@ -31,8 +35,10 @@ public class Directory {
     }
 
     public Directory( String name,
+                      String fullPath,
                       String URI,
                       Map<String, List<String>> tagMap ) {
+        this.fullPath = fullPath;
         this.name = name;
         this.URI = URI;
         this.tagMap = tagMap;
@@ -78,4 +84,20 @@ public class Directory {
         return childComponents;
     }
 
+    public void removeChildDirectoryByURI( String uri ) {
+        Directory candidate = null;
+        for ( Directory child : childsDirectories ) {
+            if ( child.getURI().equalsIgnoreCase( uri ) ) {
+                candidate = child;
+                break;
+            }
+        }
+        if ( candidate != null ) {
+            childsDirectories.remove( candidate );
+        }
+    }
+
+    public String getFullPath() {
+        return fullPath;
+    }
 }

@@ -21,7 +21,6 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui" >
 
-
   <g:FlowPanel ui:field="mainPanel">
     <b:Breadcrumbs ui:field="dirs"/>
     <g:FlowPanel ui:field="dirContent"/>

@@ -59,7 +59,7 @@
           Tags
         </b:ControlLabel>
         <b:Controls>
-          <g:FlowPanel ui:field="tags"/>
+          <g:HorizontalPanel ui:field="tags"/>
         </b:Controls>
       </b:ControlGroup>
 

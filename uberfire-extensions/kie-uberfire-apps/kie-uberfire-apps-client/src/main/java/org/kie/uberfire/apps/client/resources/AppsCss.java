@@ -7,6 +7,14 @@ public interface AppsCss extends CssResource {
     @ClassName("tile")
     String tile();
 
+    @ClassName( "iconPanel" )
+    String iconPanel();
+
+    @ClassName( "deleteIcon" )
+    String deleteIcon();
+
+    @ClassName( "deletePanel" )
+    String deletePanel();
 
     @ClassName("blueTile")
     String blueTile();

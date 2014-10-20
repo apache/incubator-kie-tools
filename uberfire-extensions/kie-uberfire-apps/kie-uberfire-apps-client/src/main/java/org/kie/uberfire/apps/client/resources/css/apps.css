@@ -1,5 +1,4 @@
 .tile {
-    background: rgba(76, 98, 154, 0.52) none repeat scroll 0% 0% / auto padding-box border-box;
     border-collapse: collapse;
     box-shadow: rgb(255, 255, 204) 0px 0px 1px 0px inset;
     box-sizing: border-box;
@@ -16,7 +15,7 @@
 }
 
 .blueTile {
-    background: rgba(76, 98, 154, 0.52) none repeat scroll 0% 0% / auto padding-box border-box; !important;
+    background: rgba(76, 98, 154, 0.52) none repeat scroll 0% 0% / auto padding-box border-box !important;
 }
 
 .redTile {
@@ -24,16 +23,16 @@
 }
 
 .greenTile {
-    background: rgba(67, 154, 99, 0.60) none repeat scroll 0% 0% / auto padding-box border-box; !important;
+    background: rgba(67, 154, 99, 0.60) none repeat scroll 0% 0% / auto padding-box border-box !important;
 }
 
 .tileContent {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 20px;
     border-collapse: collapse;
     box-sizing: border-box;
     cursor: pointer;
-    height: 160px;
+    height: 140px;
     justify-self: stretch;
     left: 0px;
     right: 2px;
@@ -47,9 +46,26 @@
     overflow: hidden;
 }
 
+.deletePanel{
+    text-align: right;
+    height: 20px;
+    position: relative;
+    width: 160px;
+}
+
+.deleteIcon {
+    margin-right: 2px;
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+}
+
+.iconPanel{
+    margin-top: 25px;
+}
+
 .tileIcon {
     font-size: 46px;
-    color: rgb(255, 255, 255)
+    color: rgb(255, 255, 255);
 }
 
 .tileIcon:before {
@@ -114,7 +130,7 @@
     display: block;
     #height: 18px;
     text-decoration: none solid rgb(255, 255, 255);
-    width:152px;
+    width: 152px;
     #perspective-origin: 47.5px 9px;
     #transform-origin: 47.5px 9px;
     border: 0px none rgb(255, 255, 255);
