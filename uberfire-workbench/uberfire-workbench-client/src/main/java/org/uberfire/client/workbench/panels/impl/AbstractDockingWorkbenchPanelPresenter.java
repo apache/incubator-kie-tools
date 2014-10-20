@@ -46,20 +46,14 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
             DockingWorkbenchPanelPresenter dockingParent = (DockingWorkbenchPanelPresenter) getParent();
             if ( dockingParent.getPanels().get( position ) == this ) {
                 dockingParent.setChildSize( this,
-                                            widthOrDefault( newChild.getDefinition(), 100 ) + widthOrDefault( getDefinition(), 100 ),
-                                            heightOrDefault( newChild.getDefinition(), 100 ) + heightOrDefault( getDefinition(), 100 ) );
+                                            widthOrDefault( newChild.getDefinition() ) + widthOrDefault( getDefinition() ),
+                                            heightOrDefault( newChild.getDefinition() ) + heightOrDefault( getDefinition() ) );
             }
         }
         WorkbenchPanelPresenter existingChild = getPanels().get( position );
         if ( existingChild != null && newChild instanceof AbstractDockingWorkbenchPanelPresenter ) {
-            Integer existingChildSize = widthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
-            Integer newChildSize = widthOrHeight( (CompassPosition) position, newChild.getDefinition() );
-            if ( existingChildSize == null ) {
-                existingChildSize = 0;
-            }
-            if ( newChildSize == null ) {
-                newChildSize = 0;
-            }
+            int existingChildSize = widthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
+            int newChildSize = widthOrHeight( (CompassPosition) position, newChild.getDefinition() );
 
             removePanel( existingChild );
             super.addPanel( newChild, position );
@@ -70,14 +64,6 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
         } else {
             super.addPanel( newChild, position );
         }
-    }
-
-    private int heightOrDefault( PanelDefinition def, int heightIfNull ) {
-        return def.getHeight() == null ? heightIfNull : def.getHeight();
-    }
-
-    private int widthOrDefault( PanelDefinition def, int widthIfNull ) {
-        return def.getWidth() == null ? widthIfNull : def.getWidth();
     }
 
     /**
