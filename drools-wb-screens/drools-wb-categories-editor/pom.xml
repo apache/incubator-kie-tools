@@ -31,6 +31,7 @@
   <name>Drools Workbench - Categories Editor</name>
   <description>Drools Workbench - Categories Editor</description>
 
+
   <modules>
     <module>drools-wb-categories-editor-client</module>
   </modules>
