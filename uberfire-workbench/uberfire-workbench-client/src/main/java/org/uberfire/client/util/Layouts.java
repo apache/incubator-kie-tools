@@ -18,6 +18,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Layouts {
 
+    public static final int DEFAULT_CHILD_SIZE = 100;
+
     /**
      * Sets the CSS on the given widget so it automatically fills the available space, rather than being sized based on
      * the amount of space required by its contents. This tends to be useful when building a UI that always fills the
@@ -103,7 +105,7 @@ public class Layouts {
      * Returns a multi-line string detailing layout information about the given widget and each of its descendants in
      * the widget tree.
      *
-     * @param w
+     * @param startAt
      *            the widget to start at. Null is permitted.
      * @return information about w and its descendants, one widget per line. Each line is indented with leading spaces
      *         to illustrate the containment hierarchy.
@@ -164,18 +166,28 @@ public class Layouts {
      *            determines which dimension (width or height) to return.
      * @param definition
      *            the definition to get the size information from.
-     * @return the with if position is EAST or WEST; the height if position is NORTH or SOUTH. May be null.
+     * @return the with if position is EAST or WEST; the height if position is NORTH or SOUTH. If no size is provided by the PanelDefinition the DEFAULT_CHILD_SIZE is used.
      */
-    public static Integer widthOrHeight( CompassPosition position, PanelDefinition definition ) {
+    public static int widthOrHeight( CompassPosition position,
+                                     PanelDefinition definition ) {
         switch ( position ) {
             case NORTH:
             case SOUTH:
-                return definition.getHeight();
+                return heightOrDefault( definition );
             case EAST:
             case WEST:
-                return definition.getWidth();
-            default: throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
+                return widthOrDefault( definition );
+            default:
+                throw new IllegalArgumentException( "Position " + position + " has no horizontal or vertial aspect." );
         }
+    }
+
+    public static int heightOrDefault( PanelDefinition def ) {
+        return def.getHeight() == null ? DEFAULT_CHILD_SIZE : def.getHeight();
+    }
+
+    public static int widthOrDefault( PanelDefinition def ) {
+        return def.getWidth() == null ? DEFAULT_CHILD_SIZE : def.getWidth();
     }
 
 }

@@ -63,8 +63,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
-    private static final double DEFAULT_CHILD_SIZE = 100;
-
     class HSplitter extends Splitter {
         public HSplitter(Widget target,
                          boolean reverse) {
@@ -462,15 +460,11 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
      * @param position
      *            the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
      * @param size
-     *            the width or height to give the added child. If null or 0, the default value
-     *            {@value #DEFAULT_CHILD_SIZE} is used.
+     *            the width or height to give the added child.
      */
     public void add( Widget child,
                      CompassPosition position,
-                     Double size ) {
-        if ( size == null || size <= 0 ) {
-            size = DEFAULT_CHILD_SIZE;
-        }
+                     double size ) {
         switch ( position ) {
             case NORTH:
                 addNorth( child, size );
@@ -497,18 +491,12 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
      * @param position
      *            the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
      * @param size
-     *            the width or height to give the added child. If null or 0, the default value
-     *            {@value #DEFAULT_CHILD_SIZE} is used.
+     *            the width or height to give the added child
      */
     public void add( Widget child,
                      CompassPosition position,
-                     Integer size ) {
-        Double doubleSize;
-        if ( size == null ) {
-            doubleSize = null;
-        } else {
-            doubleSize = (double) size;
-        }
+                     int size ) {
+        double doubleSize = (double) size;
         add( child, position, doubleSize );
     }
 }
