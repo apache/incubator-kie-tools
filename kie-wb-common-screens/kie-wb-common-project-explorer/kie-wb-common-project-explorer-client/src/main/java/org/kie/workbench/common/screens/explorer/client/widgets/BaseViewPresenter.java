@@ -321,12 +321,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
 
 
-        if (folderItem.getItem() instanceof Package) {
-//            final Package pkg = ((Package) item.getItem());
-//
-//            Window.open(URLHelper.getDownloadUrl(folderItem.path),
-//                    "downloading",
-//                    "resizable=no,scrollbars=yes,status=no");
+        if (folderItem.getItem() instanceof Path) {
+            final Path path = (Path) folderItem.getItem();
+
+            Window.open(URLHelper.getDownloadUrl(path),
+                    "downloading",
+                    "resizable=no,scrollbars=yes,status=no");
         }
     }
 

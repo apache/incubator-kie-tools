@@ -16,12 +16,6 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.Map;
-import javax.enterprise.event.Event;
-import javax.enterprise.util.TypeLiteral;
-
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -37,7 +31,13 @@ import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetView;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
-import static org.junit.Assert.*;
+import javax.enterprise.event.Event;
+import java.lang.annotation.Annotation;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 public class DiscussionWidgetPresenterTest {
@@ -194,9 +194,5 @@ public class DiscussionWidgetPresenterTest {
             return null;
         }
 
-        @Override
-        public <U extends CommentAddedEvent> Event<U> select(TypeLiteral<U> uTypeLiteral, Annotation... annotations) {
-            return null;
-        }
     }
 }

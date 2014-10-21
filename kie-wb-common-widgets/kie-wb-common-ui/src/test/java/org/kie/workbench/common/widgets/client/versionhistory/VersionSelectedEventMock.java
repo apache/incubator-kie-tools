@@ -18,10 +18,8 @@ package org.kie.workbench.common.widgets.client.versionhistory;
 
 import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.java.nio.base.version.VersionRecord;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.util.TypeLiteral;
 import java.lang.annotation.Annotation;
 
 public class VersionSelectedEventMock
@@ -49,8 +47,4 @@ public class VersionSelectedEventMock
         return null;
     }
 
-    @Override
-    public <U extends VersionSelectedEvent> Event<U> select(TypeLiteral<U> uTypeLiteral, Annotation... annotations) {
-        return null;
-    }
 }

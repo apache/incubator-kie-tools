@@ -29,7 +29,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.version.VersionRecord;
 
 import javax.enterprise.event.Event;
-import javax.enterprise.util.TypeLiteral;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
@@ -218,9 +217,5 @@ public class VersionHistoryPresenterTest {
             return null;
         }
 
-        @Override
-        public <U extends VersionSelectedEvent> Event<U> select(TypeLiteral<U> uTypeLiteral, Annotation... annotations) {
-            return null;
-        }
     }
 }
