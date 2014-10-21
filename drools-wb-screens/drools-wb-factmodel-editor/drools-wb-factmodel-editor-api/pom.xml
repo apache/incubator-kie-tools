@@ -16,9 +16,20 @@
   <description>Drools Workbench - Fact Model Editor - API</description>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-services-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
     </dependency>
 
     <dependency>
