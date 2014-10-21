@@ -85,7 +85,10 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
         } catch (Exception e) {
 
         }
-        request.getSession().invalidate();
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
     }
 
     @Override
