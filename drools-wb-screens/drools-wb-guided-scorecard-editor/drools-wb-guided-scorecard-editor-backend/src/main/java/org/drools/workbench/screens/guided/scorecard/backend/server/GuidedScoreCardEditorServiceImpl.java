@@ -23,7 +23,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.codehaus.plexus.util.StringUtils;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardXMLPersistence;
 import org.drools.workbench.models.guided.scorecard.shared.Attribute;
@@ -243,10 +242,10 @@ public class GuidedScoreCardEditorServiceImpl
 
     private List<ValidationMessage> doValidation( final ScoreCardModel model ) {
         final List<ValidationMessage> results = new ArrayList<ValidationMessage>();
-        if ( StringUtils.isBlank( model.getFactName() ) ) {
+        if ( isBlank( model.getFactName() ) ) {
             results.add( makeValidationMessages( "Fact Name is empty." ) );
         }
-        if ( StringUtils.isBlank( model.getFieldName() ) ) {
+        if ( isBlank( model.getFieldName() ) ) {
             results.add( makeValidationMessages( "Resultant Score Field is empty." ) );
         }
         if ( model.getCharacteristics().size() == 0 ) {
@@ -255,24 +254,24 @@ public class GuidedScoreCardEditorServiceImpl
         int ctr = 1;
         for ( final Characteristic c : model.getCharacteristics() ) {
             String characteristicName = "Characteristic ('#" + ctr + "')";
-            if ( StringUtils.isBlank( c.getName() ) ) {
+            if ( isBlank( c.getName() ) ) {
                 results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "' is empty." ) );
             } else {
                 characteristicName = "Characteristic ('" + c.getName() + "')";
             }
-            if ( StringUtils.isBlank( c.getFact() ) ) {
+            if ( isBlank( c.getFact() ) ) {
                 results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Fact is empty." ) );
             }
-            if ( StringUtils.isBlank( c.getField() ) ) {
+            if ( isBlank( c.getField() ) ) {
                 results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Characteristic Field is empty." ) );
-            } else if ( StringUtils.isBlank( c.getDataType() ) ) {
+            } else if ( isBlank( c.getDataType() ) ) {
                 results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Internal Error (missing datatype)." ) );
             }
             if ( c.getAttributes().size() == 0 ) {
                 results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. No Attributes Found." ) );
             }
             if ( model.isUseReasonCodes() ) {
-                if ( StringUtils.isBlank( model.getReasonCodeField() ) ) {
+                if ( isBlank( model.getReasonCodeField() ) ) {
                     results.add( makeValidationMessages( "Characteristic Name '" + characteristicName + "'. Resultant Reason Codes Field is empty." ) );
                 }
                 if ( !"none".equalsIgnoreCase( model.getReasonCodesAlgorithm() ) ) {
@@ -282,15 +281,15 @@ public class GuidedScoreCardEditorServiceImpl
             int attrCtr = 1;
             for ( final Attribute attribute : c.getAttributes() ) {
                 final String attributeName = "Attribute ('#" + attrCtr + "')";
-                if ( StringUtils.isBlank( attribute.getOperator() ) ) {
+                if ( isBlank( attribute.getOperator() ) ) {
                     results.add( makeValidationMessages( "Attribute Name '" + attributeName + "'. Attribute Operator is empty." ) );
                 }
-                if ( StringUtils.isBlank( attribute.getValue() ) ) {
+                if ( isBlank( attribute.getValue() ) ) {
                     results.add( makeValidationMessages( "Attribute Name '" + attributeName + "'. Attribute Value is empty." ) );
                 }
                 if ( model.isUseReasonCodes() ) {
-                    if ( StringUtils.isBlank( c.getReasonCode() ) ) {
-                        if ( StringUtils.isBlank( attribute.getReasonCode() ) ) {
+                    if ( isBlank( c.getReasonCode() ) ) {
+                        if ( isBlank( attribute.getReasonCode() ) ) {
                             results.add( makeValidationMessages( "Attribute Name '" + attributeName + "'. Reason Code must be set at either attribute or characteristic." ) );
                         }
                     }
@@ -300,6 +299,10 @@ public class GuidedScoreCardEditorServiceImpl
             ctr++;
         }
         return results;
+    }
+
+    private boolean isBlank( final String str ) {
+        return ( str == null || str.isEmpty() || str.trim().isEmpty() );
     }
 
     private ValidationMessage makeValidationMessages( final String message ) {
