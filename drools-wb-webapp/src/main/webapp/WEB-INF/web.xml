@@ -112,6 +112,15 @@ profile in pom.xml to use that. -->
   </servlet-mapping>
 
   <servlet>
+    <servlet-name>ArchiveServlet</servlet-name>
+    <servlet-class>org.guvnor.common.services.backend.archive.ArchiveServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ArchiveServlet</servlet-name>
+    <url-pattern>/org.drools.workbench.DroolsWorkbench/archive</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
     <servlet-name>ScoreCardFileServlet</servlet-name>
     <servlet-class>org.drools.workbench.screens.scorecardxls.backend.server.ScoreCardXLSFileServlet</servlet-class>
   </servlet>
