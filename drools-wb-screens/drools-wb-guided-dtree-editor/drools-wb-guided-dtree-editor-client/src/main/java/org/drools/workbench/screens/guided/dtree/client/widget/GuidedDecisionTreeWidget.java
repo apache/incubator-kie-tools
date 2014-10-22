@@ -62,6 +62,8 @@ import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
 import org.kie.uberfire.wires.core.client.canvas.WiresCanvas;
 import org.kie.uberfire.wires.core.client.util.ShapeFactoryUtil;
 import org.kie.uberfire.wires.core.trees.client.canvas.WiresTreeNodeConnector;
+import org.kie.uberfire.wires.core.trees.client.layout.WiresLayoutUtilities;
+import org.kie.uberfire.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.commons.data.Pair;
@@ -171,22 +173,25 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
     public void onDragCompleteHandler( @Observes ShapeDragCompleteEvent shapeDragCompleteEvent ) {
         final WiresBaseShape wiresShape = shapeDragCompleteEvent.getShape();
 
+        //Hide the temporary connector
+        if ( connector != null ) {
+            canvasLayer.remove( connector );
+            canvasLayer.draw();
+            connector = null;
+        }
+
         //If there's no Shape to add then exit
         if ( wiresShape == null ) {
+            dropContext.setContext( null );
             return;
         }
 
         //If the Shape is not intended for the Guided Decision Tree widget then exit
         if ( !( wiresShape instanceof BaseGuidedDecisionTreeShape ) ) {
+            dropContext.setContext( null );
             return;
         }
         final BaseGuidedDecisionTreeShape uiChild = (BaseGuidedDecisionTreeShape) wiresShape;
-
-        //Hide the temporary connector
-        if ( connector != null ) {
-            canvasLayer.remove( connector );
-            connector = null;
-        }
 
         //Get Shape's co-ordinates relative to the Canvas
         final double cx = getX( shapeDragCompleteEvent.getX() );
@@ -194,9 +199,14 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
 
         //If the Shape was dropped outside the bounds of the Canvas then exit
         if ( cx < 0 || cy < 0 ) {
+            dropContext.setContext( null );
             return;
         }
-        if ( cx > getOffsetWidth() || cy > getOffsetHeight() ) {
+
+        final int scrollWidth = getElement().getScrollWidth();
+        final int scrollHeight = getElement().getScrollHeight();
+        if ( cx > scrollWidth || cy > scrollHeight ) {
+            dropContext.setContext( null );
             return;
         }
 
@@ -315,12 +325,17 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                              uiRoot,
                              isReadOnly );
 
-            final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( uiRoot,
-                                                                                            canvasLayer );
+            final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( uiRoot );
+            final Rectangle2D canvasBounds = WiresLayoutUtilities.alignLayoutInCanvas( layout );
             for ( Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet() ) {
-                e.getKey().setX( e.getValue().getX() );
-                e.getKey().setY( e.getValue().getY() );
+                final Point2D destination = new Point2D( e.getValue().getX(),
+                                                         e.getValue().getY() );
+
+                e.getKey().setLocation( destination );
             }
+
+            WiresLayoutUtilities.resizeViewPort( canvasBounds,
+                                                 canvasLayer.getViewport() );
         }
 
         if ( shapesInCanvas.isEmpty() ) {
@@ -408,8 +423,8 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
 
     private void layout() {
         //Get layout information
-        final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( uiRoot,
-                                                                                        canvasLayer );
+        final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( uiRoot );
+        final Rectangle2D canvasBounds = WiresLayoutUtilities.alignLayoutInCanvas( layout );
 
         //Run an animation to move WiresBaseTreeNodes from their current position to the target position
         uiRoot.animate( AnimationTweener.EASE_OUT,
@@ -425,10 +440,15 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                                 //Reposition nodes. First we store the WiresBaseTreeNode together with its current position and target position
                                 transformations.clear();
                                 for ( Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet() ) {
+                                    final Point2D origin = e.getKey().getLocation();
+                                    final Point2D destination = new Point2D( e.getValue().getX(),
+                                                                             e.getValue().getY() );
                                     transformations.put( e.getKey(),
-                                                         new Pair<Point2D, Point2D>( e.getKey().getLocation(),
-                                                                                     e.getValue() ) );
+                                                         new Pair<Point2D, Point2D>( origin,
+                                                                                     destination ) );
                                 }
+                                WiresLayoutUtilities.resizeViewPort( canvasBounds,
+                                                                     canvasLayer.getViewport() );
                             }
 
                             @Override
