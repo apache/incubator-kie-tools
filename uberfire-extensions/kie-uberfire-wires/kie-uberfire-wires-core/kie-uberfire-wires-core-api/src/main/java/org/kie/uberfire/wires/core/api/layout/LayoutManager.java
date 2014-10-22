@@ -17,7 +17,6 @@ package org.kie.uberfire.wires.core.api.layout;
 
 import java.util.Map;
 
-import com.emitrom.lienzo.client.core.shape.Layer;
 import com.emitrom.lienzo.client.core.types.Point2D;
 import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
 
@@ -29,10 +28,8 @@ public interface LayoutManager {
     /**
      * Get the layout information for the shapes
      * @param root Root element of the shapes to layout
-     * @param layer The Layer containing the elements to layout
      * @return Map of Shape-to-Location information
      */
-    Map<WiresBaseShape, Point2D> getLayoutInformation( final WiresBaseShape root,
-                                                       final Layer layer );
+    Map<WiresBaseShape, Point2D> getLayoutInformation( final WiresBaseShape root );
 
 }

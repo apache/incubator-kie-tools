@@ -35,6 +35,8 @@ import org.kie.uberfire.wires.core.api.shapes.RequiresShapesManager;
 import org.kie.uberfire.wires.core.api.shapes.ShapesManager;
 import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
 import org.kie.uberfire.wires.core.trees.client.canvas.WiresTreeNodeConnector;
+import org.kie.uberfire.wires.core.trees.client.layout.WiresLayoutUtilities;
+import org.kie.uberfire.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 
@@ -224,6 +226,9 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                        private List<WiresBaseTreeNode> descendants;
                                        private Map<WiresBaseShape, Pair<Point2D, Point2D>> transformations = new HashMap<WiresBaseShape, Pair<Point2D, Point2D>>();
 
+                                       private Map<WiresBaseShape, Point2D> layout;
+                                       private Rectangle2D canvasBounds;
+
                                        @Override
                                        public void onStart( final IAnimation iAnimation,
                                                             final IAnimationHandle iAnimationHandle ) {
@@ -234,15 +239,17 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                            }
 
                                            //Get new layout information
-                                           final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( getTreeRoot(),
-                                                                                                                           WiresBaseTreeNode.this.getLayer() );
+                                           layout = layoutManager.getLayoutInformation( getTreeRoot() );
+                                           canvasBounds = WiresLayoutUtilities.alignLayoutInCanvas( layout );
 
                                            //Store required transformations: Shape, Current location, Target location
                                            transformations.clear();
                                            for ( Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet() ) {
+                                               final Point2D origin = e.getKey().getLocation();
+                                               final Point2D destination = e.getValue();
                                                transformations.put( e.getKey(),
-                                                                    new Pair<Point2D, Point2D>( e.getKey().getLocation(),
-                                                                                                e.getValue() ) );
+                                                                    new Pair<Point2D, Point2D>( origin,
+                                                                                                destination ) );
                                            }
 
                                            //Allow subclasses to change their appearance
@@ -297,6 +304,9 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                            if ( callback != null ) {
                                                callback.execute();
                                            }
+
+                                           WiresLayoutUtilities.resizeViewPort( canvasBounds,
+                                                                                WiresBaseTreeNode.this.getViewport() );
                                        }
                                    } );
 
@@ -368,19 +378,24 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                                            }
 
                                            //Get new layout information
-                                           final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( getTreeRoot(),
-                                                                                                                           WiresBaseTreeNode.this.getLayer() );
+                                           final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( getTreeRoot() );
+                                           final Rectangle2D canvasBounds = WiresLayoutUtilities.alignLayoutInCanvas( layout );
 
                                            //Store required transformations: Shape, Current location, Target location
                                            transformations.clear();
                                            for ( Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet() ) {
+                                               final Point2D origin = e.getKey().getLocation();
+                                               final Point2D destination = e.getValue();
                                                transformations.put( e.getKey(),
-                                                                    new Pair<Point2D, Point2D>( e.getKey().getLocation(),
-                                                                                                e.getValue() ) );
+                                                                    new Pair<Point2D, Point2D>( origin,
+                                                                                                destination ) );
                                            }
 
                                            //Allow subclasses to change their appearance
                                            onExpandStart();
+
+                                           WiresLayoutUtilities.resizeViewPort( canvasBounds,
+                                                                                WiresBaseTreeNode.this.getViewport() );
                                        }
 
                                        @Override

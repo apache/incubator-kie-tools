@@ -20,17 +20,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.emitrom.lienzo.client.core.shape.Layer;
 import com.emitrom.lienzo.client.core.types.Point2D;
 import org.kie.uberfire.wires.core.api.layout.LayoutManager;
 import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
-import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
 import org.kie.uberfire.wires.core.trees.client.layout.treelayout.AbstractTreeForTreeLayout;
 import org.kie.uberfire.wires.core.trees.client.layout.treelayout.Configuration;
 import org.kie.uberfire.wires.core.trees.client.layout.treelayout.DefaultConfiguration;
 import org.kie.uberfire.wires.core.trees.client.layout.treelayout.NodeExtentProvider;
 import org.kie.uberfire.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.kie.uberfire.wires.core.trees.client.layout.treelayout.TreeLayout;
+import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
 /**
  * Default Tree layout using an adaptation of https://code.google.com/p/treelayout/ for use with GWT
@@ -38,8 +37,7 @@ import org.kie.uberfire.wires.core.trees.client.layout.treelayout.TreeLayout;
 public class WiresTreesDefaultLayout implements LayoutManager {
 
     @Override
-    public Map<WiresBaseShape, Point2D> getLayoutInformation( final WiresBaseShape root,
-                                                              final Layer layer ) {
+    public Map<WiresBaseShape, Point2D> getLayoutInformation( final WiresBaseShape root ) {
         if ( root == null ) {
             return Collections.emptyMap();
         }
@@ -57,17 +55,12 @@ public class WiresTreesDefaultLayout implements LayoutManager {
                                                                                         treeNodesExtentProvider,
                                                                                         treeNodesLayoutConfiguration );
 
-        //Calculate offset so tree appears centred in the X-axis of the Canvas
-        final Map<WiresBaseTreeNode, Rectangle2D> bounds = layout.getNodeBounds();
-        final Rectangle2D rootBounds = bounds.get( treeRootNode );
-        final double offsetX = ( layer.getWidth() / 2 ) - rootBounds.getX();
-        final double offsetY = 100;
-
+        //Set absolute positions
         final Map<WiresBaseShape, Point2D> locations = new HashMap<WiresBaseShape, Point2D>();
-        for ( Map.Entry<WiresBaseTreeNode, Rectangle2D> e : bounds.entrySet() ) {
+        for ( Map.Entry<WiresBaseTreeNode, Rectangle2D> e : layout.getNodeBounds().entrySet() ) {
             locations.put( e.getKey(),
-                           new Point2D( e.getValue().getX() + offsetX,
-                                        e.getValue().getY() + offsetY ) );
+                           new Point2D( e.getValue().getX(),
+                                        e.getValue().getY() ) );
         }
 
         //Collapse children into parent if required. By setting the location of "collapsed" nodes to that

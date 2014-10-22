@@ -48,6 +48,9 @@ public class WiresCanvas extends Composite implements ShapesManager,
                                                       SelectionManager,
                                                       MagnetManager {
 
+    public static final int DEFAULT_SIZE_WIDTH = 1000;
+    public static final int DEFAULT_SIZE_HEIGHT = 1000;
+
     private FocusableLienzoPanel panel;
     private WiresBaseShape selectedShape;
     private ProgressBar progressBar;
@@ -57,8 +60,8 @@ public class WiresCanvas extends Composite implements ShapesManager,
 
     @PostConstruct
     public void init() {
-        panel = new FocusableLienzoPanel( 1000,
-                                          1000 );
+        panel = new FocusableLienzoPanel( DEFAULT_SIZE_WIDTH,
+                                          DEFAULT_SIZE_HEIGHT );
 
         initWidget( panel );
 
@@ -185,7 +188,9 @@ public class WiresCanvas extends Composite implements ShapesManager,
         }
         clearSelection();
         shapesInCanvas.clear();
-        canvasLayer.draw();
+        panel.getViewport().setPixelSize( DEFAULT_SIZE_WIDTH,
+                                          DEFAULT_SIZE_HEIGHT );
+        panel.getViewport().draw();
     }
 
     @Override

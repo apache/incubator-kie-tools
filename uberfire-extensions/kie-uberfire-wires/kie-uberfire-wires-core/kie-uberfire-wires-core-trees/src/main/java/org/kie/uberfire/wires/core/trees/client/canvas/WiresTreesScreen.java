@@ -41,6 +41,8 @@ import org.kie.uberfire.wires.core.api.layout.LayoutManager;
 import org.kie.uberfire.wires.core.api.layout.RequiresLayoutManager;
 import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
 import org.kie.uberfire.wires.core.client.canvas.WiresCanvas;
+import org.kie.uberfire.wires.core.trees.client.layout.WiresLayoutUtilities;
+import org.kie.uberfire.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -217,15 +219,17 @@ public class WiresTreesScreen extends WiresCanvas {
     public void onDragCompleteHandler( @Observes ShapeDragCompleteEvent shapeDragCompleteEvent ) {
         final WiresBaseShape wiresShape = shapeDragCompleteEvent.getShape();
 
-        //If there's no Shape to add then exit
-        if ( wiresShape == null ) {
-            return;
-        }
-
         //Hide the temporary connector
         if ( connector != null ) {
             canvasLayer.remove( connector );
+            canvasLayer.draw();
             connector = null;
+        }
+
+        //If there's no Shape to add then exit
+        if ( wiresShape == null ) {
+            dropContext.setContext( null );
+            return;
         }
 
         //Get Shape's co-ordinates relative to the Canvas
@@ -234,9 +238,14 @@ public class WiresTreesScreen extends WiresCanvas {
 
         //If the Shape was dropped outside the bounds of the Canvas then exit
         if ( cx < 0 || cy < 0 ) {
+            dropContext.setContext( null );
             return;
         }
-        if ( cx > getOffsetWidth() || cy > getOffsetHeight() ) {
+
+        final int scrollWidth = getElement().getScrollWidth();
+        final int scrollHeight = getElement().getScrollHeight();
+        if ( cx > scrollWidth || cy > scrollHeight ) {
+            dropContext.setContext( null );
             return;
         }
 
@@ -402,8 +411,8 @@ public class WiresTreesScreen extends WiresCanvas {
 
     private void layout() {
         //Get layout information
-        final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( root,
-                                                                                        canvasLayer );
+        final Map<WiresBaseShape, Point2D> layout = layoutManager.getLayoutInformation( root );
+        final Rectangle2D canvasBounds = WiresLayoutUtilities.alignLayoutInCanvas( layout );
 
         //Run an animation to move WiresBaseTreeNodes from their current position to the target position
         root.animate( AnimationTweener.EASE_OUT,
@@ -419,10 +428,14 @@ public class WiresTreesScreen extends WiresCanvas {
                               //Reposition nodes. First we store the WiresBaseTreeNode together with its current position and target position
                               transformations.clear();
                               for ( Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet() ) {
+                                  final Point2D origin = e.getKey().getLocation();
+                                  final Point2D destination = e.getValue();
                                   transformations.put( e.getKey(),
-                                                       new Pair<Point2D, Point2D>( e.getKey().getLocation(),
-                                                                                   e.getValue() ) );
+                                                       new Pair<Point2D, Point2D>( origin,
+                                                                                   destination ) );
                               }
+                              WiresLayoutUtilities.resizeViewPort( canvasBounds,
+                                                                   canvasLayer.getViewport() );
                           }
 
                           @Override
