@@ -17,10 +17,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class UberTabPanelUnitTestWrapper extends UberTabPanel {
 
     ResizeTabPanel tabPanelSpy;
-    private boolean lastTabIsDropdownTab;
 
     public UberTabPanelUnitTestWrapper( PanelManager panelManager ) {
-        super( panelManager );
+        super( panelManager, mock( DropdownTab.class ) );
     }
 
     @Override
@@ -49,38 +48,10 @@ public class UberTabPanelUnitTestWrapper extends UberTabPanel {
             }
         } );
         this.tabPanel = tabPanelSpy;
-        this.lastTabIsDropdownTab = false;
-    }
-
-    @Override
-    Widget getLastTab() {
-        return mock( DropdownTab.class );
     }
 
     @Override
     boolean isFirstWidget() {
         return false;
-    }
-
-    public void setLastTabIsDropdownTab(boolean lastTabIsDropdownTab ) {
-        this.lastTabIsDropdownTab = lastTabIsDropdownTab;
-    }
-
-    @Override
-    boolean lastTabIsDropdownTab( Widget lastTab ) {
-        return lastTabIsDropdownTab;
-    }
-
-    @Override
-    Tab cloneTab( final TabLink tabLink,
-                  final boolean fromDropdown,
-                  final boolean toDropdown ) {
-        return mock(Tab.class);
-    }
-
-    @Override
-    DropdownTab cloneDropdown( final DropdownTab original,
-                               final int excludedIndex ) {
-        return mock(DropdownTab.class);
     }
 }

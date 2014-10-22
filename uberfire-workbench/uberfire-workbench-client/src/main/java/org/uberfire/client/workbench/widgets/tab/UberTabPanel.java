@@ -5,6 +5,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,9 +27,7 @@ import com.github.gwtbootstrap.client.ui.TabPane;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TabPanel.ShowEvent;
 import com.github.gwtbootstrap.client.ui.TabPanel.ShownEvent;
-import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.github.gwtbootstrap.client.ui.resources.Bootstrap.Tabs;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
@@ -75,12 +74,14 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     private static final int MARGIN = 20;
 
     ResizeTabPanel tabPanel;
+    private final DropdownTab dropdownTab;
 
-    private WorkbenchPanelPresenter presenter;
-    WorkbenchDragAndDropManager dndManager;
+    /**
+     * Flag protecting {@link #updateDisplayedTabs()} from recursively invoking itself through events that it causes.
+     */
+    private boolean updating;
 
-    private int maxDropdownTabLinkWidth = 0;
-    private boolean alreadyScheduled = false;
+    final List<WorkbenchPartPresenter> parts = new ArrayList<WorkbenchPartPresenter>();
 
     final Map<WorkbenchPartPresenter.View, TabLink> tabIndex = new HashMap<WorkbenchPartPresenter.View, TabLink>();
     final Map<TabLink, WorkbenchPartPresenter.View> tabInvertedIndex = new HashMap<TabLink, WorkbenchPartPresenter.View>();
@@ -89,104 +90,23 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     private final List<Command> focusGainedHandlers = new ArrayList<Command>();
 
     private final PanelManager panelManager;
+    WorkbenchDragAndDropManager dndManager;
 
-    @Override
-    public void clear() {
-        tabPanel.clear();
-        partTabIndex.clear();
-        tabIndex.clear();
-        tabInvertedIndex.clear();
-        maxDropdownTabLinkWidth = 0;
-        alreadyScheduled = false;
-    }
-
-    @Override
-    public boolean selectPart( final PartDefinition id ) {
-        final TabLink tab = partTabIndex.get( id );
-        if ( tab != null ) {
-            int index = getTabs().getWidgetIndex( tab );
-
-            // TODO (UF-118): during perspective startup, the view widgets aren't yet filled in according to the PanelDefinitions
-            // we should solve that instead of skipping this call on missing parts
-            if ( index >= 0 ) {
-                tabPanel.selectTab( index );
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean remove( final PartDefinition id ) {
-        final TabLink tab = partTabIndex.get( id );
-        if ( tab == null ) {
-            return false;
-        }
-        int index = getTabs().getWidgetIndex( tab );
-        if ( index < 0 ) {
-            final DropdownTab _dropdown = (DropdownTab) getLastTab();
-            for ( int i = 0; i < _dropdown.getTabList().size(); i++ ) {
-                final TabLink activeTab = _dropdown.getTabList().get( i ).asTabLink();
-                if ( activeTab.equals( tab ) ) {
-                    index = i;
-                    break;
-                }
-            }
-            final DropdownTab cloneDropdown = cloneDropdown( _dropdown, index );
-            if ( cloneDropdown.getTabList().size() > 0 ) {
-                tabPanel.add( cloneDropdown );
-            }
-            tabPanel.remove( _dropdown );
-        } else {
-            final boolean wasActive = tab.isActive();
-
-            tabPanel.remove( tab );
-
-            if ( wasActive ) {
-                try {
-                    tabPanel.selectTab( index <= 0 ? 0 : index - 1 );
-                } catch ( final IndexOutOfBoundsException ex ) {
-                    //no more tabs, it's ok
-                }
-            }
-        }
-
-        tabIndex.remove( tabInvertedIndex.remove( tab ) );
-        partTabIndex.remove( id );
-
-        scheduleResize();
-
-        return true;
-    }
-
-    @Override
-    public void changeTitle( final PartDefinition id,
-                             final String title,
-                             final IsWidget titleDecoration ) {
-        final TabLink tabLink = partTabIndex.get( id );
-        if ( tabLink != null ) {
-            tabLink.setText( title );
-
-            if ( tabLink.getParent().getParent() instanceof DropdownTab ) {
-                final DropdownTab dropdownTab = (DropdownTab) tabLink.getParent().getParent();
-                dropdownTab.setText( "Active: " + title );
-                dropdownTab.addStyleName( Constants.ACTIVE );
-            }
-        }
-    }
-
-    @Override
-    public HandlerRegistration addBeforeSelectionHandler( final BeforeSelectionHandler<PartDefinition> handler ) {
-        return addHandler( handler, BeforeSelectionEvent.getType() );
-    }
-
-    @Override
-    public HandlerRegistration addSelectionHandler( final SelectionHandler<PartDefinition> handler ) {
-        return addHandler( handler, SelectionEvent.getType() );
-    }
-
+    /**
+     * Creates a new empty tab panel.
+     *
+     * @param panelManager
+     *            the PanelManager that will be called upon to close a place when the user clicks on its tab's close
+     *            button. (TODO: change to PlaceManager).
+     */
     public UberTabPanel( PanelManager panelManager ) {
+        this( panelManager,
+              new DropdownTab( "More..." ) );
+    }
+
+    protected UberTabPanel( PanelManager panelManager, DropdownTab dropdownTab ) {
         this.panelManager = checkNotNull( "panelManager", panelManager );
+        this.dropdownTab = checkNotNull( "dropdownTab", dropdownTab );
         tabPanel = new ResizeTabPanel( ABOVE );
         tabPanel.addShownHandler( new ShownEvent.Handler() {
             @Override
@@ -214,58 +134,150 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     }
 
     @Override
+    public void clear() {
+        parts.clear();
+        tabPanel.clear();
+        dropdownTab.clear();
+        partTabIndex.clear();
+        tabIndex.clear();
+        tabInvertedIndex.clear();
+    }
+
+    /**
+     * Updates the display ({@link #tabPanel}) to reflect the current desired state of this tab panel.
+     */
+    private void updateDisplayedTabs() {
+        if ( updating ) {
+            return;
+        }
+        try {
+            updating = true;
+            tabPanel.clear();
+            dropdownTab.clear();
+
+            if ( parts.size() == 0 ) {
+                return;
+            }
+
+            int availableSpace = tabPanel.getOffsetWidth();
+            TabLink selectedTab = null;
+
+            // add and measure all tabs
+            for ( int i = 0; i < parts.size(); i++ ) {
+                WorkbenchPartPresenter part = parts.get( i );
+                TabLink tabWidget = partTabIndex.get( part.getDefinition() );
+                if ( tabWidget.isActive() ) {
+                    selectedTab = tabWidget;
+                }
+                tabWidget.setActive( false );
+                tabPanel.add( tabWidget );
+                availableSpace -= tabWidget.getOffsetWidth();
+            }
+
+            // if we didn't find any selected tab, let's select the first one
+            if ( selectedTab == null ) {
+                TabLink firstTab = (TabLink) getTabs().getWidget( 0 );
+                selectedTab = firstTab;
+            }
+
+            // now work from right to left to find out how many tabs we have to collapse into the dropdown
+            if ( availableSpace < 0 ) {
+                LinkedList<TabLink> newDropdownContents = new LinkedList<TabLink>();
+                dropdownTab.setText( "More..." );
+                tabPanel.add( dropdownTab );
+                while ( availableSpace - dropdownTab.getOffsetWidth() < 0 && getTabs().getWidgetCount() > 1 ) {
+                    // get the last tab that isn't the dropdown tab
+                    TabLink tabWidget = (TabLink) getTabs().getWidget( getTabs().getWidgetCount() - 2 );
+                    availableSpace += tabWidget.getOffsetWidth();
+                    tabPanel.remove( tabWidget );
+                    newDropdownContents.addFirst( tabWidget );
+                    if ( tabWidget == selectedTab ) {
+                        dropdownTab.setText( tabInvertedIndex.get( selectedTab ).getPresenter().getTitle() );
+                    }
+                }
+
+                for ( TabLink l : newDropdownContents ) {
+                    dropdownTab.add( l );
+                    getTabContent().add( l.getTabPane() );
+                }
+            }
+
+            selectedTab.show();
+
+        } finally {
+            updating = false;
+        }
+    }
+
+    @Override
+    public boolean selectPart( final PartDefinition id ) {
+        final TabLink tab = partTabIndex.get( id );
+        if ( tab != null ) {
+            tab.show();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean remove( final PartDefinition id ) {
+        final TabLink tab = partTabIndex.get( id );
+        if ( tab == null ) {
+            return false;
+        }
+        int removedTabIndex = getTabs().getWidgetIndex( tab );
+        final boolean wasActive = tab.isActive();
+
+        View partView = tabInvertedIndex.remove( tab );
+        parts.remove( partView.getPresenter() );
+        tabIndex.remove( partView );
+        partTabIndex.remove( id );
+
+        updateDisplayedTabs();
+
+        if ( removedTabIndex >= 0 && wasActive && getTabs().getWidgetCount() > 0 ) {
+            tabPanel.selectTab( removedTabIndex <= 0 ? 0 : removedTabIndex - 1 );
+        }
+
+        return true;
+    }
+
+    @Override
+    public void changeTitle( final PartDefinition id,
+                             final String title,
+                             final IsWidget titleDecoration ) {
+        final TabLink tabLink = partTabIndex.get( id );
+        if ( tabLink != null ) {
+            tabLink.setText( title );
+        }
+    }
+
+    @Override
+    public HandlerRegistration addBeforeSelectionHandler( final BeforeSelectionHandler<PartDefinition> handler ) {
+        return addHandler( handler, BeforeSelectionEvent.getType() );
+    }
+
+    @Override
+    public HandlerRegistration addSelectionHandler( final SelectionHandler<PartDefinition> handler ) {
+        return addHandler( handler, SelectionEvent.getType() );
+    }
+
+    @Override
     public void setPresenter( final WorkbenchPanelPresenter presenter ) {
-        this.presenter = presenter;
+        // not needed
     }
 
     @Override
     public void addPart( final WorkbenchPartPresenter.View view ) {
-
         if ( !tabIndex.containsKey( view ) ) {
             final Tab newTab = createTab( view, false, 0, 0 );
-
-            final Widget lastTab = getLastTab();
-            if ( lastTabIsDropdownTab( lastTab ) ) {
-                final Tab clonedTab = cloneTab( newTab.asTabLink(), false, true );
-                final DropdownTab dropdown = cloneDropdown( (DropdownTab) lastTab, -1 );
-
-                dropdown.setText( "Active: " + newTab.asTabLink().getText() );
-                dropdown.addStyleName( Constants.ACTIVE );
-
-                dropdown.add( clonedTab );
-                tabPanel.add( dropdown );
-
-                tabPanel.remove( lastTab );
-            } else {
-                tabPanel.add( newTab );
-                if ( isFirstWidget() ) {
-                    tabPanel.selectTab( 0 );
-                }
-            }
-
-            scheduleResize();
+            parts.add( view.getPresenter() );
+            tabIndex.put( view, newTab.asTabLink() );
+            updateDisplayedTabs();
         }
-    }
-
-    boolean lastTabIsDropdownTab( Widget lastTab ) {
-        return lastTab != null && lastTab instanceof DropdownTab;
     }
 
     boolean isFirstWidget() {
         return getTabs().getWidgetCount() == 1;
-    }
-    private void scheduleResize() {
-        if ( alreadyScheduled ) {
-            return;
-        }
-        alreadyScheduled = true;
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                onResize();
-                alreadyScheduled = false;
-            }
-        } );
     }
 
     /**
@@ -280,6 +292,9 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
         }
     }
 
+    /**
+     * Creates a tab widget for the given part view, adding it to the tab/partDef/tabLink maps.
+     */
     Tab createTab( final WorkbenchPartPresenter.View view,
                    final boolean isActive,
                    final int width,
@@ -302,144 +317,26 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
         return addCloseToTab( tab );
     }
 
+    /**
+     * Subroutine of {@link #createTab(View, boolean, int, int)}. Exposed for testing. Never call this except from
+     * within the other createTab method.
+     */
+    Tab createTab( final WorkbenchPartPresenter.View view,
+                   final boolean isActive ) {
+        Tab tab = new Tab();
+        tab.setHeading( view.getPresenter().getTitle() );
+        tab.setActive( isActive );
+        return tab;
+    }
+
     private ClickHandler createTabClickHandler( final WorkbenchPartPresenter.View view,
                                                 final Tab tab ) {
         return new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
                 UberTabPanel.this.onClick( event );
-                if ( tab.asTabLink().getParent().getParent() instanceof DropdownTab ) {
-                    final DropdownTab dropdownTab = (DropdownTab) tab.asTabLink().getParent().getParent();
-                    dropdownTab.setText( "Active: " + view.getPresenter().getTitle() );
-                    dropdownTab.addStyleName( Constants.ACTIVE );
-                } else {
-                    final Widget lastTab = getLastTab();
-                    if ( lastTab instanceof DropdownTab ) {
-                        ( (DropdownTab) lastTab ).setText( "More..." );
-                    }
-                }
             }
         };
-    }
-
-    Tab createTab( final WorkbenchPartPresenter.View view,
-                   final boolean isActive ) {
-        return new Tab() {{
-            setHeading( view.getPresenter().getTitle() );
-            setActive( isActive );
-        }};
-    }
-
-    Tab cloneTab( final TabLink tabLink,
-                  final boolean fromDropdown,
-                  final boolean toDropdown ) {
-
-        final Widget content = tabLink.getTabPane().getWidget( 0 );
-        final WorkbenchPartPresenter.View view = tabInvertedIndex.get( tabLink );
-
-        if ( !fromDropdown && toDropdown && tabLink.getOffsetWidth() > maxDropdownTabLinkWidth ) {
-            maxDropdownTabLinkWidth = tabLink.getOffsetWidth();
-        }
-
-        tabInvertedIndex.remove( tabLink );
-
-        return createTab( view,
-                          tabLink.isActive(),
-                          content.getOffsetWidth(),
-                          content.getOffsetHeight() );
-    }
-
-    DropdownTab cloneDropdown( final DropdownTab original,
-                               final int excludedIndex ) {
-        final DropdownTab newDropdown = new DropdownTab( original.getText() );
-
-        boolean isAnyTabActive = false;
-
-        for ( int i = 0; i < original.getTabList().size(); i++ ) {
-            final Tab currentTab = original.getTabList().get( i );
-            if ( i != excludedIndex ) {
-                if ( !isAnyTabActive ) {
-                    isAnyTabActive = currentTab.isActive();
-                }
-                newDropdown.add( cloneTab( currentTab.asTabLink(), true, true ) );
-            }
-        }
-
-        if ( isAnyTabActive ) {
-            newDropdown.addStyleName( Constants.ACTIVE );
-        } else {
-            newDropdown.setText( "More..." );
-        }
-
-        return newDropdown;
-    }
-
-    private void shrinkTabBar() {
-        final Widget lastTab = getLastTab();
-
-        if ( lastTab instanceof TabLink ) {
-            maxDropdownTabLinkWidth = 0;
-            final TabLink tab = (TabLink) lastTab;
-
-            final DropdownTab dropdown = new DropdownTab( "More..." );
-
-            final Tab clonedTab = cloneTab( tab, false, true );
-
-            if ( clonedTab.isActive() ) {
-                dropdown.setText( "Active: " + clonedTab.asTabLink().getText() );
-                dropdown.addStyleName( Constants.ACTIVE );
-            }
-
-            dropdown.add( clonedTab );
-
-            tabPanel.add( dropdown );
-
-            tabPanel.remove( tab );
-            scheduleResize();
-        } else if ( lastTab instanceof DropdownTab ) {
-            final TabLink lastTabLink = (TabLink) getBeforeLastTab();
-
-            final Tab clonedTab = cloneTab( lastTabLink, false, true );
-            final DropdownTab dropdown = cloneDropdown( (DropdownTab) lastTab, -1 );
-
-            if ( clonedTab.isActive() ) {
-                dropdown.setText( "Active: " + clonedTab.asTabLink().getText() );
-                dropdown.addStyleName( Constants.ACTIVE );
-            }
-
-            dropdown.add( clonedTab );
-            tabPanel.add( dropdown );
-
-            tabPanel.remove( lastTabLink );
-            tabPanel.remove( lastTab );
-
-            scheduleResize();
-        }
-    }
-
-    private void expandTabBar() {
-        final DropdownTab dropdown = (DropdownTab) getLastTab();
-
-        int index = dropdown.getTabList().size() - 1;
-
-        final TabLink tab = dropdown.getTabList().get( index ).asTabLink();
-
-        final Tab newTab = cloneTab( tab, true, false );
-
-        tabPanel.add( newTab );
-
-        if ( dropdown.getTabList().size() > 2 ) {
-
-            tabPanel.add( cloneDropdown( dropdown, index ) );
-        } else if ( dropdown.getTabList().size() == 2 ) {
-            final TabLink _tab = dropdown.getTabList().get( index - 1 ).asTabLink();
-
-            tabPanel.add( cloneTab( _tab, true, false ) );
-            maxDropdownTabLinkWidth = 0;
-        }
-
-        tabPanel.remove( dropdown );
-        scheduleResize();
     }
 
     @Override
@@ -447,26 +344,14 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
         final int width = getOffsetWidth();
         final int height = getOffsetHeight();
 
-        int selectedTab = tabPanel.getSelectedTab();
-        if ( selectedTab >= 0 ) {
-            final ComplexPanel content = getTabContent();
-            final TabPane tabPane = (TabPane) content.getWidget( selectedTab );
+        updateDisplayedTabs();
+
+        TabLink selectedTab = getSelectedTab();
+        if ( selectedTab != null ) {
+            final TabPane tabPane = selectedTab.getTabPane();
             Widget tabPaneContent = tabPane.getWidget( 0 );
             tabPaneContent.setPixelSize( width, height - getTabHeight() );
             resizeIfNeeded(tabPaneContent);
-        }
-
-        final ComplexPanel tabs = getTabs();
-        if ( tabs != null && tabs.getWidgetCount() > 0 ) {
-            final Widget firstTabItem = tabs.getWidget( 0 );
-            final Widget lastTabItem = getLastTab();
-            if ( tabs.getWidgetCount() > 1 &&
-                    ( width < getTabBarWidth() || tabs.getOffsetHeight() > firstTabItem.getOffsetHeight() ) ) {
-                shrinkTabBar();
-            } else if ( lastTabItem instanceof DropdownTab
-                    && ( getTabBarWidth() + getLastTab().getOffsetWidth() ) < width ) {
-                expandTabBar();
-            }
         }
     }
 
@@ -474,42 +359,20 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
         return tabPanel.getWidget( 0 ).getOffsetHeight() + MARGIN;
     }
 
+    /**
+     * Returns the panel (from inside {@link #tabPanel}) that contains the panel content for each tab. Each child of the
+     * returned panel is the GUI that will be shown then its corresponding tab is selected.
+     */
     private ComplexPanel getTabContent() {
         return (ComplexPanel) tabPanel.getWidget( 1 );
     }
 
+    /**
+     * Returns the panel (from inside {@link #tabPanel}) that contains the tab widgets. Each child of the returned panel
+     * is a tab in the GUI.
+     */
     private ComplexPanel getTabs() {
         return (ComplexPanel) tabPanel.getWidget( 0 );
-    }
-
-    Widget getLastTab() {
-        final ComplexPanel tabs = getTabs();
-        if ( tabs.getWidgetCount() <= 0 ) {
-            return null;
-        }
-        return tabs.getWidget( tabs.getWidgetCount() - 1 );
-    }
-
-    private Widget getBeforeLastTab() {
-        final ComplexPanel tabs = getTabs();
-        return tabs.getWidget( tabs.getWidgetCount() - 2 );
-    }
-
-    private int getTabBarWidth() {
-        final ComplexPanel tabs = getTabs();
-
-        int width = 0;
-        for ( final Widget currentTab : tabs ) {
-            width += currentTab.getOffsetWidth();
-        }
-
-        int margin = 42;
-
-        if ( getLastTab() instanceof DropdownTab ) {
-            margin = maxDropdownTabLinkWidth;
-        }
-
-        return width + margin;
     }
 
     private Tab addCloseToTab( final Tab tab ) {
@@ -549,30 +412,27 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
     public void onClick( final ClickEvent event ) {
         if ( !hasFocus ) {
             fireFocusGained();
-
-            for ( int i = 0; i < getTabs().getWidgetCount(); i++ ) {
-                final Widget _widget = getTabs().getWidget( i );
-                if ( _widget instanceof TabLink && ( (TabLink) _widget ).isActive() ) {
-                    SelectionEvent.fire( UberTabPanel.this, tabInvertedIndex.get( _widget ).getPresenter().getDefinition() );
-                    break;
-                } else if ( _widget instanceof DropdownTab ) {
-                    final List<Tab> tabs = ( (DropdownTab) _widget ).getTabList();
-                    for ( final Tab activeTab : tabs ) {
-                        if ( activeTab.isActive() ) {
-                            View view = tabInvertedIndex.get( activeTab );
-                            if ( view != null ) {
-                                SelectionEvent.fire( UberTabPanel.this, view.getPresenter().getDefinition() );
-                            } else {
-                                System.out.println("Warning: missing view for " + activeTab + " in tabInvertedIndex");
-                            }
-                            break;
-                        }
-                    }
-                }
-
+            View view = getSelectedPart();
+            if ( view != null ) {
+                SelectionEvent.fire( UberTabPanel.this, view.getPresenter().getDefinition() );
             }
-
         }
+    }
+
+    /**
+     * Gets the selected tab, even if it's nested in the DropdownTab. Returns null if no tab is selected.
+     */
+    private TabLink getSelectedTab() {
+        for ( TabLink tab : tabInvertedIndex.keySet() ) {
+            if ( tab.isActive() ) {
+                return tab;
+            }
+        }
+        return null;
+    }
+
+    private View getSelectedPart() {
+        return tabInvertedIndex.get( getSelectedTab() );
     }
 
     private void fireFocusGained() {
