@@ -46,7 +46,7 @@ public abstract class ValueEditorFactory {
                                   fieldName,
                                   currentValueMap );
             if ( dd != null ) {
-                dataType = DataType.TYPE_STRING;
+                dataType = DataType.TYPE_COMPARABLE;
             }
         }
 

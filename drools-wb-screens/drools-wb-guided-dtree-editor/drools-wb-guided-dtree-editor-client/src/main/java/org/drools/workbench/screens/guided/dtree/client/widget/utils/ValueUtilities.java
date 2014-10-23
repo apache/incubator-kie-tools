@@ -28,6 +28,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.values.impl.Boolean
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.ByteValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DateValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DoubleValue;
+import org.drools.workbench.models.guided.dtree.shared.model.values.impl.EnumValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.FloatValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.IntegerValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.LongValue;
@@ -106,6 +107,9 @@ public class ValueUtilities {
 
         } else if ( DataType.TYPE_DATE.equals( dataType ) ) {
             return new DateValue( new Date() );
+
+        } else if ( DataType.TYPE_COMPARABLE.equals( dataType ) ) {
+            return new EnumValue( new String() );
 
         }
         return null;
