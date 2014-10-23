@@ -29,16 +29,17 @@ import com.github.gwtbootstrap.client.ui.constants.IconSize;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
+import org.kie.workbench.common.screens.explorer.client.widgets.URLHelper;
 import org.kie.workbench.common.screens.explorer.client.widgets.business.BusinessViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.client.widgets.technical.TechnicalViewPresenterImpl;
 import org.kie.workbench.common.screens.explorer.service.ExplorerService;
@@ -90,6 +91,8 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     private final NavLink techView = new NavLink( ProjectExplorerConstants.INSTANCE.repositoryView() );
     private final NavLink treeExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsFolders() );
     private final NavLink breadcrumbExplorer = new NavLink( ProjectExplorerConstants.INSTANCE.showAsLinks() );
+    private final NavLink archiveRepository = new NavLink( ProjectExplorerConstants.INSTANCE.downloadRepository() );
+    private final NavLink archiveProject = new NavLink( ProjectExplorerConstants.INSTANCE.downloadProject() );
 
     private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS ) );
 
@@ -182,6 +185,27 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                 }
             }
         } );
+
+        archiveProject.setIcon( IconType.DOWNLOAD_ALT );
+        archiveProject.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.open(URLHelper.getDownloadUrl(context.getActiveProject().getRootPath()),
+                        "downloading",
+                        "resizable=no,scrollbars=yes,status=no");
+            }
+        });
+
+        archiveRepository.setIcon( IconType.DOWNLOAD_ALT );
+        archiveRepository.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.open(URLHelper.getDownloadUrl(context.getActiveRepository().getRoot()),
+                        "downloading",
+                        "resizable=no,scrollbars=yes,status=no");
+            }
+        });
+
 
         if ( options.contains( Option.BUSINESS_CONTENT ) ) {
             selectBusinessView();
@@ -290,7 +314,10 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                         add( techView );
                                         add( new Divider() );
                                         add( breadcrumbExplorer );
-                                        add( treeExplorer );
+                                        add(treeExplorer);
+                                        add(new Divider());
+                                        add(archiveProject);
+                                        add(archiveRepository);
 //                                        add( new Divider() );
 //                                        add( hiddenFiles );
                                     }

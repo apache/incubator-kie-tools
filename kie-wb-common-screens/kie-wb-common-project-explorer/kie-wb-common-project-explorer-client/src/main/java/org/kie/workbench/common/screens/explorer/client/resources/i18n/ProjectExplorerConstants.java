@@ -63,4 +63,9 @@ public interface ProjectExplorerConstants
     public String miscellaneous_files();
 
     String LoadingDotDotDot();
+
+    String downloadRepository();
+
+    String downloadProject();
+
 }

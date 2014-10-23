@@ -27,6 +27,7 @@ import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.util.TypeLiteral;
 import java.lang.annotation.Annotation;
 
 import static org.mockito.Mockito.*;
@@ -83,7 +84,7 @@ public class GAVWizardPageTest {
         public <U extends WizardPageStatusChangeEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
             return null;
         }
-        
+
     }
 
     private class ProjectScreenServiceMock
