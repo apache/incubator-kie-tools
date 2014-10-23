@@ -102,11 +102,9 @@ public class RowView extends Composite {
                 column.add( new RowView( parent, editor.getRowSpam() ) );
             }
             for ( ScreenEditor editor : columnEditor.getScreens() ) {
-                //ederign bug puting a drop panel
                 column.add( new ScreenView( parent, editor ) );
             }
             for ( HTMLEditor editor : columnEditor.getHtmls() ) {
-                //ederign bug puting a drop panel
                 column.add( new HTMLView( parent, editor.getHtmlCode() ) );
             }
             rowWidget.add( column );

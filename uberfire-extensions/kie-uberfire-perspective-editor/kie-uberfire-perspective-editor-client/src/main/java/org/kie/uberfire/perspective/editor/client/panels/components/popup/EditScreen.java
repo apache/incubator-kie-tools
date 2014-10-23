@@ -15,8 +15,6 @@
 */
 package org.kie.uberfire.perspective.editor.client.panels.components.popup;
 
-import java.util.Map;
-
 import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
@@ -30,6 +28,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
+import org.kie.uberfire.perspective.editor.model.ScreenEditor;
 import org.kie.uberfire.perspective.editor.model.ScreenParameter;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 import org.kie.uberfire.properties.editor.client.PropertyEditorWidget;
@@ -96,12 +95,31 @@ public class EditScreen
 
     private PropertyEditorCategory defaultScreenProperties() {
         PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
-        Map<String, String> screenProperties = perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
+        ScreenEditor screenEditor= perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
 
         PropertyEditorCategory category = new PropertyEditorCategory( "Screen Editors" );
-        for ( String key : screenProperties.keySet() ) {
+        boolean alreadyHasScreenNameParameter = false;
+        for ( ScreenParameter key : screenEditor.getParameters() ) {
+            if(key.getKey().equals( ScreenEditor.PLACE_NAME_KEY )){
+                alreadyHasScreenNameParameter=true;
+            }
             category.withField(
-                    new PropertyEditorFieldInfo( key, screenProperties.get( key ), PropertyEditorType.TEXT )
+                    new PropertyEditorFieldInfo( key.getKey(),key.getValue(), PropertyEditorType.TEXT )
+                            .withKey( parent.hashCode() + "" ).withValidators( new PropertyFieldValidator() {
+                        @Override
+                        public boolean validate( Object value ) {
+                            return true;
+                        }
+
+                        @Override
+                        public String getValidatorErrorMessage() {
+                            return "";
+                        }
+                    } ) );
+        }
+        if (!alreadyHasScreenNameParameter){
+            category.withField(
+                    new PropertyEditorFieldInfo( ScreenEditor.PLACE_NAME_KEY,"", PropertyEditorType.TEXT )
                             .withKey( parent.hashCode() + "" ).withValidators( new PropertyFieldValidator() {
                         @Override
                         public boolean validate( Object value ) {

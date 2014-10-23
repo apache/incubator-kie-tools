@@ -1,6 +1,6 @@
 package org.kie.uberfire.perspective.editor.client.panels.components;
 
-import java.util.List;
+import java.util.Collection;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.Column;
@@ -19,16 +19,21 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.uberfire.perspective.editor.client.api.ExternalPerspectiveEditorComponent;
+import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditExternalScreen;
+import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditScreen;
 import org.kie.uberfire.perspective.editor.client.panels.dnd.DropColumnPanel;
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
+import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.ScreenEditorWidgetUI;
+import org.kie.uberfire.perspective.editor.client.util.DragType;
 import org.kie.uberfire.perspective.editor.model.ScreenEditor;
-import org.kie.uberfire.perspective.editor.model.ScreenParameter;
-import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditScreen;
-import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 
 public class ScreenView extends Composite {
+
+    private ExternalPerspectiveEditorComponent externalComponent;
+    private DragType type = DragType.SCREEN;
 
     private ScreenEditorWidgetUI screenEditor;
 
@@ -36,7 +41,6 @@ public class ScreenView extends Composite {
     FluidContainer fluidContainer;
 
     private EditorWidget parent;
-
 
     interface ScreenEditorMainViewBinder
             extends
@@ -46,8 +50,21 @@ public class ScreenView extends Composite {
 
     private static ScreenEditorMainViewBinder uiBinder = GWT.create( ScreenEditorMainViewBinder.class );
 
-    public ScreenView( ColumnEditorUI parent ) {
+    public ScreenView( ColumnEditorUI parent,
+                       DragType type ) {
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.type = type;
+        this.parent = parent;
+        this.screenEditor = new ScreenEditorWidgetUI( parent, fluidContainer );
+        build();
+    }
+
+    public ScreenView( ColumnEditorUI parent,
+                       DragType type,
+                       String externalComponentFQCN ) {
+        this.externalComponent = lookupForExternalComponent( externalComponentFQCN );
+        initWidget( uiBinder.createAndBindUi( this ) );
+        this.type = type;
         this.parent = parent;
         this.screenEditor = new ScreenEditorWidgetUI( parent, fluidContainer );
         build();
@@ -58,10 +75,18 @@ public class ScreenView extends Composite {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
         this.screenEditor = new ScreenEditorWidgetUI( parent, fluidContainer );
-        loadScreenParameters(this.screenEditor, editor);
+        if ( editor.isAExternalComponent() ) {
+            loadExternalComponent(editor);
+        }
+        loadScreenParameters( this.screenEditor, editor );
         build();
     }
 
+    private void loadExternalComponent( ScreenEditor editor ) {
+        this.type = DragType.EXTERNAL;
+        this.externalComponent = lookupForExternalComponent( editor.getExternalComponentFQCN() );
+        this.externalComponent.setup( editor.getPlaceName(), editor.toParametersMap() );
+    }
 
     private void build() {
         screenEditor.getWidget().add( generateMainRow() );
@@ -74,10 +99,14 @@ public class ScreenView extends Composite {
         return row;
     }
 
-
     private Column generateRowLabelColumn() {
         Column column = new Column( 6 );
-        Label row1 = generateLabel( "Screen Component" );
+        Label row1;
+        if ( typeIsExternalScreen() ) {
+            row1 = generateLabel( this.externalComponent.getPlaceName() );
+        } else {
+            row1 = generateLabel( type.label() );
+        }
         column.add( row1 );
         return column;
     }
@@ -98,11 +127,25 @@ public class ScreenView extends Composite {
         remove.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                EditScreen editUserForm = new EditScreen( screenEditor );
-                editUserForm.show();
+                if ( typeIsExternalScreen() ) {
+                    EditExternalScreen editUserForm = new EditExternalScreen( screenEditor, externalComponent );
+                    editUserForm.show();
+                } else {
+                    EditScreen editUserForm = new EditScreen( screenEditor );
+                    editUserForm.show();
+                }
+
             }
         } );
         return remove;
+    }
+
+    private boolean typeIsExternalScreen() {
+        return type == DragType.EXTERNAL;
+    }
+
+    private boolean typeIsRegularScreen() {
+        return type == DragType.SCREEN;
     }
 
     private Button generateRemoveButton() {
@@ -126,7 +169,7 @@ public class ScreenView extends Composite {
     }
 
     private void addDropColumnPanel() {
-        ColumnEditorUI columnEditorUIParent =(ColumnEditorUI) parent;
+        ColumnEditorUI columnEditorUIParent = (ColumnEditorUI) parent;
         columnEditorUIParent.getWidget().add( new DropColumnPanel( columnEditorUIParent ) );
     }
 
@@ -139,7 +182,7 @@ public class ScreenView extends Composite {
     private void loadScreenParameters( ScreenEditorWidgetUI parent,
                                        ScreenEditor editor ) {
         PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
-        perspectiveEditor.loadProperties(parent.hashCode()+"", editor);
+        perspectiveEditor.loadProperties( parent.hashCode() + "", editor );
 
     }
 
@@ -148,4 +191,17 @@ public class ScreenView extends Composite {
         IOCBeanDef<PerspectiveEditorUI> perspectiveEditorIOCBeanDef = beanManager.lookupBean( PerspectiveEditorUI.class );
         return perspectiveEditorIOCBeanDef.getInstance();
     }
+
+    private ExternalPerspectiveEditorComponent lookupForExternalComponent( String externalComponentFQCN ) {
+        ExternalPerspectiveEditorComponent externalPerspectiveEditorComponent = null;
+        SyncBeanManager beanManager = IOC.getBeanManager();
+        final Collection<IOCBeanDef<ExternalPerspectiveEditorComponent>> externalComponents = beanManager.lookupBeans( ExternalPerspectiveEditorComponent.class );
+        for ( IOCBeanDef iocBeanDef : externalComponents ) {
+            if ( iocBeanDef.getInstance().getClass().getName().equalsIgnoreCase( externalComponentFQCN ) ) {
+                externalPerspectiveEditorComponent = (ExternalPerspectiveEditorComponent) iocBeanDef.getInstance();
+            }
+        }
+        return externalPerspectiveEditorComponent;
+    }
+
 }

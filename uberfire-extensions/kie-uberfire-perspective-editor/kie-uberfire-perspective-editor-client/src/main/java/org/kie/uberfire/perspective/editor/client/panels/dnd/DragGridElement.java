@@ -12,8 +12,13 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.perspective.editor.client.util.DragType;
+import org.kie.uberfire.perspective.editor.client.api.ExternalPerspectiveEditorComponent;
 
 public class DragGridElement extends Composite {
+
+    private ExternalPerspectiveEditorComponent externalComponent;
+    private DragType type;
+    private String dragText;
 
     @UiField
     InputAddOn move;
@@ -23,10 +28,26 @@ public class DragGridElement extends Composite {
     public DragGridElement( DragType type,
                             final String dragText ) {
         initWidget( uiBinder.createAndBindUi( this ) );
+        this.dragText = dragText;
+        this.type = type;
+        build();
+    }
+
+    public DragGridElement( DragType type,
+                            String dragText,
+                            ExternalPerspectiveEditorComponent externalPerspectiveEditorComponent ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        this.dragText = dragText;
+        this.type = type;
+        this.externalComponent = externalPerspectiveEditorComponent;
+        build();
+    }
+
+    private void build() {
         if ( type == DragType.GRID ) {
-            createTextBox( dragText );
+            createTextBox();
         } else {
-            createComponentWidget( dragText );
+            createComponentWidget();
         }
         createMoveIcon( type );
     }
@@ -36,8 +57,10 @@ public class DragGridElement extends Composite {
             @Override
             public void onDragStart( DragStartEvent event ) {
                 String text = extractText();
-
                 event.setData( type.name(), text );
+                if ( isAExternalComponent( type ) ) {
+                    event.setData( type.name(), externalComponent.getClass().getName()  );
+                }
                 event.getDataTransfer().setDragImage( move.getElement(), 10, 10 );
             }
         }, DragStartEvent.getType() );
@@ -45,22 +68,25 @@ public class DragGridElement extends Composite {
         move.getElement().setDraggable( Element.DRAGGABLE_TRUE );
     }
 
-    private String extractText() {
-        String EMPTY_SCREEN = " ";
-        return textBox.getText().isEmpty() ? EMPTY_SCREEN : textBox.getText();
+    private boolean isAExternalComponent( DragType type ) {
+        return type == DragType.EXTERNAL;
     }
 
-    private void createComponentWidget( String label ) {
+    private String extractText() {
+        return textBox.getText().isEmpty() ? type.name() : textBox.getText();
+    }
+
+    private void createComponentWidget() {
         textBox = new TextBox();
-        textBox.setPlaceholder( label );
+        textBox.setPlaceholder( dragText );
         textBox.setReadOnly( true );
         textBox.setAlternateSize( AlternateSize.MEDIUM );
         move.add( textBox );
     }
 
-    private void createTextBox( String label ) {
+    private void createTextBox() {
         textBox = new TextBox();
-        textBox.setText( label );
+        textBox.setText( dragText );
         textBox.setAlternateSize( AlternateSize.SMALL );
         move.add( textBox );
     }

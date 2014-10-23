@@ -39,22 +39,33 @@ public class DropColumnPanel extends FlowPanel {
             }
         } );
         addDropHandler( new DropHandler() {
-            @Override
-            public void onDrop( DropEvent event ) {
-                event.preventDefault();
+                            @Override
+                            public void onDrop( DropEvent event ) {
+                                event.preventDefault();
 
-                if ( isAGridDrop( event ) ) {
-                    String gridData = event.getData( DragType.GRID.name() );
-                    handleGridDrop( gridData );
-                }
-                if ( isAScreenDrop( event ) ) {
-                    handleScreenDrop();
-                }
-                if ( isHtmlDrop( event ) ) {
-                    handleHTMLDrop();
-                }
-            }
-        } );
+                                if ( isAGridDrop( event ) ) {
+                                    String gridData = event.getData( DragType.GRID.name() );
+                                    handleGridDrop( gridData );
+                                }
+                                if ( isAScreenDrop( event ) ) {
+                                    handleScreenDrop( event );
+                                }
+                                if ( isAExternalComponentDrop( event ) ) {
+                                    handleExternalScreenDrop( event );
+                                }
+                                if ( isHtmlDrop( event ) ) {
+                                    handleHTMLDrop();
+                                }
+                            }
+                        }
+
+                      );
+    }
+
+    private void handleExternalScreenDrop( DropEvent event ) {
+        parent.getWidget().remove( this );
+        parent.getWidget().add( new ScreenView( parent, DragType.EXTERNAL, event.getData( DragType.EXTERNAL.name() ) ) );
+        getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
     }
 
     private void handleHTMLDrop() {
@@ -63,9 +74,9 @@ public class DropColumnPanel extends FlowPanel {
         getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
     }
 
-    private void handleScreenDrop() {
+    private void handleScreenDrop( DropEvent event ) {
         parent.getWidget().remove( this );
-        parent.getWidget().add( new ScreenView( parent ) );
+        parent.getWidget().add( new ScreenView( parent, DragType.SCREEN ) );
         getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
     }
 
@@ -76,7 +87,19 @@ public class DropColumnPanel extends FlowPanel {
     }
 
     private boolean isAScreenDrop( DropEvent event ) {
-        return !event.getData( DragType.SCREEN.name() ).isEmpty();
+        return isARegularScreenEvent( event );
+    }
+
+    private boolean isAExternalComponentDrop( DropEvent event ) {
+        return isAExternalComponent( event );
+    }
+
+    private boolean isAExternalComponent( DropEvent event ) {
+        return ( !event.getData( DragType.EXTERNAL.name() ).isEmpty() );
+    }
+
+    private boolean isARegularScreenEvent( DropEvent event ) {
+        return ( !event.getData( DragType.SCREEN.name() ).isEmpty() );
     }
 
     private boolean isAGridDrop( DropEvent event ) {

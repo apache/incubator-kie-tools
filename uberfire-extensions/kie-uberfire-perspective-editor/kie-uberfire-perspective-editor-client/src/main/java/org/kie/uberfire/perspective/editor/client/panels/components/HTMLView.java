@@ -19,6 +19,7 @@ import org.kie.uberfire.perspective.editor.client.panels.dnd.DropColumnPanel;
 import org.kie.uberfire.perspective.editor.client.structure.ColumnEditorUI;
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 import org.kie.uberfire.perspective.editor.client.structure.HTMLEditorWidgetUI;
+import org.kie.uberfire.perspective.editor.client.util.DragType;
 
 public class HTMLView extends Composite {
 
@@ -66,7 +67,7 @@ public class HTMLView extends Composite {
 
     private Column generateRowLabelColumn() {
         Column column = new Column( 6 );
-        Label row1 = generateLabel( "HTML Component" );
+        Label row1 = generateLabel( DragType.HTML.label() );
         column.add( row1 );
         return column;
     }

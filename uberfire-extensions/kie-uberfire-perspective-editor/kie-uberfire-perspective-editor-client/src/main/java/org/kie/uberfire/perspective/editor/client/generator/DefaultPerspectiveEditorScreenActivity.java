@@ -12,7 +12,6 @@ import com.github.gwtbootstrap.client.ui.Row;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.perspective.editor.model.ColumnEditor;
 import org.kie.uberfire.perspective.editor.model.HTMLEditor;
 import org.kie.uberfire.perspective.editor.model.PerspectiveEditor;
@@ -81,13 +80,13 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
                                   Column column ) {
         for ( ScreenEditor screenEditor : columnEditor.getScreens() ) {
             FlowPanel panel = new FlowPanel();
-            panel.getElement().setId( screenEditor.getScreenName() );
+            panel.getElement().setId( screenEditor.getPlaceName() );
             column.add( panel );
             Map<String, String> parameters  = new HashMap<String, String>(  );
             for ( ScreenParameter screenParameter : screenEditor.getParameters() ) {
                 parameters.put( screenParameter.getKey(), screenParameter.getValue() );
             }
-            screensToLoad.put( screenEditor.getScreenName(), new Target( column, panel, parameters  ) );
+            screensToLoad.put( screenEditor.getPlaceName(), new Target( column, panel, parameters  ) );
         }
     }
 

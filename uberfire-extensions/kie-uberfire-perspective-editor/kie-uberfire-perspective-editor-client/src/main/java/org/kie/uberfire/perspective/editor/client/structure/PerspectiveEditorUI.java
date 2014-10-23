@@ -24,7 +24,7 @@ public class PerspectiveEditorUI implements EditorWidget {
 
     public static String PROPERTY_EDITOR_KEY = "PerspectiveEditor";
 
-    public Map<String, Map<String, String>> screenProperties = new HashMap<String, Map<String, String>>();
+    public Map<String, ScreenEditor> screenProperties = new HashMap<String, ScreenEditor>();
 
     private List<String> tags;
 
@@ -37,7 +37,7 @@ public class PerspectiveEditorUI implements EditorWidget {
     public void setup( FlowPanel container ) {
         this.container = container;
         this.rowEditors = new ArrayList<EditorWidget>();
-        this.screenProperties = new HashMap<String, Map<String, String>>();
+        this.screenProperties = new HashMap<String, ScreenEditor>();
     }
 
     public FlowPanel getWidget() {
@@ -66,49 +66,53 @@ public class PerspectiveEditorUI implements EditorWidget {
         return rowEditors;
     }
 
-    public void observeEditComponentEvent( @Observes PropertyEditorChangeEvent event ) {
+    public void observeEditComponentEventFromPropertyEditor( @Observes PropertyEditorChangeEvent event ) {
 
         PropertyEditorFieldInfo property = event.getProperty();
         if ( property.getEventId().equalsIgnoreCase( PROPERTY_EDITOR_KEY ) ) {
-            Map<String, String> screenMap = screenProperties.get( property.getKey() );
-            screenMap.put( property.getLabel(), property.getCurrentStringValue() );
-            screenProperties.put( property.getKey(), screenMap );
+            ScreenEditor screenEditor = screenProperties.get( property.getKey() );
+            screenEditor.addParameters( new ScreenParameter( property.getLabel(), property.getCurrentStringValue() ) );
+            screenProperties.put( property.getKey(), screenEditor );
         }
     }
 
-    public Map<String, String> getScreenProperties( String hashcode ) {
-        Map<String, String> screenMap = this.screenProperties.get( hashcode );
-        if ( screenMap == null ) {
-            screenMap = new HashMap<String, String>();
-            screenMap.put( ScreenEditor.SCREEN_NAME, " " );
+    public void loadEditExternalComponentEvent( String hashcode,
+                                                String componentFQCN,
+                                                String placeName,
+                                                Map<String, String> properties ) {
+        ScreenEditor screenEditor = getScreenProperties( hashcode );
+        screenEditor.setPlaceName( placeName );
+        screenEditor.setType( ScreenEditor.SCREEN_TYPE.EXTERNAL );
+        screenEditor.setExternalComponentFQCN( componentFQCN );
+        for ( String key : properties.keySet() ) {
+            screenEditor.addParameters( new ScreenParameter( key, properties.get( key ) ) );
         }
-        this.screenProperties.put( hashcode, screenMap );
-        return screenMap;
+        screenProperties.put( hashcode, screenEditor );
+    }
+
+    public ScreenEditor getScreenProperties( String hashcode ) {
+        ScreenEditor screenEditor = this.screenProperties.get( hashcode );
+        if ( screenEditor == null ) {
+            screenEditor = new ScreenEditor();
+        }
+        this.screenProperties.put( hashcode, screenEditor );
+        return screenEditor;
     }
 
     public void loadProperties( String hashcode,
                                 ScreenEditor editor ) {
-        Map<String, String> screenMap = this.screenProperties.get( hashcode );
-        if ( screenMap == null ) {
-            screenMap = new HashMap<String, String>();
-        }
-        final List<ScreenParameter> parameters = editor.getParameters();
-        parameters.add( new ScreenParameter( ScreenEditor.SCREEN_NAME, editor.getScreenName() ) );
-        for ( ScreenParameter parameter : parameters ) {
-            screenMap.put( parameter.getKey(), parameter.getValue() );
-        }
-        this.screenProperties.put( hashcode, screenMap );
+        this.screenProperties.put( hashcode, editor );
     }
 
     public void addParameter( String hashcode,
                               ScreenParameter parameter ) {
-        Map<String, String> screenMap = this.screenProperties.get( hashcode );
-        if ( screenMap == null ) {
-            screenMap = new HashMap<String, String>();
+        ScreenEditor screenEditor = this.screenProperties.get( hashcode );
+        if ( screenEditor == null ) {
+            screenEditor = new ScreenEditor();
         }
-        screenMap.put( parameter.getKey(), parameter.getValue() );
+        screenEditor.addParameters( parameter );
 
-        this.screenProperties.put( hashcode, screenMap );
+        this.screenProperties.put( hashcode, screenEditor );
     }
 
     public void setName( String name ) {

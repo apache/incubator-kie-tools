@@ -65,7 +65,6 @@ public class PerspectiveEditorAdapter {
 
     private void extractChilds( ColumnEditorUI columnEditorUI,
                                 ColumnEditor columnEditor ) {
-        //ederign -> types can be mixed? refactoring
         if ( columnEditorUI.getChilds().get( 0 ) instanceof RowEditorWidgetUI ) {
             extractRows( columnEditorUI, columnEditor );
         }
@@ -90,25 +89,10 @@ public class PerspectiveEditorAdapter {
                                  ColumnEditor columnEditor ) {
         for ( EditorWidget genericEditor : columnEditorUI.getChilds() ) {
             ScreenEditorWidgetUI screenEditorUI = (ScreenEditorWidgetUI) genericEditor;
-            ScreenEditor screenEditor = new ScreenEditor();
-            screenEditor.setParameters( extractScreenParameters( screenEditorUI.hashCode() + "", screenEditor ) );
+            ScreenEditor screenEditor = perspectiveEditor.getScreenProperties( screenEditorUI.hashCode() + "" );
+
             columnEditor.addScreen( screenEditor );
         }
     }
 
-    public List<ScreenParameter> extractScreenParameters( String uiHashCode,
-                                                          ScreenEditor screenEditor ) {
-
-        List<ScreenParameter> screenParameters = new ArrayList<ScreenParameter>();
-        Map<String, String> screenProperties = perspectiveEditor.getScreenProperties( uiHashCode );
-        for ( String key : screenProperties.keySet() ) {
-            if ( key.equals( ScreenEditor.SCREEN_NAME ) ) {
-                screenEditor.setScreenName( screenProperties.get( key ) );
-            } else {
-                screenParameters.add( new ScreenParameter( key, screenProperties.get( key ) ) );
-            }
-        }
-
-        return screenParameters;
-    }
 }
