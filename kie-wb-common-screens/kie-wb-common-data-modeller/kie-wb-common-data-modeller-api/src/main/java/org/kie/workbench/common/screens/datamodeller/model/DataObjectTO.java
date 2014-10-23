@@ -129,6 +129,16 @@ public class DataObjectTO {
         this.originalClassName = originalClassName;
     }
 
+    public String getOriginalPackageName() {
+        //extract package name.
+        int index = getOriginalClassName() != null ? getOriginalClassName().lastIndexOf(".") : -1;
+        String originalPackageName = null;
+        if (index > 0) {
+            originalPackageName = getOriginalClassName().substring(0, index);
+        }
+        return originalPackageName;
+    }
+
     public String getSuperClassName() {
         return superClassName;
     }
@@ -172,11 +182,9 @@ public class DataObjectTO {
     public boolean packageNameChanged() {
         if (!isVolatile()) {
             //extract package name.
-            int index = getOriginalClassName().lastIndexOf(".");
-            String originalPackageName = "";
-            if (index > 0) {
-                originalPackageName = getOriginalClassName().substring(0, index);
-                return originalPackageName.equals(getPackageName());
+            String originalPackageName = getOriginalPackageName();
+            if ( originalPackageName != null ) {
+                return originalPackageName.equals( getPackageName() );
             } else {
                 return getPackageName() != null;
             }

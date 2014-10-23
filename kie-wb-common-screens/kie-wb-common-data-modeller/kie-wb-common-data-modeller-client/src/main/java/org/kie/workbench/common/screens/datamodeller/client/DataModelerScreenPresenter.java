@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -56,6 +57,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
+import org.kie.workbench.common.screens.datamodeller.model.JavaTypeInfoTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -71,6 +73,7 @@ import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
+import org.guvnor.common.services.project.model.Package;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -176,7 +179,7 @@ public class DataModelerScreenPresenter
                            final PlaceRequest place ) {
         init(path, place, resourceType);
 
-        initContext();
+        initContext( path );
         open = true;
 
         currentMessageType = "DataModeler" + path.toURI();
@@ -444,11 +447,12 @@ public class DataModelerScreenPresenter
 
     protected void save() {
 
-        final String[] newClassName = new String[ 1 ];
+        final JavaTypeInfoTO newTypeInfo = new JavaTypeInfoTO(  );
         if ( getContext().isDirty() ) {
             if ( getContext().isEditorChanged() ) {
-                newClassName[ 0 ] = getContext().getDataObject().getName();
-                save( newClassName[ 0 ] );
+                newTypeInfo.setPackageName( getContext().getDataObject().getPackageName() );
+                newTypeInfo.setName( getContext().getDataObject().getName() );
+                save( newTypeInfo );
             } else {
                 view.showLoading();
                 modelerService.call( new RemoteCallback<TypeInfoResult>() {
@@ -456,9 +460,10 @@ public class DataModelerScreenPresenter
                     public void callback( TypeInfoResult typeInfoResult ) {
                         view.hideBusyIndicator();
                         if ( !typeInfoResult.hasErrors() && typeInfoResult.getJavaTypeInfo() != null ) {
-                            newClassName[ 0 ] = typeInfoResult.getJavaTypeInfo().getName();
+                            newTypeInfo.setPackageName( typeInfoResult.getJavaTypeInfo().getPackageName() );
+                            newTypeInfo.setName( typeInfoResult.getJavaTypeInfo().getName() );
                         }
-                        save( newClassName[ 0 ] );
+                        save( newTypeInfo );
                     }
                 } ).loadJavaTypeInfo( getSource() );
             }
@@ -467,17 +472,53 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void save( final String newClassName ) {
+    private void save( final JavaTypeInfoTO newTypeInfo ) {
 
         String currentFileName = DataModelerUtils.extractSimpleFileName( versionRecordManager.getPathToLatest() );
-        if ( currentFileName != null && newClassName != null && !currentFileName.equals( newClassName ) ) {
+
+        if ( newTypeInfo.getPackageName() != null && !newTypeInfo.getPackageName().equals( getContext().getDataObject().getOriginalPackageName() ) ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                                                                                      Constants.INSTANCE.modelEditor_confirm_file_name_refactoring( newClassName ),
+                    "Mover la clase de paquete hacia: " + newTypeInfo.getPackageName(),
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( newTypeInfo, versionRecordManager.getPathToLatest() ) );
+                        }
+                    },
+                    Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
+                    ButtonType.PRIMARY,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
+                        }
+                    },
+                    Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
+                    ButtonType.DANGER,
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            //do nothing
+                        }
+                    },
+                    null,
+                    null
+            );
+
+            yesNoCancelPopup.setCloseVisible( false );
+            yesNoCancelPopup.show();
+
+
+
+        } else if ( currentFileName != null && newTypeInfo.getName() != null && !currentFileName.equals( newTypeInfo.getName() ) ) {
+
+            YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
+                                                                                      Constants.INSTANCE.modelEditor_confirm_file_name_refactoring( newTypeInfo.getName() ),
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( newClassName, versionRecordManager.getPathToLatest() ) );
+                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( newTypeInfo, versionRecordManager.getPathToLatest() ) );
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
@@ -508,7 +549,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private CommandWithCommitMessage getSaveCommand( final String newFileName, final Path path ) {
+    private CommandWithCommitMessage getSaveCommand( final JavaTypeInfoTO newTypeInfo, final Path path ) {
         return new CommandWithCommitMessage() {
             @Override
             public void execute( final String commitMessage ) {
@@ -529,14 +570,28 @@ public class DataModelerScreenPresenter
                 }
                 view.showSaving();
 
-                modelerService.call( getSaveSuccessCallback( newFileName, path ),
-                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource( getSource(), path, modifiedDataObject[ 0 ], metadata, commitMessage, newFileName );
+                if ( newTypeInfo != null ) {
+                    modelerService.call( getSaveSuccessCallback( newTypeInfo , path ),
+                                     new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource(
+                            getSource(),
+                            path,
+                            modifiedDataObject[ 0 ],
+                            metadata, commitMessage,
+                            newTypeInfo.getPackageName(), newTypeInfo.getName() );
+                } else {
+                    modelerService.call( getSaveSuccessCallback( newTypeInfo , path ),
+                            new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_saving_error() ) ).saveSource(
+                            getSource(),
+                            path,
+                            modifiedDataObject[ 0 ],
+                            metadata, commitMessage );
+                }
 
             }
         };
     }
 
-    private RemoteCallback<GenerationResult> getSaveSuccessCallback( final String newFileName, final Path currentPath ) {
+    private RemoteCallback<GenerationResult> getSaveSuccessCallback( final JavaTypeInfoTO newTypeInfo, final Path currentPath ) {
         return new RemoteCallback<GenerationResult>() {
 
             @Override
@@ -544,7 +599,7 @@ public class DataModelerScreenPresenter
 
                 view.hideBusyIndicator();
 
-                if ( newFileName == null ) {
+                if ( newTypeInfo == null ) {
 
                     if ( result.hasErrors() ) {
                         getContext().setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
@@ -992,7 +1047,7 @@ public class DataModelerScreenPresenter
 
     }
 
-    private void initContext() {
+    private void initContext( final ObservablePath path ) {
         context = new DataModelerContext();
 
         modelerService.call(
@@ -1003,7 +1058,17 @@ public class DataModelerScreenPresenter
                     }
                 },
                 new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_propertyType_loading_error() )
-                           ).getBasePropertyTypes();
+        ).getBasePropertyTypes();
+
+        modelerService.call(
+                new RemoteCallback<Set<Package>>() {
+                    @Override
+                    public void callback( Set<Package> packages ) {
+                        context.appendPackages( packages );
+                    }
+                },
+                new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() )
+        ).resolvePackages( path );
     }
 
     private void clearContext() {
@@ -1025,38 +1090,4 @@ public class DataModelerScreenPresenter
         return sessionInfo != null && sessionInfo.getIdentity() != null ? sessionInfo.getIdentity().getIdentifier() : null;
     }
 
-    private void showStatus() {
-
-        String status = "Editor edition status: \n";
-        status += "dirty:         " + ( getContext() != null ? getContext().isDirty() : null ) + "\n";
-        status += "contextStatus: " + printContextStatus( getContext().getEditionStatus() ) + "\n";
-        status += "parseStatus:   " + printParseStatus( getContext().getParseStatus() ) + "\n";
-        status += "dataModel:     " + getContext().getDataModel() + "\n";
-        status += "dataObject:    " + getContext().getDataObject() + "\n";
-        Window.alert( status );
-    }
-
-    private String printContextStatus( DataModelerContext.EditionStatus editionStatus ) {
-        switch ( editionStatus ) {
-            case NO_CHANGES:
-                return "NO_CHANGES";
-            case EDITOR_CHANGED:
-                return "EDITOR_CHANGED";
-            case SOURCE_CHANGED:
-                return "SOURCE_CHANGED";
-        }
-        return "unknown";
-    }
-
-    private String printParseStatus( DataModelerContext.ParseStatus status ) {
-        switch ( status ) {
-            case PARSED:
-                return "PARSED";
-            case NOT_PARSED:
-                return "NOT_PARSED";
-            case PARSE_ERRORS:
-                return "PARSE_ERRORS";
-        }
-        return "unknown";
-    }
 }

@@ -95,6 +95,8 @@ public interface Constants extends Messages {
 
     public String modelEditor_confirm_renaming_of_used_class(String className);
 
+    public String modelEditor_confirm_package_change_of_used_class(String className);
+
     public String modelEditor_confirm_deletion_of_used_field(String fieldName);
 
     public String modelEditor_confirm_renaming_of_used_field(String fieldName);

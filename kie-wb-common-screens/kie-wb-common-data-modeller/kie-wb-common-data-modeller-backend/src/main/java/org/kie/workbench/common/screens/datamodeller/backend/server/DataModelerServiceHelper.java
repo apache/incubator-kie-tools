@@ -22,12 +22,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -58,6 +63,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyIm
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.rpc.SessionInfo;
@@ -70,6 +76,13 @@ public class DataModelerServiceHelper {
 
     @Inject
     private User identity;
+
+    @Inject
+    @Named("ioStrategy")
+    IOService ioService;
+
+    @Inject
+    private ProjectService projectService;
 
     public DataModel to2Domain( DataModelTO dataModelTO ) {
         DataModel dataModel = ModelFactoryImpl.getInstance().newModel();
@@ -403,4 +416,37 @@ public class DataModelerServiceHelper {
                 when );
         return option;
     }
+
+    public Package ensurePackageStructure(final Project project, final String packageName) {
+
+        if ( packageName == null || "".equals( packageName ) || project == null ) {
+            return null;
+        }
+
+        Package defaultPackage = projectService.resolveDefaultPackage( project );
+        Package subPackage = defaultPackage;
+        Path subDirPath = Paths.convert( defaultPackage.getPackageMainSrcPath() );
+        String subDirName;
+
+        StringTokenizer tokenizer = new StringTokenizer( packageName, "." );
+        while ( tokenizer.hasMoreTokens() ) {
+            subDirName = tokenizer.nextToken();
+            subDirPath = subDirPath.resolve( subDirName );
+            if ( !ioService.exists( subDirPath ) ) {
+                //create the package using the projectService.
+                subPackage = projectService.newPackage( subPackage, subDirName );
+            } else {
+                subPackage = projectService.resolvePackage( Paths.convert( subDirPath ) );
+            }
+        }
+
+        return subPackage;
+    }
+
+    public String getCanonicalFileName(org.uberfire.backend.vfs.Path path) {
+        if ( path == null ) return null;
+        String fileName = path.getFileName();
+        return fileName.substring( 0, fileName.indexOf( "." ) );
+    }
+
 }

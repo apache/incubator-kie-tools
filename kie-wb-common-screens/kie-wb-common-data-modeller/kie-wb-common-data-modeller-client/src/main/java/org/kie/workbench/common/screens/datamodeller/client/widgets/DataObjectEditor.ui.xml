@@ -86,8 +86,7 @@
                 <td style="padding-left: 4px;">
                 </td>
             </tr>
-<!--
-            Commented in favour of using the platform Move service that will move assets between packages
+
             <tr>
                 <td colspan="3" style="padding: 3px;"></td>
             </tr>
@@ -103,7 +102,7 @@
                 <td style="padding-left: 4px;">
                 </td>
             </tr>
--->
+
             <tr>
                 <td colspan="3" style="padding: 3px;"></td>
             </tr>

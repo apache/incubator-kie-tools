@@ -18,7 +18,10 @@ package org.kie.workbench.common.screens.datamodeller.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.guvnor.common.services.project.model.*;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
@@ -51,7 +54,7 @@ public interface DataModelerService {
 
     GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage );
 
-    GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage, final String newFileName );
+    GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage, final String newPackageName, final String newFileName );
 
     GenerationResult updateSource( final String source, final Path path, final DataObjectTO dataObjectTO );
 
@@ -82,5 +85,7 @@ public interface DataModelerService {
     List<Path> findFieldUsages( String className, String fieldName );
 
     Boolean exists( Path path );
+
+    Set<Package> resolvePackages( final Path path );
 
 }

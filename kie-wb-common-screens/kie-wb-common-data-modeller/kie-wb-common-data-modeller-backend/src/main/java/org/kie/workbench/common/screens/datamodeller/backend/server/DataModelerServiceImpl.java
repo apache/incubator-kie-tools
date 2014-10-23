@@ -18,10 +18,12 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -480,7 +482,7 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
                                         final DataObjectTO dataObjectTO,
                                         final Metadata metadata,
                                         final String commitMessage ) {
-        return saveSource( source, path, dataObjectTO, metadata, commitMessage, null );
+        return saveSource( source, path, dataObjectTO, metadata, commitMessage, null, null );
     }
 
     @Override
@@ -489,26 +491,74 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
                                         final DataObjectTO dataObjectTO,
                                         final Metadata metadata,
                                         final String commitMessage,
+                                        final String newPackageName,
                                         final String newFileName ) {
+
+        Boolean onBatch = false;
 
         try {
 
             GenerationResult result = resolveSaveSource( source, path, dataObjectTO );
 
-            ioService.write( Paths.convert( path ),
-                             result.getSource(),
-                             metadataService.setUpAttributes( path, metadata ),
-                             serviceHelper.makeCommentedOption( commitMessage ) );
+            Package currentPackage = projectService.resolvePackage( path );
+            Package targetPackage = currentPackage;
+            String targetName = path.getFileName();
+            org.uberfire.java.nio.file.Path targetPath = Paths.convert( path );
 
-            if ( newFileName != null ) {
+            boolean packageChanged = false;
+            boolean nameChanged = false;
+
+            if ( newPackageName != null && ( currentPackage == null || !newPackageName.equals( currentPackage.getPackageName() ) ) ) {
+                //make sure destination package exists.
+                targetPackage = serviceHelper.ensurePackageStructure( projectService.resolveProject( path ), newPackageName );
+                packageChanged = true;
+            }
+
+            if ( newFileName != null && !(newFileName+".java").equals( path.getFileName() ) ) {
+                targetName = newFileName+".java";
+                nameChanged = true;
+            }
+
+            ioService.startBatch( targetPath.getFileSystem() );
+            onBatch = true;
+            if ( packageChanged ) {
+                targetPath = Paths.convert(  targetPackage.getPackageMainSrcPath() ).resolve( targetName );
+
+
+                ioService.write( Paths.convert( path ),
+                        result.getSource(),
+                        metadataService.setUpAttributes( path, metadata ),
+                        serviceHelper.makeCommentedOption( commitMessage ) );
+
+                //deleteService.delete( path, commitMessage );
+                ioService.move( Paths.convert( path ), targetPath, serviceHelper.makeCommentedOption( commitMessage ) );
+                result.setPath( Paths.convert( targetPath ) );
+
+            } else if ( nameChanged ) {
+
+                ioService.write( Paths.convert( path ),
+                        result.getSource(),
+                        metadataService.setUpAttributes( path, metadata ),
+                        serviceHelper.makeCommentedOption( commitMessage ) );
+
                 Path newPath = renameService.rename( path, newFileName, commitMessage );
                 result.setPath( newPath );
-            }
-            return result;
+            } else {
 
+                ioService.write( Paths.convert( path ),
+                        result.getSource(),
+                        metadataService.setUpAttributes( path, metadata ),
+                        serviceHelper.makeCommentedOption( commitMessage ) );
+                result.setPath( path );
+
+            }
+
+            return result;
         } catch ( Exception e ) {
             logger.error( "Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + ( dataObjectTO != null ? dataObjectTO.getClassName() : null ) + ".", e );
             throw new ServiceException( "Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + ( dataObjectTO != null ? dataObjectTO.getClassName() : null ) + ".", e );
+        } finally {
+            if ( onBatch ) ioService.endBatch();
         }
     }
 
@@ -1184,7 +1234,7 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
         final RefactoringPageRequest request = new RefactoringPageRequest( queryName,
                                                                            queryTerms,
                                                                            0,
-                                                                           10 );
+                                                                           100 );
 
         try {
 
@@ -1228,6 +1278,19 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
     @Override
     public Boolean exists( Path path ) {
         return ioService.exists( Paths.convert( path ) );
+    }
+
+    @Override
+    public Set<Package> resolvePackages( final Path path ) {
+        Project project = null;
+        if ( path != null ) {
+            project = projectService.resolveProject( path );
+        }
+        if ( path == null || project == null ) {
+            return new HashSet<Package>( );
+        } else {
+            return projectService.resolvePackages( project );
+        }
     }
 
     private boolean hasUIChanges( DataObjectTO dataObjectTO ) {

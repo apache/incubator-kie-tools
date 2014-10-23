@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -305,7 +306,11 @@ public abstract class KieEditor {
     }
 
     private void onDelete() {
-        placeManager.forceClosePlace( place );
+        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            @Override public void execute() {
+                placeManager.forceClosePlace( place );
+            }
+        } );
     }
 
     /**

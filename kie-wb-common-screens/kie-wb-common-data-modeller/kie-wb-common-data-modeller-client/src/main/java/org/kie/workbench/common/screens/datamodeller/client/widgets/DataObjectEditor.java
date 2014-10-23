@@ -90,10 +90,10 @@ public class DataObjectEditor extends Composite {
     @UiField
     TextArea description;
 
-    //@UiField
+    @UiField
     Label packageNameLabel;
 
-    //@UiField
+    @UiField
     SimplePanel packageSelectorPanel;
 
     @Inject
@@ -248,7 +248,7 @@ public class DataObjectEditor extends Composite {
         timestampFieldSelector.addItem( "", NOT_SELECTED );
         durationFieldSelector.addItem( "", NOT_SELECTED );
 
-        //TODO remove package selector stuff packageSelectorPanel.add( packageSelector );
+        packageSelectorPanel.add( packageSelector );
         packageSelector.getPackageList().addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
@@ -589,49 +589,54 @@ public class DataObjectEditor extends Composite {
         // Set widgets to errorpopup for styling purposes etc.
         packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
 
+        final String originalClassName = getDataObject().getOriginalClassName();
         final String newPackageName = packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue() : null;
-        final String oldPackageName = getDataObject().getPackageName();
+        final String oldPackageName = getDataObject().getOriginalPackageName();
 
-        // No notification needed
+        if ( (oldPackageName != null && !oldPackageName.equals( newPackageName )) ||
+                ( oldPackageName == null && newPackageName != null) ) {
+            //the user is trying to change the package name
 
-        if ( /*(newPackageName == null && oldPackageName == null) ||*/
-                (newPackageName != null && newPackageName.equalsIgnoreCase(oldPackageName)) ) {
-            packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
-            return;
+            modelerService.call( new RemoteCallback<List<Path>>() {
 
-        } else if (newPackageName == null) {
+                @Override public void callback( List<Path> paths ) {
 
-            /*
-            ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_package_identifier_null(), null, new Command() {
-                @Override
-                public void execute() {
-                    packageNameLabel.setStyleName( "text-error" );
-                    packageSelector.getPackageList().setFocus( true );
+                    if ( paths != null && paths.size() > 0 ) {
+                        //If usages for this class were detected in project assets
+                        //show the confirmation message to the user.
+
+                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
+                                Constants.INSTANCE.modelEditor_confirm_package_change_of_used_class( originalClassName ),
+                                paths,
+                                new org.uberfire.mvp.Command() {
+                                    @Override
+                                    public void execute() {
+                                        doPackageChange( oldPackageName, newPackageName );
+                                    }
+                                },
+                                new org.uberfire.mvp.Command() {
+                                    @Override public void execute() {
+                                        //do nothing.
+                                        packageSelector.getPackageList().setSelectedValue( oldPackageName );
+                                    }
+                                }
+                        );
+
+                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.show();
+
+                    } else {
+                        //no usages, just proceed with the package change.
+                        doPackageChange( oldPackageName, newPackageName );
+                    }
                 }
-            } );
-            */
-
-        } else {
-            validatorService.isUniqueEntityName( newPackageName, getDataObject().getName(), getDataModel(), new ValidatorCallback() {
-                @Override
-                public void onFailure() {
-                    ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_already_exists( getDataObject().getName(), newPackageName ), null, new Command() {
-                        @Override
-                        public void execute() {
-                            packageNameLabel.setStyleName(TEXT_ERROR_CLASS);
-                            packageSelector.getPackageList().setFocus( true );
-                        }
-                    } );
-                }
-
-                @Override
-                public void onSuccess() {
-                    packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
-                    dataObject.setPackageName( newPackageName );
-                    notifyObjectChange( "packageName", oldPackageName, newPackageName );
-                }
-            } );
+            } ).findClassUsages( originalClassName );
         }
+    }
+
+    private void doPackageChange( String oldPackageName, String newPackageName ) {
+        getDataObject().setPackageName( newPackageName );
+        notifyObjectChange( "packageName", oldPackageName, newPackageName );
     }
 
     private void superClassChanged( ChangeEvent event ) {
