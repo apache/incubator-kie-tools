@@ -27,8 +27,8 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBaseEvent;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -73,7 +73,6 @@ import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
-import org.guvnor.common.services.project.model.Package;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -479,14 +478,14 @@ public class DataModelerScreenPresenter
         if ( newTypeInfo.getPackageName() != null && !newTypeInfo.getPackageName().equals( getContext().getDataObject().getOriginalPackageName() ) ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
-                    "Mover la clase de paquete hacia: " + newTypeInfo.getPackageName(),
+                    Constants.INSTANCE.modelEditor_confirm_file_package_refactoring( newTypeInfo.getPackageName() ),
                     new Command() {
                         @Override
                         public void execute() {
                             new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( newTypeInfo, versionRecordManager.getPathToLatest() ) );
                         }
                     },
-                    Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
+                    Constants.INSTANCE.modelEditor_action_yes_refactor_directory(),
                     ButtonType.PRIMARY,
                     new Command() {
                         @Override
@@ -494,7 +493,7 @@ public class DataModelerScreenPresenter
                             new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
                         }
                     },
-                    Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
+                    Constants.INSTANCE.modelEditor_action_no_dont_refactor_directory(),
                     ButtonType.DANGER,
                     new Command() {
                         @Override
@@ -713,6 +712,7 @@ public class DataModelerScreenPresenter
                 }
                 if ( content.getDataObject() != null ) {
                     setSelectedTab( EDITOR_TAB_INDEX );
+                    uiStarted = true;
                 } else {
                     showParseErrorsDialog(Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
                             false,
@@ -721,7 +721,8 @@ public class DataModelerScreenPresenter
                                 @Override
                                 public void execute() {
                                     //we need to go directly to the sources tab
-                                    onSourceTabSelected();
+                                    uiStarted = true;
+                                    //onSourceTabSelected();
                                     setSelectedTab( EDITABLE_SOURCE_TAB );
                                 }
                     });
@@ -795,8 +796,6 @@ public class DataModelerScreenPresenter
 
         view.setContext( context );
         setSource( model.getSource() );
-
-        uiStarted = true;
 
         if ( model.getDataObject() != null ) {
             getContext().setParseStatus( DataModelerContext.ParseStatus.PARSED );

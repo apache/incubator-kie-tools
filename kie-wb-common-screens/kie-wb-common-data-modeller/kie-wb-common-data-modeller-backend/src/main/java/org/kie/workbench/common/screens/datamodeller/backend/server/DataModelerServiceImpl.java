@@ -519,12 +519,12 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
                 nameChanged = true;
             }
 
-            ioService.startBatch( targetPath.getFileSystem() );
-            onBatch = true;
+
             if ( packageChanged ) {
                 targetPath = Paths.convert(  targetPackage.getPackageMainSrcPath() ).resolve( targetName );
 
-
+                ioService.startBatch( targetPath.getFileSystem() );
+                onBatch = true;
                 ioService.write( Paths.convert( path ),
                         result.getSource(),
                         metadataService.setUpAttributes( path, metadata ),
@@ -535,7 +535,7 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
                 result.setPath( Paths.convert( targetPath ) );
 
             } else if ( nameChanged ) {
-
+                //obs, rename service already do a startBatch.
                 ioService.write( Paths.convert( path ),
                         result.getSource(),
                         metadataService.setUpAttributes( path, metadata ),

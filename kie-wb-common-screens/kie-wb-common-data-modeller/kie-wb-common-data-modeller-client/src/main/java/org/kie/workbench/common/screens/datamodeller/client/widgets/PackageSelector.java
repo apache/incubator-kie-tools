@@ -175,18 +175,10 @@ public class PackageSelector extends Composite {
             }
 
         }
-        /* WM old processing
-        if (getDataModel() != null) {
-            String packageName;
-            for (String className : getContext().getHelper().getClassList()) {
-                packageName = DataModelerUtils.getInstance().extractPackageName(className);
-                if (packageName != null && !DEFAULT_PACKAGE.equals(packageName) && !packageNames.contains(packageName)) {
-                    packageNames.add(packageName);
-                }
-            }
-        }
-        */
 
+        if ( dataObject != null && dataObject.getPackageName() != null && !packageNames.contains( dataObject.getPackageName()  ) ) {
+            packageNames.add( dataObject.getPackageName() );
+        }
         Collections.sort(packageNames);
         if (enableEmptyPackageOption) packageList.addItem(NOT_SELECTED_DESC, NOT_SELECTED);
         //packageList.addItem(DEFAULT_PACKAGE, DEFAULT_PACKAGE);

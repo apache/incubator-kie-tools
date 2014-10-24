@@ -113,6 +113,10 @@ public abstract class KieEditor {
     }
 
     protected void init(ObservablePath path, PlaceRequest place, ClientResourceType type) {
+        init( path, place, type, true );
+    }
+
+    protected void init(ObservablePath path, PlaceRequest place, ClientResourceType type, boolean addFileChangeListeners) {
         this.place = place;
         this.type = type;
 
@@ -138,7 +142,9 @@ public abstract class KieEditor {
                     }
                 });
 
-        addFileChangeListeners(path);
+        if ( addFileChangeListeners ) {
+            addFileChangeListeners(path);
+        }
 
         makeMenuBar();
 
@@ -421,7 +427,8 @@ public abstract class KieEditor {
             return;
         }
         if (versionRecordManager.getCurrentPath().equals(restore.getPath())) {
-            init(versionRecordManager.getPathToLatest(), place, type);
+            //when a version is restored we don't want to add the concurrency listeners again -> false
+            init(versionRecordManager.getPathToLatest(), place, type, false);
             notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
         }
     }
