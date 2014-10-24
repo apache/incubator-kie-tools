@@ -2,6 +2,7 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.user.client.Timer;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.uberfire.client.common.popups.KieBaseModal;
@@ -39,7 +40,17 @@ public class DependencySelectorPopupViewImpl
 
     @Override
     public void show() {
-        dependencyPagedJarTable.refresh();
         super.show();
+
+        /*
+           We need to give time for the popup to show up,
+           before loading the content.
+         */
+        new Timer() {
+            @Override
+            public void run() {
+                dependencyPagedJarTable.refresh();
+            }
+        }.schedule(1000);
     }
 }
