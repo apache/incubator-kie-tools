@@ -21,8 +21,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
@@ -30,8 +30,7 @@ import org.kie.uberfire.perspective.editor.client.api.ExternalPerspectiveEditorC
 import org.kie.uberfire.perspective.editor.client.structure.EditorWidget;
 import org.kie.uberfire.perspective.editor.client.structure.PerspectiveEditorUI;
 
-public class EditExternalScreen
-        extends PopupPanel {
+public class EditExternalScreen extends Composite {
 
     private final ExternalPerspectiveEditorComponent externalComponent;
     private final EditorWidget parent;
@@ -52,10 +51,11 @@ public class EditExternalScreen
 
     public EditExternalScreen( EditorWidget parent,
                                ExternalPerspectiveEditorComponent externalComponent ) {
-        setWidget( uiBinder.createAndBindUi( this ) );
+        initWidget( uiBinder.createAndBindUi (this ) );
         this.parent = parent;
         this.externalComponent = externalComponent;
         externalWidget.add( externalComponent.getConfig() );
+        externalComponent.modalSettings( popup );
     }
 
     @UiHandler("close")
@@ -73,11 +73,9 @@ public class EditExternalScreen
         final IOCBeanDef<PerspectiveEditorUI> perspectiveEditorUIIOCBeanDef = IOC.getBeanManager().lookupBean( PerspectiveEditorUI.class );
         final PerspectiveEditorUI perspectiveEditorUI = perspectiveEditorUIIOCBeanDef.getInstance();
         perspectiveEditorUI.loadEditExternalComponentEvent( parent.hashCode() + "", externalComponent.getClass().getName(), externalComponent.getPlaceName(), externalComponent.getParametersMap() );
-
     }
 
     public void show() {
         popup.show();
     }
-
 }
