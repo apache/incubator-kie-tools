@@ -18,7 +18,7 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  * A Perspective for Wires Scratch Pad
  */
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "WiresScratchPadPerspective", isDefault = true)
+@WorkbenchPerspective(identifier = "WiresScratchPadPerspective")
 public class WiresScratchPadPerspective {
 
     private static final String WIRES = "Wires";
