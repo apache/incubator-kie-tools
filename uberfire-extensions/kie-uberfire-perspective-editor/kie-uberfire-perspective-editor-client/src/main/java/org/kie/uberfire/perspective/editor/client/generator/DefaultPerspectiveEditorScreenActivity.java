@@ -1,10 +1,12 @@
 package org.kie.uberfire.perspective.editor.client.generator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.Container;
@@ -41,12 +43,12 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     private Container mainPanel;
 
-    private Map<String, Target> screensToLoad = new HashMap<String, Target>();
+    private List<Target> screensToLoad = new ArrayList<Target>();
 
     public DefaultPerspectiveEditorScreenActivity( PerspectiveEditor editor,
                                                    final PlaceManager placeManager ) {
         this.placeManager = placeManager;
-        build(editor);
+        build( editor );
     }
 
     public void build( PerspectiveEditor editor ) {
@@ -68,25 +70,26 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
     }
 
     private void generateHTML( ColumnEditor columnEditor,
-                                  Column column ) {
+                               Column column ) {
         for ( HTMLEditor htmlEditor : columnEditor.getHtmls() ) {
-            HTMLPanel panel = new HTMLPanel(htmlEditor.getHtmlCode());
+            HTMLPanel panel = new HTMLPanel( htmlEditor.getHtmlCode() );
             column.add( panel );
         }
     }
 
-
     private void generateScreens( ColumnEditor columnEditor,
                                   Column column ) {
+        Random r = new Random();
+
         for ( ScreenEditor screenEditor : columnEditor.getScreens() ) {
             FlowPanel panel = new FlowPanel();
-            panel.getElement().setId( screenEditor.getPlaceName() );
+            panel.getElement().setId( screenEditor.getPlaceName() + r.nextInt() );
             column.add( panel );
-            Map<String, String> parameters  = new HashMap<String, String>(  );
+            Map<String, String> parameters = new HashMap<String, String>();
             for ( ScreenParameter screenParameter : screenEditor.getParameters() ) {
                 parameters.put( screenParameter.getKey(), screenParameter.getValue() );
             }
-            screensToLoad.put( screenEditor.getPlaceName(), new Target( column, panel, parameters  ) );
+            screensToLoad.add( new Target( screenEditor.getPlaceName(), column, panel, parameters ) );
         }
     }
 
@@ -162,13 +165,12 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     @Override
     public void onOpen() {
-        for ( String key : screensToLoad.keySet() ) {
-            final Target target = screensToLoad.get( key );
+        for ( Target target : screensToLoad) {
             final Column column = target.getColumn();
             final FlowPanel panel = target.getPanel();
             final int height = 400;
             panel.setPixelSize( column.getElement().getClientWidth(), height );
-            placeManager.goTo( new DefaultPlaceRequest( key, target.getParameters() ), target.getPanel() );
+            placeManager.goTo( new DefaultPlaceRequest( target.getPlaceName(), target.getParameters() ), target.getPanel() );
         }
 
     }
@@ -213,14 +215,16 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     private class Target {
 
+        private final String placeName;
         private final Column column;
         private final FlowPanel panel;
         private final Map<String, String> parameters;
 
-        public Target( Column column,
+        public Target( String placeName,
+                       Column column,
                        FlowPanel panel,
                        Map<String, String> parameters ) {
-
+            this.placeName = placeName;
             this.column = column;
             this.panel = panel;
             this.parameters = parameters;
@@ -236,6 +240,10 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
         public Column getColumn() {
             return column;
+        }
+
+        public String getPlaceName() {
+            return placeName;
         }
     }
 }
