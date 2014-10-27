@@ -80,7 +80,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                 @Override
                 public void run() {
                     try {
-                        final Server server = remoteAccess.toServer( serverRef.getId(), serverRef.getName(), serverRef.getConnectionType(), serverRef.getContainersRef() );
+                        final Server server = remoteAccess.toServer( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), serverRef.getConnectionType(), serverRef.getContainersRef() );
                         if ( server == null ) {
                             serverOnErrorEvent.fire( new ServerOnError( toError( serverRef ), "" ) );
                         } else {
@@ -98,7 +98,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     private ServerRef toError( final ServerRef serverRef ) {
-        return new ServerRefImpl( serverRef.getId(), serverRef.getName(), ContainerStatus.ERROR, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
+        return new ServerRefImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), ContainerStatus.ERROR, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         checkNotEmpty( "endpoint", endpoint );
         checkNotEmpty( "name", name );
 
-        final Server server = remoteAccess.toServer( endpoint, name, REMOTE );
+        final Server server = remoteAccess.toServer( endpoint, name, username, password, REMOTE );
 
         if ( storage.exists( server ) ) {
             throw new ServerAlreadyRegisteredException( "Server already registered." );
@@ -240,7 +240,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     private void unregisterServer( final String id ) {
-        storage.unregister( new ServerRefImpl( id, "--none--", null, null, null, null ) );
+        storage.unregister( new ServerRefImpl( id, "--none--", null, null, null, null, null, null ) );
         serverDeletedEvent.fire( new ServerDeleted( id ) );
     }
 }

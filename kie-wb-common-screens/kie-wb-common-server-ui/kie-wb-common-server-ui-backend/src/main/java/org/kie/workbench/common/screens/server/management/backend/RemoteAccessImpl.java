@@ -38,11 +38,13 @@ public class RemoteAccessImpl {
 
     public ServerRef toServerRef( final String endpoint,
                                   final String name,
+                                  final String username,
+                                  final String password,
                                   final ConnectionType connectionType,
                                   final Collection<ContainerRef> containerRefs ) {
 
         String _endpoint = cleanup( endpoint );
-        KieServicesClient client = new KieServicesClient( _endpoint );
+        KieServicesClient client = new KieServicesClient( _endpoint, username, password );
         String _version = null;
         try {
             final ServiceResponse<KieServerInfo> response = client.getServerInfo();
@@ -51,7 +53,7 @@ public class RemoteAccessImpl {
             }
         } catch ( final Exception ex ) {
             _endpoint = _endpoint.concat( BASE_URI );
-            client = new KieServicesClient( _endpoint );
+            client = new KieServicesClient( _endpoint, username, password );
             final ServiceResponse<KieServerInfo> response = client.getServerInfo();
             if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
                 _version = response.getResult().getVersion();
@@ -60,7 +62,7 @@ public class RemoteAccessImpl {
 
         final String version = _version;
 
-        return new ServerRefImpl( _endpoint, name, ContainerStatus.LOADING, connectionType, new HashMap<String, String>() {{
+        return new ServerRefImpl( _endpoint, name, username, password, ContainerStatus.LOADING, connectionType, new HashMap<String, String>() {{
             put( "version", version );
         }}, containerRefs );
     }
@@ -74,10 +76,12 @@ public class RemoteAccessImpl {
 
     public Server toServer( final String endpoint,
                             final String name,
+                            final String username,
+                            final String password,
                             final ConnectionType connectionType,
                             final Collection<ContainerRef> containerRefs ) {
 
-        final ServerRef serverRef = toServerRef( endpoint, name, connectionType, containerRefs );
+        final ServerRef serverRef = toServerRef( endpoint, name, username, password, connectionType, containerRefs );
         try {
             final KieServicesClient client = new KieServicesClient( serverRef.getId() );
             final Collection<Container> containers = new ArrayList<Container>();
@@ -196,8 +200,10 @@ public class RemoteAccessImpl {
 
     public Server toServer( final String endpoint,
                             final String name,
+                            final String username,
+                            final String password,
                             final ConnectionType remote ) {
-        return toServer( endpoint, name, remote, null );
+        return toServer( endpoint, name, username, password, remote, null );
     }
 
     public Pair<Boolean, Container> getContainer( final String serverId,

@@ -14,24 +14,31 @@ import org.kie.workbench.common.screens.server.management.service.ContainerAlrea
 @Portable
 public class ServerRefImpl implements ServerRef {
 
-    private String id;
-    private String name;
-    private ContainerStatus status;
-    private ConnectionType connectionType;
-    private final Map<String, String> properties = new HashMap<String, String>();
+    private         String          id;
+    private         String          name;
+    private         String          username;
+    private         String          password;
+    private         ContainerStatus status;
+    private         ConnectionType  connectionType;
+    private final   Map<String, String>       properties    = new HashMap<String, String>();
     protected final Map<String, ContainerRef> containersRef = new HashMap<String, ContainerRef>();
 
     public ServerRefImpl() {
     }
 
-    public ServerRefImpl( final String id,
-                          final String name,
-                          final ContainerStatus status,
-                          final ConnectionType connectionType,
-                          final Map<String, String> properties,
-                          final Collection<ContainerRef> containerRefs ) {
+    public ServerRefImpl(
+            final String id,
+            final String name,
+            final String username,
+            final String password,
+            final ContainerStatus status,
+            final ConnectionType connectionType,
+            final Map<String, String> properties,
+            final Collection<ContainerRef> containerRefs) {
         this.id = id;
         this.name = name;
+        this.username = username;
+        this.password = password;
         this.connectionType = connectionType;
         this.status = status;
         if ( properties != null ) {
@@ -53,6 +60,16 @@ public class ServerRefImpl implements ServerRef {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override

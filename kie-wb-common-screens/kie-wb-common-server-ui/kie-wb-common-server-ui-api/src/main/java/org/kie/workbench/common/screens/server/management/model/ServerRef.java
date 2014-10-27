@@ -9,6 +9,10 @@ public interface ServerRef {
 
     String getName();
 
+    String getUsername();
+
+    String getPassword();
+
     ContainerStatus getStatus();
 
     ConnectionType getConnectionType();
