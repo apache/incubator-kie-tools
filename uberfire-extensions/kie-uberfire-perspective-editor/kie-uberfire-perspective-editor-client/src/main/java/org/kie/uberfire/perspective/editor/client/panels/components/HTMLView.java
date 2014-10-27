@@ -6,6 +6,7 @@ import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -13,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.perspective.editor.client.panels.components.popup.EditHTML;
 import org.kie.uberfire.perspective.editor.client.panels.dnd.DropColumnPanel;
@@ -44,36 +46,34 @@ public class HTMLView extends Composite {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
         this.htmlEditor = new HTMLEditorWidgetUI( parent, fluidContainer, htmlCode );
-        build(  );
+        build();
     }
 
     public HTMLView( ColumnEditorUI parent ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
         this.htmlEditor = new HTMLEditorWidgetUI( parent, fluidContainer );
-        build(  );
+        build();
+        showEditScreen();
     }
 
-    private void build(   ) {
+    private void build() {
+        htmlEditor.getWidget().clear();
         htmlEditor.getWidget().add( generateMainRow( ) );
+        if (htmlEditor.getHtmlCode() != null) {
+            HTMLPanel htmlPanel = new HTMLPanel(htmlEditor.getHtmlCode());
+            htmlEditor.getWidget().add( htmlPanel );
+        }
     }
 
     private FluidRow generateMainRow() {
         FluidRow row = new FluidRow();
-        row.add( generateRowLabelColumn() );
         row.add( generateButtonColumn() );
         return row;
     }
 
-    private Column generateRowLabelColumn() {
-        Column column = new Column( 6 );
-        Label row1 = generateLabel( DragType.HTML.label() );
-        column.add( row1 );
-        return column;
-    }
-
     private Column generateButtonColumn() {
-        Column buttonColumn = new Column( 6 );
+        Column buttonColumn = new Column( 12 );
         buttonColumn.getElement().getStyle().setProperty( "textAlign", "right" );
         buttonColumn.add( generateEditPropertyButton() );
         buttonColumn.add( generateRemoveButton() );
@@ -84,21 +84,32 @@ public class HTMLView extends Composite {
         Button remove = new Button( "Configure" );
         remove.setSize( ButtonSize.MINI );
         remove.setType( ButtonType.PRIMARY );
+        remove.setIcon( IconType.EDIT );
         remove.getElement().getStyle().setProperty( "marginRight", "3px" );
         remove.addClickHandler( new ClickHandler() {
-            @Override
             public void onClick( ClickEvent event ) {
-                EditHTML editUserForm = new EditHTML( htmlEditor );
-                editUserForm.show();
+                showEditScreen();
             }
         } );
         return remove;
+    }
+
+    private void showEditScreen() {
+        EditHTML editUserForm = new EditHTML( htmlEditor, new EditHTML.Listener() {
+            public void onSave() {
+                build();
+            }
+            public void onClose() {
+            }
+        });
+        editUserForm.show();
     }
 
     private Button generateRemoveButton() {
         Button remove = new Button( "Remove" );
         remove.setSize( ButtonSize.MINI );
         remove.setType( ButtonType.DANGER );
+        remove.setIcon( IconType.REMOVE );
         remove.getElement().getStyle().setProperty( "marginRight", "3px" );
         remove.addClickHandler( new ClickHandler() {
             @Override
@@ -118,11 +129,5 @@ public class HTMLView extends Composite {
     private void removeThisWidgetFromParent() {
         parent.getWidget().remove( this );
         htmlEditor.removeFromParent();
-    }
-
-    private Label generateLabel( String row ) {
-        Label label = new Label( row );
-        label.getElement().getStyle().setProperty( "marginLeft", "3px" );
-        return label;
     }
 }

@@ -8,6 +8,7 @@ import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -185,6 +186,7 @@ public class RowView extends Composite {
         Button remove = new Button( "Remove" );
         remove.setSize( ButtonSize.MINI );
         remove.setType( ButtonType.DANGER );
+        remove.setIcon( IconType.REMOVE );
         remove.getElement().getStyle().setProperty( "marginRight", "3px" );
         remove.addClickHandler( new ClickHandler() {
             @Override

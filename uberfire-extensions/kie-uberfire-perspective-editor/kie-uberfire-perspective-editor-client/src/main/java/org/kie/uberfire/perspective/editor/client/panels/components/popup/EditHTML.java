@@ -40,6 +40,13 @@ public class EditHTML
     @UiField
     TextArea textArea;
 
+    Listener listener;
+
+    public interface Listener {
+        void onSave();
+        void onClose();
+    }
+
     interface Binder
             extends
             UiBinder<Widget, EditHTML> {
@@ -48,10 +55,11 @@ public class EditHTML
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
-    public EditHTML( EditorWidget parent ) {
+    public EditHTML( EditorWidget parent, Listener listener) {
         setWidget( uiBinder.createAndBindUi( this ) );
         final HTMLEditorWidgetUI htmlParent = (HTMLEditorWidgetUI) parent;
         this.parent = htmlParent;
+        this.listener = listener;
         setupHTMLEditor( htmlParent );
     }
 
@@ -71,12 +79,17 @@ public class EditHTML
     @UiHandler("close")
     void close( final ClickEvent event ) {
         popup.hide();
+        if (listener != null) {
+            listener.onClose();
+        }
     }
 
     @UiHandler("save")
     void save( final ClickEvent event ) {
         parent.setHtmlCode( textArea.getText() );
         popup.hide();
+        if (listener != null) {
+            listener.onSave();
+        }
     }
-
 }

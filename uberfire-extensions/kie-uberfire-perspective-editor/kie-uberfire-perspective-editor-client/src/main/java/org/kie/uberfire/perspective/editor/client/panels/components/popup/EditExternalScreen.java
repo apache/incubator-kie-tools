@@ -41,6 +41,13 @@ public class EditExternalScreen extends Composite {
     @UiField
     FlowPanel externalWidget;
 
+    Listener listener;
+
+    public interface Listener {
+        void onSave();
+        void onClose();
+    }
+
     interface Binder
             extends
             UiBinder<Widget, EditExternalScreen> {
@@ -50,10 +57,12 @@ public class EditExternalScreen extends Composite {
     private static Binder uiBinder = GWT.create( Binder.class );
 
     public EditExternalScreen( EditorWidget parent,
-                               ExternalPerspectiveEditorComponent externalComponent ) {
+            ExternalPerspectiveEditorComponent externalComponent,
+            Listener listener) {
         initWidget( uiBinder.createAndBindUi (this ) );
         this.parent = parent;
         this.externalComponent = externalComponent;
+        this.listener = listener;
         externalWidget.add( externalComponent.getConfig() );
         externalComponent.modalSettings( popup );
     }
@@ -61,12 +70,18 @@ public class EditExternalScreen extends Composite {
     @UiHandler("close")
     void close( final ClickEvent event ) {
         popup.hide();
+        if (listener != null) {
+            listener.onClose();
+        }
     }
 
     @UiHandler("save")
     void save( final ClickEvent event ) {
         loadSavedParametersOnPerspectiveEditorUI();
         popup.hide();
+        if (listener != null) {
+            listener.onSave();
+        }
     }
 
     private void loadSavedParametersOnPerspectiveEditorUI() {
