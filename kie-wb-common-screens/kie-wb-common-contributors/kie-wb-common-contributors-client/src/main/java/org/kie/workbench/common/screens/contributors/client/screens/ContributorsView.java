@@ -24,6 +24,7 @@ import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerCoordinator;
 import org.dashbuilder.displayer.client.DisplayerHelper;
+import org.dashbuilder.renderer.table.client.TableRenderer;
 
 import static org.dashbuilder.dataset.date.DayOfWeek.*;
 import static org.dashbuilder.dataset.group.DateIntervalType.*;
@@ -154,6 +155,7 @@ public class ContributorsView extends Composite {
                 .tablePageSize(5)
                 .tableWidth(1000)
                 .tableOrderEnabled(true)
+                .renderer(TableRenderer.UUID)
                 .column(COLUMN_AUTHOR, "Author")
                 .column(COLUMN_REPO, "Repository")
                 .column(COLUMN_DATE, "Date")
