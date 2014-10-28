@@ -234,6 +234,23 @@ public class ShowUsagesPopup extends KieBaseModal {
                                null );
     }
 
+    public static ShowUsagesPopup newUsagesPopupForChanging( final String message,
+            final List<Path> usedByFiles,
+            final Command yesCommand,
+            final Command cancelCommand ) {
+
+        return newUsagesPopup( message,
+                usedByFiles,
+                yesCommand,
+                Constants.INSTANCE.usages_popup_action_yes_change_anyway(),
+                ButtonType.DANGER,
+                IconType.MINUS_SIGN,
+                cancelCommand,
+                null,
+                ButtonType.PRIMARY,
+                null );
+    }
+
     private void initTable() {
         usedByTable.columnPickerButton.setVisible( true );
 

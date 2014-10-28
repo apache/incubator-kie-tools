@@ -17,9 +17,12 @@
 package org.kie.workbench.common.screens.datamodeller.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.model.*;
+import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
@@ -39,6 +42,8 @@ public class EditorModelContent extends DataModelerResult {
 
     private String originalClassName;
 
+    private String originalPackageName;
+
     /**
      * Path for the file that is being edited.
      */
@@ -54,6 +59,8 @@ public class EditorModelContent extends DataModelerResult {
     private long elapsedTime;
 
     private Project currentProject;
+
+    private Set<Package> currentProjectPackages = new HashSet<Package>(  );
 
     private static int modelIds = 0;
 
@@ -87,6 +94,14 @@ public class EditorModelContent extends DataModelerResult {
         this.originalClassName = originalClassName;
     }
 
+    public String getOriginalPackageName() {
+        return originalPackageName;
+    }
+
+    public void setOriginalPackageName( String originalPackageName ) {
+        this.originalPackageName = originalPackageName;
+    }
+
     public Path getPath() {
         return path;
     }
@@ -117,6 +132,14 @@ public class EditorModelContent extends DataModelerResult {
 
     public void setCurrentProject( Project currentProject ) {
         this.currentProject = currentProject;
+    }
+
+    public Set<Package> getCurrentProjectPackages() {
+        return currentProjectPackages;
+    }
+
+    public void setCurrentProjectPackages( Set<Package> currentProjectPackages ) {
+        this.currentProjectPackages = currentProjectPackages;
     }
 
     public Overview getOverview() {

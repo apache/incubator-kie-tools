@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.datamodeller.client;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -28,7 +27,6 @@ import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.PublishBaseEvent;
 import org.guvnor.messageconsole.events.PublishBatchMessagesEvent;
@@ -475,7 +473,7 @@ public class DataModelerScreenPresenter
 
         String currentFileName = DataModelerUtils.extractSimpleFileName( versionRecordManager.getPathToLatest() );
 
-        if ( newTypeInfo.getPackageName() != null && !newTypeInfo.getPackageName().equals( getContext().getDataObject().getOriginalPackageName() ) ) {
+        if ( newTypeInfo != null && newTypeInfo.getPackageName() != null && !newTypeInfo.getPackageName().equals( getContext().getEditorModelContent().getOriginalPackageName() ) ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
                     Constants.INSTANCE.modelEditor_confirm_file_package_refactoring( newTypeInfo.getPackageName() ),
@@ -510,7 +508,7 @@ public class DataModelerScreenPresenter
 
 
 
-        } else if ( currentFileName != null && newTypeInfo.getName() != null && !currentFileName.equals( newTypeInfo.getName() ) ) {
+        } else if ( currentFileName != null && newTypeInfo != null && !currentFileName.equals( newTypeInfo.getName() ) ) {
 
             YesNoCancelPopup yesNoCancelPopup = YesNoCancelPopup.newYesNoCancelPopup( CommonConstants.INSTANCE.Information(),
                                                                                       Constants.INSTANCE.modelEditor_confirm_file_name_refactoring( newTypeInfo.getName() ),
@@ -1058,7 +1056,7 @@ public class DataModelerScreenPresenter
                 },
                 new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_propertyType_loading_error() )
         ).getBasePropertyTypes();
-
+        /*
         modelerService.call(
                 new RemoteCallback<Set<Package>>() {
                     @Override
@@ -1068,6 +1066,7 @@ public class DataModelerScreenPresenter
                 },
                 new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() )
         ).resolvePackages( path );
+        */
     }
 
     private void clearContext() {

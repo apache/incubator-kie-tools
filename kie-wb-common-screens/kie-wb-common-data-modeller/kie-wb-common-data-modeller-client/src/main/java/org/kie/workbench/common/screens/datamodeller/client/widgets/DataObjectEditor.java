@@ -478,7 +478,7 @@ public class DataObjectEditor extends Composite {
                         showUsagesPopup.show();
 
                     } else {
-                        //no usages, just proceed with the deletion.
+                        //no usages, just proceed with the class name change.
                         doClassNameChange( packageName, oldValue, newValue );
                     }
                 }
@@ -589,9 +589,9 @@ public class DataObjectEditor extends Composite {
         // Set widgets to errorpopup for styling purposes etc.
         packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
 
-        final String originalClassName = getDataObject().getOriginalClassName();
+        final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
         final String newPackageName = packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue() : null;
-        final String oldPackageName = getDataObject().getOriginalPackageName();
+        final String oldPackageName = getContext().getDataObject().getPackageName();
 
         if ( (oldPackageName != null && !oldPackageName.equals( newPackageName )) ||
                 ( oldPackageName == null && newPackageName != null) ) {
@@ -605,7 +605,7 @@ public class DataObjectEditor extends Composite {
                         //If usages for this class were detected in project assets
                         //show the confirmation message to the user.
 
-                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForRenaming(
+                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForChanging(
                                 Constants.INSTANCE.modelEditor_confirm_package_change_of_used_class( originalClassName ),
                                 paths,
                                 new org.uberfire.mvp.Command() {
@@ -631,6 +631,8 @@ public class DataObjectEditor extends Composite {
                     }
                 }
             } ).findClassUsages( originalClassName );
+        } else {
+            doPackageChange( oldPackageName, newPackageName );
         }
     }
 

@@ -23,7 +23,9 @@ import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.base.HtmlWidget;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -60,6 +62,9 @@ public class NewPackagePopup extends KieBaseModal {
     ValidatorService validatorService;
 
     public NewPackagePopup() {
+        newPackageButton.setType( ButtonType.PRIMARY );
+        newPackageButton.setIcon( IconType.PLUS_SIGN );
+
         newPackageName.setPlaceholder( Constants.INSTANCE.package_id_placeholder() );
         newPackageControlGroup.add( newPackageName );
         errorMessagesGroup.add( errorMessages );
@@ -68,6 +73,10 @@ public class NewPackagePopup extends KieBaseModal {
         mainPanel.add( dataPanel );
         mainPanel.add( newPackageHelpHtml );
         mainPanel.add( errorMessagesGroup );
+        add( mainPanel );
+
+        setTitle( Constants.INSTANCE.new_dataobject_popup_new_package() );
+        setCloseVisible( true );
 
         newPackageButton.addClickHandler( new ClickHandler() {
 
@@ -120,7 +129,7 @@ public class NewPackagePopup extends KieBaseModal {
     @Override
     public void hide() {
         super.hide();
-        clear();
+        clean();
     }
 
     public void clean() {

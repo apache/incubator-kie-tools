@@ -257,6 +257,8 @@ public class DataModelerContext {
             //TODO, likely this helper is no longer needed.
             helper.setDataModel( editorModelContent.getDataModel());
         }
+        cleanPackages();
+        appendPackages( editorModelContent.getCurrentProjectPackages() );
     }
 
     public void clear() {

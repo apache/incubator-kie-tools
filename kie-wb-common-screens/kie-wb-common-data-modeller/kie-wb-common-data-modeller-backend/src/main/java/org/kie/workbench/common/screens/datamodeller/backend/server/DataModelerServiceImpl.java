@@ -244,10 +244,12 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
             String className = calculateClassName( project, path );
 
             editorModelContent.setCurrentProject( project );
+            editorModelContent.setCurrentProjectPackages( projectService.resolvePackages( project ) );
             editorModelContent.setDataModel( dataModelTO );
             editorModelContent.setDataObject( dataModelTO.getDataObjectByClassName( className ) );
             if ( editorModelContent.getDataObject() != null ) {
                 editorModelContent.setOriginalClassName( className );
+                editorModelContent.setOriginalPackageName( NamingUtils.extractPackageName( className ) );
             }
 
             //Read the sources for the file being edited.

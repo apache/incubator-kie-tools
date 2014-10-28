@@ -279,6 +279,8 @@ public interface Constants extends Messages {
 
     public String usages_popup_action_yes_rename_anyway();
 
+    public String usages_popup_action_yes_change_anyway();
+
     public String usages_popup_file_name_column();
 
     public String usages_popup_file_path_column();
