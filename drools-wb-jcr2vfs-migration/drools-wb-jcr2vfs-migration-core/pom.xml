@@ -179,6 +179,12 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>kie-uberfire-social-activities-backend</artifactId>
+          <groupId>org.kie.uberfire</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
