@@ -24,11 +24,11 @@ import org.drools.workbench.screens.categories.client.type.CategoryDefinitionRes
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.structure.client.file.CommandWithCommitMessage;
+import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
-import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;

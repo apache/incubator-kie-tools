@@ -39,8 +39,8 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
+import org.guvnor.structure.client.file.CommandWithPayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithPayload;
 import org.uberfire.client.callbacks.Callback;
 
 public class ActionFieldValueEditor extends Composite {
