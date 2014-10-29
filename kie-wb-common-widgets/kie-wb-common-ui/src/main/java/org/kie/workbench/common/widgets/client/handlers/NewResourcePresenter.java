@@ -30,7 +30,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.mvp.UberView;
 

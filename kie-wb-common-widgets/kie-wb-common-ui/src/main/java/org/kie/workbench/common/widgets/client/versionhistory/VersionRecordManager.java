@@ -17,6 +17,8 @@
 package org.kie.workbench.common.widgets.client.versionhistory;
 
 import org.guvnor.common.services.shared.version.VersionService;
+import org.guvnor.structure.client.file.RestorePopup;
+import org.guvnor.structure.client.file.RestoreUtil;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;

@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
-import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.commons.data.Pair;
 

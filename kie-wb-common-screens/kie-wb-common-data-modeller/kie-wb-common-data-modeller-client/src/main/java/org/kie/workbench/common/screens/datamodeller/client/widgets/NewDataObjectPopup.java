@@ -31,6 +31,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.structure.client.validation.ValidatorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
@@ -40,7 +41,6 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEve
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.workbench.events.NotificationEvent;
 

@@ -31,7 +31,7 @@ import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
-import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;

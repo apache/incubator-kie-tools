@@ -31,7 +31,7 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.javaeditor.client.resources.JavaEditorResources;
 import org.kie.workbench.common.screens.javaeditor.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
-import org.kie.workbench.common.services.shared.validation.ValidatorWithReasonCallback;
+import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;

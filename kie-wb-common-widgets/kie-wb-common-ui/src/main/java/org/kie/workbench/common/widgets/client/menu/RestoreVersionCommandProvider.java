@@ -5,14 +5,13 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.shared.version.VersionService;
 import org.guvnor.common.services.shared.version.events.RestoreEvent;
+import org.guvnor.structure.client.file.CommandWithCommitMessage;
+import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
-import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 

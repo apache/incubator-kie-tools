@@ -19,11 +19,11 @@ package org.kie.workbench.common.screens.datamodeller.client.validation;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.guvnor.structure.client.validation.Validator;
+import org.guvnor.structure.client.validation.ValidatorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
-import org.kie.workbench.common.services.shared.validation.Validator;
-import org.kie.workbench.common.services.shared.validation.ValidatorCallback;
 
 @ApplicationScoped
 public class JavaFileNameValidator implements Validator {

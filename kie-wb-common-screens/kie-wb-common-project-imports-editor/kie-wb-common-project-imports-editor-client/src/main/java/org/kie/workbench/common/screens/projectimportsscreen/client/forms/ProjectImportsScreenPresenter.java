@@ -24,6 +24,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.structure.client.file.CommandWithCommitMessage;
+import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
@@ -32,8 +34,6 @@ import org.kie.workbench.common.screens.projectimportsscreen.client.resources.i1
 import org.kie.workbench.common.screens.projectimportsscreen.client.type.ProjectImportsResourceType;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.popups.file.CommandWithCommitMessage;
-import org.kie.workbench.common.widgets.client.popups.file.SaveOperationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.uberfire.backend.vfs.Path;

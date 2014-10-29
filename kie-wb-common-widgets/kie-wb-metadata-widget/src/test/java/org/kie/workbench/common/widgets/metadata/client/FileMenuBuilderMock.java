@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
-import org.kie.workbench.common.services.shared.validation.Validator;
+import org.guvnor.structure.client.validation.Validator;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;

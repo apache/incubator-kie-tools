@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.widgets.client.versionhistory;
 
+import org.guvnor.structure.client.file.RestorePopup;
+import org.guvnor.structure.client.file.RestoreUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;

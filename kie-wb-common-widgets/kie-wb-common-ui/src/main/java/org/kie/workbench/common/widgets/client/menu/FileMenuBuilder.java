@@ -15,10 +15,9 @@
  */
 package org.kie.workbench.common.widgets.client.menu;
 
-import org.kie.workbench.common.services.shared.validation.Validator;
+import org.guvnor.structure.client.validation.Validator;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
