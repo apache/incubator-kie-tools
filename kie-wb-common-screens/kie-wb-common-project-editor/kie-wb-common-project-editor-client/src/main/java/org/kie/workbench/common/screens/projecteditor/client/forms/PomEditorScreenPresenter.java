@@ -3,9 +3,9 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.client.type.POMResourceType;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorPresenter;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.KieTextEditorView;
-import org.kie.workbench.common.screens.projecteditor.client.type.POMResourceType;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
