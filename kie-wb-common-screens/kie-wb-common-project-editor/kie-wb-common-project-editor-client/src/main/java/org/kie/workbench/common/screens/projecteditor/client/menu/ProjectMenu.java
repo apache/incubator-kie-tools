@@ -55,7 +55,7 @@ public class ProjectMenu {
                 }
             } ).endMenu().build().getItems().get( 0 );
     
-    private MenuItem projectStructureScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.ProjectStructure() ).respondsWith(
+    private MenuItem projectStructureScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.RepositoryStructure() ).respondsWith(
             new Command() {
                 @Override
                 public void execute() {

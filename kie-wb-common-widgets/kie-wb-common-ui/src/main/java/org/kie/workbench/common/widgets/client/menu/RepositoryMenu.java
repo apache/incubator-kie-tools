@@ -8,14 +8,10 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.shared.file.CopyService;
-import org.guvnor.common.services.shared.file.DeleteService;
-import org.guvnor.common.services.shared.file.RenameService;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -42,11 +38,11 @@ public class RepositoryMenu {
                 }
             } ).endMenu().build().getItems().get( 0 );
     
-    private MenuItem projectStructureScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.ProjectStructure() ).respondsWith(
+    private MenuItem repositoryStructureScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.RepositoryStructure() ).respondsWith(
             new Command() {
                 @Override
                 public void execute() {
-                    placeManager.goTo( "projectStructureScreen" );
+                    placeManager.goTo( "repositoryStructureScreen" );
                 }
             } ).endMenu().build().getItems().get( 0 );
 
@@ -66,7 +62,7 @@ public class RepositoryMenu {
         //@TODO: the idea is to remove this one when we add the option to the project explorer
         menuItems.add( projectScreen );
         
-        menuItems.add( projectStructureScreen );
+        menuItems.add( repositoryStructureScreen );
         
         
         //menuItems.add( categoriesEditor );
