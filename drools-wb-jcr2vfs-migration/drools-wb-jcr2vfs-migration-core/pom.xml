@@ -181,8 +181,8 @@
       <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>kie-uberfire-social-activities-backend</artifactId>
-          <groupId>org.kie.uberfire</groupId>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-all</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
