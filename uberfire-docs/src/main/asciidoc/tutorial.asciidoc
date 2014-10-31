@@ -1,5 +1,5 @@
 = UberFire Tutorial
-Jonathan Fuerth <jfuerth@redhat.com>
+UberFire Community <uberfire@googlegroups.com>
 :toc:
 :source-highlighter: highlightjs
 :stylesheet: asciidoctor.css
