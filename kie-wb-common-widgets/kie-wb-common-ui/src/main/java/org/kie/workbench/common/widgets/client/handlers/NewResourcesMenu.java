@@ -54,9 +54,12 @@ public class NewResourcesMenu {
     @PostConstruct
     public void setup() {
         final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
+        MenuItem projectMenuItem = null;
         if ( handlerBeans.size() > 0 ) {
             for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
                 final NewResourceHandler activeHandler = handlerBean.getInstance();
+                boolean isProjectMenuItem = activeHandler.getClass().getName().contains("NewProjectHandler");
+                
                 final String description = activeHandler.getDescription();
                 final MenuItem menuItem = MenuFactory.newSimpleItem( description ).respondsWith( new Command() {
                     @Override
@@ -66,7 +69,11 @@ public class NewResourcesMenu {
                 } ).endMenu().build().getItems().get( 0 );
                 newResourceHandlers.put( activeHandler,
                                          menuItem );
-                items.add( menuItem );
+                if(!isProjectMenuItem){
+                    items.add( menuItem );
+                }else{
+                    projectMenuItem = menuItem;
+                }
             }
         }
 
@@ -79,6 +86,9 @@ public class NewResourcesMenu {
                                   return o1.getCaption().compareToIgnoreCase( o2.getCaption() );
                               }
                           } );
+        if(projectMenuItem != null){
+            items.add(0, projectMenuItem);
+        }
 
     }
 
