@@ -291,6 +291,18 @@ public class AceEditor extends Composite implements RequiresResize,
     }-*/;
 
     /**
+     * Go to given line.
+     * @param line the line to go to
+     */
+    public native void scrollToLine( int line ) /*-{
+        var editor = this.@org.kie.uberfire.client.ace.AceEditor::editor;
+        editor.resize(true);
+
+        editor.scrollToLine(line, true, true, function () {});
+    }-*/;
+
+
+    /**
      * Set whether or not the horizontal scrollbar is always visible.
      * @param hScrollBarAlwaysVisible true if the horizontal scrollbar is always
      * visible, false if it is hidden when not needed
