@@ -82,7 +82,7 @@ public class DataModelerServiceHelper {
     IOService ioService;
 
     @Inject
-    private ProjectService projectService;
+    private ProjectService<?> projectService;
 
     public DataModel to2Domain( DataModelTO dataModelTO ) {
         DataModel dataModel = ModelFactoryImpl.getInstance().newModel();
