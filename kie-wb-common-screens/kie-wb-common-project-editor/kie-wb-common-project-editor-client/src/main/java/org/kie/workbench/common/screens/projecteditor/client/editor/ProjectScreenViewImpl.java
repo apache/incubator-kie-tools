@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.github.gwtbootstrap.client.ui.NavHeader;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -87,6 +88,12 @@ public class ProjectScreenViewImpl
 
     @UiField
     DeckPanel deckPanel;
+
+    @UiField
+    NavHeader deploymentsHeader;
+
+    @UiField
+    NavLink deploymentDescriptorButton;
 
     @Inject
     BusyIndicatorView busyIndicatorView;
@@ -196,6 +203,11 @@ public class ProjectScreenViewImpl
     @UiHandler(value = "importsMetadataButton")
     public void onImportsMetadataButtonClick(ClickEvent clickEvent) {
         presenter.onImportsMetadataPanelSelected();
+    }
+
+    @UiHandler(value = "deploymentDescriptorButton")
+    public void onDeploymentDescriptorButtonClick(ClickEvent clickEvent) {
+        presenter.onDeploymentDescriptorSelected();
     }
 
     @Override
@@ -320,5 +332,10 @@ public class ProjectScreenViewImpl
     @Override
     public void setDeployToRuntimeSetting(Boolean supports) {
         this.supportDeployToRuntime = supports;
+
+        if (supports != null) {
+            deploymentsHeader.setVisible(supports.booleanValue());
+            deploymentDescriptorButton.setVisible(supports.booleanValue());
+        }
     }
 }

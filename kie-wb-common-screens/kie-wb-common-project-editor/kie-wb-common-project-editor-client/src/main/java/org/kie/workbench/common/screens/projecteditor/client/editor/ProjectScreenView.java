@@ -48,6 +48,8 @@ public interface ProjectScreenView
 
         void onDependenciesSelected();
 
+        void onDeploymentDescriptorSelected();
+
     }
 
     void setPresenter(Presenter projectScreenPresenter);

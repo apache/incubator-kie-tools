@@ -276,4 +276,8 @@ public interface ProjectEditorConstants
 
     String FieldMandatory0( final String fieldName );
 
+    String DeploymentDescriptor();
+
+    String Deployments();
+
 }
