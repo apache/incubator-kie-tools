@@ -145,7 +145,8 @@ public class NewProjectHandler
 
                     @Override
                     public void callback(RepositoryStructureModel repoModel) {
-                        if(repoModel.isManaged()){
+                        
+                        if(repoModel != null && repoModel.isManaged()){
                             boolean isMultiModule = repoModel.isMultiModule();
                             response.onSuccess( isMultiModule );
                         }
