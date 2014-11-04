@@ -13,7 +13,7 @@
   </ui:style>
 
   <g:HTMLPanel >
-    <g:HTMLPanel addStyleNames="{style.margin}">
+    <g:HTMLPanel ui:field="filterPanel" addStyleNames="{style.margin}">
         <b:TextBox ui:field="filterBox" searchQuery="true" placeholder="filter properties..."/>
         <b:ButtonGroup>
           <b:Tooltip text="Reload Property Editor">

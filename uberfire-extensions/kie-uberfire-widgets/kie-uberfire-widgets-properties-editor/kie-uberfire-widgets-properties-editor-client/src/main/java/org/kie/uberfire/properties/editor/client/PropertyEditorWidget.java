@@ -10,6 +10,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.uberfire.properties.editor.model.PropertyEditorEvent;
 
@@ -23,6 +24,9 @@ public class PropertyEditorWidget extends Composite {
     PropertyEditorEvent originalEvent;
 
     @UiField
+    HTMLPanel filterPanel;
+
+    @UiField
     TextBox filterBox;
 
     @UiField
@@ -34,7 +38,6 @@ public class PropertyEditorWidget extends Composite {
             this.filterBox.setText( "" );
             PropertyEditorHelper.extractEditorFrom( this, propertyMenu, event );
         }
-
     }
 
     @UiHandler("reload")
@@ -54,13 +57,9 @@ public class PropertyEditorWidget extends Composite {
 
     public PropertyEditorWidget() {
         initWidget( uiBinder.createAndBindUi( this ) );
-
     }
 
-    interface MyUiBinder extends UiBinder<Widget, PropertyEditorWidget> {
-
-    }
-
+    interface MyUiBinder extends UiBinder<Widget, PropertyEditorWidget> {}
     private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
 
     public String getLastOpenAccordionGroupTitle() {
@@ -69,5 +68,9 @@ public class PropertyEditorWidget extends Composite {
 
     public void setLastOpenAccordionGroupTitle( String lastOpenAccordionGroupTitle ) {
         this.lastOpenAccordionGroupTitle = lastOpenAccordionGroupTitle;
+    }
+
+    public void setFilterPanelVisible(boolean visible) {
+        filterPanel.setVisible(visible);
     }
 }
