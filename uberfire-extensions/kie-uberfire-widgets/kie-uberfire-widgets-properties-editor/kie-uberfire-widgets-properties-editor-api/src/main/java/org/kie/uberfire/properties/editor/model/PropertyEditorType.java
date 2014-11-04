@@ -29,14 +29,6 @@ public enum PropertyEditorType {
         private boolean isString( Class<?> type ) {
             return type.equals( String.class );
         }
-
-        @Override
-        public List<PropertyFieldValidator> getValidators() {
-            ArrayList validators = new ArrayList();
-            validators.add( new TextValidator() );
-            return validators;
-        }
-
     }, BOOLEAN {
         @Override
         public boolean isType( Class<?> type ) {

@@ -93,6 +93,7 @@ public class PropertyEditorFieldInfo {
      */
     public PropertyEditorFieldInfo withValidators( PropertyFieldValidator... validators ) {
         checkNotNull( "validators", validators );
+        this.validators.clear();
         for ( PropertyFieldValidator field : validators ) {
             this.validators.add( field );
         }
