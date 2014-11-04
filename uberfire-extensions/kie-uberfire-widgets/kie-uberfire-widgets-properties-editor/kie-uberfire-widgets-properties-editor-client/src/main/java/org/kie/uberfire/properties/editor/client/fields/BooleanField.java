@@ -21,7 +21,7 @@ public class BooleanField extends AbstractField {
     @Override
     public Widget widget( final PropertyEditorFieldInfo property ) {
         final PropertyEditorCheckBox checkBox = GWT.create( PropertyEditorCheckBox.class );
-
+        checkBox.setValue(Boolean.parseBoolean(property.getCurrentStringValue()));
         checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange( ValueChangeEvent<Boolean> event ) {
