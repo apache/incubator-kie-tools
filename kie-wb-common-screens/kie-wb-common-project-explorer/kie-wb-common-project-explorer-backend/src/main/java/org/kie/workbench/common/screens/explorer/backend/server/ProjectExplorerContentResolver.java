@@ -70,7 +70,7 @@ public class ProjectExplorerContentResolver {
 
     private Set<OrganizationalUnit> organizationalUnits;
     private Map<String, Repository> repositories;
-    private Set<Project> projects;
+    private Map<String, Project> projects;
 
     public ProjectExplorerContentResolver() {
 
@@ -121,7 +121,7 @@ public class ProjectExplorerContentResolver {
                 }},
                 selectedRepository,
                 new TreeSet<Project>(Sorters.PROJECT_SORTER) {{
-                    addAll(projects);
+                    addAll(projects.values());
                 }},
                 selectedProject,
                 folderListing,
@@ -186,7 +186,7 @@ public class ProjectExplorerContentResolver {
                 }},
                 selectedRepository,
                 new TreeSet<Project>(Sorters.PROJECT_SORTER) {{
-                    addAll(projects);
+                    addAll(projects.values());
                 }},
                 selectedProject,
                 new FolderListing(null, Collections.<FolderItem>emptyList(), Collections.<FolderItem>emptyList()),
@@ -196,8 +196,11 @@ public class ProjectExplorerContentResolver {
 
     private void setSelectedProject() {
         projects = getProjects(selectedRepository);
-        if (!projects.contains(selectedProject)) {
-            selectedProject = (projects.isEmpty() ? null : projects.iterator().next());
+
+        if (selectedProject == null || !projects.containsKey(selectedProject.getProjectName())) {
+            selectedProject = (projects.isEmpty() ? null : projects.values().iterator().next());
+        } else {
+            selectedProject = projects.get(selectedProject.getProjectName());
         }
     }
 
@@ -273,31 +276,14 @@ public class ProjectExplorerContentResolver {
         }
     }
 
-
     private void clear(ProjectExplorerContentQuery query) {
-        if (hasBranchChanged(query.getRepository())) {
-            selectedOrganizationalUnit = null;
-            selectedRepository = query.getRepository();
-            selectedProject = null;
-            selectedPackage = null;
-            selectedItem = null;
-        } else {
-            selectedOrganizationalUnit = query.getOrganizationalUnit();
-            selectedRepository = query.getRepository();
-            selectedProject = query.getProject();
-            selectedPackage = query.getPkg();
-            selectedItem = query.getItem();
-        }
+        selectedOrganizationalUnit = query.getOrganizationalUnit();
+        selectedRepository = query.getRepository();
+        selectedProject = query.getProject();
+        selectedPackage = query.getPkg();
+        selectedItem = query.getItem();
         folderListing = null;
         siblings = new HashMap<FolderItem, List<FolderItem>>();
-    }
-
-    private boolean hasBranchChanged(Repository repository) {
-        if (selectedRepository == null || repository == null) {
-            return false;
-        } else {
-            return repository.getCurrentBranch().equals(selectedRepository.getCurrentBranch());
-        }
     }
 
     private List<FolderItem> getSegmentSiblings(final Path path) {
@@ -425,8 +411,8 @@ public class ProjectExplorerContentResolver {
         return authorizedRepositories;
     }
 
-    private Set<Project> getProjects(final Repository repository) {
-        final Set<Project> authorizedProjects = new HashSet<Project>();
+    private Map<String, Project> getProjects(final Repository repository) {
+        final Map<String, Project> authorizedProjects = new HashMap<String, Project>();
 
         if (repository == null) {
             return authorizedProjects;
@@ -436,7 +422,7 @@ public class ProjectExplorerContentResolver {
             for (Project project : allProjects) {
                 if (authorizationManager.authorize(project,
                         identity)) {
-                    authorizedProjects.add(project);
+                    authorizedProjects.put(project.getProjectName(), project);
                 }
             }
 

@@ -532,7 +532,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             getView().getExplorer().clear();
             ProjectExplorerContentQuery query = new ProjectExplorerContentQuery(
                     activeOrganizationalUnit,
-                    activeRepository);
+                    activeRepository,
+                    activeProject);
             doInitialiseViewForActiveContext(
                     query,
                     true);

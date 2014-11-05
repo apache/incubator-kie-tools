@@ -21,7 +21,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.impl.OrganizationalUnitImpl;
-import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -34,7 +33,6 @@ import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
@@ -58,7 +56,6 @@ public class ProjectExplorerContentResolverTest {
     private Set<Project> masterProjects;
     private Set<Project> devProjects;
 
-    private Map<String, Project> projectMap = new HashMap<String, Project>();
     private HelperWrapper helperWrapper;
 
     @Before
@@ -84,12 +81,12 @@ public class ProjectExplorerContentResolverTest {
         userExplorerData.setOrganizationalUnit(organizationalUnit);
 
         masterProjects = new HashSet<Project>();
-        masterProjects.add(getProject("project 1"));
-        masterProjects.add(getProject("project 2"));
+        masterProjects.add(createProject("master", "project 1"));
+        masterProjects.add(createProject("master", "project 2"));
 
         devProjects = new HashSet<Project>();
-        devProjects.add(getProject("project 1"));
-        devProjects.add(getProject("project 2"));
+        devProjects.add(createProject("dev-1.0.0", "project 1"));
+        devProjects.add(createProject("dev-1.0.0", "project 2"));
 
         helperWrapper = new HelperWrapper(helper);
 
@@ -133,34 +130,41 @@ public class ProjectExplorerContentResolverTest {
     @Test
     public void testChangeProject() throws Exception {
 
-        ProjectExplorerContent content = resolver.resolve(getContentQuery("master", getProject("project 1")));
+        ProjectExplorerContent content = resolver.resolve(getContentQuery("master", createProject("master", "project 1")));
         helperWrapper.reset();
 
         assertEquals("master", content.getRepository().getCurrentBranch());
         assertNotNull(content.getProject()); // This will be the default project
+        assertEquals("master@project 1", content.getProject().getRootPath().toURI());
 
-        content = resolver.resolve(getContentQuery("dev-1.0.0", getProject("project 1")));
+        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 1")));
         helperWrapper.reset();
 
         assertEquals("dev-1.0.0", content.getRepository().getCurrentBranch());
         assertEquals("project 1", content.getProject().getProjectName());
+        assertEquals("dev-1.0.0@project 1", content.getProject().getRootPath().toURI());
 
-        content = resolver.resolve(getContentQuery("dev-1.0.0", getProject("project 2")));
+        content = resolver.resolve(getContentQuery("dev-1.0.0", createProject("dev-1.0.0", "project 2")));
         helperWrapper.reset();
 
         assertEquals("dev-1.0.0", content.getRepository().getCurrentBranch());
         assertEquals("project 2", content.getProject().getProjectName());
+        assertEquals("dev-1.0.0@project 2", content.getProject().getRootPath().toURI());
+
+        content = resolver.resolve(getContentQuery("master", createProject("master", "project 2")));
+        helperWrapper.reset();
+
+        assertEquals("master", content.getRepository().getCurrentBranch());
+        assertEquals("project 2", content.getProject().getProjectName());
+        assertEquals("master@project 2", content.getProject().getRootPath().toURI());
 
     }
 
-    private Project getProject(final String projectName) {
-        if (!projectMap.containsKey(projectName)) {
-            projectMap.put(projectName, new Project(createMockPath(projectName), createMockPath(projectName), projectName));
-        }
-        return projectMap.get(projectName);
+    private Project createProject(final String branch, final String projectName) {
+        return new Project(createMockPath(branch, projectName), createMockPath(branch, projectName), projectName);
     }
 
-    private Path createMockPath(final String projectName) {
+    private Path createMockPath(final String branch, final String projectName) {
 
         return new Path() {
             @Override
@@ -170,7 +174,7 @@ public class ProjectExplorerContentResolverTest {
 
             @Override
             public String toURI() {
-                return projectName;
+                return branch + "@" + projectName;
             }
 
             @Override
