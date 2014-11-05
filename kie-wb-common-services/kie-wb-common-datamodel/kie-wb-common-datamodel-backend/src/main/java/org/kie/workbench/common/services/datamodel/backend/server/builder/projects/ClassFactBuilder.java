@@ -213,10 +213,11 @@ public class ClassFactBuilder extends BaseFactBuilder {
                                                                            returnType,
                                                                            false,
                                                                            typeSource ) );
-
                 }
-                fieldFactBuilders.put( genericReturnType,
-                                       discoveredFieldFactBuilders.get( genericReturnType ) );
+                if ( discoveredFieldFactBuilders.get( genericReturnType ) != null ) {
+                    fieldFactBuilders.put( genericReturnType,
+                                           discoveredFieldFactBuilders.get( genericReturnType ) );
+                }
 
                 addField( new ModelField( fieldName,
                                           returnType.getName(),
