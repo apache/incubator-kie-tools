@@ -18,6 +18,14 @@
   <dependencies>
 
     <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-wires-bayesian-parser-api</artifactId>
     </dependency>
