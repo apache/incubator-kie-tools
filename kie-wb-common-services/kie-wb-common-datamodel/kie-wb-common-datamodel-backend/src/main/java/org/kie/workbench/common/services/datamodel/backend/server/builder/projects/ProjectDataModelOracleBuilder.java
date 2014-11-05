@@ -32,11 +32,13 @@ public final class ProjectDataModelOracleBuilder {
     private ProjectDataModelOracleBuilder() {
     }
 
+    //Used by tests
     public SimpleFactBuilder addFact( final String factType ) {
         return addFact( factType,
                         false );
     }
 
+    //Used by tests
     public SimpleFactBuilder addFact( final String factType,
                                       final boolean isEvent ) {
         return addFact( factType,
@@ -44,6 +46,7 @@ public final class ProjectDataModelOracleBuilder {
                         TypeSource.JAVA_PROJECT );
     }
 
+    //Used by tests
     public SimpleFactBuilder addFact( final String factType,
                                       final boolean isEvent,
                                       final TypeSource typeSource ) {
@@ -51,30 +54,38 @@ public final class ProjectDataModelOracleBuilder {
                                                                  factType,
                                                                  isEvent,
                                                                  typeSource );
-        factTypeBuilders.put(factType, builder);
+        factTypeBuilders.put( factType,
+                              builder );
         return builder;
     }
 
-    public ProjectDataModelOracleBuilder addClass( final Class clazz ) throws IOException {
+    public ProjectDataModelOracleBuilder addClass( final Class clazz,
+                                                   final Map<String, FactBuilder> discoveredFieldFactBuilders ) throws IOException {
         return addClass( clazz,
+                         discoveredFieldFactBuilders,
                          false );
     }
 
     public ProjectDataModelOracleBuilder addClass( final Class clazz,
+                                                   final Map<String, FactBuilder> discoveredFieldFactBuilders,
                                                    final boolean isEvent ) throws IOException {
         return addClass( clazz,
+                         discoveredFieldFactBuilders,
                          isEvent,
                          TypeSource.JAVA_PROJECT );
     }
 
     public ProjectDataModelOracleBuilder addClass( final Class clazz,
+                                                   final Map<String, FactBuilder> discoveredFieldFactBuilders,
                                                    final boolean isEvent,
                                                    final TypeSource typeSource ) throws IOException {
         final FactBuilder builder = new ClassFactBuilder( this,
+                                                          discoveredFieldFactBuilders,
                                                           clazz,
                                                           isEvent,
                                                           typeSource );
-        factTypeBuilders.put(clazz.getName(), builder);
+        factTypeBuilders.put( clazz.getName(),
+                              builder );
         return this;
     }
 
@@ -82,8 +93,8 @@ public final class ProjectDataModelOracleBuilder {
                                                   final String fieldName,
                                                   final String[] values ) {
         final String qualifiedFactField = factType + "#" + fieldName;
-        factFieldEnums.put(qualifiedFactField,
-                values);
+        factFieldEnums.put( qualifiedFactField,
+                            values );
         return this;
     }
 
@@ -106,7 +117,7 @@ public final class ProjectDataModelOracleBuilder {
     }
 
     private void logEnumErrors( final DataEnumLoader enumLoader ) {
-        errors.addAll(enumLoader.getErrors());
+        errors.addAll( enumLoader.getErrors() );
     }
 
     public ProjectDataModelOracle build() {
@@ -118,17 +129,17 @@ public final class ProjectDataModelOracleBuilder {
     }
 
     private void loadPackageNames() {
-        oracle.addProjectPackageNames(packageNames);
+        oracle.addProjectPackageNames( packageNames );
     }
 
     private void loadFactTypes() {
 
-        for (final FactBuilder factBuilder : new ArrayList<FactBuilder>(this.factTypeBuilders.values())) {
-            this.factTypeBuilders.putAll(factBuilder.getInternalBuilders());
+        for ( final FactBuilder factBuilder : new ArrayList<FactBuilder>( this.factTypeBuilders.values() ) ) {
+            this.factTypeBuilders.putAll( factBuilder.getInternalBuilders() );
         }
 
-        for (final FactBuilder factBuilder : this.factTypeBuilders.values()) {
-            factBuilder.build(oracle);
+        for ( final FactBuilder factBuilder : this.factTypeBuilders.values() ) {
+            factBuilder.build( oracle );
         }
 
     }

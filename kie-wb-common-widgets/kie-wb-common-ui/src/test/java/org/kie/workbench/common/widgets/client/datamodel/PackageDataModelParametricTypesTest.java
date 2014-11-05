@@ -3,7 +3,9 @@ package org.kie.workbench.common.widgets.client.datamodel;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -12,6 +14,7 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
@@ -42,9 +45,12 @@ public class PackageDataModelParametricTypesTest {
 
     @Test
     public void testPackageDMOParametricReturnTypes() throws Exception {
+        final Map<String, FactBuilder> discoveredFieldFactBuilders = new HashMap<String, FactBuilder>();
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Purchase.class )
-                .addClass( Product.class )
+                .addClass( Purchase.class,
+                           discoveredFieldFactBuilders )
+                .addClass( Product.class,
+                           discoveredFieldFactBuilders )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -88,7 +94,8 @@ public class PackageDataModelParametricTypesTest {
     @Test
     public void testParametricMethod() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Purchase.class )
+                .addClass( Purchase.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();

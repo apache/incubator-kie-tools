@@ -47,6 +47,18 @@ public class ClassFactBuilder extends BaseFactBuilder {
                              final Class<?> clazz,
                              final boolean isEvent,
                              final TypeSource typeSource ) throws IOException {
+        this( builder,
+              new HashMap<String, FactBuilder>(),
+              clazz,
+              isEvent,
+              typeSource );
+    }
+
+    public ClassFactBuilder( final ProjectDataModelOracleBuilder builder,
+                             final Map<String, FactBuilder> discoveredFieldFactBuilders,
+                             final Class<?> clazz,
+                             final boolean isEvent,
+                             final TypeSource typeSource ) throws IOException {
         super( builder,
                clazz,
                isEvent,
@@ -54,7 +66,8 @@ public class ClassFactBuilder extends BaseFactBuilder {
         this.superTypes = getSuperTypes( clazz );
         this.annotations.addAll( getAnnotations( clazz ) );
         this.fieldAnnotations.putAll( getFieldsAnnotations( clazz ) );
-        loadClassFields( clazz );
+        loadClassFields( clazz,
+                         discoveredFieldFactBuilders );
     }
 
     @Override
@@ -124,7 +137,8 @@ public class ClassFactBuilder extends BaseFactBuilder {
         return fieldAnnotations;
     }
 
-    private void loadClassFields( final Class<?> clazz ) throws IOException {
+    private void loadClassFields( final Class<?> clazz,
+                                  final Map<String, FactBuilder> discoveredFieldFactBuilders ) throws IOException {
         if ( clazz == null ) {
             return;
         }
@@ -189,11 +203,20 @@ public class ClassFactBuilder extends BaseFactBuilder {
                 final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
                 final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
 
+                //To prevent recursion we keep track of all ClassFactBuilder's created and re-use where applicable
+                if ( !discoveredFieldFactBuilders.containsKey( genericReturnType ) ) {
+                    discoveredFieldFactBuilders.put( genericReturnType,
+                                                     null );
+                    discoveredFieldFactBuilders.put( genericReturnType,
+                                                     new ClassFactBuilder( builder,
+                                                                           discoveredFieldFactBuilders,
+                                                                           returnType,
+                                                                           false,
+                                                                           typeSource ) );
+
+                }
                 fieldFactBuilders.put( genericReturnType,
-                                       new ClassFactBuilder( builder,
-                                                             returnType,
-                                                             false,
-                                                             typeSource ) );
+                                       discoveredFieldFactBuilders.get( genericReturnType ) );
 
                 addField( new ModelField( fieldName,
                                           returnType.getName(),

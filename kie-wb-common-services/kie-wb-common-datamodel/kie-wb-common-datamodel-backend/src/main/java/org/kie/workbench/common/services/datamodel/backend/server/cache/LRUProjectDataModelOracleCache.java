@@ -1,6 +1,8 @@
 package org.kie.workbench.common.services.datamodel.backend.server.cache;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -18,6 +20,7 @@ import org.guvnor.common.services.project.service.POMService;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.backend.builder.Builder;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -90,6 +93,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, Project
         pdBuilder.addPackages( kieModuleMetaData.getPackages() );
 
         //Add all classes from the KieModule metaData
+        final Map<String, FactBuilder> discoveredFieldFactBuilders = new HashMap<String, FactBuilder>(  );
         for ( final String packageName : kieModuleMetaData.getPackages() ) {
             for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
                 try {
@@ -99,6 +103,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, Project
                     final TypeSource typeSource = builder.getClassSource( kieModuleMetaData,
                                                                           clazz );
                     pdBuilder.addClass( clazz,
+                                        discoveredFieldFactBuilders,
                                         typeMetaInfo.isEvent(),
                                         typeSource );
 
@@ -118,6 +123,7 @@ public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, Project
                 try {
                     Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
                     pdBuilder.addClass( clazz,
+                                        discoveredFieldFactBuilders,
                                         false,
                                         TypeSource.JAVA_DEPENDENCY );
                 } catch ( ClassNotFoundException cnfe ) {

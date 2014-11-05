@@ -17,6 +17,7 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -31,6 +32,7 @@ import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
@@ -46,7 +48,8 @@ public class PackageDataModelMethodsTest {
     @Test
     public void testMethodsOnJavaClass_TreeMap() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TreeMap.class )
+                .addClass( TreeMap.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( projectLoader ).build();
@@ -168,7 +171,8 @@ public class PackageDataModelMethodsTest {
     @Test
     public void testMethodsOnJavaClass_ArrayList() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( ArrayList.class )
+                .addClass( ArrayList.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "java.util" ).setProjectOracle( projectLoader ).build();
@@ -204,7 +208,8 @@ public class PackageDataModelMethodsTest {
     @Test
     public void testMethodsOnJavaClass_Number() throws Exception {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( Number.class )
+                .addClass( Number.class,
+                           new HashMap<String, FactBuilder>() )
                 .addFact( "int" ).end()
                 .build();
 

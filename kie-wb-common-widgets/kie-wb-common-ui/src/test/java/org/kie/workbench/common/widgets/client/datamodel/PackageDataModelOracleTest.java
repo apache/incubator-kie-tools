@@ -2,8 +2,10 @@ package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.imports.Imports;
@@ -12,15 +14,20 @@ import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFactBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelService;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.Product;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDataTypes;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDelegatedClass;
+import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestDirectRecursionClass;
+import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestIndirectRecursionClassA;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSubClass;
 import org.kie.workbench.common.widgets.client.datamodel.testclasses.TestSuperClass;
 import org.uberfire.backend.vfs.Path;
@@ -37,7 +44,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testDataTypes() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestDataTypes.class )
+                .addClass( TestDataTypes.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -135,7 +143,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testSuperClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.class )
+                .addClass( TestSuperClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -193,7 +202,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testSubClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSubClass.class )
+                .addClass( TestSubClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -268,7 +278,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testDelegatedClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestDelegatedClass.class )
+                .addClass( TestDelegatedClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -335,7 +346,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testNestedClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class )
+                .addClass( TestSuperClass.NestedClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -385,7 +397,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClass() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class )
+                .addClass( TestSuperClass.NestedClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -453,7 +466,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClassMethodInformation() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class )
+                .addClass( TestSuperClass.NestedClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -541,7 +555,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClassMethodInformationImportBothTypes() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class )
+                .addClass( TestSuperClass.NestedClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder().setProjectOracle( projectLoader ).build();
@@ -631,7 +646,8 @@ public class PackageDataModelOracleTest {
     @Test
     public void testImportedNestedClassMethodInformationInPackageScope() throws IOException {
         final ProjectDataModelOracle projectLoader = ProjectDataModelOracleBuilder.newProjectOracleBuilder()
-                .addClass( TestSuperClass.NestedClass.class )
+                .addClass( TestSuperClass.NestedClass.class,
+                           new HashMap<String, FactBuilder>() )
                 .build();
 
         final PackageDataModelOracle packageLoader = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" ).setProjectOracle( projectLoader ).build();
@@ -711,6 +727,118 @@ public class PackageDataModelOracleTest {
                                        assertTrue( methodInfos.contains( mf2 ) );
                                    }
                                } );
+    }
+
+    @Test
+    public void testDirectRecursion() throws Exception {
+        //Build ProjectDMO
+        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        final ProjectDataModelOracleImpl projectLoader = new ProjectDataModelOracleImpl();
+
+        final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
+                                                          new HashMap<String, FactBuilder>(),
+                                                          TestDirectRecursionClass.class,
+                                                          false,
+                                                          TypeSource.JAVA_PROJECT );
+        cb.build( projectLoader );
+
+        //Build PackageDMO
+        final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" );
+        packageBuilder.setProjectOracle( projectLoader );
+        final PackageDataModelOracle packageLoader = packageBuilder.build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setTypeAnnotations( packageLoader.getProjectTypeAnnotations() );
+        dataModel.setTypeFieldsAnnotations( packageLoader.getProjectTypeFieldsAnnotations() );
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 new MockHasImports(),
+                                                                 oracle,
+                                                                 dataModel );
+
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( "TestDirectRecursionClass",
+                      oracle.getFactTypes()[ 0 ] );
+
+        oracle.getFieldCompletions( "TestDirectRecursionClass",
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] result ) {
+                                            assertEquals( 2,
+                                                          result.length );
+                                            assertEquals( "TestDirectRecursionClass",
+                                                          result[ 0 ].getClassName() );
+                                            assertEquals( DataType.TYPE_THIS,
+                                                          result[ 0 ].getName() );
+                                            assertEquals( "TestDirectRecursionClass",
+                                                          result[ 1 ].getClassName() );
+                                            assertEquals( "recursiveField",
+                                                          result[ 1 ].getName() );
+                                        }
+                                    } );
+    }
+
+    @Test
+    public void testIndirectRecursion() throws Exception {
+        //Build ProjectDMO
+        final ProjectDataModelOracleBuilder projectBuilder = ProjectDataModelOracleBuilder.newProjectOracleBuilder();
+        final ProjectDataModelOracleImpl projectLoader = new ProjectDataModelOracleImpl();
+
+        final ClassFactBuilder cb = new ClassFactBuilder( projectBuilder,
+                                                          new HashMap<String, FactBuilder>(),
+                                                          TestIndirectRecursionClassA.class,
+                                                          false,
+                                                          TypeSource.JAVA_PROJECT );
+        cb.build( projectLoader );
+
+        //Build PackageDMO
+        final PackageDataModelOracleBuilder packageBuilder = PackageDataModelOracleBuilder.newPackageOracleBuilder( "org.kie.workbench.common.widgets.client.datamodel.testclasses" );
+        packageBuilder.setProjectOracle( projectLoader );
+        final PackageDataModelOracle packageLoader = packageBuilder.build();
+
+        //Emulate server-to-client conversions
+        final MockAsyncPackageDataModelOracleImpl oracle = new MockAsyncPackageDataModelOracleImpl();
+        final Caller<IncrementalDataModelService> service = new MockIncrementalDataModelServiceCaller( packageLoader );
+        oracle.setService( service );
+
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        dataModel.setPackageName( packageLoader.getPackageName() );
+        dataModel.setModelFields( packageLoader.getProjectModelFields() );
+        dataModel.setTypeAnnotations( packageLoader.getProjectTypeAnnotations() );
+        dataModel.setTypeFieldsAnnotations( packageLoader.getProjectTypeFieldsAnnotations() );
+        PackageDataModelOracleTestUtils.populateDataModelOracle( mock( Path.class ),
+                                                                 new MockHasImports(),
+                                                                 oracle,
+                                                                 dataModel );
+
+        assertEquals( 1,
+                      oracle.getFactTypes().length );
+        assertEquals( "TestIndirectRecursionClassA",
+                      oracle.getFactTypes()[ 0 ] );
+
+        oracle.getFieldCompletions( "TestIndirectRecursionClassA",
+                                    new Callback<ModelField[]>() {
+                                        @Override
+                                        public void callback( final ModelField[] result ) {
+                                            assertEquals( 2,
+                                                          result.length );
+                                            assertEquals( "TestIndirectRecursionClassA",
+                                                          result[ 0 ].getClassName() );
+                                            assertEquals( DataType.TYPE_THIS,
+                                                          result[ 0 ].getName() );
+                                            assertEquals( "TestIndirectRecursionClassB",
+                                                          result[ 1 ].getClassName() );
+                                            assertEquals( "recursiveField",
+                                                          result[ 1 ].getName() );
+                                        }
+                                    } );
     }
 
 }
