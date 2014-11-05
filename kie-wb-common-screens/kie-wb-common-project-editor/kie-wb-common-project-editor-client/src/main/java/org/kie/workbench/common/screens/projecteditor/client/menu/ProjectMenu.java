@@ -59,7 +59,7 @@ public class ProjectMenu {
             new Command() {
                 @Override
                 public void execute() {
-                    placeManager.goTo( "projectStructureScreen" );
+                    placeManager.goTo( "repositoryStructureScreen" );
                 }
             } ).endMenu().build().getItems().get( 0 );
 
