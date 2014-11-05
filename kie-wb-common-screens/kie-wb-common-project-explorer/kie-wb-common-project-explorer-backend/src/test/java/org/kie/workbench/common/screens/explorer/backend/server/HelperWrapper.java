@@ -6,7 +6,6 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Mockito.atLeastOnce;
@@ -48,6 +47,12 @@ public class HelperWrapper {
                     repositoryArgumentCaptor.getValue(),
                     projectArgumentCaptor.getValue(),
                     value);
+        } else {
+            userExplorerLastData.setPackage(
+                    organizationalUnitArgumentCaptor.getValue(),
+                    repositoryArgumentCaptor.getValue(),
+                    projectArgumentCaptor.getValue(),
+                    new Package());
 
         }
 
