@@ -21,12 +21,14 @@ public class ServerImpl extends ServerRefImpl implements Server {
 
     public ServerImpl( final String id,
                        final String name,
+                       final String username,
+                       final String password,
                        final ContainerStatus status,
                        final ConnectionType connectionType,
                        final Collection<Container> containers,
                        final Map<String, String> properties,
                        final Collection<ContainerRef> containersConfig ) {
-        super( id, name, status, connectionType, properties, containersConfig );
+        super( id, name, username, password, status, connectionType, properties, containersConfig );
         if ( containers != null && !containers.isEmpty() ) {
             this.containers.addAll( containers );
             for ( final Container container : containers ) {

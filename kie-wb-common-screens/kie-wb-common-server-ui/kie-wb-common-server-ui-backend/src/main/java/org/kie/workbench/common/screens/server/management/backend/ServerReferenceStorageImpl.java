@@ -74,7 +74,7 @@ public class ServerReferenceStorageImpl {
     private ServerRef restoreConfig( final Path registeredServer ) {
         try {
             final ServerRef serverRef = (ServerRef) xs.fromXML( ioService.readAllString( registeredServer ) );
-            return new ServerRefImpl( serverRef.getId(), serverRef.getName(), ContainerStatus.LOADING, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
+            return new ServerRefImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), ContainerStatus.LOADING, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
         } catch ( Exception ex ) {
         }
         return null;

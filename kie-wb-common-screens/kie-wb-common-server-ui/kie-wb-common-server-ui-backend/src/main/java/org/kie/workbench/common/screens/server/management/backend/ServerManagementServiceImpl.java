@@ -140,7 +140,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
             final ServerRef serverRef = storage.loadServerRef( entry.getKey() );
             for ( final String containerId : entry.getValue() ) {
                 final ContainerRef containerRef = serverRef.getContainerRef( containerId );
-                final Container container = remoteAccess.install( containerRef.getServerId(), containerRef.getId(), containerRef.getReleasedId() );
+                final Container container = remoteAccess.install( containerRef.getServerId(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword(), containerRef.getReleasedId() );
                 containerStartedEvent.fire( new ContainerStarted( container ) );
             }
         }
@@ -156,7 +156,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                 serverRef.deleteContainer( containerRef.getId() );
                 serverRef.addContainerRef( newContainerRef );
                 storage.forceRegister( serverRef );
-                remoteAccess.deleteContainer( containerRef.getServerId(), containerRef.getId() );
+                remoteAccess.deleteContainer( containerRef.getServerId(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
                 containerStoppedEvent.fire( new ContainerStopped( newContainerRef ) );
             }
         }
@@ -164,8 +164,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
     private void deleteContainer( final String serverId,
                                   final String containerId ) {
+        final ServerRef serverRef = storage.loadServerRef( serverId );
         storage.deleteContainer( serverId, containerId );
-        remoteAccess.deleteContainer( serverId, containerId );
+        remoteAccess.deleteContainer( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
         containerDeletedEvent.fire( new ContainerDeleted( serverId, containerId ) );
     }
 
@@ -173,7 +174,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     public void createContainer( final String serverId,
                                  final String containerId,
                                  final GAV gav ) {
-        if ( remoteAccess.containerExists( serverId, containerId ) ) {
+        final ServerRef serverRef = storage.loadServerRef( serverId );
+
+        if ( remoteAccess.containerExists( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() ) ) {
             throw new ContainerAlreadyRegisteredException( containerId );
         }
         final ContainerRef containerRef = new ContainerRefImpl( serverId, containerId, ContainerStatus.STOPPED, gav, ScannerStatus.STOPPED );
@@ -189,7 +192,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     @Override
     public Container getContainerInfo( final String serverId,
                                        final String container ) {
-        final Pair<Boolean, Container> result = remoteAccess.getContainer( serverId, container );
+        final ServerRef serverRef = storage.loadServerRef( serverId );
+
+        final Pair<Boolean, Container> result = remoteAccess.getContainer( serverId, container, serverRef.getUsername(), serverRef.getPassword() );
         if ( result.getK2() != null ) {
             return result.getK2();
         }
@@ -202,7 +207,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     @Override
     public ScannerOperationResult scanNow( final String serverId,
                                            final String containerId ) {
-        final KieScannerResource resource = remoteAccess.scanNow( serverId, containerId );
+        final ServerRef serverRef = storage.loadServerRef( serverId );
+
+        final KieScannerResource resource = remoteAccess.scanNow( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
         if ( resource == null ) {
             refresh();
         }
@@ -213,7 +220,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     public ScannerOperationResult startScanner( String serverId,
                                                 String containerId,
                                                 long interval ) {
-        final KieScannerResource resource = remoteAccess.startScanner( serverId, containerId, interval );
+        final ServerRef serverRef = storage.loadServerRef( serverId );
+
+        final KieScannerResource resource = remoteAccess.startScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword(), interval );
         refresh();
         return new ScannerOperationResult( resource == null, remoteAccess.toStatus( resource ) );
     }
@@ -221,7 +230,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     @Override
     public ScannerOperationResult stopScanner( String serverId,
                                                String containerId ) {
-        final KieScannerResource resource = remoteAccess.stopScanner( serverId, containerId );
+        final ServerRef serverRef = storage.loadServerRef( serverId );
+
+        final KieScannerResource resource = remoteAccess.stopScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
         refresh();
         return new ScannerOperationResult( resource == null, remoteAccess.toStatus( resource ) );
     }
@@ -231,8 +242,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                   final String containerId,
                                   final GAV releaseId ) {
 
+        final ServerRef serverRef = storage.loadServerRef( serverId );
         try {
-            remoteAccess.upgradeContainer( serverId, containerId, releaseId );
+            remoteAccess.upgradeContainer( serverId, containerId, serverRef.getUsername(), serverRef.getPassword(), releaseId );
             storage.updateContainer( serverId, containerId, releaseId );
         } finally {
             containerUpdatedEvent.fire( new ContainerUpdated( getContainerInfo( serverId, containerId ) ) );

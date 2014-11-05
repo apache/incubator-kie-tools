@@ -83,7 +83,7 @@ public class RemoteAccessImpl {
 
         final ServerRef serverRef = toServerRef( endpoint, name, username, password, connectionType, containerRefs );
         try {
-            final KieServicesClient client = new KieServicesClient( serverRef.getId() );
+            final KieServicesClient client = new KieServicesClient( serverRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
             final Collection<Container> containers = new ArrayList<Container>();
 
             final ServiceResponse<KieContainerResourceList> containerResourcesResponse = client.listContainers();
@@ -94,7 +94,7 @@ public class RemoteAccessImpl {
                 }
             }
 
-            return new ServerImpl( serverRef.getId(), serverRef.getName(), STARTED, connectionType, containers, serverRef.getProperties(), serverRef.getContainersRef() );
+            return new ServerImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), STARTED, connectionType, containers, serverRef.getProperties(), serverRef.getContainersRef() );
 
         } catch ( final Exception ex ) {
             return null;
@@ -103,10 +103,12 @@ public class RemoteAccessImpl {
 
     public Container install( final String serverId,
                               final String containerId,
+                              final String username,
+                              final String password,
                               final GAV gav ) {
 
         try {
-            final KieServicesClient client = new KieServicesClient( serverId );
+            final KieServicesClient client = new KieServicesClient( serverId, username, password );
 
             final ServiceResponse<KieContainerResource> response = client.createContainer( containerId, new KieContainerResource( new ReleaseId( gav.getGroupId(), gav.getArtifactId(), gav.getVersion() ) ) );
 
@@ -121,9 +123,11 @@ public class RemoteAccessImpl {
     }
 
     public boolean stop( final String serverId,
-                         final String containerId ) {
+                         final String containerId,
+                         final String username,
+                         final String password ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId );
+            final KieServicesClient client = new KieServicesClient( serverId, username, password );
             final ServiceResponse<KieScannerResource> response = client.updateScanner( containerId, new KieScannerResource( KieScannerStatus.STOPPED ) );
 
             return response.getType().equals( ServiceResponse.ResponseType.SUCCESS );
@@ -180,9 +184,11 @@ public class RemoteAccessImpl {
     }
 
     public boolean deleteContainer( final String serverId,
-                                    final String containerId ) {
+                                    final String containerId,
+                                    final String username,
+                                    final String password ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId );
+            final KieServicesClient client = new KieServicesClient( serverId, username, password );
             return client.disposeContainer( containerId ).getType().equals( ServiceResponse.ResponseType.SUCCESS );
         } catch ( final Exception ex ) {
             throw new RuntimeException( ex );
@@ -190,9 +196,11 @@ public class RemoteAccessImpl {
     }
 
     public boolean containerExists( final String serverId,
-                                    final String containerId ) {
+                                    final String containerId,
+                                    final String username,
+                                    final String password ) {
         try {
-            return new KieServicesClient( serverId ).getContainerInfo( containerId ).getType().equals( ServiceResponse.ResponseType.SUCCESS );
+            return new KieServicesClient( serverId, username, password ).getContainerInfo( containerId ).getType().equals( ServiceResponse.ResponseType.SUCCESS );
         } catch ( final Exception ex ) {
             throw new RuntimeException( ex );
         }
@@ -207,9 +215,11 @@ public class RemoteAccessImpl {
     }
 
     public Pair<Boolean, Container> getContainer( final String serverId,
-                                                  final String containerId ) {
+                                                  final String containerId,
+                                                  final String username,
+                                                  final String password ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId );
+            final KieServicesClient client = new KieServicesClient( serverId, username, password );
             final ServiceResponse<KieContainerResource> response = client.getContainerInfo( containerId );
 
             if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
@@ -224,27 +234,35 @@ public class RemoteAccessImpl {
     }
 
     public KieScannerResource stopScanner( final String serverId,
-                                           final String containerId ) {
-        return changeScannerStatus( serverId, containerId, KieScannerStatus.STOPPED, null );
+                                           final String containerId,
+                                           final String username,
+                                           final String password ) {
+        return changeScannerStatus( serverId, containerId, username, password, KieScannerStatus.STOPPED, null );
     }
 
     public KieScannerResource startScanner( final String serverId,
                                             final String containerId,
+                                            final String username,
+                                            final String password,
                                             long interval ) {
-        return changeScannerStatus( serverId, containerId, KieScannerStatus.STARTED, interval );
+        return changeScannerStatus( serverId, containerId, username, password, KieScannerStatus.STARTED, interval );
     }
 
     public KieScannerResource scanNow( final String serverId,
-                                       final String containerId ) {
-        return changeScannerStatus( serverId, containerId, KieScannerStatus.SCANNING, null );
+                                       final String containerId,
+                                       final String username,
+                                       final String password ) {
+        return changeScannerStatus( serverId, containerId, username, password, KieScannerStatus.SCANNING, null );
     }
 
     private KieScannerResource changeScannerStatus( final String serverId,
                                                     final String containerId,
+                                                    final String username,
+                                                    final String password,
                                                     final KieScannerStatus status,
                                                     final Long interval ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId );
+            final KieServicesClient client = new KieServicesClient( serverId, username, password );
             final KieScannerResource resource;
             if ( interval == null ) {
                 resource = new KieScannerResource( status );
@@ -264,9 +282,11 @@ public class RemoteAccessImpl {
 
     public void upgradeContainer( final String serverId,
                                   final String containerId,
+                                  final String username,
+                                  final String password,
                                   final GAV releaseId ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId );
+            final KieServicesClient client = new KieServicesClient( serverId, username, password );
             final ServiceResponse<ReleaseId> response = client.updateReleaseId( containerId, new ReleaseId( releaseId.getGroupId(), releaseId.getArtifactId(), releaseId.getVersion() ) );
 
             if ( !response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
