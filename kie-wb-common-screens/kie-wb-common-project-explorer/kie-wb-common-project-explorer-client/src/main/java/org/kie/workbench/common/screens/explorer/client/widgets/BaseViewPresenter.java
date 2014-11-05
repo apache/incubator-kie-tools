@@ -368,11 +368,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         query.setOptions(getActiveOptions());
 
         explorerService.call(
-                getContentCallback( query.isBranchChangeFlag() ),
+                getContentCallback(),
                 new HasBusyIndicatorDefaultErrorCallback(getView())).getContent(query);
     }
 
-    private RemoteCallback<ProjectExplorerContent> getContentCallback(final boolean branchChangedFlag) {
+    private RemoteCallback<ProjectExplorerContent> getContentCallback() {
         return new RemoteCallback<ProjectExplorerContent>() {
             @Override
             public void callback( final ProjectExplorerContent content ) {
@@ -384,8 +384,6 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 if (setActiveRepository(content)) {
                     signalChange = true;
                 }
-
-                signalChange = signalChange || branchChangedFlag;
 
                 if( setActiveProject(content) ){
                     signalChange = true;
@@ -535,7 +533,6 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             ProjectExplorerContentQuery query = new ProjectExplorerContentQuery(
                     activeOrganizationalUnit,
                     activeRepository);
-            query.setBranchChangeFlag(true);
             doInitialiseViewForActiveContext(
                     query,
                     true);

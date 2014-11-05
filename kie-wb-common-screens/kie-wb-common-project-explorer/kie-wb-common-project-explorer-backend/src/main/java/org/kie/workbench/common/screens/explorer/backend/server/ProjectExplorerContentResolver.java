@@ -16,26 +16,13 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
@@ -45,32 +32,23 @@ import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static java.util.Collections.*;
-import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.*;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import java.util.*;
+
+import static java.util.Collections.emptyList;
+import static org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper.toFolderItem;
 
 public class ProjectExplorerContentResolver {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectExplorerContentResolver.class);
-
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
 
-    private IOService ioService;
-
     private KieProjectService projectService;
-
-    private UserServicesImpl userServices;
 
     private ExplorerServiceHelper helper;
 
@@ -100,15 +78,11 @@ public class ProjectExplorerContentResolver {
 
     @Inject
     public ProjectExplorerContentResolver(
-            @Named("ioStrategy") IOService ioService,
             KieProjectService projectService,
-            UserServicesImpl userServices,
             ExplorerServiceHelper helper,
             AuthorizationManager authorizationManager,
             OrganizationalUnitService organizationalUnitService) {
-        this.ioService = ioService;
         this.projectService = projectService;
-        this.userServices = userServices;
         this.helper = helper;
         this.authorizationManager = authorizationManager;
         this.organizationalUnitService = organizationalUnitService;
@@ -119,7 +93,7 @@ public class ProjectExplorerContentResolver {
         setupSelectedItems(query);
 
         setSelectedOrganizationalUnit();
-        setSelectedRepository(query.isBranchChangeFlag());
+        setSelectedRepository();
         setSelectedProject();
 
         if (selectedOrganizationalUnit == null || selectedRepository == null || selectedProject == null) {
@@ -130,33 +104,36 @@ public class ProjectExplorerContentResolver {
     }
 
     private ProjectExplorerContent projectExplorerContentWithSelections(final Set<Option> options) {
-        if (selectedItem == null) {
-            final List<FolderItem> segments;
-            if (options.contains(Option.BUSINESS_CONTENT)) {
-                final Package defaultPackage;
-                if (selectedPackage == null) {
-                    defaultPackage = projectService.resolveDefaultPackage(selectedProject);
-                    segments = emptyList();
-                } else {
-                    defaultPackage = selectedPackage;
-                    segments = helper.getPackageSegments(selectedPackage);
-                }
-                folderListing = new FolderListing(toFolderItem(defaultPackage),
-                        helper.getItems(defaultPackage),
-                        segments);
-            } else {
-                folderListing = helper.getFolderListing(selectedProject.getRootPath());
-            }
-        } else {
-            folderListing = helper.getFolderListing(selectedItem);
-        }
 
-        if (selectedPackage != null && folderListing == null) {
-            folderListing = new FolderListing(toFolderItem(selectedPackage),
-                    helper.getItems(selectedPackage),
-                    helper.getPackageSegments(selectedPackage));
-        }
+        setFolderListing(options);
 
+        setSiblings();
+
+        helper.store(selectedOrganizationalUnit, selectedRepository, selectedProject, folderListing, selectedPackage, options);
+
+        return new ProjectExplorerContent(
+                new TreeSet<OrganizationalUnit>(Sorters.ORGANIZATIONAL_UNIT_SORTER) {{
+                    addAll(organizationalUnits);
+                }},
+                selectedOrganizationalUnit,
+                new TreeSet<Repository>(Sorters.REPOSITORY_SORTER) {{
+                    addAll(repositories.values());
+                }},
+                selectedRepository,
+                new TreeSet<Project>(Sorters.PROJECT_SORTER) {{
+                    addAll(projects);
+                }},
+                selectedProject,
+                folderListing,
+                siblings
+        );
+    }
+
+    private void setFolderListing(Set<Option> options) {
+        folderListing = helper.getFolderListing(selectedItem, selectedProject, selectedPackage, options);
+    }
+
+    private void setSiblings() {
         if (folderListing.getSegments().size() > 1) {
             final ListIterator<FolderItem> li = folderListing.getSegments().listIterator(folderListing.getSegments().size());
             while (li.hasPrevious()) {
@@ -171,7 +148,6 @@ public class ProjectExplorerContentResolver {
                 siblings.put(currentItem, result);
             }
         }
-
         if (selectedItem != null && selectedItem.getType().equals(FolderItemType.FOLDER) &&
                 !siblings.containsKey(selectedItem)) {
             final List<FolderItem> result = new ArrayList<FolderItem>();
@@ -197,57 +173,6 @@ public class ProjectExplorerContentResolver {
                 siblings.put(folderListing.getItem(), result);
             }
         }
-
-        final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath("explorer", "user.nav");
-        final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath("explorer", "last.user.nav");
-
-        final OrganizationalUnit _selectedOrganizationalUnit = selectedOrganizationalUnit;
-        final Repository _selectedRepository = selectedRepository;
-        final Project _selectedProject = selectedProject;
-        final FolderItem _selectedItem = folderListing.getItem();
-        final Package _selectedPackage;
-        if (selectedPackage != null) {
-            _selectedPackage = selectedPackage;
-        } else if (folderListing.getItem().getItem() instanceof Package) {
-            _selectedPackage = (Package) folderListing.getItem().getItem();
-        } else {
-            _selectedPackage = null;
-        }
-
-        SimpleAsyncExecutorService.getDefaultInstance().execute(new DescriptiveRunnable() {
-            @Override
-            public String getDescription() {
-                return "Serialize Navigation State";
-            }
-
-            @Override
-            public void run() {
-                try {
-                    helper.store(userNavPath, lastUserNavPath, _selectedOrganizationalUnit,
-                            _selectedRepository, _selectedProject,
-                            _selectedPackage, _selectedItem, options);
-                } catch (final Exception e) {
-                    LOGGER.error("Can't serialize user's state navigation", e);
-                }
-            }
-        });
-
-        return new ProjectExplorerContent(
-                new TreeSet<OrganizationalUnit>(Sorters.ORGANIZATIONAL_UNIT_SORTER) {{
-                    addAll(organizationalUnits);
-                }},
-                selectedOrganizationalUnit,
-                new TreeSet<Repository>(Sorters.REPOSITORY_SORTER) {{
-                    addAll(repositories.values());
-                }},
-                selectedRepository,
-                new TreeSet<Project>(Sorters.PROJECT_SORTER) {{
-                    addAll(projects);
-                }},
-                selectedProject,
-                folderListing,
-                siblings
-        );
     }
 
     private ProjectExplorerContent emptyProjectExplorerContent() {
@@ -274,17 +199,25 @@ public class ProjectExplorerContentResolver {
         if (!projects.contains(selectedProject)) {
             selectedProject = (projects.isEmpty() ? null : projects.iterator().next());
         }
-        }
+    }
 
-    private void setSelectedRepository(boolean branchChangeFlag) {
+    private void setSelectedRepository() {
         repositories = getRepositories(selectedOrganizationalUnit);
         if (selectedRepository == null || !repositories.containsKey(selectedRepository.getAlias())) {
             selectedRepository = (repositories.isEmpty() ? null : repositories.values().iterator().next());
-        } else if (selectedRepository != null && branchChangeFlag) {
-            selectedRepository = selectedRepository;
-        } else if (!selectedRepository.equals(repositories.get(selectedRepository.getAlias()))) {
+
+        } else if (isCurrentRepositoryUpToDate()) {
+
+            String branch = selectedRepository.getCurrentBranch();
             selectedRepository = repositories.get(selectedRepository.getAlias());
+            if (selectedRepository instanceof GitRepository) {
+                ((GitRepository) selectedRepository).changeBranch(branch);
+            }
         }
+    }
+
+    private boolean isCurrentRepositoryUpToDate() {
+        return !selectedRepository.equals(repositories.get(selectedRepository.getAlias()));
     }
 
     private void setSelectedOrganizationalUnit() {
@@ -298,7 +231,7 @@ public class ProjectExplorerContentResolver {
 
         clear(query);
 
-        final UserExplorerLastData lastContent = getUserExplorerLastData(query.isBranchChangeFlag());
+        final UserExplorerLastData lastContent = helper.getLastContent();
         final UserExplorerData userContent = helper.loadUserContent();
 
         if (!lastContent.isDataEmpty()) {
@@ -340,16 +273,9 @@ public class ProjectExplorerContentResolver {
         }
     }
 
-    private UserExplorerLastData getUserExplorerLastData(boolean changeFlag) {
-        if (changeFlag) {
-            return helper.getLastContent();
-        } else {
-            return UserExplorerLastData.EMPTY;
-        }
-    }
 
     private void clear(ProjectExplorerContentQuery query) {
-        if (query.isBranchChangeFlag()) {
+        if (hasBranchChanged(query.getRepository())) {
             selectedOrganizationalUnit = null;
             selectedRepository = query.getRepository();
             selectedProject = null;
@@ -366,6 +292,13 @@ public class ProjectExplorerContentResolver {
         siblings = new HashMap<FolderItem, List<FolderItem>>();
     }
 
+    private boolean hasBranchChanged(Repository repository) {
+        if (selectedRepository == null || repository == null) {
+            return false;
+        } else {
+            return repository.getCurrentBranch().equals(selectedRepository.getCurrentBranch());
+        }
+    }
 
     private List<FolderItem> getSegmentSiblings(final Path path) {
         final List<FolderItem> result = new ArrayList<FolderItem>();
@@ -494,24 +427,20 @@ public class ProjectExplorerContentResolver {
 
     private Set<Project> getProjects(final Repository repository) {
         final Set<Project> authorizedProjects = new HashSet<Project>();
+
         if (repository == null) {
             return authorizedProjects;
-        }
-        final Path repositoryRoot = repository.getRoot();
-        org.uberfire.java.nio.file.Path convert = Paths.convert(repositoryRoot);
-        final DirectoryStream<org.uberfire.java.nio.file.Path> nioRepositoryPaths = ioService.newDirectoryStream(convert);
-        for (org.uberfire.java.nio.file.Path nioRepositoryPath : nioRepositoryPaths) {
-            if (Files.isDirectory(nioRepositoryPath)) {
-                final org.uberfire.backend.vfs.Path projectPath = Paths.convert(nioRepositoryPath);
-                final Project project = projectService.resolveProject(projectPath);
-                if (project != null) {
-                    if (authorizationManager.authorize(project,
-                            identity)) {
-                        authorizedProjects.add(project);
-                    }
+        } else {
+            Set<Project> allProjects = projectService.getProjects(repository, repository.getCurrentBranch());
+
+            for (Project project : allProjects) {
+                if (authorizationManager.authorize(project,
+                        identity)) {
+                    authorizedProjects.add(project);
                 }
             }
+
+            return authorizedProjects;
         }
-        return authorizedProjects;
     }
 }

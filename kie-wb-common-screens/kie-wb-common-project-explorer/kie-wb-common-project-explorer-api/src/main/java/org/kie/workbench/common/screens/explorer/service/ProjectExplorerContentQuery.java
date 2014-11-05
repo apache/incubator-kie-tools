@@ -34,7 +34,6 @@ public class ProjectExplorerContentQuery {
     private org.guvnor.common.services.project.model.Package pkg = null;
     private FolderItem item = null;
     private Set<Option> options = null;
-    private boolean branchChangeFlag;
 
     public ProjectExplorerContentQuery() {
     }
@@ -98,11 +97,4 @@ public class ProjectExplorerContentQuery {
         this.options = options;
     }
 
-    public void setBranchChangeFlag(boolean branchChangeFlag) {
-        this.branchChangeFlag = branchChangeFlag;
-    }
-
-    public boolean isBranchChangeFlag() {
-        return branchChangeFlag;
-    }
 }

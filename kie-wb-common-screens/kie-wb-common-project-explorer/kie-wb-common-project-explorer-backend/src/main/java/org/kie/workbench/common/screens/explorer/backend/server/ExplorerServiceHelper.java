@@ -30,9 +30,13 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
@@ -45,8 +49,13 @@ import static java.util.Collections.emptyList;
 
 public class ExplorerServiceHelper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExplorerServiceHelper.class);
+
     @Inject
     private KieProjectService projectService;
+
+    @Inject
+    private FolderListingResolver folderListingResolver;
 
     private LinkedDotFileFilter dotFileFilter = new LinkedDotFileFilter();
     private LinkedRegularFileFilter regularFileFilter = new LinkedRegularFileFilter(dotFileFilter);
@@ -99,6 +108,10 @@ public class ExplorerServiceHelper {
         }
 
         return Lists.reverse(result);
+    }
+
+    public FolderListing getFolderListing(FolderItem selectedItem, Project selectedProject, Package selectedPackage, Set<Option> options) {
+        return folderListingResolver.resolve(selectedItem,selectedProject,selectedPackage,this,options);
     }
 
     public FolderListing getFolderListing(final Package pkg) {
@@ -209,6 +222,49 @@ public class ExplorerServiceHelper {
         return folderItems;
     }
 
+    public void store(
+            OrganizationalUnit selectedOrganizationalUnit,
+            Repository selectedRepository,
+            Project selectedProject,
+            FolderListing folderListing,
+            Package selectedPackage, final Set<Option> options) {
+
+
+        final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath("explorer", "user.nav");
+        final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath("explorer", "last.user.nav");
+
+        final OrganizationalUnit _selectedOrganizationalUnit = selectedOrganizationalUnit;
+        final Repository _selectedRepository = selectedRepository;
+        final Project _selectedProject = selectedProject;
+        final FolderItem _selectedItem = folderListing.getItem();
+        final org.guvnor.common.services.project.model.Package _selectedPackage;
+        if (selectedPackage != null) {
+            _selectedPackage = selectedPackage;
+        } else if (folderListing.getItem().getItem() instanceof Package) {
+            _selectedPackage = (Package) folderListing.getItem().getItem();
+        } else {
+            _selectedPackage = null;
+        }
+
+        SimpleAsyncExecutorService.getDefaultInstance().execute(new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Serialize Navigation State";
+            }
+
+            @Override
+            public void run() {
+                try {
+                    store(userNavPath, lastUserNavPath, _selectedOrganizationalUnit,
+                            _selectedRepository, _selectedProject,
+                            _selectedPackage, _selectedItem, options);
+                } catch (final Exception e) {
+                    LOGGER.error("Can't serialize user's state navigation", e);
+                }
+            }
+        });
+    }
+
     public void store(final org.uberfire.java.nio.file.Path userNav,
                       final org.uberfire.java.nio.file.Path lastUserNav,
                       final OrganizationalUnit organizationalUnit,
@@ -293,4 +349,5 @@ public class ExplorerServiceHelper {
         }
         return null;
     }
+
 }
