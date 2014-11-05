@@ -67,5 +67,7 @@ public interface ProjectExplorerConstants
     String downloadRepository();
 
     String downloadProject();
+    
+    String openProjectEditor();
 
 }

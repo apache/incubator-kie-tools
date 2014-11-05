@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,10 +24,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.event.Observes;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -40,6 +45,8 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.uberfire.client.mvp.PlaceManager;
 
 /**
  * Technical View implementation
@@ -62,6 +69,14 @@ public class TechnicalViewWidget extends Composite implements View {
     @UiField(provided = true)
     @Inject
     BranchSelector branchSelector;
+    
+    @UiField
+    Button openProjectEditorButton;
+    
+    
+    
+    @Inject
+    PlaceManager placeManager;
 
     private final NavigatorOptions techOptions = new NavigatorOptions() {{
         showFiles( true );
@@ -85,6 +100,23 @@ public class TechnicalViewWidget extends Composite implements View {
     public void init( final ViewPresenter presenter ) {
         this.presenter = presenter;
         explorer.init( Explorer.Mode.EXPANDED, techOptions, Explorer.NavType.BREADCRUMB, presenter );
+        openProjectEditorButton.addClickHandler(new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                placeManager.goTo("projectScreen");
+            }
+        });
+    }
+    
+    //@TODO: we need to remove these two when we remove the projectScreen from here
+    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
+        enableToolsMenuItems( (KieProject) event.getProject() );
+    }
+
+    private void enableToolsMenuItems( final KieProject project ) {
+        final boolean enabled = ( project != null );
+        openProjectEditorButton.setEnabled(enabled);
     }
 
     @Override

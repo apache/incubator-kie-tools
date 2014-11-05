@@ -31,7 +31,11 @@
       <bootstrap:Well styleName="{resources.CSS.viewContainer}">
         <w:Explorer ui:field="explorer"/>
         <hr/>
+        <bootstrap:Button ui:field="openProjectEditorButton"  >
+             <ui:text from="{i18n.openProjectEditor}"/>
+        </bootstrap:Button>
         <selector:BranchSelector ui:field="branchSelector" />
+        <hr/>
         <div style="clear:both;" />
         <bootstrap:WellNavList ui:field="itemsContainer"/>
       </bootstrap:Well>

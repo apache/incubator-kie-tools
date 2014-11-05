@@ -26,6 +26,9 @@
 
   <g:HTMLPanel visible="false">
     <div ui:field="technicalView">
+        <b:Button ui:field="openProjectEditorButton"  >
+             <ui:text from="{i18n.openProjectEditor}"/>
+        </b:Button>
         <selector:BranchSelector ui:field="branchSelector" />
         <div style="clear:both;" />
         <w:Explorer ui:field="explorer"/>

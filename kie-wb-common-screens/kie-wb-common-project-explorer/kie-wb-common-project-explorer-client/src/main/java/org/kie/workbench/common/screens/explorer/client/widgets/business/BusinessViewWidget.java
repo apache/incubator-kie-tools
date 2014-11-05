@@ -36,6 +36,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.event.Observes;
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -54,6 +56,8 @@ import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
 import org.kie.uberfire.client.common.BusyPopup;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
@@ -83,8 +87,14 @@ public class BusinessViewWidget extends Composite implements View {
     @Inject
     BranchSelector branchSelector;
 
+    @UiField
+    Button openProjectEditorButton;
+    
     @Inject
     Classifier classifier;
+    
+    @Inject
+    PlaceManager placeManager;
 
     //TreeSet sorts members upon insertion
     private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>( Sorters.ITEM_SORTER );
@@ -111,6 +121,22 @@ public class BusinessViewWidget extends Composite implements View {
     public void init( final ViewPresenter presenter ) {
         this.presenter = presenter;
         explorer.init( Explorer.Mode.COLLAPSED, businessOptions, Explorer.NavType.TREE, presenter );
+        openProjectEditorButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                placeManager.goTo("projectScreen");
+            }
+        });
+    }
+    
+    //@TODO: we need to remove these two when we remove the projectScreen from here
+    public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
+        enableToolsMenuItems( (KieProject) event.getProject() );
+    }
+
+    private void enableToolsMenuItems( final KieProject project ) {
+        final boolean enabled = ( project != null );
+        openProjectEditorButton.setEnabled(enabled);
     }
 
     @Override

@@ -30,13 +30,7 @@ public class RepositoryMenu {
 
     @Inject
     protected ProjectContext context;
-    private MenuItem projectScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.ProjectEditor() ).respondsWith(
-            new Command() {
-                @Override
-                public void execute() {
-                    placeManager.goTo( "projectScreen" );
-                }
-            } ).endMenu().build().getItems().get( 0 );
+    
     
     private MenuItem repositoryStructureScreen = MenuFactory.newSimpleItem( ToolsMenuConstants.INSTANCE.RepositoryStructure() ).respondsWith(
             new Command() {
@@ -60,7 +54,6 @@ public class RepositoryMenu {
         ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
         
         //@TODO: the idea is to remove this one when we add the option to the project explorer
-        menuItems.add( projectScreen );
         
         menuItems.add( repositoryStructureScreen );
         
@@ -77,7 +70,7 @@ public class RepositoryMenu {
 
     private void enableToolsMenuItems( final KieProject project ) {
         final boolean enabled = ( project != null );
-        projectScreen.setEnabled( enabled );
+        
     }
 
 }
