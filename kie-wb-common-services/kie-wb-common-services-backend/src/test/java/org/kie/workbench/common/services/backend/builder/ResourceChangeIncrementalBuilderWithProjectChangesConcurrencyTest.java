@@ -53,7 +53,6 @@ public class ResourceChangeIncrementalBuilderWithProjectChangesConcurrencyTest {
     private Paths paths;
     private ConfigurationService configurationService;
     private ConfigurationFactory configurationFactory;
-    private BuildResultsObserver buildResultsObserver;
     private BuildService buildService;
     private KieProjectService projectService;
 
@@ -84,26 +83,19 @@ public class ResourceChangeIncrementalBuilderWithProjectChangesConcurrencyTest {
                                                                                 ConfigurationFactory.class,
                                                                                 cc3 );
 
-        //Instantiate BuildResultsObserver
-        final Bean buildResultsObserverBean = (Bean) beanManager.getBeans( BuildResultsObserver.class ).iterator().next();
-        final CreationalContext cc4 = beanManager.createCreationalContext( buildResultsObserverBean );
-        buildResultsObserver = (BuildResultsObserver) beanManager.getReference( buildResultsObserverBean,
-                                                                                BuildResultsObserver.class,
-                                                                                cc4 );
-
         //Instantiate BuildService
         final Bean buildServiceBean = (Bean) beanManager.getBeans( BuildService.class ).iterator().next();
-        final CreationalContext cc5 = beanManager.createCreationalContext( buildServiceBean );
+        final CreationalContext cc4 = beanManager.createCreationalContext( buildServiceBean );
         buildService = (BuildService) beanManager.getReference( buildServiceBean,
                                                                 BuildService.class,
-                                                                cc5 );
+                                                                cc4 );
 
         //Instantiate ProjectService
         final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
-        final CreationalContext cc6 = beanManager.createCreationalContext( projectServiceBean );
+        final CreationalContext cc5 = beanManager.createCreationalContext( projectServiceBean );
         projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
                                                                        KieProjectService.class,
-                                                                       cc6 );
+                                                                       cc5 );
 
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
@@ -117,7 +109,6 @@ public class ResourceChangeIncrementalBuilderWithProjectChangesConcurrencyTest {
         if ( !globalSettingsDefined ) {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
-
     }
 
     private ConfigGroup getGlobalConfiguration() {

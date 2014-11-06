@@ -188,7 +188,7 @@ public class Builder {
             //At the end we are interested to ensure that external .jar files referenced as dependencies don't have
             // referential inconsistencies. We will at least provide a basic algorithm to ensure that if an external class
             // X references another external class Y, Y is also accessible by the class loader.
-            final KieModuleMetaData kieModuleMetaData = getKieModuleMetaData();
+            final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors() );
             for ( final String packageName : kieModuleMetaData.getPackages() ) {
                 for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
                     final String fullyQualifiedClassName = packageName + "." + className;
@@ -217,10 +217,6 @@ public class Builder {
 
             return results;
         }
-    }
-
-    private KieModuleMetaData getKieModuleMetaData() {
-        return KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors() );
     }
 
     private void verifyExternalClass( Class clazz ) {
@@ -508,7 +504,9 @@ public class Builder {
         if ( !isBuilt() ) {
             build();
         }
-        return kieBuilder.getKieModule();
+        synchronized ( kieFileSystem ) {
+            return kieBuilder.getKieModule();
+        }
     }
 
     public KieModule getKieModuleIgnoringErrors() {
@@ -516,7 +514,9 @@ public class Builder {
         if ( !isBuilt() ) {
             build();
         }
-        return ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors();
+        synchronized ( kieFileSystem ) {
+            return ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors();
+        }
     }
 
     public KieContainer getKieContainer() {

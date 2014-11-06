@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.backend.builder;
+package org.kie.workbench.common.services.datamodel.backend.server.builder;
 
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -26,6 +26,7 @@ import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
+import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.structure.server.config.ConfigGroup;
@@ -35,15 +36,19 @@ import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.datamodel.backend.server.cache.LRUProjectDataModelOracleCache;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
+import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-public class ResourceChangeIncrementalBuilderConcurrencyTest {
+public class BuilderConcurrencyTest {
 
     private static final String GLOBAL_SETTINGS = "settings";
 
@@ -55,6 +60,8 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
     private ConfigurationFactory configurationFactory;
     private BuildService buildService;
     private KieProjectService projectService;
+    private LRUBuilderCache builderCache;
+    private LRUProjectDataModelOracleCache projectDMOCache;
 
     @Before
     public void setUp() throws Exception {
@@ -97,6 +104,20 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
                                                                        KieProjectService.class,
                                                                        cc5 );
 
+        //Instantiate LRUBuilderCache
+        final Bean LRUBuilderCacheBean = (Bean) beanManager.getBeans( LRUBuilderCache.class ).iterator().next();
+        final CreationalContext cc6 = beanManager.createCreationalContext( LRUBuilderCacheBean );
+        builderCache = (LRUBuilderCache) beanManager.getReference( LRUBuilderCacheBean,
+                                                                   LRUBuilderCache.class,
+                                                                   cc6 );
+
+        //Instantiate LRUProjectDataModelOracleCache
+        final Bean LRUProjectDataModelOracleCacheBean = (Bean) beanManager.getBeans( LRUProjectDataModelOracleCache.class ).iterator().next();
+        final CreationalContext cc7 = beanManager.createCreationalContext( LRUProjectDataModelOracleCacheBean );
+        projectDMOCache = (LRUProjectDataModelOracleCache) beanManager.getReference( LRUProjectDataModelOracleCacheBean,
+                                                                                     LRUProjectDataModelOracleCache.class,
+                                                                                     cc7 );
+
         //Define mandatory properties
         List<ConfigGroup> globalConfigGroups = configurationService.getConfiguration( ConfigType.GLOBAL );
         boolean globalSettingsDefined = false;
@@ -109,6 +130,7 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
         if ( !globalSettingsDefined ) {
             configurationService.addConfiguration( getGlobalConfiguration() );
         }
+
     }
 
     private ConfigGroup getGlobalConfiguration() {
@@ -122,16 +144,17 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
     }
 
     @Test
-    public void testConcurrentResourceUpdates() throws URISyntaxException {
-        final Bean buildChangeListenerBean = (Bean) beanManager.getBeans( org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( buildChangeListenerBean );
-        final org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder buildChangeListener = (org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder) beanManager.getReference( buildChangeListenerBean,
-                                                                                                                                                                                                        org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder.class,
-                                                                                                                                                                                                        cc );
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1145105
+    public void testBuilderConcurrency() throws URISyntaxException {
+        final URL pomUrl = this.getClass().getResource( "/BuilderConcurrencyRepo/pom.xml" );
+        final org.uberfire.java.nio.file.Path nioPomPath = fs.getPath( pomUrl.toURI() );
+        final Path pomPath = paths.convert( nioPomPath );
 
-        final URL resourceUrl = this.getClass().getResource( "/BuildChangeListenerRepo/src/main/resources/update.drl" );
+        final URL resourceUrl = this.getClass().getResource( "/BuilderConcurrencyRepo/src/main/resources/update.drl" );
         final org.uberfire.java.nio.file.Path nioResourcePath = fs.getPath( resourceUrl.toURI() );
         final Path resourcePath = paths.convert( nioResourcePath );
+
+        final SessionInfo sessionInfo = mock( SessionInfo.class );
 
         //Force full build before attempting incremental changes
         final KieProject project = projectService.resolveProject( resourcePath );
@@ -145,20 +168,57 @@ public class ResourceChangeIncrementalBuilderConcurrencyTest {
         final Result result = new Result();
         ExecutorService es = Executors.newCachedThreadPool();
         for ( int i = 0; i < THREADS; i++ ) {
-            es.execute( new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        System.out.println( "Thread " + Thread.currentThread().getName() + " has started for " + resourcePath.toURI() );
-                        buildChangeListener.updateResource( resourcePath );
-                        System.out.println( "Thread " + Thread.currentThread().getName() + " has completed for " + resourcePath.toURI() );
-                    } catch ( Throwable e ) {
-                        result.setFailed( true );
-                        result.setMessage( e.getMessage() );
-                        System.out.println( e.getMessage() );
-                    }
-                }
-            } );
+            switch ( i % 3 ) {
+                case 0:
+                    es.execute( new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                System.out.println( "Thread " + Thread.currentThread().getName() + " has started: BuildService.build( project )" );
+                                buildService.build( project );
+                                System.out.println( "Thread " + Thread.currentThread().getName() + " has completed." );
+                            } catch ( Throwable e ) {
+                                result.setFailed( true );
+                                result.setMessage( e.getMessage() );
+                                System.out.println( e.getMessage() );
+                            }
+                        }
+                    } );
+                    break;
+                case 1:
+                    es.execute( new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                System.out.println( "Thread " + Thread.currentThread().getName() + " has started: LRUProjectDataModelOracleCache.invalidateProjectCache(...)" );
+                                projectDMOCache.invalidateProjectCache( new InvalidateDMOProjectCacheEvent( sessionInfo,
+                                                                                                            project,
+                                                                                                            pomPath ) );
+                                System.out.println( "Thread " + Thread.currentThread().getName() + " has completed." );
+                            } catch ( Throwable e ) {
+                                result.setFailed( true );
+                                result.setMessage( e.getMessage() );
+                                System.out.println( e.getMessage() );
+                            }
+                        }
+                    } );
+                    break;
+                default:
+                    es.execute( new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                System.out.println( "Thread " + Thread.currentThread().getName() + " has started: LRUBuilderCache.assertBuilder( project ).getKieModuleIgnoringErrors();" );
+                                builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+                                System.out.println( "Thread " + Thread.currentThread().getName() + " has completed." );
+                            } catch ( Throwable e ) {
+                                result.setFailed( true );
+                                result.setMessage( e.getMessage() );
+                                System.out.println( e.getMessage() );
+                            }
+                        }
+                    } );
+            }
         }
 
         es.shutdown();
