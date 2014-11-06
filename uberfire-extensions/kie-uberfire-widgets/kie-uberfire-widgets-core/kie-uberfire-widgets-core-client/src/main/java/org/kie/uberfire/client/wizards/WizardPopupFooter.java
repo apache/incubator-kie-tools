@@ -17,6 +17,7 @@ package org.kie.uberfire.client.wizards;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ModalFooter;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -81,6 +82,11 @@ public class WizardPopupFooter extends ModalFooter {
 
     public void enableFinishButton( final boolean enabled ) {
         btnFinish.setEnabled( enabled );
+        if ( enabled ) {
+            btnFinish.setType( ButtonType.PRIMARY );
+        } else {
+            btnFinish.setType( ButtonType.DEFAULT );
+        }
     }
 
     public void setPreviousButtonFocus( final boolean focused ) {
