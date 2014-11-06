@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
@@ -70,12 +71,27 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     private void initExtraLeftSidePatternFactTypes() {
         extraLeftSidePatternFactTypes = new HashMap<String, String>();
-        extraLeftSidePatternFactTypes.put( "Collection",
-                                           "java.util.Collection" );
-        extraLeftSidePatternFactTypes.put( "List",
-                                           "java.util.List" );
-        extraLeftSidePatternFactTypes.put( "Set",
-                                           "java.util.Set" );
+        if ( modelImportsClass( "java.util.Collection" ) ) {
+            extraLeftSidePatternFactTypes.put( "Collection",
+                                               "Collection" );
+        }
+        if ( modelImportsClass( "java.util.List" ) ) {
+            extraLeftSidePatternFactTypes.put( "List",
+                                               "List" );
+        }
+        if ( modelImportsClass( "java.util.Set" ) ) {
+            extraLeftSidePatternFactTypes.put( "Set",
+                                               "Set" );
+        }
+    }
+
+    private boolean modelImportsClass( final String fullyQualifiedClassName ) {
+        for ( Import i : modeller.getModel().getImports().getImports() ) {
+            if ( i.getType().equals( fullyQualifiedClassName ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -162,7 +178,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                                                         (FreeFormLine) rPattern,
                                                         this.readOnly );
             } else {
-                throw new IllegalArgumentException( "Unsuported pattern " + rPattern + " for right side of FROM COLLECT" );
+                throw new IllegalArgumentException( "Unsupported pattern " + rPattern + " for right side of FROM COLLECT" );
             }
 
             patternWidget.addOnModifiedCommand( new Command() {
@@ -204,9 +220,9 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                          entry.getValue() );
         }
 
-        //TODO: Add Facts that extedns Collection
+        //TODO: Add Facts that extends Collection
         //        box.addItem("...");
-        //        box.addItem("TODO: Add Facts that extedns Collection");
+        //        box.addItem("...");
 
         box.setSelectedIndex( 0 );
         box.addChangeHandler( new ChangeHandler() {
@@ -308,22 +324,21 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     @Override
     protected void calculateReadOnly() {
-
-        String factType = this.pattern.getFactPattern().getFactType();
-
-        // We allow the use of Set, List or Collection, even when they are not added as imports
-        // Because of this, we also need to add them as known fact types
-        if ( factType.equals( "java.util.Set" )
-                || factType.equals( "java.util.List" )
-                || factType.equals( "java.util.Collection" ) ) {
-            this.isFactTypeKnown = true;
-        } else {
-            this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized( factType );
-        }
-
         if ( this.pattern.getFactPattern() != null ) {
-            this.readOnly = !( this.getExtraLeftSidePatternFactTypes().containsValue( this.pattern.getFactPattern().getFactType() )
-                    || this.getModeller().getDataModelOracle().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() ) );
+            String factType = this.pattern.getFactPattern().getFactType();
+
+            // We allow the use of Set, List or Collection, even when they are not added as imports
+            // Because of this, we also need to add them as known fact types
+            if ( getExtraLeftSidePatternFactTypes().values().contains( factType ) ) {
+                this.isFactTypeKnown = true;
+            } else {
+                this.isFactTypeKnown = this.getModeller().getDataModelOracle().isFactTypeRecognized( factType );
+            }
+
+            if ( this.pattern.getFactPattern() != null ) {
+                this.readOnly = !( this.getExtraLeftSidePatternFactTypes().containsValue( this.pattern.getFactPattern().getFactType() )
+                        || this.getModeller().getDataModelOracle().isFactTypeRecognized( this.pattern.getFactPattern().getFactType() ) );
+            }
         }
     }
 
