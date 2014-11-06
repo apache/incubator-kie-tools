@@ -17,10 +17,25 @@
 	<description>KIE UberFire Markdown Widget</description>
 
 	<dependencies>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+
 		<dependency>
 			<groupId>org.uberfire</groupId>
 			<artifactId>uberfire-client-api</artifactId>
 		</dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>

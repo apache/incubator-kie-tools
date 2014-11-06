@@ -10,7 +10,16 @@
   <packaging>jar</packaging>
   <name>KIE UberFire Widgets Commons Services API</name>
   <description>KIE UberFire Widgets Commons Services API</description>
+
   <dependencies>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-bus</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-common</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-backend-api</artifactId>

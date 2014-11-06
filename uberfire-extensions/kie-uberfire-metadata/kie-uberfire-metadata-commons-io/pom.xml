@@ -37,6 +37,10 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
     <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
@@ -68,6 +72,14 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-nio2-fs</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
