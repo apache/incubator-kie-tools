@@ -53,6 +53,7 @@ import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
@@ -130,9 +131,11 @@ public class ScenarioEditorViewImpl
                 oracle);
 
         if (!isReadOnly) {
-            addTestRunnerWidget(scenario,
+            addTestRunnerWidget(
+                    scenario,
                     service,
-                    path);
+                    path,
+                    oracle);
         }
 
         renderEditor();
@@ -284,10 +287,25 @@ public class ScenarioEditorViewImpl
         );
     }
 
-    private void addTestRunnerWidget(final Scenario scenario,
+    private void addTestRunnerWidget(
+            final Scenario scenario,
             final Caller<ScenarioTestEditorService> service,
-            final Path path) {
-        layout.add(new TestRunnerWidget(scenario, service, path));
+            final Path path,
+            final AsyncPackageDataModelOracle oracle) {
+        layout.add(
+                new TestRunnerWidget(
+                        scenario,
+                        service,
+                        path,
+                        new Callback<Scenario>() {
+                            @Override
+                            public void callback(Scenario result) {
+                                setScenario(path,result,oracle);
+
+                                setShowResults(true);
+                                renderEditor();
+                            }
+                        }));
     }
 
     private void addBulkRunTestScenarioPanel(final Path path,

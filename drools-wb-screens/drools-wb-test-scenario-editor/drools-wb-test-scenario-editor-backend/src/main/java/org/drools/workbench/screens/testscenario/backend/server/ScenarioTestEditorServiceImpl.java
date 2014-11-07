@@ -28,6 +28,7 @@ import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.testscenarios.backend.util.ScenarioXMLPersistence;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
+import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileExtensionFilter;
@@ -235,17 +236,17 @@ public class ScenarioTestEditorServiceImpl extends KieService implements Scenari
     }
 
     @Override
-    public void runScenario( final Path path,
-                             final Scenario scenario ) {
+    public TestScenarioResult runScenario(final Path path,
+                                          final Scenario scenario) {
         try {
 
             final KieProject project = projectService.resolveProject( path );
-            final KieSession session = sessionService.newKieSession( project );
+            final KieSession ksession = sessionService.newKieSession( project );
             final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper( testResultMessageEvent,
                                                                             getMaxRuleFirings() );
 
-            runner.run( scenario,
-                        session );
+            return runner.run( scenario,
+                               ksession );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );

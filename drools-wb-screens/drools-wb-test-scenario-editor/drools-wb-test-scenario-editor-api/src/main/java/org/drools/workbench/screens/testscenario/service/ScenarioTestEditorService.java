@@ -20,6 +20,7 @@ import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
+import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.guvnor.common.services.shared.file.SupportsCopy;
 import org.guvnor.common.services.shared.file.SupportsCreate;
 import org.guvnor.common.services.shared.file.SupportsDelete;
@@ -50,8 +51,8 @@ public interface ScenarioTestEditorService
 
     TestScenarioModelContent loadContent( Path path );
 
-    void runScenario( Path path,
-                      Scenario scenario );
+    TestScenarioResult runScenario(Path path,
+                                   Scenario scenario);
 
     void runAllTests(Path path);
     

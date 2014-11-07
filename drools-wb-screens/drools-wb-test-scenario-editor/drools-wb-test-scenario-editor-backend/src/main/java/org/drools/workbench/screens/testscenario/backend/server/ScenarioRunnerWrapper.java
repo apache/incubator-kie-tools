@@ -1,15 +1,15 @@
 package org.drools.workbench.screens.testscenario.backend.server;
 
-import java.util.List;
-
-import javax.enterprise.event.Event;
-
 import org.drools.workbench.models.testscenarios.backend.ScenarioRunner4JUnit;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieSession;
+
+import javax.enterprise.event.Event;
+import java.util.List;
 
 public class ScenarioRunnerWrapper {
 
@@ -23,8 +23,10 @@ public class ScenarioRunnerWrapper {
         this.maxRuleFirings = maxRuleFirings;
     }
 
-    public void run(Scenario scenario, KieSession ksession) {
+    public TestScenarioResult run(Scenario scenario, KieSession ksession) {
         try {
+            AuditLogger auditLogger = new AuditLogger(ksession);
+
             ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
                     scenario,
                     ksession,
@@ -32,11 +34,13 @@ public class ScenarioRunnerWrapper {
 
             scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
 
+            return new TestScenarioResult(scenario, auditLogger.getLog());
+
         } catch (InitializationError initializationError) {
             throw new GenericPortableException(initializationError.getMessage());
         }
     }
-    
+
     public void run(List<Scenario> scenarios, KieSession ksession) {
         try {
             ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
