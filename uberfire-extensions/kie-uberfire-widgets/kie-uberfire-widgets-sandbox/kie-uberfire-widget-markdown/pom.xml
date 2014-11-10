@@ -7,14 +7,14 @@
   <parent>
     <groupId>org.kie.uberfire</groupId>
     <artifactId>kie-uberfire-widgets-sandbox</artifactId>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
 	<artifactId>kie-uberfire-widget-markdown</artifactId>
 	<packaging>jar</packaging>
 
-	<name>KIE UberFire Markdown Widget</name>
-	<description>KIE UberFire Markdown Widget</description>
+	<name>Uberfire Markdown Widget</name>
+	<description>Uberfire Markdown Widget</description>
 
 	<dependencies>
     <dependency>

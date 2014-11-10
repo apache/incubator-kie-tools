@@ -23,14 +23,14 @@
   <parent>
     <groupId>org.kie.uberfire</groupId>
     <artifactId>kie-uberfire-security</artifactId>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-uberfire-servlet-security</artifactId>
   <packaging>jar</packaging>
 
-  <name>KIE Uberfire Servlet Security</name>
-  <description>KIE Uberfire Servlet Security</description>
+  <name>Uberfire Servlet Security</name>
+  <description>Uberfire Servlet Security</description>
 
   <dependencies>
     <dependency>

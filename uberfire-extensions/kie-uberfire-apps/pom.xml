@@ -5,13 +5,13 @@
   <parent>
     <groupId>org.kie.uberfire</groupId>
     <artifactId>kie-uberfire-extensions</artifactId>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-uberfire-apps</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE Uberfire Perspective Editor</name>
+  <name>Uberfire Perspective Editor</name>
 
   <modules>
     <module>kie-uberfire-apps-api</module>

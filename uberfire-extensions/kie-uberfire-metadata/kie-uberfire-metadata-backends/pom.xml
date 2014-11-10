@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.kie.uberfire</groupId>
     <artifactId>kie-uberfire-metadata</artifactId>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-uberfire-metadata-backends</artifactId>
   <packaging>pom</packaging>
 
-  <name>KIE Uberfire Metadata Backends</name>
+  <name>Uberfire Metadata Backends</name>
 
   <modules>
     <module>kie-uberfire-metadata-backend-lucene</module>

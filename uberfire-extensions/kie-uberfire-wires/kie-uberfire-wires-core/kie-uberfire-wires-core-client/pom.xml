@@ -6,12 +6,12 @@
   <parent>
     <groupId>org.kie.uberfire</groupId>
     <artifactId>kie-uberfire-wires-core</artifactId>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>0.5.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-uberfire-wires-core-client</artifactId>
 
-  <name>KIE Uberfire Wires :: Core Client</name>
+  <name>Uberfire Wires :: Core Client</name>
   <description>Wires Core Client</description>
 
   <dependencies>
@@ -55,7 +55,7 @@
       <artifactId>lienzo-core</artifactId>
     </dependency>
 
-    <!-- Property Editor - KIE Uberfire Extensions -->
+    <!-- Property Editor - Uberfire Extensions -->
     <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-widgets-properties-editor-client</artifactId>

@@ -1,9 +1,0 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
-  <g:FlowPanel>
-  <b:Container ui:field='itemsPanel'/>
-  <b:Fieldset ui:field='pagination'/>
-  </g:FlowPanel>
-
-</ui:UiBinder>
