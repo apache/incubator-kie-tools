@@ -1,4 +1,4 @@
-kie-uberfire-extensions
-=======================
+uberfire-extensions
+===================
 
-KIE extensions to UberFire framework
+Extensions to UberFire framework
