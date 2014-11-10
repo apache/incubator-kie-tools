@@ -1,8 +1,0 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:kie='urn:import:org.kie.uberfire.properties.editor.client'>
-
-  <g:FlowPanel ui:field='panel'>
-    <kie:PropertyEditorWidget ui:field='propertyEditorWidget'/>
-  </g:FlowPanel>
-</ui:UiBinder>

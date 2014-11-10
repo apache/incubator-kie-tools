@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config xmlns="http://zanata.org/namespace/config/">
   <url>https://translate.jboss.org/</url>
-  <project>kie-uberfire-extensions</project>
+  <project>uberfire-extensions</project>
   <project-version>0.5.0</project-version>
   <project-type>utf8properties</project-type>
 

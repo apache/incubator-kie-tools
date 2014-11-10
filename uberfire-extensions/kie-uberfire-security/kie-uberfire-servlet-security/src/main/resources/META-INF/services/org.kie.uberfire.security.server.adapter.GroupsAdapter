@@ -1,3 +1,0 @@
-org.kie.uberfire.security.server.adapter.JettyGroupsAdapter
-org.kie.uberfire.security.server.adapter.WeblogicGroupsAdapter
-org.kie.uberfire.security.server.adapter.WebSphereGroupsAdapter

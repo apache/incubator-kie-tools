@@ -28,22 +28,22 @@
     <version>6.0.0.CR16</version>
   </parent>
 
-  <groupId>org.kie.uberfire</groupId>
-  <artifactId>kie-uberfire-extensions</artifactId>
+  <groupId>org.uberfire</groupId>
+  <artifactId>uberfire-extensions</artifactId>
   <version>0.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Extensions to UberFire</name>
 
   <modules>
-    <module>kie-uberfire-extensions-bom</module>
-    <module>kie-uberfire-security</module>
-    <module>kie-uberfire-metadata</module>
-    <module>kie-uberfire-widgets</module>
-    <module>kie-uberfire-runtime-plugins</module>
-    <module>kie-uberfire-perspective-editor</module>
-    <module>kie-uberfire-wires</module>
-    <module>kie-uberfire-apps</module>
+    <module>uberfire-extensions-bom</module>
+    <module>uberfire-security</module>
+    <module>uberfire-metadata</module>
+    <module>uberfire-widgets</module>
+    <module>uberfire-runtime-plugins</module>
+    <module>uberfire-perspective-editor</module>
+    <module>uberfire-wires</module>
+    <module>uberfire-apps</module>
   </modules>
 
   <repositories>
@@ -94,8 +94,8 @@
 
       <!-- Uberfire extensions -->
       <dependency>
-        <groupId>org.kie.uberfire</groupId>
-        <artifactId>kie-uberfire-extensions-bom</artifactId>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-extensions-bom</artifactId>
         <type>pom</type>
         <version>${project.version}</version>
         <scope>import</scope>
@@ -117,7 +117,6 @@
       </dependency>
 
       <!-- Errai -->
-
       <dependency>
         <groupId>org.jboss.errai</groupId>
         <artifactId>errai-config</artifactId>
@@ -290,7 +289,6 @@
       </dependency>
 
       <!-- GWT dev  -->
-
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
@@ -298,7 +296,6 @@
       </dependency>
 
       <!-- JACC -->
-
       <dependency>
         <groupId>javax.security.jacc</groupId>
         <artifactId>javax.security.jacc-api</artifactId>
@@ -306,7 +303,6 @@
       </dependency>
 
       <!-- Apache Lucene -->
-
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
@@ -351,7 +347,6 @@
       </dependency>
 
       <!-- Lienzo -->
-
       <dependency>
         <groupId>com.rht-emitrom</groupId>
         <artifactId>lienzo-core</artifactId>
