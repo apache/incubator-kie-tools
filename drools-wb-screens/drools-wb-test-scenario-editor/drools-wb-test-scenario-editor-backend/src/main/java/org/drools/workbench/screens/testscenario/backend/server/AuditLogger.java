@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.process.*;
 import org.kie.api.event.rule.*;
 import org.kie.api.runtime.KieSession;
@@ -35,9 +36,9 @@ public class AuditLogger {
 
         addRuleRuntimeEventListener();
 
-        addAgendaEventListener(ksession);
+        addAgendaEventListener();
 
-        addProcessEventListener(ksession);
+        addProcessEventListener();
 
     }
 
@@ -45,7 +46,7 @@ public class AuditLogger {
         return logs;
     }
 
-    private void addProcessEventListener(KieSession ksession) {
+    private void addProcessEventListener() {
         ksession.addEventListener(new ProcessEventListener() {
             @Override
             public void beforeProcessStarted(ProcessStartedEvent processStartedEvent) {
@@ -99,7 +100,7 @@ public class AuditLogger {
         });
     }
 
-    private void addAgendaEventListener(KieSession ksession) {
+    private void addAgendaEventListener() {
         ksession.addEventListener(new AgendaEventListener() {
             @Override
             public void matchCreated(MatchCreatedEvent matchCreatedEvent) {
@@ -113,12 +114,12 @@ public class AuditLogger {
 
             @Override
             public void beforeMatchFired(BeforeMatchFiredEvent beforeMatchFiredEvent) {
-                log(beforeMatchFiredEvent);
+//                log(beforeMatchFiredEvent);
             }
 
             @Override
             public void afterMatchFired(AfterMatchFiredEvent afterMatchFiredEvent) {
-                log(afterMatchFiredEvent);
+                logs.add("Rule " + afterMatchFiredEvent.getMatch().getRule() + " fired.");
             }
 
             @Override
@@ -157,17 +158,27 @@ public class AuditLogger {
         ksession.addEventListener(new RuleRuntimeEventListener() {
             @Override
             public void objectInserted(ObjectInsertedEvent objectInsertedEvent) {
-                log(objectInsertedEvent);
+                Object object = objectInsertedEvent.getObject();
+                Rule rule = objectInsertedEvent.getRule();
+                if (rule == null) {
+                    logs.add("Fact " + object.getClass().getName() + " inserted.");
+                } else {
+                    logs.add("Fact " + object.getClass().getName() + " inserted in rule " + rule.getName() + ". Fact[ " + object.toString() + " ].");
+                }
             }
 
             @Override
             public void objectUpdated(ObjectUpdatedEvent objectUpdatedEvent) {
-                log(objectUpdatedEvent);
+                logs.add("Object " + objectUpdatedEvent.getObject().getClass().getName() + " updated in rule " + objectUpdatedEvent.getRule().getName()
+                        + ". Old fact[ " + objectUpdatedEvent.getOldObject().toString()
+                        + " ]. New fact[ " + objectUpdatedEvent.getObject().toString() + " ].");
+                logs.add("test");
             }
 
             @Override
             public void objectDeleted(ObjectDeletedEvent objectDeletedEvent) {
-                log(objectDeletedEvent);
+                logs.add(
+                        "Object " + objectDeletedEvent.getOldObject().getClass().getName() + " deleted in rule " + objectDeletedEvent.getRule().getName() + ". Fact[ " + objectDeletedEvent.getOldObject().toString() + " ].");
             }
         });
     }

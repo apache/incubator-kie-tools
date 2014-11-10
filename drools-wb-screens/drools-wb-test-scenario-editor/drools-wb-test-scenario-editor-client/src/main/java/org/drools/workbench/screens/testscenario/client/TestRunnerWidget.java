@@ -16,6 +16,10 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import com.github.gwtbootstrap.client.ui.Accordion;
+import com.github.gwtbootstrap.client.ui.AccordionGroup;
+import com.github.gwtbootstrap.client.ui.Hero;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.*;
@@ -28,6 +32,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 
@@ -35,7 +40,8 @@ import java.util.Set;
 
 public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 
-    private FlexTable results = new FlexTable();
+    private Scenario scenario;
+    private AccordionGroup results = new AccordionGroup();
     private VerticalPanel layout = new VerticalPanel();
     private SimplePanel actions = new SimplePanel();
 
@@ -43,7 +49,19 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
                             final Caller<ScenarioTestEditorService> testScenarioEditorService,
                             final Path path,
                             final Callback<Scenario> callback) {
+        this.scenario = scenario;
 
+        results.setIcon(IconType.CERTIFICATE);
+        results.setHeading(TestScenarioConstants.INSTANCE.AuditLogColon());
+        results.setDefaultOpen(false);
+
+        actions.add(getRunButton(testScenarioEditorService, path, callback));
+        layout.add(actions);
+
+        initWidget(layout);
+    }
+
+    private Button getRunButton(final Caller<ScenarioTestEditorService> testScenarioEditorService, final Path path, final Callback<Scenario> callback) {
         final Button run = new Button(TestScenarioConstants.INSTANCE.RunScenario());
         run.setTitle(TestScenarioConstants.INSTANCE.RunScenarioTip());
         run.addClickHandler(new ClickHandler() {
@@ -58,30 +76,32 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
                         layout.add(results);
                         actions.setVisible(true);
 
+                        TestRunnerWidget.this.scenario = result.getScenario();
                         callback.callback(result.getScenario());
 
-//                        doAuditView(result.getLog());
+                        doAuditView(result.getLog());
 
                     }
                 }, new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)).runScenario(path,
-                        scenario);
+                        TestRunnerWidget.this.scenario);
             }
         });
-
-        actions.add(run);
-        layout.add(actions);
-        initWidget(layout);
+        return run;
     }
 
-//    private void doAuditView(Set<String> log) {
-//        results.clear();
-//        results.setVisible(true);
-//        VerticalPanel panel = new VerticalPanel();
-//        for (String line : log) {
-//            panel.add(new Label(line));
-//        }
-//        results.setWidget(0, 0, panel);
-//    }
+    private void doAuditView(Set<String> log) {
+        results.clear();
+        results.setVisible(true);
+        VerticalPanel list = new VerticalPanel();
+
+        for (String line : log) {
+            list.add(new Line(line));
+        }
+
+        ScrollPanel scrollPanel=new ScrollPanel(list);
+        scrollPanel.setHeight("300px");
+        results.add(scrollPanel);
+    }
 
 //    private void showErrors( final List<BuilderResultLine> rs ) {
 //        results.clear();

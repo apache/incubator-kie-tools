@@ -8,18 +8,19 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.callbacks.Callback;
 
 public interface ScenarioEditorView
         extends IsWidget,
         KieEditorView {
 
-    void setContent( final ObservablePath path,
-                     final boolean isReadOnly,
-                     final Scenario scenario,
-                     final Overview overview,
-                     final String version,
-                     final AsyncPackageDataModelOracle oracle,
-                     final Caller<ScenarioTestEditorService> service );
+    void setContent(final ObservablePath path,
+                    final boolean isReadOnly,
+                    final Scenario scenario,
+                    final Overview overview,
+                    final String version,
+                    final AsyncPackageDataModelOracle oracle,
+                    final Caller<ScenarioTestEditorService> service, Callback<Scenario> callback);
 
     void showSaveSuccessful();
 

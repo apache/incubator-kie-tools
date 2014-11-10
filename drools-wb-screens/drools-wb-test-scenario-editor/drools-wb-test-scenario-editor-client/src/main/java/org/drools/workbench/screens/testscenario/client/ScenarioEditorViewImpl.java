@@ -22,7 +22,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Label;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -40,7 +39,6 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.uberfire.client.common.DirtyableFlexTable;
 import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.uberfire.client.common.Page;
@@ -75,6 +73,7 @@ public class ScenarioEditorViewImpl
 
     private Caller<RuleNamesService> ruleNameService;
     private OverviewWidgetPresenter overviewWidget;
+    private Callback<Scenario> updateModelCallback;
 
     @Inject
     public ScenarioEditorViewImpl(
@@ -108,12 +107,14 @@ public class ScenarioEditorViewImpl
 
     @Override
     public void setContent(final ObservablePath path,
-            final boolean isReadOnly,
-            final Scenario scenario,
-            final Overview overview,
-            final String version,
-            final AsyncPackageDataModelOracle oracle,
-            final Caller<ScenarioTestEditorService> service) {
+                           final boolean isReadOnly,
+                           final Scenario scenario,
+                           final Overview overview,
+                           final String version,
+                           final AsyncPackageDataModelOracle oracle,
+                           final Caller<ScenarioTestEditorService> service,
+                           final Callback<Scenario> updateModelCallback) {
+        this.updateModelCallback = updateModelCallback;
         layout.clear();
         multiPage.clear();
 
@@ -300,7 +301,8 @@ public class ScenarioEditorViewImpl
                         new Callback<Scenario>() {
                             @Override
                             public void callback(Scenario result) {
-                                setScenario(path,result,oracle);
+                                updateModelCallback.callback(result);
+                                setScenario(path, result, oracle);
 
                                 setShowResults(true);
                                 renderEditor();

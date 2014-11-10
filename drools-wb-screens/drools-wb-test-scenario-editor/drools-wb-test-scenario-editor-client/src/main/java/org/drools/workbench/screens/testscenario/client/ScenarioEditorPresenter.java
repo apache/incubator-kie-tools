@@ -41,6 +41,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -96,7 +97,7 @@ public class ScenarioEditorPresenter
     private RemoteCallback<TestScenarioModelContent> getModelSuccessCallback() {
         return new RemoteCallback<TestScenarioModelContent>() {
             @Override
-            public void callback( TestScenarioModelContent content ) {
+            public void callback( final TestScenarioModelContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
                 if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
@@ -105,10 +106,7 @@ public class ScenarioEditorPresenter
                 scenario = content.getScenario();
                 ifFixturesSizeZeroThenAddExecutionTrace();
 
-                final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
-                                                                        scenario,
-                                                                        dataModel );
+                setUpOracle(content);
 
                 view.setContent( versionRecordManager.getCurrentPath(),
                                  isReadOnly,
@@ -116,11 +114,25 @@ public class ScenarioEditorPresenter
                                  content.getOverview(),
                                  versionRecordManager.getVersion(),
                                  oracle,
-                                 service );
+                                 service,
+                                 new Callback<Scenario>(){
+                                     @Override
+                                     public void callback(Scenario result) {
+                                         scenario = result;
+                                         setUpOracle(content);
+                                     }
+                                 });
 
                 view.hideBusyIndicator();
             }
         };
+    }
+
+    private void setUpOracle(TestScenarioModelContent content) {
+        final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
+        oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
+                                                                scenario,
+                                                                dataModel );
     }
 
     protected void save() {
