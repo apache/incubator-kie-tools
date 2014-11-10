@@ -20,7 +20,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:kie='urn:import:org.uberfire.properties.editor.client'>
+             xmlns:uf='urn:import:org.uberfire.properties.editor.client'>
 
 
   <ui:style>
@@ -43,7 +43,7 @@
         </b:AccordionGroup>
       </b:Accordion>
 
-      <kie:PropertyEditorWidget ui:field="propertyEditor"/>
+      <uf:PropertyEditorWidget ui:field="propertyEditor"/>
 
       <b:ModalFooter>
         <b:Button icon="EYE_CLOSE" type="PRIMARY" ui:field="close">

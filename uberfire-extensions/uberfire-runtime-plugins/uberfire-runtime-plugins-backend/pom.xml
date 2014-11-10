@@ -30,7 +30,7 @@
       <artifactId>errai-bus</artifactId>
     </dependency>
 
-    <!-- as javax.inject is excluded in kie-p-w-d in errai-bus It had to be declared here -->
+    <!-- as javax.inject is excluded in parent pom's errai-bus dep. It had to be declared here -->
     <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
