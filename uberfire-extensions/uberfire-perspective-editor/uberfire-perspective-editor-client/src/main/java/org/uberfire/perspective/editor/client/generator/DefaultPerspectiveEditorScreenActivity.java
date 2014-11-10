@@ -53,6 +53,7 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     public void build( PerspectiveEditor editor ) {
         this.editor = editor;
+        this.screensToLoad.clear();
         mainPanel = new Container();
         mainPanel.getElement().setId( "mainContainer" );
         List<RowEditor> rows = this.editor.getRows();
