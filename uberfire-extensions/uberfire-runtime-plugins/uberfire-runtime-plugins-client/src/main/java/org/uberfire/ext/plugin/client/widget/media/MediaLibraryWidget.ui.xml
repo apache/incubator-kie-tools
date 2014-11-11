@@ -18,7 +18,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:c="urn:import:org.uberfire.client.common">
+             xmlns:c="urn:import:org.uberfire.ext.widgets.common.client.common">
   <ui:style>
     .reset-thumbs {
       margin-left: 0 !important;

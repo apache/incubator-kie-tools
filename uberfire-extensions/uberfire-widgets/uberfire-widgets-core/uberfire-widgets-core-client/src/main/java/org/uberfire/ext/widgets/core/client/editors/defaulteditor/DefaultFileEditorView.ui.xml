@@ -18,9 +18,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:github="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:defaulteditor="urn:import:org.uberfire.client.editors.defaulteditor">
-    <ui:with field="i18n"
-             type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
+             xmlns:defaulteditor="urn:import:org.uberfire.ext.widgets.core.client.editors.defaulteditor">
+
+  <ui:with field="i18n" type="org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants"/>
+
   <ui:style>
     .center {
       margin-top: 50px;
