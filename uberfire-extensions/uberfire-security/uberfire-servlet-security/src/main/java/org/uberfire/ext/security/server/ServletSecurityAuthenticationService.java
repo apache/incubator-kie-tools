@@ -44,7 +44,7 @@ import org.uberfire.ext.security.server.adapter.GroupsAdapter;
 @ApplicationScoped
 public class ServletSecurityAuthenticationService implements AuthenticationService {
 
-    private static final String USER_SESSION_ATTR_NAME = "kie.uf.security.user";
+    private static final String USER_SESSION_ATTR_NAME = "uf.security.user";
     private static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
 
     private final ServiceLoader<GroupsAdapter> groupsAdapterServiceLoader = ServiceLoader.load( GroupsAdapter.class );

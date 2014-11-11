@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterYesNoCancelButtons;
 import org.uberfire.mvp.Command;
 
-public class YesNoCancelPopup extends KieBaseModal {
+public class YesNoCancelPopup extends BaseModal {
 
     interface YesNoCancelPopupWidgetBinder
             extends

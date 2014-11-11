@@ -26,14 +26,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.ext.widgets.common.client.common.popups.KieBaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
 /**
  * A popup that shows an error message
  */
-public class ErrorPopup extends KieBaseModal {
+public class ErrorPopup extends BaseModal {
 
     interface ErrorPopupWidgetBinder
             extends

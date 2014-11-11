@@ -32,13 +32,13 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.ext.widgets.common.client.common.popups.KieBaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 /**
  * The generic Wizard view implementation
  */
 @Dependent
-public class WizardViewImpl extends KieBaseModal
+public class WizardViewImpl extends BaseModal
         implements
         WizardView {
 

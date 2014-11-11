@@ -11,6 +11,6 @@
   <inherits name='org.jboss.errai.bus.ErraiBus'/>
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
-  <inherits name="org.uberfire.ext.widgets.common.KIEUberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
 
 </module>

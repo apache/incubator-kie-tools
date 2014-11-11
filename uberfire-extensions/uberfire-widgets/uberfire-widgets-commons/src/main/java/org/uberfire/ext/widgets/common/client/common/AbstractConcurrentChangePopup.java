@@ -22,13 +22,13 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.ext.widgets.common.client.common.popups.KieBaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterForceSaveReOpenCancelButtons;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterReOpenIgnoreButtons;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
-public abstract class AbstractConcurrentChangePopup extends KieBaseModal {
+public abstract class AbstractConcurrentChangePopup extends BaseModal {
 
     interface AbstractConcurrentChangePopupWidgetBinder
             extends

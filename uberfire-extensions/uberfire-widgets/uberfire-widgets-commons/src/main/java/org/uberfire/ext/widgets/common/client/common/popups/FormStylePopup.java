@@ -29,7 +29,7 @@ import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
  * This builds on the FormStyleLayout for providing common popup features in a
  * columnar form layout, with a title and a large (ish) icon.
  */
-public class FormStylePopup extends KieBaseModal {
+public class FormStylePopup extends BaseModal {
 
     interface FormStylePopupWidgetBinder
             extends

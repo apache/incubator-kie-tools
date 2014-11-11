@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Base Modal for all KIE Workbench use. Setting the following properties by default:
+ * Base class for modal popup implementations. Setting the following properties by default:
  * - setMaxHeight( ( Window.getClientHeight() * 0.75 ) + "px" );
  * - setBackdrop( BackdropType.STATIC );
  * - setKeyboard( true );
@@ -48,9 +48,9 @@ import com.google.gwt.user.client.ui.Widget;
  * - Automatic invocation of the first Button's ClickHandler where ButtonType==PRIMARY when <enter> is pressed
  */
 
-public class KieBaseModal extends Modal {
+public class BaseModal extends Modal {
 
-    public KieBaseModal() {
+    public BaseModal() {
         setMaxHeigth( ( Window.getClientHeight() * 0.75 ) + "px" );
         setBackdrop( BackdropType.STATIC );
         setKeyboard( true );
@@ -62,7 +62,7 @@ public class KieBaseModal extends Modal {
         addShownHandler( new ShownHandler() {
             @Override
             public void onShown( ShownEvent shownEvent ) {
-                setFocus( KieBaseModal.this,
+                setFocus( BaseModal.this,
                           Boolean.FALSE );
             }
         } );

@@ -4,7 +4,7 @@
 <module>
   <inherits name="com.google.gwt.editor.Editor" />
   <inherits name="org.uberfire.UberfireClientAll"/>
-  <inherits name="org.uberfire.ext.widgets.common.KIEUberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
 
   <inherits name="org.uberfire.ext.plugin.RuntimePluginAPI"/>
 
