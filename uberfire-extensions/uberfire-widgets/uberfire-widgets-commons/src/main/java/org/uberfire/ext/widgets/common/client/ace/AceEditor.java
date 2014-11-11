@@ -477,7 +477,7 @@ public class AceEditor extends Composite implements RequiresResize,
                 var callbackWrapper =
                         @org.uberfire.ext.widgets.common.client.ace.AceEditor::wrapCompletionCallback(Lcom/google/gwt/core/client/JavaScriptObject;)(callback);
                 var aceEditor = editor._aceGWTAceEditor;
-                provider.@org.uberfire.ext.widgets.common.client.ace.AceCompletionProvider::getProposals(Lorg/uberfire/client/ace/AceEditor;Lorg/uberfire/client/ace/AceEditorCursorPosition;Ljava/lang/String;Lorg/uberfire/client/ace/AceCompletionCallback;)(
+                provider.@org.uberfire.ext.widgets.common.client.ace.AceCompletionProvider::getProposals(Lorg/uberfire/ext/widgets/common/client/ace/AceEditor;Lorg/uberfire/ext/widgets/common/client/ace/AceEditorCursorPosition;Ljava/lang/String;Lorg/uberfire/ext/widgets/common/client/ace/AceCompletionCallback;)(
                         aceEditor,
                         @org.uberfire.ext.widgets.common.client.ace.AceEditorCursorPosition::create(II)(pos.row, pos.column),
                         prefix,
