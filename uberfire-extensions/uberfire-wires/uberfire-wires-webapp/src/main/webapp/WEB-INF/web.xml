@@ -38,7 +38,7 @@
     <url-pattern>/wires.html</url-pattern>
     <url-pattern>/uf_security_check</url-pattern>
     <url-pattern>*.erraiBus</url-pattern>
-    <url-pattern>/org.uberfire.wires.WiresShowcase/*</url-pattern>
+    <url-pattern>/org.uberfire.ext.wires.WiresShowcase/*</url-pattern>
   </filter-mapping>
 
   <servlet>

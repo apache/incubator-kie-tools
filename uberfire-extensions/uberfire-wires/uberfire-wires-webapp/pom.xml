@@ -241,7 +241,7 @@
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <localWorkers>1</localWorkers>
-          <module>org.uberfire.wires.WiresShowcase</module>
+          <module>org.uberfire.ext.wires.WiresShowcase</module>
           <logLevel>INFO</logLevel>
           <compileSourcesArtifacts>
             <!-- UberFire -->
@@ -374,7 +374,7 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
-              <module>org.uberfire.wires.WiresShowcase</module>
+              <module>org.uberfire.ext.wires.WiresShowcase</module>
               <draftCompile>false</draftCompile>
               <localWorkers>4</localWorkers>
               <extraJvmArgs>-Xmx4096m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>
