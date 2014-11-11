@@ -2,7 +2,6 @@ package org.drools.workbench.screens.categories.client;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Categories;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 
 /**

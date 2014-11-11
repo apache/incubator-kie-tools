@@ -22,13 +22,11 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.drools.workbench.screens.dsltext.client.resources.DSLTextEditorResources;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.ResizableTextArea;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.ext.widgets.common.client.common.ResizableTextArea;
 
 /**
  * The view for the Domain Specific Language editor

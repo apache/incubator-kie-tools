@@ -35,15 +35,15 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
 import org.junit.Test;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
-import org.kie.uberfire.metadata.engine.Index;
-import org.kie.uberfire.metadata.model.KObject;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeValueIndexTerm;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
+import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.java.nio.file.Path;
 
 import static org.apache.lucene.util.Version.*;
@@ -61,7 +61,7 @@ public class IndexDecisionTableXLSAttributeNameAndValueTest extends BaseIndexing
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.kie.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         //This simply checks whether there is a Rule Attribute "ruleflow-group" and a Rule Attribute Value "myRuleflowGroup"
         //The specific query does not check that the Rule Attribute Value corresponds to the Rule Attribute, so it is possible

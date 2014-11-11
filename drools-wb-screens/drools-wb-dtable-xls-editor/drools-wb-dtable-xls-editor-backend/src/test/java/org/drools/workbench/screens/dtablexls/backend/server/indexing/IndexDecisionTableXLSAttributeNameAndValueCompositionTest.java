@@ -32,10 +32,6 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.drools.workbench.screens.dtablexls.type.DecisionTableXLSResourceTypeDefinition;
 import org.junit.Test;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil;
-import org.kie.uberfire.metadata.engine.Index;
-import org.kie.uberfire.metadata.model.KObject;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.RuleAttributeNameAnalyzer;
@@ -43,6 +39,10 @@ import org.kie.workbench.common.services.refactoring.backend.server.query.QueryB
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleAttributeValueIndexTerm;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
+import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.java.nio.file.Path;
 
 import static org.apache.lucene.util.Version.*;
@@ -58,7 +58,7 @@ public class IndexDecisionTableXLSAttributeNameAndValueCompositionTest extends B
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
-        final Index index = getConfig().getIndexManager().get( org.kie.uberfire.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
+        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
 
         //Decision Table defining a RuleFlow-Group named myRuleFlowGroup. This should match dtable3.xls
         //This checks whether there is a Rule Attribute "ruleflow-group" and its Value is "myRuleflowGroup"

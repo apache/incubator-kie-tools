@@ -50,23 +50,23 @@ import org.drools.workbench.screens.guided.dtree.client.widget.factories.Constra
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeNodeFactory;
 import org.drools.workbench.screens.guided.dtree.client.widget.shapes.BaseGuidedDecisionTreeShape;
 import org.drools.workbench.screens.guided.dtree.client.widget.shapes.TypeShape;
-import org.kie.uberfire.wires.core.api.events.ClearEvent;
-import org.kie.uberfire.wires.core.api.events.ShapeAddedEvent;
-import org.kie.uberfire.wires.core.api.events.ShapeDeletedEvent;
-import org.kie.uberfire.wires.core.api.events.ShapeDragCompleteEvent;
-import org.kie.uberfire.wires.core.api.events.ShapeDragPreviewEvent;
-import org.kie.uberfire.wires.core.api.events.ShapeSelectedEvent;
-import org.kie.uberfire.wires.core.api.layout.LayoutManager;
-import org.kie.uberfire.wires.core.api.layout.RequiresLayoutManager;
-import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
-import org.kie.uberfire.wires.core.client.canvas.WiresCanvas;
-import org.kie.uberfire.wires.core.client.util.ShapeFactoryUtil;
-import org.kie.uberfire.wires.core.trees.client.canvas.WiresTreeNodeConnector;
-import org.kie.uberfire.wires.core.trees.client.layout.WiresLayoutUtilities;
-import org.kie.uberfire.wires.core.trees.client.layout.treelayout.Rectangle2D;
-import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.wires.core.api.events.ClearEvent;
+import org.uberfire.ext.wires.core.api.events.ShapeAddedEvent;
+import org.uberfire.ext.wires.core.api.events.ShapeDeletedEvent;
+import org.uberfire.ext.wires.core.api.events.ShapeDragCompleteEvent;
+import org.uberfire.ext.wires.core.api.events.ShapeDragPreviewEvent;
+import org.uberfire.ext.wires.core.api.events.ShapeSelectedEvent;
+import org.uberfire.ext.wires.core.api.layout.LayoutManager;
+import org.uberfire.ext.wires.core.api.layout.RequiresLayoutManager;
+import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
+import org.uberfire.ext.wires.core.client.canvas.WiresCanvas;
+import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
+import org.uberfire.ext.wires.core.trees.client.canvas.WiresTreeNodeConnector;
+import org.uberfire.ext.wires.core.trees.client.layout.WiresLayoutUtilities;
+import org.uberfire.ext.wires.core.trees.client.layout.treelayout.Rectangle2D;
+import org.uberfire.ext.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
 public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<GuidedDecisionTreeEditorPresenter> {
 

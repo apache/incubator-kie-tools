@@ -43,12 +43,12 @@ import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.Uns
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedIActionParserMessage;
 import org.drools.workbench.models.guided.dtree.shared.model.parser.messages.UnsupportedIPatternParserMessage;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.GenericModalFooter;
 import org.kie.workbench.common.widgets.viewsource.client.widget.ViewDRLSourceWidget;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
 
-public class ParserMessagesPopup extends KieBaseModal {
+public class ParserMessagesPopup extends BaseModal {
 
     interface ParserMessagesBinder
             extends

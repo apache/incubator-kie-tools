@@ -49,20 +49,20 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDe
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.DefaultValueDropDownManager;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.LimitedEntryDropDownManager;
-import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
-import org.kie.uberfire.client.common.NumericBigDecimalTextBox;
-import org.kie.uberfire.client.common.NumericBigIntegerTextBox;
-import org.kie.uberfire.client.common.NumericByteTextBox;
-import org.kie.uberfire.client.common.NumericDoubleTextBox;
-import org.kie.uberfire.client.common.NumericFloatTextBox;
-import org.kie.uberfire.client.common.NumericIntegerTextBox;
-import org.kie.uberfire.client.common.NumericLongTextBox;
-import org.kie.uberfire.client.common.NumericShortTextBox;
-import org.kie.uberfire.client.common.NumericTextBox;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
+import org.uberfire.ext.widgets.common.client.common.AbstractRestrictedEntryTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericBigIntegerTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericByteTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericDoubleTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericFloatTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericIntegerTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericLongTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericShortTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericTextBox;
 
 /**
  * A Factory for Widgets to edit DTCellValues

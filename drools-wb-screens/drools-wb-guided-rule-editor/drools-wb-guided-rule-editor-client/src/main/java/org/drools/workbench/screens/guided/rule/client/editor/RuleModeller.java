@@ -47,13 +47,13 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.DirtyableHorizontalPane;
-import org.kie.uberfire.client.common.DirtyableVerticalPane;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
+import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
+import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
+import org.uberfire.ext.widgets.common.client.common.DirtyableVerticalPane;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 /**
  * This is the parent widget that contains the model based rule builder.

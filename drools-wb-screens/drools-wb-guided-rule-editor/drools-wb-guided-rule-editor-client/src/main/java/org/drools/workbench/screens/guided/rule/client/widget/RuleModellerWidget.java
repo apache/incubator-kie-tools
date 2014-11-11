@@ -23,7 +23,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
-import org.kie.uberfire.client.common.DirtyableComposite;
+import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 
 /**
  * A superclass for the widgets present in RuleModeller.

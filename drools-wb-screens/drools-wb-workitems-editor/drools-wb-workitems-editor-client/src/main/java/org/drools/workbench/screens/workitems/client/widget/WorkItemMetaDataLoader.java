@@ -7,7 +7,7 @@ import org.drools.workbench.screens.workitems.model.WorkItemDefinitionElements;
 import org.drools.workbench.screens.workitems.service.WorkItemsEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 
 /**
  * Loader for Work Items Editors meta-data.

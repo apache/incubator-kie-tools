@@ -39,7 +39,7 @@ import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
-import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
+import org.uberfire.ext.widgets.common.client.common.AbstractRestrictedEntryTextBox;
 
 /**
  * Drop-down Widget for Operators including supplementary controls for CEP

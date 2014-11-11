@@ -26,14 +26,14 @@ import com.emitrom.lienzo.shared.core.types.TextAlign;
 import com.emitrom.lienzo.shared.core.types.TextBaseLine;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.categories.GuidedDecisionTreeEditorCategory;
 import org.drools.workbench.screens.guided.dtree.client.widget.shapes.ConstraintShape;
-import org.kie.uberfire.wires.core.api.factories.FactoryHelper;
-import org.kie.uberfire.wires.core.api.factories.ShapeDragProxy;
-import org.kie.uberfire.wires.core.api.factories.ShapeDragProxyCompleteCallback;
-import org.kie.uberfire.wires.core.api.factories.ShapeDragProxyPreviewCallback;
-import org.kie.uberfire.wires.core.api.factories.categories.Category;
-import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
-import org.kie.uberfire.wires.core.client.factories.AbstractBaseFactory;
-import org.kie.uberfire.wires.core.client.util.ShapeFactoryUtil;
+import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
+import org.uberfire.ext.wires.core.api.factories.ShapeDragProxy;
+import org.uberfire.ext.wires.core.api.factories.ShapeDragProxyCompleteCallback;
+import org.uberfire.ext.wires.core.api.factories.ShapeDragProxyPreviewCallback;
+import org.uberfire.ext.wires.core.api.factories.categories.Category;
+import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
+import org.uberfire.ext.wires.core.client.factories.AbstractBaseFactory;
+import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 
 public abstract class BaseGuidedDecisionTreeNodeFactory<T extends Shape<T>> extends AbstractBaseFactory<T> {
 

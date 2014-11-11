@@ -22,9 +22,9 @@ import com.emitrom.lienzo.shared.core.types.Color;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.TypeNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.widget.shapes.TypeShape;
-import org.kie.uberfire.wires.core.api.factories.FactoryHelper;
-import org.kie.uberfire.wires.core.api.shapes.WiresBaseShape;
-import org.kie.uberfire.wires.core.client.util.ShapesUtils;
+import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
+import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
+import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
 @ApplicationScoped
 public class TypeNodeFactory extends BaseGuidedDecisionTreeNodeFactory<Circle> {

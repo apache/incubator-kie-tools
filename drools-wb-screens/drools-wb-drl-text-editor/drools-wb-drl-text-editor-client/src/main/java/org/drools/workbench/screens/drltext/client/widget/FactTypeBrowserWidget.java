@@ -34,10 +34,10 @@ import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResour
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.Util;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.Util;
 
 public class FactTypeBrowserWidget
         extends Composite implements UberView<DRLEditorPresenter> {

@@ -23,12 +23,12 @@ import com.emitrom.lienzo.shared.core.types.Color;
 import com.emitrom.lienzo.shared.core.types.TextBaseLine;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ConstraintFactoryHelper;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeFactoryHelper;
-import org.kie.uberfire.wires.core.api.factories.FactoryHelper;
-import org.kie.uberfire.wires.core.api.factories.ShapeFactory;
-import org.kie.uberfire.wires.core.api.factories.ShapeGlyph;
-import org.kie.uberfire.wires.core.client.palette.PaletteShape;
-import org.kie.uberfire.wires.core.client.palette.StencilPaletteBuilder;
-import org.kie.uberfire.wires.core.client.util.ShapeFactoryUtil;
+import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
+import org.uberfire.ext.wires.core.api.factories.ShapeFactory;
+import org.uberfire.ext.wires.core.api.factories.ShapeGlyph;
+import org.uberfire.ext.wires.core.client.palette.PaletteShape;
+import org.uberfire.ext.wires.core.client.palette.StencilPaletteBuilder;
+import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 
 public class GuidedDecisionTreeStencilPaletteBuilder extends StencilPaletteBuilder {
 

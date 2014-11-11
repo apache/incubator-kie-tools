@@ -39,9 +39,6 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.MultiPageEditor;
-import org.kie.uberfire.client.common.Page;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -52,6 +49,9 @@ import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPre
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
+import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent

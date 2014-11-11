@@ -22,9 +22,9 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 abstract class AddFieldClickHandler
         implements SelectionHandler<String>,

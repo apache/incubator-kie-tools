@@ -34,7 +34,7 @@ import com.google.gwt.resources.client.ImageResource;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.screens.guided.dtree.client.editor.GuidedDecisionTreeEditorPresenter;
 import org.drools.workbench.screens.guided.dtree.client.resources.GuidedDecisionTreeResources;
-import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
+import org.uberfire.ext.wires.core.trees.client.shapes.WiresBaseTreeNode;
 import org.uberfire.mvp.Command;
 
 public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresBaseTreeNode {

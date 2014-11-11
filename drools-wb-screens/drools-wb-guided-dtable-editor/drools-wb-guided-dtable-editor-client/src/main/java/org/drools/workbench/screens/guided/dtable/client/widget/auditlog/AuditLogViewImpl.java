@@ -48,8 +48,8 @@ import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.services.security.AppRoles;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * The AuditLog View implementation

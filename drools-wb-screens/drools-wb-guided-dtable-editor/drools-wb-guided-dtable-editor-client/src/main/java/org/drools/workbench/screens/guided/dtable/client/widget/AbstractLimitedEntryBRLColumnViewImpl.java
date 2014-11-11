@@ -42,12 +42,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModelEditor;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerConfiguration;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModellerWidgetFactory;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * An editor for Limited Entry BRL Column definitions

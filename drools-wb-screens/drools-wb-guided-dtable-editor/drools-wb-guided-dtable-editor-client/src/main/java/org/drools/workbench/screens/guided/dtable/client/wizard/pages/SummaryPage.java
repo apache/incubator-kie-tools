@@ -24,7 +24,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.client.callbacks.Callback;
-import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 /**
  * A summary page for the guided Decision Table Wizard

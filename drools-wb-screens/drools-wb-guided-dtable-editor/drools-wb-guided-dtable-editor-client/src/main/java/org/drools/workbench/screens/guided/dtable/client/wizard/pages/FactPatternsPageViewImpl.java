@@ -56,8 +56,8 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.cells.Patt
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.CEPWindowOperatorsDropdown;
 import org.drools.workbench.screens.guided.rule.client.editor.OperatorSelection;
-import org.kie.uberfire.client.resources.WizardCellListResources;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.core.client.resources.WizardCellListResources;
 
 /**
  * An implementation of the Fact Patterns page

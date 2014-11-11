@@ -24,10 +24,10 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.io.IndexersFactory;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
+import org.uberfire.ext.metadata.engine.Indexer;
+import org.uberfire.ext.metadata.io.IndexersFactory;
 
 @Startup(StartupType.EAGER)
 @ApplicationScoped

@@ -21,7 +21,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -29,7 +28,6 @@ import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionEd
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementSelectedListener;
 import org.drools.workbench.screens.workitems.client.widget.WorkItemDefinitionElementsBrowser;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class WorkItemsEditorViewImpl

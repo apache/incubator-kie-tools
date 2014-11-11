@@ -42,13 +42,13 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ConstraintNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.BindingUtilities;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-public class EditConstraintPopup extends KieBaseModal {
+public class EditConstraintPopup extends BaseModal {
 
     interface EditConstraintBinder
             extends

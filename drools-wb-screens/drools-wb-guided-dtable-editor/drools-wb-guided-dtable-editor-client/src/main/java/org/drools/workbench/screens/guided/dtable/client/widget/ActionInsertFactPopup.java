@@ -51,13 +51,13 @@ import org.drools.workbench.screens.guided.dtable.client.resources.images.Guided
 import org.drools.workbench.screens.guided.dtable.client.utils.DTCellValueUtilities;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
-import org.kie.uberfire.client.common.ImageButton;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.ImageButton;
+import org.uberfire.ext.widgets.common.client.common.InfoPopup;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * This is an editor for columns that are for inserting facts.

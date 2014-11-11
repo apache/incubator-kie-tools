@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.uberfire.client.common.ImageButton;
+import org.uberfire.ext.widgets.common.client.common.ImageButton;
 
 public class AddConstraintButton
         extends Composite {

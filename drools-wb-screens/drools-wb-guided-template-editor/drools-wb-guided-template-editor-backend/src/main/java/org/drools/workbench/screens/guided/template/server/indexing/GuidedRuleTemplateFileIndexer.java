@@ -24,15 +24,15 @@ import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.kie.uberfire.metadata.engine.Indexer;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KObjectKey;
 import org.kie.workbench.common.services.refactoring.backend.server.indexing.DefaultIndexBuilder;
 import org.kie.workbench.common.services.refactoring.backend.server.util.KObjectUtil;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
+import org.uberfire.ext.metadata.engine.Indexer;
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 

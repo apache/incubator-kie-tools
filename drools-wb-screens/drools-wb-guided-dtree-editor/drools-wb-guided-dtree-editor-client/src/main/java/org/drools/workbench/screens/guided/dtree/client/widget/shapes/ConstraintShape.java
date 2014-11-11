@@ -24,8 +24,8 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.DateValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.impl.StringValue;
-import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.uberfire.ext.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
 public class ConstraintShape extends BaseGuidedDecisionTreeShape<ConstraintNode> {
 

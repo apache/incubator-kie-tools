@@ -31,9 +31,9 @@ import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.InfoPopup;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class TypeChoiceFormPopup
         extends FormStylePopup

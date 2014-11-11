@@ -39,12 +39,12 @@ import org.drools.workbench.screens.guided.rule.client.editor.BindingTextBox;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.InfoPopup;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class PopupCreator {
 

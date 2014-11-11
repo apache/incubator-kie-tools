@@ -23,15 +23,15 @@ import org.drools.workbench.models.testscenarios.shared.FactData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.ImageButton;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
+import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import org.uberfire.ext.widgets.common.client.common.ImageButton;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class CallMethodWidget extends DirtyableComposite {
 

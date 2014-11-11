@@ -31,9 +31,9 @@
   <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
   <inherits name="org.kie.workbench.common.services.security.KieWorkbenchCommonSecurity"/>
 
-  <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
 
-  <inherits name="org.kie.uberfire.wires.core.trees.WiresCoreTrees"/>
+  <inherits name="org.uberfire.ext.wires.core.trees.WiresCoreTrees"/>
 
   <source path="client"/>
 

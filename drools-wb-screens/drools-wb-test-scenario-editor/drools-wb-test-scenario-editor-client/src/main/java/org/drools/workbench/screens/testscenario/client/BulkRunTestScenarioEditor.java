@@ -25,10 +25,10 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public class BulkRunTestScenarioEditor
         implements IsWidget,

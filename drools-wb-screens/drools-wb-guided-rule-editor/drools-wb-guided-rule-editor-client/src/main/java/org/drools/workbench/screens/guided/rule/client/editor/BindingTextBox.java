@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import org.kie.workbench.common.widgets.client.util.Unicode;
-import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
+import org.uberfire.ext.widgets.common.client.common.AbstractRestrictedEntryTextBox;
 
 /**
  * A TextBox to handle entry of Pattern\Field bindings

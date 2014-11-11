@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.Caller;
@@ -32,7 +31,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.BusyPopup;
 
 public class GuidedRuleEditorViewImpl
         extends KieEditorViewImpl

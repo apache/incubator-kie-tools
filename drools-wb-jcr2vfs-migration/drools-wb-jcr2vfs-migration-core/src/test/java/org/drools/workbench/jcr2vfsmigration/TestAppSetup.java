@@ -21,8 +21,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
+import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.mockito.Mockito.*;

@@ -18,11 +18,11 @@ package org.drools.workbench.screens.guided.dtree.client.widget.palette;
 import com.emitrom.lienzo.client.core.shape.Layer;
 import com.emitrom.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.kie.uberfire.wires.core.api.factories.FactoryHelper;
-import org.kie.uberfire.wires.core.api.factories.ShapeFactory;
-import org.kie.uberfire.wires.core.client.canvas.FocusableLienzoPanel;
-import org.kie.uberfire.wires.core.client.palette.PaletteShape;
-import org.kie.uberfire.wires.core.client.util.ShapeFactoryUtil;
+import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
+import org.uberfire.ext.wires.core.api.factories.ShapeFactory;
+import org.uberfire.ext.wires.core.client.canvas.FocusableLienzoPanel;
+import org.uberfire.ext.wires.core.client.palette.PaletteShape;
+import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 
 public class GuidedDecisionTreePaletteGroup extends VerticalPanel {
 

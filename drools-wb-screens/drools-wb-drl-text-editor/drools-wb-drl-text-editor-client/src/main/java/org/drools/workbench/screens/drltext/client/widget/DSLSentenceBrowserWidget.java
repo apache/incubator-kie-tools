@@ -30,9 +30,9 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.client.editor.DRLEditorPresenter;
 import org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class DSLSentenceBrowserWidget
         extends Composite implements UberView<DRLEditorPresenter> {

@@ -37,14 +37,14 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class ScenarioWidgetComponentCreator {
 

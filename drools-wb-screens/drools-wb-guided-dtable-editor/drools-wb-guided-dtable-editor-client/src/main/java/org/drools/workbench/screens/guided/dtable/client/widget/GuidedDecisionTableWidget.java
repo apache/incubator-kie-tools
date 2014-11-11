@@ -85,19 +85,19 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidge
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.common.AddButton;
-import org.kie.uberfire.client.common.DecoratedDisclosurePanel;
-import org.kie.uberfire.client.common.DirtyableHorizontalPane;
-import org.kie.uberfire.client.common.ImageButton;
-import org.kie.uberfire.client.common.PrettyFormLayout;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.AddButton;
+import org.uberfire.ext.widgets.common.client.common.DecoratedDisclosurePanel;
+import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
+import org.uberfire.ext.widgets.common.client.common.ImageButton;
+import org.uberfire.ext.widgets.common.client.common.PrettyFormLayout;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * This is the new guided decision table editor for the web.

@@ -6,12 +6,11 @@
   <inherits name="org.uberfire.UberfireClientAll"/>
 
   <!-- Uberfire Extensions - Runtime Plugin -->
-  <inherits name="org.kie.uberfire.plugin.RuntimePluginClient"/>
-
-  <inherits name="org.kie.uberfire.KIEUberfireWidgetsCommons"/>
+  <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
 
   <!-- Uberfire Extensions - Core Widgets -->
-  <inherits name="org.kie.uberfire.KIEUberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
 
   <!-- Guvnor dependencies -->
   <inherits name='org.guvnor.asset.management.GuvnorAssetMgmtClient'/>
@@ -71,11 +70,10 @@
   <inherits name="org.kie.uberfire.social.activities.SocialActivitiesClient"/>
 
   <!-- Perspective Editor-->
-  <inherits name="org.kie.uberfire.perspective.editor.PerspectiveEditorClient"/>
+  <inherits name="org.uberfire.ext.perspective.editor.PerspectiveEditorClient"/>
 
   <!-- Uberfire Apps-->
-  <inherits name="org.kie.uberfire.apps.UberfireAppsClient"/>
-
+  <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
 
   <!-- Specify the application specific style sheet. -->
   <stylesheet src='css/drools-workbench.css'/>

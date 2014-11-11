@@ -40,11 +40,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.workitems.IBindingProvider;
 import org.kie.workbench.common.widgets.client.workitems.WorkItemParametersWidget;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * A popup to define an Action to execute a Work Item

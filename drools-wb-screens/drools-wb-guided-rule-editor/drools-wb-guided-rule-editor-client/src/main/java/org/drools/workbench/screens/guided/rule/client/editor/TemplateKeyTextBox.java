@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.guided.rule.client.editor;
 
 import com.google.gwt.regexp.shared.RegExp;
-import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
+import org.uberfire.ext.widgets.common.client.common.AbstractRestrictedEntryTextBox;
 
 /**
  * A TextBox to handle entry of Template Keys

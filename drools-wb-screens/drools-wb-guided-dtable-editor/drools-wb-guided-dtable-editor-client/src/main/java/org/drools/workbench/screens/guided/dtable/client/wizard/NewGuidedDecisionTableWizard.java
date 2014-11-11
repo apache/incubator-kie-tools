@@ -40,8 +40,8 @@ import org.drools.workbench.screens.guided.dtable.client.wizard.pages.FactPatter
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.ImportsPage;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.RowExpander;
 import org.drools.workbench.screens.guided.dtable.client.wizard.pages.SummaryPage;
-import org.kie.uberfire.client.wizards.AbstractWizard;
-import org.kie.uberfire.client.wizards.WizardPage;
+import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;

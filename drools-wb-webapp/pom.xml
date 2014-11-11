@@ -64,8 +64,8 @@
       <artifactId>errai-security-server</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-metadata-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
@@ -454,22 +454,22 @@
 
     <!-- Perspective Editor -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-perspective-editor-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-perspective-editor-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-perspective-editor-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-perspective-editor-backend</artifactId>
     </dependency>
-    <!-- Uberfire Apps -->
 
+    <!-- Uberfire Apps -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-apps-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-apps-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-backend</artifactId>
     </dependency>
 
     <!-- Drools Workbench Screens -->
@@ -620,23 +620,23 @@
 
     <!-- UberFire PlugIn Extension -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-runtime-plugins-backend</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-runtime-plugins-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-client</artifactId>
     </dependency>
 
     <!-- UberFire Extension -->
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-metadata-commons-io</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-commons-io</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-metadata-backend-lucene</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-metadata-backend-lucene</artifactId>
     </dependency>
 
     <!-- UberFire -->
@@ -848,9 +848,9 @@
             <compileSourcesArtifact>org.drools:drools-wb-workitems-editor-client</compileSourcesArtifact>
 
             <!-- UberFire Extensions -->
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-runtime-plugins-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-perspective-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.uberfire:kie-uberfire-apps-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-perspective-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact>org.uberfire:uberfire-apps-client</compileSourcesArtifact>
 
             <!-- Dashbuilder -->
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-dataset-api</compileSourcesArtifact>

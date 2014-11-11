@@ -53,10 +53,10 @@ import org.drools.workbench.screens.guided.rule.client.editor.events.TemplateVar
 import org.drools.workbench.screens.guided.template.client.editor.TemplateModellerWidgetFactory;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * An editor for BRL Column definitions

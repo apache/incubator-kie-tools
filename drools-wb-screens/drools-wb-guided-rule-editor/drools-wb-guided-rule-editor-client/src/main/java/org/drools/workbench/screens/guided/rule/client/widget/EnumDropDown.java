@@ -22,10 +22,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
-import org.kie.uberfire.client.common.DropDownValueChanged;
-import org.kie.uberfire.client.common.IDirtyable;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
+import org.uberfire.ext.widgets.common.client.common.IDirtyable;
 
 /**
  * A drop down for enumerated values

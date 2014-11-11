@@ -65,16 +65,16 @@ import org.drools.workbench.screens.guided.rule.client.widget.ExpressionBuilder;
 import org.guvnor.common.services.workingset.client.WorkingSetManager;
 import org.guvnor.common.services.workingset.client.factconstraints.customform.CustomFormConfiguration;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.DropDownValueChanged;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
+import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
+import org.uberfire.ext.widgets.common.client.common.InfoPopup;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 /**
  * This is an editor for constraint values. How this behaves depends on the

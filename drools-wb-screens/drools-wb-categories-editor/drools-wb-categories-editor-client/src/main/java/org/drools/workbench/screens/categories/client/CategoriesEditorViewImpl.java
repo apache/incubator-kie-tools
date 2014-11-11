@@ -23,7 +23,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -34,12 +33,11 @@ import org.drools.workbench.screens.categories.client.resources.i18n.Constants;
 import org.drools.workbench.screens.categories.client.widget.CategoryTreeEditorWidget;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.PrettyFormLayout;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.ext.widgets.common.client.common.PrettyFormLayout;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 /**
  *

@@ -26,13 +26,11 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.enums.client.resources.i18n.EnumEditorConstants;
 import org.drools.workbench.screens.enums.client.widget.DeleteButtonCellWidget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class EnumEditorViewImpl

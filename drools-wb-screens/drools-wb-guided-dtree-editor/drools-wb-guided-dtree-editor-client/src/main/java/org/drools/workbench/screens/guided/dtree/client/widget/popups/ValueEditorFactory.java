@@ -16,11 +16,11 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.HasValue;
 import org.drools.workbench.models.guided.dtree.shared.model.values.Value;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public abstract class ValueEditorFactory {
 

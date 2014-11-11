@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Dependency;
-import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface BulkRunTestScenarioEditorView extends HasBusyIndicator,
                                                        IsWidget {

@@ -16,7 +16,7 @@
 package org.drools.workbench.screens.guided.dtree.client.widget.factories;
 
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ConstraintNode;
-import org.kie.uberfire.wires.core.api.factories.FactoryHelper;
+import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 
 public class ConstraintFactoryHelper implements FactoryHelper<ConstraintNode> {
 

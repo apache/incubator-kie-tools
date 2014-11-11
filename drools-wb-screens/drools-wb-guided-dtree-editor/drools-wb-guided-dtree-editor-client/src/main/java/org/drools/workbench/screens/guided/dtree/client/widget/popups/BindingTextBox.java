@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.widget.popups;
 
-import org.kie.uberfire.client.common.AbstractRestrictedEntryTextBox;
 import org.kie.workbench.common.widgets.client.util.Unicode;
+import org.uberfire.ext.widgets.common.client.common.AbstractRestrictedEntryTextBox;
 
 /**
  * A TextBox to handle entry of Pattern\Field bindings

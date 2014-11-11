@@ -21,7 +21,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertN
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ActionInsertNodeFactory;
-import org.kie.uberfire.wires.core.trees.client.shapes.WiresBaseTreeNode;
+import org.uberfire.ext.wires.core.trees.client.shapes.WiresBaseTreeNode;
 
 public class ActionInsertShape extends BaseGuidedDecisionTreeShape<ActionInsertNode> {
 

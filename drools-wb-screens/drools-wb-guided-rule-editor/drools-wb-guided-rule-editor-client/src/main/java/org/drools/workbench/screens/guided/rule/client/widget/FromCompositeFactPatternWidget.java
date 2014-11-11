@@ -32,12 +32,12 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRuleEditorImages508;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.DirtyableHorizontalPane;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
+import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
+import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 

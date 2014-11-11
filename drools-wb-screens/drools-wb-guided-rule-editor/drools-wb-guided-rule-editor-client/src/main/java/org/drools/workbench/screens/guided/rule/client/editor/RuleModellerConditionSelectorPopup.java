@@ -35,10 +35,10 @@ import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.uberfire.client.common.InfoPopup;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
+import org.uberfire.ext.widgets.common.client.common.InfoPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 /**
  * Pop-up for adding Conditions to the (RuleModeller) guided editor

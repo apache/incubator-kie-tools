@@ -75,7 +75,7 @@
 
   <servlet>
     <servlet-name>PluginMediaServlet</servlet-name>
-    <servlet-class>org.kie.uberfire.plugin.backend.PluginMediaServlet</servlet-class>
+    <servlet-class>org.uberfire.ext.plugin.backend.PluginMediaServlet</servlet-class>
     <init-param>
       <param-name>url-pattern</param-name>
       <param-value>/plugins/</param-value>

@@ -16,27 +16,28 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import com.github.gwtbootstrap.client.ui.Accordion;
+import java.util.Set;
+
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
-import com.github.gwtbootstrap.client.ui.Hero;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.HasBusyIndicator;
-import org.kie.uberfire.client.common.SmallLabel;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-
-import java.util.Set;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 

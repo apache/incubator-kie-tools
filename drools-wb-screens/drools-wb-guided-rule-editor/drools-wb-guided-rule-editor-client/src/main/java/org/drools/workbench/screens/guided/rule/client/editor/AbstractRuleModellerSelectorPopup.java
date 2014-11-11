@@ -25,15 +25,15 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
-import org.kie.uberfire.client.common.FormStyleLayout;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 /**
  * Base class for Pop-ups used by RuleModeller
  */
-public abstract class AbstractRuleModellerSelectorPopup extends KieBaseModal {
+public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
 
     protected static final String SECTION_SEPARATOR = "..................";
 

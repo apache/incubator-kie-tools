@@ -26,7 +26,7 @@ import com.emitrom.lienzo.shared.core.types.Color;
 import com.emitrom.lienzo.shared.core.types.TextAlign;
 import com.emitrom.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.event.shared.HandlerRegistration;
-import org.kie.uberfire.wires.core.client.util.ShapeFactoryUtil;
+import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 
 public class NodeLabel extends Group {
 

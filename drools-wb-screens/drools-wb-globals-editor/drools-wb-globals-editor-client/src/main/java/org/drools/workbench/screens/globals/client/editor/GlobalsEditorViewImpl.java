@@ -22,13 +22,11 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.model.Global;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 /**

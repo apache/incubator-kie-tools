@@ -70,8 +70,8 @@
       <artifactId>kie-wb-common-ui</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-widgets-commons</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -135,8 +135,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-widgets-core-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-core-client</artifactId>
     </dependency>
 
     <!-- Needed for DataModelOracle builder used in tests -->

@@ -38,12 +38,12 @@ import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
+import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
+import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 

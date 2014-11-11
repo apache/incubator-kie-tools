@@ -40,15 +40,15 @@ import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioAltedImages;
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.SmallLabel;
-import org.kie.uberfire.client.common.ValueChanged;
-import org.kie.uberfire.client.common.popups.FormStylePopup;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.ValueChanged;
+import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class VerifyFactWidget extends Composite {
 

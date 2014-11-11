@@ -39,10 +39,10 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
-import org.kie.uberfire.client.common.ClickableLabel;
-import org.kie.uberfire.client.common.DirtyableFlexTable;
-import org.kie.uberfire.client.common.ImageButton;
-import org.kie.uberfire.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
+import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import org.uberfire.ext.widgets.common.client.common.ImageButton;
+import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class FactDataWidgetFactory {
 

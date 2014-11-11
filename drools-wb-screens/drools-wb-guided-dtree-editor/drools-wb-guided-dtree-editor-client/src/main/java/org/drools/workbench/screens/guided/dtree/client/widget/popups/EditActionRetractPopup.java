@@ -34,10 +34,10 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionRetractNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-public class EditActionRetractPopup extends KieBaseModal {
+public class EditActionRetractPopup extends BaseModal {
 
     interface EditActionRetractBinder
             extends
