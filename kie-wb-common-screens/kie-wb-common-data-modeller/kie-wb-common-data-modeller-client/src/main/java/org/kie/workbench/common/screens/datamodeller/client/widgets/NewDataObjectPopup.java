@@ -19,7 +19,13 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.*;
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.HelpInline;
+import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.Modal;
+import com.github.gwtbootstrap.client.ui.Popover;
+import com.github.gwtbootstrap.client.ui.RadioButton;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.BackdropType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
@@ -41,7 +47,7 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEve
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class NewDataObjectPopup extends Modal {
@@ -135,40 +141,48 @@ public class NewDataObjectPopup extends Modal {
                 } )
         ) );
 
-        r_newPackage.setValue(Boolean.FALSE);
-        r_existingPackage.setValue(Boolean.TRUE);
+        r_newPackage.setValue( Boolean.FALSE );
+        r_existingPackage.setValue( Boolean.TRUE );
 
-        newPackageGroup.setVisible(Boolean.FALSE);
-        existingPackageGroup.setVisible(Boolean.TRUE);
+        newPackageGroup.setVisible( Boolean.FALSE );
+        existingPackageGroup.setVisible( Boolean.TRUE );
 
-        r_newPackage.addClickHandler(new ClickHandler() {
+        r_newPackage.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                if (!newPackageGroup.isVisible()) newPackageGroup.setVisible(true);
-                if(existingPackageGroup.isVisible()) existingPackageGroup.setVisible(false);
+            public void onClick( ClickEvent event ) {
+                if ( !newPackageGroup.isVisible() ) {
+                    newPackageGroup.setVisible( true );
+                }
+                if ( existingPackageGroup.isVisible() ) {
+                    existingPackageGroup.setVisible( false );
+                }
                 // Reset package error messages upon switching between new and existing package
-                if (existingPackageGroup.getStyleName().toLowerCase().contains(ControlGroupType.ERROR.toString().toLowerCase())) {
+                if ( existingPackageGroup.getStyleName().toLowerCase().contains( ControlGroupType.ERROR.toString().toLowerCase() ) ) {
                     errorMessagesGroup.setType( ControlGroupType.NONE );
-                    errorMessages.setText("");
+                    errorMessages.setText( "" );
                 }
                 existingPackageGroup.setType( ControlGroupType.NONE );
-                packageSelector.getPackageList().setSelectedValue(null);
+                packageSelector.getPackageList().setSelectedValue( null );
             }
-        });
-        r_existingPackage.addClickHandler(new ClickHandler() {
+        } );
+        r_existingPackage.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                if (newPackageGroup.isVisible()) newPackageGroup.setVisible(false);
-                if(!existingPackageGroup.isVisible()) existingPackageGroup.setVisible(true);
+            public void onClick( ClickEvent event ) {
+                if ( newPackageGroup.isVisible() ) {
+                    newPackageGroup.setVisible( false );
+                }
+                if ( !existingPackageGroup.isVisible() ) {
+                    existingPackageGroup.setVisible( true );
+                }
                 // Reset package error messages upon switching between new and existing package
-                if (newPackageGroup.getStyleName().toLowerCase().contains(ControlGroupType.ERROR.toString().toLowerCase())) {
+                if ( newPackageGroup.getStyleName().toLowerCase().contains( ControlGroupType.ERROR.toString().toLowerCase() ) ) {
                     errorMessagesGroup.setType( ControlGroupType.NONE );
-                    errorMessages.setText("");
+                    errorMessages.setText( "" );
                 }
                 newPackageGroup.setType( ControlGroupType.NONE );
-                packageSelector.getPackageList().setSelectedValue(null);
+                packageSelector.getPackageList().setSelectedValue( null );
             }
-        });
+        } );
 
         packageSelector.enableCreatePackage( false );
 
@@ -189,18 +203,18 @@ public class NewDataObjectPopup extends Modal {
         superclassSelector.setContext( context );
         packageSelector.setContext( context );
 
-        if (context != null && context.getCurrentProjectPackages() != null && context.getCurrentProjectPackages().size() > 0) {
-            r_newPackage.setValue(Boolean.FALSE);
-            r_existingPackage.setValue(Boolean.TRUE);
+        if ( context != null && context.getCurrentProjectPackages() != null && context.getCurrentProjectPackages().size() > 0 ) {
+            r_newPackage.setValue( Boolean.FALSE );
+            r_existingPackage.setValue( Boolean.TRUE );
 
-            newPackageGroup.setVisible(Boolean.FALSE);
-            existingPackageGroup.setVisible(Boolean.TRUE);
+            newPackageGroup.setVisible( Boolean.FALSE );
+            existingPackageGroup.setVisible( Boolean.TRUE );
         } else {
-            r_newPackage.setValue(Boolean.TRUE);
-            r_existingPackage.setValue(Boolean.FALSE);
+            r_newPackage.setValue( Boolean.TRUE );
+            r_existingPackage.setValue( Boolean.FALSE );
 
-            newPackageGroup.setVisible(Boolean.TRUE);
-            existingPackageGroup.setVisible(Boolean.FALSE);
+            newPackageGroup.setVisible( Boolean.TRUE );
+            existingPackageGroup.setVisible( Boolean.FALSE );
         }
     }
 
@@ -217,8 +231,8 @@ public class NewDataObjectPopup extends Modal {
 
         newName[ 0 ] = name.getText() != null ? name.getText().trim() : "";
         newLabel[ 0 ] = label.getText() != null ? label.getText().trim() : "";
-        packageName[ 0 ] = r_newPackage.getValue() ?  ( newPackage.getText() != null ? newPackage.getText().trim().toLowerCase() : "" ) :
-                                                      ( packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue().trim().toLowerCase() : null );
+        packageName[ 0 ] = r_newPackage.getValue() ? ( newPackage.getText() != null ? newPackage.getText().trim().toLowerCase() : "" ) :
+                ( packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue().trim().toLowerCase() : null );
 
         superClass[ 0 ] = superclassSelector.getSuperclassList().getValue();
         if ( SuperclassSelector.NOT_SELECTED.equals( superClass[ 0 ] ) ) {
@@ -238,13 +252,14 @@ public class NewDataObjectPopup extends Modal {
             public void onSuccess() {
 
                 //2) if classname is ok, validate the package name.
-                if (packageName[0] == null || "".equals(packageName[0])) {
-                    if (r_newPackage.getValue())
+                if ( packageName[ 0 ] == null || "".equals( packageName[ 0 ] ) ) {
+                    if ( r_newPackage.getValue() ) {
                         setErrorMessage( newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier_null() );
-                    else
+                    } else {
                         setErrorMessage( existingPackageGroup, Constants.INSTANCE.validation_error_no_package_selected() );
+                    }
                 } else {
-                    validatorService.isValidPackageIdentifier(packageName[0], new ValidatorCallback() {
+                    validatorService.isValidPackageIdentifier( packageName[ 0 ], new ValidatorCallback() {
                         @Override
                         public void onFailure() {
                             setErrorMessage( newPackageGroup, Constants.INSTANCE.validation_error_invalid_package_identifier( packageName[ 0 ] ) );
@@ -267,7 +282,7 @@ public class NewDataObjectPopup extends Modal {
                             } );
 
                         }
-                    });
+                    } );
                 }
             }
         } );
@@ -294,10 +309,10 @@ public class NewDataObjectPopup extends Modal {
         label.setText( "" );
         newPackage.setText( "" );
 
-        r_newPackage.setValue(Boolean.FALSE);
-        r_existingPackage.setValue(Boolean.TRUE);
-        newPackageGroup.setVisible(Boolean.FALSE);
-        existingPackageGroup.setVisible(Boolean.TRUE);
+        r_newPackage.setValue( Boolean.FALSE );
+        r_existingPackage.setValue( Boolean.TRUE );
+        newPackageGroup.setVisible( Boolean.FALSE );
+        existingPackageGroup.setVisible( Boolean.TRUE );
 
         cleanErrors();
     }

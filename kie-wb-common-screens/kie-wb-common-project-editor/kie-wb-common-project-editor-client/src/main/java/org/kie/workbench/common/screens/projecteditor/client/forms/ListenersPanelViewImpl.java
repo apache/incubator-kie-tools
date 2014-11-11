@@ -33,10 +33,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.tables.SimpleTable;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 public class ListenersPanelViewImpl
         extends Composite

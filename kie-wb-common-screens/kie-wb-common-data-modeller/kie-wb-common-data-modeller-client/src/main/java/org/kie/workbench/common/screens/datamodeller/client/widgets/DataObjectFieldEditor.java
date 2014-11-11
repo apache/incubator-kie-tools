@@ -46,7 +46,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.client.validation.ValidatorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
@@ -65,15 +64,18 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class DataObjectFieldEditor extends Composite {
 
     interface DataObjectFieldEditorUIBinder
             extends UiBinder<Widget, DataObjectFieldEditor> {
 
-    };
+    }
 
-    private static DataObjectFieldEditorUIBinder uiBinder = GWT.create(DataObjectFieldEditorUIBinder.class);
+    ;
+
+    private static DataObjectFieldEditorUIBinder uiBinder = GWT.create( DataObjectFieldEditorUIBinder.class );
 
     private static final String DEFAULT_LABEL_CLASS = "gwt-Label";
 
@@ -127,34 +129,34 @@ public class DataObjectFieldEditor extends Composite {
     private Caller<DataModelerService> modelerService;
 
     public DataObjectFieldEditor() {
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        typeSelector.addChangeHandler(new ChangeHandler() {
+        typeSelector.addChangeHandler( new ChangeHandler() {
             @Override
-            public void onChange(ChangeEvent event) {
-                typeChanged(event);
+            public void onChange( ChangeEvent event ) {
+                typeChanged( event );
             }
-        });
+        } );
 
-        positionSelector.addChangeHandler(new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                positionChanged(event);
+        positionSelector.addChangeHandler( new ChangeHandler() {
+            public void onChange( ChangeEvent event ) {
+                positionChanged( event );
             }
-        });
+        } );
 
         //positionHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
-        positionHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        positionHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
         //equalsHelpIcon.getElement().getStyle().setPaddingLeft(4, Style.Unit.PX);
-        equalsHelpIcon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        equalsHelpIcon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
 
-        setReadonly(true);
+        setReadonly( true );
     }
 
     public DataObjectTO getDataObject() {
         return dataObject;
     }
 
-    public void setDataObject(DataObjectTO dataObject) {
+    public void setDataObject( DataObjectTO dataObject ) {
         this.dataObject = dataObject;
     }
 
@@ -162,7 +164,7 @@ public class DataObjectFieldEditor extends Composite {
         return objectField;
     }
 
-    public void setObjectField(ObjectPropertyTO objectField) {
+    public void setObjectField( ObjectPropertyTO objectField ) {
         this.objectField = objectField;
     }
 
@@ -170,7 +172,7 @@ public class DataObjectFieldEditor extends Composite {
         return context;
     }
 
-    public void setContext(DataModelerContext context) {
+    public void setContext( DataModelerContext context ) {
         this.context = context;
         initTypeList();
     }
@@ -183,16 +185,16 @@ public class DataObjectFieldEditor extends Composite {
         return getContext() != null ? getContext().getCurrentProject() : null;
     }
 
-    private void setReadonly(boolean readonly) {
+    private void setReadonly( boolean readonly ) {
         this.readonly = readonly;
         boolean value = !readonly;
 
-        name.setEnabled(value);
-        label.setEnabled(value);
-        description.setEnabled(value);
-        typeSelector.setEnabled(value);
-        equalsSelector.setEnabled(value);
-        positionSelector.setEnabled(value);
+        name.setEnabled( value );
+        label.setEnabled( value );
+        description.setEnabled( value );
+        typeSelector.setEnabled( value );
+        equalsSelector.setEnabled( value );
+        positionSelector.setEnabled( value );
     }
 
     private boolean isReadonly() {
@@ -201,80 +203,83 @@ public class DataObjectFieldEditor extends Composite {
 
     // Event notifications
 
-    private void notifyFieldChange(String memberName, Object oldValue, Object newValue) {
-        DataObjectFieldChangeEvent changeEvent = new DataObjectFieldChangeEvent(DataModelerEvent.DATA_OBJECT_FIELD_EDITOR, getDataModel(), getDataObject(), getObjectField(), memberName, oldValue, newValue);
+    private void notifyFieldChange( String memberName,
+                                    Object oldValue,
+                                    Object newValue ) {
+        DataObjectFieldChangeEvent changeEvent = new DataObjectFieldChangeEvent( DataModelerEvent.DATA_OBJECT_FIELD_EDITOR, getDataModel(), getDataObject(), getObjectField(), memberName, oldValue, newValue );
         // Notify helper directly
-        getContext().getHelper().dataModelChanged(changeEvent);
-        dataModelerEventEvent.fire(changeEvent);
+        getContext().getHelper().dataModelChanged( changeEvent );
+        dataModelerEventEvent.fire( changeEvent );
     }
 
     // Event observers
-    private void onDataObjectFieldSelected(@Observes DataObjectFieldSelectedEvent event) {
-        if (event.isFrom(getDataModel())) {
-            loadDataObjectField(event.getCurrentDataObject(), event.getCurrentField());
+    private void onDataObjectFieldSelected( @Observes DataObjectFieldSelectedEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
+            loadDataObjectField( event.getCurrentDataObject(), event.getCurrentField() );
         }
     }
 
-    private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
+    private void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
         // When all attributes from the current object have been deleted clean
-        if (event.isFrom(getDataModel())) {
-            if (getDataObject().getProperties().size() == 0) {
+        if ( event.isFrom( getDataModel() ) ) {
+            if ( getDataObject().getProperties().size() == 0 ) {
                 clean();
-                setReadonly(true);
+                setReadonly( true );
             }
         }
     }
 
-    private void onDataObjectChange(@Observes DataObjectChangeEvent event) {
-        if (event.isFrom(getDataModel())) {
-            if ("name".equals(event.getPropertyName()) ||
-                    "packageName".equals(event.getPropertyName()) ||
-                    "label".equals(event.getPropertyName())) {
+    private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
+            if ( "name".equals( event.getPropertyName() ) ||
+                    "packageName".equals( event.getPropertyName() ) ||
+                    "label".equals( event.getPropertyName() ) ) {
 
                 initTypeList();
             }
         }
     }
 
-    private void onDataObjectSelected(@Observes DataObjectSelectedEvent event) {
-        if (event.isFrom(getDataModel())) {
+    private void onDataObjectSelected( @Observes DataObjectSelectedEvent event ) {
+        if ( event.isFrom( getDataModel() ) ) {
             clean();
-            setDataObject(event.getCurrentDataObject());
-            setObjectField(null);
+            setDataObject( event.getCurrentDataObject() );
+            setObjectField( null );
         }
     }
 
-    private void loadDataObjectField(DataObjectTO dataObject, ObjectPropertyTO objectField) {
+    private void loadDataObjectField( DataObjectTO dataObject,
+                                      ObjectPropertyTO objectField ) {
         clean();
-        setReadonly(true);
-        if (dataObject != null && objectField != null) {
-            setDataObject(dataObject);
-            setObjectField(objectField);
+        setReadonly( true );
+        if ( dataObject != null && objectField != null ) {
+            setDataObject( dataObject );
+            setObjectField( objectField );
             initTypeList();
 
             initPositions();
 
-            name.setText(getObjectField().getName());
+            name.setText( getObjectField().getName() );
 
-            AnnotationTO annotation = objectField.getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
-            if (annotation != null) {
-                label.setText( (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM) );
+            AnnotationTO annotation = objectField.getAnnotation( AnnotationDefinitionTO.LABEL_ANNOTATION );
+            if ( annotation != null ) {
+                label.setText( (String) annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) );
             }
 
-            annotation = objectField.getAnnotation(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION);
-            if (annotation != null) {
-                description.setText( (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM));
+            annotation = objectField.getAnnotation( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION );
+            if ( annotation != null ) {
+                description.setText( (String) annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) );
             }
 
-            annotation = objectField.getAnnotation(AnnotationDefinitionTO.KEY_ANNOTATION);
-            if (annotation != null) {
-                equalsSelector.setValue(Boolean.TRUE);
+            annotation = objectField.getAnnotation( AnnotationDefinitionTO.KEY_ANNOTATION );
+            if ( annotation != null ) {
+                equalsSelector.setValue( Boolean.TRUE );
             }
 
-            annotation = objectField.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION );
-            if (annotation != null) {
-                String position = (String) annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
-                positionSelector.setSelectedValue(position);
+            annotation = objectField.getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION );
+            if ( annotation != null ) {
+                String position = (String) annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM );
+                positionSelector.setSelectedValue( position );
             }
 
             setReadonly( getContext() == null || getContext().isReadonly() );
@@ -287,13 +292,15 @@ public class DataObjectFieldEditor extends Composite {
 
     // Event handlers
     @UiHandler("name")
-    void nameChanged(ValueChangeEvent<String> event) {
-        if (getObjectField() == null) return;
+    void nameChanged( ValueChangeEvent<String> event ) {
+        if ( getObjectField() == null ) {
+            return;
+        }
         // Set widgets to errorpopup for styling purposes etc.
-        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
 
         final String oldValue = getObjectField().getName();
-        final String newValue = DataModelerUtils.unCapitalize(name.getValue());
+        final String newValue = DataModelerUtils.unCapitalize( name.getValue() );
 
         final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
         final String fieldName = oldValue;
@@ -301,7 +308,8 @@ public class DataObjectFieldEditor extends Composite {
         if ( originalClassName != null ) {
             modelerService.call( new RemoteCallback<List<Path>>() {
 
-                @Override public void callback( List<Path> paths ) {
+                @Override
+                public void callback( List<Path> paths ) {
 
                     if ( paths != null && paths.size() > 0 ) {
                         //If usages for this field were detected in project assets
@@ -317,12 +325,13 @@ public class DataObjectFieldEditor extends Composite {
                                     }
                                 },
                                 new org.uberfire.mvp.Command() {
-                                    @Override public void execute() {
+                                    @Override
+                                    public void execute() {
                                         //do nothing.
                                         name.setValue( oldValue );
                                     }
                                 }
-                        );
+                                                                                                   );
 
                         showUsagesPopup.setCloseVisible( false );
                         showUsagesPopup.show();
@@ -338,24 +347,25 @@ public class DataObjectFieldEditor extends Composite {
         }
     }
 
-    private void doFieldNameChange( final String oldValue, final String newValue ) {
+    private void doFieldNameChange( final String oldValue,
+                                    final String newValue ) {
 
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
-                nameLabel.setStyleName(TEXT_ERROR_CLASS);
+                nameLabel.setStyleName( TEXT_ERROR_CLASS );
                 name.selectAll();
             }
         };
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
-        if (oldValue.equalsIgnoreCase(name.getValue())) {
-            name.setText(oldValue);
-            nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        if ( oldValue.equalsIgnoreCase( name.getValue() ) ) {
+            name.setText( oldValue );
+            nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
             return;
         }
 
-        validatorService.isValidIdentifier(newValue, new ValidatorCallback() {
+        validatorService.isValidIdentifier( newValue, new ValidatorCallback() {
             @Override
             public void onFailure() {
                 ErrorPopup.showMessage( Constants.INSTANCE.validation_error_invalid_object_attribute_identifier( newValue ), null, afterCloseCommand );
@@ -363,118 +373,137 @@ public class DataObjectFieldEditor extends Composite {
 
             @Override
             public void onSuccess() {
-                validatorService.isUniqueAttributeName(newValue, getDataObject(), new ValidatorCallback() {
+                validatorService.isUniqueAttributeName( newValue, getDataObject(), new ValidatorCallback() {
                     @Override
                     public void onFailure() {
-                        ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists(newValue), null, afterCloseCommand );
+                        ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists( newValue ), null, afterCloseCommand );
                     }
 
                     @Override
                     public void onSuccess() {
-                        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
-                        objectField.setName(newValue);
-                        notifyFieldChange("name", oldValue, newValue);
+                        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
+                        objectField.setName( newValue );
+                        notifyFieldChange( "name", oldValue, newValue );
                     }
-                });
+                } );
             }
-        });
+        } );
     }
 
     @UiHandler("label")
-    void labelChanged(final ValueChangeEvent<String> event) {
-        if (getObjectField() == null) return;
+    void labelChanged( final ValueChangeEvent<String> event ) {
+        if ( getObjectField() == null ) {
+            return;
+        }
 
         String oldValue = null;
         final String _label = label.getValue();
-        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.LABEL_ANNOTATION);
+        AnnotationTO annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.LABEL_ANNOTATION );
 
-        if (annotation != null) {
-            oldValue = AnnotationValueHandler.getInstance().getStringValue(annotation, AnnotationDefinitionTO.VALUE_PARAM);
-            if ( _label != null && !"".equals(_label) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, _label);
-            else getObjectField().removeAnnotation(annotation);
+        if ( annotation != null ) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
+            if ( _label != null && !"".equals( _label ) ) {
+                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _label );
+            } else {
+                getObjectField().removeAnnotation( annotation );
+            }
         } else {
-            if ( _label != null && !"".equals(_label) ) {
-                getObjectField().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.LABEL_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _label );
+            if ( _label != null && !"".equals( _label ) ) {
+                getObjectField().addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, _label );
             }
         }
         // TODO replace 'label' literal with annotation definition constant
-        notifyFieldChange("label", oldValue, _label);
+        notifyFieldChange( "label", oldValue, _label );
     }
 
     @UiHandler("description")
-    void descriptionChanged(final ValueChangeEvent<String> event) {
-        if (getObjectField() == null) return;
+    void descriptionChanged( final ValueChangeEvent<String> event ) {
+        if ( getObjectField() == null ) {
+            return;
+        }
 
         String oldValue = null;
         final String _description = description.getValue();
-        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION);
+        AnnotationTO annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION );
 
-        if (annotation != null) {
-            oldValue = AnnotationValueHandler.getInstance().getStringValue(annotation, AnnotationDefinitionTO.VALUE_PARAM);
-            if ( _description != null && !"".equals(_description) ) annotation.setValue(AnnotationDefinitionTO.VALUE_PARAM, _description);
-            else getObjectField().removeAnnotation(annotation);
+        if ( annotation != null ) {
+            oldValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
+            if ( _description != null && !"".equals( _description ) ) {
+                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _description );
+            } else {
+                getObjectField().removeAnnotation( annotation );
+            }
         } else {
-            if ( _description != null && !"".equals(_description) ) {
-                getObjectField().addAnnotation(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION), AnnotationDefinitionTO.VALUE_PARAM, _description );
+            if ( _description != null && !"".equals( _description ) ) {
+                getObjectField().addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, _description );
             }
         }
-        notifyFieldChange(AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description);
+        notifyFieldChange( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description );
     }
 
-    private void typeChanged(ChangeEvent event) {
-        if (getObjectField() == null) return;
+    private void typeChanged( ChangeEvent event ) {
+        if ( getObjectField() == null ) {
+            return;
+        }
 
         String oldValue = getObjectField().getClassName();
         String type = typeSelector.getValue();
-        if (DataModelerUtils.isMultipleType(type)) {
-            type = DataModelerUtils.getCanonicalClassName(type);
-            getObjectField().setMultiple(true);
-            if (getObjectField().getBag() == null) {
+        if ( DataModelerUtils.isMultipleType( type ) ) {
+            type = DataModelerUtils.getCanonicalClassName( type );
+            getObjectField().setMultiple( true );
+            if ( getObjectField().getBag() == null ) {
                 getObjectField().setBag( ObjectPropertyTO.DEFAULT_PROPERTY_BAG );
             }
         } else {
-            getObjectField().setMultiple(false);
+            getObjectField().setMultiple( false );
         }
-        getObjectField().setClassName(type);
+        getObjectField().setClassName( type );
 
-        if (getContext().getHelper().isBaseType(type)) {
-            getObjectField().setBaseType(true);
+        if ( getContext().getHelper().isBaseType( type ) ) {
+            getObjectField().setBaseType( true );
         } else {
             // Un-reference former type reference and set the new one
-            getObjectField().setBaseType(false);
-            getContext().getHelper().dataObjectUnReferenced(oldValue, getDataObject().getClassName());
-            getContext().getHelper().dataObjectReferenced(type, getDataObject().getClassName());
+            getObjectField().setBaseType( false );
+            getContext().getHelper().dataObjectUnReferenced( oldValue, getDataObject().getClassName() );
+            getContext().getHelper().dataObjectReferenced( type, getDataObject().getClassName() );
         }
-        notifyFieldChange("className", oldValue, type);
+        notifyFieldChange( "className", oldValue, type );
     }
 
     @UiHandler("equalsSelector")
-    void equalsChanged(final ClickEvent event) {
-        if (getObjectField() == null) return;
+    void equalsChanged( final ClickEvent event ) {
+        if ( getObjectField() == null ) {
+            return;
+        }
 
         Boolean oldEquals = null;
-        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.KEY_ANNOTATION);
-        if (annotation != null) {
-            Object annotationValue = annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM);
+        AnnotationTO annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.KEY_ANNOTATION );
+        if ( annotation != null ) {
+            Object annotationValue = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM );
             oldEquals = annotationValue != null ? (Boolean) annotationValue : Boolean.FALSE;
         }
         final Boolean setEquals = equalsSelector.getValue();
 
-        if (annotation != null && !setEquals) getObjectField().removeAnnotation(annotation);
-        else if (annotation == null && setEquals) getObjectField().addAnnotation(new AnnotationTO(getContext().getAnnotationDefinitions().get(AnnotationDefinitionTO.KEY_ANNOTATION)));
-        notifyFieldChange(AnnotationDefinitionTO.KEY_ANNOTATION, oldEquals, setEquals);
+        if ( annotation != null && !setEquals ) {
+            getObjectField().removeAnnotation( annotation );
+        } else if ( annotation == null && setEquals ) {
+            getObjectField().addAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.KEY_ANNOTATION ) ) );
+        }
+        notifyFieldChange( AnnotationDefinitionTO.KEY_ANNOTATION, oldEquals, setEquals );
     }
 
-    void positionChanged(ChangeEvent event) {
-        if (getObjectField() == null) return;
+    void positionChanged( ChangeEvent event ) {
+        if ( getObjectField() == null ) {
+            return;
+        }
 
-        AnnotationTO annotation = getObjectField().getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION );
-        final String oldPosition = (annotation != null) ? annotation.getValue(AnnotationDefinitionTO.VALUE_PARAM).toString() : "-1";
+        AnnotationTO annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION );
+        final String oldPosition = ( annotation != null ) ? annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() : "-1";
         final String newPosition = positionSelector.getValue();
 
-        DataModelerUtils.recalculatePositions(getDataObject(), Integer.parseInt(oldPosition, 10), Integer.parseInt(newPosition, 10));
+        DataModelerUtils.recalculatePositions( getDataObject(), Integer.parseInt( oldPosition, 10 ), Integer.parseInt( newPosition, 10 ) );
 
-        notifyFieldChange(AnnotationDefinitionTO.POSITION_ANNOTATION, oldPosition, newPosition);
+        notifyFieldChange( AnnotationDefinitionTO.POSITION_ANNOTATION, oldPosition, newPosition );
     }
 
     private void initTypeList() {
@@ -482,12 +511,12 @@ public class DataObjectFieldEditor extends Composite {
         String currentFieldType = null;
         boolean currentFieldTypeMultiple = false;
 
-        if (getDataModel() != null) {
-            if (getDataObject() != null && getObjectField() != null) {
+        if ( getDataModel() != null ) {
+            if ( getDataObject() != null && getObjectField() != null ) {
                 currentFieldType = getObjectField().getClassName();
                 currentFieldTypeMultiple = getObjectField().isMultiple();
             }
-            DataModelerUtils.initTypeList( typeSelector, getContext().getHelper().getOrderedBaseTypes().values(), getDataModel().getDataObjects(), getDataModel().getExternalClasses(), currentFieldType, currentFieldTypeMultiple);
+            DataModelerUtils.initTypeList( typeSelector, getContext().getHelper().getOrderedBaseTypes().values(), getDataModel().getDataObjects(), getDataModel().getExternalClasses(), currentFieldType, currentFieldTypeMultiple );
         } else {
             DataModelerUtils.initList( typeSelector, false );
         }
@@ -503,41 +532,41 @@ public class DataObjectFieldEditor extends Composite {
 
     private void setSelectedType() {
         String type = getObjectField() != null ?
-                (getObjectField().getClassName() + (getObjectField().isMultiple() ? DataModelerUtils.MULTIPLE:"")) : null;
-        typeSelector.setSelectedValue(type);
+                ( getObjectField().getClassName() + ( getObjectField().isMultiple() ? DataModelerUtils.MULTIPLE : "" ) ) : null;
+        typeSelector.setSelectedValue( type );
     }
 
     private void initPositions() {
         positionSelector.clear();
         List<ObjectPropertyTO> properties = null;
-        if (getDataModel() != null && getDataObject() != null && (properties = getDataObject().getProperties()) != null && properties.size() > 0) {
+        if ( getDataModel() != null && getDataObject() != null && ( properties = getDataObject().getProperties() ) != null && properties.size() > 0 ) {
             SortedMap<Integer, String> positions = new TreeMap<Integer, String>();
             String positionValue;
             Integer positionIntValue;
-            for (ObjectPropertyTO propertyTO : properties) {
-                positionValue = AnnotationValueHandler.getInstance().getStringValue(propertyTO, AnnotationDefinitionTO.POSITION_ANNOTATION, "value");
-                if (positionValue != null) {
+            for ( ObjectPropertyTO propertyTO : properties ) {
+                positionValue = AnnotationValueHandler.getInstance().getStringValue( propertyTO, AnnotationDefinitionTO.POSITION_ANNOTATION, "value" );
+                if ( positionValue != null ) {
                     try {
-                        positionIntValue = new Integer(positionValue);
-                        positions.put(positionIntValue, positionValue);
-                    } catch (NumberFormatException e) {
+                        positionIntValue = new Integer( positionValue );
+                        positions.put( positionIntValue, positionValue );
+                    } catch ( NumberFormatException e ) {
                     }
                 }
             }
-            for (Map.Entry<Integer, String> position : positions.entrySet()) {
-                positionSelector.addItem(position.getValue(), position.getValue());
+            for ( Map.Entry<Integer, String> position : positions.entrySet() ) {
+                positionSelector.addItem( position.getValue(), position.getValue() );
             }
         }
     }
 
     private void clean() {
-        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
-        name.setText(null);
-        label.setText(null);
-        description.setText(null);
-        typeSelector.setSelectedValue(null);
-        equalsSelector.setValue(Boolean.FALSE);
-        positionLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
+        name.setText( null );
+        label.setText( null );
+        description.setText( null );
+        typeSelector.setSelectedValue( null );
+        equalsSelector.setValue( Boolean.FALSE );
+        positionLabel.setStyleName( DEFAULT_LABEL_CLASS );
         positionSelector.clear();
     }
 }

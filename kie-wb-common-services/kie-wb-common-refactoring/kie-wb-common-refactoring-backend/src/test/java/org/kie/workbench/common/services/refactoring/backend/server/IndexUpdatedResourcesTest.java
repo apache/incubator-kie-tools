@@ -28,10 +28,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.junit.Test;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndex;
-import org.kie.uberfire.metadata.engine.Index;
-import org.kie.uberfire.metadata.io.KObjectUtil;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
+import org.uberfire.ext.metadata.engine.Index;
+import org.uberfire.ext.metadata.io.KObjectUtil;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

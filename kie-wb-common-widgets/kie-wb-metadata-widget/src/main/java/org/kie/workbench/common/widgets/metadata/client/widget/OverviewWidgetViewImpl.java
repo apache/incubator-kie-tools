@@ -31,13 +31,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.versionhistory.VersionHistoryPresenter;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 public class OverviewWidgetViewImpl
         extends Composite
@@ -53,7 +53,7 @@ public class OverviewWidgetViewImpl
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     TextArea description;
@@ -89,83 +89,87 @@ public class OverviewWidgetViewImpl
     public OverviewWidgetViewImpl(
             BusyIndicatorView busyIndicatorView,
             DiscussionWidgetPresenter discussionArea,
-            VersionHistoryPresenter versionHistory) {
+            VersionHistoryPresenter versionHistory ) {
 
-        this.metadata = new MetadataWidget(busyIndicatorView);
+        this.metadata = new MetadataWidget( busyIndicatorView );
 
         this.discussionArea = discussionArea;
 
         this.versionHistory = versionHistory;
 
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
 
         showVersionHistory();
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setReadOnly(boolean isReadOnly) {
-        description.setEnabled(!isReadOnly);
+    public void setReadOnly( boolean isReadOnly ) {
+        description.setEnabled( !isReadOnly );
     }
 
     @Override
-    public void setVersionHistory(Path path) {
-        versionHistory.init(path);
+    public void setVersionHistory( Path path ) {
+        versionHistory.init( path );
     }
 
     @Override
-    public void setDescription(String description) {
-        this.description.setText(description);
+    public void setDescription( String description ) {
+        this.description.setText( description );
     }
 
     @UiHandler("description")
-    public void onDescriptionChange(KeyUpEvent event) {
-        presenter.onDescriptionEdited(description.getText());
+    public void onDescriptionChange( KeyUpEvent event ) {
+        presenter.onDescriptionEdited( description.getText() );
     }
 
     @Override
-    public void setResourceType(ClientResourceType type) {
-        resourceType.setText(type.getDescription());
+    public void setResourceType( ClientResourceType type ) {
+        resourceType.setText( type.getDescription() );
     }
 
     @Override
-    public void setProject(String project) {
-        projects.setText(project);
+    public void setProject( String project ) {
+        projects.setText( project );
     }
 
     @Override
-    public void setLastModified(String lastContributor, Date lastModified) {
-        lastModifiedLabel.setText("By/" + lastContributor + " on " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(lastModified));
+    public void setLastModified( String lastContributor,
+                                 Date lastModified ) {
+        lastModifiedLabel.setText( "By/" + lastContributor + " on " + DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( lastModified ) );
     }
 
     @Override
-    public void setCreated(String creator, Date dateCreated) {
-        createdLabel.setText("By/" + creator + " on " + DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(dateCreated));
+    public void setCreated( String creator,
+                            Date dateCreated ) {
+        createdLabel.setText( "By/" + creator + " on " + DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( dateCreated ) );
     }
 
     @Override
-    public String getTitle(String fileName, String fileType) {
+    public String getTitle( String fileName,
+                            String fileType ) {
         return fileName + "- Business Rule";
     }
 
     @Override
     public void showVersionHistory() {
-        tabPanel.selectTab(VERSION_HISTORY_TAB);
+        tabPanel.selectTab( VERSION_HISTORY_TAB );
     }
 
     @Override
-    public void setMetadata(Metadata metadata, boolean isReadOnly) {
-        this.metadata.setContent(metadata, isReadOnly);
-        this.discussionArea.setContent(metadata);
+    public void setMetadata( Metadata metadata,
+                             boolean isReadOnly ) {
+        this.metadata.setContent( metadata, isReadOnly );
+        this.discussionArea.setContent( metadata );
     }
 
     @Override
-    public void showBusyIndicator(String message) {
-        BusyPopup.showMessage(message);
+    public void showBusyIndicator( String message ) {
+        BusyPopup.showMessage( message );
     }
 
     @Override
@@ -180,16 +184,16 @@ public class OverviewWidgetViewImpl
 
     @Override
     public void showSavingIndicator() {
-        showBusyIndicator(CommonConstants.INSTANCE.Saving());
+        showBusyIndicator( CommonConstants.INSTANCE.Saving() );
     }
 
     @Override
     public void showLoadingIndicator() {
-        showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        showBusyIndicator( CommonConstants.INSTANCE.Loading() );
     }
 
     @Override
-    public void refresh(String version) {
-        versionHistory.refresh(version);
+    public void refresh( String version ) {
+        versionHistory.refresh( version );
     }
 }

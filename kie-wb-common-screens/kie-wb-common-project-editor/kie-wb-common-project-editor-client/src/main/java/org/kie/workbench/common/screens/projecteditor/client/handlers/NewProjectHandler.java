@@ -17,17 +17,15 @@ import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.wizard.NewProjectWizard;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
-
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.PathLabel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -54,7 +52,7 @@ public class NewProjectHandler
 
     @Inject
     private NewProjectWizard wizard;
-    
+
     @Inject
     private Caller<RepositoryStructureService> repoStructureService;
 
@@ -91,22 +89,20 @@ public class NewProjectHandler
                         final String projectName,
                         final NewResourcePresenter presenter ) {
         if ( context.getActiveRepository() != null ) {
-            
-            
-            repoStructureService.call(new RemoteCallback<RepositoryStructureModel>(){
+
+            repoStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
 
                 @Override
-                public void callback(RepositoryStructureModel repoModel) {
-                    if(repoModel.isManaged()){
-                                wizard.setContent(projectName, repoModel.getPOM().getGav().getGroupId(), repoModel.getPOM().getGav().getVersion());
-                   }else{
-                       wizard.setContent( projectName );
-                   }
-                   wizard.start();
-                   presenter.complete();   
+                public void callback( RepositoryStructureModel repoModel ) {
+                    if ( repoModel.isManaged() ) {
+                        wizard.setContent( projectName, repoModel.getPOM().getGav().getGroupId(), repoModel.getPOM().getGav().getVersion() );
+                    } else {
+                        wizard.setContent( projectName );
+                    }
+                    wizard.start();
+                    presenter.complete();
                 }
-            }).load(context.getActiveRepository());
-                
+            } ).load( context.getActiveRepository() );
 
         } else {
             ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.NoRepositorySelectedPleaseSelectARepository() );
@@ -137,25 +133,25 @@ public class NewProjectHandler
     @Override
     public void acceptContext( final ProjectContext context,
                                final Callback<Boolean, Void> response ) {
-        
-        if(context.getActiveRepository() != null){
-        
-            //You can always create a new Project (provided a repository has been selected)
-             repoStructureService.call(new RemoteCallback<RepositoryStructureModel>(){
 
-                    @Override
-                    public void callback(RepositoryStructureModel repoModel) {
-                        
-                        if(repoModel != null && repoModel.isManaged()){
-                            boolean isMultiModule = repoModel.isMultiModule();
-                            response.onSuccess( isMultiModule );
-                        }
+        if ( context.getActiveRepository() != null ) {
+
+            //You can always create a new Project (provided a repository has been selected)
+            repoStructureService.call( new RemoteCallback<RepositoryStructureModel>() {
+
+                @Override
+                public void callback( RepositoryStructureModel repoModel ) {
+
+                    if ( repoModel != null && repoModel.isManaged() ) {
+                        boolean isMultiModule = repoModel.isMultiModule();
+                        response.onSuccess( isMultiModule );
                     }
-             }).load(context.getActiveRepository());
-        }else{
+                }
+            } ).load( context.getActiveRepository() );
+        } else {
             response.onSuccess( false );
         }
-        
+
     }
 
 }

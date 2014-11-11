@@ -40,13 +40,13 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.service.RefactoringQueryService;
-import org.kie.uberfire.metadata.backend.lucene.LuceneConfig;
-import org.kie.uberfire.metadata.backend.lucene.index.LuceneIndexManager;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.search.ClusterSegment;
+import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
+import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.search.ClusterSegment;
 import org.uberfire.paging.PageResponse;
 
-import static org.kie.uberfire.metadata.backend.lucene.util.KObjectUtil.*;
+import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.*;
 
 @Service
 @ApplicationScoped

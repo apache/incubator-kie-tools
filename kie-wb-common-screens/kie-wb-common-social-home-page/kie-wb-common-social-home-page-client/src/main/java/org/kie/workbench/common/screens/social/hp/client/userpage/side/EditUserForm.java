@@ -27,8 +27,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.uberfire.social.activities.model.SocialUser;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -44,7 +44,7 @@ public class EditUserForm
     Button cancel;
 
     @UiField
-    KieBaseModal popup;
+    BaseModal popup;
 
     @UiField
     TextBox emailTextBox;
@@ -80,7 +80,6 @@ public class EditUserForm
     void cancel( final ClickEvent event ) {
         popup.hide();
     }
-
 
     public void show( SocialUser socialUser,
                       ParameterizedCommand<SocialUser> updateCommand ) {

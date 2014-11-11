@@ -18,8 +18,8 @@ package org.kie.workbench.common.widgets.metadata.client;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets/**/.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 public abstract class KieEditorViewImpl
         extends Composite
@@ -29,17 +29,17 @@ public abstract class KieEditorViewImpl
 
     @Override
     public void alertReadOnly() {
-        Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
+        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
     }
 
     @Override
     public void showLoading() {
-        showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        showBusyIndicator( CommonConstants.INSTANCE.Loading() );
     }
 
     @Override
     public void showSaving() {
-        showBusyIndicator(CommonConstants.INSTANCE.Saving());
+        showBusyIndicator( CommonConstants.INSTANCE.Saving() );
     }
 
     @Override
@@ -48,13 +48,14 @@ public abstract class KieEditorViewImpl
     }
 
     @Override
-    public void refreshTitle(String fileName, String description) {
-        title.setText(fileName, description);
+    public void refreshTitle( String fileName,
+                              String description ) {
+        title.setText( fileName, description );
     }
 
     @Override
-    public void showBusyIndicator(String message) {
-        BusyPopup.showMessage(message);
+    public void showBusyIndicator( String message ) {
+        BusyPopup.showMessage( message );
     }
 
     @Override

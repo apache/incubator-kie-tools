@@ -23,12 +23,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
-import org.kie.workbench.common.services.refactoring.model.query.RefactoringPathPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.kie.workbench.common.services.refactoring.model.query.RefactoringPathPageRow;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.io.IOService;
-import org.kie.uberfire.metadata.model.KObject;
 import org.uberfire.paging.PageResponse;
 
 @ApplicationScoped

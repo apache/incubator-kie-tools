@@ -34,13 +34,13 @@ import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
 import org.kie.workbench.common.screens.search.service.SearchService;
 import org.kie.workbench.common.widgets.client.tables.AbstractPathPagedTable;
-import org.kie.uberfire.client.common.CheckboxCellImpl;
-import org.kie.uberfire.client.tables.ComparableImageResource;
-import org.kie.uberfire.client.tables.ComparableImageResourceCell;
-import org.kie.uberfire.client.tables.TitledTextCell;
-import org.kie.uberfire.client.tables.TitledTextColumn;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.ext.widgets.common.client.common.CheckboxCellImpl;
+import org.uberfire.ext.widgets.common.client.tables.ComparableImageResource;
+import org.uberfire.ext.widgets.common.client.tables.ComparableImageResourceCell;
+import org.uberfire.ext.widgets.common.client.tables.TitledTextCell;
+import org.uberfire.ext.widgets.common.client.tables.TitledTextColumn;
 import org.uberfire.paging.PageResponse;
 
 import static org.jboss.errai.bus.client.api.base.MessageBuilder.*;

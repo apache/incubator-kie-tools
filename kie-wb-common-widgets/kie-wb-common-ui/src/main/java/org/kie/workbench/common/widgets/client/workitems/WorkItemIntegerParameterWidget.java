@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterDefinition;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.NumericIntegerTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericIntegerTextBox;
 
 /**
  * A Widget to display a Work Item Integer parameter

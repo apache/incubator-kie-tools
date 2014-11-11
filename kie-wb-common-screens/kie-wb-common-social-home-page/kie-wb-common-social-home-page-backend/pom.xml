@@ -39,6 +39,7 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-social-home-page-api</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-social-activities-api</artifactId>

@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.services.refactoring.backend.server;
 
-import org.kie.uberfire.metadata.engine.Indexer;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.io.IOService;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 

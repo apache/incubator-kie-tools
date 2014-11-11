@@ -17,10 +17,10 @@
 package org.kie.workbench.common.screens.datamodeller.client;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
-import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class DataModelerErrorCallback extends DefaultErrorCallback {
 

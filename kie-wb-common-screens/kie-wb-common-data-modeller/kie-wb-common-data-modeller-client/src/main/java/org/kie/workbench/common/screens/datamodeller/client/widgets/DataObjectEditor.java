@@ -26,7 +26,11 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.*;
+import com.github.gwtbootstrap.client.ui.CheckBox;
+import com.github.gwtbootstrap.client.ui.Icon;
+import com.github.gwtbootstrap.client.ui.ListBox;
+import com.github.gwtbootstrap.client.ui.TextArea;
+import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -62,8 +66,8 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class DataObjectEditor extends Composite {
 
@@ -221,17 +225,20 @@ public class DataObjectEditor extends Composite {
             }
         } );
         typeSafeSelector.addChangeHandler( new ChangeHandler() {
-            @Override public void onChange( ChangeEvent event ) {
+            @Override
+            public void onChange( ChangeEvent event ) {
                 typeSafeChanged( event );
             }
         } );
         timestampFieldSelector.addChangeHandler( new ChangeHandler() {
-            @Override public void onChange( ChangeEvent event ) {
+            @Override
+            public void onChange( ChangeEvent event ) {
                 timestampChanged( event );
             }
         } );
         durationFieldSelector.addChangeHandler( new ChangeHandler() {
-            @Override public void onChange( ChangeEvent event ) {
+            @Override
+            public void onChange( ChangeEvent event ) {
                 durationChanged( event );
             }
         } );
@@ -255,7 +262,7 @@ public class DataObjectEditor extends Composite {
                 packageChanged( event );
             }
         } );
-        setReadonly(true);
+        setReadonly( true );
     }
 
     public DataObjectTO getDataObject() {
@@ -288,7 +295,7 @@ public class DataObjectEditor extends Composite {
         superclassSelector.refreshList( keepSelection );
     }
 
-    private void setReadonly(boolean readonly) {
+    private void setReadonly( boolean readonly ) {
         this.readonly = readonly;
         boolean value = !readonly;
 
@@ -401,20 +408,22 @@ public class DataObjectEditor extends Composite {
         }
     }
 
-    private void onDataObjectFieldCreated(@Observes DataObjectFieldCreatedEvent event) {
+    private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
         updateFieldDependentSelectors( event, event.getCurrentDataObject(), event.getCurrentField() );
     }
 
-    private void onDataObjectFieldChange(@Observes DataObjectFieldChangeEvent event) {
+    private void onDataObjectFieldChange( @Observes DataObjectFieldChangeEvent event ) {
         updateFieldDependentSelectors( event, event.getCurrentDataObject(), event.getCurrentField() );
     }
 
-    private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
-        updateFieldDependentSelectors(event, event.getCurrentDataObject(), event.getCurrentField());
+    private void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
+        updateFieldDependentSelectors( event, event.getCurrentDataObject(), event.getCurrentField() );
     }
 
-    private void updateFieldDependentSelectors( DataModelerEvent event, DataObjectTO currentDataObject, ObjectPropertyTO currentField ) {
-        if ( event.isFrom( getDataModel() ) && getDataObject() == currentDataObject) {
+    private void updateFieldDependentSelectors( DataModelerEvent event,
+                                                DataObjectTO currentDataObject,
+                                                ObjectPropertyTO currentField ) {
+        if ( event.isFrom( getDataModel() ) && getDataObject() == currentDataObject ) {
             loadDuration( getDataObject() );
             loadTimestamp( getDataObject() );
         }
@@ -422,8 +431,8 @@ public class DataObjectEditor extends Composite {
 
     // Event notifications
     private void notifyObjectChange( String memberName,
-            Object oldValue,
-            Object newValue ) {
+                                     Object oldValue,
+                                     Object newValue ) {
         DataObjectChangeEvent changeEvent = new DataObjectChangeEvent( DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue );
         // Notify helper directly
         getContext().getHelper().dataModelChanged( changeEvent );
@@ -439,7 +448,7 @@ public class DataObjectEditor extends Composite {
         }
 
         // Set widgets to errorpopup for styling purposes etc.
-        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
 
         final String packageName = getDataObject().getPackageName();
         final String oldValue = getDataObject().getName();
@@ -451,7 +460,8 @@ public class DataObjectEditor extends Composite {
         if ( originalClassName != null ) {
             modelerService.call( new RemoteCallback<List<Path>>() {
 
-                @Override public void callback( List<Path> paths ) {
+                @Override
+                public void callback( List<Path> paths ) {
 
                     if ( paths != null && paths.size() > 0 ) {
                         //If usages for this field were detected in project assets
@@ -467,12 +477,13 @@ public class DataObjectEditor extends Composite {
                                     }
                                 },
                                 new org.uberfire.mvp.Command() {
-                                    @Override public void execute() {
+                                    @Override
+                                    public void execute() {
                                         //do nothing.
                                         name.setValue( oldValue );
                                     }
                                 }
-                        );
+                                                                                                   );
 
                         showUsagesPopup.setCloseVisible( false );
                         showUsagesPopup.show();
@@ -488,19 +499,21 @@ public class DataObjectEditor extends Composite {
         }
     }
 
-    private void doClassNameChange(final String packageName, final String oldValue, final String newValue) {
+    private void doClassNameChange( final String packageName,
+                                    final String oldValue,
+                                    final String newValue ) {
 
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
-                nameLabel.setStyleName(TEXT_ERROR_CLASS);
+                nameLabel.setStyleName( TEXT_ERROR_CLASS );
                 name.selectAll();
             }
         };
 
         // In case an invalid name (entered before), was corrected to the original value, don't do anything but reset the label style
         if ( oldValue.equals( newValue ) ) {
-            nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+            nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
             return;
         }
         // Otherwise validate
@@ -520,7 +533,7 @@ public class DataObjectEditor extends Composite {
 
                     @Override
                     public void onSuccess() {
-                        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+                        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
                         dataObject.setName( newValue );
                         notifyObjectChange( "name", oldValue, newValue );
                     }
@@ -587,19 +600,20 @@ public class DataObjectEditor extends Composite {
         }
 
         // Set widgets to errorpopup for styling purposes etc.
-        packageNameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        packageNameLabel.setStyleName( DEFAULT_LABEL_CLASS );
 
         final String originalClassName = getContext() != null ? getContext().getEditorModelContent().getOriginalClassName() : null;
         final String newPackageName = packageSelector.isValueSelected() ? packageSelector.getPackageList().getValue() : null;
         final String oldPackageName = getContext().getDataObject().getPackageName();
 
-        if ( (oldPackageName != null && !oldPackageName.equals( newPackageName )) ||
-                ( oldPackageName == null && newPackageName != null) ) {
+        if ( ( oldPackageName != null && !oldPackageName.equals( newPackageName ) ) ||
+                ( oldPackageName == null && newPackageName != null ) ) {
             //the user is trying to change the package name
 
             modelerService.call( new RemoteCallback<List<Path>>() {
 
-                @Override public void callback( List<Path> paths ) {
+                @Override
+                public void callback( List<Path> paths ) {
 
                     if ( paths != null && paths.size() > 0 ) {
                         //If usages for this class were detected in project assets
@@ -615,12 +629,13 @@ public class DataObjectEditor extends Composite {
                                     }
                                 },
                                 new org.uberfire.mvp.Command() {
-                                    @Override public void execute() {
+                                    @Override
+                                    public void execute() {
                                         //do nothing.
                                         packageSelector.getPackageList().setSelectedValue( oldPackageName );
                                     }
                                 }
-                        );
+                                                                                                   );
 
                         showUsagesPopup.setCloseVisible( false );
                         showUsagesPopup.show();
@@ -636,7 +651,8 @@ public class DataObjectEditor extends Composite {
         }
     }
 
-    private void doPackageChange( String oldPackageName, String newPackageName ) {
+    private void doPackageChange( String oldPackageName,
+                                  String newPackageName ) {
         getDataObject().setPackageName( newPackageName );
         notifyObjectChange( "packageName", oldPackageName, newPackageName );
     }
@@ -647,7 +663,7 @@ public class DataObjectEditor extends Composite {
         }
 
         // Set widgets to errorpopup for styling purposes etc.
-        superclassLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        superclassLabel.setStyleName( DEFAULT_LABEL_CLASS );
 
         final String newSuperClass = superclassSelector.getSuperclassList().getValue();
         final String oldSuperClass = getDataObject().getSuperClassName();
@@ -666,7 +682,7 @@ public class DataObjectEditor extends Composite {
                     ErrorPopup.showMessage( Constants.INSTANCE.validation_error_cyclic_extension( getDataObject().getClassName(), newSuperClass ), null, new Command() {
                         @Override
                         public void execute() {
-                            superclassLabel.setStyleName(TEXT_ERROR_CLASS);
+                            superclassLabel.setStyleName( TEXT_ERROR_CLASS );
                             superclassSelector.getSuperclassList().setFocus( true );
                         }
                     } );
@@ -788,11 +804,13 @@ public class DataObjectEditor extends Composite {
     }
 
     @UiHandler("propertyReactiveSelector")
-    void propertyReactiveChanged(final ClickEvent event) {
-        if ( getDataObject() == null ) return;
+    void propertyReactiveChanged( final ClickEvent event ) {
+        if ( getDataObject() == null ) {
+            return;
+        }
 
         Boolean oldValue = null;
-        AnnotationTO annotation = getDataObject().getAnnotation(AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION);
+        AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION );
         oldValue = annotation != null;
 
         final Boolean isChecked = propertyReactiveSelector.getValue();
@@ -812,8 +830,10 @@ public class DataObjectEditor extends Composite {
     }
 
     @UiHandler("classReactiveSelector")
-    void classReactiveChanged(final ClickEvent event) {
-        if ( getDataObject() == null ) return;
+    void classReactiveChanged( final ClickEvent event ) {
+        if ( getDataObject() == null ) {
+            return;
+        }
 
         Boolean oldValue = null;
         AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION );
@@ -827,7 +847,7 @@ public class DataObjectEditor extends Composite {
             getDataObject().addAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION ) ) );
         }
 
-        if ( isChecked )  {
+        if ( isChecked ) {
             getDataObject().removeAnnotation( new AnnotationTO( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION ) ) );
             propertyReactiveSelector.setValue( false );
         }
@@ -842,11 +862,11 @@ public class DataObjectEditor extends Composite {
         }
 
         // Set widgets to error popup for styling purposes etc.
-        expiresLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        expiresLabel.setStyleName( DEFAULT_LABEL_CLASS );
         final Command afterCloseCommand = new Command() {
             @Override
             public void execute() {
-                expiresLabel.setStyleName(TEXT_ERROR_CLASS);
+                expiresLabel.setStyleName( TEXT_ERROR_CLASS );
                 expires.selectAll();
             }
         };
@@ -857,7 +877,7 @@ public class DataObjectEditor extends Composite {
 
         // In case an invalid expression (entered before), was corrected to the original value, don't do anything but reset the label style
         if ( oldValue != null && oldValue.equals( newValue ) ) {
-            nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+            nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
             return;
         }
 
@@ -883,8 +903,10 @@ public class DataObjectEditor extends Composite {
     }
 
     @UiHandler("remotableSelector")
-    void remotableChanged(final ClickEvent event) {
-        if ( getDataObject() == null ) return;
+    void remotableChanged( final ClickEvent event ) {
+        if ( getDataObject() == null ) {
+            return;
+        }
 
         Boolean oldValue = null;
         AnnotationTO annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.REMOTABLE_ANNOTATION );
@@ -901,10 +923,12 @@ public class DataObjectEditor extends Composite {
         notifyObjectChange( AnnotationDefinitionTO.REMOTABLE_ANNOTATION, oldValue, isChecked );
     }
 
-    private void loadDurationSelector(DataObjectTO dataObject) {
-        if (dataObject == null) return;
+    private void loadDurationSelector( DataObjectTO dataObject ) {
+        if ( dataObject == null ) {
+            return;
+        }
 
-        List<String> types = new ArrayList<String>( );
+        List<String> types = new ArrayList<String>();
         types.add( "short" );
         types.add( "int" );
         types.add( "long" );
@@ -914,17 +938,19 @@ public class DataObjectEditor extends Composite {
 
         String defaultValue = null;
         AnnotationTO annotation = dataObject.getAnnotation( AnnotationDefinitionTO.DURATION_ANNOTATION );
-        if (annotation != null) {
+        if ( annotation != null ) {
             defaultValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
         }
 
-        loadPropertySelector( durationFieldSelector, dataObject, types, defaultValue  );
+        loadPropertySelector( durationFieldSelector, dataObject, types, defaultValue );
     }
 
-    private void loadTimestampSelector(DataObjectTO dataObject) {
-        if (dataObject == null) return;
+    private void loadTimestampSelector( DataObjectTO dataObject ) {
+        if ( dataObject == null ) {
+            return;
+        }
 
-        List<String> types = new ArrayList<String>( );
+        List<String> types = new ArrayList<String>();
         types.add( "long" );
         types.add( "java.lang.Long" );
         types.add( "java.util.Date" );
@@ -932,36 +958,41 @@ public class DataObjectEditor extends Composite {
 
         String defaultValue = null;
         AnnotationTO annotation = dataObject.getAnnotation( AnnotationDefinitionTO.TIMESTAMP_ANNOTATION );
-        if (annotation != null) {
+        if ( annotation != null ) {
             defaultValue = AnnotationValueHandler.getInstance().getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
         }
 
-        loadPropertySelector( timestampFieldSelector, dataObject, types, defaultValue  );
+        loadPropertySelector( timestampFieldSelector, dataObject, types, defaultValue );
     }
 
-    private void loadPropertySelector(ListBox selector, DataObjectTO dataObject, List<String> types, String defaultValue) {
-        if (dataObject == null) return;
+    private void loadPropertySelector( ListBox selector,
+                                       DataObjectTO dataObject,
+                                       List<String> types,
+                                       String defaultValue ) {
+        if ( dataObject == null ) {
+            return;
+        }
 
-        List<ObjectPropertyTO> properties = DataModelerUtils.filterPropertiesByType(dataObject.getProperties(), types, true);
+        List<ObjectPropertyTO> properties = DataModelerUtils.filterPropertiesByType( dataObject.getProperties(), types, true );
         SortedMap<String, String> propertyNames = new TreeMap<String, String>();
-        for (ObjectPropertyTO property : properties) {
+        for ( ObjectPropertyTO property : properties ) {
             propertyNames.put( property.getName(), property.getName() );
         }
 
-        if (defaultValue != null && !"".equals( defaultValue ) ) {
+        if ( defaultValue != null && !"".equals( defaultValue ) ) {
             propertyNames.put( defaultValue, defaultValue );
         }
 
         selector.clear();
         selector.addItem( "", NOT_SELECTED );
-        for (Map.Entry<String, String> propertyName : propertyNames.entrySet()) {
-            selector.addItem(propertyName.getKey(), propertyName.getValue());
+        for ( Map.Entry<String, String> propertyName : propertyNames.entrySet() ) {
+            selector.addItem( propertyName.getKey(), propertyName.getValue() );
         }
         selector.setSelectedValue( NOT_SELECTED );
     }
 
     private void clean() {
-        nameLabel.setStyleName(DEFAULT_LABEL_CLASS);
+        nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
         name.setText( null );
         label.setText( null );
         description.setText( null );

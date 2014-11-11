@@ -24,13 +24,12 @@ import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,
-        IsWidget {
-
+                IsWidget {
 
     interface Presenter {
 
@@ -52,21 +51,21 @@ public interface ProjectScreenView
 
     }
 
-    void setPresenter(Presenter projectScreenPresenter);
+    void setPresenter( Presenter projectScreenPresenter );
 
-    void setPOM(POM pom);
+    void setPOM( POM pom );
 
-    void setDependencies(List<Dependency> dependencies);
+    void setDependencies( List<Dependency> dependencies );
 
-    void setPomMetadata(Metadata pomMetaData);
+    void setPomMetadata( Metadata pomMetaData );
 
-    void setKModule(KModuleModel kModule);
+    void setKModule( KModuleModel kModule );
 
-    void setKModuleMetadata(Metadata kModuleMetaData);
+    void setKModuleMetadata( Metadata kModuleMetaData );
 
-    void setImports(ProjectImports projectImports);
+    void setImports( ProjectImports projectImports );
 
-    void setImportsMetadata(Metadata projectImportsMetadata);
+    void setImportsMetadata( Metadata projectImportsMetadata );
 
     void showImportsPanel();
 
@@ -82,11 +81,11 @@ public interface ProjectScreenView
 
     void showKBaseMetadataPanel();
 
-    void switchBusyIndicator(String newMessage);
+    void switchBusyIndicator( String newMessage );
 
     void showABuildIsAlreadyRunning();
 
     DropdownButton getBuildOptionsButton();
 
-    void setDeployToRuntimeSetting(Boolean supports);
+    void setDeployToRuntimeSetting( Boolean supports );
 }

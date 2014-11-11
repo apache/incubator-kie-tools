@@ -20,7 +20,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:bootstrapBase='urn:import:com.github.gwtbootstrap.client.ui.base'
              xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
-             xmlns:uf="urn:import:org.kie.uberfire.client.tables"
+             xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables"
              xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
 
   <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>

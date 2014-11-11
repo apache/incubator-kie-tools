@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Composite;
 import org.guvnor.structure.client.resources.NavigatorResources;
 import org.kie.workbench.common.screens.explorer.client.widgets.dropdown.CustomDropdown;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.uberfire.client.common.UberBreadcrumbs;
+import org.uberfire.ext.widgets.common.client.common.UberBreadcrumbs;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class NavigatorBreadcrumbs extends Composite {

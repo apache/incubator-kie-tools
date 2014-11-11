@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
+import java.lang.annotation.Annotation;
+import javax.enterprise.event.Event;
+
 import org.guvnor.common.services.project.client.POMEditorPanel;
 import org.guvnor.common.services.project.model.POM;
 import org.jboss.errai.common.client.api.Caller;
@@ -23,12 +26,8 @@ import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.uberfire.client.wizards.WizardPageStatusChangeEvent;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-
-import javax.enterprise.event.Event;
-import javax.enterprise.util.TypeLiteral;
-import java.lang.annotation.Annotation;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPageStatusChangeEvent;
 
 import static org.mockito.Mockito.*;
 
@@ -40,48 +39,50 @@ public class GAVWizardPageTest {
 
     @Before
     public void setUp() throws Exception {
-        pomEditor = mock(POMEditorPanel.class);
-        view = mock(GAVWizardPageView.class);
+        pomEditor = mock( POMEditorPanel.class );
+        view = mock( GAVWizardPageView.class );
         page = new GAVWizardPage(
                 pomEditor,
                 view,
                 new WizardPageStatusChangeEventMock(),
-                new ProjectScreenServiceMock());
+                new ProjectScreenServiceMock() );
     }
 
     @Test
     public void testPomsWithParentDataDisableFieldsParentNotSet() throws Exception {
-        page.setPom(new POM());
+        page.setPom( new POM() );
 
-        verify(pomEditor, never()).disableGroupID(anyString());
-        verify(pomEditor, never()).disableVersion(anyString());
+        verify( pomEditor, never() ).disableGroupID( anyString() );
+        verify( pomEditor, never() ).disableVersion( anyString() );
     }
 
     @Test
     public void testPomsWithParentDataDisableFieldsParentSet() throws Exception {
-        when(view.InheritedFromAParentPOM()).thenReturn("InheritedFromAParentPOM");
+        when( view.InheritedFromAParentPOM() ).thenReturn( "InheritedFromAParentPOM" );
         POM pom = new POM();
-        pom.getGav().setGroupId("supergroup");
-        page.setPom(pom);
+        pom.getGav().setGroupId( "supergroup" );
+        page.setPom( pom );
 
-        verify(pomEditor).disableGroupID("InheritedFromAParentPOM");
-        verify(pomEditor).disableVersion("InheritedFromAParentPOM");
+        verify( pomEditor ).disableGroupID( "InheritedFromAParentPOM" );
+        verify( pomEditor ).disableVersion( "InheritedFromAParentPOM" );
     }
 
     private class WizardPageStatusChangeEventMock
             implements Event<WizardPageStatusChangeEvent> {
+
         @Override
-        public void fire(WizardPageStatusChangeEvent wizardPageStatusChangeEvent) {
+        public void fire( WizardPageStatusChangeEvent wizardPageStatusChangeEvent ) {
 
         }
 
         @Override
-        public Event<WizardPageStatusChangeEvent> select(Annotation... annotations) {
+        public Event<WizardPageStatusChangeEvent> select( Annotation... annotations ) {
             return null;
         }
 
         @Override
-        public <U extends WizardPageStatusChangeEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
+        public <U extends WizardPageStatusChangeEvent> Event<U> select( Class<U> uClass,
+                                                                        Annotation... annotations ) {
             return null;
         }
 
@@ -89,18 +90,20 @@ public class GAVWizardPageTest {
 
     private class ProjectScreenServiceMock
             implements Caller<ProjectScreenService> {
+
         @Override
         public ProjectScreenService call() {
             return null;
         }
 
         @Override
-        public ProjectScreenService call(RemoteCallback<?> remoteCallback) {
+        public ProjectScreenService call( RemoteCallback<?> remoteCallback ) {
             return null;
         }
 
         @Override
-        public ProjectScreenService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
+        public ProjectScreenService call( RemoteCallback<?> remoteCallback,
+                                          ErrorCallback<?> errorCallback ) {
             return null;
         }
     }

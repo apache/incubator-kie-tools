@@ -15,14 +15,15 @@
  */
 package org.kie.workbench.common.screens.explorer.client.widgets.technical;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -30,7 +31,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import javax.enterprise.event.Observes;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -44,9 +44,9 @@ import org.kie.workbench.common.screens.explorer.client.widgets.navigator.Naviga
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 /**
  * Technical View implementation
@@ -65,16 +65,13 @@ public class TechnicalViewWidget extends Composite implements View {
     @UiField
     Explorer explorer;
 
-
     @UiField(provided = true)
     @Inject
     BranchSelector branchSelector;
-    
+
     @UiField
     Button openProjectEditorButton;
-    
-    
-    
+
     @Inject
     PlaceManager placeManager;
 
@@ -100,15 +97,15 @@ public class TechnicalViewWidget extends Composite implements View {
     public void init( final ViewPresenter presenter ) {
         this.presenter = presenter;
         explorer.init( Explorer.Mode.EXPANDED, techOptions, Explorer.NavType.BREADCRUMB, presenter );
-        openProjectEditorButton.addClickHandler(new ClickHandler() {
+        openProjectEditorButton.addClickHandler( new ClickHandler() {
 
             @Override
-            public void onClick(ClickEvent event) {
-                placeManager.goTo("projectScreen");
+            public void onClick( ClickEvent event ) {
+                placeManager.goTo( "projectScreen" );
             }
-        });
+        } );
     }
-    
+
     //@TODO: we need to remove these two when we remove the projectScreen from here
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
         enableToolsMenuItems( (KieProject) event.getProject() );
@@ -116,7 +113,7 @@ public class TechnicalViewWidget extends Composite implements View {
 
     private void enableToolsMenuItems( final KieProject project ) {
         final boolean enabled = ( project != null );
-        openProjectEditorButton.setEnabled(enabled);
+        openProjectEditorButton.setEnabled( enabled );
     }
 
     @Override
@@ -133,7 +130,7 @@ public class TechnicalViewWidget extends Composite implements View {
                               projects, activeProject );
         explorer.loadContent( folderListing, siblings );
 
-        branchSelector.setRepository(activeRepository);
+        branchSelector.setRepository( activeRepository );
 
     }
 
@@ -169,7 +166,7 @@ public class TechnicalViewWidget extends Composite implements View {
         return explorer;
     }
 
-    public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
-        branchSelector.addBranchChangeHandler(branchChangeHandler);
+    public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
+        branchSelector.addBranchChangeHandler( branchChangeHandler );
     }
 }

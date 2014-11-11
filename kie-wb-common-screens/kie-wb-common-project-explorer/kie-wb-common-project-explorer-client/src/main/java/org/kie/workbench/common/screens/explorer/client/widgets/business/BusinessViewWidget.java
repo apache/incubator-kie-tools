@@ -24,19 +24,25 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.*;
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.Collapse;
+import com.github.gwtbootstrap.client.ui.CollapseTrigger;
+import com.github.gwtbootstrap.client.ui.Divider;
+import com.github.gwtbootstrap.client.ui.Label;
+import com.github.gwtbootstrap.client.ui.NavLink;
+import com.github.gwtbootstrap.client.ui.NavList;
+import com.github.gwtbootstrap.client.ui.WellNavList;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import javax.enterprise.event.Observes;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
@@ -55,11 +61,11 @@ import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.utils.Sorters;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 /**
  * Business View implementation
@@ -89,10 +95,10 @@ public class BusinessViewWidget extends Composite implements View {
 
     @UiField
     Button openProjectEditorButton;
-    
+
     @Inject
     Classifier classifier;
-    
+
     @Inject
     PlaceManager placeManager;
 
@@ -121,14 +127,14 @@ public class BusinessViewWidget extends Composite implements View {
     public void init( final ViewPresenter presenter ) {
         this.presenter = presenter;
         explorer.init( Explorer.Mode.COLLAPSED, businessOptions, Explorer.NavType.TREE, presenter );
-        openProjectEditorButton.addClickHandler(new ClickHandler() {
+        openProjectEditorButton.addClickHandler( new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                placeManager.goTo("projectScreen");
+            public void onClick( ClickEvent event ) {
+                placeManager.goTo( "projectScreen" );
             }
-        });
+        } );
     }
-    
+
     //@TODO: we need to remove these two when we remove the projectScreen from here
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
         enableToolsMenuItems( (KieProject) event.getProject() );
@@ -136,7 +142,7 @@ public class BusinessViewWidget extends Composite implements View {
 
     private void enableToolsMenuItems( final KieProject project ) {
         final boolean enabled = ( project != null );
-        openProjectEditorButton.setEnabled(enabled);
+        openProjectEditorButton.setEnabled( enabled );
     }
 
     @Override
@@ -153,9 +159,9 @@ public class BusinessViewWidget extends Composite implements View {
                               projects, project );
         explorer.loadContent( folderListing, siblings );
 
-        branchSelector.setRepository(repository);
+        branchSelector.setRepository( repository );
 
-        setItems(folderListing);
+        setItems( folderListing );
     }
 
     @Override
@@ -258,8 +264,8 @@ public class BusinessViewWidget extends Composite implements View {
         return resourceType != null ? resourceType.getShortName().replaceAll( ID_CLEANUP_PATTERN, "" ) : "";
     }
 
-    public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
-        branchSelector.addBranchChangeHandler(branchChangeHandler);
+    public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
+        branchSelector.addBranchChangeHandler( branchChangeHandler );
     }
 
     @Override

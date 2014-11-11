@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget.cells;
 
+import java.math.BigDecimal;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -24,9 +26,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.uberfire.client.common.NumericBigDecimalTextBox;
-
-import java.math.BigDecimal;
+import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
 
 /**
  * A Popup Text Editor for BigDecimal values.

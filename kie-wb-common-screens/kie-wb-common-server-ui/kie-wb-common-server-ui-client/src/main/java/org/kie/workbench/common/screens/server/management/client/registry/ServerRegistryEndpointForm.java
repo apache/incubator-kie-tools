@@ -38,12 +38,12 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
 import org.kie.workbench.common.screens.server.management.model.Server;
 import org.kie.workbench.common.screens.server.management.service.ServerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.common.ErrorPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.mvp.Command;
 import org.uberfire.util.URIUtil;
 
@@ -96,7 +96,7 @@ public class ServerRegistryEndpointForm
     PasswordTextBox passwordTextBox;
 
     @UiField
-    KieBaseModal popup;
+    BaseModal popup;
 
     @PostConstruct
     public void init() {
@@ -138,27 +138,28 @@ public class ServerRegistryEndpointForm
         lockScreen();
 
         service.call( new RemoteCallback<Server>() {
-            @Override
-            public void callback( final Server response ) {
-                hide();
-            }
-        }, new ErrorCallback<Object>() {
-            @Override
-            public boolean error( final Object message,
-                                  final Throwable throwable ) {
-                String errorMessage = "Can't connect to endpoint.";
-                if ( throwable instanceof ServerAlreadyRegisteredException ) {
-                    errorMessage = throwable.getMessage();
-                }
-                ErrorPopup.showMessage( errorMessage, null, new Command() {
-                    @Override
-                    public void execute() {
-                        hide();
-                    }
-                } );
-                return false;
-            }
-        } ).registerServer( endpointTextBox.getText(), nameTextBox.getText(), usernameTextBox.getText(), passwordTextBox.getText() );
+                          @Override
+                          public void callback( final Server response ) {
+                              hide();
+                          }
+                      }, new ErrorCallback<Object>() {
+                          @Override
+                          public boolean error( final Object message,
+                                                final Throwable throwable ) {
+                              String errorMessage = "Can't connect to endpoint.";
+                              if ( throwable instanceof ServerAlreadyRegisteredException ) {
+                                  errorMessage = throwable.getMessage();
+                              }
+                              ErrorPopup.showMessage( errorMessage, null, new Command() {
+                                  @Override
+                                  public void execute() {
+                                      hide();
+                                  }
+                              } );
+                              return false;
+                          }
+                      }
+                    ).registerServer( endpointTextBox.getText(), nameTextBox.getText(), usernameTextBox.getText(), passwordTextBox.getText() );
     }
 
     private void lockScreen() {

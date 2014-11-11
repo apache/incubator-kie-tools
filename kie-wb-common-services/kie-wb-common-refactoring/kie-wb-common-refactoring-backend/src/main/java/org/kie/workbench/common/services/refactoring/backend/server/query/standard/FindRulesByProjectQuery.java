@@ -29,8 +29,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.drools.workbench.models.datamodel.util.PortablePreconditions;
-import org.kie.uberfire.metadata.model.KObject;
-import org.kie.uberfire.metadata.model.KProperty;
 import org.kie.workbench.common.services.refactoring.backend.server.query.NamedQuery;
 import org.kie.workbench.common.services.refactoring.backend.server.query.response.ResponseBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm;
@@ -40,6 +38,8 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.RuleIndex
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringStringPageRow;
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.model.KProperty;
 import org.uberfire.paging.PageResponse;
 
 import static org.apache.lucene.search.BooleanClause.Occur.*;

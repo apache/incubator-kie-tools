@@ -28,8 +28,6 @@ import org.guvnor.structure.client.file.CommandWithCommitMessage;
 import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.screens.projectimportsscreen.client.resources.i18n.ProjectConfigScreenConstants;
 import org.kie.workbench.common.screens.projectimportsscreen.client.type.ProjectImportsResourceType;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -41,6 +39,8 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -106,8 +106,8 @@ public class ProjectImportsScreenPresenter
 
         view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        importsService.call(getModelSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).load( path );
+        importsService.call( getModelSuccessCallback(),
+                             new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
     private RemoteCallback<ProjectImports> getModelSuccessCallback() {
@@ -131,7 +131,7 @@ public class ProjectImportsScreenPresenter
                         public void execute() {
                             onSave();
                         }
-                    })
+                    } )
                     .addCopy( path )
                     .addRename( path )
                     .addDelete( path )
@@ -145,8 +145,8 @@ public class ProjectImportsScreenPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 importsService.call(getSaveSuccessCallback(),
-                                                         new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).save( path,
+                                                 importsService.call( getSaveSuccessCallback(),
+                                                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
                                                                                                                                             content,
                                                                                                                                             view.getMetadata(),
                                                                                                                                             commitMessage );
@@ -180,9 +180,9 @@ public class ProjectImportsScreenPresenter
 
     @Override
     public void onShowMetadata() {
-        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
-        metadataService.call(getMetadataSuccessCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(view)).getMetadata(path);
+        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        metadataService.call( getMetadataSuccessCallback(),
+                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
     }
 
     private RemoteCallback<Metadata> getMetadataSuccessCallback() {

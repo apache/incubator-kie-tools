@@ -37,8 +37,8 @@ import com.google.gwt.view.client.ProvidesKey;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
-import org.kie.uberfire.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.tables.PagedTable;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.tables.PagedTable;
 import org.uberfire.paging.AbstractPathPageRow;
 
 /**

@@ -14,11 +14,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-public class DeploymentScreenPopupViewImpl extends KieBaseModal {
+public class DeploymentScreenPopupViewImpl extends BaseModal {
 
     interface DeploymentScreenPopupWidgetBinder
             extends
@@ -26,7 +26,7 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
 
     }
 
-    private DeploymentScreenPopupWidgetBinder uiBinder = GWT.create(DeploymentScreenPopupWidgetBinder.class);
+    private DeploymentScreenPopupWidgetBinder uiBinder = GWT.create( DeploymentScreenPopupWidgetBinder.class );
 
     @Inject
     private User identity;
@@ -53,39 +53,38 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
     ControlGroup serverURLTextGroup;
 
     @UiField
-    TextBox serverURLText;;
+    TextBox serverURLText;
+    ;
 
     @UiField
     HelpInline serverURLTextHelpInline;
 
     private Command callbackCommand;
 
-
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
 
-            if (isEmpty(userNameText.getText())) {
+            if ( isEmpty( userNameText.getText() ) ) {
                 userNameTextGroup.setType( ControlGroupType.ERROR );
-                userNameTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0("Username"));
+                userNameTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "Username" ) );
 
                 return;
             }
 
-            if (isEmpty(passwordText.getText())) {
+            if ( isEmpty( passwordText.getText() ) ) {
                 passwordTextGroup.setType( ControlGroupType.ERROR );
-                passwordTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0("Password"));
+                passwordTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "Password" ) );
 
                 return;
             }
 
-            if (isEmpty(serverURLText.getText())) {
+            if ( isEmpty( serverURLText.getText() ) ) {
                 serverURLTextGroup.setType( ControlGroupType.ERROR );
-                serverURLTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0("ServerURL"));
+                serverURLTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "ServerURL" ) );
 
                 return;
             }
-
 
             if ( callbackCommand != null ) {
                 callbackCommand.execute();
@@ -93,8 +92,8 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
             hide();
         }
 
-        private boolean isEmpty(String value) {
-            if (value == null || value.isEmpty()) {
+        private boolean isEmpty( String value ) {
+            if ( value == null || value.isEmpty() ) {
                 return true;
             }
 
@@ -109,10 +108,10 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
         }
     };
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand, cancelCommand);
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand, cancelCommand );
 
     public DeploymentScreenPopupViewImpl() {
-        setTitle(ProjectEditorResources.CONSTANTS.BuildAndDeploy());
+        setTitle( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
         setBackdrop( BackdropType.STATIC );
         setKeyboard( true );
         setAnimation( true );
@@ -122,12 +121,12 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
         add( footer );
     }
 
-    public void configure(Command command) {
+    public void configure( Command command ) {
         this.callbackCommand = command;
 
         // set default values for the fields
-        userNameText.setText(identity.getIdentifier());
-        serverURLText.setText(GWT.getModuleBaseURL().replaceFirst("/" + GWT.getModuleName() + "/", ""));
+        userNameText.setText( identity.getIdentifier() );
+        serverURLText.setText( GWT.getModuleBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "" ) );
     }
 
     public String getUsername() {
@@ -141,6 +140,5 @@ public class DeploymentScreenPopupViewImpl extends KieBaseModal {
     public String getServerURL() {
         return this.serverURLText.getText();
     }
-
 
 }

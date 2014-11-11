@@ -19,10 +19,10 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.uberfire.client.resources.CoreImages;
-import org.kie.uberfire.client.resources.i18n.CoreConstants;
 import org.kie.workbench.common.screens.defaulteditor.service.XmlResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.widgets.core.client.resources.CoreImages;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 @ApplicationScoped
 public class XmlResourceType extends XmlResourceTypeDefinition implements ClientResourceType {

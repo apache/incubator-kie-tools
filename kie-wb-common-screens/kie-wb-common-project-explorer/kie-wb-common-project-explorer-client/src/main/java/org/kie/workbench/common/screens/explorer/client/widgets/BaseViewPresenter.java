@@ -32,6 +32,14 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.structure.client.file.CommandWithCommitMessage;
+import org.guvnor.structure.client.file.CommandWithFileNameAndCommitMessage;
+import org.guvnor.structure.client.file.CopyPopup;
+import org.guvnor.structure.client.file.DeletePopup;
+import org.guvnor.structure.client.file.FileNameAndCommitMessage;
+import org.guvnor.structure.client.file.RenamePopup;
+import org.guvnor.structure.client.validation.Validator;
+import org.guvnor.structure.client.validation.ValidatorCallback;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
@@ -45,8 +53,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.callbacks.DefaultErrorCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -58,18 +64,12 @@ import org.kie.workbench.common.screens.explorer.service.ExplorerService;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.explorer.service.ProjectExplorerContentQuery;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
-import org.guvnor.structure.client.validation.Validator;
-import org.guvnor.structure.client.validation.ValidatorCallback;
-import org.guvnor.structure.client.file.CommandWithCommitMessage;
-import org.guvnor.structure.client.file.CommandWithFileNameAndCommitMessage;
-import org.guvnor.structure.client.file.CopyPopup;
-import org.guvnor.structure.client.file.DeletePopup;
-import org.guvnor.structure.client.file.FileNameAndCommitMessage;
-import org.guvnor.structure.client.file.RenamePopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -131,7 +131,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     @Override
     public void update( final Set<Option> options ) {
         setOptions( new HashSet<Option>( options ) );
-        getView().setOptions(options);
+        getView().setOptions( options );
     }
 
     protected abstract void setOptions( final Set<Option> options );
@@ -139,20 +139,20 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     protected abstract View getView();
 
     @Override
-    public void initialiseViewForActiveContext(final OrganizationalUnit organizationalUnit) {
+    public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit ) {
         doInitialiseViewForActiveContext(
-                new ProjectExplorerContentQuery(organizationalUnit),
-                true);
+                new ProjectExplorerContentQuery( organizationalUnit ),
+                true );
     }
 
     @Override
-    public void initialiseViewForActiveContext(final OrganizationalUnit organizationalUnit,
-                                               final Repository repository) {
+    public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
+                                                final Repository repository ) {
         doInitialiseViewForActiveContext(
                 new ProjectExplorerContentQuery(
                         organizationalUnit,
-                        repository),
-                true);
+                        repository ),
+                true );
     }
 
     @Override
@@ -163,8 +163,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 new ProjectExplorerContentQuery(
                         organizationalUnit,
                         repository,
-                        project),
-                true);
+                        project ),
+                true );
     }
 
     @Override
@@ -177,13 +177,13 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                         organizationalUnit,
                         repository,
                         project,
-                        pkg),
-                true);
+                        pkg ),
+                true );
     }
 
     @Override
     public void refresh() {
-        refresh(true);
+        refresh( true );
     }
 
     @Override
@@ -199,7 +199,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 activeRepository,
                 activeProject,
                 item,
-                options);
+                options );
     }
 
     @Override
@@ -306,9 +306,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                             }
                         },
                         new HasBusyIndicatorDefaultErrorCallback( getView() )
-                                    ).copyItem(folderItem,
-                        details.getNewFileName(),
-                        details.getCommitMessage());
+                                    ).copyItem( folderItem,
+                                                details.getNewFileName(),
+                                                details.getCommitMessage() );
             }
         }
         );
@@ -317,16 +317,14 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     }
 
     @Override
-    public void uploadArchivedFolder(FolderItem folderItem) {
+    public void uploadArchivedFolder( FolderItem folderItem ) {
 
-
-
-        if (folderItem.getItem() instanceof Path) {
+        if ( folderItem.getItem() instanceof Path ) {
             final Path path = (Path) folderItem.getItem();
 
-            Window.open(URLHelper.getDownloadUrl(path),
-                    "downloading",
-                    "resizable=no,scrollbars=yes,status=no");
+            Window.open( URLHelper.getDownloadUrl( path ),
+                         "downloading",
+                         "resizable=no,scrollbars=yes,status=no" );
         }
     }
 
@@ -347,15 +345,15 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private void refresh(boolean showLoadingIndicator) {
+    private void refresh( boolean showLoadingIndicator ) {
         doInitialiseViewForActiveContext(
                 new ProjectExplorerContentQuery(
                         activeOrganizationalUnit,
                         activeRepository,
                         activeProject,
                         activePackage,
-                        activeFolderItem),
-                showLoadingIndicator);
+                        activeFolderItem ),
+                showLoadingIndicator );
     }
 
     private void doInitialiseViewForActiveContext( final ProjectExplorerContentQuery query,
@@ -365,11 +363,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
         }
 
-        query.setOptions(getActiveOptions());
+        query.setOptions( getActiveOptions() );
 
         explorerService.call(
                 getContentCallback(),
-                new HasBusyIndicatorDefaultErrorCallback(getView())).getContent(query);
+                new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getContent( query );
     }
 
     private RemoteCallback<ProjectExplorerContent> getContentCallback() {
@@ -380,17 +378,17 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 boolean signalChange = false;
                 boolean buildSelectedProject = false;
 
-                signalChange = setActiveOrganizationalUnit(content);
-                if (setActiveRepository(content)) {
+                signalChange = setActiveOrganizationalUnit( content );
+                if ( setActiveRepository( content ) ) {
                     signalChange = true;
                 }
 
-                if( setActiveProject(content) ){
+                if ( setActiveProject( content ) ) {
                     signalChange = true;
                     buildSelectedProject = true;
                 }
 
-                signalChange = signalChange || setActiveFolderAndPackage(content);
+                signalChange = signalChange || setActiveFolderAndPackage( content );
 
                 if ( signalChange ) {
                     fireContextChangeEvent();
@@ -419,9 +417,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         };
     }
 
-    private boolean setActiveProject(ProjectExplorerContent content) {
-        if (Utils.hasProjectChanged(content.getProject(),
-                activeProject)) {
+    private boolean setActiveProject( ProjectExplorerContent content ) {
+        if ( Utils.hasProjectChanged( content.getProject(),
+                                      activeProject ) ) {
             activeProject = content.getProject();
             return true;
         } else {
@@ -429,26 +427,26 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private boolean setActiveFolderAndPackage(ProjectExplorerContent content) {
-        if ( Utils.hasFolderItemChanged(content.getFolderListing().getItem(),
-                activeFolderItem) ) {
+    private boolean setActiveFolderAndPackage( ProjectExplorerContent content ) {
+        if ( Utils.hasFolderItemChanged( content.getFolderListing().getItem(),
+                                         activeFolderItem ) ) {
 
             activeFolderItem = content.getFolderListing().getItem();
-            if ( activeFolderItem != null && activeFolderItem.getItem() != null && activeFolderItem.getItem() instanceof Package) {
+            if ( activeFolderItem != null && activeFolderItem.getItem() != null && activeFolderItem.getItem() instanceof Package ) {
                 activePackage = (Package) activeFolderItem.getItem();
             } else if ( activeFolderItem == null || activeFolderItem.getItem() == null ) {
                 activePackage = null;
             }
 
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    private boolean setActiveRepository(ProjectExplorerContent content) {
-        if ( Utils.hasRepositoryChanged(content.getRepository(),
-                activeRepository) ) {
+    private boolean setActiveRepository( ProjectExplorerContent content ) {
+        if ( Utils.hasRepositoryChanged( content.getRepository(),
+                                         activeRepository ) ) {
             activeRepository = content.getRepository();
             return true;
         } else {
@@ -456,13 +454,13 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    private boolean setActiveOrganizationalUnit(ProjectExplorerContent content) {
+    private boolean setActiveOrganizationalUnit( ProjectExplorerContent content ) {
 
-        if ( Utils.hasOrganizationalUnitChanged(content.getOrganizationalUnit(),
-                activeOrganizationalUnit) ) {
+        if ( Utils.hasOrganizationalUnitChanged( content.getOrganizationalUnit(),
+                                                 activeOrganizationalUnit ) ) {
             activeOrganizationalUnit = content.getOrganizationalUnit();
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -526,17 +524,17 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     }
 
     @Override
-    public void branchChanged(final String branch) {
-        if (activeRepository instanceof GitRepository) {
-            ((GitRepository) activeRepository).changeBranch(branch);
+    public void branchChanged( final String branch ) {
+        if ( activeRepository instanceof GitRepository ) {
+            ( (GitRepository) activeRepository ).changeBranch( branch );
             getView().getExplorer().clear();
             ProjectExplorerContentQuery query = new ProjectExplorerContentQuery(
                     activeOrganizationalUnit,
                     activeRepository,
-                    activeProject);
+                    activeProject );
             doInitialiseViewForActiveContext(
                     query,
-                    true);
+                    true );
         }
     }
 
@@ -545,15 +543,15 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( Utils.hasRepositoryChanged( repository,
                                          activeRepository ) ) {
             getView().getExplorer().clear();
-            initialiseViewForActiveContext(activeOrganizationalUnit,
-                    repository);
+            initialiseViewForActiveContext( activeOrganizationalUnit,
+                                            repository );
         }
     }
 
     @Override
     public void projectSelected( final Project project ) {
-        if ( Utils.hasProjectChanged(project,
-                activeProject) ) {
+        if ( Utils.hasProjectChanged( project,
+                                      activeProject ) ) {
             getView().getExplorer().clear();
             initialiseViewForActiveContext( activeOrganizationalUnit,
                                             activeRepository,
@@ -568,7 +566,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             fireContextChangeEvent();
 
             //Show busy popup. Once Items are loaded it is closed
-            getView().showBusyIndicator(CommonConstants.INSTANCE.Loading());
+            getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
             explorerService.call( new RemoteCallback<FolderListing>() {
                 @Override
                 public void callback( final FolderListing folderListing ) {
@@ -578,11 +576,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                     getView().hideBusyIndicator();
                     isOnLoading = false;
                 }
-            }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing(activeOrganizationalUnit,
-                    activeRepository,
-                    activeProject,
-                    item,
-                    getActiveOptions());
+            }, new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getFolderListing( activeOrganizationalUnit,
+                                                                                         activeRepository,
+                                                                                         activeProject,
+                                                                                         item,
+                                                                                         getActiveOptions() );
         }
     }
 
@@ -595,7 +593,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( folderItem.getType().equals( FolderItemType.FILE ) && _item instanceof Path ) {
             placeManager.goTo( (Path) _item );
         } else {
-            activeFolderItemSelected(folderItem);
+            activeFolderItemSelected( folderItem );
         }
     }
 
@@ -657,11 +655,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     }
 
     public void onRepositoryUpdatedEvent( @Observes RepositoryUpdatedEvent event ) {
-        if (repositories != null) {
-            for (Repository repository : repositories) {
-                if (repository.getAlias().equals(event.getRepository().getAlias())) {
-                    if ( activeRepository != null && activeRepository.getAlias().equals( event.getRepository().getAlias() )) {
-                        refresh(false);
+        if ( repositories != null ) {
+            for ( Repository repository : repositories ) {
+                if ( repository.getAlias().equals( event.getRepository().getAlias() ) ) {
+                    if ( activeRepository != null && activeRepository.getAlias().equals( event.getRepository().getAlias() ) ) {
+                        refresh( false );
                     } else {
                         repository.getEnvironment().clear();
                         repository.getEnvironment().putAll( event.getUpdatedRepository().getEnvironment() );
@@ -696,8 +694,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                     new ProjectExplorerContentQuery(
                             activeOrganizationalUnit,
                             activeRepository,
-                            project),
-                    false);
+                            project ),
+                    false );
         }
     }
 
@@ -715,8 +713,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                     new ProjectExplorerContentQuery(
                             activeOrganizationalUnit,
                             activeRepository,
-                            event.getNewProject()),
-                    true);
+                            event.getNewProject() ),
+                    true );
         }
     }
 
@@ -736,8 +734,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             doInitialiseViewForActiveContext(
                     new ProjectExplorerContentQuery(
                             activeOrganizationalUnit,
-                            activeRepository),
-                    true);
+                            activeRepository ),
+                    true );
         }
     }
 
@@ -759,8 +757,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                         activeOrganizationalUnit,
                         activeRepository,
                         activeProject,
-                        pkg),
-                false);
+                        pkg ),
+                false );
     }
 
     // Refresh when a Resource has been added, if it exists in the active package
@@ -772,8 +770,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( resource == null ) {
             return;
         }
-        if ( !Utils.isInFolderItem(activeFolderItem,
-                resource) ) {
+        if ( !Utils.isInFolderItem( activeFolderItem,
+                                    resource ) ) {
             return;
         }
 
@@ -782,11 +780,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             public void callback( final FolderListing folderListing ) {
                 getView().setItems( folderListing );
             }
-        }, new DefaultErrorCallback() ).getFolderListing(activeOrganizationalUnit,
-                activeRepository,
-                activeProject,
-                activeFolderItem,
-                getActiveOptions());
+        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                          activeRepository,
+                                                          activeProject,
+                                                          activeFolderItem,
+                                                          getActiveOptions() );
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
@@ -848,11 +846,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 openSelectedFileOnEditor( path );
                 setupActiveContextFor( path );
             }
-        } ).get(event.getUri());
+        } ).get( event.getUri() );
     }
 
     private void openSelectedFileOnEditor( Path path ) {
-        placeManager.goTo(path);
+        placeManager.goTo( path );
     }
 
     private void setupActiveContextFor( final Path path ) {
@@ -861,13 +859,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             @Override
             public void callback( URIStructureExplorerModel model ) {
                 initialiseViewForActiveContext( model.getOrganizationalUnit(),
-                                                  model.getRepository(),
-                                                  model.getProject());
+                                                model.getRepository(),
+                                                model.getProject() );
             }
-        } ).getURIStructureExplorerModel(path);
+        } ).getURIStructureExplorerModel( path );
 
     }
-
 
     // Refresh when a Resource has been renamed, if it exists in the active package
     public void onResourceRenamed( @Observes final ResourceRenamedEvent event ) {
@@ -892,11 +889,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                 public void callback( final FolderListing folderListing ) {
                     getView().setItems( folderListing );
                 }
-            }, new DefaultErrorCallback() ).getFolderListing(activeOrganizationalUnit,
-                    activeRepository,
-                    activeProject,
-                    activeFolderItem,
-                    getActiveOptions());
+            }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
+                                                              activeRepository,
+                                                              activeProject,
+                                                              activeFolderItem,
+                                                              getActiveOptions() );
         }
     }
 
@@ -919,29 +916,31 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         }
     }
 
-    public void onBranchCreated(@Observes NewBranchEvent event) {
-        if (isTheSameRepo(event.getRepositoryAlias())) {
-            if (activeRepository instanceof GitRepository) {
-                addBranch(activeRepository, event.getBranchName(), event.getBranchPath());
+    public void onBranchCreated( @Observes NewBranchEvent event ) {
+        if ( isTheSameRepo( event.getRepositoryAlias() ) ) {
+            if ( activeRepository instanceof GitRepository ) {
+                addBranch( activeRepository, event.getBranchName(), event.getBranchPath() );
             }
         }
 
-        if (repositories != null) {
-            for (Repository repository : repositories) {
-                if (repository.getAlias().equals(event.getRepositoryAlias())) {
-                    addBranch(repository, event.getBranchName(), event.getBranchPath());
+        if ( repositories != null ) {
+            for ( Repository repository : repositories ) {
+                if ( repository.getAlias().equals( event.getRepositoryAlias() ) ) {
+                    addBranch( repository, event.getBranchName(), event.getBranchPath() );
                 }
             }
         }
     }
 
-    private void addBranch(Repository repository, String branchName, Path branchPath) {
-        ((GitRepository) repository).addBranch(branchName, branchPath);
-        refresh(false);
+    private void addBranch( Repository repository,
+                            String branchName,
+                            Path branchPath ) {
+        ( (GitRepository) repository ).addBranch( branchName, branchPath );
+        refresh( false );
     }
 
-    private boolean isTheSameRepo(String alias) {
-        return activeRepository != null && activeRepository.getAlias().equals(alias);
+    private boolean isTheSameRepo( String alias ) {
+        return activeRepository != null && activeRepository.getAlias().equals( alias );
     }
 
 }

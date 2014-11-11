@@ -17,10 +17,10 @@ package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.editors.texteditor.TextEditorPresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorTitle;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
 
 public class KieTextEditorViewImpl
         extends TextEditorPresenter

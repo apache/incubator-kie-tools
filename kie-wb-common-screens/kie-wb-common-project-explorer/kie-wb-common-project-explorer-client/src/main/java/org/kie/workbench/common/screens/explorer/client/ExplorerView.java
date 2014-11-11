@@ -15,8 +15,8 @@
  */
 package org.kie.workbench.common.screens.explorer.client;
 
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 /**
  * Explorer View definition

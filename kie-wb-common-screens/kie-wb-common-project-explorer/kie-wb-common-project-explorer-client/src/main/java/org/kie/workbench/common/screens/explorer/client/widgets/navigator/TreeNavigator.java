@@ -20,8 +20,8 @@ import org.kie.workbench.common.screens.explorer.model.FolderItem;
 import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.uberfire.backend.vfs.Path;
-import org.kie.uberfire.client.tree.Tree;
-import org.kie.uberfire.client.tree.TreeItem;
+import org.uberfire.ext.widgets.core.client.tree.Tree;
+import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelViewImpl;
-import org.kie.uberfire.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class KModuleEditorPanelViewImpl

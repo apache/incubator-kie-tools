@@ -34,7 +34,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.tables.SimpleTable;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 public class WorkItemHandlersPanelViewImpl
         extends Composite

@@ -29,7 +29,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class ListFormComboPanelViewImpl
         extends Composite
@@ -123,7 +123,7 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void showXsdIDError() {
-        ErrorPopup.showMessage(ProjectEditorResources.CONSTANTS.XsdIDError());
+        ErrorPopup.showMessage( ProjectEditorResources.CONSTANTS.XsdIDError() );
 
     }
 
@@ -155,14 +155,14 @@ public class ListFormComboPanelViewImpl
 
     @Override
     public void enableItemEditingButtons() {
-        renameButton.setEnabled(true);
-        deleteButton.setEnabled(true);
+        renameButton.setEnabled( true );
+        deleteButton.setEnabled( true );
     }
 
     @Override
     public void disableItemEditingButtons() {
-        renameButton.setEnabled(false);
-        deleteButton.setEnabled(false);
+        renameButton.setEnabled( false );
+        deleteButton.setEnabled( false );
     }
 
     @Override

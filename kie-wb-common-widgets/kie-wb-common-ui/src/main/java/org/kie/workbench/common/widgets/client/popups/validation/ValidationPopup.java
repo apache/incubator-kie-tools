@@ -25,14 +25,14 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
 /**
  * A popup that lists BuildMessages
  */
-public class ValidationPopup extends KieBaseModal {
+public class ValidationPopup extends BaseModal {
 
     interface ValidationPopupWidgetBinder
             extends

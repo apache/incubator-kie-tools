@@ -30,18 +30,19 @@ import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.client.file.*;
+import org.guvnor.structure.client.file.CommandWithCommitMessage;
+import org.guvnor.structure.client.file.CommandWithFileNameAndCommitMessage;
+import org.guvnor.structure.client.file.CopyPopup;
+import org.guvnor.structure.client.file.DeletePopup;
+import org.guvnor.structure.client.file.FileNameAndCommitMessage;
+import org.guvnor.structure.client.file.RenamePopup;
+import org.guvnor.structure.client.file.SaveOperationService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.HasBusyIndicator;
-import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -58,6 +59,11 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -68,8 +74,8 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import static org.kie.uberfire.client.common.ConcurrentChangePopup.*;
 import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.*;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -123,10 +129,10 @@ public class ProjectScreenPresenter
                                    final PlaceManager placeManager,
                                    final BusyIndicatorView busyIndicatorView,
                                    final KieWorkbenchACL kieACL,
-                                   final Caller<AssetManagementService> assetManagementServices) {
+                                   final Caller<AssetManagementService> assetManagementServices ) {
         this.view = view;
         view.setPresenter( this );
-        view.setDeployToRuntimeSetting(ApplicationPreferences.getBooleanPref("support.runtime.deploy"));
+        view.setDeployToRuntimeSetting( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) );
 
         this.projectScreenService = projectScreenService;
         this.buildServiceCaller = buildServiceCaller;
@@ -148,11 +154,11 @@ public class ProjectScreenPresenter
         adjustBuildOptions();
     }
 
-    private boolean isRepositoryManaged(Repository repository) {
+    private boolean isRepositoryManaged( Repository repository ) {
         Boolean isRepositoryManaged = Boolean.FALSE;
 
-        if (repository != null && repository.getEnvironment().containsKey("managed")) {
-            isRepositoryManaged = (Boolean) repository.getEnvironment().get("managed");
+        if ( repository != null && repository.getEnvironment().containsKey( "managed" ) ) {
+            isRepositoryManaged = (Boolean) repository.getEnvironment().get( "managed" );
         }
 
         return isRepositoryManaged;
@@ -166,7 +172,7 @@ public class ProjectScreenPresenter
     public void selectedPathChanged( @Observes final ProjectContextChangeEvent event ) {
         showCurrentProjectInfoIfAny( event.getProject() );
         this.repository = event.getRepository();
-        if (event.getBranch() != null) {
+        if ( event.getBranch() != null ) {
             this.branch = event.getBranch();
         } else {
             this.branch = repository.getCurrentBranch();
@@ -175,7 +181,7 @@ public class ProjectScreenPresenter
     }
 
     private void adjustBuildOptions() {
-        if(isRepositoryManaged(repository)) {
+        if ( isRepositoryManaged( repository ) ) {
             enableBuildAndInstall( true );
             enableBuildAndDeploy( true );
         } else {
@@ -222,12 +228,12 @@ public class ProjectScreenPresenter
     }
 
     private void updateEditorTitle() {
-        changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(
+        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                 placeRequest,
                 ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
                         model.getPOM().getGav().getArtifactId() + ":" +
                                 model.getPOM().getGav().getGroupId() + ":" +
-                                model.getPOM().getGav().getVersion())));
+                                model.getPOM().getGav().getVersion() ) ) );
     }
 
     private void setupPathToPomXML() {
@@ -289,10 +295,10 @@ public class ProjectScreenPresenter
     }
 
     private void disableMenus() {
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled(false);
-        menus.getItemsMap().get(FileMenuBuilder.MenuItems.RENAME).setEnabled(false);
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
         menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled(false);
+        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
     }
 
     private void reload() {
@@ -304,24 +310,24 @@ public class ProjectScreenPresenter
     private void makeMenuBar() {
         menus = MenuFactory
                 .newTopLevelMenu( CommonConstants.INSTANCE.Save() )
-                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_SAVE))
-                .respondsWith(getSaveCommand())
+                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_SAVE ) )
+                .respondsWith( getSaveCommand() )
                 .endMenu()
-                .newTopLevelMenu(CommonConstants.INSTANCE.Delete())
-                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_DELETE))
-                .respondsWith(getDeleteCommand())
+                .newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
+                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_DELETE ) )
+                .respondsWith( getDeleteCommand() )
                 .endMenu()
-                .newTopLevelMenu(CommonConstants.INSTANCE.Rename())
-                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_RENAME))
-                .respondsWith(getRenameCommand())
+                .newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
+                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_RENAME ) )
+                .respondsWith( getRenameCommand() )
                 .endMenu()
-                .newTopLevelMenu(CommonConstants.INSTANCE.Copy())
-                .withRoles(kieACL.getGrantedRoles(F_PROJECT_AUTHORING_COPY))
-                .respondsWith(getCopyCommand())
+                .newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
+                .withRoles( kieACL.getGrantedRoles( F_PROJECT_AUTHORING_COPY ) )
+                .respondsWith( getCopyCommand() )
                 .endMenu()
-                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
+                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
                     @Override
-                    public void push(MenuFactory.CustomMenuBuilder element) {
+                    public void push( MenuFactory.CustomMenuBuilder element ) {
                     }
 
                     @Override
@@ -333,7 +339,7 @@ public class ProjectScreenPresenter
                             }
                         };
                     }
-                }).endMenu()
+                } ).endMenu()
                 .build();
     }
 
@@ -440,20 +446,20 @@ public class ProjectScreenPresenter
 
     private YesNoCancelPopup createYesNoCancelPopup() {
         return YesNoCancelPopup.newYesNoCancelPopup(
-                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Information(),
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Information(),
                 ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
                 getYesCommand(),
-                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.YES(),
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
                 ButtonType.PRIMARY,
                 IconType.SAVE,
 
                 getNoCommand(),
-                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.NO(),
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
                 ButtonType.DANGER,
                 IconType.WARNING_SIGN,
 
                 getCancelCommand(),
-                org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
+                org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Cancel(),
                 ButtonType.DEFAULT,
                 null
                                                    );
@@ -472,7 +478,7 @@ public class ProjectScreenPresenter
             @Override
             public void execute() {
                 view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                if (isRepositoryManaged(repository)) {
+                if ( isRepositoryManaged( repository ) ) {
                     buildOnly();
                 } else {
                     build();
@@ -491,7 +497,7 @@ public class ProjectScreenPresenter
                         view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
                         notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
                                                                        NotificationEvent.NotificationType.SUCCESS ) );
-                        if (isRepositoryManaged(repository)) {
+                        if ( isRepositoryManaged( repository ) ) {
                             buildOnly();
                         } else {
                             build();
@@ -511,7 +517,7 @@ public class ProjectScreenPresenter
     private void buildOnly() {
         building = true;
         buildServiceCaller.call( getBuildSuccessCallback(),
-                new BuildFailureErrorCallback( view ) ).build( project );
+                                 new BuildFailureErrorCallback( view ) ).build( project );
     }
 
     public void triggerBuild() {
@@ -521,41 +527,47 @@ public class ProjectScreenPresenter
     public void triggerBuildAndInstall() {
         building = true;
 
-        assetManagementServices.call(new RemoteCallback<Long>() {
-                                         @Override
-                                         public void callback(Long taskId) {
-                                             notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
-                                                     NotificationEvent.NotificationType.SUCCESS));
-                                             view.hideBusyIndicator();
-                                             building = false;
-                                         }
-                                     }, new ErrorCallback<Message>() {
-                                         @Override
-                                         public boolean error(Message message, Throwable throwable) {
-                                             ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-                                             return true;
-                                         }
-                                     }).buildProject(repository.getAlias(), branch, project.getProjectName(), null, null, null, false);
+        assetManagementServices.call( new RemoteCallback<Long>() {
+                                          @Override
+                                          public void callback( Long taskId ) {
+                                              notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                                                             NotificationEvent.NotificationType.SUCCESS ) );
+                                              view.hideBusyIndicator();
+                                              building = false;
+                                          }
+                                      }, new ErrorCallback<Message>() {
+                                          @Override
+                                          public boolean error( Message message,
+                                                                Throwable throwable ) {
+                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              return true;
+                                          }
+                                      }
+                                    ).buildProject( repository.getAlias(), branch, project.getProjectName(), null, null, null, false );
     }
 
-    public void triggerBuildAndDeploy(String username, String password, String serverURL) {
+    public void triggerBuildAndDeploy( String username,
+                                       String password,
+                                       String serverURL ) {
         building = true;
 
-        assetManagementServices.call(new RemoteCallback<Long>() {
-                                         @Override
-                                         public void callback(Long taskId) {
-                                             notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
-                                                     NotificationEvent.NotificationType.SUCCESS));
-                                             view.hideBusyIndicator();
-                                             building = false;
-                                         }
-                                     }, new ErrorCallback<Message>() {
-                                         @Override
-                                         public boolean error(Message message, Throwable throwable) {
-                                             ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
-                                             return true;
-                                         }
-                                     }).buildProject(repository.getAlias(), branch, project.getProjectName(), username, password, serverURL, true);
+        assetManagementServices.call( new RemoteCallback<Long>() {
+                                          @Override
+                                          public void callback( Long taskId ) {
+                                              notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                                                             NotificationEvent.NotificationType.SUCCESS ) );
+                                              view.hideBusyIndicator();
+                                              building = false;
+                                          }
+                                      }, new ErrorCallback<Message>() {
+                                          @Override
+                                          public boolean error( Message message,
+                                                                Throwable throwable ) {
+                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
+                                              return true;
+                                          }
+                                      }
+                                    ).buildProject( repository.getAlias(), branch, project.getProjectName(), username, password, serverURL, true );
     }
 
     private Command getSaveCommand() {
@@ -691,8 +703,8 @@ public class ProjectScreenPresenter
 
     @Override
     public void onDeploymentDescriptorSelected() {
-        placeManager.goTo( PathFactory.newPath("kie-deployment-descriptor.xml",
-                project.getRootPath().toURI() + "/src/main/resources/META-INF/kie-deployment-descriptor.xml") );
+        placeManager.goTo( PathFactory.newPath( "kie-deployment-descriptor.xml",
+                                                project.getRootPath().toURI() + "/src/main/resources/META-INF/kie-deployment-descriptor.xml" ) );
     }
 
     private class BuildFailureErrorCallback

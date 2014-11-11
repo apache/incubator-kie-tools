@@ -26,7 +26,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.kie.uberfire.client.common.ResizableTextArea;
+import org.uberfire.ext.widgets.common.client.common.ResizableTextArea;
 
 public class EditJavaSourceWidget extends Composite implements RequiresResize {
 
@@ -37,7 +37,7 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
     public EditJavaSourceWidget() {
         textArea.setWidth( "100%" );
         textArea.getElement().setAttribute( "spellcheck",
-                "false" );
+                                            "false" );
 
         Element element = textArea.getElement();
         DOM.setStyleAttribute( element, "fontFamily", "monospace" );
@@ -83,13 +83,13 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
     private void insertText( final String ins ) {
         final int i = textArea.getCursorPos();
         final String left = textArea.getText().substring( 0,
-                i );
+                                                          i );
         final String right = textArea.getText().substring( i,
-                textArea.getText().length() );
+                                                           textArea.getText().length() );
         textArea.setText( left + ins + right );
     }
 
-    public void setDirty(boolean dirty) {
+    public void setDirty( boolean dirty ) {
         this.isDirty = dirty;
     }
 
@@ -101,7 +101,7 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
         textArea.setReadOnly( readonly );
     }
 
-    public HandlerRegistration addChangeHandler(ChangeHandler handler) {
+    public HandlerRegistration addChangeHandler( ChangeHandler handler ) {
         return textArea.addChangeHandler( handler );
     }
 
@@ -110,7 +110,7 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
         setPixelSize( width,
-                height );
+                      height );
         textArea.onResize();
     }
 }

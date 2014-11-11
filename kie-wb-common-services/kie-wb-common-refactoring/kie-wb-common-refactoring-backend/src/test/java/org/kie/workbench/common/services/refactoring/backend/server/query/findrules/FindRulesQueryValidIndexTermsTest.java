@@ -10,7 +10,6 @@ import javax.enterprise.inject.Instance;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.junit.Test;
-import org.kie.uberfire.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.kie.workbench.common.services.refactoring.backend.server.BaseIndexingTest;
 import org.kie.workbench.common.services.refactoring.backend.server.TestIndexer;
 import org.kie.workbench.common.services.refactoring.backend.server.drl.TestDrlFileIndexer;
@@ -27,6 +26,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.valueterm
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRequest;
 import org.kie.workbench.common.services.refactoring.model.query.RefactoringPageRow;
+import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
 

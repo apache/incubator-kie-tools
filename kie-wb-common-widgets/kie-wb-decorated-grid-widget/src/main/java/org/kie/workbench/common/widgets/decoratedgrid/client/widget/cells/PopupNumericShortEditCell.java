@@ -24,7 +24,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.uberfire.client.common.NumericShortTextBox;
+import org.uberfire.ext.widgets.common./**/client.common.NumericShortTextBox;
 
 /**
  * A Popup Text Editor for Short values.

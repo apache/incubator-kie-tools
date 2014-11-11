@@ -16,9 +16,6 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -28,9 +25,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.common.HasBusyIndicator;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -48,30 +45,37 @@ public class MetadataWidget
 
     }
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     private Metadata metadata = null;
     private boolean readOnly;
 
-//    @UiField Label title;
-    @UiField CategorySelectorWidget categories;
-    @UiField Label note;
-    @UiField Label uri;
-    @UiField TextBox subject;
-    @UiField TextBox type;
-    @UiField TextBox external;
-    @UiField TextBox source;
+    //    @UiField Label title;
+    @UiField
+    CategorySelectorWidget categories;
+    @UiField
+    Label note;
+    @UiField
+    Label uri;
+    @UiField
+    TextBox subject;
+    @UiField
+    TextBox type;
+    @UiField
+    TextBox external;
+    @UiField
+    TextBox source;
 
     private BusyIndicatorView busyIndicatorView;
 
-    public MetadataWidget(BusyIndicatorView busyIndicatorView) {
+    public MetadataWidget( BusyIndicatorView busyIndicatorView ) {
         this.busyIndicatorView = busyIndicatorView;
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void setContent(final Metadata metadata,
-            final boolean readOnly) {
-        this.metadata = checkNotNull("metadata", metadata);
+    public void setContent( final Metadata metadata,
+                            final boolean readOnly ) {
+        this.metadata = checkNotNull( "metadata", metadata );
         this.readOnly = readOnly;
 
         loadData();
@@ -79,47 +83,47 @@ public class MetadataWidget
 
     private void loadData() {
 
-        categories.setContent(metadata, this.readOnly);
+        categories.setContent( metadata, this.readOnly );
 
-        note.setText(metadata.getCheckinComment());
+        note.setText( metadata.getCheckinComment() );
 
-        uri.setText(metadata.getPath().toURI());
+        uri.setText( metadata.getPath().toURI() );
 
-        subject.setText(metadata.getSubject());
-        subject.addKeyUpHandler(new KeyUpHandler() {
+        subject.setText( metadata.getSubject() );
+        subject.addKeyUpHandler( new KeyUpHandler() {
             @Override
-            public void onKeyUp(KeyUpEvent event) {
-                metadata.setSubject(subject.getText());
+            public void onKeyUp( KeyUpEvent event ) {
+                metadata.setSubject( subject.getText() );
                 dirtyflag = true;
             }
-        });
+        } );
 
-        type.setText(metadata.getType());
-        type.addKeyUpHandler(new KeyUpHandler() {
+        type.setText( metadata.getType() );
+        type.addKeyUpHandler( new KeyUpHandler() {
             @Override
-            public void onKeyUp(KeyUpEvent event) {
-                metadata.setType(type.getText());
+            public void onKeyUp( KeyUpEvent event ) {
+                metadata.setType( type.getText() );
                 dirtyflag = true;
             }
-        });
+        } );
 
-        external.setText(metadata.getExternalRelation());
-        external.addKeyUpHandler(new KeyUpHandler() {
+        external.setText( metadata.getExternalRelation() );
+        external.addKeyUpHandler( new KeyUpHandler() {
             @Override
-            public void onKeyUp(KeyUpEvent event) {
-                metadata.setExternalRelation(external.getText());
+            public void onKeyUp( KeyUpEvent event ) {
+                metadata.setExternalRelation( external.getText() );
                 dirtyflag = true;
             }
-        });
+        } );
 
-        source.setText(metadata.getExternalSource());
-        source.addKeyUpHandler(new KeyUpHandler() {
+        source.setText( metadata.getExternalSource() );
+        source.addKeyUpHandler( new KeyUpHandler() {
             @Override
-            public void onKeyUp(KeyUpEvent event) {
-                metadata.setExternalSource(source.getText());
+            public void onKeyUp( KeyUpEvent event ) {
+                metadata.setExternalSource( source.getText() );
                 dirtyflag = true;
             }
-        });
+        } );
 
     }
 
@@ -137,8 +141,8 @@ public class MetadataWidget
     }
 
     @Override
-    public void showBusyIndicator(final String message) {
-        busyIndicatorView.showBusyIndicator(message);
+    public void showBusyIndicator( final String message ) {
+        busyIndicatorView.showBusyIndicator( message );
     }
 
     @Override

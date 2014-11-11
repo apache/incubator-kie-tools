@@ -4,15 +4,15 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.kie.uberfire.client.common.BusyPopup;
-import org.kie.uberfire.client.common.MultiPageEditorView;
-import org.kie.uberfire.client.common.Page;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.MultiPageEditorView;
+import org.uberfire.ext.widgets.common.client.common.Page;
 
 public class ProjectImportsScreenViewImpl
         extends MultiPageEditorView
@@ -25,7 +25,7 @@ public class ProjectImportsScreenViewImpl
     @Inject
     public ProjectImportsScreenViewImpl( final BusyIndicatorView busyIndicatorView ) {
         super();
-        this.metadataWidget = new MetadataWidget(busyIndicatorView);
+        this.metadataWidget = new MetadataWidget( busyIndicatorView );
 
     }
 
@@ -47,8 +47,8 @@ public class ProjectImportsScreenViewImpl
             }
         } );
 
-        addPage(new Page(metadataWidget,
-                MetadataConstants.INSTANCE.Metadata()) {
+        addPage( new Page( metadataWidget,
+                           MetadataConstants.INSTANCE.Metadata() ) {
             @Override
             public void onFocus() {
                 presenter.onShowMetadata();
@@ -57,7 +57,7 @@ public class ProjectImportsScreenViewImpl
             @Override
             public void onLostFocus() {
             }
-        });
+        } );
     }
 
     @Override

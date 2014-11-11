@@ -59,14 +59,16 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.images.Ima
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataObjectComparator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.events.*;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
-import org.uberfire.mvp.Command;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.workbench.events.NotificationEvent;
-
-import static org.kie.workbench.common.widgets.client.popups.project.ProjectConcurrentChangePopup.newConcurrentChange;
 
 public class DataModelBrowser extends Composite {
 
@@ -127,8 +129,8 @@ public class DataModelBrowser extends Composite {
 
             @Override
             public void render( Cell.Context context,
-                    DataObjectTO object,
-                    SafeHtmlBuilder sb ) {
+                                DataObjectTO object,
+                                SafeHtmlBuilder sb ) {
                 SafeHtml startDiv = new SafeHtml() {
                     @Override
                     public String asString() {
@@ -157,12 +159,12 @@ public class DataModelBrowser extends Composite {
         dataObjectsTable.addColumn( dataObjectColumn, Constants.INSTANCE.modelBrowser_columnName() );
 
         // Init delete column
-        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell(true, 16);
-        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>(clickableImageResourceCell);
-        decorator.setPlacement(Placement.LEFT);
-        decorator.setText(Constants.INSTANCE.modelBrowser_action_deleteDataObject());
+        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell( true, 16 );
+        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( clickableImageResourceCell );
+        decorator.setPlacement( Placement.LEFT );
+        decorator.setText( Constants.INSTANCE.modelBrowser_action_deleteDataObject() );
 
-        final Column<DataObjectTO, ImageResource> deleteDataObjectColumnImg = new Column<DataObjectTO, ImageResource>(decorator) {
+        final Column<DataObjectTO, ImageResource> deleteDataObjectColumnImg = new Column<DataObjectTO, ImageResource>( decorator ) {
             @Override
             public ImageResource getValue( final DataObjectTO dataObject ) {
                 return ImagesResources.INSTANCE.Delete();
@@ -171,19 +173,19 @@ public class DataModelBrowser extends Composite {
 
         deleteDataObjectColumnImg.setFieldUpdater( new FieldUpdater<DataObjectTO, ImageResource>() {
             public void update( final int index,
-                    final DataObjectTO object,
-                    final ImageResource value ) {
-                checkAndDeleteDataObject(object, index);
+                                final DataObjectTO object,
+                                final ImageResource value ) {
+                checkAndDeleteDataObject( object, index );
             }
         } );
 
-        dataObjectsTable.addColumn(deleteDataObjectColumnImg);
-        dataObjectsTable.setColumnWidth(deleteDataObjectColumnImg, 32, Style.Unit.PX);
+        dataObjectsTable.addColumn( deleteDataObjectColumnImg );
+        dataObjectsTable.setColumnWidth( deleteDataObjectColumnImg, 32, Style.Unit.PX );
 
-        ColumnSortEvent.ListHandler<DataObjectTO> dataObjectNameColHandler = new ColumnSortEvent.ListHandler<DataObjectTO>(dataObjectsProvider.getList());
-        dataObjectNameColHandler.setComparator(dataObjectColumn, new DataObjectComparator());
-        dataObjectsTable.addColumnSortHandler(dataObjectNameColHandler);
-        dataObjectsTable.getColumnSortList().push(dataObjectColumn);
+        ColumnSortEvent.ListHandler<DataObjectTO> dataObjectNameColHandler = new ColumnSortEvent.ListHandler<DataObjectTO>( dataObjectsProvider.getList() );
+        dataObjectNameColHandler.setComparator( dataObjectColumn, new DataObjectComparator() );
+        dataObjectsTable.addColumnSortHandler( dataObjectNameColHandler );
+        dataObjectsTable.getColumnSortList().push( dataObjectColumn );
 
         //Init the selection model
         SingleSelectionModel<DataObjectTO> selectionModel = new SingleSelectionModel<DataObjectTO>();
@@ -228,7 +230,7 @@ public class DataModelBrowser extends Composite {
     }
 
     private void setTooltip( Widget w,
-            String message ) {
+                             String message ) {
         Tooltip tooltip = new Tooltip();
         tooltip.setWidget( w );
         tooltip.setText( message );
@@ -341,7 +343,8 @@ public class DataModelBrowser extends Composite {
         dataObjectsTable.setKeyboardSelectedRow( index );
     }
 
-    private void checkAndDeleteDataObject(final DataObjectTO dataObject, final int index) {
+    private void checkAndDeleteDataObject( final DataObjectTO dataObject,
+                                           final int index ) {
         /*
         if (getContext().isDMOInvalidated()) {
             newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
@@ -360,18 +363,18 @@ public class DataModelBrowser extends Composite {
                     }
             ).show();
         } else {*/
-        deleteDataObject(dataObject, index);
+        deleteDataObject( dataObject, index );
         //}
     }
 
     private void deleteDataObject( final DataObjectTO dataObjectTO,
-            final int index ) {
+                                   final int index ) {
 
-        Collection<String> refs = validatorService.getDataObjectExternalReferences(getContext(), dataObjectTO, getDataModel());
-        if ( refs != null && refs.size() > 0) {
-            StringBuilder refString = new StringBuilder("<br><br>");
+        Collection<String> refs = validatorService.getDataObjectExternalReferences( getContext(), dataObjectTO, getDataModel() );
+        if ( refs != null && refs.size() > 0 ) {
+            StringBuilder refString = new StringBuilder( "<br><br>" );
             for ( String ref : refs ) {
-                refString.append("    --> " + ref + "<br>");
+                refString.append( "    --> " + ref + "<br>" );
             }
             ErrorPopup.showMessage( Constants.INSTANCE.validation_error_cannot_delete_object( DataModelerUtils.getDataObjectUILabel( dataObjectTO ), refString.toString() ) );
         } else {

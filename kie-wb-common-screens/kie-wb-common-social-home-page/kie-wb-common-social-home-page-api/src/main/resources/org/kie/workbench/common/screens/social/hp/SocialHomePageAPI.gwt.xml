@@ -5,7 +5,6 @@
   <inherits name="org.jboss.errai.bus.ErraiBus"/>
   <inherits name="org.kie.uberfire.social.activities.SocialActivitiesAPI"/>
 
-
   <source path='predicate'/>
   <source path='model'/>
   <source path='service'/>

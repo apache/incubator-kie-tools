@@ -38,14 +38,14 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ProvidesKey;
-import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
-import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.ClickableImageResourceCell;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
+import org.kie.workbench.common.services.shared.kmodule.ClockTypeOption;
+import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.popups.errors.ErrorPopup;
-import org.kie.uberfire.client.tables.SimpleTable;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 
 public class KSessionsPanelViewImpl
         extends Composite

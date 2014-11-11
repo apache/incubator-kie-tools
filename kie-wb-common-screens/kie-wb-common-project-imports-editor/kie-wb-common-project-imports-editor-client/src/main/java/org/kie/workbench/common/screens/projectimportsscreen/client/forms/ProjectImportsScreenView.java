@@ -2,12 +2,11 @@ package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface ProjectImportsScreenView extends HasBusyIndicator,
-        IsWidget {
-
+                                                  IsWidget {
 
     interface Presenter {
 
@@ -15,13 +14,13 @@ public interface ProjectImportsScreenView extends HasBusyIndicator,
 
     }
 
-    void setPresenter(final Presenter presenter);
+    void setPresenter( final Presenter presenter );
 
-    void setMetadata(final Metadata metadata);
+    void setMetadata( final Metadata metadata );
 
     Metadata getMetadata();
 
-    void setImports(ImportsWidgetPresenter importsWidgetPresenter);
+    void setImports( ImportsWidgetPresenter importsWidgetPresenter );
 
     boolean confirmClose();
 

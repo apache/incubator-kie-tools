@@ -18,10 +18,10 @@ package org.kie.workbench.common.widgets.client.popups.project;
 
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.uberfire.client.common.AbstractConcurrentChangePopup;
-import org.kie.uberfire.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.resources.i18n.ProjectConcurrentChangePopupConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.AbstractConcurrentChangePopup;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 
 public class ProjectConcurrentChangePopup extends AbstractConcurrentChangePopup {

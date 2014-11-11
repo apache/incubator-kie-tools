@@ -26,13 +26,13 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.common.popups.footers.ModalFooterOKButton;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 
 public class KSessionModelOptionsPopUpViewImpl
-        extends KieBaseModal
+        extends BaseModal
         implements KSessionModelOptionsPopUpView {
 
     private static final Style PANEL_ENABLED = new Style() {

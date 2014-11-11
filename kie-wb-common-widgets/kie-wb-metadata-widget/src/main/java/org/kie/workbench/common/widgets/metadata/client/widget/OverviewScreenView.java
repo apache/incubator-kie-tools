@@ -20,42 +20,45 @@ import java.util.Date;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface OverviewScreenView
-        extends IsWidget, HasBusyIndicator {
-
-
+        extends IsWidget,
+                HasBusyIndicator {
 
     interface Presenter {
 
-        void onDescriptionEdited(String description);
+        void onDescriptionEdited( String description );
 
     }
 
-    void setPresenter(Presenter presenter);
+    void setPresenter( Presenter presenter );
 
-    void refresh(String version);
+    void refresh( String version );
 
-    void setReadOnly(boolean isReadOnly);
+    void setReadOnly( boolean isReadOnly );
 
-    void setVersionHistory(Path path);
+    void setVersionHistory( Path path );
 
-    void setDescription(String description);
+    void setDescription( String description );
 
-    void setResourceType(ClientResourceType type);
+    void setResourceType( ClientResourceType type );
 
-    void setProject(String project);
+    void setProject( String project );
 
-    void setLastModified(String lastContributor, Date lastModified);
+    void setLastModified( String lastContributor,
+                          Date lastModified );
 
-    void setCreated(String creator, Date dateCreated);
+    void setCreated( String creator,
+                     Date dateCreated );
 
-    void setMetadata(Metadata metadata, boolean isReadOnly);
+    void setMetadata( Metadata metadata,
+                      boolean isReadOnly );
 
-    String getTitle(String fileName, String fileType);
+    String getTitle( String fileName,
+                     String fileType );
 
     void showVersionHistory();
 

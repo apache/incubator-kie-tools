@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.uberfire.client.common.NumericFloatTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericFloatTextBox;
 
 /**
  * A Widget to display a Work Item Float parameter

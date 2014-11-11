@@ -24,22 +24,22 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.uberfire.client.common.DirtyableComposite;
-import org.kie.uberfire.client.common.ValueChanged;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
+import org.uberfire.ext.widgets.common.client.common.ValueChanged;
 
 abstract class DatePicker extends DirtyableComposite {
 
     protected DatePickerPopUp datePickerPopUp;
 
-    protected Panel   panel      = new HorizontalPanel();
+    protected Panel panel = new HorizontalPanel();
     protected TextBox textWidget = new TextBox();
 
     // Format that the text box uses.
-    protected              String         visualFormat          = "";
+    protected String visualFormat = "";
     // Format that the system uses.
-    protected final static String         defaultFormat         = ApplicationPreferences.getDroolsDateFormat();
-    protected              DateTimeFormat visualFormatFormatter = null;
+    protected final static String defaultFormat = ApplicationPreferences.getDroolsDateFormat();
+    protected DateTimeFormat visualFormatFormatter = null;
 
     protected List<ValueChanged> valueChangeds = new ArrayList<ValueChanged>();
 

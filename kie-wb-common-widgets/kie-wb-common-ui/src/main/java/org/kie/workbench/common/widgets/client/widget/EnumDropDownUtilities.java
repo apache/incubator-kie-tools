@@ -28,11 +28,11 @@ import org.jboss.errai.bus.client.api.BusErrorCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.common.BusyPopup;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.util.ConstraintValueHelper;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 
 /**
  * Utilities to populate a ListBox with DropDownData

@@ -18,9 +18,9 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:kie-ui="urn:import:org.kie.uberfire.client.tables">
+             xmlns:kie-ui="urn:import:org.uberfire.ext.widgets.common.client.tables">
 
-  <ui:with field="i18nCommon" type="org.kie.uberfire.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18nCommon" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
 
     <b:Well>
 

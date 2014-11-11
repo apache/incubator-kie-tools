@@ -22,7 +22,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.util.Version;
-import org.kie.uberfire.metadata.backend.lucene.analyzer.LowerCaseTokenizer;
+import org.uberfire.ext.metadata.backend.lucene.analyzer.LowerCaseTokenizer;
 
 /**
  * A specialise analyzer to include special characters in attribute names, such as "-"

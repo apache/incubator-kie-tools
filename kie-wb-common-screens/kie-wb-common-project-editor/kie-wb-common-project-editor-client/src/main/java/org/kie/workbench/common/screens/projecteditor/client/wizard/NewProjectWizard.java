@@ -1,13 +1,14 @@
 package org.kie.workbench.common.screens.projecteditor.client.wizard;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Widget;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.model.POM;
@@ -15,10 +16,6 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.ProjectWizard;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyIndicatorView;
-import org.kie.uberfire.client.wizards.AbstractWizard;
-import org.kie.uberfire.client.wizards.WizardPage;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -26,12 +23,16 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.core.client.wizards.AbstractWizard;
+import org.uberfire.ext.widgets.core.client.wizards.WizardPage;
 import org.uberfire.workbench.events.NotificationEvent;
 
 @Dependent
 public class NewProjectWizard
         extends AbstractWizard
-        implements ProjectWizard{
+        implements ProjectWizard {
 
     @Inject
     private PlaceManager placeManager;
@@ -109,8 +110,10 @@ public class NewProjectWizard
         pom.getGav().setVersion( "1.0" );
         gavWizardPage.setPom( pom );
     }
-    
-    public void setContent( final String projectName, final String groupId, final String version ) {
+
+    public void setContent( final String projectName,
+                            final String groupId,
+                            final String version ) {
         // The Project Name is used to generate the folder name and hence is only checked to be a valid file name.
         // The ArtifactID is initially set to the project name, subsequently validated against the maven regex,
         // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
@@ -151,7 +154,8 @@ public class NewProjectWizard
     }
 
     @Override
-    public void start( Callback<Project> callback, boolean openEditor ) {
+    public void start( Callback<Project> callback,
+                       boolean openEditor ) {
         this.projectCallback = callback;
         this.openEditor = openEditor;
         super.start();

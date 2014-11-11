@@ -52,7 +52,6 @@
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
 
-
     <dependency>
       <groupId>org.kie.uberfire</groupId>
       <artifactId>kie-uberfire-social-activities-client</artifactId>
@@ -68,10 +67,9 @@
       <artifactId>kie-uberfire-social-activities-backend</artifactId>
     </dependency>
 
-
     <dependency>
-      <groupId>org.kie.uberfire</groupId>
-      <artifactId>kie-uberfire-widgets-commons</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
 
     <dependency>

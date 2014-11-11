@@ -24,7 +24,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.TextBox;
-import org.kie.uberfire.client.common.NumericDoubleTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericDoubleTextBox;
 
 /**
  * A Popup Text Editor for Double values

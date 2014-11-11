@@ -27,16 +27,21 @@ import javax.inject.Inject;
 import org.guvnor.common.services.shared.file.CopyService;
 import org.guvnor.common.services.shared.file.DeleteService;
 import org.guvnor.common.services.shared.file.RenameService;
-import org.guvnor.structure.client.file.*;
+import org.guvnor.structure.client.file.CommandWithCommitMessage;
+import org.guvnor.structure.client.file.CommandWithFileNameAndCommitMessage;
+import org.guvnor.structure.client.file.CopyPopup;
+import org.guvnor.structure.client.file.DeletePopup;
+import org.guvnor.structure.client.file.FileNameAndCommitMessage;
+import org.guvnor.structure.client.file.RenamePopup;
 import org.guvnor.structure.client.validation.Validator;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.uberfire.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.kie.uberfire.client.common.BusyIndicatorView;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -84,13 +89,13 @@ public class FileMenuBuilderImpl
     private List<MenuItem> topLevelMenus = new ArrayList<MenuItem>();
 
     @Override
-    public FileMenuBuilder addSave(MenuItem menuItem) {
+    public FileMenuBuilder addSave( MenuItem menuItem ) {
         saveMenuItem = menuItem;
         return this;
     }
 
     @Override
-    public FileMenuBuilder addSave(final Command command) {
+    public FileMenuBuilder addSave( final Command command ) {
         this.saveCommand = command;
         return this;
     }
@@ -288,13 +293,13 @@ public class FileMenuBuilderImpl
     @Override
     public Menus build() {
         final Map<Object, MenuItem> menuItems = new LinkedHashMap<Object, MenuItem>();
-        if (saveCommand != null) {
-            menuItems.put(MenuItems.SAVE, MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Save())
-                    .respondsWith(saveCommand)
+        if ( saveCommand != null ) {
+            menuItems.put( MenuItems.SAVE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Save() )
+                    .respondsWith( saveCommand )
                     .endMenu()
-                    .build().getItems().get(0));
-        } else if (saveMenuItem != null) {
-            menuItems.put(MenuItems.SAVE, saveMenuItem);
+                    .build().getItems().get( 0 ) );
+        } else if ( saveMenuItem != null ) {
+            menuItems.put( MenuItems.SAVE, saveMenuItem );
         }
 
         if ( deleteCommand != null ) {
@@ -345,8 +350,8 @@ public class FileMenuBuilderImpl
             menuItems.put( item, item );
         }
 
-        for (MenuItem menuItem : topLevelMenus) {
-            menuItems.put(menuItem, menuItem);
+        for ( MenuItem menuItem : topLevelMenus ) {
+            menuItems.put( menuItem, menuItem );
         }
 
         return new Menus() {
@@ -368,8 +373,8 @@ public class FileMenuBuilderImpl
     }
 
     @Override
-    public FileMenuBuilder addNewTopLevelMenu(MenuItem menu) {
-        topLevelMenus.add(menu);
+    public FileMenuBuilder addNewTopLevelMenu( MenuItem menu ) {
+        topLevelMenus.add( menu );
         return this;
     }
 }

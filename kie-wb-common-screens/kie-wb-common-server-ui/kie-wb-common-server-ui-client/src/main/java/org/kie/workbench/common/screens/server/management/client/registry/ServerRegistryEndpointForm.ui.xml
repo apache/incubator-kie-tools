@@ -18,7 +18,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:kie="urn:import:org.kie.uberfire.client.common.popups">
+             xmlns:kie="urn:import:org.uberfire.ext.widgets.common.client.common.popups">
 
   <ui:style>
     .mandatory-field {
@@ -27,7 +27,7 @@
   </ui:style>
 
   <g:HTMLPanel>
-    <kie:KieBaseModal ui:field="popup" title="Register Server" backdrop="STATIC" keyboard="true" animation="true">
+    <kie:BaseModal ui:field="popup" title="Register Server" backdrop="STATIC" keyboard="true" animation="true">
       <b:Well>
         <b:Fieldset>
           <b:Legend>
@@ -82,6 +82,6 @@
           Connect
         </b:Button>
       </b:ModalFooter>
-    </kie:KieBaseModal>
+    </kie:BaseModal>
   </g:HTMLPanel>
 </ui:UiBinder> 

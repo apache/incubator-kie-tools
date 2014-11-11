@@ -18,14 +18,13 @@ package org.kie.workbench.common.widgets.client.callbacks;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.uberfire.client.common.HasBusyIndicator;
-import org.kie.uberfire.client.common.MultiPageEditor;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.uberfire.client.common.MultiPageEditor;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -49,19 +48,18 @@ public class CommandBuilder {
         return this;
     }
 
-
     public CommandBuilder addNoSuchFileException( final HasBusyIndicator view,
-                                                  final Callback<IsWidget> callback) {
-        add(NoSuchFileException.class,
-                new Command() {
+                                                  final Callback<IsWidget> callback ) {
+        add( NoSuchFileException.class,
+             new Command() {
 
-                    @Override
-                    public void execute() {
-                        callback.callback(new NoSuchFileWidget());
-                        view.hideBusyIndicator();
-                    }
-                }
-        );
+                 @Override
+                 public void execute() {
+                     callback.callback( new NoSuchFileWidget() );
+                     view.hideBusyIndicator();
+                 }
+             }
+           );
         return this;
     }
 

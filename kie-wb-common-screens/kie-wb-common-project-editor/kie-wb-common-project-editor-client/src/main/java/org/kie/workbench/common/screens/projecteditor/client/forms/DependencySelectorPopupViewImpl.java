@@ -5,12 +5,12 @@ import javax.enterprise.context.Dependent;
 import com.google.gwt.user.client.Timer;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class DependencySelectorPopupViewImpl
-        extends KieBaseModal
+        extends BaseModal
         implements DependencySelectorPopupView {
 
     private DependencySelectorPresenter presenter;
@@ -51,6 +51,6 @@ public class DependencySelectorPopupViewImpl
             public void run() {
                 dependencyPagedJarTable.refresh();
             }
-        }.schedule(1000);
+        }.schedule( 1000 );
     }
 }

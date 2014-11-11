@@ -17,15 +17,15 @@ package org.kie.workbench.common.widgets.client.widget;
 
 import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.kie.uberfire.client.common.NumericBigDecimalTextBox;
-import org.kie.uberfire.client.common.NumericBigIntegerTextBox;
-import org.kie.uberfire.client.common.NumericByteTextBox;
-import org.kie.uberfire.client.common.NumericDoubleTextBox;
-import org.kie.uberfire.client.common.NumericFloatTextBox;
-import org.kie.uberfire.client.common.NumericIntegerTextBox;
-import org.kie.uberfire.client.common.NumericLongTextBox;
-import org.kie.uberfire.client.common.NumericShortTextBox;
-import org.kie.uberfire.client.common.NumericTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericBigDecimalTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericBigIntegerTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericByteTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericDoubleTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericFloatTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericIntegerTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericLongTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericShortTextBox;
+import org.uberfire.ext.widgets.common.client.common.NumericTextBox;
 
 /**
  * A Factory for Text Boxes relevant to the specified data-type

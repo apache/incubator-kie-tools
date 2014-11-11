@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.ListFormComboPanelView;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface KModuleEditorPanelView extends HasBusyIndicator,
                                                 ListFormComboPanelView {

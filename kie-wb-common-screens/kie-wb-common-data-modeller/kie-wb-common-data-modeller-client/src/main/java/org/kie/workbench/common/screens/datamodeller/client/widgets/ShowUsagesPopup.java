@@ -40,13 +40,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import org.kie.uberfire.client.common.popups.KieBaseModal;
-import org.kie.uberfire.client.tables.SimpleTable;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 import org.uberfire.mvp.Command;
 
-public class ShowUsagesPopup extends KieBaseModal {
+public class ShowUsagesPopup extends BaseModal {
 
     interface ShowUsagesPopupWidgetBinder
             extends

@@ -16,7 +16,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.uberfire.client.common.popups.YesNoCancelPopup;
 import org.kie.workbench.common.screens.server.management.client.artifact.NewContainerForm;
 import org.kie.workbench.common.screens.server.management.client.box.BoxPresenter;
 import org.kie.workbench.common.screens.server.management.client.box.BoxType;
@@ -41,6 +40,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -179,7 +179,7 @@ public class ServerManagementBrowserPresenter {
                                 service.call().deleteOp( new ArrayList<String>( serverNames.keySet() ), container2delete );
                             }
                         },
-                        org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.YES(),
+                        org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
                         ButtonType.DANGER,
                         IconType.EXCLAMATION_SIGN,
 
@@ -188,7 +188,7 @@ public class ServerManagementBrowserPresenter {
                             public void execute() {
                             }
                         },
-                        org.kie.uberfire.client.resources.i18n.CommonConstants.INSTANCE.NO(),
+                        org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
                         ButtonType.DEFAULT,
                         null,
 

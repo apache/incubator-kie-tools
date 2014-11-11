@@ -5,8 +5,8 @@ import java.util.List;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.kie.uberfire.client.common.HasBusyIndicator;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface ImportsWidgetView
         extends HasBusyIndicator,
