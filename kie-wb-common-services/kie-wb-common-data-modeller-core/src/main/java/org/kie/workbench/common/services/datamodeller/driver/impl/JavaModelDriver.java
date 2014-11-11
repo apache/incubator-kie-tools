@@ -58,6 +58,7 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.QualifiedName
 import org.kie.workbench.common.services.datamodeller.parser.descr.TextTokenElementDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TypeDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.VariableDeclarationDescr;
+import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.slf4j.Logger;
@@ -458,8 +459,8 @@ public class JavaModelDriver implements ModelDriver {
         ElementDescriptor equalsInsertionPoint = null;
         ElementDescriptor hashCodeInsertionPoint = null;
 
-        assignableFieldsCount = DriverUtils.getInstance().assignableFieldsCount( dataObject );
-        keyFieldsCount = DriverUtils.getInstance().keyFieldsCount( dataObject );
+        assignableFieldsCount = DataModelUtils.assignableFieldsCount( dataObject );
+        keyFieldsCount = DataModelUtils.keyFieldsCount( dataObject );
         needsKeyFieldsConstructor =  keyFieldsCount > 0 &&  ( keyFieldsCount < assignableFieldsCount );
         currentConstructors = classDescr.getConstructors();
         if (currentConstructors != null && currentConstructors.size() > 0) {

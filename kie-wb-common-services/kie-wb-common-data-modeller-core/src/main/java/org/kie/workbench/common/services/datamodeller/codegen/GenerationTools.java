@@ -18,8 +18,8 @@ package org.kie.workbench.common.services.datamodeller.codegen;
 
 import org.apache.commons.lang.StringUtils;
 import org.kie.workbench.common.services.datamodeller.core.*;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.KeyAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.datamodeller.util.StringEscapeUtils;
@@ -42,6 +42,12 @@ public class GenerationTools {
     private static final String ANNOTATION_START_INDENT = "\n";
     private static final String LINE_INDENT = "    ";
     private static final String END_INDENT = "\n";
+
+    /**
+     * Constant inherited for drools world that prevents from generating the all fields constructor if a class has
+     * >= 120 fields.
+     */
+    public static final int MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR = 120;
 
     public String fitToSize(int size, String name, char padChar) {
         int n = size - name.length();
@@ -242,7 +248,7 @@ public class GenerationTools {
         int count = 0;
         if (dataObject != null && dataObject.getProperties() != null && !dataObject.getProperties().isEmpty()) {
             for (ObjectProperty prop : dataObject.getProperties().values()) {
-                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) count++;
+                if ( DataModelUtils.isKeyField( prop )) count++;
             }
         }
         return count;
@@ -250,6 +256,16 @@ public class GenerationTools {
 
     public int propertiesCount(DataObject dataObject) {
         return (dataObject != null && dataObject.getProperties() != null) ? dataObject.getProperties().size() : 0;
+    }
+
+    public int enabledForConstructorPropertiesCount(DataObject dataObject) {
+        int count = 0;
+        if (dataObject != null && dataObject.getProperties() != null && !dataObject.getProperties().isEmpty()) {
+            for (ObjectProperty prop : dataObject.getProperties().values()) {
+                if ( DataModelUtils.isAssignable( prop )) count++;
+            }
+        }
+        return count;
     }
 
     public boolean hasEquals(DataObject dataObject) {
@@ -285,7 +301,7 @@ public class GenerationTools {
         if (props != null && props.size() > 0) {
             for(ObjectProperty prop : props) {
                 String _propName = toJavaVar(prop.getName());
-                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
+                if ( DataModelUtils.isKeyField( prop )) {
 
                     if (NamingUtils.isPrimitiveTypeId(prop.getClassName())) {
                         // Construction: "if (<_propName> != that.<_propName>) return false;
@@ -349,7 +365,7 @@ public class GenerationTools {
         if (props != null && props.size() > 0) {
             for(ObjectProperty prop : props) {
                 String _propName = toJavaVar(prop.getName());
-                if (prop.getAnnotation(org.kie.api.definition.type.Key.class.getName()) != null) {
+                if ( DataModelUtils.isKeyField( prop )) {
 
                     if (NamingUtils.isPrimitiveTypeId(prop.getClassName())) {
                         sb.append(indent + TAB);
@@ -406,8 +422,17 @@ public class GenerationTools {
     public String resolveAllFieldsConstructor(DataObject dataObject, String indent) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-            sortedProperties.addAll(dataObject.getProperties().values());
-            return resolveConstructor(dataObject, sortByPosition(sortByName(sortedProperties)), indent);
+            for (ObjectProperty property : dataObject.getProperties().values()) {
+                if ( DataModelUtils.isAssignable( property )) {
+                    sortedProperties.add(property);
+                }
+            }
+
+            if ( sortedProperties.size() > 0 && sortedProperties.size() < MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR ) {
+                //condition used by drools. All fields constructor is generated only if a class has less than
+                // MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR
+                return resolveConstructor( dataObject, sortByPosition( sortByName( sortedProperties ) ), indent );
+            }
         }
         return "";
     }
@@ -417,21 +442,25 @@ public class GenerationTools {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
             for (ObjectProperty property : dataObject.getProperties().values()) {
-                //TODO improve this kind of filtering
-                if (!property.isFinal() && !property.isStatic()) {
+                if ( DataModelUtils.isAssignable( property )) {
                     sortedProperties.add(property);
                 }
             }
-            return resolveConstructor2(dataObject, sortByPosition(sortByName(sortedProperties)), "    ");
+            if ( sortedProperties.size() > 0 && sortedProperties.size() < MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR ) {
+                //condition used by drools. All fields constructor is generated only if a class has less than
+                // MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR
+                return resolveConstructor2(dataObject, sortByPosition(sortByName(sortedProperties)), "    ");
+            }
         }
         return "";
     }
+
 
     public String resolveKeyFieldsConstructor(DataObject dataObject, String indent) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
             for (ObjectProperty property : dataObject.getProperties().values()) {
-                if (property.getAnnotation(KeyAnnotationDefinition.getInstance().getClassName()) != null) {
+                if ( DataModelUtils.isAssignable( property ) && DataModelUtils.isKeyField( property )) {
                     //the property is marked as key.
                     sortedProperties.add(property);
                 }
@@ -448,7 +477,7 @@ public class GenerationTools {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
             for (ObjectProperty property : dataObject.getProperties().values()) {
-                if (property.getAnnotation(KeyAnnotationDefinition.getInstance().getClassName()) != null) {
+                if ( DataModelUtils.isAssignable( property ) && DataModelUtils.isKeyField( property )) {
                     //the property is marked as key.
                     sortedProperties.add(property);
                 }

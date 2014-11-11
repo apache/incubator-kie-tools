@@ -58,6 +58,7 @@ import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
@@ -821,7 +822,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         String defaultConstructorSource = null;
         String allFieldsConstructorSource = null;
-        String kieFieldsConstructorSource = null;
+        String keyFieldsConstructorSource = null;
         String equalsMethodSource = null;
         String hashCodeMethodSource = null;
 
@@ -830,8 +831,8 @@ public class JavaRoasterModelDriver implements ModelDriver {
         MethodSource<JavaClassSource> currentHashCode = null;
         MethodSource<JavaClassSource> newConstructor;
 
-        assignableFieldsCount = driverUtils.assignableFieldsCount( dataObject );
-        keyFieldsCount = driverUtils.keyFieldsCount( dataObject );
+        assignableFieldsCount = DataModelUtils.assignableFieldsCount( dataObject );
+        keyFieldsCount = DataModelUtils.keyFieldsCount( dataObject );
         needsKeyFieldsConstructor =  keyFieldsCount > 0 &&  ( keyFieldsCount < assignableFieldsCount );
 
         List<MethodSource<JavaClassSource>> methods = javaClassSource.getMethods();
@@ -858,15 +859,19 @@ public class JavaRoasterModelDriver implements ModelDriver {
         newConstructor = javaClassSource.addMethod( defaultConstructorSource );
         newConstructor.setConstructor( true );
 
-        if (assignableFieldsCount > 0) {
+        if ( assignableFieldsCount > 0 ) {
             allFieldsConstructorSource = genTools.indent( engine.generateAllFieldsConstructorString( generationContext, dataObject ) );
-            newConstructor = javaClassSource.addMethod( allFieldsConstructorSource );
-            newConstructor.setConstructor( true );
+            if ( allFieldsConstructorSource != null && !allFieldsConstructorSource.trim().isEmpty() ) {
+                newConstructor = javaClassSource.addMethod( allFieldsConstructorSource );
+                newConstructor.setConstructor( true );
+            }
         }
         if (needsKeyFieldsConstructor) {
-            kieFieldsConstructorSource = genTools.indent( engine.generateKeyFieldsConstructorString( generationContext, dataObject ) );
-            newConstructor = javaClassSource.addMethod( kieFieldsConstructorSource );
-            newConstructor.setConstructor( true );
+            keyFieldsConstructorSource = genTools.indent( engine.generateKeyFieldsConstructorString( generationContext, dataObject ) );
+            if ( keyFieldsConstructorSource != null && !keyFieldsConstructorSource.trim().isEmpty() ) {
+                newConstructor = javaClassSource.addMethod( keyFieldsConstructorSource );
+                newConstructor.setConstructor( true );
+            }
         }
         if (keyFieldsCount > 0) {
             equalsMethodSource = genTools.indent( engine.generateEqualsString( generationContext, dataObject ) );

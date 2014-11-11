@@ -277,7 +277,7 @@ public class GenerationEngine {
         GenerationTools generationTools = new GenerationTools();
         StringBuilder sb = new StringBuilder();
         int keyFieldsCount = generationTools.keyFieldsCount( dataObject );
-        int propertiesCount = generationTools.propertiesCount( dataObject );
+        int propertiesCount = generationTools.enabledForConstructorPropertiesCount( dataObject );
 
         sb.append( generateDefaultConstructorString( generationContext, dataObject ) );
 

@@ -9,6 +9,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 
 import java.io.InputStream;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -189,6 +190,57 @@ public class GenerationEngineTest {
         } catch ( Exception e ) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testMaxFieldsForConstructorsStringGeneration1() {
+
+        DataModel dataModel = dataModelOracleDriver.createModel();
+        DataObject object1 = dataModel.addDataObject("com.test.MaxFieldsForConstructor1");
+
+        ObjectProperty prop1;
+        //The constructor for this data object should be generated, since we don't reach the limit.
+        for (int i = 0; i < GenerationTools.MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR-1; i++) {
+            prop1 = object1.addProperty("attribute"+normalize(i), "java.lang.String");
+        }
+
+        GenerationContext generationContext = new GenerationContext( dataModel );
+
+        try {
+            String result = engine.generateAllConstructorsString(generationContext, object1);
+            assertEquals( results.getProperty( "testMaxFieldsForConstructorsStringGeneration1" ), result );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testMaxFieldsForConstructorsStringGeneration2() {
+
+        DataModel dataModel = dataModelOracleDriver.createModel();
+        DataObject object1 = dataModel.addDataObject("com.test.MaxFieldsForConstructor2");
+
+        ObjectProperty prop1;
+        //The constructor for this data object should be generated, since we don't reach the limit.
+        for (int i = 0; i < GenerationTools.MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR; i++) {
+            prop1 = object1.addProperty("attribute"+normalize(i), "java.lang.String");
+        }
+
+        GenerationContext generationContext = new GenerationContext( dataModel );
+
+        try {
+            String result = engine.generateAllConstructorsString(generationContext, object1);
+            assertEquals( results.getProperty( "testMaxFieldsForConstructorsStringGeneration2" ), result );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    private String normalize(int i) {
+        if ( i < 10 ) return "000"+i;
+        if ( i < 100 ) return "00"+i;
+        if ( i < 1000 ) return "0"+i;
+        return i+"";
     }
 
     @Test
@@ -488,4 +540,5 @@ public class GenerationEngineTest {
             e.printStackTrace();
         }
     }
+
 }

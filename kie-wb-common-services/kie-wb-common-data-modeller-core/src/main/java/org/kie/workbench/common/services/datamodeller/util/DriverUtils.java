@@ -363,24 +363,4 @@ public class DriverUtils {
         return modifiers;
     }
 
-    public int keyFieldsCount( DataObject dataObject ) {
-        int result = 0;
-        for (ObjectProperty property : dataObject.getProperties().values()) {
-            if (property.getAnnotation( org.kie.api.definition.type.Key.class.getName() ) != null) {
-                result++;
-            }
-        }
-        return result;
-    }
-
-    public int assignableFieldsCount( DataObject dataObject ) {
-        int result = 0;
-        for (ObjectProperty property : dataObject.getProperties().values()) {
-            if (!property.isStatic() && !property.isFinal()) {
-                result++;
-            }
-        }
-        return result;
-    }
-
 }
