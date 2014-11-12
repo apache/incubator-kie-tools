@@ -131,12 +131,10 @@ public class FieldConstraintHelper {
     }
 
     public void replaceFieldWith( final Field newField ) {
-        boolean notCollection = true;
         for ( Field factsField : fact.getFieldData() ) {
             if ( factsField instanceof CollectionFieldData ) {
                 CollectionFieldData fData = (CollectionFieldData) factsField;
 
-                notCollection = false;
                 List<FieldData> list = fData.getCollectionFieldList();
                 boolean aNewItem = true;
                 for ( FieldData aField : list ) {
@@ -145,14 +143,14 @@ public class FieldConstraintHelper {
                         aField.setNature( ( (FieldData) newField ).getNature() );
                     }
                 }
-                if ( aNewItem ) {
-                    list.set( list.indexOf( field ),
+                if ( aNewItem && list.contains(field)) {
+                    list.set( list.indexOf(field),
                               (FieldData) newField );
                 }
             }
 
         }
-        if ( notCollection ) {
+        if ( fact.getFieldData().contains( field ) ) {
             fact.getFieldData().set( fact.getFieldData().indexOf( field ),
                                      newField );
             field = newField;
