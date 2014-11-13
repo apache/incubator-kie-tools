@@ -36,7 +36,6 @@
   <!-- Common Services -->
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
   <inherits name='org.kie.workbench.common.services.datamodel.KieWorkbenchCommonDataModelAPI'/>
-  <inherits name='org.kie.workbench.common.services.security.KieWorkbenchCommonSecurity'/>
   <inherits name='org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI'/>
 
   <!-- Models for Drools Workbench Screens -->

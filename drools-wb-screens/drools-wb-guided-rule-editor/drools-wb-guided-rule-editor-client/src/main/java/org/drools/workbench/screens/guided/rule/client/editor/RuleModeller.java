@@ -42,7 +42,7 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeEvent;
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeHandler;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
-import org.kie.workbench.common.services.security.UserCapabilities;
+import org.guvnor.common.services.shared.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;

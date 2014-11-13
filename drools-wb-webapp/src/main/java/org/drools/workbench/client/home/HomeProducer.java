@@ -7,10 +7,10 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
+import org.guvnor.common.services.shared.security.AppRoles;
 import org.kie.workbench.common.screens.home.model.HomeModel;
 import org.kie.workbench.common.screens.home.model.ModelUtils;
 import org.kie.workbench.common.screens.home.model.Section;
-import org.kie.workbench.common.services.security.AppRoles;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 
