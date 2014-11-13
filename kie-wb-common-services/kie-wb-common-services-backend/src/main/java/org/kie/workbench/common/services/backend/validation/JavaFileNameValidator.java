@@ -44,6 +44,9 @@ public class JavaFileNameValidator implements FileNameValidator {
 
     @Override
     public boolean accept( Path path ) {
+        if ( !accept( path.getFileName() ) ) {
+            return false;
+        }
         Package currentPackage = projectService.resolvePackage( path );
         return currentPackage != null && !"".equals( currentPackage.getPackageName() );
     }

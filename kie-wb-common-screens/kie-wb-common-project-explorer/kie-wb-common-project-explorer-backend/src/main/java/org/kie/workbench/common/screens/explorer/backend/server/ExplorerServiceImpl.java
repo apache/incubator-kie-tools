@@ -42,6 +42,7 @@ import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
 import org.kie.workbench.common.screens.explorer.model.FolderListing;
 import org.kie.workbench.common.screens.explorer.model.ProjectExplorerContent;
 import org.kie.workbench.common.screens.explorer.model.URIStructureExplorerModel;
@@ -240,9 +241,27 @@ public class ExplorerServiceImpl
         }
 
         if ( item.getItem() instanceof Path ) {
-            return new ArrayList<Path>( 1 ) {{
-                add( (Path) item.getItem() );
-            }};
+            //Path could represent a package
+            if ( item.getType() == FolderItemType.FOLDER ) {
+                final Package pkg = projectService.resolvePackage( (Path) item.getItem() );
+                if ( pkg == null ) {
+                    return new ArrayList<Path>( 1 ) {{
+                        add( (Path) item.getItem() );
+                    }};
+                } else {
+                    return new ArrayList<Path>( 4 ) {{
+                        add( pkg.getPackageMainResourcesPath() );
+                        add( pkg.getPackageMainSrcPath() );
+                        add( pkg.getPackageTestResourcesPath() );
+                        add( pkg.getPackageTestSrcPath() );
+                    }};
+                }
+
+            } else {
+                return new ArrayList<Path>( 1 ) {{
+                    add( (Path) item.getItem() );
+                }};
+            }
         }
 
         return emptyList();

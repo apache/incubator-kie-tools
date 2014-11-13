@@ -46,6 +46,9 @@ public class PackageNameValidator implements FileNameValidator {
     @Override
     public boolean accept( final Path path ) {
         final Package pkg = projectService.resolvePackage( path );
+        if ( pkg == null ) {
+            return false;
+        }
         return pkg.getPackageMainSrcPath().equals( path ) ||
                 pkg.getPackageMainResourcesPath().equals( path ) ||
                 pkg.getPackageTestSrcPath().equals( path ) ||
