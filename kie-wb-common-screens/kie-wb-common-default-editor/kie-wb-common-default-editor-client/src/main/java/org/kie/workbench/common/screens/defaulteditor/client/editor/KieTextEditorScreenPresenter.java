@@ -31,7 +31,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class, XmlResourceType.class }, priority = 1)
+@WorkbenchEditor(identifier = "GuvnorTextEditor", supportedTypes = { TextResourceType.class, XmlResourceType.class, PackageNameWhiteListResourceType.class }, priority = 1)
 public class KieTextEditorScreenPresenter
         extends KieTextEditorPresenter {
 

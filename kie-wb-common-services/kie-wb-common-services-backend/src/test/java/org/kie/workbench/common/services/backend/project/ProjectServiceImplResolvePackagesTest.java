@@ -73,10 +73,12 @@ public class ProjectServiceImplResolvePackagesTest {
         final URL pom = this.getClass().getResource( "/ProjectBackendTestProject1/pom.xml" );
         final URL kmodule = this.getClass().getResource( "/ProjectBackendTestProject1/src/main/resources/META-INF/kmodule.xml" );
         final URL imports = this.getClass().getResource( "/ProjectBackendTestProject1/project.imports" );
+        final URL packageNameWhiteList = this.getClass().getResource( "/ProjectBackendTestProject1/package-names-white-list" );
         final Project project = new KieProject( paths.convert( fs.getPath( root.toURI() ) ),
                                                 paths.convert( fs.getPath( pom.toURI() ) ),
                                                 paths.convert( fs.getPath( kmodule.toURI() ) ),
                                                 paths.convert( fs.getPath( imports.toURI() ) ),
+                                                paths.convert( fs.getPath( packageNameWhiteList.toURI() ) ),
                                                 "ProjectBackendTestProject1" );
 
         {

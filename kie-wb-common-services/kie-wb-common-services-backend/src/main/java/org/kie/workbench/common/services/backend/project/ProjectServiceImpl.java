@@ -60,6 +60,7 @@ public class ProjectServiceImpl
         implements KieProjectService {
 
     private static final String PROJECT_IMPORTS_PATH = "project.imports";
+    private static final String PACKAGE_NAME_WHITE_LIST = "package-names-white-list";
     private static final String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
 
     @Inject
@@ -87,16 +88,15 @@ public class ProjectServiceImpl
     }
 
     @Override
-    public KieProject newProject(
-            final Repository repository,
-            final String projectName,
-            final POM pom,
-            final String baseUrl ) {
+    public KieProject newProject( final Repository repository,
+                                  final String projectName,
+                                  final POM pom,
+                                  final String baseUrl ) {
         final FileSystem fs = Paths.convert( repository.getRoot() ).getFileSystem();
         try {
             //Projects are always created in the FS root
             final Path fsRoot = repository.getRoot();
-            
+
             final Path projectRootPath = Paths.convert( Paths.convert( fsRoot ).resolve( projectName ) );
 
             ioService.startBatch( fs, makeCommentedOption( "New project [" + projectName + "]" ) );
@@ -104,34 +104,40 @@ public class ProjectServiceImpl
             kModuleService.setUpKModuleStructure( projectRootPath );
 
             Path parentPom = Paths.convert( Paths.convert( fsRoot ).resolve( "pom.xml" ) );
-            boolean parentExists = ioService.exists(Paths.convert(parentPom));
+            boolean parentExists = ioService.exists( Paths.convert( parentPom ) );
             POM parent = null;
-            if(parentExists){
-              parent = pomService.load(parentPom);
-              if(parent != null){
-                pom.setParent(parent.getGav());
-              }
+            if ( parentExists ) {
+                parent = pomService.load( parentPom );
+                if ( parent != null ) {
+                    pom.setParent( parent.getGav() );
+                }
             }
 
             //Create POM.xml
             pomService.create( projectRootPath,
                                baseUrl,
                                pom );
-            
-            if(parentExists && parent != null){
-              parent.setMultiModule(true);
-              parent.getModules().add(pom.getName());
-              pomService.save(parentPom, parent, null, "Adding child module "+pom.getName());
+
+            if ( parentExists && parent != null ) {
+                parent.setMultiModule( true );
+                parent.getModules().add( pom.getName() );
+                pomService.save( parentPom, parent, null, "Adding child module " + pom.getName() );
             }
 
-            //Create Project configuration
-            final Path projectConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ) );
-
-            if ( ioService.exists( Paths.convert( projectConfigPath ) ) ) {
-                throw new FileAlreadyExistsException( projectConfigPath.toString() );
+            //Create Project configuration - project imports
+            final Path projectImportsConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PROJECT_IMPORTS_PATH ) );
+            if ( ioService.exists( Paths.convert( projectImportsConfigPath ) ) ) {
+                throw new FileAlreadyExistsException( projectImportsConfigPath.toString() );
             }
-            ioService.write( Paths.convert( projectConfigPath ),
+            ioService.write( Paths.convert( projectImportsConfigPath ),
                              projectConfigurationContentHandler.toString( createProjectImports() ) );
+
+            //Create Project configuration - project package names White List
+            final Path projectPackageNamesConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PACKAGE_NAME_WHITE_LIST ) );
+            if ( ioService.exists( Paths.convert( projectPackageNamesConfigPath ) ) ) {
+                throw new FileAlreadyExistsException( projectPackageNamesConfigPath.toString() );
+            }
+            ioService.createFile( Paths.convert( projectPackageNamesConfigPath ) );
 
             //Raise an event for the new project
             final KieProject project = resolveProject( projectRootPath );
@@ -172,10 +178,11 @@ public class ProjectServiceImpl
                                Paths.convert( nioProjectRootPath.resolve( POM_PATH ) ),
                                Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) ),
                                Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) ),
+                               Paths.convert( nioProjectRootPath.resolve( PACKAGE_NAME_WHITE_LIST ) ),
                                projectRootPath.getFileName() );
     }
-    
-     @Override
+
+    @Override
     public Project resolveToParentProject( final Path resource ) {
         try {
             //Null resource paths cannot resolve to a Project
@@ -184,28 +191,27 @@ public class ProjectServiceImpl
             }
             //Check if resource is the project root
             org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
-            
-          
+
             org.uberfire.java.nio.file.Path parentPomPath = path.resolve( POM_PATH );
-          
-            if ( hasPom( path )){
-              POM parent = pomService.load(Paths.convert(parentPomPath));
-              
-              final Path projectRootPath = Paths.convert( path );
-              Project project = new Project( projectRootPath,
-                      Paths.convert( parentPomPath ),
-                      projectRootPath.getFileName() );
-              project.getModules().addAll(parent.getModules());
-              return project;
-            }else{
-              return null;
+
+            if ( hasPom( path ) ) {
+                POM parent = pomService.load( Paths.convert( parentPomPath ) );
+
+                final Path projectRootPath = Paths.convert( path );
+                Project project = new Project( projectRootPath,
+                                               Paths.convert( parentPomPath ),
+                                               projectRootPath.getFileName() );
+                project.getModules().addAll( parent.getModules() );
+                return project;
+            } else {
+                return null;
             }
-              
-        }catch ( Exception e ) {
+
+        } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
     }
-    
+
     @Override
     public Project resolveParentProject( final Path resource ) {
         try {
@@ -215,17 +221,17 @@ public class ProjectServiceImpl
             }
             //Check if resource is the project root
             org.uberfire.java.nio.file.Path path = Paths.convert( resource ).normalize();
-            
-            if ( hasPom( path )){
-              final Path projectRootPath = Paths.convert( path );
-              return new Project( projectRootPath,
-                               Paths.convert( path.resolve( POM_PATH ) ),
-                               projectRootPath.getFileName() );
-            }else{
-              return null;
+
+            if ( hasPom( path ) ) {
+                final Path projectRootPath = Paths.convert( path );
+                return new Project( projectRootPath,
+                                    Paths.convert( path.resolve( POM_PATH ) ),
+                                    projectRootPath.getFileName() );
+            } else {
+                return null;
             }
-              
-        }catch ( Exception e ) {
+
+        } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
     }

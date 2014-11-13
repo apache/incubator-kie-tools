@@ -690,6 +690,9 @@ public class Builder {
     //For example Guided Decision Tables have a source format of .gdst but become .drl when added to KieBuilder
     //The build messages returned from KieBuilder contain the target source format; i.e. .drl
     private String getBaseFileName( final String path ) {
+        if ( !path.contains( "." ) ) {
+            return path;
+        }
         return path.substring( 0,
                                path.lastIndexOf( "." ) );
     }

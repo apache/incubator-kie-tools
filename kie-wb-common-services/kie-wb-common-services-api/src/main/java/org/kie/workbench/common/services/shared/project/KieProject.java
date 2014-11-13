@@ -27,21 +27,27 @@ public class KieProject
 
     private Path kmoduleXMLPath;
     private Path importsPath;
+    private Path packageNamesWhiteList;
 
     public KieProject() {
         //For Errai-marshalling
     }
 
-    public KieProject(final Path rootPath,
-            final Path pomXMLPath,
-            final Path kmoduleXMLPath,
-            final Path importsPath,
-            final String projectName) {
-        super(rootPath, pomXMLPath, projectName);
-        this.kmoduleXMLPath = PortablePreconditions.checkNotNull("kmoduleXMLPath",
-                kmoduleXMLPath);
-        this.importsPath = PortablePreconditions.checkNotNull("importsPath",
-                importsPath);
+    public KieProject( final Path rootPath,
+                       final Path pomXMLPath,
+                       final Path kmoduleXMLPath,
+                       final Path importsPath,
+                       final Path packageNamesWhiteList,
+                       final String projectName ) {
+        super( rootPath,
+               pomXMLPath,
+               projectName );
+        this.kmoduleXMLPath = PortablePreconditions.checkNotNull( "kmoduleXMLPath",
+                                                                  kmoduleXMLPath );
+        this.importsPath = PortablePreconditions.checkNotNull( "importsPath",
+                                                               importsPath );
+        this.packageNamesWhiteList = PortablePreconditions.checkNotNull( "packageNamesWhiteList",
+                                                                         packageNamesWhiteList );
     }
 
     public Path getKModuleXMLPath() {
@@ -52,30 +58,37 @@ public class KieProject
         return this.importsPath;
     }
 
+    public Path getPackageNamesWhiteList() {
+        return this.packageNamesWhiteList;
+    }
+
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals( Object o ) {
+        if ( this == o ) {
             return true;
         }
-        if (!(o instanceof KieProject)) {
+        if ( !( o instanceof KieProject ) ) {
             return false;
         }
 
         KieProject project = (KieProject) o;
 
-        if (!rootPath.equals(project.rootPath)) {
+        if ( !rootPath.equals( project.rootPath ) ) {
             return false;
         }
-        if (!pomXMLPath.equals(project.pomXMLPath)) {
+        if ( !pomXMLPath.equals( project.pomXMLPath ) ) {
             return false;
         }
-        if (!kmoduleXMLPath.equals(project.kmoduleXMLPath)) {
+        if ( !kmoduleXMLPath.equals( project.kmoduleXMLPath ) ) {
             return false;
         }
-        if (!importsPath.equals(project.importsPath)) {
+        if ( !importsPath.equals( project.importsPath ) ) {
             return false;
         }
-        if (!projectName.equals(project.projectName)) {
+        if ( !packageNamesWhiteList.equals( project.packageNamesWhiteList ) ) {
+            return false;
+        }
+        if ( !projectName.equals( project.projectName ) ) {
             return false;
         }
 
@@ -88,6 +101,7 @@ public class KieProject
         result = 31 * result + pomXMLPath.hashCode();
         result = 31 * result + kmoduleXMLPath.hashCode();
         result = 31 * result + importsPath.hashCode();
+        result = 31 * result + packageNamesWhiteList.hashCode();
         result = 31 * result + projectName.hashCode();
         return result;
     }
