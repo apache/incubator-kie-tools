@@ -83,6 +83,7 @@ public class FactModelsMigrater extends BaseAssetMigrater {
                                       projectRootPath,
                                       projectRootPath,
                                       projectRootPath,
+                                      projectRootPath,
                                       "" );
         }
 
