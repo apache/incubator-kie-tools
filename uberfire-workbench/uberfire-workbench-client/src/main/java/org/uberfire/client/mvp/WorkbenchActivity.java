@@ -18,6 +18,7 @@ package org.uberfire.client.mvp;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
@@ -46,8 +47,37 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public interface WorkbenchActivity extends ContextSensitiveActivity {
 
+    /**
+     * Invoked by the framework before this activity is closed, unless the framework has been told to "force close" the
+     * activity.
+     * <p>
+     * The activity can cancel the close operation by returning {@code false} from this method. This is most often used
+     * for implementing a "save before closing" workflow.
+     *
+     * @see PlaceManager#closeAllPlaces()
+     * @see PlaceManager#closePlace(PlaceRequest)
+     * @see PlaceManager#closePlace(String)
+     *
+     * @return true if the activity is ready to be closed; false if it should remain open.
+     */
     boolean onMayClose();
 
+    /**
+     * Specifies custom positioning for this activity's view when the request to launch it comes without specific
+     * positioning information of its own. For a newly launching activity, when this method returns a non-null value,
+     * UberFire will attempt to create a new panel for this activity and add that new panel as a child of the current
+     * perspective's root panel. The activity's view will then be added to the new panel.
+     * <p>
+     * If this method returns null, UberFire will attempt to add this activity's view directly to the root panel.
+     * <p>
+     * <b>Developers of cross-application reusable components should use caution with this feature.</b> If the component
+     * declares a default position that is not supported by the root panel the application uses, the application's root
+     * panel could throw a ClassCastException when the framework attempts to create the child panel at the given
+     * position.
+     *
+     * @return the Position to add a new child panel to the root that accommodates this activity's view, or null if this
+     *         activity's view should be added directly to the root panel.
+     */
     Position getDefaultPosition();
 
     /**
@@ -59,8 +89,22 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      */
     PlaceRequest getOwningPlace();
 
+    /**
+     * Invoked by the UberFire framework when this activity is the current activity in the current panel. Activities may
+     * choose to make their UI more prominent, or begin refreshing their data more aggressively when they are focused.
+     *
+     * @see #onLostFocus()
+     * @see PanelManager#onPartFocus(org.uberfire.workbench.model.PartDefinition)
+     */
     void onFocus();
 
+    /**
+     * Invoked by the UberFire framework when this activity is no longer the current activity in the current panel.
+     * Typically undoes changes made in the corresponding {@link #onFocus()} call.
+     *
+     * @see #onLostFocus()
+     * @see PanelManager#onPartFocus(org.uberfire.workbench.model.PartDefinition)
+     */
     void onLostFocus();
 
     String getTitle();

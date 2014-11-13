@@ -22,36 +22,33 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Classes annotated with this are considered WorkbenchParts that perform
- * display some form of read-only content. If the content can be edited and
- * saved developers should consider using {@code @WorkbenchEditor}.
+ * Classes annotated with this are considered WorkbenchParts that display some form of non-editable (but possibly still
+ * interactive) content. If the content is associated with a VFS path, or otherwise represents some sort of document
+ * that can be edited and saved, developers should consider using {@code @WorkbenchEditor}.
  * <p>
- * At its simplest form the Class should implement
- * {@code com.google.gwt.user.client.ui.IsWidget} (e.g. extend
- * {@code com.google.gwt.user.client.ui.Composite}) and provide a method
- * annotated with {@code @WorkbenchPartTitle}.
- * </p>
+ * All classes annotated with {@code @WorkbenchScreen} must have a declared or inherited method annotated with
+ * {@code @WorkbenchPartTitle}.
  * <p>
- * Developers wishing to separate view from logic (perhaps by implementing the
- * MVP pattern) can further provide a zero-argument method annotated with
- * {@code @WorkbenchPartView} with return type
- * {@code com.google.gwt.user.client.ui.IsWidget}.
- * </p>
+ * There are two options for providing the screen's view:
+ * <ol>
+ *  <li>the class implements {@code com.google.gwt.user.client.ui.IsWidget} (often by extending {@code com.google.gwt.user.client.ui.Composite})
+ *  <li>the class declares or inherits a zero-argument method annotated with {@code @WorkbenchPartView} that returns the
+ *  {@code com.google.gwt.user.client.ui.IsWidget} that handles the view. In this case the class need not implement
+ *  {@code com.google.gwt.user.client.ui.IsWidget}.
+ * </ol>
  * <p>
- * In this latter case the {@code @WorkbenchScreen} need not implement
- * {@code com.google.gwt.user.client.ui.IsWidget}.
- * </p>
+ * Developers wishing to separate view from logic via the MVP pattern will choose the second option.
  * <p>
- * WorkbechEditors can receive the following life-cycle calls:
+ * WorkbechScreens can receive the following life-cycle calls:
  * <ul>
- * <li>{@code @OnClose}</li>
+ * <li>{@code @OnStartup}</li>
+ * <li>{@code @OnOpen}</li>
  * <li>{@code @OnFocus}</li>
  * <li>{@code @OnLostFocus}</li>
  * <li>{@code @OnMayClose}</li>
- * <li>{@code @OnStartup}</li>
- * <li>{@code @OnOpen}</li>
- *
- * </p>
+ * <li>{@code @OnClose}</li>
+ * <li>{@code @OnShutdown}</li>
+ * </ul>
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)

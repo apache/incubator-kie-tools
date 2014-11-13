@@ -45,14 +45,12 @@ import org.uberfire.client.workbench.type.ClientResourceType;
  * <p>
  * WorkbechEditors can receive the following life-cycle calls:
  * <ul>
- * <li>{@code @IsDirty}</li>
- * <li>{@code @OnClose}</li>
+ * <li>{@code @OnStartup(org.drools.guvnor.vfs.Path)}</li>
+ * <li>{@code @OnOpen}</li>
  * <li>{@code @OnFocus}</li>
  * <li>{@code @OnLostFocus}</li>
  * <li>{@code @OnMayClose}</li>
- * <li>{@code @OnSave}</li>
- * <li>{@code @OnStartup(org.drools.guvnor.vfs.Path)}</li>
- * <li>{@code @OnOpen}</li>
+ * <li>{@code @OnClose}</li>
  * </p>
  */
 @Inherited

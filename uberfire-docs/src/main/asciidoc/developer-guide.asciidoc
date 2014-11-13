@@ -4,21 +4,899 @@ UberFire Community <uberfire@googlegroups.com>
 :source-highlighter: highlightjs
 :stylesheet: asciidoctor.css
 :link-suffix: .asciidoc
+:icons:
+:imagesdir: ./images
 
 This document explains the major features of UberFire 0.5. It is
-organized by topic and is intended to be used as a reference for how
-to use each part of UberFire correctly. It is not an introduction. For
-a hands-on introduction, see link:tutorial{link-suffix}[the UberFire
-Tutorial]. For a high-level overview, see
-link:tutorial{link-suffix}[the UberFire Overview]
+organized by UberFire feature. It includes detailed explanations and
+usage examples that show how to use each part of UberFire
+correctly. If you want a brief high-level overview, see
+link:tutorial{link-suffix}[the UberFire Overview] instead.
+
+This guide assumes you are already familiar with the basics of GWT,
+CDI, and Errai. If you are not yet familiar with these things, or you
+need to brush up on any of them, start with our hands-on introduction,
+link:tutorial{link-suffix}[the UberFire Tutorial].
+
+
+== UberFire Workbench
+
+You can program UberFire applications, application support libraries,
+and UberFire extensions using the Java API, the JavaScript API, or a
+combination of both. Currently, the Java API exposes more
+functionality than the JavaScript API, but the long term plan is to
+expose all available functionality through both APIs.
+
+.Help Wanted!
+NOTE: If there's something you would like to be able to do from the
+JavaScript API and that feature is not exposed yet, submit a pull
+request to the UberFire project on GitHub!
+
+=== Overall Organization
+
+The UberFire workbench module is composed of layers that work
+together. The following diagram shows how the parts are layered. Components
+interact with those directly above and below them, as well as those
+they are connected to with an arrow (&#x21e3;).
+
+[cols="8*^"]
+|===
+ 8+| PlaceManager
+ 2+| PerspectiveManager 2+| &#x21e3;      3+| ActivityManager       .3+| &#x21e3;
+ 4+| PanelManager                         2+| AuthorizationManager  .2+| &#x21e3;
+ 3+| PanelPresenters   .2+| &#x21e3;      2+| ResourceManager
+ 3+| PanelViews                         4.3+| Activities (Your Application's Behaviour)
+.2+| &#x21e3;         3+| PartPresenters
+                      3+| PartViews
+ 8+| GWT Widgets
+ 8+| HTML DOM
+|===
+
+There are a lot of parts to this diagram, but for the most part, your
+application will supply Activity classes that describe the UI and
+business logic of your components, and call into the PlaceManager to
+change which acitivies are visible on the screen. The rest of the
+components will do the right thing without help from you.
+
+So familiarize yourself with the names of the components, but don't
+feel you have to understand the whole thing at this point!  We've put
+the diagram first so you can refer back to it to get your bearings as
+new parts of the system are introduced.
+
+=== Constructing the UI
+
+This section covers the capabilities of UberFire's Java-based
+Workbench API.
+
+
+==== Workbench Activities and PlaceRequests
+
+In UberFire, your `WorkbenchScreenActivity` and
+`WorkbenchEditorActivity` implementations provide the bulk of the user
+interface and application-specific behaviour that your users will
+spend most of their time interacting with. Collectively, screens and
+editors are referred to as "Workbench Parts." The only difference
+between a Screens and an Editor is that Editors track clean/dirty
+state, and can prompt the user about unsaved changes before closing.
+
+You can define a workbench part in three ways: by creating a Java
+class annotated with `@WorkbenchScreen` or `@WorkbenchEditor`; by
+creating a subclass of `AbstractWorkbenchScreenActivity` or
+`AbstractWorkbenchEditorActivity`; or through the JavaScript runtime
+extension API by providing a JSON description of the activity.
+
+.Example Screen Declared Using Annotations
+[code, java]
+----
+@Dependent // <1>
+@WorkbenchScreen(identifier = "HelloScreen") // <2>
+public class HelloScreen { // <3>
+
+  private final Label label = new Label();
+
+  @WorkbenchPartTitle
+  public String getTitle() {
+    return "Greetings";
+  }
+
+  @WorkbenchPartView
+  public IsWidget getView() {
+    return label;
+  }
+
+  @OnStartup
+  public void start(PlaceRequest place) {
+    label.setText("Hello " + place.getParameter("name", "World")); // <4>
+  }
+  
+}
+----
+<1> All Workbench Screens and Editors are Dependent-scoped CDI beans.
+<2> Tells UberFire that this bean implements the behaviour of a screen
+  that's referred to as "HelloScreen". The identifier can be any
+  string, but since it will appear in the browser's location bar,
+  spaces and URL-meaningful punctuation are discouraged.
+<3> UberFire Screens and Editors that are declared with the
+  `@WorkbenchScreen` or `@WorkbenchEditor` annotation need not implement
+  any particular interface, but there are still some interface-like
+  requirements enforced by the annotation processor (see the
+  `@WorkbenchScreen` JavaDoc for full details)
+<4> PlaceRequests can include named parameters. In this case, we retrieve
+  the name of the person to greet from a parameter, defaulting to
+  "World" if the parameter is not present. See the section on PlaceRequests for details.
+
+In the above example, we have declared a new Workbench Screen using
+UberFire's annotation-based API. Behind the scenes, UberFire will use
+a Java annotation processor to generate the source code for an
+implementation of WorkbenchScreenActivity. This approach lets your
+screen class "inherit" default behaviour without needing to extend a
+particular base class (for example, AbstractWorkbenchScreenActivity).
+This leaves you free to have your screens extend some
+application-specific superclass.
+
+On the other hand, you can choose to implement WorkbenchScreenActivity
+directly, or by subclassing AbstractWorkbenchScreenActivity. When you
+do this, the Java type system works in your favour and your IDE can
+give you more help with the nuts and bolts of implementing a screen.
+
+.Example Screen Declared By Extending AbstractWorkbenchScreenActivity
+[code,java]
+----
+@Dependent // <1>
+@Named("HelloWorldScreenExtends") // <2>
+public class HelloWorldScreenExtends extends AbstractWorkbenchScreenActivity { // <3>
+
+  @Inject
+  public HelloWorldScreenExtends(PlaceManager placeManager) { // <4>
+    super(placeManager);
+  }
+
+  private final Label label = new Label();
+
+  @Override
+  public String getTitle() { // <5>
+    return "Greetings";
+  }
+
+  @Override
+  public IsWidget getWidget() { // <5>
+    return label;
+  }
+
+  @Override
+  public void onStartup(PlaceRequest place) { <6>
+    super.onStartup(place);
+    label.setText("Hello " + place.getParameter("name", "World"));
+  }
+
+  @Override
+  public String getSignatureId() { // <7>
+    return "HelloWorldScreenExtends";
+  }
+
+  @Override
+  public Collection<String> getRoles() { // <8>
+    return Collections.emptyList();
+  }
+
+  @Override
+  public Collection<String> getTraits() { // <9>
+    return Collections.emptyList();
+  }
+}
+----
+<1> All screen and editor activities are Dependent-scoped CDI beans
+<2> The place ID of a screen activity is its CDI bean name. All screen
+  and editor activity implementations must be `@Named` with a unique
+  identifier.
+<3> In this example, we're getting some help in the implementation of
+  the `WorkbenchScreenActivity` interface by extending
+  `AbstractWorkbenchScreenActivity`. You can also implement
+  `WorkbenchScreenActivity` directly and implement every method
+  yourself.
+<4> `AbstractWorkbenchScreenActivity` has a protected constructor that
+  takes a `PlaceManager`. The best way to satisfy this is to make your
+  own constructor that takes a `PlaceManager` and annotate it with
+  `@Inject`. Of course, you can add extra parameters to the
+  constructor if you want additional CDI dependencies
+  constructor-injected.
+<5> Instead of using the `@WorkbenchPartTitle` and
+  `@WorkbenchPartView` annotations as in the previous example, we
+  override the corresponding methods directly.
+<6> Similarly, the lifecycle callbacks are overrides now. *Note that
+  you have to call up to the super method for all four lifecycle calls
+  (`onStartup`, `onOpen`, `onClose`, and `onShutdown`).*
+<7> The Signature ID is used when registering your screen with the
+  `RuntimeResourceManager`, which is part of UberFire's role-based
+  access control system (see the security section of this guide for
+  details). The Signature ID should typically be the same thing you
+  put in the `@Named` anntation.
+<8> Here, you can return the set of roles that a user must belong to
+  in order to access this screen. An empty collection means anyone can
+  access the screen.
+<9> Traits affect the way role-based access is decided. See the
+  security section for details.
+
+
+==== Creating the Screen or Editor UI
+
+In this section, we show three options for creating the user interface
+of a workbench screen activity. Each of the three approaches below can
+be used with `@WorkbenchScreen`-annotated classes, or with classes
+that implement WorkbenchScreenActivity directly. You can mix and match
+these approaches, using the approach that best suits the problem and
+your style.
+
+Each example will arrive at the same end result: a workbench screen
+with a form for responding to an invitation. The screen will prompt 
+
+===== Declarative UI With Errai UI Templates
+
+Errai UI is the recommended approach for building user interface
+components in UberFire. This brief introduction-by-example illustrates
+show how well Errai UI fits with UberFire screens, but it is not a
+full reference. For all the details, see
+link:http://docs.jboss.org/errai/3.0.3.Final/errai/reference/html_single/#sid-51806600_ErraiUI-UseErraiUICompositecomponents[The
+Errai UI section of the Errai Reference Guide].
+
+.RSVP Template
+[code, html]
+----
+<div>
+  <label for="inviteeName">Name: </label>
+  <input id="inviteeName"><br>
+  
+  <label for="numberOfGuests">Number of Guests:</label>
+  <select id="numberOfGuests" size="1"></select><br>
+  
+  <label for="comments">Comments:</label>
+  <textarea id="comments" rows="4" cols="40"></textarea><br> 
+</div>
+----
+
+.RSVP Form With Errai UI
+[code, java]
+----
+@Dependent
+@Templated // <1>
+@WorkbenchScreen(identifier = "InvitationRsvpErraiUI")
+public class InvitationRsvpErraiUI extends Composite { // <2>
+
+  @Inject
+  private Caller<InvitationService> invitationService;
+
+  @Inject @AutoBound // <3>
+  private DataBinder<Rsvp> rsvpBinder;
+
+  @Inject @Bound @DataField // <3> <4>
+  private TextBox inviteeName;
+
+  @Bound @DataField // <5>
+  private final ValueListBox<Integer> numberOfGuests = new ValueListBox<Integer>(IntegerRenderer.instance());
+
+  @Inject @Bound @DataField
+  private TextArea comments;
+
+  private boolean hasChanges;
+
+  @OnStartup // <6>
+  void setup(PlaceRequest place) {
+    numberOfGuests.setAcceptableValues(Arrays.asList(1, 2, 3, 4));
+    final int id = Integer.parseInt(place.getParameter("id", "-1"));
+    invitationService.call(new RemoteCallback<Rsvp>() {
+      @Override
+      public void callback(Rsvp response) {
+        rsvpBinder.setModel(response); // <7>
+      }
+    }).getInvitation(id);
+  }
+
+  @WorkbenchPartTitle
+  public String getPartTitle() {
+    return "RSVP";
+  }
+
+
+  @EventHandler
+  private void onAnyChange(KeyDownEvent e) { // <8>
+    hasChanges = true;
+  }
+
+  @OnMayClose
+  public boolean mayClose() {
+    if (hasChanges) {
+      return Window.confirm("Changes to your RSVP have not been saved.\n"
+                            + "Close without saving?"); // <9>
+    }
+    return true;
+  }
+
+  @EventHandler("save")
+  private void save(ClickEvent e) { // <10>
+    invitationService.call(new ResponseCallback() {
+      @Override
+      public void callback(Response response) {
+        hasChanges = false;
+      }
+    }).saveResponse(rsvpBinder.getModel());
+  }
+}
+----
+<1> The `@Templated` annotation tells Errai UI that this CDI bean gets
+  its UI layout from the corresponding template `InvitationRsvp.html`.
+<2> Errai UI templated components must extend Composite. UberFire
+  Parts do not have this requirement themselves (see the section on
+  MVP below).
+<3> The `@AutoBound` and `@Bound` annotations establish a two-way binding
+  between the UI widgets and the properties of the Rsvp object. See
+  the
+  link:http://docs.jboss.org/errai/3.0.3.Final/errai/reference/html_single/#sid-51806600_ErraiUI-DataBinding[Errai
+  Data Binding Reference] for details. Note that we can't use the
+  `@Model` shortcut in this case because we need to be able to update
+  the model object from within the screen class itself.
+<4> The `@DataField` annotation tells Errai UI that this field
+  corresponds with the HTML element in the template whose `id`,
+  `class`, or `data-field` attribute is `"inviteeName"`.
+<5> `numberOfGuests` is not injected because we want to call a
+  non-default constructor on `ValueListBox`.
+<6> We use the UberFire `@OnStartup` lifecycle method to do
+  additional setup on the widgets and to fetch the `Rsvp` instance
+  from the server.
+<7> When we get the requested `Rsvp` instance back from the server, we
+  tell Errai Data Binding to update all the model and UI state to
+  match the data we received from the server.
+<8> Errai UI's `@EventHandler` feature saves a lot of work here: this
+  method will be called every time there is a `KeyDownEvent` on any
+  widget in the screen. We use this to track the dirty state.
+<9> This is an easy way to get the browser to display an
+  OK/Cancel prompt, but you can't customize the buttons and it does
+  not support HTML markup in the message. UberFire has its own system
+  for rich and configurable modal dialogs. See the section on Popups
+  for details.
+<10> Finally, we react to click events on the Save button by sending
+  the `Rsvp` instance back to the server and clearing the `hasChanges`
+  flag when the server responds. Note that we didn't need to
+  explicitly read the values out of the UI fields:
+  `rsvpBinder.getModel()` always returns an up-to-date `Rsvp` instance!
+
+
+===== Procedural UI With Direct Use of Widgets
+
+We strongly recommend the use of Errai UI templates when building your
+UI, but it's also possible to build the UI structure yourself
+programmatically by combining widgets into panels. Here is such a
+variation of the above:
+
+.The RSVP Screen With Programmatic Assembly of UI
+[code, java]
+----
+@Dependent
+@WorkbenchScreen(identifier = "InvitationRsvpPlainWidgets")
+public class InvitationRsvpPlainWidgets {
+
+  @Inject
+  private Caller<InvitationService> invitationService;
+
+  @Inject @AutoBound // <1>
+  private DataBinder<Rsvp> rsvpBinder;
+
+  private final VerticalPanel panel = new VerticalPanel();
+
+  @Bound
+  private final TextBox inviteeName = new TextBox();
+
+  @Bound
+  private final ValueListBox<Integer> numberOfGuests = new ValueListBox<Integer>(IntegerRenderer.instance());
+
+  @Bound
+  private final TextArea comments = new TextArea();
+
+  private final Button save = new Button("Save");
+
+  private boolean hasChanges;
+
+  @OnStartup
+  public void setup(PlaceRequest place) {
+    numberOfGuests.setAcceptableValues(Arrays.asList(1, 2, 3, 4));
+
+    final int id = Integer.parseInt(place.getParameter("id", "-1"));
+    invitationService.call(new RemoteCallback<Rsvp>() {
+      @Override
+      public void callback(Rsvp response) {
+        rsvpBinder.setModel(response);
+        hasChanges = false;
+      }
+    }).getInvitation(id);
+
+    ValueChangeHandler dirtyStateHandler = new ValueChangeHandler() {
+      @Override
+      public void onValueChange(ValueChangeEvent event) {
+        hasChanges = true;
+      }
+    };
+
+    inviteeName.addValueChangeHandler(dirtyStateHandler); // <2>
+    numberOfGuests.addValueChangeHandler(dirtyStateHandler);
+    comments.addValueChangeHandler(dirtyStateHandler);
+
+    panel.add(new Label("Name:")); // <3>
+    panel.add(inviteeName);
+
+    panel.add(new Label("Number of Guests:"));
+    panel.add(numberOfGuests);
+
+    panel.add(new Label("Comments:"));
+    panel.add(comments);
+
+    panel.add(save);
+
+    save.addClickHandler(new ClickHandler() { // <4>
+      @Override
+      public void onClick(ClickEvent event) {
+        invitationService.call(new ResponseCallback() {
+          @Override
+          public void callback(Response response) {
+            hasChanges = false;
+          }
+        }).saveResponse(rsvpBinder.getModel());
+      }
+    });
+  }
+
+  @WorkbenchPartTitle
+  public String getPartTitle() {
+    return "RSVP (Plain Widgets)";
+  }
+
+  @WorkbenchPartView
+  public Panel getView() {
+    return panel;
+  }
+
+  @OnMayClose
+  public boolean mayClose() {
+    if (hasChanges) {
+      return Window.confirm("Changes to your RSVP have not been saved.\n"
+                            + "Close without saving?");
+    }
+    return true;
+  }
+}
+----
+<1> We can still use Errai Data Binding even without Errai
+  UI. Naturally, this is up to you: you can always manage the
+  model/view data binding with handwritten code too. We will see this
+  approach in the MVP example that follows.
+<2> We are registering the listener that handles the `hasChanges` flag
+  programmatically here. Contrast with Errai UI where we used the
+  `@EventHandler` annotation to register a key event handler on all
+  widgets simultaneously.
+<3> Similary, we build up the structure of the UI using a series of
+  `panel.add()` calls. In the Errai UI example, the HTML file defined
+  this structure in a way that we could instantly preview in a web
+  browser just by opening the file.
+<4> We register the click handler on the button programmatically.
+
+===== Implementing Parts That Follow the MVP Pattern
+
+The MVP (Model, View, Presenter) pattern is a variant of the more
+widely known MVC (Model, View, Controller) pattern. MVP is especially
+popular among GWT developers, perhaps because it has been
+link:http://www.gwtproject.org/articles/mvp-architecture.html[explained
+and recommended in the GWT documentation] as a good way to structure
+projects and increase the proportion of fast-running unit tests to
+slower GWTTestCases.
+
+The main tenets of MVP are:
+
+1. Model classes do not know about the Presenters or the
+Views. This is the same idea as Models in MVC.
+2. Presenter classes can access Model classes directly.
+3. Presenter classes only talk to Views indirectly, through a View interface
+the Presenters define themselves.
+4. Presenter classes never reference view-level technologies (in the
+case of GWT, this means no use of Widgets, DOM Elements, CSS classes,
+or anything that ultimately relies on JSNI code).
+5. View classes _do not_ know about Model classes. Instead, they deal
+in basic data types such as String, Integer, and Date.
+6. In some variants of MVP, a View may call directly into its own
+Presenter to inform it of events like user input; in other variants of
+MVP, this is not allowed, and the View interface includes a method for
+registering generic listeners for such events. UberFire supports the
+variant where the View is permitted to call directly into its Presenter.
+
+You will see these rules in action in the following example. For a
+more thorough treatment of MVP, take a look at
+link:http://www.gwtproject.org/articles/mvp-architecture.html[the
+original article in the GWT documentation].
+
+These days, there is another viable option to testing GWT apps without
+heavy reliance on GWTTestCase:
+link:https://github.com/google/gwtmockito[GwtMockito].  GwtMockito
+stubs out GWT.create() and most of the built-in GWT widget
+implementations, which allows you to write fast-running JUnit tests
+without the overhead of extra view interfaces and without maintaining
+strict Presenter/View separation.
+
+Nevertheless, you may well decide the benefits of MVP exceed the cost,
+and UberFire together with Errai's CDI implementation make the MVP
+pattern reasonably easy to follow. Here is the MVP variant of the RSVP
+form:
+
+.RSVP Screen MVP Presenter
+[code, java]
+----
+@Dependent
+@WorkbenchScreen(identifier = "com.mycompany.uftutorial.client.InvitationRsvpPresenter")
+public class InvitationRsvpPresenter {
+
+  @Inject
+  private Caller<InvitationService> invitationService;
+
+  private Rsvp rsvp;
+  private final View view;
+
+  public interface View extends UberView<InvitationRsvpPresenter> { // <1>
+    String getInviteeName();
+    void setInviteeName(String inviteeName);
+
+    int getNumberOfGuests();
+    void setNumberOfGuests(int numberOfGuests);
+
+    String getComments();
+    void setComments(String comments);
+
+    boolean confirmSave();
+  }
+
+  @Inject
+  public InvitationRsvpPresenter(RsvpView view) { // <2>
+    this.view = checkNotNull("view", view);
+  }
+
+  @OnStartup
+  public void setup(PlaceRequest place) {
+    view.init(this); // <3>
+    final int id = Integer.parseInt(place.getParameter("id", "-1"));
+    invitationService.call(new RemoteCallback<Rsvp>() {
+      @Override
+      public void callback(Rsvp response) {
+        rsvp = response;
+        updateViewFromModel();
+      }
+    }).getInvitation(id);
+  }
+
+  public void save() {
+    updateModelFromView();
+    invitationService.call().saveResponse(rsvp);
+  }
+
+  @WorkbenchPartTitle
+  public String getPartTitle() {
+    return "RSVP (MVP)";
+  }
+
+  @WorkbenchPartView
+  public IsWidget getView() { // <4>
+    return view;
+  }
+
+  @OnMayClose
+  public boolean mayClose() {
+    if (hasChanges()) {
+      return view.confirmSave(); // <5>
+    }
+    return true;
+  }
+
+  boolean hasChanges() {
+    if (rsvp == null) {
+      return false;
+    }
+
+    return isDifferent(view.getInviteeName(), rsvp.getInviteeName()) // <6>
+           || view.getNumberOfGuests() != rsvp.getNumberOfGuests()
+           || isDifferent(view.getComments(), rsvp.getComments());
+  }
+
+  private static boolean isDifferent(String s1, String s2) {
+    if (s1 == null) {
+      return s2 != null && !s2.trim().isEmpty();
+    }
+    if (s2 == null) {
+      return !s1.trim().isEmpty();
+    }
+    return !s1.trim().equals(s2.trim());
+  }
+
+  void updateViewFromModel() { // <7>
+    view.setInviteeName(rsvp.getInviteeName());
+    view.setNumberOfGuests(rsvp.getNumberOfGuests());
+    view.setComments(rsvp.getComments());
+  }
+
+  void updateModelFromView() { // <7>
+    rsvp.setInviteeName(view.getInviteeName());
+    rsvp.setNumberOfGuests(view.getNumberOfGuests());
+    rsvp.setComments(view.getComments());
+  }
+}
+----
+<1> The Presenter defines all the actions it needs to perform in the
+    user interface. Typically this interface is simply called `View`
+    and it's nested inside the presenter. In the case of UberFire, the
+    View interface extends `UberView<P>` which in turn extends GWT's
+    `IsWidget` interface.
+<2> In UberFire apps, the view is typically injected into the
+    constructor. This makes it straightforward to unit test with a
+    mock View implementation.
+<3> The Presenter passes a reference to itself to its view. This
+    allows the view to call back into the presenter when user
+    interface events happen.
+<4> Here we take advantage of the fact that `UberView` extends
+    `IsWidget`, GWT's built-in interface that lets you talk about
+    Widgets without actually handling one.
+<5> Instead of showing the confirm dialog (which leads to JSNI code,
+    something the Presenter cannot do), we ask the view to do so.
+<6> In this example, we are checking for changes a little
+    differently. We could have had the view call back into the
+    Presenter on any Widget change to mark it dirty, but the name of
+    the game in MVP is "keep the view simple!" So we're instead
+    reusing a view capability that we already need (retrieving the
+    current values from its widgets) and comparing with the model
+    value. Remember, unless you get GwtMockito involved, everything
+    you do in the View implementation will not be tested in your
+    "fast" unit test suite. And if you _do_ get GwtMockito involved,
+    what's the point in separating View and Presenter in the first
+    place?
+<7> This is the logic that Errai Data Binding will automatically
+    generate for you if you can put the model instance in the same
+    class as the widgets.
+
+
+.RSVP Screen MVP View
+[source, java]
+----
+@Dependent // <1>
+public class InvitationRsvpView implements InvitationRsvpPresenter.View { // <2>
+
+  private InvitationRsvpPresenter presenter;
+
+  private final VerticalPanel panel = new VerticalPanel();
+  private final TextBox inviteeName = new TextBox();
+  private final ValueListBox<Integer> numberOfGuests = new ValueListBox<Integer>(IntegerRenderer.instance());
+  private final TextArea comments = new TextArea();
+  private final Button save = new Button("Save");
+
+  @PostConstruct
+  private void setupUi() {
+    numberOfGuests.setAcceptableValues(Arrays.asList(1, 2, 3, 4));
+
+    panel.add(new Label("Name:")); // <3>
+    panel.add(inviteeName);
+
+    panel.add(new Label("Number of Guests:"));
+    panel.add(numberOfGuests);
+
+    panel.add(new Label("Comments:"));
+    panel.add(comments);
+
+    panel.add(save);
+    save.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        presenter.save();
+      }
+    });
+  }
+
+  @Override
+  public void init(InvitationRsvpPresenter presenter) { // <4>
+    this.presenter = checkNotNull("presenter", presenter);
+  }
+
+  @Override
+  public Widget asWidget() { // <5>
+    return panel;
+  }
+
+  @Override
+  public String getInviteeName() {
+    return inviteeName.getText();
+  }
+
+  @Override
+  public void setInviteeName(String inviteeName) {
+    this.inviteeName.setText(inviteeName);
+  }
+
+  @Override
+  public int getNumberOfGuests() {
+    return numberOfGuests.getValue();
+  }
+
+  @Override
+  public void setNumberOfGuests(int numberOfGuests) {
+    this.numberOfGuests.setValue(numberOfGuests);
+  }
+
+  @Override
+  public String getComments() {
+    return comments.getText();
+  }
+
+  @Override
+  public void setComments(String comments) {
+    this.comments.setText(comments);
+  }
+
+  @Override
+  public boolean confirmSave() { // <6>
+    return Window.confirm("Changes to your RSVP have not been saved.\n"
+            + "Close without saving?");
+  }
+}
+----
+<1> In UberFire MVP, a View is a Dependent-scoped CDI bean.
+<2> The View's main job is to implement the interface defined by its
+  Presenter. Since it will not be unit tested, it should strive to do this as
+  straightforwardly as possible. Notice that every method in this
+  class except the `@PostConstruct` method is annotated with
+  `@Override`. This is a good indication that the view is not doing too much.
+<3> In this example, we are building the view programmatically. If we
+  were using an Errai UI template, we would not need this logic in the
+  view.
+<4> `init()` is defined by `UberView`, and is called by the presenter
+  when it's starting up.
+<5> `asWidget()` is defined by `IsWidget`, which `UberView`
+  extends. If your view type extends a GWT Widget type (for example,
+  Errai UI views will extend `Composite`) then you'll inherit this
+  method and there is no need to override it. In this example, we
+  build a panel ourselves and return it here.
+<6> The same confirmation code as the other examples now gets its own
+  interface method so the presenter can invoke it when needed. As a
+  reminder, `Window.confirm()` is being used here for
+  simplicity. UberFire has a richer popup system that will be covered
+  in a later section.
+
+
+===== Creating Screen and Editor UIs: Conclusion
+
+Most of your development time, and most of your users attention, will
+be focused on creating the contents of your Screen and Editor
+activities. UberFire gives you great flexibility in how you construct the user
+interface. The examples in this section have shown some of the most
+common combinations, but many other combinations are possible. You may
+choose to do MVP with a view driven by Errai UI, or a monolithic view
+that uses programmatic layout and Errai Data Binding, and so on.
+
+Take some time to experiment (make sure some of that time is spent
+writing tests so you get a feel for the testability of the different
+approaches!), and find the approach that suits you and your team best.
+
+
+==== Workbench Panels and Perspectives
+
+No matter how you choose to create your view, it needs to be put into
+a Panel before it can be displayed in the UberFire workbench. Panels
+can be nested in one another, and ultimately there is a _root panel_
+at the top of the panel tree. The root panel belongs to a Perspective.
+
+A Perspective's job is threefold:
+
+1. to define the default nesting and sizes of panels within the root
+panel and further down the tree;
+2. to define which workbench parts (Screens and Editors) will appear
+in each panel by default;
+3. to be a uniquely named anchor for saving and restoring end-user
+customizations to the panels and parts in the layout
+
+.A Perspective With Two Panels
+image:example_perspective.png[A Perspective With Two Panels]
+
+As with Screens and Editors, you have three main choices about how to
+define a perspective: you can use the `@WorkbenchPerspective`
+annotation, implement `WorkbenchPerspectiveActivity` directly or by
+extending `AbstractWorkbenchPerspectiveActivity`, or define it as a
+JavaScript extension.
+
+Let's look at three ways to create the perspective in the example
+image above.
+
+.Example Perspective Defined Using Annotations
+[code, java]
+----
+@Dependent // <1>
+@WorkbenchPerspective(
+        identifier = "HomePerspective", // <2>
+        isDefault = true) // <3>
+public class HomePerspective {
+
+  @Perspective // <4>
+  public PerspectiveDefinition getPerspective() {
+    final PerspectiveDefinition p = new PerspectiveDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
+    p.setName(getClass().getName());
+
+    p.getRoot().addPart(HelloWorldScreen.class.getName());
+
+    PanelDefinitionImpl westPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+    p.getRoot().insertChild(CompassPosition.WEST, westPanel);
+    westPanel.setWidth(250);
+    westPanel.addPart(MoodScreen.class.getName());
+
+    return p;
+  }
+}
+----
+<1> A Perspective is a Dependent-scoped CDI bean.
+<2> Each perspective needs a unique identifier. This identifier is
+  used in PlaceRequest objects that refer to the perspective, and as a
+  key for saving and retrieving the customized perspective definition.
+<3> Every application needs exactly one default perspective. This
+  perspective is shown when the UberFire Workbench starts up.
+<4>
+
+Perspectives also participate in the `@OnStartup`, `@OnOpen`,
+`@OnClose`, `@OnShutdown` lifecycle 
+
+==== Popups and Splash Screens
+
+==== Toolbars
+
+==== Top-Level Menus
+
+==== Context Menus
+
+==== Customizing the Overall Layout
+
+=== Uniform Lifecycle
+
+=== Extending the Workbench
+
+==== Defining New Panel Types
+
+
+== UberFire Security
+
+=== Authentication
+
+=== Authorization
+
+=== Declaring Required Permissions
+
+==== Using Annotations
+
+==== From Direct Implementations
+
+==== On JavaScript Components
+
+
+== UberFire VFS
+
+=== Using From Client Side Code
+
+=== Using From Server Side Code
+
+=== jGit Backend
+
+=== NIO2 Backend
+
+
+== Deploying UberFire Apps
+
+=== Full Client and Server
+
+==== Defining The System Repository
+
+==== Setting Up Authentication
+
+==== Clustered Deployments
+
+=== Standalone Client (No Server-Side Services)
 
 
 == UberFire Core
-
-These concepts are expressed in the core `uberfire-api` module,
-footnote:[A few of these concepts actually come from Errai and GWT,
-but the distinction isn't important when getting started with
-UberFire.] so they permeate all parts of the UberFire framework:
 
 * Workbench
 +
