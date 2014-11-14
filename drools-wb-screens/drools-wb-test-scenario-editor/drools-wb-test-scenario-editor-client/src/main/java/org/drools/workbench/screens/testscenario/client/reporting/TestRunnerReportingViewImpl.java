@@ -14,7 +14,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -30,18 +29,18 @@ import com.google.gwt.user.client.ui.Widget;
 public class TestRunnerReportingViewImpl
         extends Composite
         implements TestRunnerReportingView,
-                   RequiresResize {
+        RequiresResize {
 
-    interface Template extends SafeHtmlTemplates {
+    interface SuccessTemplate extends SafeHtmlTemplates {
 
         @Template("<span style='color:{0}'>{1}</span>")
-        SafeHtml title( String color,
-                        String text );
+        SafeHtml title(String color,
+                       String text);
     }
 
-    static final Template SUCCESS_TEMPLATE = GWT.create( Template.class );
+    private static final SuccessTemplate SUCCESS_TEMPLATE = GWT.create(SuccessTemplate.class);
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
     private Presenter presenter;
 
     interface Binder extends UiBinder<Widget, TestRunnerReportingViewImpl> {
@@ -58,26 +57,29 @@ public class TestRunnerReportingViewImpl
     HTML successPanel;
 
     @UiField
+    Label stats;
+
+    @UiField
     Label explanationLabel;
 
     @Inject
     public TestRunnerReportingViewImpl() {
         dataGrid = new DataGrid<Failure>();
-        dataGrid.setWidth( "100%" );
+        dataGrid.setWidth("100%");
 
-        dataGrid.setAutoHeaderRefreshDisabled( true );
+        dataGrid.setAutoHeaderRefreshDisabled(true);
 
-        dataGrid.setEmptyTableWidget( new Label( "---" ) );
+        dataGrid.setEmptyTableWidget(new Label("---"));
 
         setUpColumns();
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
     public void onResize() {
-        dataGrid.setPixelSize( (int) ( getParent().getOffsetWidth() * 0.60 ),
-                               getParent().getOffsetHeight() );
+        dataGrid.setPixelSize((int) (getParent().getOffsetWidth() * 0.60),
+                getParent().getOffsetHeight());
         dataGrid.onResize();
     }
 
@@ -87,65 +89,65 @@ public class TestRunnerReportingViewImpl
     }
 
     private void addSuccessColumn() {
-        Column<Failure, ImageResource> column = new Column<Failure, ImageResource>( new ImageResourceCell() ) {
+        Column<Failure, ImageResource> column = new Column<Failure, ImageResource>(new ImageResourceCell()) {
             @Override
-            public ImageResource getValue( Failure failure ) {
-                presenter.onAddingFailure( failure );
+            public ImageResource getValue(Failure failure) {
+                presenter.onAddingFailure(failure);
                 return CommonImages.INSTANCE.error();
             }
         };
-        dataGrid.addColumn( column );
-        dataGrid.setColumnWidth( column, 10, Style.Unit.PCT );
+        dataGrid.addColumn(column);
+        dataGrid.setColumnWidth(column, 10, Style.Unit.PCT);
     }
 
     private void addTextColumn() {
-        Column<Failure, String> column = new Column<Failure, String>( new ClickableTextCell() ) {
+        Column<Failure, String> column = new Column<Failure, String>(new ClickableTextCell()) {
             @Override
-            public String getValue( Failure failure ) {
-                return makeMessage( failure );
+            public String getValue(Failure failure) {
+                return makeMessage(failure);
             }
 
-            private String makeMessage( Failure failure ) {
+            private String makeMessage(Failure failure) {
                 final String displayName = failure.getDisplayName();
                 final String message = failure.getMessage();
-                return displayName + ( !( message == null || message.isEmpty() ) ? " : " + message : "" );
+                return displayName + (!(message == null || message.isEmpty()) ? " : " + message : "");
             }
         };
 
-        column.setFieldUpdater( new FieldUpdater<Failure, String>() {
+        column.setFieldUpdater(new FieldUpdater<Failure, String>() {
             @Override
-            public void update( int index,
-                                Failure failure,
-                                String value ) {
-                presenter.onMessageSelected( failure );
+            public void update(int index,
+                               Failure failure,
+                               String value) {
+                presenter.onMessageSelected(failure);
             }
-        } );
-        dataGrid.addColumn( column, TestScenarioConstants.INSTANCE.Text() );
-        dataGrid.setColumnWidth( column, 60, Style.Unit.PCT );
+        });
+        dataGrid.addColumn(column, TestScenarioConstants.INSTANCE.Text());
+        dataGrid.setColumnWidth(column, 60, Style.Unit.PCT);
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void bindDataGridToService( TestRuntimeReportingService testRuntimeReportingService ) {
-        testRuntimeReportingService.addDataDisplay( dataGrid );
+    public void bindDataGridToService(TestRuntimeReportingService testRuntimeReportingService) {
+        testRuntimeReportingService.addDataDisplay(dataGrid);
     }
 
     @Override
     public void showSuccess() {
-        successPanel.setHTML( SUCCESS_TEMPLATE.title( "green", TestScenarioConstants.INSTANCE.Success() ) );
+        successPanel.setHTML(SUCCESS_TEMPLATE.title("green", TestScenarioConstants.INSTANCE.Success()));
     }
 
     @Override
     public void showFailure() {
-        successPanel.setHTML( SUCCESS_TEMPLATE.title( "red", TestScenarioConstants.INSTANCE.ThereWereTestFailures() ) );
+        successPanel.setHTML(SUCCESS_TEMPLATE.title("red", TestScenarioConstants.INSTANCE.ThereWereTestFailures()));
     }
 
     @Override
-    public void setExplanation( String explanation ) {
-        explanationLabel.setText( explanation );
+    public void setExplanation(String explanation) {
+        explanationLabel.setText(explanation);
     }
 }

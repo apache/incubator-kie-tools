@@ -262,4 +262,5 @@ public interface
     String TestScenarioParamFileName(String fileName);
 
     String testScenarioResourceTypeDescription();
+
 }

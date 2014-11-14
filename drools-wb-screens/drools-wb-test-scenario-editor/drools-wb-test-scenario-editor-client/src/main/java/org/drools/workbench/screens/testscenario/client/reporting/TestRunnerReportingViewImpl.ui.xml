@@ -26,6 +26,7 @@
 
   <gwt:VerticalPanel ui:field="panel" width="100%">
     <gwt:HTML ui:field="successPanel"/>
+    <gwt:Label ui:field="stats"/>
     <gwt:HorizontalPanel>
       <cellview:DataGrid ui:field='dataGrid'/>
       <gwt:Label ui:field='explanationLabel' width="100%"/>

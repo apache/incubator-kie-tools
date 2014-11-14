@@ -32,7 +32,10 @@ public class ScenarioRunnerWrapper {
                     ksession,
                     maxRuleFirings);
 
-            scenarioRunner.run(new CustomJUnitRunNotifier(identifier, testResultMessageEvent));
+            CustomJUnitRunNotifier notifier = new CustomJUnitRunNotifier(identifier, testResultMessageEvent);
+            scenarioRunner.run(notifier);
+
+            notifier.fireNotificationEvent();
 
             return new TestScenarioResult(identifier, scenario, auditLogger.getLog());
 
@@ -48,7 +51,10 @@ public class ScenarioRunnerWrapper {
                     ksession,
                     maxRuleFirings);
 
-            scenarioRunner.run(new CustomJUnitRunNotifier(identifier, testResultMessageEvent));
+            CustomJUnitRunNotifier notifier = new CustomJUnitRunNotifier(identifier, testResultMessageEvent);
+            scenarioRunner.run(notifier);
+
+            notifier.fireNotificationEvent();
 
         } catch (InitializationError initializationError) {
             throw new GenericPortableException(initializationError.getMessage());

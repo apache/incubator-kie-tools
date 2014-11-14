@@ -42,7 +42,7 @@ public class TestRuntimeReportingService {
             dataProvider.getList().clear();
 
             if (message.wasSuccessful()) {
-                successEvent.fire(new Success());
+                successEvent.fire(new Success(message.getRunCount()));
             } else {
                 dataProvider.getList().addAll(message.getFailures());
                 dataProvider.flush();

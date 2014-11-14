@@ -22,13 +22,11 @@ public class TestRunnerReportingScreen
         implements TestRunnerReportingView.Presenter {
 
     private final TestRunnerReportingView view;
-    private final TestRuntimeReportingService testRuntimeReportingService;
 
     @Inject
     public TestRunnerReportingScreen(TestRunnerReportingView view,
                                      TestRuntimeReportingService testRuntimeReportingService) {
         this.view = view;
-        this.testRuntimeReportingService = testRuntimeReportingService;
         view.setPresenter(this);
         view.bindDataGridToService(testRuntimeReportingService);
     }
