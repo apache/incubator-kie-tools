@@ -10,10 +10,10 @@
   </parent>
 
 
-  <artifactId>uberfire-security</artifactId>
+  <artifactId>uberfire-security-extensions</artifactId>
   <packaging>pom</packaging>
 
-  <name>Uberfire Security</name>
+  <name>Uberfire Security Extensions</name>
 
   <modules>
     <module>uberfire-servlet-security</module>
