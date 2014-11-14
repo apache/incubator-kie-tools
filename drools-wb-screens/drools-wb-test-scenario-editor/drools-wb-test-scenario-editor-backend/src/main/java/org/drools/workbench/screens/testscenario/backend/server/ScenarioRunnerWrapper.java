@@ -23,7 +23,7 @@ public class ScenarioRunnerWrapper {
         this.maxRuleFirings = maxRuleFirings;
     }
 
-    public TestScenarioResult run(Scenario scenario, KieSession ksession) {
+    public TestScenarioResult run(String identifier, Scenario scenario, KieSession ksession) {
         try {
             AuditLogger auditLogger = new AuditLogger(ksession);
 
@@ -32,23 +32,23 @@ public class ScenarioRunnerWrapper {
                     ksession,
                     maxRuleFirings);
 
-            scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
+            scenarioRunner.run(new CustomJUnitRunNotifier(identifier, testResultMessageEvent));
 
-            return new TestScenarioResult(scenario, auditLogger.getLog());
+            return new TestScenarioResult(identifier, scenario, auditLogger.getLog());
 
         } catch (InitializationError initializationError) {
             throw new GenericPortableException(initializationError.getMessage());
         }
     }
 
-    public void run(List<Scenario> scenarios, KieSession ksession) {
+    public void run(String identifier, List<Scenario> scenarios, KieSession ksession) {
         try {
             ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
                     scenarios,
                     ksession,
                     maxRuleFirings);
 
-            scenarioRunner.run(new CustomJUnitRunNotifier(testResultMessageEvent));
+            scenarioRunner.run(new CustomJUnitRunNotifier(identifier, testResultMessageEvent));
 
         } catch (InitializationError initializationError) {
             throw new GenericPortableException(initializationError.getMessage());

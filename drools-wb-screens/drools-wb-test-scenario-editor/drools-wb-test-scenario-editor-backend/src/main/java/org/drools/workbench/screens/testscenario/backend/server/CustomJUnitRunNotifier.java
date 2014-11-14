@@ -16,10 +16,13 @@ import org.junit.runner.notification.RunNotifier;
 public class CustomJUnitRunNotifier
         extends RunNotifier {
 
+    private String identifier;
     private final Event<TestResultMessage> testResultMessageEvent;
 
-    public CustomJUnitRunNotifier( final Event<TestResultMessage> testResultMessageEvent ) {
+    public CustomJUnitRunNotifier( final String identifier,
+                                   final Event<TestResultMessage> testResultMessageEvent ) {
 
+        this.identifier = identifier;
         this.testResultMessageEvent = testResultMessageEvent;
 
         addListener( new RunListener() {
@@ -49,14 +52,16 @@ public class CustomJUnitRunNotifier
     }
 
     private void reportTestRunResult( final Result result ) {
-        fireMessageEvent( new TestResultMessage( result.wasSuccessful(),
+        fireMessageEvent( new TestResultMessage( identifier,
+                                                 result.wasSuccessful(),
                                                  result.getRunCount(),
                                                  result.getFailureCount(),
                                                  getFailures( result.getFailures() ) ) );
     }
 
     private void reportTestSuccess() {
-        fireMessageEvent( new TestResultMessage( true,
+        fireMessageEvent( new TestResultMessage( identifier,
+                                                 true,
                                                  1,
                                                  1,
                                                  new ArrayList<org.guvnor.common.services.shared.test.Failure>() ) );
@@ -66,7 +71,8 @@ public class CustomJUnitRunNotifier
         ArrayList<org.guvnor.common.services.shared.test.Failure> failures = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
         failures.add( failureToFailure( failure ) );
 
-        fireMessageEvent( new TestResultMessage( false,
+        fireMessageEvent( new TestResultMessage( identifier,
+                                                 false,
                                                  1,
                                                  1,
                                                  failures ) );

@@ -46,6 +46,7 @@ import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.session.SessionService;
@@ -73,6 +74,9 @@ public class ScenarioTestEditorServiceImpl extends KieService implements Scenari
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
+
+    @Inject
+    protected User identity;
 
     @Inject
     private MetadataService metadataService;
@@ -245,7 +249,8 @@ public class ScenarioTestEditorServiceImpl extends KieService implements Scenari
             final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper( testResultMessageEvent,
                                                                             getMaxRuleFirings() );
 
-            return runner.run( scenario,
+            return runner.run( identity.getIdentifier(),
+                               scenario,
                                ksession );
 
         } catch ( Exception e ) {
@@ -286,6 +291,7 @@ public class ScenarioTestEditorServiceImpl extends KieService implements Scenari
             }
 
             new ScenarioRunnerWrapper( testResultMessageEvent, getMaxRuleFirings() ).run(
+                    identity.getIdentifier(),
                     scenarios,
                     sessionService.newKieSession( project )
                                                                                         );

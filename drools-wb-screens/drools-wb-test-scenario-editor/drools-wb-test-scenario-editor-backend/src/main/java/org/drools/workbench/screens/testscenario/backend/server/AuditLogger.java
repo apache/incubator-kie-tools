@@ -169,16 +169,30 @@ public class AuditLogger {
 
             @Override
             public void objectUpdated(ObjectUpdatedEvent objectUpdatedEvent) {
-                logs.add("Object " + objectUpdatedEvent.getObject().getClass().getName() + " updated in rule " + objectUpdatedEvent.getRule().getName()
-                        + ". Old fact[ " + objectUpdatedEvent.getOldObject().toString()
-                        + " ]. New fact[ " + objectUpdatedEvent.getObject().toString() + " ].");
-                logs.add("test");
+                Object object = objectUpdatedEvent.getObject();
+                Rule rule = objectUpdatedEvent.getRule();
+                Object oldObject = objectUpdatedEvent.getOldObject();
+
+                if (rule == null) {
+
+                    logs.add("Object " + object.getClass().getName() + " updated. Old fact[ " + oldObject.toString()
+                            + " ]. New fact[ " + object.toString() + " ].");
+                } else {
+                    logs.add("Object " + object.getClass().getName() + " updated in rule " + rule.getName()
+                            + ". Old fact[ " + oldObject.toString()
+                            + " ]. New fact[ " + object.toString() + " ].");
+                }
             }
 
             @Override
             public void objectDeleted(ObjectDeletedEvent objectDeletedEvent) {
-                logs.add(
-                        "Object " + objectDeletedEvent.getOldObject().getClass().getName() + " deleted in rule " + objectDeletedEvent.getRule().getName() + ". Fact[ " + objectDeletedEvent.getOldObject().toString() + " ].");
+                Object oldObject = objectDeletedEvent.getOldObject();
+                Rule rule = objectDeletedEvent.getRule();
+                if (rule == null) {
+                    logs.add("Object " + oldObject.getClass().getName() + " deleted. Fact[ " + oldObject.toString() + " ].");
+                } else {
+                    logs.add("Object " + oldObject.getClass().getName() + " deleted in rule " + rule.getName() + ". Fact[ " + oldObject.toString() + " ].");
+                }
             }
         });
     }
