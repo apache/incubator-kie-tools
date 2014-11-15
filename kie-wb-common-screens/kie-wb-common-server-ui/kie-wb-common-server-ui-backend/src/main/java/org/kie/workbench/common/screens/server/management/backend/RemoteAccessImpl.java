@@ -139,7 +139,7 @@ public class RemoteAccessImpl {
 
     private Container toContainer( final String serverId,
                                    final KieContainerResource kieContainerResource ) {
-        return new ContainerImpl( serverId, kieContainerResource.getContainerId(), toStatus( kieContainerResource.getStatus() ), toGAV( kieContainerResource.getReleaseId() ), toStatus( kieContainerResource.getScanner() ), toGAV( kieContainerResource.getResolvedReleaseId() ) );
+        return new ContainerImpl( serverId, kieContainerResource.getContainerId(), toStatus( kieContainerResource.getStatus() ), toGAV( kieContainerResource.getReleaseId() ), toStatus( kieContainerResource.getScanner() ), kieContainerResource.getScanner() == null ? null : kieContainerResource.getScanner().getPollInterval(), toGAV( kieContainerResource.getResolvedReleaseId() ) );
     }
 
     private GAV toGAV( final ReleaseId releaseId ) {

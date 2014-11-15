@@ -16,7 +16,7 @@
 package org.kie.workbench.common.screens.server.management.client.container;
 
 import java.util.Collection;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -50,6 +50,8 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
@@ -63,9 +65,11 @@ import org.uberfire.workbench.model.menu.Menus;
 
 import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 
-@ApplicationScoped
+@Dependent
 @WorkbenchScreen(identifier = "ContainerInfo", preferredWidth = 500)
 public class ContainerInfoPresenter {
+
+    private boolean isClosed = true;
 
     public interface View extends UberView<ContainerInfoPresenter> {
 
@@ -73,7 +77,9 @@ public class ContainerInfoPresenter {
 
         void setStatus( final ContainerStatus started );
 
-        void setStatus( final ScannerStatus scannerStatus );
+        void setScannerStatus( final ScannerStatus scannerStatus );
+
+        void setResolvedReleasedId( final GAV resolvedReleasedId );
 
         void cleanup();
     }
@@ -101,7 +107,20 @@ public class ContainerInfoPresenter {
         this.placeRequest = placeRequest;
     }
 
+    @OnOpen
+    public void onOpen() {
+        isClosed = false;
+    }
+
+    @OnClose
+    public void onClose() {
+        isClosed = true;
+    }
+
     private void onContainerInfo( @Observes ContainerInfo containerInfo ) {
+        if ( isClosed ) {
+            return;
+        }
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, "Container Info [" + containerInfo.getContainerId() + "]", null ) );
         serverId = containerInfo.getServerId();
         containerId = containerInfo.getContainerId();
@@ -116,42 +135,64 @@ public class ContainerInfoPresenter {
     }
 
     public void onServerConnected( @Observes final ServerConnected event ) {
+        if ( isClosed ) {
+            return;
+        }
         if ( event.getServer().getId().equals( serverId ) ) {
             view.setStatus( event.getServer().getContainerRef( containerId ).getStatus() );
         }
     }
 
     public void onServerDeleted( @Observes final ServerDeleted event ) {
+        if ( isClosed ) {
+            return;
+        }
         if ( event.getServerId().equals( serverId ) ) {
             close();
         }
     }
 
     public void onContainerDeleted( @Observes final ContainerDeleted event ) {
+        if ( isClosed ) {
+            return;
+        }
         if ( event.getServerId().equals( serverId ) && event.getContainerId().equals( containerId ) ) {
             close();
         }
     }
 
     public void onContainerUpdated( @Observes final ContainerUpdated event ) {
+        if ( isClosed ) {
+            return;
+        }
         if ( event.getContainer().getServerId().equals( serverId ) && event.getContainer().getId().equals( containerId ) ) {
             view.setup( event.getContainer() );
         }
     }
 
     public void onContainerStarted( @Observes final ContainerStarted event ) {
+        if ( isClosed ) {
+            return;
+        }
         if ( event.getContainer().getServerId().equals( serverId ) && event.getContainer().getId().equals( containerId ) ) {
             view.setStatus( ContainerStatus.STARTED );
+            view.setResolvedReleasedId( event.getContainer().getResolvedReleasedId() );
         }
     }
 
     public void onServerError( @Observes final ServerOnError event ) {
+        if ( isClosed ) {
+            return;
+        }
         if ( event.getServer().getId().equals( serverId ) ) {
             view.setStatus( ContainerStatus.ERROR );
         }
     }
 
     public void onContainerStopped( @Observes final ContainerStopped event ) {
+        if ( isClosed ) {
+            return;
+        }
         if ( event.getContainer().getServerId().equals( serverId ) && event.getContainer().getId().equals( containerId ) ) {
             view.setStatus( ContainerStatus.STOPPED );
         }
@@ -161,7 +202,7 @@ public class ContainerInfoPresenter {
         service.call( new RemoteCallback<ScannerOperationResult>() {
             @Override
             public void callback( final ScannerOperationResult response ) {
-                view.setStatus( response.getScannerStatus() );
+                view.setScannerStatus( response.getScannerStatus() );
             }
         } ).scanNow( serverId, containerId );
     }
@@ -170,7 +211,7 @@ public class ContainerInfoPresenter {
         service.call( new RemoteCallback<ScannerOperationResult>() {
             @Override
             public void callback( final ScannerOperationResult response ) {
-                view.setStatus( response.getScannerStatus() );
+                view.setScannerStatus( response.getScannerStatus() );
             }
         } ).startScanner( serverId, containerId, interval );
     }
@@ -179,7 +220,7 @@ public class ContainerInfoPresenter {
         service.call( new RemoteCallback<ScannerOperationResult>() {
             @Override
             public void callback( final ScannerOperationResult response ) {
-                view.setStatus( response.getScannerStatus() );
+                view.setScannerStatus( response.getScannerStatus() );
             }
         } ).stopScanner( serverId, containerId );
     }

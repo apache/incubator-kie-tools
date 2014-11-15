@@ -144,7 +144,7 @@ public class ServerReferenceStorageImpl {
 
             serverRef.deleteContainer( containerId );
 
-            serverRef.addContainerRef( new ContainerRefImpl( serverId, containerId, containerRef.getStatus(), releaseId, containerRef.getScannerStatus() ) );
+            serverRef.addContainerRef( new ContainerRefImpl( serverId, containerId, containerRef.getStatus(), releaseId, containerRef.getScannerStatus(), containerRef.getPollInterval() ) );
             ioService.write( path, xs.toXML( serverRef ) );
         }
     }

@@ -14,7 +14,6 @@ import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.screens.server.management.client.artifact.NewContainerForm;
 import org.kie.workbench.common.screens.server.management.client.box.BoxPresenter;
@@ -41,6 +40,8 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -268,8 +269,17 @@ public class ServerManagementBrowserPresenter {
         } );
     }
 
-    @AfterInitialization
-    public void loadContent() {
+    @OnStartup
+    public void onOnStartup() {
+        listServers();
+    }
+
+    @OnOpen
+    public void onOpen() {
+        listServers();
+    }
+
+    private void listServers() {
         service.call( new RemoteCallback<Collection<ServerRef>>() {
             @Override
             public void callback( final Collection<ServerRef> response ) {

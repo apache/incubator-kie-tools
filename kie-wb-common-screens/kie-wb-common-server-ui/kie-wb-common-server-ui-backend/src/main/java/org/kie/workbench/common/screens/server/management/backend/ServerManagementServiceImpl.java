@@ -21,7 +21,6 @@ import org.kie.workbench.common.screens.server.management.events.ServerOnError;
 import org.kie.workbench.common.screens.server.management.model.Container;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
-import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
 import org.kie.workbench.common.screens.server.management.model.Server;
 import org.kie.workbench.common.screens.server.management.model.ServerRef;
 import org.kie.workbench.common.screens.server.management.model.impl.ContainerImpl;
@@ -152,7 +151,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
             final ServerRef serverRef = storage.loadServerRef( entry.getKey() );
             for ( final String containerId : entry.getValue() ) {
                 final ContainerRef containerRef = serverRef.getContainerRef( containerId );
-                final ContainerRef newContainerRef = new ContainerRefImpl( containerRef.getServerId(), containerRef.getId(), ContainerStatus.STOPPED, containerRef.getReleasedId(), containerRef.getScannerStatus() );
+                final ContainerRef newContainerRef = new ContainerRefImpl( containerRef.getServerId(), containerRef.getId(), ContainerStatus.STOPPED, containerRef.getReleasedId(), containerRef.getScannerStatus(), containerRef.getPollInterval() );
                 serverRef.deleteContainer( containerRef.getId() );
                 serverRef.addContainerRef( newContainerRef );
                 storage.forceRegister( serverRef );
@@ -179,7 +178,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         if ( remoteAccess.containerExists( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() ) ) {
             throw new ContainerAlreadyRegisteredException( containerId );
         }
-        final ContainerRef containerRef = new ContainerRefImpl( serverId, containerId, ContainerStatus.STOPPED, gav, ScannerStatus.STOPPED );
+        final ContainerRef containerRef = new ContainerRefImpl( serverId, containerId, ContainerStatus.STOPPED, gav, null, null );
         storage.createContainer( containerRef );
         containerCreatedEvent.fire( new ContainerCreated( containerRef ) );
     }
@@ -201,7 +200,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
         final ContainerRef containerRef = storage.loadServerRef( serverId ).getContainerRef( container );
 
-        return new ContainerImpl( containerRef.getServerId(), containerRef.getId(), result.getK1() ? containerRef.getStatus() : ContainerStatus.ERROR, containerRef.getReleasedId(), containerRef.getScannerStatus(), null );
+        return new ContainerImpl( containerRef.getServerId(), containerRef.getId(), result.getK1() ? containerRef.getStatus() : ContainerStatus.ERROR, containerRef.getReleasedId(), null, containerRef.getPollInterval(), null );
     }
 
     @Override

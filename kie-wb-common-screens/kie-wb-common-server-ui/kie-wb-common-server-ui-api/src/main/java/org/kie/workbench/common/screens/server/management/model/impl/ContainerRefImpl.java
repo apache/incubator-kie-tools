@@ -14,6 +14,7 @@ public class ContainerRefImpl implements ContainerRef {
     private ContainerStatus status = ContainerStatus.STOPPED;
     private GAV releaseId;
     private ScannerStatus scannerStatus;
+    private Long pollInterval;
 
     public ContainerRefImpl() {
     }
@@ -22,12 +23,14 @@ public class ContainerRefImpl implements ContainerRef {
                              final String id,
                              final ContainerStatus status,
                              final GAV releaseId,
-                             final ScannerStatus scannerStatus ) {
+                             final ScannerStatus scannerStatus,
+                             final Long pollInterval ) {
         this.serverId = serverId;
         this.id = id;
         this.status = status;
         this.releaseId = releaseId;
         this.scannerStatus = scannerStatus;
+        this.pollInterval = pollInterval;
     }
 
     @Override
@@ -43,6 +46,11 @@ public class ContainerRefImpl implements ContainerRef {
     @Override
     public ContainerStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public Long getPollInterval() {
+        return pollInterval;
     }
 
     @Override

@@ -19,11 +19,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.ButtonGroup;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpBlock;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -31,6 +33,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.GAV;
@@ -113,6 +116,32 @@ public class ContainerInfoView
     @UiField
     Button upgrade;
 
+    private org.uberfire.mvp.Command stopScannerActive = new org.uberfire.mvp.Command() {
+        @Override
+        public void execute() {
+            Scheduler.get().scheduleDeferred( new Command() {
+                @Override
+                public void execute() {
+                    stopScanner.setActive( true );
+                    startScanner.setActive( false );
+                }
+            } );
+        }
+    };
+
+    private org.uberfire.mvp.Command startScannerActive = new org.uberfire.mvp.Command() {
+        @Override
+        public void execute() {
+            Scheduler.get().scheduleDeferred( new Command() {
+                @Override
+                public void execute() {
+                    stopScanner.setActive( true );
+                    startScanner.setActive( false );
+                }
+            } );
+        }
+    };
+
     private ContainerInfoPresenter presenter;
 
     private static Binder uiBinder = GWT.create( Binder.class );
@@ -148,15 +177,15 @@ public class ContainerInfoView
     @Override
     public void setup( final Container response ) {
         setStatus( response.getStatus() );
-        setStatus( response.getScannerStatus() );
+        setScannerStatus( response.getScannerStatus() );
+        intervalGroup.setType( ControlGroupType.NONE );
+        if ( response.getPollInterval() != null ) {
+            interval.setText( String.valueOf( response.getPollInterval().longValue() ) );
+        }
         groupId.setText( response.getReleasedId().getGroupId() );
         artifactId.setText( response.getReleasedId().getArtifactId() );
         version.setText( response.getReleasedId().getVersion() );
-        if ( response.getResolvedReleasedId() != null ) {
-            resolvedGroupId.setText( response.getResolvedReleasedId().getGroupId() );
-            resolvedArtifactId.setText( response.getResolvedReleasedId().getArtifactId() );
-            resolvedVersion.setText( response.getResolvedReleasedId().getVersion() );
-        }
+        setResolvedReleasedId( response.getResolvedReleasedId() );
         endpoint.setText( response.getServerId() + "/containers/" + response.getId() );
     }
 
@@ -178,12 +207,10 @@ public class ContainerInfoView
             scanNow.setEnabled( false );
             upgrade.setEnabled( false );
         }
-
-        setupStatus( this.status, status );
     }
 
     @Override
-    public void setStatus( final ScannerStatus scannerStatus ) {
+    public void setScannerStatus( final ScannerStatus scannerStatus ) {
         if ( scannerStatus == null ||
                 scannerStatus.equals( ScannerStatus.ERROR ) ||
                 scannerStatus.equals( ScannerStatus.UNKNOWN ) ) {
@@ -207,7 +234,21 @@ public class ContainerInfoView
     }
 
     @Override
+    public void setResolvedReleasedId( final GAV resolvedReleasedId ) {
+        if ( resolvedReleasedId != null ) {
+            resolvedGroupId.setText( resolvedReleasedId.getGroupId() );
+            resolvedArtifactId.setText( resolvedReleasedId.getArtifactId() );
+            resolvedVersion.setText( resolvedReleasedId.getVersion() );
+        }
+    }
+
+    @Override
     public void cleanup() {
+        intervalGroup.setType( ControlGroupType.NONE );
+        interval.setText( "" );
+        startScanner.setEnabled( false );
+        stopScanner.setEnabled( false );
+        scanNow.setEnabled( false );
         groupId.setText( "" );
         artifactId.setText( "" );
         version.setText( "" );
@@ -222,11 +263,13 @@ public class ContainerInfoView
 
     @UiHandler("startScanner")
     public void startScanner( final ClickEvent e ) {
+        if ( startScanner.isActive() ) {
+            return;
+        }
 
         if ( interval.getText().trim().isEmpty() ) {
             intervalGroup.setType( ControlGroupType.ERROR );
-            startScanner.removeStyleName( "active" );
-            stopScanner.setActive( true );
+            stopScannerActive.execute();
             return;
         }
 
@@ -235,21 +278,26 @@ public class ContainerInfoView
             value = Long.valueOf( interval.getText() );
         } catch ( Exception ex ) {
             intervalGroup.setType( ControlGroupType.ERROR );
-            startScanner.removeStyleName( "active" );
-            stopScanner.setActive( true );
+            stopScannerActive.execute();
             return;
         }
 
+        startScannerActive.execute();
         presenter.startScanner( value );
     }
 
     @UiHandler("stopScanner")
     public void stopScanner( final ClickEvent e ) {
+        if ( stopScanner.isActive() ) {
+            return;
+        }
+        stopScannerActive.execute();
         presenter.stopScanner();
     }
 
     @UiHandler("scanNow")
     public void scanNow( final ClickEvent e ) {
+        stopScannerActive.execute();
         presenter.scanNow();
     }
 

@@ -19,8 +19,9 @@ public class ContainerImpl extends ContainerRefImpl implements Container {
                           final ContainerStatus status,
                           final GAV releaseId,
                           final ScannerStatus scannerStatus,
+                          final Long pollInterval,
                           final GAV resolvedReleasedId ) {
-        super( serverId, id, status, releaseId, scannerStatus );
+        super( serverId, id, status, releaseId, scannerStatus, pollInterval );
         this.resolvedReleasedId = resolvedReleasedId;
     }
 

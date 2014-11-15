@@ -12,6 +12,8 @@ public interface ContainerRef {
 
     ContainerStatus getStatus();
 
+    Long getPollInterval();
+
     ScannerStatus getScannerStatus();
 
     void setStatus( ContainerStatus serverStatus );
