@@ -53,7 +53,7 @@ public class LuceneIndexManager implements IndexManager {
     }
 
     @Override
-    public LuceneIndex indexOf( final KObjectKey object ) {
+    public synchronized LuceneIndex indexOf( final KObjectKey object ) {
         final KCluster kcluster = kcluster( object );
         final LuceneIndex currentSetup = indexes.get( kcluster );
         if ( currentSetup != null ) {
