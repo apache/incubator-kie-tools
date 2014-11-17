@@ -26,7 +26,6 @@
     <version.org.owasp.encoder>1.1</version.org.owasp.encoder>
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
     <version.jakarta-regexp>1.4</version.jakarta-regexp>
-    <version.javax.security.jacc>1.4</version.javax.security.jacc>
     <version.com.rht-emitrom.lienzo-core>1.2.1-RELEASE</version.com.rht-emitrom.lienzo-core>
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
 
@@ -247,13 +246,6 @@
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${version.com.google.gwt}</version>
-      </dependency>
-
-      <!-- JACC -->
-      <dependency>
-        <groupId>javax.security.jacc</groupId>
-        <artifactId>javax.security.jacc-api</artifactId>
-        <version>${version.javax.security.jacc}</version>
       </dependency>
 
       <!-- Apache Lucene -->
