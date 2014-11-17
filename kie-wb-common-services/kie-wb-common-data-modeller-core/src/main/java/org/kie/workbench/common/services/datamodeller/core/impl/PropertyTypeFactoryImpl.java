@@ -13,8 +13,6 @@ import java.util.List;
 
 public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
 
-    private static PropertyTypeFactory singleton = null;
-
     private static List<PropertyType> baseTypes = new ArrayList<PropertyType>();
     
     private static HashMap<String, PropertyType> baseTypesByClass = new HashMap<String, PropertyType>();
@@ -53,10 +51,8 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
     }
 
     public static PropertyTypeFactory getInstance() {
-        if (singleton == null) {
-            singleton = new PropertyTypeFactoryImpl();
-        }
-        return singleton;
+
+        return HoldInstance.INSTANCE;
     }
 
     @Override
@@ -73,5 +69,9 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
     public boolean isPrimitivePropertyType(String className) {
         PropertyType type = baseTypesByClass.get(className);
         return type != null && type.isPrimitive();
+    }
+
+    private static class HoldInstance {
+        private static final PropertyTypeFactoryImpl INSTANCE = new PropertyTypeFactoryImpl();
     }
 }
