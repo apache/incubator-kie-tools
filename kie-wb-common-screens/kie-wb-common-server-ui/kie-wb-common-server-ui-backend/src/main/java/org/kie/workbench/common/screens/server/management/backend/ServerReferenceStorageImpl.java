@@ -148,4 +148,22 @@ public class ServerReferenceStorageImpl {
             ioService.write( path, xs.toXML( serverRef ) );
         }
     }
+
+    public void updateContainer( String serverId,
+                                 String containerId,
+                                 Long pollInterval ) {
+        final Path path = buildPath( serverId );
+        final ServerRef serverRef = loadServerRef( serverId );
+        if ( serverRef != null ) {
+            final ContainerRef containerRef = serverRef.getContainerRef( containerId );
+            if ( containerRef == null ) {
+                throw new ContainerNotFoundException( containerId );
+            }
+
+            serverRef.deleteContainer( containerId );
+
+            serverRef.addContainerRef( new ContainerRefImpl( serverId, containerId, containerRef.getStatus(), containerRef.getReleasedId(), containerRef.getScannerStatus(), pollInterval ) );
+            ioService.write( path, xs.toXML( serverRef ) );
+        }
+    }
 }

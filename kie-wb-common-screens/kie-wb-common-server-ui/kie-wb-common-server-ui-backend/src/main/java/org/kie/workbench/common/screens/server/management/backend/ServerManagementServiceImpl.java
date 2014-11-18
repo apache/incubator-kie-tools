@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.server.api.model.KieScannerResource;
 import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
 import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
 import org.kie.workbench.common.screens.server.management.events.ContainerStarted;
@@ -21,6 +20,7 @@ import org.kie.workbench.common.screens.server.management.events.ServerOnError;
 import org.kie.workbench.common.screens.server.management.model.Container;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
+import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
 import org.kie.workbench.common.screens.server.management.model.Server;
 import org.kie.workbench.common.screens.server.management.model.ServerRef;
 import org.kie.workbench.common.screens.server.management.model.impl.ContainerImpl;
@@ -208,11 +208,13 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                            final String containerId ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        final KieScannerResource resource = remoteAccess.scanNow( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
-        if ( resource == null ) {
+        final ScannerOperationResult resource = remoteAccess.scanNow( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
+
+        if ( resource != null && resource.getScannerStatus().equals( ScannerStatus.SCANNING ) ) {
             refresh();
         }
-        return new ScannerOperationResult( resource == null, remoteAccess.toStatus( resource ) );
+
+        return resource;
     }
 
     @Override
@@ -221,9 +223,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                                 long interval ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        final KieScannerResource resource = remoteAccess.startScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword(), interval );
-        refresh();
-        return new ScannerOperationResult( resource == null, remoteAccess.toStatus( resource ) );
+        storage.updateContainer( serverId, containerId, interval );
+
+        return remoteAccess.startScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword(), interval );
     }
 
     @Override
@@ -231,9 +233,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                                String containerId ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        final KieScannerResource resource = remoteAccess.stopScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
-        refresh();
-        return new ScannerOperationResult( resource == null, remoteAccess.toStatus( resource ) );
+        return remoteAccess.stopScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
     }
 
     @Override

@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.ButtonGroup;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpBlock;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -135,8 +134,8 @@ public class ContainerInfoView
             Scheduler.get().scheduleDeferred( new Command() {
                 @Override
                 public void execute() {
-                    stopScanner.setActive( true );
-                    startScanner.setActive( false );
+                    startScanner.setActive( true );
+                    stopScanner.setActive( false );
                 }
             } );
         }
@@ -201,7 +200,6 @@ public class ContainerInfoView
             resolvedGroupId.setText( "" );
             resolvedArtifactId.setText( "" );
             resolvedVersion.setText( "" );
-
             startScanner.setEnabled( false );
             stopScanner.setEnabled( false );
             scanNow.setEnabled( false );
@@ -211,25 +209,30 @@ public class ContainerInfoView
 
     @Override
     public void setScannerStatus( final ScannerStatus scannerStatus ) {
-        if ( scannerStatus == null ||
-                scannerStatus.equals( ScannerStatus.ERROR ) ||
-                scannerStatus.equals( ScannerStatus.UNKNOWN ) ) {
+        if ( scannerStatus == null ) {
             startScanner.setEnabled( false );
             stopScanner.setEnabled( false );
             scanNow.setEnabled( false );
-        } else if ( scannerStatus.equals( ScannerStatus.CREATED ) ||
-                scannerStatus.equals( ScannerStatus.STARTED ) ) {
+            return;
+        }
+
+        if ( scannerStatus.equals( ScannerStatus.ERROR ) ||
+                scannerStatus.equals( ScannerStatus.UNKNOWN ) ) {
             startScanner.setEnabled( true );
             stopScanner.setEnabled( true );
-            startScanner.setActive( true );
-            stopScanner.setActive( false );
-            scanNow.setEnabled( false );
+            scanNow.setEnabled( true );
+            stopScannerActive.execute();
         } else {
             startScanner.setEnabled( true );
             stopScanner.setEnabled( true );
-            stopScanner.setActive( true );
-            startScanner.setActive( false );
-            scanNow.setEnabled( true );
+            if ( scannerStatus.equals( ScannerStatus.CREATED ) ||
+                    scannerStatus.equals( ScannerStatus.STARTED ) ) {
+                startScannerActive.execute();
+                scanNow.setEnabled( false );
+            } else {
+                stopScannerActive.execute();
+                scanNow.setEnabled( true );
+            }
         }
     }
 
@@ -282,7 +285,6 @@ public class ContainerInfoView
             return;
         }
 
-        startScannerActive.execute();
         presenter.startScanner( value );
     }
 

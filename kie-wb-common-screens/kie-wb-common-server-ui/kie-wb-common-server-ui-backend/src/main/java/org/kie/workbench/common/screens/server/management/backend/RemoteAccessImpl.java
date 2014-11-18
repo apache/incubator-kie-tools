@@ -23,6 +23,7 @@ import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
 import org.kie.workbench.common.screens.server.management.model.Server;
 import org.kie.workbench.common.screens.server.management.model.ServerRef;
 import org.kie.workbench.common.screens.server.management.model.impl.ContainerImpl;
+import org.kie.workbench.common.screens.server.management.model.impl.ScannerOperationResult;
 import org.kie.workbench.common.screens.server.management.model.impl.ServerImpl;
 import org.kie.workbench.common.screens.server.management.model.impl.ServerRefImpl;
 import org.kie.workbench.common.screens.server.management.service.ContainerAlreadyRegisteredException;
@@ -233,34 +234,34 @@ public class RemoteAccessImpl {
         return Pair.newPair( false, null );
     }
 
-    public KieScannerResource stopScanner( final String serverId,
-                                           final String containerId,
-                                           final String username,
-                                           final String password ) {
+    public ScannerOperationResult stopScanner( final String serverId,
+                                               final String containerId,
+                                               final String username,
+                                               final String password ) {
         return changeScannerStatus( serverId, containerId, username, password, KieScannerStatus.STOPPED, null );
     }
 
-    public KieScannerResource startScanner( final String serverId,
-                                            final String containerId,
-                                            final String username,
-                                            final String password,
-                                            long interval ) {
+    public ScannerOperationResult startScanner( final String serverId,
+                                                final String containerId,
+                                                final String username,
+                                                final String password,
+                                                long interval ) {
         return changeScannerStatus( serverId, containerId, username, password, KieScannerStatus.STARTED, interval );
     }
 
-    public KieScannerResource scanNow( final String serverId,
-                                       final String containerId,
-                                       final String username,
-                                       final String password ) {
+    public ScannerOperationResult scanNow( final String serverId,
+                                           final String containerId,
+                                           final String username,
+                                           final String password ) {
         return changeScannerStatus( serverId, containerId, username, password, KieScannerStatus.SCANNING, null );
     }
 
-    private KieScannerResource changeScannerStatus( final String serverId,
-                                                    final String containerId,
-                                                    final String username,
-                                                    final String password,
-                                                    final KieScannerStatus status,
-                                                    final Long interval ) {
+    private ScannerOperationResult changeScannerStatus( final String serverId,
+                                                        final String containerId,
+                                                        final String username,
+                                                        final String password,
+                                                        final KieScannerStatus status,
+                                                        final Long interval ) {
         try {
             final KieServicesClient client = new KieServicesClient( serverId, username, password );
             final KieScannerResource resource;
@@ -272,12 +273,13 @@ public class RemoteAccessImpl {
             final ServiceResponse<KieScannerResource> response = client.updateScanner( containerId, resource );
 
             if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
-                return response.getResult();
+                return new ScannerOperationResult( toStatus( response.getResult() ), response.getMsg(), response.getResult().getPollInterval() );
             }
-        } catch ( final Exception ex ) {
-        }
 
-        return null;
+            return new ScannerOperationResult( ScannerStatus.ERROR, response.getMsg(), null );
+        } catch ( final Exception ex ) {
+            return new ScannerOperationResult( ScannerStatus.ERROR, ex.getMessage(), null );
+        }
     }
 
     public void upgradeContainer( final String serverId,

@@ -54,6 +54,7 @@ import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -89,6 +90,9 @@ public class ContainerInfoPresenter {
 
     @Inject
     private Caller<ServerManagementService> service;
+
+    @Inject
+    private Event<NotificationEvent> notification;
 
     @Inject
     private View view;
@@ -175,8 +179,9 @@ public class ContainerInfoPresenter {
             return;
         }
         if ( event.getContainer().getServerId().equals( serverId ) && event.getContainer().getId().equals( containerId ) ) {
-            view.setStatus( ContainerStatus.STARTED );
-            view.setResolvedReleasedId( event.getContainer().getResolvedReleasedId() );
+            view.setup( event.getContainer() );
+//            view.setStatus( ContainerStatus.STARTED );
+//            view.setResolvedReleasedId( event.getContainer().getResolvedReleasedId() );
         }
     }
 
@@ -202,6 +207,10 @@ public class ContainerInfoPresenter {
         service.call( new RemoteCallback<ScannerOperationResult>() {
             @Override
             public void callback( final ScannerOperationResult response ) {
+                if ( response != null && response.getScannerStatus().equals( ScannerStatus.ERROR ) && response.getMessage() != null && !response.getMessage().trim().isEmpty() ) {
+                    notification.fire( new NotificationEvent( response.getMessage(),
+                                                              NotificationEvent.NotificationType.ERROR ) );
+                }
                 view.setScannerStatus( response.getScannerStatus() );
             }
         } ).scanNow( serverId, containerId );
@@ -211,6 +220,10 @@ public class ContainerInfoPresenter {
         service.call( new RemoteCallback<ScannerOperationResult>() {
             @Override
             public void callback( final ScannerOperationResult response ) {
+                if ( response != null && response.getScannerStatus().equals( ScannerStatus.ERROR ) && response.getMessage() != null && !response.getMessage().trim().isEmpty() ) {
+                    notification.fire( new NotificationEvent( response.getMessage(),
+                                                              NotificationEvent.NotificationType.ERROR ) );
+                }
                 view.setScannerStatus( response.getScannerStatus() );
             }
         } ).startScanner( serverId, containerId, interval );
@@ -220,6 +233,10 @@ public class ContainerInfoPresenter {
         service.call( new RemoteCallback<ScannerOperationResult>() {
             @Override
             public void callback( final ScannerOperationResult response ) {
+                if ( response != null && response.getScannerStatus().equals( ScannerStatus.ERROR ) && response.getMessage() != null && !response.getMessage().trim().isEmpty() ) {
+                    notification.fire( new NotificationEvent( response.getMessage(),
+                                                              NotificationEvent.NotificationType.ERROR ) );
+                }
                 view.setScannerStatus( response.getScannerStatus() );
             }
         } ).stopScanner( serverId, containerId );

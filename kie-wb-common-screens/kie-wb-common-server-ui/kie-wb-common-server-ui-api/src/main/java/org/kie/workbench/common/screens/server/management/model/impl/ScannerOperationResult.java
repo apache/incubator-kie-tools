@@ -6,23 +6,30 @@ import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
 @Portable
 public class ScannerOperationResult {
 
-    private boolean opStatus;
     private ScannerStatus scannerStatus;
+    private String message;
+    private Long pollInterval;
 
     public ScannerOperationResult() {
     }
 
-    public ScannerOperationResult( final boolean opStatus,
-                                   final ScannerStatus scannerStatus ) {
-        this.opStatus = opStatus;
+    public ScannerOperationResult( final ScannerStatus scannerStatus,
+                                   final String message,
+                                   final Long pollInterval ) {
         this.scannerStatus = scannerStatus;
-    }
-
-    public boolean opStatus() {
-        return opStatus;
+        this.message = message;
+        this.pollInterval = pollInterval;
     }
 
     public ScannerStatus getScannerStatus() {
         return scannerStatus;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public Long getPollInterval() {
+        return pollInterval;
     }
 }
