@@ -39,7 +39,9 @@ public class ContextualSearch {
     }
 
     public void onPerspectiveChange( @Observes final PerspectiveChange perspectiveChange ) {
-        this.searchBehavior = defaultSearchBehavior;
+        if(searchBehavior == null){
+            this.searchBehavior = defaultSearchBehavior;
+        }
     }
 
 }
