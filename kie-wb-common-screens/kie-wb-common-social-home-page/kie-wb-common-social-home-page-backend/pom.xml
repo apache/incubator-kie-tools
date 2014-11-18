@@ -31,11 +31,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-services-api</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-social-home-page-api</artifactId>
     </dependency>
