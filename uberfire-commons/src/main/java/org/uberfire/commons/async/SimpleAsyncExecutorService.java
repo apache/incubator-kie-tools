@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ejb.Asynchronous;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
@@ -91,6 +93,7 @@ public class SimpleAsyncExecutorService {
     }
 
     @Asynchronous
+    @Lock(LockType.READ)
     public void execute( final Runnable r ) {
         if ( executorService != null ) {
             jobs.add( executorService.submit( r ) );
