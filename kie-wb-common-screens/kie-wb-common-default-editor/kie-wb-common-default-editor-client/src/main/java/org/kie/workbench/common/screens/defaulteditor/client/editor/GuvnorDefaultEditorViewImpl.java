@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultFileEditorPresenter;
+import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultFileEditorView;
 
 public class GuvnorDefaultEditorViewImpl
         extends KieEditorViewImpl
@@ -30,7 +31,6 @@ public class GuvnorDefaultEditorViewImpl
     @Inject
     public GuvnorDefaultEditorViewImpl( final DefaultFileEditorPresenter presenter ) {
         this.presenter = presenter;
-        initWidget( this.presenter.view );
     }
 
     @Override
@@ -40,6 +40,7 @@ public class GuvnorDefaultEditorViewImpl
 
     @Override
     public void onStartup( final ObservablePath path ) {
+        initWidget( this.presenter.view );
         presenter.onStartup( path );
     }
 }
