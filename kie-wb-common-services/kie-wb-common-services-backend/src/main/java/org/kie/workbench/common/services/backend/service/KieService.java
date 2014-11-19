@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.workbench.common.services.backend.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -79,7 +80,11 @@ public abstract class KieService {
         final org.uberfire.java.nio.file.Path convertedPath = Paths.convert( path );
 
         if ( sourceServices.hasServiceFor( convertedPath ) ) {
-            return sourceServices.getServiceFor( convertedPath ).getSource( convertedPath );
+            try {
+                return sourceServices.getServiceFor(convertedPath).getSource(convertedPath);
+            } catch (SourceGenerationFailedException e) {
+                return "Could not generate source for this file";
+            }
         } else {
             return "";
         }

@@ -28,12 +28,12 @@ public interface SourceService<T> {
      * @return Source generated from the model, not from the file that the path points to.
      */
     String getSource( final Path path,
-                      final T model );
+                      final T model ) throws SourceGenerationFailedException;
     /**
      * @param path path to the file
      * @return Source generated from the model, that the path points to.
      */
-    String getSource(Path path);
+    String getSource(Path path) throws SourceGenerationFailedException;
 
     String getPattern();
 
