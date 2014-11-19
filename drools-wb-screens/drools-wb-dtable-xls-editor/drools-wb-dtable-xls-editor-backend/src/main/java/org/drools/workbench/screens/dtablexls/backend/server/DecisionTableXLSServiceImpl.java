@@ -52,6 +52,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
+import org.kie.workbench.common.services.backend.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -252,6 +253,8 @@ public class DecisionTableXLSServiceImpl
                                                  InputType.XLS );
             return drl;
 
+        } catch (Exception e) {
+            return "Could not generate the source.";
         } finally {
             if ( inputStream != null ) {
                 try {

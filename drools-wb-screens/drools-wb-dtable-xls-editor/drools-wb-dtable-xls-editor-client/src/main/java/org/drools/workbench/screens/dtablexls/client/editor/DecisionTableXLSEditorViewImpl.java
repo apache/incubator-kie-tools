@@ -53,8 +53,9 @@ public class DecisionTableXLSEditorViewImpl
     private final Button downloadButton = new Button( DecisionTableXLSEditorConstants.INSTANCE.Download() );
 
     private final VerticalPanel layout = new VerticalPanel();
-    private final FormStyleLayout ts = new FormStyleLayout( getIcon(),
-                                                            DecisionTableXLSEditorConstants.INSTANCE.DecisionTable() );
+    private final FormStyleLayout formStyleLayout = new FormStyleLayout(
+            getIcon(),
+            DecisionTableXLSEditorConstants.INSTANCE.DecisionTable());
 
     @Inject
     private Event<NotificationEvent> notificationEvent;
@@ -69,7 +70,7 @@ public class DecisionTableXLSEditorViewImpl
     public void init() {
         uploadWidget = new AttachmentFileWidget( new String[]{ resourceType.getSuffix() }, true );
         layout.setWidth( "100%" );
-        layout.add( ts );
+        layout.add(formStyleLayout);
         initWidget( layout );
         setWidth( "100%" );
     }
@@ -92,7 +93,7 @@ public class DecisionTableXLSEditorViewImpl
         uploadContainer.add( uploadWidget );
         uploadWell.add( uploadContainer );
 
-        ts.addRow( uploadWell );
+        formStyleLayout.addRow(uploadWell);
         uploadWidget.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( final ClickEvent event ) {
@@ -134,7 +135,7 @@ public class DecisionTableXLSEditorViewImpl
         downloadContainer.add( new Label( DecisionTableXLSEditorConstants.INSTANCE.DownloadCurrentVersion() + ":" ) );
         downloadContainer.add( downloadButton );
         downloadWell.add( downloadContainer );
-        ts.addRow( downloadWell );
+        formStyleLayout.addRow(downloadWell);
 
         downloadButton.addClickHandler( new ClickHandler() {
             @Override
