@@ -4,8 +4,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.TemplatedActivity;
+import org.uberfire.client.workbench.events.MaximizePlaceEvent;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
 @Dependent
 public class TemplatedWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresenter<TemplatedWorkbenchPanelPresenter> {
@@ -40,4 +43,16 @@ public class TemplatedWorkbenchPanelPresenter extends AbstractWorkbenchPanelPres
         getPanelView().setActivity( activity );
     }
 
+    /**
+     * Forwards the request to the first child panel (the one marked as {@link WorkbenchPanel#isDefault}).
+     */
+    @Override
+    public void addPart( WorkbenchPartPresenter part,
+                         String contextId ) {
+        if ( getPanels().isEmpty() ) {
+            throw new IllegalStateException( "This panel type does not support parts directly; it forwards add part requests"
+                    + " to its first child panel. However, this panel currently has no child panels." );
+        }
+        getPanels().values().iterator().next().addPart( part, contextId );
+    }
 }

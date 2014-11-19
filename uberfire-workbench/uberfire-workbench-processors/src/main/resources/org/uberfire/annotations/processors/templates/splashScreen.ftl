@@ -35,6 +35,7 @@ import org.uberfire.client.mvp.UberView;
 </#if>
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractSplashScreenActivity;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
 import javax.inject.Named;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
@@ -71,8 +72,8 @@ public class ${className} extends AbstractSplashScreenActivity {
 
     @Inject
     //Constructor injection for testing
-    public ${className}(final PlaceManager placeManager) {
-        super( placeManager );
+    public ${className}( final PlaceManager placeManager, final SplashView view ) {
+        super( placeManager, view );
     }
 
     <#if hasUberView>

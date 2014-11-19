@@ -65,6 +65,7 @@
 
     <version.com.google.gwt>2.5.1</version.com.google.gwt>
     <version.com.github.gwtbootstrap>2.2.1.0</version.com.github.gwtbootstrap>
+    <version.org.gwtbootstrap3>0.8.1</version.org.gwtbootstrap3>
     <version.com.allen-sauer.gwt.dnd>3.1.2</version.com.allen-sauer.gwt.dnd>
     <version.com.google.guava>14.0.1</version.com.google.guava>
 
@@ -497,11 +498,18 @@
         <version>${version.org.jboss.spec.javax.ejb.3.1}</version>
       </dependency>
 
-      <!-- Bootstrap -->
+      <!-- Bootstrap 2 (NOTE: you can't use this and Bootstrap 3 at the same time!) -->
       <dependency>
         <groupId>com.github.gwtbootstrap</groupId>
         <artifactId>gwt-bootstrap</artifactId>
         <version>${version.com.github.gwtbootstrap}</version>
+      </dependency>
+
+      <!-- Bootstrap 3 (NOTE: you can't use this and Bootstrap 2 at the same time!) -->
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3</artifactId>
+        <version>${version.org.gwtbootstrap3}</version>
       </dependency>
 
       <!-- GWT and GWT Extensions -->

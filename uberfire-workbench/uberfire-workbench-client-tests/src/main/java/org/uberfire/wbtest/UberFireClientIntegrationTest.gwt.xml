@@ -4,6 +4,8 @@
 <module rename-to="UberFireClientIntegrationTest">
 
   <inherits name="org.uberfire.UberfireClient"/>
+  <inherits name="org.uberfire.client.views.PatternFly"/>
+
   <source path='client'/>
 
   <!-- Enable ensureDebugId() -->

@@ -24,6 +24,7 @@ import javax.inject.Named;
 
 import org.uberfire.client.mvp.IsSplashScreen;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.wbtest.client.api.AbstractTestSplashScreenActivity;
 import org.uberfire.workbench.model.SplashScreenFilter;
@@ -40,8 +41,9 @@ public class SplashyPerspectiveSplashScreen extends AbstractTestSplashScreenActi
     Label view = new Label( "I am splash screen. Who are you?" );
 
     @Inject
-    public SplashyPerspectiveSplashScreen( final PlaceManager placeManager ) {
-        super( placeManager );
+    public SplashyPerspectiveSplashScreen( final PlaceManager placeManager,
+                                           final SplashView view ) {
+        super( placeManager, view );
     }
 
     @Override

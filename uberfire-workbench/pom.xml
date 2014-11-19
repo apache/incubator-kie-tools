@@ -32,6 +32,8 @@
   <modules>
     <module>uberfire-workbench-client</module>
     <module>uberfire-workbench-client-backend</module>
+    <module>uberfire-workbench-client-views-bs2</module>
+    <module>uberfire-workbench-client-views-patternfly</module>
     <module>uberfire-workbench-processors</module>
     <module>uberfire-workbench-processors-tests</module>
 <!--    <module>uberfire-workbench-client-tests</module>-->

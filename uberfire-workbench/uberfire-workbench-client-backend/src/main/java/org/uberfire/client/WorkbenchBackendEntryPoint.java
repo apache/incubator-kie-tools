@@ -23,14 +23,18 @@ import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.bus.client.api.TransportError;
 import org.jboss.errai.bus.client.api.TransportErrorHandler;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.uberfire.client.workbench.widgets.common.ErrorPopup;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.Commands;
 
 @EntryPoint
 public class WorkbenchBackendEntryPoint {
 
     @Inject
     private ClientMessageBus bus;
+
+    @Inject
+    private ErrorPopupPresenter errorPopupPresenter;
 
     private boolean askRefresh = false;
 
@@ -48,7 +52,9 @@ public class WorkbenchBackendEntryPoint {
                 }
                 if ( error != null && error.getStatusCode() > 400 && error.getStatusCode() < 500 ) {
                     askRefresh = true;
-                    ErrorPopup.showMessage( "You've been disconnected, click OK to refresh application.", null, new Command() {
+                    errorPopupPresenter.showMessage( "You've been disconnected. Click OK to refresh the application.",
+                                                     Commands.DO_NOTHING,
+                                                     new Command() {
                         @Override
                         public void execute() {
                             forceReload();

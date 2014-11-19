@@ -1,5 +1,8 @@
 package org.uberfire.workbench.model.menu.impl;
 
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,11 +19,10 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
+import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuPosition;
+import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
-
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  *
@@ -60,6 +62,7 @@ public final class MenuBuilderImpl
             menuRawItems.push( element );
         }
 
+        @Override
         public MenuItem build() {
             if ( menu != null ) {
                 return menu;
@@ -134,6 +137,16 @@ public final class MenuBuilderImpl
                         return emptyList();
                     }
 
+                    @Override
+                    public void accept( MenuVisitor visitor ) {
+                        if ( visitor.visitEnter( this ) ) {
+                            for ( MenuItem child : getItems() ) {
+                                child.accept( visitor );
+                            }
+                            visitor.visitLeave( this );
+                        }
+                    }
+
                     private void notifyListeners( final boolean enabled ) {
                         for ( final EnabledStateChangeListener listener : enabledStateChangeListeners ) {
                             listener.enabledStateChanged( enabled );
@@ -148,7 +161,7 @@ public final class MenuBuilderImpl
 
                     @Override
                     public Command getCommand() {
-                        return command;  //To change body of implemented methods use File | Settings | File Templates.
+                        return command;
                     }
 
                     @Override
@@ -206,6 +219,11 @@ public final class MenuBuilderImpl
                         return emptyList();
                     }
 
+                    @Override
+                    public void accept( MenuVisitor visitor ) {
+                        visitor.visit( this );
+                    }
+
                     private void notifyListeners( final boolean enabled ) {
                         for ( final EnabledStateChangeListener listener : enabledStateChangeListeners ) {
                             listener.enabledStateChanged( enabled );
@@ -213,7 +231,7 @@ public final class MenuBuilderImpl
                     }
                 };
             }
-            return new MenuItem() {
+            return new MenuItemPlain() {
 
                 private final List<EnabledStateChangeListener> enabledStateChangeListeners = new ArrayList<EnabledStateChangeListener>();
                 private boolean isEnabled = true;
@@ -271,6 +289,11 @@ public final class MenuBuilderImpl
                 @Override
                 public Collection<String> getTraits() {
                     return emptyList();
+                }
+
+                @Override
+                public void accept( MenuVisitor visitor ) {
+                    visitor.visit( this );
                 }
 
                 private void notifyListeners( final boolean enabled ) {
@@ -450,6 +473,16 @@ public final class MenuBuilderImpl
             @Override
             public List<MenuItem> getItems() {
                 return unmodifiableList( menuItems );
+            }
+
+            @Override
+            public void accept( MenuVisitor visitor ) {
+                if ( visitor.visitEnter( this ) ) {
+                    for ( MenuItem item : menuItems ) {
+                        item.accept( visitor );
+                    }
+                    visitor.visitLeave( this );
+                }
             }
 
             @Override

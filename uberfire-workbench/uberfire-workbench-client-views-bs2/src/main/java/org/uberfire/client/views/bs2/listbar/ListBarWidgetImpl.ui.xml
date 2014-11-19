@@ -1,0 +1,79 @@
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:tb="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:uf="urn:import:org.uberfire.client.workbench.widgets.listbar"
+             xmlns:ufm="urn:import:org.uberfire.client.views.bs2.maximize">
+
+  <ui:with field="res" type="org.uberfire.client.resources.WorkbenchResources"/>
+
+  <ui:style>
+    .title {
+      font-size: 18px;
+    }
+
+    .better_margin {
+      padding-right: 10px;
+    }
+
+    .pull-right {
+      float: right;
+    }
+
+    .inline {
+      display: inline;
+    }
+
+    .fill-parent {
+      position: relative;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </ui:style>
+
+  <uf:ResizeFocusPanel ui:field="container">
+    <g:FlowPanel styleName="{style.fill-parent}">
+      <g:FlowPanel styleName="{res.CSS.listbar}" ui:field="header">
+
+        <g:FlowPanel styleName="{style.pull-right} {style.better_margin}" ui:field="menuArea">
+          <g:FlowPanel styleName="{style.inline} {style.better_margin}" ui:field="contextMenu"/>
+          <tb:ButtonGroup ui:field="closeButtonContainer">
+            <tb:Button ui:field="closeButton" size="MINI" icon="REMOVE"/>
+          </tb:ButtonGroup>
+          <tb:ButtonGroup ui:field="dropdownCaretContainer">
+            <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
+          </tb:ButtonGroup>
+          <tb:ButtonGroup>
+            <ufm:MaximizeToggleButton ui:field="maximizeButton"/>
+          </tb:ButtonGroup>
+        </g:FlowPanel>
+
+        <g:FlowPanel styleName="{style.inline}">
+          <tb:Button ui:field="contextDisplay" size="MINI" icon="REORDER"/>
+          <g:SimplePanel styleName="{style.inline} {style.title}" ui:field="title"/>
+        </g:FlowPanel>
+
+      </g:FlowPanel>
+      <g:FlowPanel ui:field="content"/>
+    </g:FlowPanel>
+  </uf:ResizeFocusPanel>
+
+</ui:UiBinder> 

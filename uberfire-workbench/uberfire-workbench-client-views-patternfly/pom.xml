@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.uberfire</groupId>
+    <artifactId>uberfire-workbench</artifactId>
+    <version>0.7.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+  <packaging>jar</packaging>
+
+  <name>UberFire Workbench Client Views: PatternFly</name>
+  <description>UberFire Workbench Client Views: PatternFly</description>
+
+  <dependencies>
+    <!-- forcing this to come first because it contains customized/old versions of many popular
+         libraries that GWT's jUnit test system needs -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-ui</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+
+  <build>
+    <resources>
+      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+      </resource>
+      <!-- Include module descriptors from src/main/resources in order not to
+        break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>**/*.less</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${basedir}/${profile.testOutputDirectory}/</additionalClasspathElement>
+            <additionalClasspathElement>${basedir}/src/test/java/</additionalClasspathElement>
+          </additionalClasspathElements>
+          <useManifestOnlyJar>false</useManifestOnlyJar>
+          <forkMode>pertest</forkMode>
+          <!-- DO NOT REMOVE THE errai.ioc.experimental.infer_dependent_by_reachability 
+            flag or the testsuite WILL fail. -->
+          <argLine>-Xmx1500m -Derrai.devel.nocache=true -Dgwt.args='-testBeginTimeout 5' -Derrai.hosted_mode_testing=true -Derrai.ioc.experimental.infer_dependent_by_reachability=true -Dorg.jboss.errai.bus.do_long_poll=false</argLine>
+
+          <systemProperties>
+            <!-- Must disable long polling for automated tests to succeed -->
+            <property>
+              <name>errai.hosted_mode_testing</name>
+              <value>true</value>
+            </property>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>    
+  </build>
+
+</project>

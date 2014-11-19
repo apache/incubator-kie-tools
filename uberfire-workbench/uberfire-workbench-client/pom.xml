@@ -36,12 +36,12 @@
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.errai</groupId>
-      <artifactId>errai-cdi-client</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.github.gwtbootstrap</groupId>
-      <artifactId>gwt-bootstrap</artifactId>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
     </dependency>
     <dependency>
       <groupId>com.allen-sauer.gwt.dnd</groupId>

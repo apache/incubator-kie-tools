@@ -10,10 +10,10 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.wbtest.client.api.AbstractTestScreenActivity;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.google.common.collect.ImmutableMap;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;

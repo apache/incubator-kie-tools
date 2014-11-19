@@ -18,24 +18,23 @@ package org.uberfire.client.workbench.panels.impl;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.util.Layouts;
+import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
-import org.uberfire.client.workbench.widgets.panel.MaximizeToggleButton;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
-
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
 
 /**
  * Supertype for both the DnD and non-DnD simple workbench panel views.
  */
 public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelPresenter>
-extends AbstractDockingWorkbenchPanelView<P> {
+        extends AbstractDockingWorkbenchPanelView<P> {
 
     @Inject
     protected ListBarWidget listBar;
@@ -57,9 +56,9 @@ extends AbstractDockingWorkbenchPanelView<P> {
         addOnFocusHandler( listBar );
         addSelectionHandler( listBar );
         listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
-        Layouts.setToFillParent( listBar );
+        Layouts.setToFillParent( listBar.asWidget() );
 
-        final MaximizeToggleButton maximizeButton = listBar.getMaximizeButton();
+        final MaximizeToggleButtonPresenter maximizeButton = listBar.getMaximizeButton();
         maximizeButton.setVisible( true );
         maximizeButton.setMaximizeCommand( new Command() {
             @Override
@@ -140,10 +139,10 @@ extends AbstractDockingWorkbenchPanelView<P> {
         super.unmaximize();
         listBar.getMaximizeButton().setMaximized( false );
     }
-    
+
     @Override
     public void setElementId( String elementId ) {
         super.setElementId( elementId );
-        listBar.getMaximizeButton().ensureDebugId( elementId + "-maximizeButton" );
+        listBar.getMaximizeButton().getView().asWidget().ensureDebugId( elementId + "-maximizeButton" );
     }
 }

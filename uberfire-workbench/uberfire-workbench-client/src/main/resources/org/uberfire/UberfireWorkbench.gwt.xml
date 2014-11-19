@@ -12,8 +12,6 @@
   <!-- inherit css based theme -->
   <inherits name='com.google.gwt.user.theme.clean.Clean'/>
 
-  <inherits name="com.github.gwtbootstrap.Bootstrap"/>
-
   <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
 
@@ -36,10 +34,6 @@
   <source path='client'/>
   <source path='shared'/>
 
-  <replace-with class="org.uberfire.client.resources.UberFireConfigurator">
-    <when-type-is class="com.github.gwtbootstrap.client.ui.config.Configurator"/>
-  </replace-with>
-
   <replace-with class="org.uberfire.client.workbench.WorkbenchCloseHandlerImpl">
     <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler"/>
   </replace-with>
@@ -47,10 +41,5 @@
     <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler"/>
     <when-property-is name="user.agent" value="ie9"/>
   </replace-with>
-
-  <public path="client/resources">
-    <include name="**/css/font-*.*"/>
-    <include name="**/font/*.*"/>
-  </public>
 
 </module>

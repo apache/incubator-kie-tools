@@ -10,13 +10,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
-import org.uberfire.client.workbench.widgets.panel.MaximizeToggleButton;
 import org.uberfire.mvp.Command;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -30,15 +31,16 @@ public class SimpleWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelV
 
     @Mock Element listBarElement;
     @Mock Style listBarElementStyle;
-    @Mock MaximizeToggleButton maximizeButton;
+    @Mock MaximizeToggleButtonPresenter maximizeButton;
 
     // Not a @Mock or @GwtMock because we want to test the view.init() method
     private SimpleWorkbenchPanelPresenter presenter;
 
     @Before
     public void setup() {
-        when( listBar.asWidget() ).thenReturn( listBar );
-        when( listBar.getElement() ).thenReturn( listBarElement );
+        Widget listBarWidget = mock( Widget.class );
+        when( listBar.asWidget() ).thenReturn( listBarWidget );
+        when( listBarWidget.getElement() ).thenReturn( listBarElement );
         when( listBarElement.getStyle() ).thenReturn( listBarElementStyle );
 
         when( listBar.getMaximizeButton() ).thenReturn( maximizeButton );

@@ -4,7 +4,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.menu.MenuSplashList;
+import org.uberfire.client.menu.SplashScreenMenuPresenter;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.wbtest.client.api.AbstractTestScreenActivity;
@@ -22,7 +22,7 @@ public class SplashyScreen extends AbstractTestScreenActivity {
     private String debugId;
 
     @Inject
-    private MenuSplashList splashList;
+    private SplashScreenMenuPresenter splashList;
 
     @Inject
     public SplashyScreen( PlaceManager placeManager ) {
@@ -33,7 +33,7 @@ public class SplashyScreen extends AbstractTestScreenActivity {
     public void onStartup( PlaceRequest place ) {
         super.onStartup( place );
         debugId = place.getParameter( "debugId", "default" );
-        splashList.getElement().setId( "SplashyScreen-" + debugId + "-SplashList" );
+        splashList.asWidget().getElement().setId( "SplashyScreen-" + debugId + "-SplashList" );
         panel.getElement().setId( "SplashyScreen-" + debugId );
 
         label.setText( "Splashy screen " + debugId );

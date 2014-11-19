@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.wbtest.client.api.AbstractTestSplashScreenActivity;
 import org.uberfire.workbench.model.SplashScreenFilter;
@@ -24,8 +25,8 @@ public class BreakableSplashScreen extends AbstractTestSplashScreenActivity {
     private final Label widget = new Label( "Not started" );
 
     @Inject
-    public BreakableSplashScreen( PlaceManager placeManager ) {
-        super( placeManager );
+    public BreakableSplashScreen( PlaceManager placeManager, SplashView view ) {
+        super( placeManager, view );
     }
 
     @Override

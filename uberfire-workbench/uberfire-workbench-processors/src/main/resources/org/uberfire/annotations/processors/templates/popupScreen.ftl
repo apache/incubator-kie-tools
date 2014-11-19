@@ -31,6 +31,7 @@ import org.uberfire.client.mvp.UberView;
 </#if>
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractPopupActivity;
+import org.uberfire.client.workbench.widgets.popup.PopupView;
 import javax.inject.Named;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -68,8 +69,8 @@ public class ${className} extends AbstractPopupActivity {
 
     @Inject
     //Constructor injection for testing
-    public ${className}(final PlaceManager placeManager) {
-        super( placeManager );
+    public ${className}( final PlaceManager placeManager, final PopupView view ) {
+        super( placeManager, view );
     }
 
     <#if hasUberView>

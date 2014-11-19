@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
-import org.uberfire.client.workbench.widgets.notifications.NotificationPopupsManager;
+import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.NotificationEvent.NotificationType;
 
@@ -22,7 +22,7 @@ public class ActivityLifecycleErrorHandler {
     private Event<ActivityLifecycleError> lifecycleErrorEvent;
 
     @Inject
-    private NotificationPopupsManager notificationManager;
+    private NotificationManager notificationManager;
 
     /**
      * Becomes true when the error handling procedure is happening; reverts back to false when error handling is

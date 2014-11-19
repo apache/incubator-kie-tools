@@ -15,58 +15,45 @@
  */
 package org.uberfire.client.workbench.widgets.popup;
 
-import com.github.gwtbootstrap.client.ui.Modal;
-import com.github.gwtbootstrap.client.ui.event.HideEvent;
-import com.github.gwtbootstrap.client.ui.event.HideHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
+import org.uberfire.client.mvp.PopupActivity;
+
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Skeleton for popups
+ * API contract for the view container of {@link PopupActivity} activities. Implementations of this class must be
+ * Dependent-scoped CDI beans.
+ * <p>
+ * Each application must have exactly one implementation of this interface in the classpath at compile time. Normally
+ * this implementation will be part of a view module.
  */
-public class PopupView
-extends Composite
-implements HasCloseHandlers<PopupView> {
+public interface PopupView extends HasCloseHandlers<PopupView> {
 
-    final Modal modal = new Modal( true, true );
+    /**
+     * Sets the main content of this popup dialog, replacing any content that was previously set.
+     *
+     * @param widget the content to add. Must not be null.
+     */
+    public void setContent( final IsWidget widget );
 
-    public PopupView() {
-        final SimplePanel panel = new SimplePanel( modal );
+    /**
+     * Sets the title text for this popup's dialog. Usually, the view will put this in a large font above the
+     * main content.
+     *
+     * @param title The title text for the popup container.
+     */
+    public void setTitle( final String title );
 
-        initWidget( panel );
-    }
+    /**
+     * Makes this popup container (and the main content along with it) visible on the workbench. Has no effect if this
+     * popup is already visible.
+     */
+    public void show();
 
-    public void setContent( final IsWidget widget ) {
-        modal.add( widget );
-    }
-
-    @Override
-    public void setTitle( final String title ) {
-        modal.setTitle( title );
-    }
-
-    public void show() {
-        modal.show();
-        modal.addHideHandler( new HideHandler() {
-            @Override
-            public void onHide( final HideEvent hideEvent ) {
-                CloseEvent.fire( PopupView.this, PopupView.this, false );
-            }
-        } );
-    }
-
-    public void hide() {
-        modal.hide();
-    }
-
-    @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<PopupView> handler ) {
-        return addHandler( handler, CloseEvent.getType() );
-    }
+    /**
+     * Makes this popup container(and the main content along with it) invisible. Has no effect if the popup is not
+     * already showing.
+     */
+    public void hide();
 
 }

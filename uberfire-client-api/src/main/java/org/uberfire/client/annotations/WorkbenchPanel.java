@@ -55,7 +55,10 @@ public @interface WorkbenchPanel {
     String[] parts();
 
     /**
-     * TODO figure out the purpose of this flag.
+     * Makes this panel the first panel in the generated PerspectiveDefinition object. Some panel presenters may treat
+     * their first child panel specially (for example, by forwarding addPanel requests to it). If no panel within a
+     * perspective is explicitly marked as the default, a randomly selected panel will be first. It is an error to
+     * define more than one default panel in a perspective.
      */
     boolean isDefault() default false;
 

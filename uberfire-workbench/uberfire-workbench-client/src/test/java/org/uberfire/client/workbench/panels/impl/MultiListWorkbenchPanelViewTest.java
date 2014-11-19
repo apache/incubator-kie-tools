@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
-import org.uberfire.client.workbench.widgets.panel.MaximizeToggleButton;
 import org.uberfire.mvp.Command;
 
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -20,7 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 public class MultiListWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelViewTest {
 
     @Mock ListBarWidget listBar;
-    @Mock MaximizeToggleButton maximizeButton;
+    @Mock MaximizeToggleButtonPresenter maximizeButton;
     @Mock MultiListWorkbenchPanelPresenter presenter;
 
     @InjectMocks MultiListWorkbenchPanelView view;

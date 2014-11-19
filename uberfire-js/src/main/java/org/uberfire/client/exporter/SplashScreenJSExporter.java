@@ -11,6 +11,7 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.splash.JSNativeSplashScreen;
 import org.uberfire.client.splash.JSSplashScreenActivity;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
 
 import static org.jboss.errai.ioc.client.QualifierUtil.*;
 
@@ -36,7 +37,10 @@ public class SplashScreenJSExporter implements UberfireJSExporter {
             final JSNativeSplashScreen newNativePlugin = beanManager.lookupBean( JSNativeSplashScreen.class ).getInstance();
             newNativePlugin.build( obj );
 
-            final JSSplashScreenActivity activity = new JSSplashScreenActivity( newNativePlugin );
+            final SplashView splashView = beanManager.lookupBean( SplashView.class ).getInstance();
+
+            final JSSplashScreenActivity activity = new JSSplashScreenActivity( newNativePlugin,
+                                                                                splashView );
 
             ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) Activity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );
             ( (SyncBeanManagerImpl) beanManager ).addBean( (Class) SplashScreenActivity.class, JSSplashScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, newNativePlugin.getId(), true, null );

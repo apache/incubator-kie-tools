@@ -15,6 +15,8 @@
  */
 package org.uberfire.client.mvp;
 
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -37,14 +39,16 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     @Inject
     private WorkbenchServicesProxy wbServices;
 
-    private final SplashView splash = new SplashView();
+    private final SplashView splash;
 
     private Boolean showAgain;
     private SplashScreenFilter splashFilter;
 
     @Inject
-    public AbstractSplashScreenActivity( final PlaceManager placeManager ) {
+    public AbstractSplashScreenActivity( final PlaceManager placeManager,
+                                         final SplashView splash ) {
         super( placeManager );
+        this.splash = checkNotNull( "splash", splash );
     }
 
     @PostConstruct

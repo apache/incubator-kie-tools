@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.ProvidesResize;
 import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -190,4 +191,29 @@ public class Layouts {
         return def.getWidth() == null ? DEFAULT_CHILD_SIZE : def.getWidth();
     }
 
+    /**
+     * Disables the scrolling behaviour of the nearest scrollpanel found in the given widget's containment hierarchy.
+     * <p>
+     * FIXME this is a really horrible workaround! should instead modify UF API to allow PanelDefinition to opt out of having a scroll panel.
+     * The better fix would require changes to:
+     * <ul>
+     *  <li>WorkbenchPartPresenter.View
+     *  <li>WorkbenchPartView and its mock
+     *  <li>The @WorkbenchPanel annotation
+     *  <li>The annotation processor code generators and their tests
+     * </ul>
+     *
+     * @return true if a scroll panel was found and disabled; false if no scroll panel was found.
+     */
+    public static boolean disableNearestScrollPanel( Widget w ) {
+        while ( w != null ) {
+            if ( w instanceof ScrollPanel ) {
+                w.getElement().getStyle().clearOverflow();
+                w.getElement().getParentElement().getStyle().clearOverflow();
+                return true;
+            }
+            w = w.getParent();
+        }
+        return false;
+    }
 }

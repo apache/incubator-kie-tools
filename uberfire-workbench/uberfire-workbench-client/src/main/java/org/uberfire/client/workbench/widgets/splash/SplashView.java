@@ -15,91 +15,57 @@
  */
 package org.uberfire.client.workbench.widgets.splash;
 
-import org.uberfire.client.workbench.widgets.common.Modal;
-import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.client.mvp.SplashScreenActivity;
 
-import com.github.gwtbootstrap.client.ui.base.DivWidget;
-import com.github.gwtbootstrap.client.ui.event.HideEvent;
-import com.github.gwtbootstrap.client.ui.event.HideHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * Skeleton for splash screen
+ * API Contract for the view container of {@link SplashScreenActivity} activities.
  */
-public class SplashView
-        extends Composite
-        implements HasCloseHandlers<SplashView> {
+public interface SplashView extends HasCloseHandlers<SplashView> {
 
-    private Boolean showAgain = null;
-
-    private final Modal modal = getModal();
-
-    Modal getModal() {
-        return new Modal( true, true );
-    }
-
-    final SplashModalFooter footer = new SplashModalFooter( new ParameterizedCommand<Boolean>() {
-        @Override
-        public void execute( final Boolean parameter ) {
-            showAgain = parameter;
-            hide();
-        }
-    } );
-
-    public SplashView() {
-        modal.addHideHandler( createHideHandler() );
-
-        final SimplePanel panel = new SimplePanel( modal );
-        initWidget( panel );
-    }
-
+    /**
+     * Sets the contents for this splash screen view, replacing any contents that were there already.
+     *
+     * @param widget
+     *            The widget to display in the body area of the splash screen dialog.
+     * @param height
+     *            The height to give the content area in the splash screen dialog.
+     */
     public void setContent( final IsWidget widget,
-                            final Integer height ) {
-        showAgain = null;
-        modal.add( widget );
-        modal.add( footer );
-        if ( height != null ) {
-            modal.setBodyHeigth( height );
-        }
-    }
+                            final Integer height );
 
-    @Override
-    public void setTitle( final String title ) {
-        modal.setTitle( title );
-    }
+    /**
+     * Sets the title text for this splash screen's popup. Usually, the view will put this in a large font above the
+     * main content.
+     *
+     * @param title The title text for the splash screen's popup container.
+     */
+    public void setTitle( final String title );
 
-    public Boolean showAgain() {
-        return showAgain;
-    }
+    /**
+     * Returns true if the user has indicated that they want to see this splash screen next time its interceptor says it
+     * should be displayed.
+     *
+     * @return true if the user has indicated that they want to see this splash screen next time it could be displayed;
+     *         false if the user has indicated they do not want to see this splash screen next time; null if the user
+     *         has not yet made a decision either way. The framework will keep the existing "show again" preference if
+     *         this method returns null.
+     */
+    public Boolean showAgain();
 
-    public void show() {
-        modal.show();
-    }
+    /**
+     * Makes this splash screen container (and the main content along with it) visible on the workbench. Has no effect
+     * if this splash screen is already visible.
+     */
+    public void show();
 
-    private HideHandler createHideHandler() {
-        return new HideHandler() {
-            @Override
-            public void onHide( final HideEvent hideEvent ) {
-                showAgain = footer.getShowAgain();
-                CloseEvent.fire( SplashView.this, SplashView.this, false );
-                ( (DivWidget) modal.getWidget( 1 ) ).clear();
-            }
-        };
-    }
+    /**
+     * Makes this splash screen container(and the main content along with it) invisible. Has no effect if the splash
+     * screen is not already showing.
+     */
+    public void hide();
 
-    public void hide() {
-        modal.hide();
-    }
-
-    @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<SplashView> handler ) {
-        return addHandler( handler, CloseEvent.getType() );
-    }
-
+    public boolean isAttached();
 }
