@@ -482,4 +482,18 @@ public class GuidedRuleEditorValidatorTest {
 
         verify( constants ).AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
     }
+
+    @Test
+    public void testMissingFactTypeInFromCollect() throws Exception {
+
+        FromCollectCompositeFactPattern fromCompositeFactPattern = new FromCollectCompositeFactPattern();
+        fromCompositeFactPattern.setRightPattern(new FactPattern("Person"));
+        model.lhs = new IPattern[]{ fromCompositeFactPattern };
+
+        assertFalse( validator.isValid() );
+        assertEquals( 1, validator.getErrors().size() );
+        assertEquals( MISSING_FACT_PATTERN, validator.getErrors().get( 0 ) );
+
+        verify( constants ).AreasMarkedWithRedAreMandatoryPleaseSetAValueBeforeSaving();
+    }
 }

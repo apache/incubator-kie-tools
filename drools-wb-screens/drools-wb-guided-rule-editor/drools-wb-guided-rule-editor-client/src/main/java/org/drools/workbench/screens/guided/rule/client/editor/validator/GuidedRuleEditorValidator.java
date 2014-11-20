@@ -111,6 +111,8 @@ public class GuidedRuleEditorValidator {
 
         if (fromCollectCompositeFactPattern.getRightPattern() == null) {
             reportMandatoryFieldsError();
+        } else if (fromCollectCompositeFactPattern.getFactPattern() == null){
+            reportMandatoryFieldsError();
         } else {
             validateIPattern(fromCollectCompositeFactPattern.getRightPattern());
         }
