@@ -232,14 +232,9 @@ public class GuidedRuleTemplateEditorServiceImpl
     }
 
     @Override
-    public String toSource( final Path path,
-                            final TemplateModel model ) {
-        try {
-            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+    public String toSource(final Path path,
+                           final TemplateModel model) {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path), model);
     }
 
     @Override

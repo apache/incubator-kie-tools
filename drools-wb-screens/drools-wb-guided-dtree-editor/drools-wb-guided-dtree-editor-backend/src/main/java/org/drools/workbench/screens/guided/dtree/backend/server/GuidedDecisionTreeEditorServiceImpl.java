@@ -267,15 +267,10 @@ public class GuidedDecisionTreeEditorServiceImpl extends KieService implements G
     }
 
     @Override
-    public String toSource( final Path path,
-                            final GuidedDecisionTree model ) {
-        try {
-            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
-                                                                                    model );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+    public String toSource(final Path path,
+                           final GuidedDecisionTree model) {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
+                model);
     }
 
     @Override

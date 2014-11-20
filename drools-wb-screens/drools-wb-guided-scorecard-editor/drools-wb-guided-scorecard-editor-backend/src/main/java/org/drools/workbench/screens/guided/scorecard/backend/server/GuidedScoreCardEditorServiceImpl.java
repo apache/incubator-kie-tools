@@ -38,9 +38,8 @@ import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.source.SourceGenerationFailedException;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -217,13 +216,9 @@ public class GuidedScoreCardEditorServiceImpl
         }
     }
 
-    private String toDRL( final Path path,
-                          final ScoreCardModel model ) {
-        try {
-            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
-        } catch (SourceGenerationFailedException e) {
-            throw ExceptionUtilities.handleException( e );
-        }
+    private String toDRL(final Path path,
+                         final ScoreCardModel model) throws SourceGenerationFailedException {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path), model);
     }
 
     private String toValidationErrors( final List<ValidationMessage> results ) {

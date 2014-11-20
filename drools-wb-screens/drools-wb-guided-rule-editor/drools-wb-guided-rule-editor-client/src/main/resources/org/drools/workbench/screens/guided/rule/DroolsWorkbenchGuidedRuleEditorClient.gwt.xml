@@ -29,7 +29,6 @@
 
   <inherits name="org.guvnor.common.services.GuvnorServicesAPI"/>
 
-  <inherits name="org.kie.workbench.common.widgets.viewsource.KieWorkbenchViewSourceWidget"/>
   <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
 

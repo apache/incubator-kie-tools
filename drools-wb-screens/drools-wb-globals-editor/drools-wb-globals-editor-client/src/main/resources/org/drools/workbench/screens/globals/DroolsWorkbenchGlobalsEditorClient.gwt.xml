@@ -20,7 +20,6 @@
 <module>
 
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
-  <inherits name="org.kie.workbench.common.widgets.viewsource.KieWorkbenchViewSourceWidget"/>
   <inherits name="org.kie.workbench.common.widgets.metadata.KieWorkbenchMetadataWidget"/>
   <inherits name="org.kie.workbench.common.widgets.configresource.KieWorkbenchConfigResourceWidget"/>
 

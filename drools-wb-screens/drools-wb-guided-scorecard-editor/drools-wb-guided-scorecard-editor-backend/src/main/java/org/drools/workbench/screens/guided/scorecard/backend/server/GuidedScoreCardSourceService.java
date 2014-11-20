@@ -23,6 +23,7 @@ import org.drools.workbench.models.guided.scorecard.backend.GuidedScoreCardDRLPe
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEditorService;
 import org.drools.workbench.screens.guided.scorecard.type.GuidedScoreCardResourceTypeDefinition;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
@@ -43,15 +44,20 @@ public class GuidedScoreCardSourceService
     }
 
     @Override
-    public String getSource( final Path path,
-                             final ScoreCardModel model ) {
-        return new StringBuilder().append( GuidedScoreCardDRLPersistence.marshal( model ) ).toString();
+    public String getSource(final Path path,
+                            final ScoreCardModel model) throws SourceGenerationFailedException {
+        try {
+
+            return new StringBuilder().append(GuidedScoreCardDRLPersistence.marshal(model)).toString();
+        } catch (Exception e) {
+            throw new SourceGenerationFailedException(e.getMessage());
+        }
     }
 
     @Override
-    public String getSource( final Path path ) {
-        return getSource( path,
-                          guidedScoreCardEditorService.load( Paths.convert( path ) ) );
+    public String getSource(final Path path) throws SourceGenerationFailedException {
+        return getSource(path,
+                guidedScoreCardEditorService.load(Paths.convert(path)));
     }
 
 }

@@ -23,6 +23,7 @@ import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceI
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
@@ -44,12 +45,16 @@ public class GuidedRuleDRLSourceService
 
     @Override
     public String getSource( final Path path,
-                             final RuleModel model ) {
-        return new StringBuilder().append( RuleModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
+                             final RuleModel model ) throws SourceGenerationFailedException {
+        try{
+            return new StringBuilder().append( RuleModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
+        }catch (Exception e){
+            throw new SourceGenerationFailedException(e.getMessage());
+        }
     }
 
     @Override
-    public String getSource( final Path path ) {
+    public String getSource( final Path path ) throws SourceGenerationFailedException {
         return getSource( path,
                           guidedRuleEditorService.load( Paths.convert( path ) ) );
     }

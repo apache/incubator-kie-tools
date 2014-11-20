@@ -23,6 +23,7 @@ import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
@@ -43,13 +44,17 @@ public class GuidedDecisionTableSourceService
     }
 
     @Override
-    public String getSource( final Path path,
-                             final GuidedDecisionTable52 model ) {
-        return new StringBuilder().append( GuidedDTDRLPersistence.getInstance().marshal( model ) ).toString();
+    public String getSource(final Path path,
+                            final GuidedDecisionTable52 model) throws SourceGenerationFailedException {
+        try {
+            return new StringBuilder().append(GuidedDTDRLPersistence.getInstance().marshal(model)).toString();
+        } catch (Exception e) {
+            throw new SourceGenerationFailedException(e.getMessage());
+        }
     }
 
     @Override
-    public String getSource( final Path path ) {
+    public String getSource( final Path path ) throws SourceGenerationFailedException {
         return getSource( path,
                           guidedDecisionTableEditorService.load( Paths.convert( path ) ) );
     }

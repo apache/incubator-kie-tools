@@ -133,21 +133,12 @@ public class EnumServiceImpl extends KieService implements EnumService {
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            String text = load( path );
-            return new EnumModelContent( new EnumModel( text ),
-                                         loadOverview( path,
-                                                       text ) );
+            return new EnumModelContent( new EnumModel( load( path ) ),
+                                         loadOverview( path ) );
 
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private Overview loadOverview( final Path path,
-                                   final String text ) {
-        final Overview overview = super.loadOverview( path );
-        overview.setPreview( text );
-        return overview;
     }
 
     @Override

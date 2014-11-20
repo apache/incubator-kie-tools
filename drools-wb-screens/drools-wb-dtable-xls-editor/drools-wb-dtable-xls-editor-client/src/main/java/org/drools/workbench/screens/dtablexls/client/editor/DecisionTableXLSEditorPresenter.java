@@ -102,12 +102,15 @@ public class DecisionTableXLSEditorPresenter
 
     @Override
     protected void onSourceTabSelected() {
-        decisionTableXLSService.call( new RemoteCallback<String>() {
-            @Override
-            public void callback( String source ) {
-                updateSource( source );
-            }
-        } ).getSource( versionRecordManager.getCurrentPath() );
+        decisionTableXLSService.call(
+                new RemoteCallback<String>() {
+                    @Override
+                    public void callback(String source) {
+                        updateSource(source);
+                    }
+                },
+                getCouldNotGenerateSourceErrorCallback()
+        ).getSource(versionRecordManager.getCurrentPath());
     }
 
     @Override

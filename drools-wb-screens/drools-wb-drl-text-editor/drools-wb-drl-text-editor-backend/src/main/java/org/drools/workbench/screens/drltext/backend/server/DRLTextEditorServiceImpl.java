@@ -151,7 +151,6 @@ public class DRLTextEditorServiceImpl extends KieService implements DRLTextEdito
     @Override
     public DrlModelContent loadContent( final Path path ) {
         try {
-            final String drl = load( path );
             final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
             final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
             final List<DSLSentence> dslConditions = oracle.getPackageDslConditionSentences();
@@ -161,9 +160,8 @@ public class DRLTextEditorServiceImpl extends KieService implements DRLTextEdito
             resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
                                                                sessionInfo ) );
 
-            return new DrlModelContent( drl,
-                                        loadOverview( path,
-                                                      drl ),
+            return new DrlModelContent( load( path ),
+                                        loadOverview( path ),
                                         Arrays.asList( fullyQualifiedClassNames ),
                                         dslConditions,
                                         dslActions );
@@ -171,13 +169,6 @@ public class DRLTextEditorServiceImpl extends KieService implements DRLTextEdito
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }
-    }
-
-    private Overview loadOverview( final Path path,
-                                   final String drl ) {
-        final Overview overview = super.loadOverview( path );
-        overview.setPreview( drl );
-        return overview;
     }
 
     @Override

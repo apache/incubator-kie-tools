@@ -221,15 +221,10 @@ public class GlobalsEditorServiceImpl extends KieService implements GlobalsEdito
     }
 
     @Override
-    public String toSource( final Path path,
-                            final GlobalsModel model ) {
-        try {
-            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
-                                                                                    GlobalsPersistence.getInstance().marshal( model ) );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+    public String toSource(final Path path,
+                           final GlobalsModel model) {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
+                GlobalsPersistence.getInstance().marshal(model));
     }
 
     @Override

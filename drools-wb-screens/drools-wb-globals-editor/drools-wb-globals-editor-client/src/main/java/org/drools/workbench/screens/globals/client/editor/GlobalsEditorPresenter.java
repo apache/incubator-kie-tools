@@ -141,13 +141,13 @@ public class GlobalsEditorPresenter
 
     @Override
     protected void onSourceTabSelected() {
-        globalsEditorService.call( new RemoteCallback<String>() {
+        globalsEditorService.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String source ) {
-                updateSource( source );
+            public void callback(String source) {
+                updateSource(source);
             }
-        } ).toSource( versionRecordManager.getCurrentPath(),
-                      model );
+        }).toSource(versionRecordManager.getCurrentPath(),
+                model);
     }
 
     @WorkbenchPartView

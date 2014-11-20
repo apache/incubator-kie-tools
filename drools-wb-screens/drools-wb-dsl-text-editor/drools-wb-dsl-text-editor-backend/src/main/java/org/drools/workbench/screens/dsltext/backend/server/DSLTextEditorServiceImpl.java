@@ -122,17 +122,8 @@ public class DSLTextEditorServiceImpl extends KieService implements DSLTextEdito
 
     @Override
     public DSLTextEditorContent loadContent( final Path path ) {
-        String dsl = load( path );
-        return new DSLTextEditorContent( dsl,
-                                         loadOverview( path,
-                                                       dsl ) );
-    }
-
-    private Overview loadOverview( final Path path,
-                                   final String dsl ) {
-        final Overview overview = super.loadOverview( path );
-        overview.setPreview( dsl );
-        return overview;
+        return new DSLTextEditorContent( load( path ),
+                                         loadOverview( path ) );
     }
 
     @Override

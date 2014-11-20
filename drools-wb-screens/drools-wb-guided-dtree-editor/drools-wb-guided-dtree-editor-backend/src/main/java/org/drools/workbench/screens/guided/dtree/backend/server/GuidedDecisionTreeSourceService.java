@@ -24,6 +24,7 @@ import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.service.GuidedDecisionTreeEditorService;
 import org.drools.workbench.screens.guided.dtree.type.GuidedDTreeResourceTypeDefinition;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
 
@@ -44,18 +45,16 @@ public class GuidedDecisionTreeSourceService
 
     @Override
     public String getSource( final Path path,
-                             final GuidedDecisionTree model ) {
+                             final GuidedDecisionTree model ) throws SourceGenerationFailedException {
         try {
             return new StringBuilder().append( GuidedDecisionTreeDRLPersistence.getInstance().marshal( model ) ).toString();
-
-        } catch ( Exception e ) {
-            System.out.println( e.getMessage() );
+        } catch (Exception e) {
+            throw new SourceGenerationFailedException(e.getMessage());
         }
-        return "An error occurred please see the server log.";
     }
 
     @Override
-    public String getSource( final Path path ) {
+    public String getSource( final Path path ) throws SourceGenerationFailedException {
         return getSource( path,
                           guidedDecisionTreeEditorService.load( Paths.convert( path ) ) );
     }

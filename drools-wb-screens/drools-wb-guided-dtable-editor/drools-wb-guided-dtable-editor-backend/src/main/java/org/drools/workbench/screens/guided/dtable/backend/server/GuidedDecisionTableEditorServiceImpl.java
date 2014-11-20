@@ -44,7 +44,6 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.DSLRFileFilter;
@@ -52,7 +51,6 @@ import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
@@ -266,17 +264,9 @@ public class GuidedDecisionTableEditorServiceImpl extends KieService implements 
     }
 
     @Override
-    public String toSource( final Path path,
-                            final GuidedDecisionTable52 model ) {
-        try {
-            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ),
-                                                                                    model );
-
-        } catch ( SourceGenerationFailedException e ) {
-            return "Could not generate the source.";
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+    public String toSource(final Path path,
+                           final GuidedDecisionTable52 model) {
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path), model);
     }
 
     @Override

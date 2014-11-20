@@ -50,7 +50,6 @@ import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
 import org.kie.workbench.common.services.backend.file.RDRLFileFilter;
 import org.kie.workbench.common.services.backend.file.RDSLRFileFilter;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -293,14 +292,10 @@ public class GuidedRuleEditorServiceImpl
         }
     }
 
-    private String toSourceExpanded( final Path path,
-                                     final RuleModel model ) {
+    private String toSourceExpanded(final Path path,
+                                    final RuleModel model) {
         //This returns the expanded Source as used in "View Source" within the UI.
-        try {
-            return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path), model);
     }
 
     private String toSourceUnexpanded( final Path path,
