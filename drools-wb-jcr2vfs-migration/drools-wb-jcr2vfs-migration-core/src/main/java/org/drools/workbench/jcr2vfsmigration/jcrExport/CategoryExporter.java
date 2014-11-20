@@ -16,11 +16,16 @@
 package org.drools.workbench.jcr2vfsmigration.jcrExport;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.RepositoryCategoryService;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.xml.format.CategoriesXmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Categories;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,65 +44,30 @@ public class CategoryExporter {
     @Inject
     FileManager fileManager;
 
+    CategoriesXmlFormat categoriesXmlFormat = new CategoriesXmlFormat();
+
     public void exportAll() {
         System.out.println( "  Category export started" );
 
+        StringBuilder xml = new StringBuilder();
+        categoriesXmlFormat.format( xml, export( "/" ) );
+
         PrintWriter pw = fileManager.createCategoryExportFileWriter();
-        pw.println( "<" + CATEGORIES + ">" );
-
-        export( "/", pw, 1 );
-
-        pw.println( "</" + CATEGORIES + ">" );
+        pw.print( xml.toString() );
         pw.close();
 
         System.out.println( "  Category export ended" );
     }
 
-//    private void _export() {
-//        StringWriter stringWriter = new StringWriter(  );
-//        Categories categories = new Categories();
-//
-//        List<Category> lCat = new ArrayList<Category>( 5 );
-//
-//        Category category = new Category();
-//        category.setName( "head1" );
-//        lCat.add( category );
-//        category = new Category();
-//        category.setName( "head2" );
-//        lCat.add( category );
-//        category = new Category();
-//        category.setName( "head3withsub" );
-//        Categories subcat = new Categories();
-//        List<Category> lCatsub = new ArrayList<Category>( 5 );
-//        Category subcategory = new Category();
-//        subcategory.setName( "sub1" );
-//        lCatsub.add( subcategory );
-//        subcat.setCategoryList( lCatsub );
-//        category.setCategories( subcat );
-//
-//        lCat.add( category );
-//        categories.setCategoryList( lCat );
-//
-//        xmlWriter.categoriesToXml( categories, stringWriter );
-//        System.out.println(stringWriter.toString());
-//    }
-
-    private void export( String category, PrintWriter pw, int indent ) {
+    private Categories export( String category ) {
         String[] categories = jcrRepositoryCategoryService.loadChildCategories( category );
+        Collection<Category> cCategories = new ArrayList<Category>( categories.length );
 
         for(String c : categories) {
-            printIndent( pw, indent++ );
-            pw.println( "<category " + CATEGORY_NAME + "=\"" + c + "\">" );
-            export( getCategoryPath( c, category ), pw, indent );
-            printIndent( pw, --indent );
-            pw.println( "</category>" );
+            Category _category = new Category( c, export( getCategoryPath( c, category ) ) );
+            cCategories.add( _category );
         }
-    }
-
-    private void printIndent(PrintWriter out, int indent) {
-        for (int i = 0; i < indent; i++) {
-            out.print("  ");
-        }
+        return new Categories( cCategories );
     }
 
     private String getCategoryPath(String categoryName, String parentPath) {

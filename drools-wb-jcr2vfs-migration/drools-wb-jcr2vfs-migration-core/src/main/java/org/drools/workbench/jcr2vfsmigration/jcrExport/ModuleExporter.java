@@ -16,12 +16,17 @@
 package org.drools.workbench.jcr2vfsmigration.jcrExport;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
+import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,48 +35,46 @@ public class ModuleExporter {
 
     protected static final Logger logger = LoggerFactory.getLogger( ModuleExporter.class );
 
-    public static final String GLOBAL_MODULE = "globalModule";
-    public static final String MODULE = "module";
-    public static final String MODULE_UUID = "moduleUUID";
-    public static final String MODULE_NAME = "moduleName";
-
     @Inject
     protected RepositoryModuleService jcrRepositoryModuleService;
 
     @Inject
     FileManager fileManager;
 
+    ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
+
     public void exportAll() {
 
         System.out.println( "  Module export started" );
-        Module globalModule = jcrRepositoryModuleService.loadGlobalModule();
-        Module[] jcrModules = jcrRepositoryModuleService.listModules();
+        org.drools.guvnor.client.rpc.Module jcrGlobalModule = jcrRepositoryModuleService.loadGlobalModule();
+        org.drools.guvnor.client.rpc.Module[] jcrModules = jcrRepositoryModuleService.listModules();
 
-        if ( globalModule == null && jcrModules.length == 0 ) {
+        if ( jcrGlobalModule == null && jcrModules.length == 0 ) {
             System.out.println( "  No modules to be exported" );
             return;
         }
 
-        PrintWriter pw = fileManager.createModuleExportFileWriter();
-        pw.println( "<modules>" );
-
-        for ( Module jcrModule : jcrModules ) {
-            export( MODULE, jcrModule, pw );
+        Collection<Module> normalModules = new ArrayList<Module>( 5 );
+        for ( org.drools.guvnor.client.rpc.Module jcrModule : jcrModules ) {
+            normalModules.add( export( ModuleType.NORMAL, jcrModule ) );
         }
 
-        export( GLOBAL_MODULE, globalModule, pw );
+        Module globalModule = export( ModuleType.GLOBAL, jcrGlobalModule );
 
-        pw.println( "</modules>" );
+        Modules modules = new Modules( globalModule, normalModules );
+
+        StringBuilder xml = new StringBuilder();
+        modulesXmlFormat.format( xml, modules );
+
+        PrintWriter pw = fileManager.createModuleExportFileWriter();
+        pw.print( xml.toString() );
         pw.close();
 
         System.out.println( "  Module export ended" );
     }
 
-    private void export( String moduleType, Module jcrModule, PrintWriter pw ) {
-        pw.println( "  <" + moduleType + ">" );
-        pw.println( "    <" + MODULE_UUID + ">" + jcrModule.getUuid() + "</" + MODULE_UUID + ">" );
-        pw.println( "    <" + MODULE_NAME + ">" + jcrModule.getName() + "</" + MODULE_NAME + ">" );
-        pw.println( "  </" + moduleType + ">" );
+    private Module export( ModuleType moduleType, org.drools.guvnor.client.rpc.Module jcrModule ) {
         System.out.format( "Module [%s] exported. %n", jcrModule.getName() );
+        return new Module( moduleType, jcrModule.getUuid(), jcrModule.getName() );
     }
 }
