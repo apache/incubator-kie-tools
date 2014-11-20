@@ -25,4 +25,32 @@ public class Media {
     public Path getPath() {
         return path;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof Media ) ) {
+            return false;
+        }
+
+        Media media = (Media) o;
+
+        if ( externalURI != null ? !externalURI.equals( media.externalURI ) : media.externalURI != null ) {
+            return false;
+        }
+        if ( path != null ? !path.equals( media.path ) : media.path != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = externalURI != null ? externalURI.hashCode() : 0;
+        result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        return result;
+    }
 }

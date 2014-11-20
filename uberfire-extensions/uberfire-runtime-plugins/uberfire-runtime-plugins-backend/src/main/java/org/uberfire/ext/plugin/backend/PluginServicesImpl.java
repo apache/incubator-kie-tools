@@ -338,7 +338,7 @@ public class PluginServicesImpl implements PluginServices {
             final Set<Media> result = new HashSet<Media>();
 
             for ( final Path path : stream ) {
-                result.add( new Media( "/" + getMediaServletURI() + pluginName + "/media/" + path.getFileName(), convert( path ) ) );
+                result.add( new Media( getMediaServletURI() + pluginName + "/media/" + path.getFileName(), convert( path ) ) );
             }
 
             return result;

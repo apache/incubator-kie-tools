@@ -135,7 +135,7 @@ public class PluginMediaServlet
 
                 writeFile( ioService, path, fileItem );
 
-                newMediaEvent.fire( new MediaAdded( pluginName.substring( 1 ), new Media( pattern + pluginName.substring( 1 ) + "/media/" + path.getFileName(), Paths.convert( path ) ) ) );
+                newMediaEvent.fire( new MediaAdded( pluginName.substring( 1 ), new Media( pattern.substring( 1 ) + pluginName.substring( 1 ) + "/media/" + path.getFileName(), Paths.convert( path ) ) ) );
 
                 writeResponse( response, "OK" );
             }
