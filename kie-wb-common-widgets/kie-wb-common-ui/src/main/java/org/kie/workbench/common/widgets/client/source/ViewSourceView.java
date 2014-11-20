@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.viewsource.client.screen;
+package org.kie.workbench.common.widgets.client.source;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;

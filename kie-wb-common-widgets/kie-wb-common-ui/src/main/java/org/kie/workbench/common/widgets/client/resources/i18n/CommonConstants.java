@@ -242,4 +242,6 @@ public interface CommonConstants
 
     String CommitMessage();
 
+    String FailedToGenerateSource();
+
 }

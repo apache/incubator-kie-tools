@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.widgets.viewsource.client.screen;
+package org.kie.workbench.common.widgets.client.source;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
-import org.kie.workbench.common.widgets.viewsource.client.widget.ViewDRLSourceWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 @Dependent

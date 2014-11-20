@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.services.backend.source.SourceGenerationFailedException;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.backend.source.SourceServices;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -62,9 +62,6 @@ public abstract class KieService {
             logger.warn( "No metadata found for file: " + path.getFileName() + ", full path [" + path.toString() + "]" );
         }
 
-        //Set source for preview, generated from a corresponding SourceService
-        overview.setPreview( getSource( path ) );
-
         //Some resources are not within a Project (e.g. categories.xml) so don't assume we can set the project name
         final KieProject project = projectService.resolveProject( path );
         if ( project == null ) {
@@ -76,15 +73,12 @@ public abstract class KieService {
         return overview;
     }
 
-    public String getSource( final Path path ) {
+    public String getSource( final Path path )
+            throws SourceGenerationFailedException {
         final org.uberfire.java.nio.file.Path convertedPath = Paths.convert( path );
 
         if ( sourceServices.hasServiceFor( convertedPath ) ) {
-            try {
-                return sourceServices.getServiceFor(convertedPath).getSource(convertedPath);
-            } catch (SourceGenerationFailedException e) {
-                return "Could not generate source for this file";
-            }
+            return sourceServices.getServiceFor(convertedPath).getSource(convertedPath);
         } else {
             return "";
         }

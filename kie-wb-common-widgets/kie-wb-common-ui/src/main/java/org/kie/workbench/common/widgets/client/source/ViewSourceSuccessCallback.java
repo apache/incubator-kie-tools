@@ -1,7 +1,7 @@
-package org.kie.workbench.common.widgets.viewsource.client.callbacks;
+package org.kie.workbench.common.widgets.client.source;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.widgets.viewsource.client.screen.ViewSourceView;
+import org.kie.workbench.common.widgets.client.source.ViewSourceView;
 
 /**
  * Callback to set the ViewSource Widgets content

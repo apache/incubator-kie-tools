@@ -21,7 +21,6 @@
     <module>kie-wb-config-resource-widget</module>
     <module>kie-wb-decorated-grid-widget</module>
     <module>kie-wb-metadata-widget</module>
-    <module>kie-wb-view-source-widget</module>
   </modules>
 
   <build>

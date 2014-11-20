@@ -34,7 +34,7 @@ import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileName
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
-import org.kie.workbench.common.widgets.viewsource.client.widget.ViewDRLSourceWidget;
+import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
@@ -177,6 +177,14 @@ public abstract class KieEditor {
                                                        baseView,
                                                        multiPage,
                                                        menus ).build()
+        );
+    }
+
+    protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
+        return new CommandDrivenErrorCallback( baseView,
+                                               new CommandBuilder().addSourceCodeGenerationFailedException(
+                                                       baseView,
+                                                       sourceWidget ).build()
         );
     }
 

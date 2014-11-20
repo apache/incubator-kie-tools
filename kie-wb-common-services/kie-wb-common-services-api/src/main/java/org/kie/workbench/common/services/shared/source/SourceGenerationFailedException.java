@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.services.backend.source;
+package org.kie.workbench.common.services.shared.source;
 
+import org.jboss.errai.common.client.api.annotations.Portable;
+
+@Portable
 public class SourceGenerationFailedException
-        extends Exception {
+        extends RuntimeException {
 
-    public SourceGenerationFailedException(Throwable cause) {
-        super(cause);
+    public SourceGenerationFailedException() {
+    }
+
+    public SourceGenerationFailedException(String message) {
+        super(message);
     }
 }

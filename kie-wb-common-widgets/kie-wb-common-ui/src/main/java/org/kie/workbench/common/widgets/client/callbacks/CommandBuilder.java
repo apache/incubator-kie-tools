@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -29,6 +31,7 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 /**
  * Utility class to build the Commands for CommandDrivenErrorCallback.
@@ -102,6 +105,22 @@ public class CommandBuilder {
                  }
              }
            );
+        return this;
+    }
+
+    public CommandBuilder addSourceCodeGenerationFailedException(final HasBusyIndicator view, final ViewDRLSourceWidget sourceWidget) {
+        add( SourceGenerationFailedException.class,
+                new Command() {
+
+                    @Override
+                    public void execute() {
+                        sourceWidget.clearContent();
+                        view.hideBusyIndicator();
+                        ErrorPopup.showMessage(CommonConstants.INSTANCE.FailedToGenerateSource());
+                    }
+
+                }
+        );
         return this;
     }
 
