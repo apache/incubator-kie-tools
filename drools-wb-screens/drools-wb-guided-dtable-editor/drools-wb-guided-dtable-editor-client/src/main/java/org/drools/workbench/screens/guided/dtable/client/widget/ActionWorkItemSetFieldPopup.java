@@ -41,6 +41,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
@@ -253,11 +254,19 @@ public class ActionWorkItemSetFieldPopup extends FormStylePopup {
         clone.setType( col.getType() );
         clone.setValueList( col.getValueList() );
         clone.setUpdate( col.isUpdate() );
-        clone.setDefaultValue( col.getDefaultValue() );
+        clone.setDefaultValue( cloneDTCellValue( col.getDefaultValue() ) );
         clone.setHideColumn( col.isHideColumn() );
         clone.setWorkItemName( col.getWorkItemName() );
         clone.setWorkItemResultParameterName( col.getWorkItemResultParameterName() );
         clone.setParameterClassName( col.getParameterClassName() );
+        return clone;
+    }
+
+    private DTCellValue52 cloneDTCellValue( DTCellValue52 dcv ) {
+        if ( dcv == null ) {
+            return null;
+        }
+        DTCellValue52 clone = new DTCellValue52( dcv );
         return clone;
     }
 

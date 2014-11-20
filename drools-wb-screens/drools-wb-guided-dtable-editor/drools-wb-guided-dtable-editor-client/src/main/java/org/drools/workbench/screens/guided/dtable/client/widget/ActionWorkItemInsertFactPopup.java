@@ -43,6 +43,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCo
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
@@ -256,12 +257,20 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         clone.setFactType( col.getFactType() );
         clone.setHeader( col.getHeader() );
         clone.setValueList( col.getValueList() );
-        clone.setDefaultValue( col.getDefaultValue() );
+        clone.setDefaultValue( cloneDTCellValue( col.getDefaultValue() ) );
         clone.setHideColumn( col.isHideColumn() );
         clone.setInsertLogical( col.isInsertLogical() );
         clone.setWorkItemName( col.getWorkItemName() );
         clone.setWorkItemResultParameterName( col.getWorkItemResultParameterName() );
         clone.setParameterClassName( col.getParameterClassName() );
+        return clone;
+    }
+
+    private DTCellValue52 cloneDTCellValue( DTCellValue52 dcv ) {
+        if ( dcv == null ) {
+            return null;
+        }
+        DTCellValue52 clone = new DTCellValue52( dcv );
         return clone;
     }
 

@@ -466,7 +466,7 @@ public class ConditionPopup extends FormStylePopup {
         ConditionCol52 clone = null;
         if ( col instanceof LimitedEntryConditionCol52 ) {
             clone = new LimitedEntryConditionCol52();
-            DTCellValue52 dcv = cloneLimitedEntryValue( ( (LimitedEntryCol) col ).getValue() );
+            DTCellValue52 dcv = cloneDTCellValue( ( (LimitedEntryCol) col ).getValue() );
             ( (LimitedEntryCol) clone ).setValue( dcv );
         } else {
             clone = new ConditionCol52();
@@ -477,7 +477,7 @@ public class ConditionPopup extends FormStylePopup {
         clone.setHeader( col.getHeader() );
         clone.setOperator( col.getOperator() );
         clone.setValueList( col.getValueList() );
-        clone.setDefaultValue( new DTCellValue52( col.getDefaultValue() ) );
+        clone.setDefaultValue( cloneDTCellValue( col.getDefaultValue() ) );
         clone.setHideColumn( col.isHideColumn() );
         clone.setParameters( col.getParameters() );
         clone.setWidth( col.getWidth() );
@@ -485,7 +485,7 @@ public class ConditionPopup extends FormStylePopup {
         return clone;
     }
 
-    private DTCellValue52 cloneLimitedEntryValue( DTCellValue52 dcv ) {
+    private DTCellValue52 cloneDTCellValue( DTCellValue52 dcv ) {
         if ( dcv == null ) {
             return null;
         }

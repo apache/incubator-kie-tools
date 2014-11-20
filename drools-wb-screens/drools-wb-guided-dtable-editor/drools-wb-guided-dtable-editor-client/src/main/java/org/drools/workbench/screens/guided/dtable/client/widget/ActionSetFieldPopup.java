@@ -296,7 +296,7 @@ public class ActionSetFieldPopup extends FormStylePopup {
         ActionSetFieldCol52 clone = null;
         if ( col instanceof LimitedEntryActionSetFieldCol52 ) {
             clone = new LimitedEntryActionSetFieldCol52();
-            DTCellValue52 dcv = cloneLimitedEntryValue( ( (LimitedEntryCol) col ).getValue() );
+            DTCellValue52 dcv = cloneDTCellValue( ( (LimitedEntryCol) col ).getValue() );
             ( (LimitedEntryCol) clone ).setValue( dcv );
         } else {
             clone = new ActionSetFieldCol52();
@@ -307,12 +307,12 @@ public class ActionSetFieldPopup extends FormStylePopup {
         clone.setType( col.getType() );
         clone.setValueList( col.getValueList() );
         clone.setUpdate( col.isUpdate() );
-        clone.setDefaultValue( new DTCellValue52( col.getDefaultValue() ) );
+        clone.setDefaultValue( cloneDTCellValue( col.getDefaultValue() ) );
         clone.setHideColumn( col.isHideColumn() );
         return clone;
     }
 
-    private DTCellValue52 cloneLimitedEntryValue( DTCellValue52 dcv ) {
+    private DTCellValue52 cloneDTCellValue( DTCellValue52 dcv ) {
         if ( dcv == null ) {
             return null;
         }

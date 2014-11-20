@@ -309,7 +309,7 @@ public class ActionInsertFactPopup extends FormStylePopup {
         ActionInsertFactCol52 clone = null;
         if ( col instanceof LimitedEntryActionInsertFactCol52 ) {
             clone = new LimitedEntryActionInsertFactCol52();
-            DTCellValue52 dcv = cloneLimitedEntryValue( ( (LimitedEntryCol) col ).getValue() );
+            DTCellValue52 dcv = cloneDTCellValue( ( (LimitedEntryCol) col ).getValue() );
             ( (LimitedEntryCol) clone ).setValue( dcv );
         } else {
             clone = new ActionInsertFactCol52();
@@ -320,13 +320,13 @@ public class ActionInsertFactPopup extends FormStylePopup {
         clone.setFactType( col.getFactType() );
         clone.setHeader( col.getHeader() );
         clone.setValueList( col.getValueList() );
-        clone.setDefaultValue( new DTCellValue52( col.getDefaultValue() ) );
+        clone.setDefaultValue( cloneDTCellValue( col.getDefaultValue() ) );
         clone.setHideColumn( col.isHideColumn() );
         clone.setInsertLogical( col.isInsertLogical() );
         return clone;
     }
 
-    private DTCellValue52 cloneLimitedEntryValue( DTCellValue52 dcv ) {
+    private DTCellValue52 cloneDTCellValue( DTCellValue52 dcv ) {
         if ( dcv == null ) {
             return null;
         }
