@@ -21,6 +21,7 @@ public class SecureHeadersFilter implements Filter {
     public static final String LOCATION = "Location";
     public static final String STRICT_TRANSPORT_SECURITY = "Strict-Transport-Security";
     public static final String X_FRAME_OPTIONS = "X-FRAME-OPTIONS";
+    public static final String X_XSS_OPTIONS = "X-XSS-Protection";
 
     private SecureHeadersConfig config;
 
@@ -47,6 +48,7 @@ public class SecureHeadersFilter implements Filter {
         } else if ( request.getScheme().equals( "https" ) ) {
             addStrictTransportSecurity( response );
         }
+        addXSSOptions( response );
 
         chain.doFilter( request, response );
     }
@@ -69,4 +71,11 @@ public class SecureHeadersFilter implements Filter {
             response.setStatus( HttpServletResponse.SC_MOVED_PERMANENTLY );
         }
     }
+
+    private void addXSSOptions( HttpServletResponse response ) {
+        if ( config.hasXSSOptions() ) {
+            response.addHeader( X_XSS_OPTIONS, config.getXssOptions() );
+        }
+    }
+
 }

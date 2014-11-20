@@ -2,6 +2,7 @@ package org.uberfire.security.server;
 
 import javax.servlet.FilterConfig;
 
+
 /**
  * HTTP headers related to security
  * For example: HSTS and Clickjacking mitigation support
@@ -14,6 +15,7 @@ public class SecureHeadersConfig {
     private final Boolean includeSubDomains;
     private final String location;
     private final String frameOptions;
+    private final String xssOptions;
 
     public SecureHeadersConfig( final FilterConfig config ) {
         final String _maxAge = config.getInitParameter( "max-age" );
@@ -30,6 +32,32 @@ public class SecureHeadersConfig {
         }
         this.location = config.getInitParameter( "Location" );
         this.frameOptions = config.getInitParameter( "x-frame-options" );
+        final String _xssOptionsEnable = config.getInitParameter( "x-xss-protection-enable" );
+        final String _xssOptionsBlock = config.getInitParameter( "x-xss-protection-block" );
+        String _xssOptions;
+        if ( _xssOptionsEnable == null ) {
+            xssOptions = null;
+        } else {
+            if ( toBoolean( _xssOptionsEnable, false ) ) {
+                _xssOptions = "1";
+            } else {
+                _xssOptions = "0";
+            }
+
+            if ( toBoolean( _xssOptionsBlock, false ) ) {
+                _xssOptions += "; mode=block";
+            }
+            xssOptions = _xssOptions;
+        }
+    }
+
+    private boolean toBoolean( final String value,
+                               final boolean defaultValue ) {
+        try {
+            return Boolean.valueOf( value );
+        } catch ( Exception ex ) {
+            return defaultValue;
+        }
     }
 
     /**
@@ -89,6 +117,18 @@ public class SecureHeadersConfig {
      */
     public boolean hasFrameOptions() {
         return isEmpty( frameOptions );
+    }
+
+    /**
+     * Verify if "x-xss-protection" is present
+     * @return boolean
+     */
+    public boolean hasXSSOptions() {
+        return isEmpty( xssOptions );
+    }
+
+    public String getXssOptions() {
+        return xssOptions;
     }
 
     private boolean isEmpty( final String value ) {
