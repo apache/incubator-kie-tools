@@ -39,7 +39,27 @@
       - org.sonatype.sisu:sisu-inject-bean
       - org.jboss.errai:errai-javax-enterprise
   -->
+
+  <!--
+    TODO declare the drools-wb-jcr2vfs-migration-xml artifact version like this for now, when this gets merged into master,
+    TODO then declare the new module in the drools-bom inside droolsjbpm-build-bootstrap
+  -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wb-jcr2vfs-migration-xml</artifactId>
+        <version>6.3.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-wb-jcr2vfs-migration-xml</artifactId>
+    </dependency>
 
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>

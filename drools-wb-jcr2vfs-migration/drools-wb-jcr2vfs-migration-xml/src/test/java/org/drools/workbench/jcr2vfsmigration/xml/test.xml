@@ -1,0 +1,19 @@
+<categories>
+  <category name="Home Mortgage">
+    <categories>
+      <category name="Eligibility rules"></category>
+      <category name="Pricing rules"></category>
+      <category name="Test scenarios"></category>
+      <category name="Technical">
+        <categories>
+          <category name="Sub_tech">
+            <categories>
+              <category name="Subsub_tech"></category>
+            </categories>
+          </category>
+        </categories>
+      </category>
+    </categories>
+  </category>
+  <category name="Commercial Mortgage"></category>
+</categories>
