@@ -35,6 +35,7 @@ import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -55,6 +56,9 @@ public class BuildServiceImpl
     private KieProjectService projectService;
     private LRUBuilderCache cache;
     private Instance<PostBuildHandler> handlers;
+
+    @Inject
+    protected User identity;
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
@@ -77,6 +81,16 @@ public class BuildServiceImpl
     public BuildResults build( final Project project ) {
         try {
             final BuildResults results = doBuild( project );
+            StringBuffer message = new StringBuffer();
+            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ identity.getIdentifier()+ ") completed.\n");
+            message.append(" Build: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
+
+            BuildMessage infoMsg = new BuildMessage();
+            infoMsg.setLevel(BuildMessage.Level.INFO);
+            infoMsg.setText(message.toString());
+
+            results.addBuildMessage(0, infoMsg);
+
             return results;
 
         } catch ( Exception e ) {
@@ -99,6 +113,9 @@ public class BuildServiceImpl
         try {
             //Build
             final BuildResults results = doBuild( project );
+            StringBuffer message = new StringBuffer();
+            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ identity.getIdentifier()+ ") completed.\n");
+            message.append(" Build: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
 
             //Deploy, if no errors
             final POM pom = pomService.load( project.getPomXMLPath() );
@@ -108,7 +125,7 @@ public class BuildServiceImpl
                 final ByteArrayInputStream input = new ByteArrayInputStream( kieModule.getBytes() );
                 m2RepoService.deployJar( input,
                         pom.getGav() );
-
+                message.append(" Maven: SUCCESSFUL");
                 if (!suppressHandlers) {
                     for ( PostBuildHandler handler : handlers ) {
                         try {
@@ -117,6 +134,7 @@ public class BuildServiceImpl
                             logger.warn( "PostBuildHandler {} failed due to {}", handler, e.getMessage() );
                         }
                     }
+                    message.append(" Deploy: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
                 }
             }
 
