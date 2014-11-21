@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -23,7 +24,7 @@ public class Categories {
     private Collection<Category> cCategories;
 
     public Categories( Collection<Category> categories ) {
-        this.cCategories = categories;
+        this.cCategories = categories != null ? categories : new ArrayList<Category>();
     }
 
     public Collection<Category> getCategories() {

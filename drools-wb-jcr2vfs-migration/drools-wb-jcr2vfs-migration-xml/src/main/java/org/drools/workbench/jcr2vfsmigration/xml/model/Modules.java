@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -25,7 +26,7 @@ public class Modules {
 
     public Modules( Module globalModule, Collection<Module> modules ) {
         this.globalModule = globalModule;
-        this.cModules = modules;
+        this.cModules = modules != null ? modules : new ArrayList<Module>();
     }
 
     public Module getGlobalModule() {
