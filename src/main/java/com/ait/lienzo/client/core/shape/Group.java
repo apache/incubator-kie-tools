@@ -551,11 +551,52 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public Group add(IPrimitive<?> child)
     {
+        child.removeFromParent();
+
         super.add(child);
 
         child.attachToLayerColorMap();
 
         return this;
+    }
+
+    @Override
+    public Group add(IPrimitive<?> child, IPrimitive<?>... children)
+    {
+        add(child);
+
+        for (IPrimitive<?> node : children)
+        {
+            add(node);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean removeFromParent()
+    {
+        Node<?> parent = getParent();
+
+        if (null != parent)
+        {
+            Layer layer = parent.asLayer();
+
+            if (null != layer)
+            {
+                layer.remove(this);
+
+                return true;
+            }
+            Group group = parent.asGroup();
+
+            if (null != group)
+            {
+                group.remove(this);
+
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

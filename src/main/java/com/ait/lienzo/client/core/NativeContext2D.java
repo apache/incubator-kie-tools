@@ -222,8 +222,7 @@ public final class NativeContext2D extends JavaScriptObject
 
     private final native void setFillGradient(LinearGradientJSO grad)
     /*-{
-    	var that = this.createLinearGradient(grad.start.x, grad.start.y,
-    			grad.end.x, grad.end.y);
+    	var that = this.createLinearGradient(grad.start.x, grad.start.y, grad.end.x, grad.end.y);
 
     	var list = grad.colorStops;
 
@@ -403,8 +402,7 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void putImageData(ImageData imageData, double x, double y, double dirtyX, double dirtyY, double dirtyWidth, double dirtyHeight)
     /*-{
-    	this.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth,
-    			dirtyHeight);
+    	this.putImageData(imageData, x, y, dirtyX, dirtyY, dirtyWidth, dirtyHeight);
     }-*/;
 
     /**
@@ -517,10 +515,11 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native double getBackingStorePixelRatio()
     /*-{
-    	return this.webkitBackingStorePixelRatio
+    	return this.backingStorePixelRatio
+    	        || this.webkitBackingStorePixelRatio
     			|| this.mozBackingStorePixelRatio
     			|| this.msBackingStorePixelRatio
-    			|| this.oBackingStorePixelRatio || this.backingStorePixelRatio
+    			|| this.oBackingStorePixelRatio
     			|| 1;
     }-*/;
 

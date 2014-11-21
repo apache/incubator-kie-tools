@@ -178,6 +178,18 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         return this;
     }
 
+    @Override
+    public Layer add(IPrimitive<?> child, IPrimitive<?>... children)
+    {
+        add(child);
+
+        for (IPrimitive<?> node : children)
+        {
+            add(node);
+        }
+        return this;
+    }
+
     /**
     * Removes a primitive from the container. Override to ensure primitive is removed from Layers Color Map
     * <p>
@@ -193,6 +205,25 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         super.remove(child);
 
         return this;
+    }
+
+    @Override
+    public boolean removeFromParent()
+    {
+        Node<?> parent = getParent();
+
+        if (null != parent)
+        {
+            Scene scene = parent.asScene();
+
+            if (null != scene)
+            {
+                scene.remove(this);
+
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

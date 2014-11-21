@@ -126,11 +126,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
     private final void setSceneAndState(Scene main)
     {
-        add(m_back);
-
-        add(m_main = main);
-
-        add(m_drag);
+        add(m_back, m_main = main, m_drag);
 
         m_drag.add(new DragLayer());
 
@@ -260,6 +256,24 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
             super.add(scene);
         }
         return this;
+    }
+
+    @Override
+    public final Viewport add(Scene scene, Scene... children)
+    {
+        add(scene);
+
+        for (Scene node : children)
+        {
+            add(node);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean removeFromParent()
+    {
+        return false;
     }
 
     public HandlerRegistration addOrientationChangeHandler(OrientationChangeHandler handler)

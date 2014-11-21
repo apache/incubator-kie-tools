@@ -173,4 +173,6 @@ public interface IDrawable<T>
      * @return T instance of the drawn object
      */
     public T moveToBottom();
+    
+    public boolean removeFromParent();
 }

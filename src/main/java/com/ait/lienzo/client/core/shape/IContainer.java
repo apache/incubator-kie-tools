@@ -39,6 +39,14 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @param node
      */
     public T add(M node);
+    
+    /**
+     * Adds a node to this container
+     * 
+     * @param node
+     */
+    @SuppressWarnings("unchecked")
+    public T add(M node, M... list);
 
     /**
      * Removes the given node from the container.

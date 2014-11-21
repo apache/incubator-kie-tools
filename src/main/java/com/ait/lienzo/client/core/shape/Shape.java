@@ -520,6 +520,33 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return m_hkey;
     }
 
+    @Override
+    public boolean removeFromParent()
+    {
+        Node<?> parent = getParent();
+
+        if (null != parent)
+        {
+            Layer layer = parent.asLayer();
+
+            if (null != layer)
+            {
+                layer.remove(this);
+
+                return true;
+            }
+            Group group = parent.asGroup();
+
+            if (null != group)
+            {
+                group.remove(this);
+
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Moves this shape one layer up.
      * 

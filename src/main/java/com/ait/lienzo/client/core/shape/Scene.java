@@ -376,6 +376,37 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
         return this;
     }
 
+    @Override
+    public final Scene add(Layer layer, Layer... children)
+    {
+        add(layer);
+
+        for (Layer node : children)
+        {
+            add(node);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean removeFromParent()
+    {
+        Node<?> parent = getParent();
+
+        if (null != parent)
+        {
+            Viewport view = parent.asViewport();
+
+            if (null != view)
+            {
+                view.remove(this);
+
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Removes a {@link Layer}
      */

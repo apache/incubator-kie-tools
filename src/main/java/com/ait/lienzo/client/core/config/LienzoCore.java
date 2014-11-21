@@ -57,15 +57,17 @@ public final class LienzoCore
 
     private boolean                  m_globalLineDashSupport  = true;
 
+    private boolean                  m_scaledCanvasForRetina  = true;
+
     private boolean                  m_nativeLineDashSupport  = false;
 
     private boolean                  m_enableBlobIfSupported  = true;
 
     private boolean                  m_nativeLineDashExamine  = false;
 
-    private Cursor                   m_normal_cursor          = null;
+    private Cursor                   m_normal_cursor          = Cursor.DEFAULT;
 
-    private Cursor                   m_select_cursor          = null;
+    private Cursor                   m_select_cursor          = Cursor.CROSSHAIR;
 
     private final boolean            m_canvasSupported        = Canvas.isSupported();
 
@@ -102,14 +104,14 @@ public final class LienzoCore
         return Collections.unmodifiableCollection(m_plugins);
     }
 
-    public native void log(String message)
+    public final native void log(String message)
     /*-{
         if ($wnd.console) {
             $wnd.console.log(message);
         }
     }-*/;
 
-    public native void error(String message)
+    public final native void error(String message)
     /*-{
         if ($wnd.console) {
             $wnd.console.error(message);
@@ -132,11 +134,13 @@ public final class LienzoCore
         return false;
     }
 
-    public boolean isFirefox()
+    public final boolean isFirefox()
     {
         String ua = getUserAgent();
 
-        if ((ua.indexOf("Mozilla") >= 0) || (ua.indexOf("Firefox") >= 0))
+        // IE 11 Says it is Mozilla!!! Check for Trident
+
+        if (((ua.indexOf("Mozilla") >= 0) || (ua.indexOf("Firefox") >= 0)) && (ua.indexOf("Trident") < 0))
         {
             return (false == isSafari());
         }
@@ -148,14 +152,30 @@ public final class LienzoCore
         return m_enableBlobIfSupported;
     }
 
-    public final void setBlobAPIEnabled(boolean enabled)
+    public final LienzoCore setBlobAPIEnabled(boolean enabled)
     {
         m_enableBlobIfSupported = enabled;
+
+        return this;
     }
 
-    public final void setDefaultFillShapeForSelection(boolean fill)
+    public final LienzoCore setScaledCanvasForRetina(boolean enabled)
+    {
+        m_scaledCanvasForRetina = enabled;
+
+        return this;
+    }
+
+    public final boolean isScaledCanvasForRetina()
+    {
+        return m_scaledCanvasForRetina;
+    }
+
+    public final LienzoCore setDefaultFillShapeForSelection(boolean fill)
     {
         m_fillShapeForSelection = fill;
+
+        return this;
     }
 
     public final ImageSelectionMode getDefaultImageSelectionMode()
@@ -163,7 +183,7 @@ public final class LienzoCore
         return m_imageSelectionMode;
     }
 
-    public final void setDefaultImageSelectionMode(ImageSelectionMode mode)
+    public final LienzoCore setDefaultImageSelectionMode(ImageSelectionMode mode)
     {
         if (null == mode)
         {
@@ -173,6 +193,7 @@ public final class LienzoCore
         {
             m_imageSelectionMode = mode;
         }
+        return this;
     }
 
     public final boolean getDefaultFillShapeForSelection()
@@ -180,7 +201,7 @@ public final class LienzoCore
         return m_fillShapeForSelection;
     }
 
-    public final void setDefaultStrokeWidth(double width)
+    public final LienzoCore setDefaultStrokeWidth(double width)
     {
         if (width > 0)
         {
@@ -190,6 +211,7 @@ public final class LienzoCore
         {
             m_strokeWidth = 1;
         }
+        return this;
     }
 
     public final double getDefaultStrokeWidth()
@@ -197,7 +219,7 @@ public final class LienzoCore
         return m_strokeWidth;
     }
 
-    public final void setDefaultStrokeColor(IColor color)
+    public final LienzoCore setDefaultStrokeColor(IColor color)
     {
         if (color != null)
         {
@@ -207,6 +229,7 @@ public final class LienzoCore
         {
             m_strokeColor = "black";
         }
+        return this;
     }
 
     public final String getDefaultStrokeColor()
@@ -233,9 +256,11 @@ public final class LienzoCore
         return m_globalLineDashSupport;
     }
 
-    public final void setGlobalLineDashSupported(boolean supported)
+    public final LienzoCore setGlobalLineDashSupported(boolean supported)
     {
         m_globalLineDashSupport = supported;
+
+        return this;
     }
 
     public final boolean isNativeLineDashSupported()
@@ -269,18 +294,23 @@ public final class LienzoCore
         return m_layerClearMode;
     }
 
-    public final native double getDevicePixelRatio()
-    /*-{
-    	return $wnd.devicePixelRatio || 1;
-    }-*/;
-
-    public final void setLayerClearMode(LayerClearMode mode)
+    public final LienzoCore setLayerClearMode(LayerClearMode mode)
     {
         if (null != mode)
         {
             m_layerClearMode = mode;
         }
+        else
+        {
+            m_layerClearMode = LayerClearMode.CLEAR;
+        }
+        return this;
     }
+
+    public final native double getDevicePixelRatio()
+    /*-{
+        return $wnd.devicePixelRatio || 1;
+    }-*/;
 
     public final double getBackingStorePixelRatio()
     {
@@ -367,9 +397,17 @@ public final class LienzoCore
         return false;
     }
 
-    public final void setDefaultNormalCursor(Cursor cursor)
+    public final LienzoCore setDefaultNormalCursor(Cursor cursor)
     {
-        m_normal_cursor = cursor;
+        if (null != cursor)
+        {
+            m_normal_cursor = cursor;
+        }
+        else
+        {
+            m_normal_cursor = Cursor.DEFAULT;
+        }
+        return this;
     }
 
     public final Cursor getDefaultNormalCursor()
@@ -377,9 +415,17 @@ public final class LienzoCore
         return m_normal_cursor;
     }
 
-    public final void setSefaultSelectCursor(Cursor cursor)
+    public final LienzoCore setSefaultSelectCursor(Cursor cursor)
     {
-        m_select_cursor = cursor;
+        if (null != cursor)
+        {
+            m_select_cursor = cursor;
+        }
+        else
+        {
+            m_select_cursor = Cursor.CROSSHAIR;
+        }
+        return this;
     }
 
     public final Cursor getDefaultSelectCursor()
