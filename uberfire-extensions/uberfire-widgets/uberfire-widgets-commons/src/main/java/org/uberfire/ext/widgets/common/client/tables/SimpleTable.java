@@ -316,20 +316,37 @@ public class SimpleTable<T>
                                               forceRangeChangeEvent );
     }
 
-    public void addColumn( final Column<T, ?> column,
-                           final String caption ) {
-        addColumn( column,
-                   caption,
-                   true );
+    public void addColumns(List<ColumnMeta<T>> columnMetas) {
+
+        for (ColumnMeta columnMeta : columnMetas) {
+            if (columnMeta.getHeader() == null) columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(), columnMeta.getColumn()));
+        }
+        columnPicker.addColumns(columnMetas);
     }
 
-    public void addColumn( final Column<T, ?> column,
-                           final String caption,
-                           final boolean visible ) {
+
+    public void addColumn( Column<T, ?> column,
+                           String caption ) {
+        addColumn(column, caption, true);
+    }
+
+    public void addColumn( Column<T, ?> column,
+                           String caption,
+                           boolean visible) {
+        ColumnMeta<T> columnMeta = new ColumnMeta<T>(column, caption, visible);
+        addColumn(columnMeta);
+    }
+
+    protected void addColumn(ColumnMeta<T> columnMeta) {
+        if (columnMeta.getHeader() == null) columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(), columnMeta.getColumn()));
+        columnPicker.addColumn(columnMeta);
+    }
+
+    protected ResizableMovableHeader<T> getColumnHeader(String caption, Column column) {
         final ResizableMovableHeader header = new ResizableMovableHeader<T>( caption,
-                                                                             dataGrid,
-                                                                             columnPicker,
-                                                                             column ) {
+                dataGrid,
+                columnPicker,
+                column ) {
             @Override
             protected int getTableBodyHeight() {
                 return dataGrid.getOffsetHeight();
@@ -361,9 +378,7 @@ public class SimpleTable<T>
             }
         } );
         column.setDataStoreName( caption );
-        columnPicker.addColumn( column,
-                                header,
-                                visible );
+        return header;
     }
 
     public void setColumnWidth( final Column<T, ?> column,
