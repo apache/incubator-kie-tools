@@ -151,7 +151,9 @@ public class ResourceChangeIncrementalBuilderTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                      buildResults.getMessages().size() );
+                      buildResults.getErrorMessages().size() );
+        assertEquals( 1,
+                      buildResults.getInformationMessages().size() );
 
         //Perform incremental build
         buildChangeListener.addResource( resourcePath );
@@ -182,7 +184,9 @@ public class ResourceChangeIncrementalBuilderTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                      buildResults.getMessages().size() );
+                      buildResults.getErrorMessages().size() );
+        assertEquals( 1,
+                      buildResults.getInformationMessages().size() );
 
         //Perform incremental build
         buildChangeListener.updateResource( resourcePath );
@@ -214,7 +218,9 @@ public class ResourceChangeIncrementalBuilderTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                      buildResults.getMessages().size() );
+                      buildResults.getErrorMessages().size() );
+        assertEquals( 1,
+                      buildResults.getInformationMessages().size() );
 
         //Perform incremental build (Without a full Build first)
         buildChangeListener.updateResource( resourcePath );
@@ -242,7 +248,9 @@ public class ResourceChangeIncrementalBuilderTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                      buildResults.getMessages().size() );
+                      buildResults.getErrorMessages().size() );
+        assertEquals( 1,
+                      buildResults.getInformationMessages().size() );
 
         //Perform incremental build (Without a full Build first)
         buildChangeListener.updateResource( resourcePath );
@@ -250,7 +258,9 @@ public class ResourceChangeIncrementalBuilderTest {
         final BuildResults buildResults2 = buildResultsObserver.getBuildResults();
         assertNotNull( buildResults2 );
         assertEquals( 0,
-                      buildResults2.getMessages().size() );
+                      buildResults.getErrorMessages().size() );
+        assertEquals( 1,
+                      buildResults.getInformationMessages().size() );
 
         final IncrementalBuildResults incrementalBuildResults = buildResultsObserver.getIncrementalBuildResults();
         assertNull( incrementalBuildResults );
@@ -273,7 +283,9 @@ public class ResourceChangeIncrementalBuilderTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                      buildResults.getMessages().size() );
+                      buildResults.getErrorMessages().size() );
+        assertEquals( 1,
+                      buildResults.getInformationMessages().size() );
 
         //Perform incremental build
         buildChangeListener.deleteResource( resourcePath );
@@ -341,7 +353,9 @@ public class ResourceChangeIncrementalBuilderTest {
         final BuildResults buildResults = buildService.build( project );
         assertNotNull( buildResults );
         assertEquals( 0,
-                      buildResults.getMessages().size() );
+                      buildResults.getErrorMessages().size() );
+        assertEquals( 1,
+                      buildResults.getInformationMessages().size() );
 
         //Perform incremental build
         buildChangeListener.batchResourceChanges( batch );
