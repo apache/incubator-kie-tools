@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
+import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
 import org.slf4j.Logger;
@@ -51,14 +52,18 @@ public final class BatchIndex {
     private final IOService ioService;
     private final Class<? extends FileAttributeView>[] views;
     private final AtomicBoolean indexDisposed = new AtomicBoolean( false );
+    private final Observer observer;
 
     public BatchIndex( final MetaIndexEngine indexEngine,
                        final IOService ioService,
+                       final Observer observer,
                        final Class<? extends FileAttributeView>... views ) {
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
         this.ioService = checkNotNull( "ioService",
                                        ioService );
+        this.observer = checkNotNull( "observer",
+                                      observer );
         this.views = views;
     }
 
@@ -125,6 +130,7 @@ public final class BatchIndex {
             }
             final KCluster cluster = KObjectUtil.toKCluster( root.getFileSystem() );
             indexEngine.startBatch( cluster );
+            observer.information( "Starting indexing of " + root.toUri() + " ..." );
             walkFileTree( checkNotNull( "root", root ),
                           new SimpleFileVisitor<Path>() {
                               @Override
@@ -171,10 +177,14 @@ public final class BatchIndex {
                                       }
                                   } catch ( final Exception ex ) {
                                       if ( indexDisposed.get() ) {
-                                          LOG.warn( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
+                                          final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
+                                          observer.warning( msg );
+                                          LOG.warn( msg );
                                           return FileVisitResult.TERMINATE;
                                       } else {
-                                          LOG.error( "Index fails. [@" + file.toString() + "]", ex );
+                                          final String msg = "Index fails. [@" + file.toString() + "]";
+                                          observer.error( msg );
+                                          LOG.error( msg, ex );
                                       }
                                   }
                                   if ( indexDisposed.get() ) {
@@ -185,23 +195,34 @@ public final class BatchIndex {
                           } );
             if ( !indexDisposed.get() ) {
                 indexEngine.commit( cluster );
+                observer.information( "Completed indexing of " + root.toUri() );
                 if ( callback != null ) {
                     callback.run();
                 }
             } else {
-                LOG.warn( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
+                final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
+                observer.warning( msg );
+                LOG.warn( msg );
             }
         } catch ( final IllegalStateException ex ) {
             if ( indexDisposed.get() ) {
-                LOG.warn( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
+                final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
+                observer.warning( msg );
+                LOG.warn( msg );
             } else {
-                LOG.error( "Index fails - Index has an invalid state. [@" + root.toUri().toString() + "]", ex );
+                final String msg = "Index fails - Index has an invalid state. [@" + root.toUri().toString() + "]";
+                observer.error( msg );
+                LOG.error( msg, ex );
             }
         } catch ( final Exception ex ) {
             if ( indexDisposed.get() ) {
-                LOG.warn( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
+                final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
+                observer.warning( msg );
+                LOG.warn( msg );
             } else {
-                LOG.error( "Index fails. [@" + root.toUri().toString() + "]", ex );
+                final String msg = "Index fails. [@" + root.toUri().toString() + "]";
+                observer.error( msg );
+                LOG.error( msg, ex );
             }
         }
     }

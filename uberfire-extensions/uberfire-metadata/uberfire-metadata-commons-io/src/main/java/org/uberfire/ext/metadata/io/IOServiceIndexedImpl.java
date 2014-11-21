@@ -20,17 +20,17 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.uberfire.ext.metadata.engine.Indexer;
-import org.uberfire.ext.metadata.engine.MetaIndexEngine;
-import org.uberfire.ext.metadata.model.KCluster;
-import org.uberfire.ext.metadata.model.KObject;
-import org.uberfire.ext.metadata.model.KObjectKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
+import org.uberfire.ext.metadata.engine.Indexer;
+import org.uberfire.ext.metadata.engine.MetaIndexEngine;
+import org.uberfire.ext.metadata.engine.Observer;
+import org.uberfire.ext.metadata.model.KCluster;
+import org.uberfire.ext.metadata.model.KObject;
+import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.lock.FSLockService;
@@ -66,37 +66,98 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     private final List<FileSystem> watchedList = new ArrayList<FileSystem>();
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
 
+    private final Observer observer;
+
     public IOServiceIndexedImpl( final MetaIndexEngine indexEngine,
+                                 final Class<? extends FileAttributeView>... views ) {
+        this( indexEngine,
+              new NOPObserver(),
+              views );
+    }
+
+    public IOServiceIndexedImpl( final String id,
+                                 final MetaIndexEngine indexEngine,
+                                 final Class<? extends FileAttributeView>... views ) {
+        this( id,
+              indexEngine,
+              new NOPObserver(),
+              views );
+    }
+
+    public IOServiceIndexedImpl( final IOWatchService watchService,
+                                 final MetaIndexEngine indexEngine,
+                                 final Class<? extends FileAttributeView>... views ) {
+        this( watchService,
+              indexEngine,
+              new NOPObserver(),
+              views );
+    }
+
+    public IOServiceIndexedImpl( final String id,
+                                 final IOWatchService watchService,
+                                 final MetaIndexEngine indexEngine,
+                                 final Class<? extends FileAttributeView>... views ) {
+        this( id,
+              watchService,
+              indexEngine,
+              new NOPObserver(),
+              views );
+    }
+
+    public IOServiceIndexedImpl( final FSLockService lockService,
+                                 final IOWatchService watchService,
+                                 final MetaIndexEngine indexEngine,
+                                 final Class<? extends FileAttributeView>... views ) {
+        this( lockService,
+              watchService,
+              indexEngine,
+              new NOPObserver(),
+              views );
+    }
+
+    public IOServiceIndexedImpl( final MetaIndexEngine indexEngine,
+                                 final Observer observer,
                                  final Class<? extends FileAttributeView>... views ) {
         super();
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
+        this.observer = checkNotNull( "observer",
+                                      observer );
         this.batchIndex = new BatchIndex( indexEngine,
                                           this,
+                                          observer,
                                           views );
         this.views = views;
     }
 
     public IOServiceIndexedImpl( final String id,
                                  final MetaIndexEngine indexEngine,
+                                 final Observer observer,
                                  final Class<? extends FileAttributeView>... views ) {
         super( id );
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
+        this.observer = checkNotNull( "observer",
+                                      observer );
         this.batchIndex = new BatchIndex( indexEngine,
                                           this,
+                                          observer,
                                           views );
         this.views = views;
     }
 
     public IOServiceIndexedImpl( final IOWatchService watchService,
                                  final MetaIndexEngine indexEngine,
+                                 final Observer observer,
                                  final Class<? extends FileAttributeView>... views ) {
         super( watchService );
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
+        this.observer = checkNotNull( "observer",
+                                      observer );
         this.batchIndex = new BatchIndex( indexEngine,
                                           this,
+                                          observer,
                                           views );
         this.views = views;
     }
@@ -104,13 +165,17 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     public IOServiceIndexedImpl( final String id,
                                  final IOWatchService watchService,
                                  final MetaIndexEngine indexEngine,
+                                 final Observer observer,
                                  final Class<? extends FileAttributeView>... views ) {
         super( id,
                watchService );
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
+        this.observer = checkNotNull( "observer",
+                                      observer );
         this.batchIndex = new BatchIndex( indexEngine,
                                           this,
+                                          observer,
                                           views );
         this.views = views;
     }
@@ -118,30 +183,17 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     public IOServiceIndexedImpl( final FSLockService lockService,
                                  final IOWatchService watchService,
                                  final MetaIndexEngine indexEngine,
+                                 final Observer observer,
                                  final Class<? extends FileAttributeView>... views ) {
         super( lockService,
                watchService );
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
+        this.observer = checkNotNull( "observer",
+                                      observer );
         this.batchIndex = new BatchIndex( indexEngine,
                                           this,
-                                          views );
-        this.views = views;
-    }
-
-    public IOServiceIndexedImpl( final String id,
-                                 final FSLockService lockService,
-                                 final IOWatchService watchService,
-                                 final MetaIndexEngine indexEngine,
-                                 final Set<Indexer> additionalIndexers,
-                                 final Class<? extends FileAttributeView>... views ) {
-        super( id,
-               lockService,
-               watchService );
-        this.indexEngine = checkNotNull( "indexEngine",
-                                         indexEngine );
-        this.batchIndex = new BatchIndex( indexEngine,
-                                          this,
+                                          observer,
                                           views );
         this.views = views;
     }
@@ -348,4 +400,26 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         }
         return result;
     }
+
+    /**
+     * A "No Operation" Observer, used by default
+     */
+    private static class NOPObserver implements Observer {
+
+        @Override
+        public void information( final String message ) {
+            //Do nothing.
+        }
+
+        @Override
+        public void warning( final String message ) {
+            //Do nothing.
+        }
+
+        @Override
+        public void error( final String message ) {
+            //Do nothing.
+        }
+    }
+
 }
