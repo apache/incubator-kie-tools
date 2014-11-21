@@ -54,8 +54,11 @@
     }
 
     .box {
+      position: absolute !important;
+      bottom: 5px !important;
       width: 240px;
       margin-top: 3px !important;
+      resize: none !important;
     }
 
     .scroll {

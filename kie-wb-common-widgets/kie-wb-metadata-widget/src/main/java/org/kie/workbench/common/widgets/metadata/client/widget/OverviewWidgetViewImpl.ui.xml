@@ -117,7 +117,12 @@
       </div>
     </gwt:HTMLPanel>
 
-    <discussion:DiscussionWidgetPresenter ui:field="discussionArea"/>
+    <gwt:HTMLPanel styleName="{style.discussion}">
+      <div style="height: 560px;">
+        <discussion:DiscussionWidgetPresenter ui:field="discussionArea"/>
+      </div>
+    </gwt:HTMLPanel>
+
 
   </gwt:HorizontalPanel>
 
