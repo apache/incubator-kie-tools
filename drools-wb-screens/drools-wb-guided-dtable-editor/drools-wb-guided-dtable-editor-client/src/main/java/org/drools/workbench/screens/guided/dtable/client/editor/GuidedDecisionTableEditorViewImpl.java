@@ -67,11 +67,22 @@ public class GuidedDecisionTableEditorViewImpl
                                                      identity,
                                                      isReadOnly );
         panel.setWidget( this.editor );
+        editor.onFocus();
     }
 
     @Override
     public GuidedDecisionTable52 getContent() {
         return this.model;
+    }
+
+    @Override
+    public void onFocus() {
+        //The editor widget is not instantiated until setContent() which is invoked in an asynchronous callback in the Presenters onStartup method.
+        //The onFocus method is called synchronously after the Presenters onStartup method; but initially before setContent() has been executed.
+        if ( editor == null ) {
+            return;
+        }
+        editor.onFocus();
     }
 
     @Override

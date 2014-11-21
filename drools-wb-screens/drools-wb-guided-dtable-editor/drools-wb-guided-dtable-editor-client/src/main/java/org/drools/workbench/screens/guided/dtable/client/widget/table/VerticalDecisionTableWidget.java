@@ -69,4 +69,8 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         ctrls.setEnableOtherwiseButton( isEnabled );
     }
 
+    public void onFocus() {
+        ( (VerticalDecoratedDecisionTableGridWidget) widget ).onFocus();
+    }
+
 }

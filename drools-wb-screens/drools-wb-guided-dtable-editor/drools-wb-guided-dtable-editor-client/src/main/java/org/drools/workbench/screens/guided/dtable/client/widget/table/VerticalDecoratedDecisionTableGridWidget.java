@@ -70,4 +70,8 @@ public class VerticalDecoratedDecisionTableGridWidget extends AbstractDecoratedD
         };
     }
 
+    public void onFocus() {
+        headerWidget.redraw();
+    }
+
 }

@@ -49,6 +49,7 @@ import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -100,6 +101,15 @@ public class GuidedDecisionTableEditorPresenter
         super.init( path,
                     place,
                     type );
+    }
+
+    @OnFocus
+    public void onFocus() {
+        // The height of the Sidebar widget in the underlying Decorated Grid library is set to the offsetHeight() of the Header
+        // widget. When the Decision Table is not visible (i.e. it is not the top most editor in a TabPanel) offsetHeight() is zero
+        // and the Decision Table Header and Sidebar are not sized correctly. Therefore we need to ensure the widgets are sized
+        // correctly when the widget becomes visible.
+        view.onFocus();
     }
 
     protected void loadContent() {

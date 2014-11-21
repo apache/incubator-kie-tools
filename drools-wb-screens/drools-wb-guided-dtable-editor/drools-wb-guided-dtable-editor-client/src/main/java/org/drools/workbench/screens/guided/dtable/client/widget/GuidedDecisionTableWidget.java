@@ -1363,13 +1363,13 @@ public class GuidedDecisionTableWidget extends Composite
 
             final Widget defaultValue = DefaultValueWidgetFactory.getDefaultValueWidget( atc,
                                                                                          isReadOnly, new DefaultValueWidgetFactory.DefaultValueChangedEventHandler() {
-                        @Override
-                        public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
-                            final AttributeCol52 clonedAt = at.cloneColumn();
-                            clonedAt.setDefaultValue( event.getOldDefaultValue() );
-                            fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
-                        }
-                    } );
+                @Override
+                public void onDefaultValueChanged( DefaultValueWidgetFactory.DefaultValueChangedEvent event ) {
+                    final AttributeCol52 clonedAt = at.cloneColumn();
+                    clonedAt.setDefaultValue( event.getOldDefaultValue() );
+                    fireUpdateColumn( identity.getIdentifier(), clonedAt, at, clonedAt.diff( at ) );
+                }
+            } );
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -1630,6 +1630,10 @@ public class GuidedDecisionTableWidget extends Composite
         dtable.updateColumn( originalColumn,
                              editedColumn );
         refreshActionsWidget();
+    }
+
+    public void onFocus() {
+        dtable.onFocus();
     }
 
 }
