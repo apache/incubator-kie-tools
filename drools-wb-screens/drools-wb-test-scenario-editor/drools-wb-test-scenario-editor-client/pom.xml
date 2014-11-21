@@ -19,6 +19,10 @@
 
     <!-- dependencies added because of new illegal transitive dependency check -->
     <dependency>
+      <groupId>com.github.gwtbootstrap</groupId>
+      <artifactId>gwt-bootstrap</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
@@ -35,12 +39,20 @@
       <artifactId>guvnor-services-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-client</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-security-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
