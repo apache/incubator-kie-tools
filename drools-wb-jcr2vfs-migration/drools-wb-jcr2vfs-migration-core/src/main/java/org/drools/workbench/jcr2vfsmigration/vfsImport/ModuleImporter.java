@@ -15,17 +15,18 @@
  */
 package org.drools.workbench.jcr2vfsmigration.vfsImport;
 
+import java.io.File;
+import java.util.Iterator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.server.RepositoryModuleService;
-import org.drools.workbench.jcr2vfsmigration.jcrExport.ModuleExporter;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -36,7 +37,6 @@ import org.uberfire.backend.vfs.Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 @ApplicationScoped
 public class ModuleImporter {
@@ -52,34 +52,32 @@ public class ModuleImporter {
     @Inject
     protected ProjectService projectService;
 
+    private ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
+
     public void importAll() {
         System.out.println( "  Module import started" );
-
         Document xml = null;
         try {
+            File modulesXmlFile = fileManager.getModulesExportFile();
+
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            xml = db.parse( fileManager.getModulesExportFile() );
-            NodeList nodeList = xml.getElementsByTagName( ModuleExporter.MODULE );
-            for ( int i = 0; i < nodeList.getLength(); i++ ) {
-                Node module = nodeList.item( i );
-                NodeList moduleAttributes = module.getChildNodes();
-                for ( int j = 0; j < moduleAttributes.getLength(); j++ ) {
-                    Node attributeNode = moduleAttributes.item( j );
-                    if ( ModuleExporter.MODULE_NAME.equalsIgnoreCase( attributeNode.getNodeName() ) ) {
-                        importModule( attributeNode.getTextContent() );
-                    }
-                }
+            xml = db.parse( modulesXmlFile );
+            NodeList children = xml.getChildNodes();
+            if ( children.getLength() != 1 ) throw new Exception( "Wrong modules.xml format" );
+            Node node = children.item( 0 );
+            if (node == null || !"modules".equals( node.getNodeName()))
+                throw new Exception( "Wrong modules.xml format" );
+
+            Modules modules = modulesXmlFormat.parse( node );
+
+            // import 'normal' modules
+            for ( Iterator<Module> moduleIterator = modules.getModules().iterator(); moduleIterator.hasNext(); ) {
+                importModule( moduleIterator.next() );
             }
-            nodeList = xml.getElementsByTagName( ModuleExporter.GLOBAL_MODULE );
-            Node module = nodeList.item( 0 );
-            NodeList moduleAttributes = module.getChildNodes();
-            for ( int j = 0; j < moduleAttributes.getLength(); j++ ) {
-                Node attributeNode = moduleAttributes.item( j );
-                if ( ModuleExporter.MODULE_NAME.equalsIgnoreCase( attributeNode.getNodeName() ) ) {
-                    importModule( attributeNode.getTextContent() );
-                }
-            }
+
+            // import 'global' module
+            importModule( modules.getGlobalModule() );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -87,10 +85,10 @@ public class ModuleImporter {
         System.out.println( "  Module import ended" );
     }
 
-    private void importModule( String moduleName ) {
+    private void importModule( Module module ) {
         //Set up project structure:
 
-        String normalizedModuleName = migrationPathManager.normalizePackageName( moduleName );
+        String normalizedModuleName = migrationPathManager.normalizePackageName( module.getName() );
         String[] nameSplit = normalizedModuleName.split( "\\." );
 
         StringBuilder groupIdBuilder = new StringBuilder();

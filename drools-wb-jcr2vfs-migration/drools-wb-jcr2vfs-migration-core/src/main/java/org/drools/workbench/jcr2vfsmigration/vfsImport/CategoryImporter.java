@@ -15,21 +15,24 @@
  */
 package org.drools.workbench.jcr2vfsmigration.vfsImport;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.Iterator;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.drools.workbench.jcr2vfsmigration.jcrExport.CategoryExporter;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.xml.format.CategoriesXmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Categories;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Category;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
-import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -46,40 +49,49 @@ public class CategoryImporter {
 
     @Inject
     protected MigrationPathManager migrationPathManager;
-    
+
+    private CategoriesXmlFormat categoriesXmlFormat = new CategoriesXmlFormat();
+
     public void importAll() {
         System.out.println( "  Category import started" );
 
         Document xml = null;
         try {
+            File categoriesXmlFile = fileManager.getCategoriesExportFile();
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            xml = db.parse( fileManager.getCategoriesExportFile() );
-            Node categoriesNode = xml.getElementsByTagName( CategoryExporter.CATEGORIES ).item( 0 );
+            xml = db.parse( categoriesXmlFile );
 
-            Categories vfsCategories = new Categories();
-            loadChildCategories(categoriesNode.getChildNodes(), vfsCategories);
+            NodeList children = xml.getChildNodes();
+            if ( children.getLength() != 1 ) throw new IllegalArgumentException( "Wrong categories.xml format" );
+            Node node = children.item( 0 );
+            if (node == null || !"categories".equals( node.getNodeName())) throw new Exception( "Wrong categories.xml format" );
 
-            categoriesService.save(migrationPathManager.generatePathForModule("categories.xml"), vfsCategories,null,"");
+            Categories xmlCategories = categoriesXmlFormat.parse( node );
 
+            // Transform xml categories to vfs categories
+            org.guvnor.common.services.shared.metadata.model.Categories vfsCategories =
+                    new org.guvnor.common.services.shared.metadata.model.Categories();
+
+            importCategories( xmlCategories.getCategories(), vfsCategories );
+
+            categoriesService.save(migrationPathManager.generatePathForModule("categories.xml"), vfsCategories, null, "");
         } catch ( Exception e ) {
             e.printStackTrace();
         }
 
         System.out.println( "  Category import ended" );
     }
-    
-    private void loadChildCategories(NodeList categoryNodes, CategoryItem vfsCategoryItem) {
 
-        for ( int i = 0; i < categoryNodes.getLength(); i++ ) {
-            Node category = categoryNodes.item( i );
-            if ( CategoryExporter.CATEGORY.equals( category.getNodeName() ) ) {
-                NamedNodeMap attrs = category.getAttributes();
-                if ( attrs != null ) {
-                    String categoryName = attrs.getNamedItem( CategoryExporter.CATEGORY_NAME ).getNodeValue();
-                    CategoryItem categoryItem = vfsCategoryItem.addChildren( categoryName, "" );
-                    loadChildCategories( category.getChildNodes(), categoryItem );
-                }
+    private void importCategories( Collection<Category> xmlCategoryCollection, CategoryItem vfsCategoryItem ) {
+        for ( Iterator<Category> categoryIterator = xmlCategoryCollection.iterator(); categoryIterator.hasNext(); ) {
+            Category xmlCategory = categoryIterator.next();
+
+            CategoryItem categoryItem = vfsCategoryItem.addChildren( xmlCategory.getName(), "" );
+
+            Categories xmlSubCategories = xmlCategory.getCategories();
+            if ( xmlSubCategories != null ) {
+                importCategories( xmlSubCategories.getCategories(), categoryItem );
             }
         }
     }
