@@ -338,6 +338,8 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableAuditLogWorkItemParameterValue();
 
+    String DecisionTableAuditLogWorkItemParameterValueOnly0( String value );
+
     String DecisionTableAuditLogWorkItemParameterClassName();
 
     String DecisionTableAuditLogNoEntries();

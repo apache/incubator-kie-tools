@@ -63,6 +63,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryAction
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.models.guided.dtable.shared.model.WorkItemColumnParameterValueDiffImpl;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 
 /**
@@ -474,7 +475,12 @@ public class AuditLogEntryCellHelper {
                 sbFields = new SafeHtmlBuilder();
                 for ( BaseColumnFieldDiff diff : diffs ) {
                     String changedFieldName = diff.getFieldName();
-                    if ( changedFieldName.equals( AttributeCol52.FIELD_HIDE_COLUMN ) ) {
+                    if ( changedFieldName.equals( DTColumnConfig52.FIELD_HEADER ) ) {
+                        buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.ColumnHeader(),
+                                                 diff.getOldValue(),
+                                                 diff.getValue(),
+                                                 sbFields );
+                    } else if ( changedFieldName.equals( AttributeCol52.FIELD_HIDE_COLUMN ) ) {
                         buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.HideThisColumn(),
                                                  diff.getOldValue(),
                                                  diff.getValue(),
@@ -1035,21 +1041,24 @@ public class AuditLogEntryCellHelper {
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
-                } else if ( changedFieldName.equals( ActionWorkItemCol52.FIELD_WORKITEM_DEFINITION_DISPLAY_NAME ) ) {
-                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemDisplayName(),
-                                             diff.getOldValue(),
-                                             diff.getValue(),
-                                             sbFields );
                 } else if ( changedFieldName.equals( ActionWorkItemCol52.FIELD_WORKITEM_DEFINITION_PARAMETER_NAME ) ) {
                     buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterName(),
                                              diff.getOldValue(),
                                              diff.getValue(),
                                              sbFields );
                 } else if ( changedFieldName.equals( ActionWorkItemCol52.FIELD_WORKITEM_DEFINITION_PARAMETER_VALUE ) ) {
-                    buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterValue(),
-                                             diff.getOldValue(),
-                                             diff.getValue(),
-                                             sbFields );
+                    if ( diff instanceof WorkItemColumnParameterValueDiffImpl ) {
+                        final String parameterName = ( (WorkItemColumnParameterValueDiffImpl) diff ).getParameterName();
+                        buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterValueOnly0( parameterName ),
+                                                 diff.getOldValue(),
+                                                 diff.getValue(),
+                                                 sbFields );
+                    } else {
+                        buildColumnUpdateFields( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogWorkItemParameterValue(),
+                                                 diff.getOldValue(),
+                                                 diff.getValue(),
+                                                 sbFields );
+                    }
                 }
             }
         }
