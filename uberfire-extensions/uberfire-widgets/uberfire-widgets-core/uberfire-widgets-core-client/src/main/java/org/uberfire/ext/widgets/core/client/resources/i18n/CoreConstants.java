@@ -94,6 +94,8 @@ public interface CoreConstants
 
     String Cloning();
 
+    String IndexClonedRepositoryWarning();
+
     String RepoInformation();
 
     String IsRequired();
