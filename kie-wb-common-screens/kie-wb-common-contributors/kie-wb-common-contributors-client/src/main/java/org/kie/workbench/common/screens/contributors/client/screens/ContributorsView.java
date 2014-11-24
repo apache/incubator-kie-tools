@@ -29,6 +29,7 @@ import org.dashbuilder.renderer.table.client.TableRenderer;
 import static org.dashbuilder.dataset.date.DayOfWeek.*;
 import static org.dashbuilder.dataset.group.DateIntervalType.*;
 import static org.dashbuilder.dataset.sort.SortOrder.*;
+import static org.dashbuilder.dataset.group.AggregateFunctionType.*;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.*;
 import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
 
@@ -78,55 +79,55 @@ public class ContributorsView extends Composite {
 
         areaChartByDate = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newAreaChartSettings()
-                .dataset(ALL)
-                .group(COLUMN_DATE, 80, MONTH)
-                .count("commits")
-                .title("#Commits evolution")
-                .titleVisible(true)
-                .width(600).height(200)
-                .margins(10, 60, 70, 0)
-                .column("Date")
-                .column("#Commits")
-                .filterOff(true)
-                .buildSettings());
+                        .dataset(ALL)
+                        .group(COLUMN_DATE).dynamic(80, MONTH)
+                        .column(COLUMN_DATE)
+                        .column(COUNT, "commits")
+                        .title("#Commits evolution")
+                        .titleVisible(true)
+                        .width(600).height(200)
+                        .margins(10, 60, 70, 0)
+                        .column("Date")
+                        .column("#Commits")
+                        .filterOff(true)
+                        .buildSettings());
 
         bubbleChartByOrg = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newBubbleChartSettings()
                 .dataset(ALL)
                 .group(COLUMN_ORG)
-                .distinct(COLUMN_REPO, "#repositories")
-                .distinct(COLUMN_AUTHOR, "#contributors")
-                .count("#commits")
+                .column(COLUMN_ORG, "Organization")
+                .column(COLUMN_REPO, DISTINCT, "#repositories")
+                .column(COUNT, "Number of commits")
+                .column(COLUMN_ORG, "Organization")
+                .column(COLUMN_AUTHOR, DISTINCT, "#contributors")
                 .title("Commits per organization")
                 .titleVisible(true)
                 .width(400).height(220)
                 .margins(10, 50, 70, 0)
-                .column(COLUMN_ORG, "Organization")
-                .column("#repositories", "#repositories")
-                .column("#commits", "Number of commits")
-                .column(COLUMN_ORG, "Organization")
-                .column("#contributors", "#contributors")
                 .filterOn(false, true, true)
                 .buildSettings());
 
         pieChartYears = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newPieChartSettings()
-                .dataset(ALL)
-                .group(COLUMN_DATE, YEAR)
-                .count("occurrences")
-                .sort(COLUMN_DATE, ASCENDING)
-                .title("Years")
-                .titleVisible(false)
-                .width(230).height(170)
-                .margins(0, 0, 10, 5)
-                .filterOn(false, true, false)
-                .buildSettings());
+                        .dataset(ALL)
+                        .group(COLUMN_DATE).dynamic(YEAR)
+                        .column(COLUMN_DATE)
+                        .column(COUNT, "occurrences")
+                        .sort(COLUMN_DATE, ASCENDING)
+                        .title("Years")
+                        .titleVisible(false)
+                        .width(230).height(170)
+                        .margins(0, 0, 10, 5)
+                        .filterOn(false, true, false)
+                        .buildSettings());
 
         pieChartQuarters = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newPieChartSettings()
                 .dataset(ALL)
                 .group(COLUMN_DATE).fixed(QUARTER)
-                .count("occurrences")
+                .column(COLUMN_DATE)
+                .column(COUNT, "occurrences")
                 .title("Quarters")
                 .titleVisible(false)
                 .width(230).height(170)
@@ -138,7 +139,8 @@ public class ContributorsView extends Composite {
                 DisplayerSettingsFactory.newBarChartSettings()
                 .dataset(ALL)
                 .group(COLUMN_DATE).fixed(DAY_OF_WEEK).firstDay(SUNDAY)
-                .count("occurrences")
+                .column(COLUMN_DATE)
+                .column(COUNT, "occurrences")
                 .title("Day of week")
                 .titleVisible(false)
                 .width(230).height(170)
@@ -150,16 +152,16 @@ public class ContributorsView extends Composite {
         tableAll = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newTableSettings()
                 .dataset(ALL)
+                .column(COLUMN_AUTHOR, "Author")
+                .column(COLUMN_REPO, "Repository")
+                .column(COLUMN_DATE, "Date")
+                .column(COLUMN_MSG, "Commit")
                 .title("Commits")
                 .titleVisible(false)
                 .tablePageSize(5)
                 .tableWidth(1000)
                 .tableOrderEnabled(true)
                 .renderer(TableRenderer.UUID)
-                .column(COLUMN_AUTHOR, "Author")
-                .column(COLUMN_REPO, "Repository")
-                .column(COLUMN_DATE, "Date")
-                .column(COLUMN_MSG, "Commit")
                 .filterOn(true, true, true)
                 .buildSettings());
 
@@ -167,11 +169,10 @@ public class ContributorsView extends Composite {
                 DisplayerSettingsFactory.newSelectorSettings()
                 .dataset(ALL)
                 .group(COLUMN_ORG)
-                .count("#Commits")
+                .column(COLUMN_ORG, "Organization")
+                .column(COUNT, "#Commits")
                 .title("Organization Selector")
                 .sort(COLUMN_ORG, ASCENDING)
-                .column("Organization")
-                .column("#Commits")
                 .filterOn(false, true, true)
                 .buildSettings());
 
@@ -179,11 +180,10 @@ public class ContributorsView extends Composite {
                 DisplayerSettingsFactory.newSelectorSettings()
                 .dataset(ALL)
                 .group(COLUMN_REPO)
-                .count("#Commits")
+                .column(COLUMN_REPO, "Repository")
+                .column(COUNT, "#Commits")
                 .sort(COLUMN_REPO, ASCENDING)
                 .title("Repository Selector")
-                .column("Repository")
-                .column("#Commits")
                 .filterOn(false, true, true)
                 .buildSettings());
 
@@ -191,11 +191,10 @@ public class ContributorsView extends Composite {
                 DisplayerSettingsFactory.newSelectorSettings()
                 .dataset(ALL)
                 .group(COLUMN_AUTHOR)
-                .count("#Commits")
+                .column(COLUMN_AUTHOR, "Author")
+                .column(COUNT, "#Commits")
                 .sort(COLUMN_AUTHOR, ASCENDING)
                 .title("Author Selector")
-                .column("Author")
-                .column("#Commits")
                 .filterOn(false, true, true)
                 .buildSettings());
 
@@ -203,11 +202,10 @@ public class ContributorsView extends Composite {
                 DisplayerSettingsFactory.newSelectorSettings()
                 .dataset(ALL)
                 .group(COLUMN_AUTHOR)
-                .count("#Commits")
+                .column(COLUMN_AUTHOR, "Top Contributor")
+                .column(COUNT, "#Commits")
                 .sort("#Commits", DESCENDING)
                 .title("Top Contributor Selector")
-                .column("Top Contributor")
-                .column("#Commits")
                 .filterOn(false, true, true)
                 .buildSettings());
 
