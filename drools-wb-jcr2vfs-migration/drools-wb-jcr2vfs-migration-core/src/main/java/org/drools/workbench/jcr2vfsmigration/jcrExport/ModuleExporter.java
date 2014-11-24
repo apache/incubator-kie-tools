@@ -22,6 +22,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.RepositoryModuleService;
+import org.drools.guvnor.server.repository.Preferred;
+import org.drools.repository.RulesRepository;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
@@ -37,6 +39,10 @@ public class ModuleExporter {
 
     @Inject
     protected RepositoryModuleService jcrRepositoryModuleService;
+
+    @Inject
+    @Preferred
+    private RulesRepository rulesRepository;
 
     @Inject
     FileManager fileManager;
@@ -75,6 +81,16 @@ public class ModuleExporter {
 
     private Module export( ModuleType moduleType, org.drools.guvnor.client.rpc.Module jcrModule ) {
         System.out.format( "Module [%s] exported. %n", jcrModule.getName() );
+
+        //setting CategoryRules to jcr module (needed in asset migration)
+        for( org.drools.repository.ModuleIterator packageItems = rulesRepository.listModules(); packageItems.hasNext(); ) {
+            org.drools.repository.ModuleItem packageItem = packageItems.next();
+            if( packageItem.getUUID().equals( jcrModule.getUuid() ) ){
+                jcrModule.setCatRules( packageItem.getCategoryRules() );
+                break;
+            }
+        }
+
         return new Module( moduleType, jcrModule.getUuid(), jcrModule.getName(), jcrModule.getCatRules() );
     }
 }
