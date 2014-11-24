@@ -75,6 +75,6 @@ public class ModuleExporter {
 
     private Module export( ModuleType moduleType, org.drools.guvnor.client.rpc.Module jcrModule ) {
         System.out.format( "Module [%s] exported. %n", jcrModule.getName() );
-        return new Module( moduleType, jcrModule.getUuid(), jcrModule.getName() );
+        return new Module( moduleType, jcrModule.getUuid(), jcrModule.getName(), jcrModule.getCatRules() );
     }
 }

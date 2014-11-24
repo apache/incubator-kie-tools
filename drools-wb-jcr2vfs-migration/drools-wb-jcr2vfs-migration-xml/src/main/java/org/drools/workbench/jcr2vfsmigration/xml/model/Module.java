@@ -15,16 +15,21 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Module {
 
     private ModuleType type;
     private String uuid;
     private String name;
+    private Map<String, String> catRules;
 
-    public Module( ModuleType type, String uuid, String name ) {
+    public Module( ModuleType type, String uuid, String name, Map<String, String> catRules  ) {
         this.type = type;
         this.uuid = uuid;
         this.name = name;
+        this.catRules = catRules != null ? catRules : new HashMap<String, String>();
     }
 
     public ModuleType getType() {
@@ -37,5 +42,9 @@ public class Module {
 
     public String getName() {
         return name;
+    }
+
+    public Map<String, String> getCatRules() {
+        return catRules;
     }
 }
