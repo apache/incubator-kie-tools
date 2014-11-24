@@ -38,11 +38,11 @@ public class CategoriesXmlFormat implements XmlFormat<Categories> {
         if ( sb == null || categories == null ) throw new IllegalArgumentException( "No output or Categories specified" );
 
         initialize();
-        sb.append( "<" ).append( CATEGORIES ).append( ">" );
+        sb.append( LT ).append( CATEGORIES ).append( GT );
         for ( Iterator<Category> it = categories.getCategories().iterator(); it.hasNext(); ) {
             categoryXmlFormat.format( sb, it.next() );
         }
-        sb.append( "</" ).append( CATEGORIES ).append( ">" );
+        sb.append( LT_SLASH ).append( CATEGORIES ).append( GT );
     }
 
     @Override

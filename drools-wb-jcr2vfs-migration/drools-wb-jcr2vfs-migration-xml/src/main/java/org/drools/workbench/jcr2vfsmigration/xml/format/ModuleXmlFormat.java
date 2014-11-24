@@ -35,12 +35,12 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     public void format( StringBuilder sb, Module module ) {
         if ( sb == null || module == null ) throw new IllegalArgumentException( "No output or Module specified" );
 
-        sb.append( "<" ).append( MODULE ).append( ">" );
-        sb.append( "<" ).append( MODULE_UUID ).append( ">" ).append( module.getUuid() ).append( "</" ).append( MODULE_UUID ).append( ">" );
-        sb.append( "<" ).append( MODULE_TYPE ).append( ">" ).append( module.getType() ).append( "</" ).append( MODULE_TYPE ).append( ">" );
-        sb.append( "<" ).append( MODULE_NAME ).append( ">" ).append( module.getName() ).append( "</" ).append( MODULE_NAME ).append( ">" );
+        sb.append( LT ).append( MODULE ).append( GT );
+        sb.append( LT ).append( MODULE_UUID ).append( GT ).append( module.getUuid() ).append( LT_SLASH ).append( MODULE_UUID ).append( GT );
+        sb.append( LT ).append( MODULE_TYPE ).append( GT ).append( module.getType() ).append( LT_SLASH ).append( MODULE_TYPE ).append( GT );
+        sb.append( LT ).append( MODULE_NAME ).append( GT ).append( module.getName() ).append( LT_SLASH ).append( MODULE_NAME ).append( GT );
         sb.append( formatCatRules( module ) );
-        sb.append( "</" ).append( MODULE ).append( ">" );
+        sb.append( LT_SLASH ).append( MODULE ).append( GT );
         System.out.format( "Module [%s] exported. %n", module.getName() );
     }
 
@@ -71,13 +71,13 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     }
 
     private String formatCatRules( Module module ) {
-        StringBuilder sbCatRules = new StringBuilder( "<" ).append( MODULE_CATRULES ).append( ">" );
+        StringBuilder sbCatRules = new StringBuilder( LT ).append( MODULE_CATRULES ).append( GT );
         Map<String, String> mapCatRules = module.getCatRules();
         if ( mapCatRules.size() > 0 ) {
             ExportXmlUtils xmlUtils = new ExportXmlUtils();
             sbCatRules.append( xmlUtils.formatMap( mapCatRules ) );
         }
-        sbCatRules.append( "</" ).append( MODULE_CATRULES ).append( ">" );
+        sbCatRules.append( LT_SLASH ).append( MODULE_CATRULES ).append( GT );
         return sbCatRules.toString();
     }
 

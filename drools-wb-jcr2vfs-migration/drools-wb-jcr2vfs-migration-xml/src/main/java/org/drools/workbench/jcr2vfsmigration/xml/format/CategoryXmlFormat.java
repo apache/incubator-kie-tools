@@ -36,12 +36,12 @@ public class CategoryXmlFormat implements XmlFormat<Category> {
         if ( sb == null || category == null ) throw new IllegalArgumentException( "No output or Category specified" );
 
         initialize();
-        sb.append( "<" ).append( CATEGORY ).append( " " ).append( CATEGORY_NAME ).append( "=\"" ).append( category.getName() ).append( "\"" ).append( ">" );
+        sb.append( LT ).append( CATEGORY ).append( " " ).append( CATEGORY_NAME ).append( "=\"" ).append( category.getName() ).append( "\"" ).append( GT );
         if ( category.getCategories() != null ) {
             if ( categoriesXmlFormat == null ) categoriesXmlFormat = new CategoriesXmlFormat();
             categoriesXmlFormat.format( sb, category.getCategories() );
         }
-        sb.append( "</" ).append( CATEGORY ).append( ">" );
+        sb.append( LT_SLASH ).append( CATEGORY ).append( GT );
         System.out.format( "Category [%s] exported. %n", category.getName() );
     }
 

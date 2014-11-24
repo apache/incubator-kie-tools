@@ -22,6 +22,8 @@ public interface XmlFormat<T> {
     static final String LT = "<";
     static final String LT_SLASH = "</";
     static final String GT = ">";
+    static final String CDATA_OPEN = "<![CDATA[";
+    static final String CDATA_CLOSE = "]]>";
 
     void format(StringBuilder sb, T t);
 

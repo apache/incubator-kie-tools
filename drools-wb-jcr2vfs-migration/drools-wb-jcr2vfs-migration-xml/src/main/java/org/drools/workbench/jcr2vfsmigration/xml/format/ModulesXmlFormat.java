@@ -38,12 +38,12 @@ public class ModulesXmlFormat implements XmlFormat<Modules> {
     public void format( StringBuilder sb, Modules modules ) {
         if ( sb == null || modules == null ) throw new IllegalArgumentException( "No output or Modules specified" );
 
-        sb.append( "<" ).append( MODULES ).append( ">" );
+        sb.append( LT ).append( MODULES ).append( GT );
         moduleXmlFormat.format( sb, modules.getGlobalModule() );
         for ( Iterator<Module> it = modules.getModules().iterator(); it.hasNext(); ) {
             moduleXmlFormat.format( sb, it.next() );
         }
-        sb.append( "</" ).append( MODULES ).append( ">" );
+        sb.append( LT_SLASH ).append( MODULES ).append( GT );
     }
 
     @Override
