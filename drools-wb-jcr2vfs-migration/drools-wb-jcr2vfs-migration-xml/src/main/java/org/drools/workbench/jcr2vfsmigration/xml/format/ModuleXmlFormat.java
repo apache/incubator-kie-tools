@@ -30,6 +30,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     public static final String MODULE_UUID = "uuid";
     public static final String MODULE_TYPE = "type";
     public static final String MODULE_NAME = "name";
+    public static final String MODULE_NORM_PACKAGENAME = "normalizedPackageName";
     public static final String MODULE_PACKAGEHEADER = "packageHeaderInfo";
     public static final String MODULE_CATRULES = "catRules";
 
@@ -38,9 +39,15 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         if ( sb == null || module == null ) throw new IllegalArgumentException( "No output or Module specified" );
 
         sb.append( LT ).append( MODULE ).append( GT );
-        sb.append( LT ).append( MODULE_UUID ).append( GT ).append( module.getUuid() ).append( LT_SLASH ).append( MODULE_UUID ).append( GT );
-        sb.append( LT ).append( MODULE_TYPE ).append( GT ).append( module.getType() ).append( LT_SLASH ).append( MODULE_TYPE ).append( GT );
-        sb.append( LT ).append( MODULE_NAME ).append( GT ).append( module.getName() ).append( LT_SLASH ).append( MODULE_NAME ).append( GT );
+
+        sb.append( LT ).append( MODULE_UUID ).append( GT ).append( module.getUuid() ).append( LT_SLASH )
+                .append( MODULE_UUID ).append( GT );
+        sb.append( LT ).append( MODULE_TYPE ).append( GT ).append( module.getType() ).append( LT_SLASH )
+                .append( MODULE_TYPE ).append( GT );
+        sb.append( LT ).append( MODULE_NAME ).append( GT ).append( module.getName() ).append( LT_SLASH )
+                .append( MODULE_NAME ).append( GT );
+        sb.append( LT ).append( MODULE_NORM_PACKAGENAME ).append( GT ).append( module.getNormalizedPackageName() )
+                .append( LT_SLASH ).append( MODULE_NORM_PACKAGENAME ).append( GT );
 
         // Package header info
         sb.append( formatPackageHeaderInfo( module.getPackageHeaderInfo() ) );
@@ -57,6 +64,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         if ( moduleNode == null || !MODULE.equals( moduleNode.getNodeName() ) ) throw new IllegalArgumentException( "No input module node specified for parsing" );
 
         String name = null;
+        String normalizedPackageName = null;
         String uuid = null;
         String packageHeaderInfo = null;
         ModuleType type = null;
@@ -68,6 +76,8 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
             String nodeContent = propertyNode.getTextContent();
             if ( MODULE_NAME.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 name = nodeContent;
+            } else if ( MODULE_NORM_PACKAGENAME.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
+                normalizedPackageName = nodeContent;
             } else if ( MODULE_UUID.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 uuid = nodeContent;
             } else if ( MODULE_TYPE.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
@@ -78,7 +88,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                 catRules = parseCatRules( propertyNode );
             }
         }
-        return new Module( type, uuid, name, packageHeaderInfo, catRules );
+        return new Module( type, uuid, name, normalizedPackageName, packageHeaderInfo, catRules );
     }
 
     private String formatCatRules( Module module ) {
