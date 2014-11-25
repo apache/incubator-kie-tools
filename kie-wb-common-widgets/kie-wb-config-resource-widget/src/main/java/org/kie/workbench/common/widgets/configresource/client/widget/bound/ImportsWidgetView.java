@@ -41,18 +41,10 @@ public interface ImportsWidgetView
 
         Widget asWidget();
 
-        boolean isDirty();
-
-        void setNotDirty();
-
     }
 
     void setContent( final List<Import> allAvailableImportTypes,
                      final List<Import> importTypes,
                      final boolean isReadOnly );
-
-    boolean isDirty();
-
-    void setNotDirty();
 
 }

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.javaeditor.client.widget;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -32,8 +31,6 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
 
     private final ResizableTextArea textArea = new ResizableTextArea();
 
-    private boolean isDirty;
-
     public EditJavaSourceWidget() {
         textArea.setWidth( "100%" );
         textArea.getElement().setAttribute( "spellcheck",
@@ -41,12 +38,6 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
 
         Element element = textArea.getElement();
         DOM.setStyleAttribute( element, "fontFamily", "monospace" );
-
-        textArea.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                isDirty = true;
-            }
-        } );
 
         textArea.addKeyDownHandler( new KeyDownHandler() {
 
@@ -87,14 +78,6 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
         final String right = textArea.getText().substring( i,
                                                            textArea.getText().length() );
         textArea.setText( left + ins + right );
-    }
-
-    public void setDirty( boolean dirty ) {
-        this.isDirty = dirty;
-    }
-
-    public boolean isDirty() {
-        return isDirty;
     }
 
     public void setReadonly( boolean readonly ) {

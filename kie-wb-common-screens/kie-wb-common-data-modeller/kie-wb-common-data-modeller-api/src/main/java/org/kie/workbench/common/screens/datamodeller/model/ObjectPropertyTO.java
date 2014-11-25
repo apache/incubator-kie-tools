@@ -193,4 +193,60 @@ public class ObjectPropertyTO {
         }
         return -1;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ObjectPropertyTO that = (ObjectPropertyTO) o;
+
+        if (baseType != that.baseType) {
+            return false;
+        }
+        if (modifiers != that.modifiers) {
+            return false;
+        }
+        if (multiple != that.multiple) {
+            return false;
+        }
+        if (annotations != null ? !annotations.equals(that.annotations) : that.annotations != null) {
+            return false;
+        }
+        if (bag != null ? !bag.equals(that.bag) : that.bag != null) {
+            return false;
+        }
+        if (className != null ? !className.equals(that.className) : that.className != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (originalName != null ? !originalName.equals(that.originalName) : that.originalName != null) {
+            return false;
+        }
+        if (status != that.status) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = className != null ? className.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (originalName != null ? originalName.hashCode() : 0);
+        result = 31 * result + (multiple ? 1 : 0);
+        result = 31 * result + (baseType ? 1 : 0);
+        result = 31 * result + (bag != null ? bag.hashCode() : 0);
+        result = 31 * result + modifiers;
+        result = 31 * result + (annotations != null ? annotations.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        return result;
+    }
 }

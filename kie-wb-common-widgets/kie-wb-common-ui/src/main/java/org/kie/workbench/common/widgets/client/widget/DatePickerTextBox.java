@@ -50,7 +50,6 @@ public class DatePickerTextBox extends DatePicker {
                     textWidget.setText( visualFormatFormatter.format( date ) );
 
                     valueChanged();
-                    makeDirty();
                     datePickerPopUp.hide();
                 } catch ( Exception e ) {
                     Window.alert( CommonConstants.INSTANCE.InvalidDateFormatMessage() );
@@ -91,7 +90,6 @@ public class DatePickerTextBox extends DatePicker {
                 TextBox box = (TextBox) event.getSource();
                 textWidget.setText( box.getText() );
                 valueChanged();
-                makeDirty();
                 datePickerPopUp.hide();
             }
         } );

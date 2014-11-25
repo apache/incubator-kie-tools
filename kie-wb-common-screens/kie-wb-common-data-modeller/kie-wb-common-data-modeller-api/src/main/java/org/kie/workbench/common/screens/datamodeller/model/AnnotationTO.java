@@ -89,4 +89,40 @@ public class AnnotationTO {
         }
         return strId.toString();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AnnotationTO that = (AnnotationTO) o;
+
+        if (annotationDefinition != null ? !annotationDefinition.equals(that.annotationDefinition) : that.annotationDefinition != null) {
+            return false;
+        }
+        if (className != null ? !className.equals(that.className) : that.className != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (values != null ? !values.equals(that.values) : that.values != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = className != null ? className.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (annotationDefinition != null ? annotationDefinition.hashCode() : 0);
+        result = 31 * result + (values != null ? values.hashCode() : 0);
+        return result;
+    }
 }

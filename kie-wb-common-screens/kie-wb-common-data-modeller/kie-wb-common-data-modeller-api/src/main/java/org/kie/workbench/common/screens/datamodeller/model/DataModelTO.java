@@ -178,5 +178,49 @@ public class DataModelTO {
     public Map<String, String> getSources() {
         return sources;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DataModelTO that = (DataModelTO) o;
+
+        if (id != that.id) {
+            return false;
+        }
+        if (dataObjects != null ? !dataObjects.equals(that.dataObjects) : that.dataObjects != null) {
+            return false;
+        }
+        if (deletedDataObjects != null ? !deletedDataObjects.equals(that.deletedDataObjects) : that.deletedDataObjects != null) {
+            return false;
+        }
+        if (externalClasses != null ? !externalClasses.equals(that.externalClasses) : that.externalClasses != null) {
+            return false;
+        }
+        if (parentProjectName != null ? !parentProjectName.equals(that.parentProjectName) : that.parentProjectName != null) {
+            return false;
+        }
+        if (sources != null ? !sources.equals(that.sources) : that.sources != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parentProjectName != null ? parentProjectName.hashCode() : 0;
+        result = 31 * result + (dataObjects != null ? dataObjects.hashCode() : 0);
+        result = 31 * result + (sources != null ? sources.hashCode() : 0);
+        result = 31 * result + (externalClasses != null ? externalClasses.hashCode() : 0);
+        result = 31 * result + (deletedDataObjects != null ? deletedDataObjects.hashCode() : 0);
+        result = 31 * result + id;
+        return result;
+    }
 }
 

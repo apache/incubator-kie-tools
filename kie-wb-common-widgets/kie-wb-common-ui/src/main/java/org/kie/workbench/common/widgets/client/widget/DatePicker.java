@@ -21,14 +21,14 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.ValueChanged;
 
-abstract class DatePicker extends DirtyableComposite {
+abstract class DatePicker extends Composite {
 
     protected DatePickerPopUp datePickerPopUp;
 

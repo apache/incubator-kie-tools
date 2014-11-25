@@ -19,14 +19,13 @@ package org.kie.workbench.common.widgets.metadata.client.widget;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.metadata.client.resources.Images;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
@@ -38,10 +37,10 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  * It is intended to work with the meta data form.
  */
 public class CategorySelectorWidget
-        extends DirtyableComposite {
+        extends Composite {
 
     private Metadata data;
-    private DirtyableFlexTable layout = new DirtyableFlexTable();
+    private FlexTable layout = new FlexTable();
     private FlexTable list;
     private boolean readOnly;
 
@@ -88,7 +87,6 @@ public class CategorySelectorWidget
 
     protected void removeCategory( int idx ) {
         data.removeCategory( idx );
-        makeDirty();
         resetBox();
     }
 
@@ -99,7 +97,6 @@ public class CategorySelectorWidget
                           0,
                           list );
         loadData( list );
-        makeDirty();
     }
 
     private void loadData( final FlexTable list ) {

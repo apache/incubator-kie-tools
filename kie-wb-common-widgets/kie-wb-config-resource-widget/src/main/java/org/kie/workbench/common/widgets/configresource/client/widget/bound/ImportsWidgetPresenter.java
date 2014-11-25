@@ -99,14 +99,4 @@ public class ImportsWidgetPresenter implements ImportsWidgetView.Presenter,
         return view.asWidget();
     }
 
-    @Override
-    public boolean isDirty() {
-        return view.isDirty();
-    }
-
-    @Override
-    public void setNotDirty() {
-        view.setNotDirty();
-    }
-
 }

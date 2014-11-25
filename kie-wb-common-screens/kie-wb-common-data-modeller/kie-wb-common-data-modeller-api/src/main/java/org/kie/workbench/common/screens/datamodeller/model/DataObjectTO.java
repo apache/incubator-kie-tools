@@ -275,4 +275,72 @@ public class DataObjectTO {
     public void setPath( Path path ) {
         this.path = path;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        DataObjectTO that = (DataObjectTO) o;
+
+        if (abstractModifier != that.abstractModifier) {
+            return false;
+        }
+        if (finalModifier != that.finalModifier) {
+            return false;
+        }
+        if (interfaceModifier != that.interfaceModifier) {
+            return false;
+        }
+        if (annotations != null ? !annotations.equals(that.annotations) : that.annotations != null) {
+            return false;
+        }
+        if (fingerPrint != null ? !fingerPrint.equals(that.fingerPrint) : that.fingerPrint != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (originalClassName != null ? !originalClassName.equals(that.originalClassName) : that.originalClassName != null) {
+            return false;
+        }
+        if (packageName != null ? !packageName.equals(that.packageName) : that.packageName != null) {
+            return false;
+        }
+        if (path != null ? !path.equals(that.path) : that.path != null) {
+            return false;
+        }
+        if (properties != null ? !properties.equals(that.properties) : that.properties != null) {
+            return false;
+        }
+        if (status != that.status) {
+            return false;
+        }
+        if (superClassName != null ? !superClassName.equals(that.superClassName) : that.superClassName != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
+        result = 31 * result + (superClassName != null ? superClassName.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (originalClassName != null ? originalClassName.hashCode() : 0);
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        result = 31 * result + (annotations != null ? annotations.hashCode() : 0);
+        result = 31 * result + (fingerPrint != null ? fingerPrint.hashCode() : 0);
+        result = 31 * result + (abstractModifier ? 1 : 0);
+        result = 31 * result + (interfaceModifier ? 1 : 0);
+        result = 31 * result + (finalModifier ? 1 : 0);
+        result = 31 * result + (path != null ? path.hashCode() : 0);
+        return result;
+    }
 }

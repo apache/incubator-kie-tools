@@ -41,6 +41,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.models.datamodel.imports.Import;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
@@ -71,7 +72,6 @@ public class ImportsWidgetViewImpl
 
     private ImportsWidgetView.Presenter presenter;
 
-    private boolean isDirty = false;
     private boolean isReadOnly = false;
 
     public ImportsWidgetViewImpl() {
@@ -117,7 +117,6 @@ public class ImportsWidgetViewImpl
                 if ( Window.confirm( ImportConstants.INSTANCE.promptForRemovalOfImport0( importType.getType() ) ) ) {
                     dataProvider.getList().remove( index );
                     presenter.onRemoveImport( importType );
-                    isDirty = true;
                 }
             }
         } );
@@ -146,17 +145,6 @@ public class ImportsWidgetViewImpl
         this.dataProvider.setList( importTypes );
         this.addImportButton.setEnabled( !isReadOnly );
         this.isReadOnly = isReadOnly;
-        setNotDirty();
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setNotDirty() {
-        isDirty = false;
     }
 
     @UiHandler("addImportButton")
@@ -174,9 +162,12 @@ public class ImportsWidgetViewImpl
                 final Import importType = new Import( addImportPopup.getImportType() );
                 dataProvider.getList().add( importType );
                 presenter.onAddImport( importType );
-                isDirty = true;
             }
         };
     }
 
+    @Override
+    public boolean confirmClose() {
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+    }
 }

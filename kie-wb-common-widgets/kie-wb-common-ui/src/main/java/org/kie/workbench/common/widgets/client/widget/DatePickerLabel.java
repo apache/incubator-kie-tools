@@ -52,7 +52,6 @@ public class DatePickerLabel extends DatePicker {
                     labelWidget.setText( textWidget.getText() );
 
                     valueChanged();
-                    makeDirty();
                     panel.clear();
                     panel.add( labelWidget );
                     datePickerPopUp.hide();
@@ -99,7 +98,6 @@ public class DatePickerLabel extends DatePicker {
                 textWidget.setText( box.getText() );
                 labelWidget.setText( box.getText() );
                 valueChanged();
-                makeDirty();
                 panel.clear();
                 panel.add( labelWidget );
                 datePickerPopUp.hide();

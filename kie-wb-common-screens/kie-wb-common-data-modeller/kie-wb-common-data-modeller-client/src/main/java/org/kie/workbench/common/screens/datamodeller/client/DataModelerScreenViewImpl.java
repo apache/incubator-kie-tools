@@ -98,10 +98,7 @@ public class DataModelerScreenViewImpl
 
     private void updateChangeStatus(DataModelerEvent event) {
         if (context != null && event.isFrom(context.getDataModel())) {
-            Boolean oldDirtyStatus = context.isDirty();
-            context.setDirty(true);
-            context.setEditionStatus( DataModelerContext.EditionStatus.EDITOR_CHANGED );
-            dataModelerEvent.fire(new DataModelStatusChangeEvent(null, context.getDataModel(), oldDirtyStatus, context.isDirty()));
+            dataModelerEvent.fire(new DataModelStatusChangeEvent(null, context.getDataModel(), true, true));
         }
     }
 
@@ -127,8 +124,4 @@ public class DataModelerScreenViewImpl
         return context;
     }
 
-    @Override
-    public void setNotDirty() {
-        context.setDirty(false);
-    }
 }

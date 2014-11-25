@@ -71,7 +71,6 @@ public class ImportsWidgetViewImpl
 
     private ImportsWidgetView.Presenter presenter;
 
-    private boolean isDirty = false;
     private boolean isReadOnly = false;
 
     public ImportsWidgetViewImpl() {
@@ -116,7 +115,6 @@ public class ImportsWidgetViewImpl
                 }
                 if ( Window.confirm( ImportConstants.INSTANCE.promptForRemovalOfImport0( importType.getType() ) ) ) {
                     dataProvider.getList().remove( index );
-                    isDirty = true;
                 }
             }
         } );
@@ -143,17 +141,6 @@ public class ImportsWidgetViewImpl
         this.dataProvider.setList( importTypes );
         this.addImportButton.setEnabled( !isReadOnly );
         this.isReadOnly = isReadOnly;
-        setNotDirty();
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setNotDirty() {
-        isDirty = false;
     }
 
     @UiHandler("addImportButton")
@@ -169,7 +156,6 @@ public class ImportsWidgetViewImpl
             public void execute() {
                 final Import importType = new Import( addImportPopup.getImportType() );
                 dataProvider.getList().add( importType );
-                isDirty = true;
             }
         };
     }

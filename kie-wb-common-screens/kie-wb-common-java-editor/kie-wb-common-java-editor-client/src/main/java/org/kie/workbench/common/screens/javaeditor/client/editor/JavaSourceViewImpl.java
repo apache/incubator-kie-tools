@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.javaeditor.client.editor;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.screens.javaeditor.client.widget.ViewJavaSourceWidget;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class JavaSourceViewImpl
@@ -45,7 +47,7 @@ public class JavaSourceViewImpl
     }
 
     @Override
-    public void setNotDirty() {
-
+    public boolean confirmClose() {
+        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
     }
 }

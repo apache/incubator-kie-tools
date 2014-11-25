@@ -54,11 +54,6 @@ public class KieTextEditorViewImpl
     }
 
     @Override
-    public void setNotDirty() {
-        super.view.setDirty( false );
-    }
-
-    @Override
     public KieEditorTitle getTitleWidget() {
         return kieEditorTitle;
     }
@@ -83,5 +78,10 @@ public class KieTextEditorViewImpl
     @Override
     public String getContent() {
         return super.view.getContent();
+    }
+
+    @Override
+    public boolean confirmClose() {
+        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
     }
 }

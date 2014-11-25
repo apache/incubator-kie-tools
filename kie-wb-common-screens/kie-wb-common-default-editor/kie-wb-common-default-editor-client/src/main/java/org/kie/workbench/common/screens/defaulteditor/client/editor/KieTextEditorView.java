@@ -25,8 +25,6 @@ public interface KieTextEditorView
 
     void makeReadOnly();
 
-    boolean isDirty();
-
     String getContent();
 
 }

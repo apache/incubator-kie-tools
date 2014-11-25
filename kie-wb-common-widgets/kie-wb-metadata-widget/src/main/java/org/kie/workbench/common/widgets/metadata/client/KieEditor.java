@@ -60,7 +60,7 @@ public abstract class KieEditor {
 
     protected boolean isReadOnly;
 
-    private KieEditorView baseView;
+    protected KieEditorView baseView;
 
     protected ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = null;
 
@@ -97,12 +97,13 @@ public abstract class KieEditor {
     protected PlaceRequest place;
     private ClientResourceType type;
     private ViewDRLSourceWidget sourceWidget;
+    protected Integer originalHash;
 
     protected KieEditor() {
     }
 
     protected KieEditor(
-            KieEditorView baseView ) {
+            KieEditorView baseView) {
         this.baseView = baseView;
 
     }
@@ -112,32 +113,32 @@ public abstract class KieEditor {
         overviewWidget.showVersionsTab();
     }
 
-    protected void init( ObservablePath path,
-                         PlaceRequest place,
-                         ClientResourceType type ) {
-        init( path, place, type, true );
+    protected void init(ObservablePath path,
+            PlaceRequest place,
+            ClientResourceType type) {
+        init(path, place, type, true);
     }
 
-    protected void init( ObservablePath path,
-                         PlaceRequest place,
-                         ClientResourceType type,
-                         boolean addFileChangeListeners ) {
+    protected void init(ObservablePath path,
+            PlaceRequest place,
+            ClientResourceType type,
+            boolean addFileChangeListeners) {
         this.place = place;
         this.type = type;
 
         baseView.showLoading();
 
-        this.isReadOnly = this.place.getParameter( "readOnly", null ) == null ? false : true;
+        this.isReadOnly = this.place.getParameter("readOnly", null) == null ? false : true;
 
         versionRecordManager.init(
-                this.place.getParameter( "version", null ),
+                this.place.getParameter("version", null),
                 path,
                 new Callback<VersionRecord>() {
                     @Override
-                    public void callback( VersionRecord versionRecord ) {
-                        selectVersion( versionRecord );
+                    public void callback(VersionRecord versionRecord) {
+                        selectVersion(versionRecord);
                     }
-                } );
+                });
 
         versionRecordManager.setShowMoreCommand(
                 new Command() {
@@ -145,10 +146,10 @@ public abstract class KieEditor {
                     public void execute() {
                         showVersions();
                     }
-                } );
+                });
 
-        if ( addFileChangeListeners ) {
-            addFileChangeListeners( path );
+        if (addFileChangeListeners) {
+            addFileChangeListeners(path);
         }
 
         makeMenuBar();
@@ -157,42 +158,42 @@ public abstract class KieEditor {
 
     }
 
-    private void selectVersion( VersionRecord versionRecord ) {
-        baseView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+    private void selectVersion(VersionRecord versionRecord) {
+        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
 
-        if ( versionRecordManager.isLatest( versionRecord ) ) {
+        if (versionRecordManager.isLatest(versionRecord)) {
             isReadOnly = false;
         } else {
             isReadOnly = true;
         }
 
-        versionRecordManager.setVersion( versionRecord.id() );
+        versionRecordManager.setVersion(versionRecord.id());
 
         loadContent();
     }
 
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
-        return new CommandDrivenErrorCallback( baseView,
-                                               new CommandBuilder().addNoSuchFileException(
-                                                       baseView,
-                                                       multiPage,
-                                                       menus ).build()
+        return new CommandDrivenErrorCallback(baseView,
+                new CommandBuilder().addNoSuchFileException(
+                        baseView,
+                        multiPage,
+                        menus).build()
         );
     }
 
     protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
-        return new CommandDrivenErrorCallback( baseView,
-                                               new CommandBuilder().addSourceCodeGenerationFailedException(
-                                                       baseView,
-                                                       sourceWidget ).build()
+        return new CommandDrivenErrorCallback(baseView,
+                new CommandBuilder().addSourceCodeGenerationFailedException(
+                        baseView,
+                        sourceWidget).build()
         );
     }
 
     protected void addSourcePage() {
         sourceWidget = new ViewDRLSourceWidget();
         addPage(
-                new Page( sourceWidget,
-                          CommonConstants.INSTANCE.SourceTabTitle() ) {
+                new Page(sourceWidget,
+                        CommonConstants.INSTANCE.SourceTabTitle()) {
                     @Override
                     public void onFocus() {
                         onSourceTabSelected();
@@ -202,24 +203,28 @@ public abstract class KieEditor {
                     public void onLostFocus() {
 
                     }
-                } );
+                });
     }
 
-    protected void addPage( Page page ) {
-        multiPage.addPage( page );
+    protected void addPage(Page page) {
+        multiPage.addPage(page);
     }
 
-    protected void resetEditorPages( final Overview overview ) {
+    public void setOriginalHash(Integer originalHash) {
+        this.originalHash = originalHash;
+    }
 
-        versionRecordManager.setVersions( overview.getMetadata().getVersion() );
-        this.overviewWidget.setContent( overview, versionRecordManager.getPathToLatest(), versionRecordManager.getVersion() );
+    protected void resetEditorPages(final Overview overview) {
+
+        versionRecordManager.setVersions(overview.getMetadata().getVersion());
+        this.overviewWidget.setContent(overview, versionRecordManager.getPathToLatest(), versionRecordManager.getVersion());
         this.metadata = overview.getMetadata();
 
         multiPage.clear();
 
         addPage(
-                new Page( baseView,
-                          CommonConstants.INSTANCE.EditTabTitle() ) {
+                new Page(baseView,
+                        CommonConstants.INSTANCE.EditTabTitle()) {
                     @Override
                     public void onFocus() {
                         onEditTabSelected();
@@ -229,14 +234,14 @@ public abstract class KieEditor {
                     public void onLostFocus() {
 
                     }
-                } );
+                });
 
         addPage(
-                new Page( this.overviewWidget,
-                          CommonConstants.INSTANCE.Overview() ) {
+                new Page(this.overviewWidget,
+                        CommonConstants.INSTANCE.Overview()) {
                     @Override
                     public void onFocus() {
-                        overviewWidget.refresh( versionRecordManager.getVersion() );
+                        overviewWidget.refresh(versionRecordManager.getVersion());
                         onOverviewSelected();
                     }
 
@@ -245,92 +250,92 @@ public abstract class KieEditor {
 
                     }
                 }
-               );
+        );
     }
 
     protected void OnClose() {
         multiPage.clear();
     }
 
-    protected void addImportsTab( IsWidget importsWidget ) {
-        multiPage.addWidget( importsWidget,
-                             CommonConstants.INSTANCE.ConfigTabTitle() );
+    protected void addImportsTab(IsWidget importsWidget) {
+        multiPage.addWidget(importsWidget,
+                CommonConstants.INSTANCE.ConfigTabTitle());
 
     }
 
-    private void addFileChangeListeners( final ObservablePath path ) {
-        path.onRename( new Command() {
+    private void addFileChangeListeners(final ObservablePath path) {
+        path.onRename(new Command() {
             @Override
             public void execute() {
                 onRename();
 
             }
-        } );
-        path.onDelete( new Command() {
+        });
+        path.onDelete(new Command() {
             @Override
             public void execute() {
                 onDelete();
             }
-        } );
+        });
 
-        path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+        path.onConcurrentUpdate(new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+            public void execute(final ObservablePath.OnConcurrentUpdateEvent eventInfo) {
                 concurrentUpdateSessionInfo = eventInfo;
             }
-        } );
+        });
 
-        path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+        path.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
-                newConcurrentRename( info.getSource(),
-                                     info.getTarget(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
+            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
+                newConcurrentRename(info.getSource(),
+                        info.getTarget(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                reload();
+                            }
+                        }
+                ).show();
             }
-        } );
+        });
 
-        path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+        path.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentDelete info ) {
-                newConcurrentDelete( info.getPath(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             disableMenus();
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( place );
-                                         }
-                                     }
-                                   ).show();
+            public void execute(final ObservablePath.OnConcurrentDelete info) {
+                newConcurrentDelete(info.getPath(),
+                        info.getIdentity(),
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                disableMenus();
+                            }
+                        },
+                        new Command() {
+                            @Override
+                            public void execute() {
+                                placeManager.closePlace(place);
+                            }
+                        }
+                ).show();
             }
-        } );
+        });
     }
 
     private void onDelete() {
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                placeManager.forceClosePlace( place );
+                placeManager.forceClosePlace(place);
             }
-        } );
+        });
     }
 
     /**
@@ -338,9 +343,9 @@ public abstract class KieEditor {
      */
     protected void onRename() {
         refreshTitle();
-        baseView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         loadContent();
-        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
+        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitleText(), getTitle()));
     }
 
     /**
@@ -357,20 +362,20 @@ public abstract class KieEditor {
     }
 
     private void refreshTitle() {
-        baseView.refreshTitle( versionRecordManager.getCurrentPath().getFileName(), type.getDescription() );
+        baseView.refreshTitle(versionRecordManager.getCurrentPath().getFileName(), type.getDescription());
     }
 
     protected void onSave() {
 
-        if ( isReadOnly && versionRecordManager.isCurrentLatest() ) {
+        if (isReadOnly && versionRecordManager.isCurrentLatest()) {
             baseView.alertReadOnly();
             return;
-        } else if ( isReadOnly && !versionRecordManager.isCurrentLatest() ) {
+        } else if (isReadOnly && !versionRecordManager.isCurrentLatest()) {
             versionRecordManager.restoreToCurrentVersion();
             return;
         }
 
-        if ( concurrentUpdateSessionInfo != null ) {
+        if (concurrentUpdateSessionInfo != null) {
             showConcurrentUpdatePopup();
         } else {
             save();
@@ -378,27 +383,27 @@ public abstract class KieEditor {
     }
 
     protected void showConcurrentUpdatePopup() {
-        newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                             concurrentUpdateSessionInfo.getIdentity(),
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     save();
-                                 }
-                             },
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     //cancel?
-                                 }
-                             },
-                             new Command() {
-                                 @Override
-                                 public void execute() {
-                                     reload();
-                                 }
-                             }
-                           ).show();
+        newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
+                concurrentUpdateSessionInfo.getIdentity(),
+                new Command() {
+                    @Override
+                    public void execute() {
+                        save();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        //cancel?
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        reload();
+                    }
+                }
+        ).show();
     }
 
     /**
@@ -406,19 +411,19 @@ public abstract class KieEditor {
      */
     protected void makeMenuBar() {
         menus = menuBuilder
-                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
+                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
                     @Override
                     public void execute() {
                         onSave();
                     }
-                } ) )
-                .addCopy( versionRecordManager.getCurrentPath(),
-                          fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(),
-                            fileNameValidator )
-                .addDelete( versionRecordManager.getPathToLatest() )
-                .addValidate( onValidate() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+                }))
+                .addCopy(versionRecordManager.getCurrentPath(),
+                        fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                        fileNameValidator)
+                .addDelete(versionRecordManager.getPathToLatest())
+                .addValidate(onValidate())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 .build();
     }
 
@@ -426,44 +431,43 @@ public abstract class KieEditor {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback( final Path path ) {
-                baseView.setNotDirty();
+            public void callback(final Path path) {
                 baseView.hideBusyIndicator();
-                versionRecordManager.reloadVersions( path );
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                versionRecordManager.reloadVersions(path);
+                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
             }
         };
     }
 
-    public void onRestore( @Observes RestoreEvent restore ) {
-        if ( versionRecordManager.getCurrentPath() == null || restore == null || restore.getPath() == null ) {
+    public void onRestore(@Observes RestoreEvent restore) {
+        if (versionRecordManager.getCurrentPath() == null || restore == null || restore.getPath() == null) {
             return;
         }
-        if ( versionRecordManager.getCurrentPath().equals( restore.getPath() ) ) {
+        if (versionRecordManager.getCurrentPath().equals(restore.getPath())) {
             //when a version is restored we don't want to add the concurrency listeners again -> false
-            init( versionRecordManager.getPathToLatest(), place, type, false );
-            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+            init(versionRecordManager.getPathToLatest(), place, type, false);
+            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
         }
     }
 
     public void reload() {
         concurrentUpdateSessionInfo = null;
         refreshTitle();
-        baseView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        baseView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         loadContent();
-        changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
+        changeTitleNotification.fire(new ChangeTitleWidgetEvent(place, getTitleText(), getTitle()));
     }
 
     private void disableMenus() {
-        disableMenuItem( FileMenuBuilder.MenuItems.COPY );
-        disableMenuItem( FileMenuBuilder.MenuItems.RENAME );
-        disableMenuItem( FileMenuBuilder.MenuItems.DELETE );
-        disableMenuItem( FileMenuBuilder.MenuItems.VALIDATE );
+        disableMenuItem(FileMenuBuilder.MenuItems.COPY);
+        disableMenuItem(FileMenuBuilder.MenuItems.RENAME);
+        disableMenuItem(FileMenuBuilder.MenuItems.DELETE);
+        disableMenuItem(FileMenuBuilder.MenuItems.VALIDATE);
     }
 
-    private void disableMenuItem( FileMenuBuilder.MenuItems menuItem ) {
-        if ( menus.getItemsMap().containsKey( menuItem ) ) {
-            menus.getItemsMap().get( menuItem ).setEnabled( false );
+    private void disableMenuItem(FileMenuBuilder.MenuItems menuItem) {
+        if (menus.getItemsMap().containsKey(menuItem)) {
+            menus.getItemsMap().get(menuItem).setEnabled(false);
         }
     }
 
@@ -480,19 +484,19 @@ public abstract class KieEditor {
     }
 
     protected void selectOverviewTab() {
-        setSelectedTab( OVERVIEW_TAB_INDEX );
+        setSelectedTab(OVERVIEW_TAB_INDEX);
     }
 
     protected void selectEditorTab() {
-        setSelectedTab( EDITOR_TAB_INDEX );
+        setSelectedTab(EDITOR_TAB_INDEX);
     }
 
-    protected void setSelectedTab( int tabIndex ) {
-        multiPage.selectPage( tabIndex );
+    protected void setSelectedTab(int tabIndex) {
+        multiPage.selectPage(tabIndex);
     }
 
-    protected void updateSource( String source ) {
-        sourceWidget.setContent( source );
+    protected void updateSource(String source) {
+        sourceWidget.setContent(source);
     }
 
     public IsWidget getWidget() {
@@ -538,5 +542,20 @@ public abstract class KieEditor {
 
     }
 
+    public boolean mayClose(int currentHash) {
+        if (isDirty(currentHash)) {
+            return baseView.confirmClose();
+        } else {
+            return true;
+        }
+    }
+
+    public boolean isDirty(int currentHash) {
+        if (originalHash == null) {
+            return false;
+        } else {
+            return originalHash != currentHash;
+        }
+    }
 }
 

@@ -99,4 +99,55 @@ public class AnnotationMemberDefinitionTO {
         return "java.lang.String".equals(className);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        AnnotationMemberDefinitionTO that = (AnnotationMemberDefinitionTO) o;
+
+        if (array != that.array) {
+            return false;
+        }
+        if (enumMember != that.enumMember) {
+            return false;
+        }
+        if (primitiveType != that.primitiveType) {
+            return false;
+        }
+        if (className != null ? !className.equals(that.className) : that.className != null) {
+            return false;
+        }
+        if (defaultValue != null ? !defaultValue.equals(that.defaultValue) : that.defaultValue != null) {
+            return false;
+        }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (shortDescription != null ? !shortDescription.equals(that.shortDescription) : that.shortDescription != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
+        result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        result = 31 * result + (array ? 1 : 0);
+        result = 31 * result + (className != null ? className.hashCode() : 0);
+        result = 31 * result + (enumMember ? 1 : 0);
+        result = 31 * result + (primitiveType ? 1 : 0);
+        return result;
+    }
 }

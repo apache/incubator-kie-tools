@@ -29,10 +29,11 @@ public interface KieEditorView
 
     void alertReadOnly();
 
-    void setNotDirty();
-
     KieEditorTitle getTitleWidget();
 
     void refreshTitle( String fileName,
                        String description );
+
+    boolean confirmClose();
+
 }

@@ -156,11 +156,6 @@ public class KieTextEditorPresenter
         return super.getTitle();
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
-    }
-
     public IsWidget getWidget() {
         return super.getWidget();
     }

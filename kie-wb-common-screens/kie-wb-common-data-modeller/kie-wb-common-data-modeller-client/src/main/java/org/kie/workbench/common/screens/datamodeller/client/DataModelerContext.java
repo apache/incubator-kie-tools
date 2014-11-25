@@ -41,8 +41,6 @@ public class DataModelerContext {
 
     private List<PropertyTypeTO> baseTypes;
 
-    private boolean dirty = false;
-
     private boolean readonly = false;
 
     private List<String> currentProjectPackages = new ArrayList<String>();
@@ -152,21 +150,6 @@ public class DataModelerContext {
 
     public boolean isParseErrors() {
         return getParseStatus() == ParseStatus.PARSE_ERRORS;
-    }
-
-    /**
-     * Editor level dirty status.
-     *
-     * @return true if there have been whatever change since the last save/load operation, no mater if the change
-     * was in the "Editor" tab or in the "Source" tab, and if the tabs are synchronized. We still need to save the
-     * changes in the .java file.
-     */
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
     }
 
     public boolean isReadonly() {

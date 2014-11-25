@@ -162,7 +162,6 @@ public class ProjectImportsScreenPresenter
             @Override
             public void callback( final Path path ) {
                 busyIndicatorView.hideBusyIndicator();
-                importsWidget.setNotDirty();
                 notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
             }
         };
