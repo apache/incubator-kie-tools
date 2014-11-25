@@ -16,12 +16,4 @@ public interface GlobalsEditorView extends KieEditorView,
                      final List<String> fullyQualifiedClassNames,
                      final boolean isReadOnly );
 
-    boolean isDirty();
-
-    void setNotDirty();
-
-    boolean confirmClose();
-
-    void alertReadOnly();
-
 }

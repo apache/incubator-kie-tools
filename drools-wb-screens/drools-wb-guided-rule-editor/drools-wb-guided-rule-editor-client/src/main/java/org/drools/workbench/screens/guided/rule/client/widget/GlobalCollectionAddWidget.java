@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 /**
@@ -29,7 +29,7 @@ import org.uberfire.ext.widgets.common.client.common.SmallLabel;
  */
 public class GlobalCollectionAddWidget extends RuleModellerWidget {
 
-    private DirtyableFlexTable layout = new DirtyableFlexTable();
+    private FlexTable layout = new FlexTable();
     private boolean readOnly;
 
     private boolean isFactTypeKnown;
@@ -84,11 +84,6 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
 
         //This widget couldn't be modified
         this.setModified( false );
-    }
-
-    @Override
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     @Override

@@ -32,7 +32,6 @@ public class RuleContentWidget
         extends Composite {
 
     private final TextArea text;
-    private boolean isDirty;
 
     public RuleContentWidget() {
         text = new TextArea();
@@ -46,7 +45,6 @@ public class RuleContentWidget
 
         text.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
-                isDirty = true;
             }
         } );
 
@@ -83,14 +81,6 @@ public class RuleContentWidget
         String right = text.getText().substring( i,
                                                  text.getText().length() );
         text.setText( left + ins + right );
-    }
-
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    public void setNotDirty() {
-        this.isDirty = false;
     }
 
     public String getContent() {

@@ -19,12 +19,4 @@ public interface DRLEditorView extends KieEditorView,
 
     String getContent();
 
-    boolean isDirty();
-
-    void setNotDirty();
-
-    boolean confirmClose();
-
-    void alertReadOnly();
-
 }

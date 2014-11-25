@@ -27,6 +27,8 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -48,8 +50,6 @@ import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
 import org.uberfire.ext.widgets.common.client.common.DirtyableVerticalPane;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -58,11 +58,11 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 /**
  * This is the parent widget that contains the model based rule builder.
  */
-public class RuleModeller extends DirtyableComposite
+public class RuleModeller extends Composite
         implements
         RuleModelEditor {
 
-    private DirtyableFlexTable layout;
+    private FlexTable layout;
     private RuleModel model;
     private AsyncPackageDataModelOracle oracle;
     private RuleModellerConfiguration configuration;
@@ -147,7 +147,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     protected void doLayout() {
-        layout = new DirtyableFlexTable();
+        layout = new FlexTable();
         initWidget();
         layout.setStyleName( "model-builder-Background" );
         initWidget( layout );
@@ -348,7 +348,6 @@ public class RuleModeller extends DirtyableComposite
 
     public void refreshWidget() {
         initWidget();
-        makeDirty();
     }
 
     private Widget getAddAttribute() {
@@ -631,7 +630,7 @@ public class RuleModeller extends DirtyableComposite
     private Widget wrapLHSWidget( final RuleModel model,
                                   int i,
                                   RuleModellerWidget w ) {
-        final DirtyableFlexTable wrapper = new DirtyableFlexTable();
+        final FlexTable wrapper = new FlexTable();
         final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
         remove.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
@@ -676,7 +675,7 @@ public class RuleModeller extends DirtyableComposite
     private Widget wrapRHSWidget( final RuleModel model,
                                   int i,
                                   RuleModellerWidget w ) {
-        final DirtyableFlexTable wrapper = new DirtyableFlexTable();
+        final FlexTable wrapper = new FlexTable();
         final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
         remove.setTitle( GuidedRuleEditorResources.CONSTANTS.RemoveThisAction() );
         final int idx = i;
@@ -793,11 +792,6 @@ public class RuleModeller extends DirtyableComposite
      */
     public boolean isVariableNameUsed( String name ) {
         return model.isVariableNameUsed( name ) || getDataModelOracle().isGlobalVariable( name );
-    }
-
-    @Override
-    public boolean isDirty() {
-        return ( layout.hasDirty() || dirtyflag );
     }
 
     public AsyncPackageDataModelOracle getDataModelOracle() {

@@ -35,14 +35,14 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected FromCompositeFactPattern pattern;
-    protected DirtyableFlexTable layout;
+    protected FlexTable layout;
     protected boolean readOnly;
 
     protected boolean isFactTypeKnown;
@@ -72,7 +72,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
             this.isFactTypeKnown = true;
         }
 
-        this.layout = new DirtyableFlexTable();
+        this.layout = new FlexTable();
         if ( this.readOnly ) {
             this.layout.addStyleName( "editor-disabled-widget" );
         }
@@ -154,7 +154,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         };
         String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from" ) + "&nbsp;</div>";
 
-        DirtyableFlexTable panel = new DirtyableFlexTable();
+        FlexTable panel = new FlexTable();
 
         int r = 0;
 
@@ -234,10 +234,6 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
             horiz.add( remove );
         }
         return horiz;
-    }
-
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     protected void calculateReadOnly() {

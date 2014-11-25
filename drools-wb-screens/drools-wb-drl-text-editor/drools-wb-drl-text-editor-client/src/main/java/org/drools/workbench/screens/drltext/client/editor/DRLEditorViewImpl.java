@@ -125,15 +125,6 @@ public class DRLEditorViewImpl
         return ruleContentWidget.getContent();
     }
 
-    @Override
-    public boolean isDirty() {
-        return ruleContentWidget.isDirty();
-    }
-
-    @Override
-    public void setNotDirty() {
-        ruleContentWidget.setNotDirty();
-    }
 
     @Override
     public boolean confirmClose() {

@@ -25,6 +25,7 @@ import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
@@ -42,7 +43,6 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.ValueChanged;
 
@@ -50,7 +50,7 @@ import org.uberfire.ext.widgets.common.client.common.ValueChanged;
  * Constraint editor for the FieldData in the Given Section
  */
 public class FieldDataConstraintEditor
-        extends DirtyableComposite
+        extends Composite
         implements
         HasValueChangeHandlers<String>,
         ScenarioParentWidget {

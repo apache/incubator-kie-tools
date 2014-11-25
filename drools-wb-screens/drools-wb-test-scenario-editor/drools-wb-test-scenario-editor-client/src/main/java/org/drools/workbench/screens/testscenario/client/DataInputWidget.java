@@ -26,10 +26,10 @@ import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 
 public class DataInputWidget
-        extends DirtyableFlexTable
+        extends FlexTable
         implements ScenarioParentWidget {
 
     private final Scenario scenario;

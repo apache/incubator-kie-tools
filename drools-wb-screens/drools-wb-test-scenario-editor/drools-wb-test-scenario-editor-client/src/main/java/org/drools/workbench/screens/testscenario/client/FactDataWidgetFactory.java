@@ -40,13 +40,13 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class FactDataWidgetFactory {
 
-    private final DirtyableFlexTable widget;
+    private final FlexTable widget;
     private final Scenario scenario;
     private final AsyncPackageDataModelOracle oracle;
     private final FixtureList definitionList;
@@ -61,7 +61,7 @@ public class FactDataWidgetFactory {
                                   final FixtureList definitionList,
                                   final ExecutionTrace executionTrace,
                                   final ScenarioParentWidget parent,
-                                  final DirtyableFlexTable widget ) {
+                                  final FlexTable widget ) {
         this.scenario = scenario;
         this.oracle = oracle;
         this.definitionList = definitionList;

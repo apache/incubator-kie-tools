@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
@@ -23,13 +24,12 @@ import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Fact;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 
 /**
  * Constraint editor for the FieldData in the Given Section
  */
 public class CollectionFieldDataConstraintEditor
-        extends DirtyableComposite
+        extends Composite
         implements
         ScenarioParentWidget {
 

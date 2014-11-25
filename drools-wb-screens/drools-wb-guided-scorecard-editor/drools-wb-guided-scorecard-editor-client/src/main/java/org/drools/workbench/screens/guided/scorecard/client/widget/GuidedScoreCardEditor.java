@@ -57,7 +57,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.DecoratedDisclosurePanel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 
 public class GuidedScoreCardEditor extends Composite {
 
@@ -75,9 +75,9 @@ public class GuidedScoreCardEditor extends Composite {
 
     private Button btnAddCharacteristic;
     private VerticalPanel characteristicsPanel;
-    private List<DirtyableFlexTable> characteristicsTables = new ArrayList<DirtyableFlexTable>();
-    private Map<DirtyableFlexTable, ListDataProvider<Attribute>> characteristicsAttrMap = new HashMap<DirtyableFlexTable, ListDataProvider<Attribute>>();
-    private Map<DirtyableFlexTable, VerticalPanel> characteristicsAttrPanelMap = new HashMap<DirtyableFlexTable, VerticalPanel>();
+    private List<FlexTable> characteristicsTables = new ArrayList<FlexTable>();
+    private Map<FlexTable, ListDataProvider<Attribute>> characteristicsAttrMap = new HashMap<FlexTable, ListDataProvider<Attribute>>();
+    private Map<FlexTable, VerticalPanel> characteristicsAttrPanelMap = new HashMap<FlexTable, VerticalPanel>();
 
     private ListBox ddUseReasonCode;
     private ListBox ddReasonCodeAlgorithm;
@@ -135,7 +135,7 @@ public class GuidedScoreCardEditor extends Composite {
         container.setWidget( disclosurePanel );
 
         for ( final Characteristic characteristic : model.getCharacteristics() ) {
-            final DirtyableFlexTable flexTable = addCharacteristic( characteristic );
+            final FlexTable flexTable = addCharacteristic( characteristic );
             for ( Attribute attribute : characteristic.getAttributes() ) {
                 addAttribute( flexTable,
                               attribute );
@@ -187,7 +187,7 @@ public class GuidedScoreCardEditor extends Composite {
         }
 
         model.getCharacteristics().clear();
-        for ( final DirtyableFlexTable flexTable : characteristicsTables ) {
+        for ( final FlexTable flexTable : characteristicsTables ) {
             final Characteristic characteristic = getCharacteristicFromTable( flexTable );
             //Characteristic Attributes
             characteristic.getAttributes().clear();
@@ -202,7 +202,7 @@ public class GuidedScoreCardEditor extends Composite {
         return model;
     }
 
-    private Characteristic getCharacteristicFromTable( DirtyableFlexTable flexTable ) {
+    private Characteristic getCharacteristicFromTable( FlexTable flexTable ) {
         ListBox enumDropDown;
         final Characteristic characteristic = new Characteristic();
         characteristic.setName( ( (TextBox) flexTable.getWidget( 0,
@@ -481,7 +481,7 @@ public class GuidedScoreCardEditor extends Composite {
         return characteristicsPanel;
     }
 
-    private void removeCharacteristic( final DirtyableFlexTable selectedTable ) {
+    private void removeCharacteristic( final FlexTable selectedTable ) {
         if ( selectedTable != null ) {
             final TextBox tbName = (TextBox) selectedTable.getWidget( 0,
                                                                       1 );
@@ -501,7 +501,7 @@ public class GuidedScoreCardEditor extends Composite {
         }
     }
 
-    private void addAttribute( final DirtyableFlexTable selectedTable,
+    private void addAttribute( final FlexTable selectedTable,
                                final Attribute attribute ) {
 
         //Disable the fact & field dropdowns
@@ -555,8 +555,8 @@ public class GuidedScoreCardEditor extends Composite {
         }
     }
 
-    private DirtyableFlexTable addCharacteristic( final Characteristic characteristic ) {
-        final DirtyableFlexTable cGrid = new DirtyableFlexTable();
+    private FlexTable addCharacteristic( final Characteristic characteristic ) {
+        final FlexTable cGrid = new FlexTable();
         cGrid.setBorderWidth( 0 );
         cGrid.setCellPadding( 1 );
         cGrid.setCellSpacing( 1 );
@@ -720,7 +720,7 @@ public class GuidedScoreCardEditor extends Composite {
                            } );
     }
 
-    private Widget addAttributeCellTable( final DirtyableFlexTable cGrid,
+    private Widget addAttributeCellTable( final FlexTable cGrid,
                                           final Characteristic characteristic,
                                           final boolean enumColumn,
                                           final String dataType,
@@ -945,7 +945,7 @@ public class GuidedScoreCardEditor extends Composite {
                 ddReasonCodeAlgorithm.setEnabled( enabled );
                 tbBaselineScore.setEnabled( enabled );
                 ddReasonCodeField.setEnabled( enabled );
-                for ( final DirtyableFlexTable cGrid : characteristicsTables ) {
+                for ( final FlexTable cGrid : characteristicsTables ) {
                     //baseline score for each characteristic
                     ( (TextBox) cGrid.getWidget( 2, 2 ) ).setEnabled( enabled );
                     //reason code for each characteristic

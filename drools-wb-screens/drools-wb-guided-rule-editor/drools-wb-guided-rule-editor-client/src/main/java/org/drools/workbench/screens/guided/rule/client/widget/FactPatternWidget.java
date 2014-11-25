@@ -71,7 +71,6 @@ import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 /**
@@ -80,7 +79,7 @@ import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 public class FactPatternWidget extends RuleModellerWidget {
 
     private FactPattern pattern;
-    private DirtyableFlexTable layout = new DirtyableFlexTable();
+    private FlexTable layout = new FlexTable();
     private Connectives connectives;
     private PopupCreator popupCreator;
     private boolean bindable;
@@ -200,7 +199,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      */
     private void drawConstraints( List<FieldConstraint> sortedConst,
                                   HasConstraints hasConstraints ) {
-        final DirtyableFlexTable table = new DirtyableFlexTable();
+        final FlexTable table = new FlexTable();
         layout.setWidget( 1,
                           0,
                           table );
@@ -243,7 +242,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private void traverseSingleFieldConstraints( List<FieldConstraint> sortedConst,
-                                                 final DirtyableFlexTable table,
+                                                 final FlexTable table,
                                                  List<FieldConstraint> parents,
                                                  HasConstraints hasConstraints,
                                                  int i ) {
@@ -331,7 +330,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      * This will render a field constraint into the given table. The row is the
      * row number to stick it into.
      */
-    private void renderFieldConstraint( final DirtyableFlexTable inner,
+    private void renderFieldConstraint( final FlexTable inner,
                                         int row,
                                         FieldConstraint constraint,
                                         HasConstraints hasConstraints,
@@ -389,7 +388,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                              2 );
 
         FieldConstraint[] nested = constraint.getConstraints();
-        DirtyableFlexTable inner = new DirtyableFlexTable();
+        FlexTable inner = new FlexTable();
         if ( nested != null ) {
             for ( int i = 0; i < nested.length; i++ ) {
                 this.renderFieldConstraint( inner,
@@ -433,7 +432,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * Applies a single field constraint to the given table, and start row.
      */
-    private void renderSingleFieldConstraint( final DirtyableFlexTable inner,
+    private void renderSingleFieldConstraint( final FlexTable inner,
                                               final int row,
                                               final SingleFieldConstraint constraint,
                                               final HasConstraints hasConstraints,
@@ -520,7 +519,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                                  OperatorSelection selection = event.getValue();
                                                                                  String selected = selection.getValue();
                                                                                  c.getWindow().setOperator( selected );
-                                                                                 getModeller().makeDirty();
                                                                              }
                                                                          } );
                                                                      }
@@ -532,7 +530,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         return hp;
     }
 
-    private void associateExpressionWithChangeHandler( final DirtyableFlexTable inner,
+    private void associateExpressionWithChangeHandler( final FlexTable inner,
                                                        final int row,
                                                        final SingleFieldConstraint constraint,
                                                        final int col,
@@ -587,7 +585,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                 public void onChange( ChangeEvent event ) {
                     setModified( true );
                     c.setValue( box.getText() );
-                    getModeller().makeDirty();
                 }
             } );
             box.setWidth( "100%" );
@@ -685,7 +682,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Widget operatorDropDown( final SingleFieldConstraint constraint,
-                                     final DirtyableFlexTable inner,
+                                     final FlexTable inner,
                                      final int row,
                                      final int col ) {
         final HorizontalPanel hp = new HorizontalPanel();
@@ -706,7 +703,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private void getOperatorDropDown( final SingleFieldConstraint constraint,
-                                      final DirtyableFlexTable inner,
+                                      final FlexTable inner,
                                       final int row,
                                       final int col,
                                       final Callback<CEPOperatorsDropdown> callback ) {
@@ -731,7 +728,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private void getOperatorCompletions( final SingleFieldConstraint constraint,
-                                         final DirtyableFlexTable inner,
+                                         final FlexTable inner,
                                          final int row,
                                          final int col,
                                          final Callback<CEPOperatorsDropdown> callback,
@@ -758,7 +755,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private void onDropDownValueChanged( ValueChangeEvent<OperatorSelection> event,
                                          SingleFieldConstraint constraint,
-                                         DirtyableFlexTable inner,
+                                         FlexTable inner,
                                          int row,
                                          int col ) {
         setModified( true );
@@ -898,10 +895,6 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
 
         return ab;
-    }
-
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     @Override

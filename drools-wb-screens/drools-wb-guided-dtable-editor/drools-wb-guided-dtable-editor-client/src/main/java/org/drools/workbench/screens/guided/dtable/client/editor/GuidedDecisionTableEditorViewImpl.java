@@ -86,15 +86,6 @@ public class GuidedDecisionTableEditorViewImpl
     }
 
     @Override
-    public boolean isDirty() {
-        return false;
-    }
-
-    @Override
-    public void setNotDirty() {
-    }
-
-    @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }

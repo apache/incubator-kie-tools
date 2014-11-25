@@ -24,6 +24,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -47,7 +48,6 @@ import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
@@ -56,7 +56,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  */
 public class ActionInsertFactWidget extends RuleModellerWidget {
 
-    private final DirtyableFlexTable layout;
+    private final FlexTable layout;
     private final ActionInsertFact model;
     private final String factType;
     private boolean readOnly;
@@ -72,7 +72,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         super( mod,
                eventBus );
         this.model = set;
-        this.layout = new DirtyableFlexTable();
+        this.layout = new FlexTable();
         this.factType = set.getFactType();
 
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
@@ -116,7 +116,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                                                   0,
                                                   2 );
 
-        DirtyableFlexTable inner = new DirtyableFlexTable();
+        FlexTable inner = new FlexTable();
         int col = 0;
 
         for ( int i = 0; i < model.getFieldValues().length; i++ ) {

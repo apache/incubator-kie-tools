@@ -24,9 +24,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.uberfire.ext.widgets.common.client.common.IDirtyable;
 
-public class BoundTextBox extends TextBox
-        implements
-        IDirtyable {
+public class BoundTextBox extends TextBox {
 
     public BoundTextBox( final BaseSingleFieldConstraint c ) {
         setStyleName( "constraint-value-Editor" ); //NON-NLS

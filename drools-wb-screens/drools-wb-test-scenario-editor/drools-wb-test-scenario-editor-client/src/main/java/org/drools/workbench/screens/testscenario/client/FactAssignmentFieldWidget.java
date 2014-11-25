@@ -24,11 +24,11 @@ import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonsResources;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 
 public class FactAssignmentFieldWidget implements IsWidget {
 
-    private final DirtyableFlexTable widget;
+    private final FlexTable widget;
 
     public FactAssignmentFieldWidget( final FactAssignmentField factAssignmentField,
                                       final FixtureList definitionList,
@@ -37,7 +37,7 @@ public class FactAssignmentFieldWidget implements IsWidget {
                                       final ScenarioParentWidget parent,
                                       final ExecutionTrace executionTrace ) {
 
-        widget = new DirtyableFlexTable();
+        widget = new FlexTable();
 
         widget.setStyleName( CommonsResources.INSTANCE.css().greyBorderWithRoundCorners() );
         new FactDataWidgetFactory( scenario,

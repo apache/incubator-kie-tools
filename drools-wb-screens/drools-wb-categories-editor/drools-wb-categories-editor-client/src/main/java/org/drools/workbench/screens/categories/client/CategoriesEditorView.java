@@ -14,10 +14,4 @@ public interface CategoriesEditorView extends KieEditorView,
 
     Categories getContent();
 
-    boolean isDirty();
-
-    void setNotDirty();
-
-    boolean confirmClose();
-
 }

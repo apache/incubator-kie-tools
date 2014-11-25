@@ -43,7 +43,6 @@ public class GuidedDecisionTreeEditorViewImpl
     @Inject
     private GuidedDecisionTreePalette palette;
 
-    private boolean isDirty = false;
     private boolean isReadOnly = false;
     private GuidedDecisionTree model;
 
@@ -77,16 +76,6 @@ public class GuidedDecisionTreeEditorViewImpl
         canvas.clearSelection();
         palette.setDataModelOracle( oracle,
                                     isReadOnly );
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setNotDirty() {
-        isDirty = false;
     }
 
     @Override

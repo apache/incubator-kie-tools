@@ -9,6 +9,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -27,13 +28,12 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
-public class CallMethodWidget extends DirtyableComposite {
+public class CallMethodWidget extends Composite {
 
     protected final ScenarioParentWidget parent;
     protected final Scenario scenario;
@@ -41,7 +41,7 @@ public class CallMethodWidget extends DirtyableComposite {
     protected final String factName;
     private final ExecutionTrace executionTrace;
 
-    final private DirtyableFlexTable layout;
+    final private FlexTable layout;
     private boolean isBoundFact = false;
 
     private String[] fieldCompletionTexts;
@@ -64,7 +64,7 @@ public class CallMethodWidget extends DirtyableComposite {
         this.executionTrace = executionTrace;
         this.oracle = oracle;
 
-        this.layout = new DirtyableFlexTable();
+        this.layout = new FlexTable();
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
@@ -118,7 +118,7 @@ public class CallMethodWidget extends DirtyableComposite {
         layout.setWidget( 0,
                           0,
                           getSetterLabel() );
-        DirtyableFlexTable inner = new DirtyableFlexTable();
+        FlexTable inner = new FlexTable();
         int i = 0;
         for ( CallFieldValue val : mCall.getCallFieldValues() ) {
 
@@ -232,21 +232,11 @@ public class CallMethodWidget extends DirtyableComposite {
                                                    executionTrace,
                                                    scenario,
                                                    val.type,
-                                                   new Command() {
-
-                                                       public void execute() {
-                                                           makeDirty();
-                                                       }
-                                                   },
                                                    oracle );
     }
 
     private Widget fieldSelector( final CallFieldValue val ) {
         return new SmallLabel( val.type );
-    }
-
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     protected void onDelete() {

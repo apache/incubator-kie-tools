@@ -31,7 +31,6 @@ import org.drools.workbench.screens.workitems.client.resources.WorkItemsEditorRe
 public class WorkItemDefinitionEditor extends Composite {
 
     private final TextArea textArea = new TextArea();
-    private boolean isDirty;
 
     public WorkItemDefinitionEditor() {
         textArea.setWidth( "100%" );
@@ -39,12 +38,6 @@ public class WorkItemDefinitionEditor extends Composite {
         textArea.setStyleName( WorkItemsEditorResources.INSTANCE.CSS().defaultTextArea() );
         textArea.getElement().setAttribute( "spellcheck",
                                             "false" );
-
-        textArea.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                isDirty = true;
-            }
-        } );
 
         textArea.addKeyDownHandler( new KeyDownHandler() {
 
@@ -95,14 +88,6 @@ public class WorkItemDefinitionEditor extends Composite {
         textArea.setFocus( true );
         textArea.setText( left + textToInsert + right );
         textArea.setCursorPos( cursorPosition );
-    }
-
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    public void setNotDirty() {
-        this.isDirty = false;
     }
 
     public String getContent() {

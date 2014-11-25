@@ -41,7 +41,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -99,11 +98,15 @@ public class EnumEditorPresenter
                     return;
                 }
 
-                resetEditorPages( content.getOverview() );
+                resetEditorPages(content.getOverview());
                 addSourcePage();
 
-                view.setContent( content.getModel().getDRL() );
+                view.setContent(content.getModel().getDRL());
                 view.hideBusyIndicator();
+
+                // We need to get the hash from the widget.
+                // Widget changes the String somehow -> hash changes, even though the string is the same.
+                setOriginalHash(view.getContent().hashCode());
             }
         };
     }
@@ -150,22 +153,14 @@ public class EnumEditorPresenter
         updateSource( view.getContent() );
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
-    }
-
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
     }
 
     @OnMayClose
-    public boolean checkIfDirty() {
-        if ( isDirty() ) {
-            return view.confirmClose();
-        }
-        return true;
+    public boolean mayClose() {
+        return super.mayClose(view.getContent().hashCode());
     }
 
     @WorkbenchPartTitle

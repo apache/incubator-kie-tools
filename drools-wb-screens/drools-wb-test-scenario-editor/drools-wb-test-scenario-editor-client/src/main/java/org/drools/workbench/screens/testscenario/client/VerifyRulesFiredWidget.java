@@ -40,7 +40,7 @@ import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScena
 import org.drools.workbench.screens.testscenario.client.resources.images.TestScenarioImages;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.CommonImages;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class VerifyRulesFiredWidget extends Composite {
@@ -81,7 +81,7 @@ public class VerifyRulesFiredWidget extends Composite {
 
     private FlexTable render( final FixtureList rfl,
                               final Scenario sc ) {
-        FlexTable data = new DirtyableFlexTable();
+        FlexTable data = new FlexTable();
 
         for ( int i = 0; i < rfl.size(); i++ ) {
             final VerifyRuleFired v = (VerifyRuleFired) rfl.get( i );

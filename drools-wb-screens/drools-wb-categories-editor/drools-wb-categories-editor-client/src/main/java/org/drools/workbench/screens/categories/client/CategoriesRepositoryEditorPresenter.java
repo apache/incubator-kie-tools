@@ -137,23 +137,14 @@ public class CategoriesRepositoryEditorPresenter {
 
             @Override
             public void callback(final Path path) {
-                view.setNotDirty();
                 view.hideBusyIndicator();
                 notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
             }
         };
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
-    }
-
     @OnMayClose
-    public boolean checkIfDirty() {
-        if (isDirty()) {
-            return view.confirmClose();
-        }
+    public boolean mayClose() {
         return true;
     }
 

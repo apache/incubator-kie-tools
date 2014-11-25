@@ -28,6 +28,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -50,7 +51,6 @@ import org.drools.workbench.screens.testscenario.client.resources.images.TestSce
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -59,14 +59,13 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 /**
  * This provides for editing of fields in the RHS of a rule.
  */
-public class MethodParameterCallValueEditor extends DirtyableComposite {
+public class MethodParameterCallValueEditor extends Composite {
 
     private CallFieldValue methodParameter;
     private DropDownData enums;
     private SimplePanel root;
     private Scenario model = null;
     private String parameterType = null;
-    private Command onValueChangeCommand = null;
     private AsyncPackageDataModelOracle oracle;
     private ExecutionTrace ex;
 
@@ -75,7 +74,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                            final ExecutionTrace ex,
                                            final Scenario model,
                                            final String parameterType,
-                                           final Command onValueChangeCommand,
                                            final AsyncPackageDataModelOracle oracle ) {
         if ( val.type.equals( DataType.TYPE_BOOLEAN ) ) {
             this.enums = DropDownData.create( new String[]{ "true", "false" } );
@@ -87,7 +85,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         this.methodParameter = val;
         this.model = model;
         this.parameterType = parameterType;
-        this.onValueChangeCommand = onValueChangeCommand;
         this.oracle = oracle;
 
         refresh();
@@ -102,10 +99,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                             public void valueChanged( String newText,
                                                                       String newValue ) {
                                                 methodParameter.value = newValue;
-                                                if ( onValueChangeCommand != null ) {
-                                                    onValueChangeCommand.execute();
-                                                }
-                                                makeDirty();
                                             }
                                         },
                                         enums,
@@ -164,10 +157,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
                 public void onChange( ChangeEvent event ) {
                     methodParameter.value = listVariable.getValue( listVariable.getSelectedIndex() );
-                    if ( onValueChangeCommand != null ) {
-                        onValueChangeCommand.execute();
-                    }
-                    makeDirty();
                     refresh();
                 }
             } );
@@ -199,10 +188,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
             public void onValueChange( final ValueChangeEvent<String> event ) {
                 c.value = event.getValue();
-                if ( onValueChangeCommand != null ) {
-                    onValueChangeCommand.execute();
-                }
-                makeDirty();
             }
 
         } );
@@ -237,7 +222,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
             public void onClick( ClickEvent event ) {
                 methodParameter.nature = FieldData.TYPE_LITERAL;
                 methodParameter.value = " ";
-                makeDirty();
                 refresh();
                 form.hide();
             }
@@ -272,7 +256,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                     public void onClick( ClickEvent event ) {
                         methodParameter.nature = FieldData.TYPE_VARIABLE;
                         methodParameter.value = "=";
-                        makeDirty();
                         refresh();
                         form.hide();
                     }

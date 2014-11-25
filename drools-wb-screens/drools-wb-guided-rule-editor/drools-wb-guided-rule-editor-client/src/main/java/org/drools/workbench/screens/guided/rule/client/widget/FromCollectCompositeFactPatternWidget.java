@@ -44,7 +44,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
@@ -114,7 +114,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
         String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from collect" ) + "</div>";
 
-        DirtyableFlexTable panel = new DirtyableFlexTable();
+        FlexTable panel = new FlexTable();
 
         int r = 0;
 

@@ -155,7 +155,6 @@ public class Connectives {
             public void onClick( ClickEvent event ) {
                 if ( Window.confirm( GuidedRuleEditorResources.CONSTANTS.RemoveThisItem() ) ) {
                     sfc.removeConnective( index );
-                    modeller.makeDirty();
                     modeller.refreshWidget();
                 }
             }

@@ -182,18 +182,11 @@ public class ExpressionBuilder extends RuleModellerWidget
                 ListBox lb = (ListBox) event.getSource();
                 int index = lb.getSelectedIndex();
                 if ( index > 0 ) {
-                    ExpressionBuilder.this.makeDirty();
                     onStartPointChange( lb.getValue( index ) );
                 }
             }
         } );
         return startPoint;
-    }
-
-    @Override
-    public void makeDirty() {
-        super.makeDirty();
-        setModified( true );
     }
 
     private void onStartPointChange( final String value ) {
@@ -570,7 +563,6 @@ public class ExpressionBuilder extends RuleModellerWidget
                     @Override
                     public void onChange( final ChangeEvent changeEvent ) {
                         expressionTextPart.setText( tb.getText() );
-                        modeller.makeDirty();
                     }
                 } );
                 container.add( tb );

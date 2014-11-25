@@ -38,14 +38,6 @@ public interface GuidedRuleEditorView
 
     RuleModel getContent();
 
-    boolean isDirty();
-
-    void setNotDirty();
-
-    boolean confirmClose();
-
     void refresh();
-
-    void alertReadOnly();
 
 }

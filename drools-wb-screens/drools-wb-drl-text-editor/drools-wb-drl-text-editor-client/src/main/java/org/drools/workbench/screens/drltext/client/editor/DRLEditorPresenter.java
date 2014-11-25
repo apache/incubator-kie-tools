@@ -47,7 +47,6 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -116,6 +115,7 @@ public class DRLEditorPresenter
                     return;
                 }
 
+                setOriginalHash(content.getDrl().hashCode());
                 resetEditorPages( content.getOverview() );
                 addSourcePage();
 
@@ -202,22 +202,14 @@ public class DRLEditorPresenter
         concurrentUpdateSessionInfo = null;
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        return view.isDirty();
-    }
-
     @OnClose
     public void onClose() {
         versionRecordManager.clear();
     }
 
     @OnMayClose
-    public boolean checkIfDirty() {
-        if ( isDirty() ) {
-            return view.confirmClose();
-        }
-        return true;
+    public boolean mayClose() {
+        return super.mayClose(view.getContent().hashCode());
     }
 
     @WorkbenchPartTitleDecoration

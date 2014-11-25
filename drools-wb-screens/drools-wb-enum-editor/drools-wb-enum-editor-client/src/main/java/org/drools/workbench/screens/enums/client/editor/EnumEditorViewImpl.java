@@ -39,8 +39,6 @@ public class EnumEditorViewImpl
 
     private final ListDataProvider<EnumRow> dataProvider = new ListDataProvider<EnumRow>();
 
-    private boolean isDirty = false;
-
     @PostConstruct
     public void init() {
         final CellTable<EnumRow> cellTable = new CellTable<EnumRow>( Integer.MAX_VALUE );
@@ -81,7 +79,6 @@ public class EnumEditorViewImpl
             public void update( final int index,
                                 final EnumRow object,
                                 final String value ) {
-                isDirty = true;
                 dataProvider.getList().remove( index );
             }
         } );
@@ -90,7 +87,6 @@ public class EnumEditorViewImpl
             public void update( final int index,
                                 final EnumRow object,
                                 final String value ) {
-                isDirty = true;
                 object.setFactName( value );
             }
         } );
@@ -99,7 +95,6 @@ public class EnumEditorViewImpl
             public void update( final int index,
                                 final EnumRow object,
                                 final String value ) {
-                isDirty = true;
                 object.setFieldName( value );
             }
         } );
@@ -108,7 +103,6 @@ public class EnumEditorViewImpl
             public void update( final int index,
                                 final EnumRow object,
                                 final String value ) {
-                isDirty = true;
                 object.setContext( value );
             }
         } );
@@ -127,7 +121,6 @@ public class EnumEditorViewImpl
         final Button addButton = new Button( EnumEditorConstants.INSTANCE.AddEnum(),
                                              new ClickHandler() {
             public void onClick( ClickEvent clickEvent ) {
-                isDirty = true;
                 final EnumRow enumRow = new EnumRow();
                 dataProvider.getList().add( enumRow );
             }
@@ -156,16 +149,6 @@ public class EnumEditorViewImpl
             }
         }
         return sb.toString();
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setNotDirty() {
-        this.isDirty = false;
     }
 
     @Override

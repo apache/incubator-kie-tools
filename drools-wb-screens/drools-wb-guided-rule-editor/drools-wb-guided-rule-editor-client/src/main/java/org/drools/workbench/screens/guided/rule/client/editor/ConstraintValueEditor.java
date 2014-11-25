@@ -35,6 +35,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -70,7 +71,6 @@ import org.kie.workbench.common.widgets.client.datamodel.CEPOracle;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -82,7 +82,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  * the user to choose the first time.
  */
 public class ConstraintValueEditor
-        extends DirtyableComposite {
+        extends Composite {
 
     private final ConstraintValueEditorHelper helper;
     private WorkingSetManager workingSetManager = null;
@@ -312,9 +312,8 @@ public class ConstraintValueEditor
 
                                                                   //Prevent recursion once value change has been applied
                                                                   if ( !newValue.equals( constraint.getValue() ) ) {
-                                                                      constraint.setValue( newValue );
+                                                                      constraint.setValue(newValue);
                                                                       executeOnValueChangeCommand();
-                                                                      makeDirty();
                                                                   }
                                                               }
                                                           },
@@ -336,9 +335,8 @@ public class ConstraintValueEditor
             box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
                 public void onValueChange( final ValueChangeEvent<String> event ) {
-                    constraint.setValue( event.getValue() );
+                    constraint.setValue(event.getValue());
                     executeOnValueChangeCommand();
-                    makeDirty();
                 }
             } );
 
@@ -376,9 +374,8 @@ public class ConstraintValueEditor
         box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             public void onValueChange( final ValueChangeEvent<String> event ) {
-                constraint.setValue( event.getValue() );
+                constraint.setValue(event.getValue());
                 executeOnValueChangeCommand();
-                makeDirty();
             }
         } );
 
@@ -707,10 +704,6 @@ public class ConstraintValueEditor
         panel.add( right );
         panel.setWidth( "100%" );
         return panel;
-    }
-
-    public boolean isDirty() {
-        return super.isDirty();
     }
 
     public void setOnValueChangeCommand( Command onValueChangeCommand ) {

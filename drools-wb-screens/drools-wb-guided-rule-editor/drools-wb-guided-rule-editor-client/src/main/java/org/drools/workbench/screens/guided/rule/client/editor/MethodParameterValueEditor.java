@@ -29,6 +29,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -47,7 +48,6 @@ import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -57,7 +57,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  * This provides for editing of fields in the RHS of a rule.
  */
 public class MethodParameterValueEditor
-        extends DirtyableComposite {
+        extends Composite {
 
     private AsyncPackageDataModelOracle oracle;
     private ActionFieldFunction methodParameter;
@@ -192,7 +192,6 @@ public class MethodParameterValueEditor
         if ( onValueChangeCommand != null ) {
             onValueChangeCommand.execute();
         }
-        makeDirty();
     }
 
     private Widget choice() {
@@ -215,9 +214,8 @@ public class MethodParameterValueEditor
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                methodParameter.setNature( FieldNatureType.TYPE_LITERAL );
-                methodParameter.setValue( "" );
-                makeDirty();
+                methodParameter.setNature(FieldNatureType.TYPE_LITERAL);
+                methodParameter.setValue("");
                 refresh();
                 form.hide();
             }
@@ -245,8 +243,7 @@ public class MethodParameterValueEditor
                 formula.addClickHandler( new ClickHandler() {
 
                     public void onClick( ClickEvent event ) {
-                        methodParameter.setNature( FieldNatureType.TYPE_FORMULA );
-                        makeDirty();
+                        methodParameter.setNature(FieldNatureType.TYPE_FORMULA);
                         refresh();
                         form.hide();
                     }
@@ -272,9 +269,8 @@ public class MethodParameterValueEditor
         variableButton.addClickHandler( new ClickHandler() {
 
             public void onClick( ClickEvent event ) {
-                methodParameter.setNature( FieldNatureType.TYPE_VARIABLE );
-                methodParameter.setValue( "=" );
-                makeDirty();
+                methodParameter.setNature(FieldNatureType.TYPE_VARIABLE);
+                methodParameter.setValue("=");
                 refresh();
                 form.hide();
             }

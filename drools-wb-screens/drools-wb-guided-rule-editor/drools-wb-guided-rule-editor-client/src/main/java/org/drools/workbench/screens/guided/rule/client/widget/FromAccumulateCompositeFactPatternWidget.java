@@ -42,7 +42,7 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
@@ -84,7 +84,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from accumulate" ) + "</div>";
 
-        DirtyableFlexTable panel = new DirtyableFlexTable();
+        FlexTable panel = new FlexTable();
 
         int r = 0;
 
@@ -172,7 +172,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         //TabLayoutPanel tPanel = new TabLayoutPanel(2, Unit.EM);
         TabPanel tPanel = new TabPanel();
 
-        DirtyableFlexTable codeTable = new DirtyableFlexTable();
+        FlexTable codeTable = new FlexTable();
         int codeTableRow = 0;
         int codeTableCol = 0;
 
@@ -228,7 +228,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         tPanel.add( codePanel,
                     GuidedRuleEditorResources.CONSTANTS.CustomCode() );
 
-        DirtyableFlexTable functionTable = new DirtyableFlexTable();
+        FlexTable functionTable = new FlexTable();
 
         functionTable.setWidget( 0,
                                  0,

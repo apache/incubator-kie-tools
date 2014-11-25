@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -49,7 +50,7 @@ import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPre
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
 import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -152,7 +153,7 @@ public class ScenarioEditorViewImpl
         overviewWidget.setContent(overview, path, version);
     }
 
-    private void createWidgetForEditorLayout(final DirtyableFlexTable editorLayout,
+    private void createWidgetForEditorLayout(final FlexTable editorLayout,
             final int layoutRow,
             final int layoutColumn,
             final Widget widget) {
@@ -167,7 +168,7 @@ public class ScenarioEditorViewImpl
             this.layout.remove(1);
         }
 
-        DirtyableFlexTable editorLayout = scenarioWidgetComponentCreator.createDirtyableFlexTable();
+        FlexTable editorLayout = scenarioWidgetComponentCreator.createFlexTable();
         this.layout.add(editorLayout);
         ScenarioHelper scenarioHelper = new ScenarioHelper();
 
@@ -193,7 +194,7 @@ public class ScenarioEditorViewImpl
                         layoutRow,
                         1,
                         scenarioWidgetComponentCreator.createExecutionWidget(currentExecutionTrace));
-                editorLayout.setHorizontalAlignmentForFlexCellFormatter(layoutRow,
+                editorLayout.getFlexCellFormatter().setHorizontalAlignment(layoutRow,
                         2,
                         HasHorizontalAlignment.ALIGN_LEFT);
 
@@ -364,7 +365,7 @@ public class ScenarioEditorViewImpl
     }
 
     @Override
-    public void setNotDirty() {
-
+    public boolean confirmClose() {
+        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
     }
 }

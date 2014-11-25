@@ -21,6 +21,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -29,7 +30,6 @@ import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.resources.i18n.Constants;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 
 /**
  * Free form DRL line widget
@@ -37,7 +37,7 @@ import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 public class FreeFormLineWidget extends RuleModellerWidget {
 
     private FreeFormLine action;
-    private DirtyableFlexTable layout = new DirtyableFlexTable();
+    private FlexTable layout = new FlexTable();
     private TextArea textArea = new TextArea();
     private boolean readOnly;
 
@@ -46,10 +46,10 @@ public class FreeFormLineWidget extends RuleModellerWidget {
     public FreeFormLineWidget( RuleModeller mod,
                                EventBus eventBus,
                                FreeFormLine p ) {
-        this( mod,
-              eventBus,
-              p,
-              null );
+        this(mod,
+                eventBus,
+                p,
+                null);
     }
 
     /**
@@ -63,8 +63,8 @@ public class FreeFormLineWidget extends RuleModellerWidget {
                                EventBus eventBus,
                                FreeFormLine p,
                                Boolean readOnly ) {
-        super( mod,
-               eventBus );
+        super(mod,
+                eventBus);
         this.action = p;
 
         if ( readOnly == null ) {
@@ -73,7 +73,7 @@ public class FreeFormLineWidget extends RuleModellerWidget {
             this.readOnly = readOnly;
         }
 
-        layout.setWidth( "100%" );
+        layout.setWidth("100%");
         textArea.setWidth( "100%" );
 
         layout.setWidget( 0,
@@ -113,11 +113,6 @@ public class FreeFormLineWidget extends RuleModellerWidget {
             } );
         }
         return textArea;
-    }
-
-    @Override
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     @Override

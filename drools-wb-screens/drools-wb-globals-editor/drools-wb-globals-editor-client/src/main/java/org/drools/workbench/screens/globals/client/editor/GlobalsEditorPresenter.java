@@ -25,7 +25,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -88,6 +87,8 @@ public class GlobalsEditorPresenter
                 }
 
                 model = content.getModel();
+
+                setOriginalHash(content.getModel().hashCode());
                 resetEditorPages( content.getOverview() );
                 addSourcePage();
 
@@ -160,20 +161,9 @@ public class GlobalsEditorPresenter
         this.versionRecordManager.clear();
     }
 
-    @IsDirty
-    public boolean isDirty() {
-        if ( isReadOnly ) {
-            return false;
-        }
-        return ( view.isDirty() );
-    }
-
     @OnMayClose
-    public boolean checkIfDirty() {
-        if ( isDirty() ) {
-            return view.confirmClose();
-        }
-        return true;
+    public boolean mayClose() {
+        return super.mayClose(model.hashCode());
     }
 
     @WorkbenchPartTitleDecoration

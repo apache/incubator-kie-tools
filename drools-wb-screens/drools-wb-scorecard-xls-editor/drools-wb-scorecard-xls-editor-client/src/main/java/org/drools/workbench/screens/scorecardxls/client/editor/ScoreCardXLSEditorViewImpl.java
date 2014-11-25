@@ -185,8 +185,7 @@ public class ScoreCardXLSEditorViewImpl
     }
 
     @Override
-    public void setNotDirty() {
-
+    public boolean confirmClose() {
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
-
 }

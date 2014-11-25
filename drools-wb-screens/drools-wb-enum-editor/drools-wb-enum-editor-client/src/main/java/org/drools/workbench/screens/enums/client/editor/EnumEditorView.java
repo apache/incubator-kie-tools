@@ -13,12 +13,4 @@ public interface EnumEditorView extends KieEditorView,
 
     String getContent();
 
-    boolean isDirty();
-
-    void setNotDirty();
-
-    boolean confirmClose();
-
-    void alertReadOnly();
-
 }

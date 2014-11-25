@@ -44,6 +44,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -124,6 +125,8 @@ public class ScenarioEditorPresenter
                                  });
 
                 view.hideBusyIndicator();
+                
+                setOriginalHash(scenario.hashCode());
             }
         };
     }
@@ -192,6 +195,11 @@ public class ScenarioEditorPresenter
         if ( scenario.getFixtures().size() == 0 ) {
             scenario.getFixtures().add( new ExecutionTrace() );
         }
+    }
+
+    @OnMayClose
+    public boolean mayClose() {
+        return super.mayClose(scenario.hashCode());
     }
 
     @OnClose

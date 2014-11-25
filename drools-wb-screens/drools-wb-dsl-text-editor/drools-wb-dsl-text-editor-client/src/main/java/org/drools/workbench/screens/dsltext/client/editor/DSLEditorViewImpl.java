@@ -38,19 +38,11 @@ public class DSLEditorViewImpl
 
     private final ResizableTextArea dslText = new ResizableTextArea();
 
-    private boolean isDirty;
-
     public DSLEditorViewImpl() {
         dslText.setWidth( "100%" );
         dslText.getElement().setAttribute( "spellcheck",
                                            "false" );
         dslText.setStyleName( DSLTextEditorResources.INSTANCE.CSS().defaultTextArea() );
-
-        dslText.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                isDirty = true;
-            }
-        } );
 
         dslText.addKeyDownHandler( new KeyDownHandler() {
 
@@ -86,16 +78,6 @@ public class DSLEditorViewImpl
             content = input;
         }
         dslText.setText( content );
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setNotDirty() {
-        this.isDirty = false;
     }
 
     @Override

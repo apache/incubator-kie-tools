@@ -28,10 +28,6 @@ public interface GuidedDecisionTableEditorView extends KieEditorView,
 
     void onFocus();
 
-    boolean isDirty();
-
-    void setNotDirty();
-
     boolean confirmClose();
 
     void alertReadOnly();

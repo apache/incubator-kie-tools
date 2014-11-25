@@ -89,16 +89,6 @@ public class WorkItemsEditorViewImpl
     }
 
     @Override
-    public boolean isDirty() {
-        return workItemWidget.isDirty();
-    }
-
-    @Override
-    public void setNotDirty() {
-        workItemWidget.setNotDirty();
-    }
-
-    @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }

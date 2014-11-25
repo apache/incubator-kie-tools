@@ -32,6 +32,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -55,7 +56,6 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.widget.EnumDropDown;
 import org.kie.workbench.common.widgets.client.widget.PopupDatePicker;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -65,7 +65,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
  * This provides for editing of fields in the RHS of a rule.
  */
 public class ActionValueEditor
-        extends DirtyableComposite {
+        extends Composite {
 
     private ActionFieldValue value;
     private DropDownData enums;
@@ -182,7 +182,6 @@ public class ActionValueEditor
     }
 
     private void doTypeChosen() {
-        makeDirty();
         executeOnChangeCommand();
         executeOnTemplateVariablesChange();
         refresh();
@@ -219,9 +218,8 @@ public class ActionValueEditor
 
                 public void onChange( ChangeEvent event ) {
                     ListBox w = (ListBox) event.getSource();
-                    value.setValue( "=" + w.getValue( w.getSelectedIndex() ) );
+                    value.setValue("=" + w.getValue(w.getSelectedIndex()));
                     executeOnChangeCommand();
-                    makeDirty();
                     refresh();
                 }
             } );
@@ -251,9 +249,8 @@ public class ActionValueEditor
 
                                                           public void valueChanged( String newText,
                                                                                     String newValue ) {
-                                                              value.setValue( newValue );
+                                                              value.setValue(newValue);
                                                               executeOnChangeCommand();
-                                                              makeDirty();
                                                           }
                                                       },
                                                       enums,
@@ -289,9 +286,8 @@ public class ActionValueEditor
         box.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             public void onValueChange( final ValueChangeEvent<String> event ) {
-                value.setValue( event.getValue() );
+                value.setValue(event.getValue());
                 executeOnChangeCommand();
-                makeDirty();
             }
         } );
         box.setText( assertValue() );

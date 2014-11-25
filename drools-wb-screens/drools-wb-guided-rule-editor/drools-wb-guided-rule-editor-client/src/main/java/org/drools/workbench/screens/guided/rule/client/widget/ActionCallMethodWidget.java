@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -43,7 +44,6 @@ import org.drools.workbench.screens.guided.rule.client.util.FieldNatureUtil;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 
@@ -53,7 +53,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 public class ActionCallMethodWidget extends RuleModellerWidget {
 
     final private ActionCallMethod model;
-    final private DirtyableFlexTable layout = new DirtyableFlexTable();
+    final private FlexTable layout = new FlexTable();
     private final AsyncPackageDataModelOracle oracle;
     private boolean isBoundFact = false;
 
@@ -213,7 +213,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         layout.setWidget( 0,
                           0,
                           getSetterLabel() );
-        DirtyableFlexTable inner = new DirtyableFlexTable();
+        FlexTable inner = new FlexTable();
         for ( int i = 0; i < model.getFieldValues().length; i++ ) {
             ActionFieldFunction val = model.getFieldValue( i );
 
@@ -352,10 +352,6 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
      */
     public boolean isBoundFact() {
         return isBoundFact;
-    }
-
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     @Override

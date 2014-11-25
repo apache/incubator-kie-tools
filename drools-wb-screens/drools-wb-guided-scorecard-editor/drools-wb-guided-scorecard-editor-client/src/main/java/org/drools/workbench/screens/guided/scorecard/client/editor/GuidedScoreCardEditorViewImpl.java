@@ -45,17 +45,6 @@ public class GuidedScoreCardEditorViewImpl
     }
 
     @Override
-    public boolean isDirty() {
-        //TODO This editor does not currently support "isDirty"
-        return false;
-    }
-
-    @Override
-    public void setNotDirty() {
-        //TODO This editor does not currently support "isDirty"
-    }
-
-    @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }

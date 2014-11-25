@@ -13,14 +13,6 @@ public interface GuidedScoreCardEditorView extends KieEditorView,
 
     ScoreCardModel getModel();
 
-    boolean isDirty();
-
-    void setNotDirty();
-
-    boolean confirmClose();
-
-    void alertReadOnly();
-
     void refreshFactTypes();
 
 }

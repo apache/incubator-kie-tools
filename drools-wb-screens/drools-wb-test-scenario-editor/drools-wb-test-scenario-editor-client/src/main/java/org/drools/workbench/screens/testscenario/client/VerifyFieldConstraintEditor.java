@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -51,7 +52,6 @@ import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.DatePickerTextBox;
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.InfoPopup;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
@@ -61,7 +61,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 /**
  * Constraint editor for the VerifyField of the expect part
  */
-public class VerifyFieldConstraintEditor extends DirtyableComposite {
+public class VerifyFieldConstraintEditor extends Composite {
 
     private String factType;
     private VerifyField field;

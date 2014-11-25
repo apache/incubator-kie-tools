@@ -24,14 +24,6 @@ public interface GuidedRuleTemplateEditorView extends KieEditorView,
 
     TemplateModel getContent();
 
-    boolean isDirty();
-
-    void setNotDirty();
-
-    boolean confirmClose();
-
     void refresh();
-
-    void alertReadOnly();
 
 }

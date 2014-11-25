@@ -50,8 +50,6 @@ public class CategoriesEditorViewImpl
     private CategoryTreeEditorWidget explorer;
     private PrettyFormLayout form;
 
-    boolean isDirty = false;
-
     @PostConstruct
     public void init() {
         explorer = new CategoryTreeEditorWidget();
@@ -95,7 +93,6 @@ public class CategoriesEditorViewImpl
                 }
                 final String name = Window.prompt( Constants.INSTANCE.CategoryNewNamePleaseEnter(), "" );
                 if ( name != null ) {
-                    isDirty = true;
                     explorer.renameSelected( name );
                 }
             }
@@ -111,7 +108,6 @@ public class CategoriesEditorViewImpl
                     return;
                 }
                 if ( Window.confirm( Constants.INSTANCE.AreYouSureYouWantToDeleteCategory() + explorer.getSelectedCategory().getName() ) ) {
-                    isDirty = true;
                     explorer.removeSelected();
                 }
             }
@@ -133,16 +129,6 @@ public class CategoriesEditorViewImpl
     @Override
     public Categories getContent() {
         return explorer.getCategories();
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setNotDirty() {
-        isDirty = false;
     }
 
     @Override
@@ -192,7 +178,6 @@ public class CategoriesEditorViewImpl
                 if ( parent.contains( name.getText() ) ) {
                     ErrorPopup.showMessage( Constants.INSTANCE.CategoryWasNotSuccessfullyCreated() );
                 } else {
-                    isDirty = true;
                     explorer.addChildren( parent, name.getText(), description.getText() );
                     hide();
                 }

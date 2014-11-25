@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -44,7 +45,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -55,7 +55,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 public class ActionSetFieldWidget extends RuleModellerWidget {
 
     final private ActionSetField model;
-    final private DirtyableFlexTable layout;
+    final private FlexTable layout;
     private boolean isBoundFact = false;
     private ModelField[] fieldCompletions;
     private String variableClass;
@@ -70,7 +70,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         super( mod,
                eventBus );
         this.model = set;
-        this.layout = new DirtyableFlexTable();
+        this.layout = new FlexTable();
 
         layout.setStyleName( "model-builderInner-Background" );
 
@@ -305,10 +305,6 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
      */
     public boolean isBoundFact() {
         return isBoundFact;
-    }
-
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     @Override

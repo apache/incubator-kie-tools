@@ -43,7 +43,7 @@ import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 
 public class ScenarioWidgetComponentCreator {
@@ -156,8 +156,8 @@ public class ScenarioWidgetComponentCreator {
                                 oracle );
     }
 
-    protected DirtyableFlexTable createDirtyableFlexTable() {
-        DirtyableFlexTable editorLayout = new DirtyableFlexTable();
+    protected FlexTable createFlexTable() {
+        FlexTable editorLayout = new FlexTable();
         editorLayout.clear();
         editorLayout.setWidth( "100%" );
         editorLayout.setStyleName( "model-builder-Background" );

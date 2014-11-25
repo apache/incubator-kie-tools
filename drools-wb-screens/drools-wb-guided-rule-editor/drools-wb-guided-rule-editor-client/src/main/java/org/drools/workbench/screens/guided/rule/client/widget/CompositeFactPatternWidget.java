@@ -24,6 +24,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -41,7 +42,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.kie.workbench.common.widgets.client.resources.i18n.HumanReadableConstants;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
 import org.uberfire.ext.widgets.common.client.common.DirtyableHorizontalPane;
 import org.uberfire.ext.widgets.common.client.common.DirtyableVerticalPane;
 import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
@@ -53,7 +53,7 @@ import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
 public class CompositeFactPatternWidget extends RuleModellerWidget {
 
     protected final AsyncPackageDataModelOracle oracle;
-    protected DirtyableFlexTable layout;
+    protected FlexTable layout;
 
     protected CompositeFactPattern pattern;
 
@@ -70,7 +70,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         this.oracle = modeller.getDataModelOracle();
         this.pattern = pattern;
 
-        this.layout = new DirtyableFlexTable();
+        this.layout = new FlexTable();
         this.layout.setStyleName( "model-builderInner-Background" );
 
         if ( readOnly != null ) {
@@ -104,10 +104,6 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
 
         doLayout();
         initWidget( layout );
-    }
-
-    public boolean isDirty() {
-        return layout.hasDirty();
     }
 
     @Override

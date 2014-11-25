@@ -10,10 +10,6 @@ public interface DSLEditorView extends KieEditorView,
 
     String getContent();
 
-    boolean isDirty();
-
-    boolean confirmClose();
-
     void makeReadOnly();
 
 }

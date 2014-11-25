@@ -29,7 +29,7 @@ import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.kie.workbench.common.widgets.client.resources.HumanReadable;
 import org.uberfire.ext.widgets.common.client.common.ClickableLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableFlexTable;
+import com.google.gwt.user.client.ui.FlexTable;
 
 public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWidget {
 
@@ -66,7 +66,7 @@ public class FromEntryPointFactPatternWidget extends FromCompositeFactPatternWid
         };
         String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from entry-point" ) + "</div>";
 
-        DirtyableFlexTable panel = new DirtyableFlexTable();
+        FlexTable panel = new FlexTable();
 
         int r = 0;
 

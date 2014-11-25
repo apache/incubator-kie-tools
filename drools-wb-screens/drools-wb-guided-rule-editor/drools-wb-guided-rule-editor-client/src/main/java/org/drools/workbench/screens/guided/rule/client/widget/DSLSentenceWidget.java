@@ -48,7 +48,6 @@ import org.guvnor.common.services.workingset.client.factconstraints.customform.C
 import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.widget.DatePickerLabel;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.widgets.common.client.common.ValueChanged;
@@ -375,7 +374,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     }
 
     class FieldEditor
-            extends DirtyableComposite
+            extends Composite
             implements DSLVariableEditor {
 
         private TextBox box;
@@ -396,7 +395,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     } else {
                         oldValue = otherBox.getText();
                         updateSentence();
-                        makeDirty();
                     }
                 }
             } );
@@ -435,7 +433,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     }
 
-    class DSLDropDown extends DirtyableComposite
+    class DSLDropDown extends Composite
             implements
             DSLVariableEditor {
 
@@ -466,7 +464,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 public void valueChanged( String newText,
                                           String newValue ) {
 
-                    makeDirty();
                     selectedValue = new DSLVariableValue( newValue );
 
                     //When the value changes we need to reset the content of *ALL* DSLSentenceWidget drop-downs.
@@ -515,7 +512,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     }
 
-    class DSLCustomFormButton extends DirtyableComposite
+    class DSLCustomFormButton extends Composite
             implements
             DSLVariableEditor {
 
@@ -558,7 +555,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                                                                              value );
 
                                 updateSentence();
-                                makeDirty();
                                 customFormPopUp.hide();
                             }
                         } );
@@ -617,7 +613,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
                 public void onChange( ChangeEvent event ) {
                     updateSentence();
-                    makeDirty();
                 }
             } );
 
@@ -652,7 +647,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             resultWidget.addValueChanged( new ValueChanged() {
                 public void valueChanged( String newValue ) {
                     updateSentence();
-                    makeDirty();
                 }
             } );
 

@@ -22,14 +22,14 @@ import java.util.List;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Composite;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
-import org.uberfire.ext.widgets.common.client.common.DirtyableComposite;
 
 /**
  * A superclass for the widgets present in RuleModeller.
  */
 public abstract class RuleModellerWidget
-        extends DirtyableComposite {
+        extends Composite {
 
     protected RuleModeller modeller;
 

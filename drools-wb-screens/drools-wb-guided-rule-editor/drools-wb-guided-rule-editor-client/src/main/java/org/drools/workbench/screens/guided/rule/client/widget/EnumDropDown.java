@@ -25,14 +25,12 @@ import org.drools.workbench.models.datamodel.oracle.DropDownData;
 import org.kie.workbench.common.widgets.client.widget.EnumDropDownUtilities;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.DropDownValueChanged;
-import org.uberfire.ext.widgets.common.client.common.IDirtyable;
 
 /**
  * A drop down for enumerated values
  */
 public class EnumDropDown
-        extends ListBox
-        implements IDirtyable {
+        extends ListBox {
 
     private final DropDownValueChanged valueChangedCommand;
     private final Path resource;

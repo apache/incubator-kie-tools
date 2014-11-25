@@ -59,7 +59,6 @@ public class GlobalsEditorViewImpl
 
     private List<String> fullyQualifiedClassNames;
 
-    private boolean isDirty = false;
     private boolean isReadOnly = false;
 
     public GlobalsEditorViewImpl() {
@@ -112,7 +111,6 @@ public class GlobalsEditorViewImpl
                 }
                 if ( Window.confirm( GlobalsEditorConstants.INSTANCE.promptForRemovalOfGlobal0( global.getAlias() ) ) ) {
                     dataProvider.getList().remove( index );
-                    isDirty = true;
                 }
             }
         } );
@@ -138,17 +136,6 @@ public class GlobalsEditorViewImpl
         this.dataProvider.setList( globals );
         this.addGlobalButton.setEnabled( !isReadOnly );
         this.isReadOnly = isReadOnly;
-        setNotDirty();
-    }
-
-    @Override
-    public boolean isDirty() {
-        return isDirty;
-    }
-
-    @Override
-    public void setNotDirty() {
-        isDirty = false;
     }
 
     @Override
@@ -172,7 +159,6 @@ public class GlobalsEditorViewImpl
                 final String className = addGlobalPopup.getClassName();
                 dataProvider.getList().add( new Global( alias,
                                                         className ) );
-                isDirty = true;
             }
         };
     }
