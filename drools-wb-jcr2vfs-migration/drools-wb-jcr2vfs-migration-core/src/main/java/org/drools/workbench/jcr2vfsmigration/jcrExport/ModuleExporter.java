@@ -18,12 +18,20 @@ package org.drools.workbench.jcr2vfsmigration.jcrExport;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.repository.Preferred;
+import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
+import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
@@ -41,8 +49,14 @@ public class ModuleExporter {
     protected RepositoryModuleService jcrRepositoryModuleService;
 
     @Inject
+    protected RepositoryAssetService jcrRepositoryAssetService;
+
+    @Inject
     @Preferred
     private RulesRepository rulesRepository;
+
+    @Inject
+    protected MigrationPathManager migrationPathManager;
 
     @Inject
     FileManager fileManager;
@@ -91,6 +105,30 @@ public class ModuleExporter {
             }
         }
 
-        return new Module( moduleType, jcrModule.getUuid(), jcrModule.getName(), jcrModule.getCatRules() );
+        String normalizedPackageName = migrationPathManager.normalizePackageName( jcrModule.getName() );
+
+        // Export package header info
+        String packageHeaderInfo = null;
+        jcrModule.setName( normalizedPackageName );
+        try {
+            List<String> formats = new ArrayList<String>();
+            formats.add("package");
+            AssetPageRequest request = new AssetPageRequest(jcrModule.getUuid(),
+                    formats,
+                    null,
+                    0,
+                    10);
+            PageResponse<AssetPageRow> response = jcrRepositoryAssetService.findAssetPage(request);
+            if (response.getTotalRowSize() > 0) {
+                AssetPageRow row = response.getPageRowList().get(0);
+                AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
+
+                packageHeaderInfo = assetItemJCR.getContent();
+            }
+        } catch ( SerializationException e ) {
+            throw new IllegalStateException( e );
+        }
+
+        return new Module( moduleType, jcrModule.getUuid(), jcrModule.getName(), normalizedPackageName, packageHeaderInfo, jcrModule.getCatRules() );
     }
 }

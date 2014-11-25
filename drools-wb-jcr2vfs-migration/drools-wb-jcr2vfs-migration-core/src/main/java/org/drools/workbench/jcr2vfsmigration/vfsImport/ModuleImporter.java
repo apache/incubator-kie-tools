@@ -88,7 +88,7 @@ public class ModuleImporter {
     private void importModule( Module module ) {
         //Set up project structure:
 
-        String normalizedModuleName = migrationPathManager.normalizePackageName( module.getName() );
+        String normalizedModuleName = module.getNormalizedPackageName();
         String[] nameSplit = normalizedModuleName.split( "\\." );
 
         StringBuilder groupIdBuilder = new StringBuilder();

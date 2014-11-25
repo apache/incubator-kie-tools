@@ -36,8 +36,8 @@ public class Module {
         this.type = type;
         this.uuid = uuid;
         this.name = name;
-        this.normalizedPackageName = normalizedPackageName;
-        this.packageHeaderInfo = packageHeaderInfo;
+        this.normalizedPackageName = normalizedPackageName != null ? normalizedPackageName : "";
+        this.packageHeaderInfo = packageHeaderInfo != null ? packageHeaderInfo : "";
         this.catRules = catRules != null ? catRules : new HashMap<String, String>();
     }
 
