@@ -22,9 +22,20 @@ import java.util.Map;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlFormat.*;
+
 public class ExportXmlUtils {
 
-    public String formatMap( Map<String, String> map ) {
+    private static final String CDATA_SECTION = "#cdata-section";
+
+    public static String formatCdataSection( String content ) {
+        if ( content.contains( CDATA_CLOSE ) ) throw new RuntimeException( "Illegal close of CDATA section inside " + content );
+        StringBuilder sb = new StringBuilder( CDATA_OPEN );
+        sb.append( content ).append( CDATA_CLOSE );
+        return sb.toString();
+    }
+
+    public static String formatMap( Map<String, String> map ) {
         StringBuilder sb = new StringBuilder("<map>");
         if ( map != null && map.size() > 0 ) {
             for ( Iterator<Map.Entry<String, String>> mapEntryIt = map.entrySet().iterator(); mapEntryIt.hasNext(); ) {
@@ -39,7 +50,14 @@ public class ExportXmlUtils {
         return sb.toString();
     }
 
-    public Map<String, String> parseMap( Node mapNode ) {
+    public static String parseCdataSection( Node cdataNode ) {
+        if ( cdataNode != null && CDATA_SECTION.equalsIgnoreCase( cdataNode.getNodeName() ) ) {
+            return cdataNode.getTextContent();
+        }
+        return "";
+    }
+
+    public static Map<String, String> parseMap( Node mapNode ) {
         Map<String, String> map = new HashMap<String, String>();
         if ( mapNode != null && "map".equals( mapNode.getNodeName() ) ) {
             NodeList entriesNodes = mapNode.getChildNodes();

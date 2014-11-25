@@ -23,12 +23,18 @@ public class Module {
     private ModuleType type;
     private String uuid;
     private String name;
+    private String packageHeaderInfo;
     private Map<String, String> catRules;
 
-    public Module( ModuleType type, String uuid, String name, Map<String, String> catRules  ) {
+    public Module( ModuleType type,
+                   String uuid,
+                   String name,
+                   String packageHeaderInfo,
+                   Map<String, String> catRules ) {
         this.type = type;
         this.uuid = uuid;
         this.name = name;
+        this.packageHeaderInfo = packageHeaderInfo;
         this.catRules = catRules != null ? catRules : new HashMap<String, String>();
     }
 
@@ -42,6 +48,10 @@ public class Module {
 
     public String getName() {
         return name;
+    }
+
+    public String getPackageHeaderInfo() {
+        return packageHeaderInfo;
     }
 
     public Map<String, String> getCatRules() {

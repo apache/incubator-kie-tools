@@ -14,5 +14,11 @@
   <name>Drools Workbench - XML for migration</name>
   <description>XML utilities for jcr to vfs migration</description>
 
+  <dependencies>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

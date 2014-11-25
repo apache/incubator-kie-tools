@@ -17,6 +17,7 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
@@ -29,6 +30,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     public static final String MODULE_UUID = "uuid";
     public static final String MODULE_TYPE = "type";
     public static final String MODULE_NAME = "name";
+    public static final String MODULE_PACKAGEHEADER = "packageHeaderInfo";
     public static final String MODULE_CATRULES = "catRules";
 
     @Override
@@ -39,7 +41,13 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         sb.append( LT ).append( MODULE_UUID ).append( GT ).append( module.getUuid() ).append( LT_SLASH ).append( MODULE_UUID ).append( GT );
         sb.append( LT ).append( MODULE_TYPE ).append( GT ).append( module.getType() ).append( LT_SLASH ).append( MODULE_TYPE ).append( GT );
         sb.append( LT ).append( MODULE_NAME ).append( GT ).append( module.getName() ).append( LT_SLASH ).append( MODULE_NAME ).append( GT );
+
+        // Package header info
+        sb.append( formatPackageHeaderInfo( module.getPackageHeaderInfo() ) );
+
+        // Category rules
         sb.append( formatCatRules( module ) );
+
         sb.append( LT_SLASH ).append( MODULE ).append( GT );
         System.out.format( "Module [%s] exported. %n", module.getName() );
     }
@@ -50,6 +58,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
 
         String name = null;
         String uuid = null;
+        String packageHeaderInfo = null;
         ModuleType type = null;
         Map<String, String> catRules = null;
 
@@ -63,19 +72,20 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                 uuid = nodeContent;
             } else if ( MODULE_TYPE.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 type = ModuleType.getByName( nodeContent );
+            } else if ( MODULE_PACKAGEHEADER.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
+                packageHeaderInfo = parsePackageHeaderInfo( propertyNode );
             } else if ( MODULE_CATRULES.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 catRules = parseCatRules( propertyNode );
             }
         }
-        return new Module( type, uuid, name, catRules );
+        return new Module( type, uuid, name, packageHeaderInfo, catRules );
     }
 
     private String formatCatRules( Module module ) {
         StringBuilder sbCatRules = new StringBuilder( LT ).append( MODULE_CATRULES ).append( GT );
         Map<String, String> mapCatRules = module.getCatRules();
         if ( mapCatRules.size() > 0 ) {
-            ExportXmlUtils xmlUtils = new ExportXmlUtils();
-            sbCatRules.append( xmlUtils.formatMap( mapCatRules ) );
+            sbCatRules.append( ExportXmlUtils.formatMap( mapCatRules ) );
         }
         sbCatRules.append( LT_SLASH ).append( MODULE_CATRULES ).append( GT );
         return sbCatRules.toString();
@@ -84,9 +94,24 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     private Map<String, String> parseCatRules( Node catRulesNode ) {
         Map<String, String> catRules;
         NodeList catRulesNodeChildren = catRulesNode.getChildNodes();
-        if ( catRulesNodeChildren.getLength() != 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_CATRULES );
-        ExportXmlUtils xmlUtils = new ExportXmlUtils();
-        catRules = xmlUtils.parseMap( catRulesNodeChildren.item( 0 ) );
+        if ( catRulesNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_CATRULES );
+        catRules = ExportXmlUtils.parseMap( catRulesNodeChildren.item( 0 ) );
         return catRules;
+    }
+
+    private String formatPackageHeaderInfo( String packageHeaderInfo ) {
+        StringBuilder sbPackageHeader = new StringBuilder( LT );
+        sbPackageHeader.append( MODULE_PACKAGEHEADER ).append( GT );
+        if ( StringUtils.isNotBlank( packageHeaderInfo ) ) {
+            sbPackageHeader.append( ExportXmlUtils.formatCdataSection( packageHeaderInfo ) );
+        }
+        sbPackageHeader.append( LT_SLASH ).append( MODULE_PACKAGEHEADER ).append( GT );
+        return sbPackageHeader.toString();
+    }
+
+    private String parsePackageHeaderInfo( Node headerInfoNode ) {
+        NodeList headerNodeChildren = headerInfoNode.getChildNodes();
+        if ( headerNodeChildren.getLength() != 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_PACKAGEHEADER );
+        return ExportXmlUtils.parseCdataSection( headerNodeChildren.item( 0 ) );
     }
 }

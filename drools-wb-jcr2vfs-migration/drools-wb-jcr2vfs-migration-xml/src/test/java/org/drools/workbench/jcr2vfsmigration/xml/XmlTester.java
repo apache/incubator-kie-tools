@@ -16,10 +16,12 @@ import org.xml.sax.InputSource;
 
 public class XmlTester {
 
-    private String modulesXml = "<modules><module><type>normal</type><name>mod1</name><uuid>uuid1</uuid></module>" +
-            "<module><type>normal</type><name>mod2</name><uuid>uuid2</uuid></module>" +
-            "<module><type>normal</type><name>mod3</name><uuid>uuid3</uuid></module>" +
-            "<module><type>global</type><name>globalmodule</name><uuid>global</uuid></module></modules>";
+    private String modulesXml = "<modules><module><uuid>e5645c2f-f79b-409a-a765-913fd054c9e2</uuid><type>GLOBAL</type>" +
+            "<name>globalArea</name><catRules></catRules></module><module><uuid>d1be22d8-4cef-416d-bd2f-98d4bf59c687</uuid>" +
+            "<type>NORMAL</type><name>class.jantest.import.package</name><catRules></catRules></module><module>" +
+            "<uuid>fae2b929-c5ef-4ce5-9fa1-514779ca0ae3</uuid><type>NORMAL</type><name>defaultPackage</name><catRules>" +
+            "</catRules></module><module><uuid>da98caef-e1c4-4f98-880c-46a740c9131f</uuid><type>NORMAL</type>" +
+            "<name>mortgages</name><catRules></catRules></module></modules>";
 
     private String categoriesXml = "<categories><category name=\"Home Mortgage\"><categories><category name=" +
             "\"Eligibility rules\"></category><category name=\"Pricing rules\"></category><category name=" +
@@ -29,6 +31,20 @@ public class XmlTester {
 
     private String mapXml = "<catRules><map><entry><key>k1</key><value>v1</value></entry><entry><key>k2</key><value>v2" +
             "</value></entry><entry><key>k3</key><value>v3</value></entry></map></catRules>";
+
+    private String packageHeaderModulesXml = "<modules><module><uuid>id1</uuid><type>GLOBAL</type><name>testModule</name>" +
+            "<catRules></catRules>" +
+            "<packageHeaderInfo><![CDATA[function matchwo(a,b)\n" +
+            "{\n" +
+            "if (a < b && a < 0) then\n" +
+            "  {\n" +
+            "  return 1;\n" +
+            "  }\n" +
+            "else\n" +
+            "  {\n" +
+            "  return 0;\n" +
+            "  }\n" +
+            "}]]></packageHeaderInfo><catRules></catRules></module></modules>";
 
     public void testModules() {
         ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
@@ -48,7 +64,6 @@ public class XmlTester {
                 modulesXmlFormat.format( sb, modules );
                 System.out.println( sb.toString() );
             }
-            return;
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -72,14 +87,12 @@ public class XmlTester {
                 categoriesXmlFormat.format( sb, categories );
                 System.out.println( sb.toString() );
             }
-            return;
         } catch ( Exception e ) {
             e.printStackTrace();
         }
     }
 
     public void testMap() {
-        ExportXmlUtils xmlUtils = new ExportXmlUtils();
         InputSource is = new InputSource( new StringReader( mapXml ) );
         Document xml = null;
         try {
@@ -92,9 +105,32 @@ public class XmlTester {
             NodeList catRulesChildren = catRulesNode.getChildNodes();
             if ( catRulesChildren.getLength() != 1 ) throw new IllegalArgumentException( "Wrong xml format" );
             Node mapNode = catRulesChildren.item( 0 );
-            Map<String, String> map = xmlUtils.parseMap( mapNode );
+            Map<String, String> map = ExportXmlUtils.parseMap( mapNode );
             System.out.println( map );
-            System.out.println( xmlUtils.formatMap( map ) );
+            System.out.println( ExportXmlUtils.formatMap( map ) );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    public void testPackageHeader() {
+        ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
+        InputSource is = new InputSource( new StringReader( packageHeaderModulesXml ) );
+        Document xml = null;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            xml = db.parse( is );
+            NodeList children = xml.getChildNodes();
+            if ( children.getLength() != 1 ) throw new IllegalArgumentException( "Wrong xml format" );
+            Node node = children.item( 0 );
+            if (node != null && "modules".equals( node.getNodeName())) {
+                Modules modules = modulesXmlFormat.parse( node );
+
+                StringBuilder sb = new StringBuilder();
+                modulesXmlFormat.format( sb, modules );
+                System.out.println( sb.toString() );
+            }
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -105,5 +141,6 @@ public class XmlTester {
         xt.testModules();
         xt.testCategories();
         xt.testMap();
+        xt.testPackageHeader();
     }
 }
