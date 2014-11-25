@@ -8,14 +8,14 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.apps.api.AppsPersistenceAPI;
-import org.uberfire.ext.apps.api.Directory;
-import org.uberfire.ext.apps.api.DirectoryBreadCrumb;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.apps.api.AppsPersistenceAPI;
+import org.uberfire.ext.apps.api.Directory;
+import org.uberfire.ext.apps.api.DirectoryBreadCrumb;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -28,10 +28,12 @@ public class AppsHomePresenter {
         void setupBreadCrumbs( List<DirectoryBreadCrumb> breadcrumbs,
                                ParameterizedCommand<String> breadCrumbAction );
 
-        void setupAddDir( ParameterizedCommand<String> clickCommand );
+        void setupAddDir( final ParameterizedCommand<String> clickCommand,
+                          Directory currentDirectory );
 
         void setupChildsDirectories( List<Directory> childsDirectories,
-                                     ParameterizedCommand<String> clickCommand, ParameterizedCommand<String> deleteCommand  );
+                                     ParameterizedCommand<String> clickCommand,
+                                     ParameterizedCommand<String> deleteCommand );
 
         void clear();
 
@@ -92,14 +94,13 @@ public class AppsHomePresenter {
         }
         Directory target = null;
         for ( Directory directory : candidate.getChildsDirectories() ) {
-            target =  searchForDirectory( parameter, directory );
+            target = searchForDirectory( parameter, directory );
             if ( target != null ) {
                 break;
             }
         }
         return target;
     }
-
 
     private ParameterizedCommand<String> generateDeleteDirectoryViewCommand() {
         return new ParameterizedCommand<String>() {
@@ -111,7 +112,7 @@ public class AppsHomePresenter {
                         view.clear();
                         view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand(), generateDeleteDirectoryViewCommand() );
                         view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
-                        view.setupAddDir( generateAddDirCommand() );
+                        view.setupAddDir( generateAddDirCommand(), currentDirectory );
                     }
                 }, new ErrorCallback<Object>() {
                     @Override
@@ -123,7 +124,6 @@ public class AppsHomePresenter {
             }
         };
     }
-
 
     private ParameterizedCommand<String> generateDirectoryViewCommand() {
         return new ParameterizedCommand<String>() {
@@ -144,7 +144,7 @@ public class AppsHomePresenter {
         view.setupBreadCrumbs( DirectoryBreadCrumb.getBreadCrumbs( currentDirectory ), generateBreadCrumbViewCommand() );
         view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand(), generateDeleteDirectoryViewCommand() );
         view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
-        view.setupAddDir( generateAddDirCommand() );
+        view.setupAddDir( generateAddDirCommand(), currentDirectory );
     }
 
     private ParameterizedCommand<String> generateComponentViewCommand() {
@@ -170,7 +170,7 @@ public class AppsHomePresenter {
                         view.clear();
                         view.setupChildsDirectories( currentDirectory.getChildsDirectories(), generateDirectoryViewCommand(), generateDeleteDirectoryViewCommand() );
                         view.setupChildComponents( currentDirectory.getChildComponents(), generateComponentViewCommand() );
-                        view.setupAddDir( generateAddDirCommand() );
+                        view.setupAddDir( generateAddDirCommand(), currentDirectory );
                     }
                 }, new ErrorCallback<Object>() {
                     @Override

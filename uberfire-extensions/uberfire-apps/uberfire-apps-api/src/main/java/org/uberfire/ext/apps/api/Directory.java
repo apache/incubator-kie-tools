@@ -100,4 +100,13 @@ public class Directory {
     public String getFullPath() {
         return fullPath;
     }
+
+    public boolean alreadyHasChild( String dirName ) {
+        for ( Directory child : childsDirectories ) {
+            if ( child.getName().equalsIgnoreCase( dirName ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

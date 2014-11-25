@@ -20,8 +20,10 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:kie="urn:import:org.uberfire.ext.widgets.common.client.common.popups"
     >
 
+  <ui:with field="i18n" type="org.uberfire.ext.apps.client.resources.i18n.CommonConstants"/>
 
   <ui:style>
     .mandatory-field {
@@ -30,25 +32,24 @@
   </ui:style>
 
   <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="Create Directory" backdrop="STATIC" keyboard="true" animation="true">
-      <b:ControlGroup ui:field="menuLabelControlGroup">
+    <kie:BaseModal ui:field="popup" title="{i18n.CreateDir}" backdrop="STATIC" keyboard="true" animation="true">
+      <b:ControlGroup ui:field="directoryNameControlGroup">
         <b:ControlLabel for="directoryName">
-          <span style="color: red;">*</span>
-           Directory Name
+          <span class="{style.mandatory-field}">*</span>
+          <ui:text from="{i18n.DirName}"/>
         </b:ControlLabel>
         <b:Controls>
-          <b:TextBox ui:field="directoryName" placeholder="directory name"/>
+          <b:TextBox ui:field="directoryName" placeholder="{i18n.DirNameHolder}"/>
+          <b:HelpInline ui:field="directoryNameInline"/>
         </b:Controls>
       </b:ControlGroup>
       <b:ModalFooter>
-        <b:Button icon="SAVE" type="PRIMARY" ui:field="save">
-          Save
-        </b:Button>
-        <b:Button icon="EYE_CLOSE" type="PRIMARY" ui:field="close">
-          Close
-        </b:Button>
+        <b:ModalFooter>
+          <b:Button ui:field="okButton" icon="PLUS_SIGN" type="PRIMARY" text="{i18n.OK}"></b:Button>
+          <b:Button ui:field="cancelButton" type="DEFAULT" text="{i18n.Cancel}"></b:Button>
+        </b:ModalFooter>
       </b:ModalFooter>
-    </b:Modal>
+    </kie:BaseModal>
   </g:HTMLPanel>
 
 </ui:UiBinder>

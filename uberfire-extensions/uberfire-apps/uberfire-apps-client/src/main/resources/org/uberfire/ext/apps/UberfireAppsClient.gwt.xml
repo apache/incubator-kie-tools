@@ -4,7 +4,10 @@
 <module>
   <source path='client'/>
 
+  <inherits name="com.google.gwt.i18n.I18N"/>
+
   <inherits name="org.uberfire.ext.apps.UberfireAppsAPI"/>
   <inherits name="org.uberfire.UberfireClientAll"/>
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
 
 </module>

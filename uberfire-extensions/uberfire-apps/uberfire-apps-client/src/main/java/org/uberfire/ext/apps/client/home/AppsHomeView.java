@@ -73,8 +73,9 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     }
 
     @Override
-    public void setupAddDir( ParameterizedCommand<String> command ) {
-        generateCreateDirThumbNail( command );
+    public void setupAddDir( final ParameterizedCommand<String> clickCommand,
+                             Directory currentDirectory ) {
+        generateCreateDirThumbNail( clickCommand , currentDirectory);
     }
 
     @Override
@@ -102,8 +103,9 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
 
     }
 
-    private void generateCreateDirThumbNail( ParameterizedCommand<String> clickCommand ) {
-        final TilesApp link = TilesApp.createDirTiles( TilesApp.TYPE.ADD, clickCommand );
+    private void generateCreateDirThumbNail( final ParameterizedCommand<String> clickCommand,
+                                             Directory currentDirectory ) {
+        final TilesApp link = TilesApp.createDirTiles( TilesApp.TYPE.ADD, clickCommand, currentDirectory );
         dirContent.add( link );
     }
 

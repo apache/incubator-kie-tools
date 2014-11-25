@@ -16,7 +16,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.ext.apps.client.home.components.popup.NewDirectory;
+import org.uberfire.ext.apps.api.Directory;
+import org.uberfire.ext.apps.client.home.components.popup.NewDirectoryPopup;
 import org.uberfire.ext.apps.client.resources.WebAppResource;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -37,7 +38,7 @@ public class TilesApp extends Composite {
     @UiField
     FlowPanel deletePanel;
 
-    private NewDirectory newDirectory = new NewDirectory();
+    private NewDirectoryPopup newDirectoryPopup;
 
     private Icon deleteIcon;
 
@@ -52,17 +53,19 @@ public class TilesApp extends Composite {
     private static TilesBinder uiBinder = GWT.create( TilesBinder.class );
 
     public static TilesApp createDirTiles( TYPE type,
-                                           final ParameterizedCommand<String> clickCommand ) {
-        return new TilesApp( type, clickCommand );
+                                           final ParameterizedCommand<String> clickCommand,
+                                           Directory currentDirectory ) {
+        return new TilesApp( type, clickCommand, currentDirectory );
     }
 
     private TilesApp( TYPE type,
-                      final ParameterizedCommand<String> clickCommand ) {
+                      final ParameterizedCommand<String> clickCommand,
+                      Directory currentDirectory ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         defineTileColor( type );
         createIcon( type );
         displayNoneOnLabel();
-        addClickPopUpHandler( clickCommand );
+        addClickPopUpHandler( clickCommand, currentDirectory );
     }
 
     public static TilesApp componentTiles( String componentName,
@@ -146,11 +149,13 @@ public class TilesApp extends Composite {
         }, ClickEvent.getType() );
     }
 
-    private void addClickPopUpHandler( final ParameterizedCommand<String> clickCommand ) {
+    private void addClickPopUpHandler( final ParameterizedCommand<String> clickCommand,
+                                       final Directory currentDirectory ) {
         tilePanel.addDomHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                newDirectory.show( clickCommand );
+                newDirectoryPopup = new NewDirectoryPopup( currentDirectory );
+                newDirectoryPopup.show( clickCommand );
             }
         }, ClickEvent.getType() );
     }
