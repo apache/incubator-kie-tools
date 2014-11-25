@@ -33,6 +33,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     public static final String MODULE_NORM_PACKAGENAME = "normalizedPackageName";
     public static final String MODULE_PACKAGEHEADER = "packageHeaderInfo";
     public static final String MODULE_CATRULES = "catRules";
+    public static final String MODULE_ASSET_FILE = "assetExportFileName";
 
     @Override
     public void format( StringBuilder sb, Module module ) {
@@ -48,6 +49,8 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                 .append( MODULE_NAME ).append( GT );
         sb.append( LT ).append( MODULE_NORM_PACKAGENAME ).append( GT ).append( module.getNormalizedPackageName() )
                 .append( LT_SLASH ).append( MODULE_NORM_PACKAGENAME ).append( GT );
+        sb.append( LT ).append( MODULE_ASSET_FILE ).append( GT ).append( module.getAssetExportFileName() )
+                .append( LT_SLASH ).append( MODULE_ASSET_FILE ).append( GT );
 
         // Package header info
         sb.append( formatPackageHeaderInfo( module.getPackageHeaderInfo() ) );
@@ -69,6 +72,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         String packageHeaderInfo = null;
         ModuleType type = null;
         Map<String, String> catRules = null;
+        String assetExportFileName = null;
 
         NodeList moduleProps = moduleNode.getChildNodes();
         for ( int i = 0; i < moduleProps.getLength(); i++ ) {
@@ -86,9 +90,17 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                 packageHeaderInfo = parsePackageHeaderInfo( propertyNode );
             } else if ( MODULE_CATRULES.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 catRules = parseCatRules( propertyNode );
+            } else if ( MODULE_ASSET_FILE.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
+                assetExportFileName = nodeContent;
             }
         }
-        return new Module( type, uuid, name, normalizedPackageName, packageHeaderInfo, catRules );
+        return new Module( type,
+                           uuid,
+                           name,
+                           normalizedPackageName,
+                           packageHeaderInfo,
+                           catRules,
+                           assetExportFileName );
     }
 
     private String formatCatRules( Module module ) {

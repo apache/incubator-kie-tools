@@ -17,6 +17,7 @@ package org.drools.workbench.jcr2vfsmigration.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -51,13 +52,36 @@ public class FileManager {
         return getFile( CATEGORIES_FILE );
     }
 
+    /**
+     * Test if the asset filename can be created, using the module uuid.
+     * Just in case the filename might become too long (windows), in which case we can try to shorten it a bit.
+     */
+    public boolean createAssetExportFile( String fileName ) {
+        return doCreateFile( new File (tempDir, fileName ) );
+    }
+
+    public File getAssetExportFile( String fileName ) throws FileNotFoundException {
+        return getFile( fileName );
+    }
+
+    private boolean doCreateFile( File file ) {
+        boolean success = false;
+        try {
+            success = file.createNewFile();
+        } catch ( IOException ioe ) {
+            System.out.println("Error while creating file " + file.getName() + "; " + ioe.getMessage());
+        }
+        return success;
+    }
+
     private PrintWriter createFileWriter( String fileName ) {
         PrintWriter pw = null;
         try {
-            pw = new PrintWriter( new File( tempDir, fileName ) );
-        } catch ( FileNotFoundException e ) {
-            e.printStackTrace();
-            System.out.println("Error creating the " + fileName + " file");
+            File f = new File (tempDir, fileName );
+            doCreateFile( f );
+            pw = new PrintWriter( f );
+        } catch ( FileNotFoundException fnfe ) {
+            System.out.println( "Error creating file writer for: " + fileName + "; " + fnfe.getMessage() );
         }
         return pw;
     }

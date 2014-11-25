@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -44,6 +45,8 @@ import org.slf4j.LoggerFactory;
 public class ModuleExporter {
 
     protected static final Logger logger = LoggerFactory.getLogger( ModuleExporter.class );
+
+    private static int assetFileName = 1;
 
     @Inject
     protected RepositoryModuleService jcrRepositoryModuleService;
@@ -129,6 +132,34 @@ public class ModuleExporter {
             throw new IllegalStateException( e );
         }
 
-        return new Module( moduleType, jcrModule.getUuid(), jcrModule.getName(), normalizedPackageName, packageHeaderInfo, jcrModule.getCatRules() );
+        String assetExportFileName = setupAssetExportFile( jcrModule.getUuid() );
+
+        return new Module( moduleType,
+                           jcrModule.getUuid(),
+                           jcrModule.getName(),
+                           normalizedPackageName,
+                           packageHeaderInfo,
+                           jcrModule.getCatRules(),
+                           assetExportFileName );
+    }
+
+    // Attempt creation of the asset export file firstly with the module's uuid. If this were null or the file could not
+    // be successfully created, then try again with a shorter (i.e. simple number) name.
+    private String setupAssetExportFile( String moduleUuid ) {
+        StringBuilder fileNameBuilder = new StringBuilder(".xml");
+        boolean success = false;
+        if ( StringUtils.isNotBlank( moduleUuid ) ) {
+            fileNameBuilder.insert( 0, moduleUuid );
+            success = fileManager.createAssetExportFile( fileNameBuilder.toString() );
+        }
+        if ( !success ) {
+            fileNameBuilder.replace( 0, fileNameBuilder.lastIndexOf( "." ), Integer.toString( assetFileName++ ) );
+            success = fileManager.createAssetExportFile( fileNameBuilder.toString() );
+            if ( ! success ) {
+                System.out.println( "Module asset file could not be created" );
+                return null;
+            }
+        }
+        return fileNameBuilder.toString();
     }
 }
