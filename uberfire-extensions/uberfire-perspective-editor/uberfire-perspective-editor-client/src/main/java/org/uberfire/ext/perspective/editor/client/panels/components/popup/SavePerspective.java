@@ -18,10 +18,12 @@ package org.uberfire.ext.perspective.editor.client.panels.components.popup;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,24 +35,37 @@ import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.perspective.editor.client.panels.perspective.PerspectivePresenter;
+import org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class SavePerspective
-        extends PopupPanel {
+        extends BaseModal {
 
     private final PerspectivePresenter perspectivePresenter;
+
     @UiField
-    Modal popup;
+    ControlGroup nameControlGroup;
 
     @UiField
     TextBox name;
 
     @UiField
+    HelpInline nameInline;
+
+    @UiField
+    ControlGroup tagControlGroup;
+
+    @UiField
     TextBox tag;
+
+    @UiField
+    HelpInline tagInline;
 
     @UiField
     HorizontalPanel tags;
@@ -67,14 +82,37 @@ public class SavePerspective
 
     public SavePerspective( PerspectivePresenter perspectivePresenter ) {
         this.perspectivePresenter = perspectivePresenter;
-        setWidget( uiBinder.createAndBindUi( this ) );
+        setTitle( CommonConstants.INSTANCE.SavePerspective() );
+        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalFooterOKCancelButtons(
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     } )
+           );
+    }
 
+    private void cancelButton() {
+        closePopup();
+    }
+
+    private void closePopup() {
+        hide();
+        super.hide();
     }
 
     public void show() {
         loadPerspectiveName();
         loadTags();
-        popup.show();
+        super.show();
     }
 
     private void loadTags() {
@@ -95,20 +133,35 @@ public class SavePerspective
         name.setText( perspectiveName );
     }
 
-    @UiHandler("save")
-    void save( final ClickEvent event ) {
-        perspectivePresenter.save( name.getText(), tagsList );
-        popup.hide();
+    private void okButton() {
+        NameValidator validator = NameValidator.perspectiveNameValidator();
+        if ( validator.isValid( name.getText() ) ) {
+            perspectivePresenter.save( name.getText(), tagsList );
+            hide();
+        } else {
+            nameControlGroup.setType( ControlGroupType.ERROR );
+            nameInline.setText( validator.getValidationError() );
+        }
+
     }
 
     @UiHandler("addTag")
     void addTag( final ClickEvent event ) {
-        tagsList.add( tag.getText() );
-        HorizontalPanel panel = new HorizontalPanel();
-        panel.add( new Label( tag.getText() ) );
-        createRemoveTagIcon( panel );
-        tags.add( panel );
-        tag.setText( "" );
+        NameValidator validator = NameValidator.tagNameValidator();
+        if ( validator.isValid( tag.getText() ) ) {
+            tagsList.add( tag.getText() );
+            HorizontalPanel panel = new HorizontalPanel();
+            panel.add( new Label( tag.getText() ) );
+            createRemoveTagIcon( panel );
+            tags.add( panel );
+            tag.setText( "" );
+            tagControlGroup.setType( ControlGroupType.NONE );
+            tagInline.setText( "" );
+
+        } else {
+            tagControlGroup.setType( ControlGroupType.ERROR );
+            tagInline.setText( validator.getValidationError() );
+        }
 
     }
 

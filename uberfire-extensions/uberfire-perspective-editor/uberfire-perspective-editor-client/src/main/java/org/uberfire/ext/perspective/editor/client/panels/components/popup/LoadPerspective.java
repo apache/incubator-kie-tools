@@ -17,29 +17,27 @@ package org.uberfire.ext.perspective.editor.client.panels.components.popup;
 
 import java.util.Collection;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.constants.Constants;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
-import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.perspective.editor.client.panels.perspective.PerspectivePresenter;
+import org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class LoadPerspective
-        extends PopupPanel {
+        extends BaseModal {
 
     private final PerspectivePresenter perspectivePresenter;
-    @UiField
-    Modal popup;
 
     @UiField
     FlowPanel suggestion;
@@ -56,7 +54,22 @@ public class LoadPerspective
 
     public LoadPerspective( PerspectivePresenter perspectivePresenter ) {
         this.perspectivePresenter = perspectivePresenter;
-        setWidget( uiBinder.createAndBindUi( this ) );
+        setTitle( CommonConstants.INSTANCE.LoadPerspective() );
+        add( uiBinder.createAndBindUi( this ) );
+        add( new ModalFooterOKCancelButtons(
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     } )
+           );
     }
 
     public void show( final Collection<String> perspectiveNames ) {
@@ -67,17 +80,18 @@ public class LoadPerspective
         perspectiveSuggestion.addSelectionHandler( new SelectionHandler<SuggestOracle.Suggestion>() {
             @Override
             public void onSelection( SelectionEvent<SuggestOracle.Suggestion> event ) {
-                System.out.println( event.getSelectedItem().getReplacementString() );
             }
         } );
         suggestion.add( perspectiveSuggestion );
-        popup.show();
+        super.show();
     }
 
-    @UiHandler("load")
-    void save( final ClickEvent event ) {
+    void okButton() {
         perspectivePresenter.load( perspectiveSuggestion.getText() );
-        popup.hide();
+        hide();
     }
 
+    private void cancelButton() {
+        hide();
+    }
 }

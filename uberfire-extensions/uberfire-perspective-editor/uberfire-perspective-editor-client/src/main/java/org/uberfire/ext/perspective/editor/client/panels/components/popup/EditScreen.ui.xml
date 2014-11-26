@@ -23,6 +23,8 @@
              xmlns:uf='urn:import:org.uberfire.ext.properties.editor.client'>
 
 
+  <ui:with field="i18n" type="org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants"/>
+
   <ui:style>
     .mandatory-field {
       color: #FF0000 !important;
@@ -30,27 +32,20 @@
   </ui:style>
 
   <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="Edit Component" backdrop="STATIC" keyboard="true" animation="true">
-      <b:Accordion>
-        <b:AccordionGroup heading="Add New Parameter">
-          <b:Controls>
-            <b:TextBox ui:field="key" placeholder="param key"/>
-            <b:TextBox ui:field="value" placeholder="param value"/>
-          </b:Controls>
-          <b:Button icon="SAVE" type="PRIMARY" ui:field="add">
-            Add
-          </b:Button>
-        </b:AccordionGroup>
-      </b:Accordion>
-
-      <uf:PropertyEditorWidget ui:field="propertyEditor"/>
-
-      <b:ModalFooter>
-        <b:Button icon="EYE_CLOSE" type="PRIMARY" ui:field="close">
-          Close
+    <b:Accordion>
+      <b:AccordionGroup heading="{i18n.AddNewParameter}">
+        <b:Controls>
+          <b:TextBox ui:field="key" placeholder="{i18n.ParamKey}"/>
+          <b:TextBox ui:field="value" placeholder="{i18n.ParamValue}"/>
+        </b:Controls>
+        <b:Button icon="SAVE" type="PRIMARY" ui:field="add">
+          <ui:text from="{i18n.Add}"/>
         </b:Button>
-      </b:ModalFooter>
-    </b:Modal>
+      </b:AccordionGroup>
+    </b:Accordion>
+
+    <uf:PropertyEditorWidget ui:field="propertyEditor"/>
+
   </g:HTMLPanel>
 
 </ui:UiBinder>

@@ -22,25 +22,9 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
 
 
-  <ui:style>
-    .mandatory-field {
-      color: #FF0000 !important;
-    }
-  </ui:style>
-
   <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="Edit Component" backdrop="STATIC" keyboard="true" animation="true">
-      <b:TextArea alternateSize="XXLARGE" ui:field="textArea"
-                  visibleLines="15" />
-      <b:ModalFooter>
-        <b:Button icon="SAVE" type="PRIMARY" ui:field="save">
-          Save
-        </b:Button>
-        <b:Button icon="EYE_CLOSE" type="PRIMARY" ui:field="close">
-          Close
-        </b:Button>
-      </b:ModalFooter>
-    </b:Modal>
+    <b:TextArea alternateSize="XXLARGE" ui:field="textArea"
+                visibleLines="15"/>
   </g:HTMLPanel>
 
 </ui:UiBinder>

@@ -22,6 +22,8 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
     >
 
+  <ui:with field="i18n" type="org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants"/>
+
 
   <ui:style>
     .mandatory-field {
@@ -30,11 +32,10 @@
   </ui:style>
 
   <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="Load Perspective" backdrop="STATIC" keyboard="true" animation="true">
-
       <b:ControlGroup>
         <b:ControlLabel>
-          Load Perspective
+          <span class="{style.mandatory-field}">*</span>
+          <ui:text from="{i18n.LoadPerspective}"/>
         </b:ControlLabel>
         <b:Controls>
           <g:FlowPanel ui:field="suggestion" />
@@ -42,12 +43,6 @@
 
       </b:ControlGroup>
 
-      <b:ModalFooter>
-        <b:Button icon="FOLDER_OPEN" type="PRIMARY" ui:field="load">
-          Load
-        </b:Button>
-      </b:ModalFooter>
-    </b:Modal>
   </g:HTMLPanel>
 
 </ui:UiBinder>

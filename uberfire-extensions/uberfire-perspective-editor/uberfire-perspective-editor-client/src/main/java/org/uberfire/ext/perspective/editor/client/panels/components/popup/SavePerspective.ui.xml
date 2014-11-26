@@ -29,46 +29,43 @@
     }
   </ui:style>
 
+  <ui:with field="i18n" type="org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants"/>
+
   <g:HTMLPanel>
-    <b:Modal ui:field="popup" title="Save Perspective" backdrop="STATIC" keyboard="true" animation="true">
 
-      <b:ControlGroup>
-        <b:ControlLabel>
-          Perspective Name
-        </b:ControlLabel>
-        <b:Controls>
-          <b:TextBox ui:field="name" placeholder="perspective name"/>
-        </b:Controls>
+    <b:ControlGroup ui:field="nameControlGroup">
+      <b:ControlLabel for="name">
+        <span class="{style.mandatory-field}">*</span>
+        <ui:text from="{i18n.PerspectiveName}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:TextBox ui:field="name" placeholder="{i18n.PerspectiveNameHolder}"/>
+        <b:HelpInline ui:field="nameInline"/>
+      </b:Controls>
+    </b:ControlGroup>
 
-      </b:ControlGroup>
-
-      <b:ControlGroup>
-        <b:ControlLabel>
-          Tag Name
-        </b:ControlLabel>
-        <b:Controls>
-          <b:TextBox ui:field="tag" placeholder="tag name"/>
-          <b:Button icon="PLUS" type="PRIMARY" ui:field="addTag">
-            Add Tag
-          </b:Button>
-        </b:Controls>
-      </b:ControlGroup>
-
-      <b:ControlGroup>
-        <b:ControlLabel>
-          Tags
-        </b:ControlLabel>
-        <b:Controls>
-          <g:HorizontalPanel ui:field="tags"/>
-        </b:Controls>
-      </b:ControlGroup>
-
-      <b:ModalFooter>
-        <b:Button icon="SAVE" type="PRIMARY" ui:field="save">
-          Save
+    <b:ControlGroup ui:field="tagControlGroup">
+      <b:ControlLabel for="tag">
+        <ui:text from="{i18n.TagName}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <b:TextBox ui:field="tag" placeholder="{i18n.PerspectiveNameHolder}"/>
+        <b:Button icon="PLUS" type="PRIMARY" ui:field="addTag">
+          <ui:text from="{i18n.AddTag}"/>
         </b:Button>
-      </b:ModalFooter>
-    </b:Modal>
+        <b:HelpInline ui:field="tagInline"/>
+      </b:Controls>
+    </b:ControlGroup>
+
+    <b:ControlGroup>
+      <b:ControlLabel>
+        <ui:text from="{i18n.TagLabel}"/>
+      </b:ControlLabel>
+      <b:Controls>
+        <g:HorizontalPanel ui:field="tags"/>
+      </b:Controls>
+    </b:ControlGroup>
+
   </g:HTMLPanel>
 
 </ui:UiBinder>

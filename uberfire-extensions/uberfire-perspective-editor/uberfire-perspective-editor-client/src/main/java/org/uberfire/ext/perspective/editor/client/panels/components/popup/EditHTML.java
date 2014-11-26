@@ -15,27 +15,24 @@
 */
 package org.uberfire.ext.perspective.editor.client.panels.components.popup;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.perspective.editor.client.structure.EditorWidget;
 import org.uberfire.ext.perspective.editor.client.structure.HTMLEditorWidgetUI;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class EditHTML
-        extends PopupPanel {
+        extends BaseModal {
 
     private final HTMLEditorWidgetUI parent;
 
     private static final String DEFAULT_HTML = "Add your HTML here...";
-
-    @UiField
-    Modal popup;
 
     @UiField
     TextArea textArea;
@@ -43,7 +40,9 @@ public class EditHTML
     Listener listener;
 
     public interface Listener {
+
         void onSave();
+
         void onClose();
     }
 
@@ -55,40 +54,54 @@ public class EditHTML
 
     private static Binder uiBinder = GWT.create( Binder.class );
 
-    public EditHTML( EditorWidget parent, Listener listener) {
-        setWidget( uiBinder.createAndBindUi( this ) );
+    public EditHTML( EditorWidget parent,
+                     Listener listener ) {
+        setTitle( CommonConstants.INSTANCE.EditHtml() );
+        add( uiBinder.createAndBindUi( this ) );
         final HTMLEditorWidgetUI htmlParent = (HTMLEditorWidgetUI) parent;
         this.parent = htmlParent;
         this.listener = listener;
         setupHTMLEditor( htmlParent );
+
+        add( new ModalFooterOKCancelButtons(
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     } )
+           );
     }
 
     private void setupHTMLEditor( HTMLEditorWidgetUI htmlParent ) {
         if ( htmlParent.getHtmlCode() == null || htmlParent.getHtmlCode().isEmpty() ) {
-            this.textArea.setText(DEFAULT_HTML);
-        }
-        else{
+            this.textArea.setText( DEFAULT_HTML );
+        } else {
             this.textArea.setText( htmlParent.getHtmlCode() );
         }
     }
 
     public void show() {
-        popup.show();
+        super.show();
     }
 
-    @UiHandler("close")
-    void close( final ClickEvent event ) {
-        popup.hide();
-        if (listener != null) {
+    void cancelButton() {
+        super.hide();
+        if ( listener != null ) {
             listener.onClose();
         }
     }
 
-    @UiHandler("save")
-    void save( final ClickEvent event ) {
+    void okButton() {
         parent.setHtmlCode( textArea.getText() );
-        popup.hide();
-        if (listener != null) {
+        super.hide();
+        if ( listener != null ) {
             listener.onSave();
         }
     }

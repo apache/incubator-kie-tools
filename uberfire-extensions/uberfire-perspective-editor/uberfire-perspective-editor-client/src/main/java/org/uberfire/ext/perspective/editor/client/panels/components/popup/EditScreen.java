@@ -15,36 +15,35 @@
 */
 package org.uberfire.ext.perspective.editor.client.panels.components.popup;
 
-import com.github.gwtbootstrap.client.ui.Modal;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.perspective.editor.client.structure.EditorWidget;
 import org.uberfire.ext.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.uberfire.ext.perspective.editor.model.ScreenEditor;
 import org.uberfire.ext.perspective.editor.model.ScreenParameter;
-import org.uberfire.ext.perspective.editor.client.structure.EditorWidget;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
 public class EditScreen
-        extends PopupPanel {
+        extends BaseModal {
 
     private final EditorWidget parent;
-
-    @UiField
-    Modal popup;
 
     @UiField
     TextBox key;
@@ -64,19 +63,38 @@ public class EditScreen
     private static Binder uiBinder = GWT.create( Binder.class );
 
     public EditScreen( EditorWidget parent ) {
-        setWidget( uiBinder.createAndBindUi( this ) );
+        setTitle( CommonConstants.INSTANCE.EditComponent() );
+        add( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
         propertyEditor.setLastOpenAccordionGroupTitle( "Screen Editors" );
         propertyEditor.handle( generateEvent( defaultScreenProperties() ) );
+
+        add( new ModalFooterOKCancelButtons(
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     } )
+           );
     }
 
     public void show() {
-        popup.show();
+        super.show();
     }
 
-    @UiHandler("close")
-    void close( final ClickEvent event ) {
-        popup.hide();
+    void okButton() {
+        super.hide();
+    }
+
+    void cancelButton() {
+        super.hide();
     }
 
     @UiHandler("add")
@@ -95,16 +113,16 @@ public class EditScreen
 
     private PropertyEditorCategory defaultScreenProperties() {
         PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
-        ScreenEditor screenEditor= perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
+        ScreenEditor screenEditor = perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
 
         PropertyEditorCategory category = new PropertyEditorCategory( "Screen Editors" );
         boolean alreadyHasScreenNameParameter = false;
         for ( ScreenParameter key : screenEditor.getParameters() ) {
-            if(key.getKey().equals( ScreenEditor.PLACE_NAME_KEY )){
-                alreadyHasScreenNameParameter=true;
+            if ( key.getKey().equals( ScreenEditor.PLACE_NAME_KEY ) ) {
+                alreadyHasScreenNameParameter = true;
             }
             category.withField(
-                    new PropertyEditorFieldInfo( key.getKey(),key.getValue(), PropertyEditorType.TEXT )
+                    new PropertyEditorFieldInfo( key.getKey(), key.getValue(), PropertyEditorType.TEXT )
                             .withKey( parent.hashCode() + "" ).withValidators( new PropertyFieldValidator() {
                         @Override
                         public boolean validate( Object value ) {
@@ -117,9 +135,9 @@ public class EditScreen
                         }
                     } ) );
         }
-        if (!alreadyHasScreenNameParameter){
+        if ( !alreadyHasScreenNameParameter ) {
             category.withField(
-                    new PropertyEditorFieldInfo( ScreenEditor.PLACE_NAME_KEY,"", PropertyEditorType.TEXT )
+                    new PropertyEditorFieldInfo( ScreenEditor.PLACE_NAME_KEY, "", PropertyEditorType.TEXT )
                             .withKey( parent.hashCode() + "" ).withValidators( new PropertyFieldValidator() {
                         @Override
                         public boolean validate( Object value ) {
