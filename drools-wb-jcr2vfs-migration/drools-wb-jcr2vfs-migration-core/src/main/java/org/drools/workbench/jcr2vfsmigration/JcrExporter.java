@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import org.apache.commons.io.FileUtils;
 import org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration;
 import org.drools.workbench.jcr2vfsmigration.config.FSExportConfig;
+import org.drools.workbench.jcr2vfsmigration.jcrExport.ModuleAssetExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.CategoryExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.ModuleExporter;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
@@ -47,6 +48,9 @@ public class JcrExporter {
 
     @Inject
     protected CategoryExporter categoryExporter;
+
+    @Inject
+    protected ModuleAssetExporter moduleAssetExporter;
 
     @Inject
     protected GuvnorBootstrapConfiguration guvnorBootstrapConfiguration;
@@ -83,7 +87,7 @@ public class JcrExporter {
 
             moduleExporter.exportAll();
 //            categoryExporter.exportAll();
-//            assetMigrater.migrateAll();
+            moduleAssetExporter.exportAll();
 
             // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
             endContexts();

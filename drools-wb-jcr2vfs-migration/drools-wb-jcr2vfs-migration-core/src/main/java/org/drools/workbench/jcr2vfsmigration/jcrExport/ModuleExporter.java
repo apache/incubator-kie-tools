@@ -146,7 +146,7 @@ public class ModuleExporter {
     // Attempt creation of the asset export file firstly with the module's uuid. If this were null or the file could not
     // be successfully created, then try again with a shorter (i.e. simple number) name.
     private String setupAssetExportFile( String moduleUuid ) {
-        StringBuilder fileNameBuilder = new StringBuilder(".xml");
+        StringBuilder fileNameBuilder = new StringBuilder();
         boolean success = false;
         if ( StringUtils.isNotBlank( moduleUuid ) ) {
             fileNameBuilder.insert( 0, moduleUuid );

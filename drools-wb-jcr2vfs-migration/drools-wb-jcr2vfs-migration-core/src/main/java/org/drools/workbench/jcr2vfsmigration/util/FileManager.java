@@ -24,8 +24,10 @@ import javax.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class FileManager {
 
-    private static final String MODULES_FILE = "modules.xml";
-    private static final String CATEGORIES_FILE = "categories.xml";
+    private static final String XML_EXTENSION = ".xml";
+
+    private static final String MODULES_FILE = "modules" + XML_EXTENSION;
+    private static final String CATEGORIES_FILE = "categories" + XML_EXTENSION;
 
     private File tempDir;
 
@@ -52,16 +54,16 @@ public class FileManager {
         return getFile( CATEGORIES_FILE );
     }
 
+    public PrintWriter createAssetExportFileWriter( String fileName ) throws FileNotFoundException {
+        return createFileWriter( getFile( fileName + XML_EXTENSION ) );
+    }
+
     /**
      * Test if the asset filename can be created, using the module uuid.
      * Just in case the filename might become too long (windows), in which case we can try to shorten it a bit.
      */
     public boolean createAssetExportFile( String fileName ) {
-        return doCreateFile( new File (tempDir, fileName ) );
-    }
-
-    public File getAssetExportFile( String fileName ) throws FileNotFoundException {
-        return getFile( fileName );
+        return doCreateFile( new File( tempDir, fileName + XML_EXTENSION ) );
     }
 
     private boolean doCreateFile( File file ) {
@@ -76,12 +78,18 @@ public class FileManager {
 
     private PrintWriter createFileWriter( String fileName ) {
         PrintWriter pw = null;
+        File f = new File (tempDir, fileName );
+        doCreateFile( f );
+        pw = createFileWriter( f );
+        return pw;
+    }
+
+    private PrintWriter createFileWriter( File file ) {
+        PrintWriter pw = null;
         try {
-            File f = new File (tempDir, fileName );
-            doCreateFile( f );
-            pw = new PrintWriter( f );
+            pw = new PrintWriter( file );
         } catch ( FileNotFoundException fnfe ) {
-            System.out.println( "Error creating file writer for: " + fileName + "; " + fnfe.getMessage() );
+            System.out.println( "Error creating file writer for: " + file.getName() + "; " + fnfe.getMessage() );
         }
         return pw;
     }
