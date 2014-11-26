@@ -12,6 +12,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
+import org.kie.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
@@ -159,12 +160,12 @@ public class UserHomePageMainPresenter {
         mainPresenter.setup( model );
     }
 
-    private ParameterizedCommand<String> generateLinkCommand() {
-        return new ParameterizedCommand<String>() {
+    private ParameterizedCommand<LinkCommandParams> generateLinkCommand() {
+        return new ParameterizedCommand<LinkCommandParams>() {
             @Override
-            public void execute( String parameter ) {
+            public void execute( LinkCommandParams parameters ) {
                 placeManager.goTo( "AuthoringPerspective" );
-                socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameter ) );
+                socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
             }
         };
     }

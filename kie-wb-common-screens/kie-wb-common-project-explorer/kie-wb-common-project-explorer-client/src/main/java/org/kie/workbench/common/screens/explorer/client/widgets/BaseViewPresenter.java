@@ -23,6 +23,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
+import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
@@ -53,6 +54,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.uberfire.social.activities.model.ExtendedTypes;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -843,14 +847,36 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         vfsService.call( new RemoteCallback<Path>() {
             @Override
             public void callback( Path path ) {
-                openSelectedFileOnEditor( path );
+                openBestSuitedScreen( event.getEventType(), path );
                 setupActiveContextFor( path );
             }
         } ).get( event.getUri() );
     }
 
-    private void openSelectedFileOnEditor( Path path ) {
-        placeManager.goTo( path );
+    private void openBestSuitedScreen( final String eventType, final Path path ) {
+        if ( isRepositoryEvent( eventType ) ) {
+            //the event is relative to a Repository and not to a file.
+            placeManager.goTo( "repositoryStructureScreen"  );
+        } else {
+            placeManager.goTo(path);
+        }
+    }
+
+    private boolean isRepositoryEvent( String eventType ) {
+        if ( eventType == null || eventType.isEmpty() ) return false;
+
+        if ( ExtendedTypes.NEW_REPOSITORY_EVENT.name().equals( eventType ) ||
+            AssetManagementEventTypes.BRANCH_CREATED.name().equals( eventType ) ||
+            AssetManagementEventTypes.PROCESS_START.name().equals( eventType ) ||
+            AssetManagementEventTypes.PROCESS_END.name().equals( eventType ) ||
+            AssetManagementEventTypes.ASSETS_PROMOTED.name().equals( eventType ) ||
+            AssetManagementEventTypes.PROJECT_BUILT.name().equals( eventType ) ||
+            AssetManagementEventTypes.PROJECT_DEPLOYED.name().equals( eventType ) ||
+            AssetManagementEventTypes.REPOSITORY_CHANGE.name().equals( eventType ) ) {
+
+            return true;
+        }
+        return false;
     }
 
     private void setupActiveContextFor( final Path path ) {
