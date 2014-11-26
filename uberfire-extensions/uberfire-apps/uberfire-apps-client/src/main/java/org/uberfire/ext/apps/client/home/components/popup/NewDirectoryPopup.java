@@ -20,18 +20,18 @@ import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.apps.api.Directory;
+import org.uberfire.ext.apps.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class NewDirectoryPopup
-        extends PopupPanel {
+        extends BaseModal {
 
     private ParameterizedCommand clickCommand;
 
@@ -40,9 +40,6 @@ public class NewDirectoryPopup
             UiBinder<Widget, NewDirectoryPopup> {
 
     }
-
-    @UiField
-    BaseModal popup;
 
     @UiField
     ControlGroup directoryNameControlGroup;
@@ -58,22 +55,36 @@ public class NewDirectoryPopup
     private static Binder uiBinder = GWT.create( Binder.class );
 
     public NewDirectoryPopup( Directory currentDirectory ) {
-        setWidget( uiBinder.createAndBindUi( this ) );
+        setTitle( CommonConstants.INSTANCE.CreateDir() );
+        add( uiBinder.createAndBindUi( this ) );
+
+        add( new ModalFooterOKCancelButtons(
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     } )
+           );
         directoryNameValidator = new DirectoryNameValidator( currentDirectory );
     }
 
     public void show( ParameterizedCommand clickCommand ) {
         this.clickCommand = clickCommand;
-        popup.show();
+        show();
     }
 
-    @UiHandler("cancelButton")
-    void cancelButton( final ClickEvent event ) {
+    private void cancelButton() {
         closePopup();
     }
 
-    @UiHandler("okButton")
-    void okButton( final ClickEvent event ) {
+    private void okButton() {
         if ( directoryNameValidator.isValid( directoryName.getText() ) ) {
             this.clickCommand.execute( directoryName.getText() );
             closePopup();
@@ -85,7 +96,7 @@ public class NewDirectoryPopup
 
     private void closePopup() {
         this.directoryName.setText( "" );
-        popup.hide();
+        hide();
         super.hide();
     }
 

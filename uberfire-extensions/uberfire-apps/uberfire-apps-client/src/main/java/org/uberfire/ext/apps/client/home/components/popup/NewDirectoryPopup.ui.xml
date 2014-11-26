@@ -32,7 +32,6 @@
   </ui:style>
 
   <g:HTMLPanel>
-    <kie:BaseModal ui:field="popup" title="{i18n.CreateDir}" backdrop="STATIC" keyboard="true" animation="true">
       <b:ControlGroup ui:field="directoryNameControlGroup">
         <b:ControlLabel for="directoryName">
           <span class="{style.mandatory-field}">*</span>
@@ -43,13 +42,7 @@
           <b:HelpInline ui:field="directoryNameInline"/>
         </b:Controls>
       </b:ControlGroup>
-      <b:ModalFooter>
-        <b:ModalFooter>
-          <b:Button ui:field="okButton" icon="PLUS_SIGN" type="PRIMARY" text="{i18n.OK}"></b:Button>
-          <b:Button ui:field="cancelButton" type="DEFAULT" text="{i18n.Cancel}"></b:Button>
-        </b:ModalFooter>
-      </b:ModalFooter>
-    </kie:BaseModal>
+
   </g:HTMLPanel>
 
 </ui:UiBinder>
