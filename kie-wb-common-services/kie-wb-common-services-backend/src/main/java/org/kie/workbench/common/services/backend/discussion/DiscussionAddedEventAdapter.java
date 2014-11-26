@@ -69,7 +69,7 @@ public class DiscussionAddedEventAdapter
     public SocialActivitiesEvent toSocial(Object object) {
         CommentAddedEvent event = (CommentAddedEvent) object;
         SocialUser socialUser = socialUserRepositoryAPI.findSocialUser(event.getUserName());
-        String additionalInfo = event.getUserName()+ " commented on " + event.getPath().getFileName();
+        String additionalInfo = "commented";
         return new SocialActivitiesEvent(
                 socialUser,
                 DiscussionEventTypes.COMMENT_ADDED.name(),
