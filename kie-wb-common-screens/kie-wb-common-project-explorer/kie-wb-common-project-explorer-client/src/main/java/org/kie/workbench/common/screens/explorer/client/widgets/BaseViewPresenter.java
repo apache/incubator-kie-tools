@@ -55,8 +55,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.ExtendedTypes;
-import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
@@ -655,6 +653,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( !getView().isVisible() ) {
             return;
         }
+        if ( activeRepository.equals( event.getRepository() ) ) {
+            activeRepository = null;
+            activeProject = null;
+            activePackage = null;
+            activeFolderItem = null;
+        }
         refresh( false );
     }
 
@@ -853,26 +857,29 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         } ).get( event.getUri() );
     }
 
-    private void openBestSuitedScreen( final String eventType, final Path path ) {
+    private void openBestSuitedScreen( final String eventType,
+                                       final Path path ) {
         if ( isRepositoryEvent( eventType ) ) {
             //the event is relative to a Repository and not to a file.
-            placeManager.goTo( "repositoryStructureScreen"  );
+            placeManager.goTo( "repositoryStructureScreen" );
         } else {
-            placeManager.goTo(path);
+            placeManager.goTo( path );
         }
     }
 
     private boolean isRepositoryEvent( String eventType ) {
-        if ( eventType == null || eventType.isEmpty() ) return false;
+        if ( eventType == null || eventType.isEmpty() ) {
+            return false;
+        }
 
         if ( ExtendedTypes.NEW_REPOSITORY_EVENT.name().equals( eventType ) ||
-            AssetManagementEventTypes.BRANCH_CREATED.name().equals( eventType ) ||
-            AssetManagementEventTypes.PROCESS_START.name().equals( eventType ) ||
-            AssetManagementEventTypes.PROCESS_END.name().equals( eventType ) ||
-            AssetManagementEventTypes.ASSETS_PROMOTED.name().equals( eventType ) ||
-            AssetManagementEventTypes.PROJECT_BUILT.name().equals( eventType ) ||
-            AssetManagementEventTypes.PROJECT_DEPLOYED.name().equals( eventType ) ||
-            AssetManagementEventTypes.REPOSITORY_CHANGE.name().equals( eventType ) ) {
+                AssetManagementEventTypes.BRANCH_CREATED.name().equals( eventType ) ||
+                AssetManagementEventTypes.PROCESS_START.name().equals( eventType ) ||
+                AssetManagementEventTypes.PROCESS_END.name().equals( eventType ) ||
+                AssetManagementEventTypes.ASSETS_PROMOTED.name().equals( eventType ) ||
+                AssetManagementEventTypes.PROJECT_BUILT.name().equals( eventType ) ||
+                AssetManagementEventTypes.PROJECT_DEPLOYED.name().equals( eventType ) ||
+                AssetManagementEventTypes.REPOSITORY_CHANGE.name().equals( eventType ) ) {
 
             return true;
         }
