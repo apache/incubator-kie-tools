@@ -18,11 +18,12 @@ package org.drools.workbench.jcr2vfsmigration.jcrExport;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -32,17 +33,28 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.repository.Preferred;
 import org.drools.repository.AssetItem;
+import org.drools.repository.ModuleItem;
+import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetExporter;
+import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.XmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
+import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.uberfire.backend.vfs.Path;
 
 public class ModuleAssetExporter {
 
+    private static int assetFileName = 1;
+
     @Inject
     FileManager fileManager;
+
+    @Inject
+    protected MigrationPathManager migrationPathManager;
 
     @Inject
     protected RepositoryModuleService jcrRepositoryModuleService;
@@ -57,25 +69,100 @@ public class ModuleAssetExporter {
     @Inject
     PlainTextAssetExporter plainTextAssetExporter;
 
+    ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
+
     public void exportAll() {
-        System.out.println("  Asset export started");
 
+        System.out.println( "  Module export started" );
+        Module jcrGlobalModule = jcrRepositoryModuleService.loadGlobalModule();
         Module[] jcrModules = jcrRepositoryModuleService.listModules();
-        List<Module> modules = new ArrayList<Module>( Arrays.asList( jcrModules ));
-        Module globalModule = jcrRepositoryModuleService.loadGlobalModule();
-        modules.add( globalModule );
 
-        for (Module jcrModule : modules) {
+        if ( jcrGlobalModule == null && jcrModules.length == 0 ) {
+            System.out.println( "  No modules to be exported" );
+            return;
+        }
+
+        Collection<org.drools.workbench.jcr2vfsmigration.xml.model.Module> normalModules = new ArrayList<org.drools.workbench.jcr2vfsmigration.xml.model.Module>( 5 );
+        for ( Module jcrModule : jcrModules ) {
+            normalModules.add( export( ModuleType.NORMAL, jcrModule ) );
+        }
+
+        org.drools.workbench.jcr2vfsmigration.xml.model.Module globalModule = export( ModuleType.GLOBAL, jcrGlobalModule );
+
+        Modules modules = new Modules( globalModule, normalModules );
+
+        StringBuilder xml = new StringBuilder();
+        modulesXmlFormat.format( xml, modules );
+
+        PrintWriter pw = fileManager.createModuleExportFileWriter();
+        pw.print( xml.toString() );
+        pw.close();
+
+        System.out.println( "  Module export ended" );
+    }
+
+    private org.drools.workbench.jcr2vfsmigration.xml.model.Module export( ModuleType moduleType, Module jcrModule ) {
+        System.out.format( "Module [%s] exported. %n", jcrModule.getName() );
+
+        //setting CategoryRules to jcr module (needed in asset migration)
+        for( ModuleIterator packageItems = rulesRepository.listModules(); packageItems.hasNext(); ) {
+            ModuleItem packageItem = packageItems.next();
+            if( packageItem.getUUID().equals( jcrModule.getUuid() ) ){
+                jcrModule.setCatRules( packageItem.getCategoryRules() );
+                break;
+            }
+        }
+
+        // Save module name for later
+        String moduleName = jcrModule.getName();
+        String normalizedPackageName = migrationPathManager.normalizePackageName( jcrModule.getName() );
+        jcrModule.setName( normalizedPackageName );
+
+        // Export package header info
+        String packageHeaderInfo = null;
+        try {
+            List<String> formats = new ArrayList<String>();
+            formats.add("package");
+            AssetPageRequest request = new AssetPageRequest(jcrModule.getUuid(),
+                    formats,
+                    null,
+                    0,
+                    10);
+            PageResponse<AssetPageRow> response = jcrRepositoryAssetService.findAssetPage(request);
+            if (response.getTotalRowSize() > 0) {
+                AssetPageRow row = response.getPageRowList().get(0);
+                AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
+
+                packageHeaderInfo = assetItemJCR.getContent();
+            }
+        } catch ( SerializationException e ) {
+            throw new IllegalStateException( e );
+        }
+
+        String assetExportFileName = setupAssetExportFile( jcrModule.getUuid() );
+
+        boolean assetExportSuccess = exportModuleAssets( jcrModule, assetExportFileName );
+        if ( !assetExportSuccess ) System.out.println( "An error ocurred during asset export for module " + jcrModule.getUuid() );
+
+        return new org.drools.workbench.jcr2vfsmigration.xml.model.Module( moduleType,
+                jcrModule.getUuid(),
+                moduleName,
+                normalizedPackageName,
+                packageHeaderInfo,
+                jcrModule.getCatRules(),
+                assetExportFileName );
+    }
+
+    public boolean exportModuleAssets( Module jcrModule, String assetFileName ) {
+        System.out.println( "  Asset export started for module " + jcrModule.getUuid() );
 
             StringBuilder xml = new StringBuilder();
             PrintWriter pw = null;
             try {
-                // TODO what if the uuid was null or the filename with uuid too long, and as a result an "1.xml" => perform export during module export?
-                // file was created for this module's assets?
-                pw = fileManager.createAssetExportFileWriter( jcrModule.getUuid() );
+                pw = fileManager.createAssetExportFileWriter( assetFileName );
             } catch ( FileNotFoundException e ) {
                 System.out.println( e.getMessage() );
-                continue;
+                return false;
             }
 
             // TODO need 'generic' asset formatter (for just this, or would it make things easier)?
@@ -118,11 +205,11 @@ public class ModuleAssetExporter {
                         System.out.format("    Done.%n");
                     }
                 } catch (SerializationException e) {
-                    System.out.println("SerializationException exporting asset: " + assetName +" from module: "+jcrModule.getName());
-                    throw new IllegalStateException(e);
+                    System.out.println("SerializationException exporting asset: " + assetName +" from module: " + jcrModule.getName());
+                    return false;
                 } catch (Exception e) {
-                    System.out.println("Exception migrating exporting: " + assetName +" from module: "+jcrModule.getName());
-                    throw new IllegalStateException(e);
+                    System.out.println("Exception migrating exporting: " + assetName +" from module: " + jcrModule.getName());
+                    return false;
                 }
 
                 if (response.isLastPage()) {
@@ -134,7 +221,7 @@ public class ModuleAssetExporter {
             xml.append( "</assets" );
             pw.print( xml.toString() );
             pw.close();
-        }
+        return true;
     }
 
     private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, Path previousVersionPath) throws SerializationException {
@@ -185,5 +272,25 @@ public class ModuleAssetExporter {
 //            return attachementAssetMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
         }
         return null;
+    }
+
+    // Attempt creation of the asset export file firstly with the module's uuid. If this were null or the file could not
+    // be successfully created, then try again with a shorter (i.e. simple number) name.
+    private String setupAssetExportFile( String moduleUuid ) {
+        StringBuilder fileNameBuilder = new StringBuilder();
+        boolean success = false;
+        if ( StringUtils.isNotBlank( moduleUuid ) ) {
+            fileNameBuilder.insert( 0, moduleUuid );
+            success = fileManager.createAssetExportFile( fileNameBuilder.toString() );
+        }
+        if ( !success ) {
+            fileNameBuilder.replace( 0, fileNameBuilder.lastIndexOf( "." ), Integer.toString( assetFileName++ ) );
+            success = fileManager.createAssetExportFile( fileNameBuilder.toString() );
+            if ( ! success ) {
+                System.out.println( "Module asset file could not be created" );
+                return null;
+            }
+        }
+        return fileNameBuilder.toString();
     }
 }

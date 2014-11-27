@@ -26,7 +26,6 @@ import org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration;
 import org.drools.workbench.jcr2vfsmigration.config.FSExportConfig;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.ModuleAssetExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.CategoryExporter;
-import org.drools.workbench.jcr2vfsmigration.jcrExport.ModuleExporter;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
@@ -42,9 +41,6 @@ public class JcrExporter {
 
     @Inject
     FileManager fileManager;
-
-    @Inject
-    protected ModuleExporter moduleExporter;
 
     @Inject
     protected CategoryExporter categoryExporter;
@@ -85,7 +81,6 @@ public class JcrExporter {
             //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
             //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
 
-            moduleExporter.exportAll();
 //            categoryExporter.exportAll();
             moduleAssetExporter.exportAll();
 
