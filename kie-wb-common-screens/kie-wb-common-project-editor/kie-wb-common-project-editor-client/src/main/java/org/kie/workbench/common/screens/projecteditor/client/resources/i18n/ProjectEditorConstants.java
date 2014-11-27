@@ -80,6 +80,8 @@ public interface ProjectEditorConstants
 
     String Build();
 
+    String Compile();
+
     String BuildAndInstall();
 
     String BuildAndDeploy();

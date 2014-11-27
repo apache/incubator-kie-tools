@@ -284,10 +284,10 @@ public class ProjectScreenViewImpl
 
     @Override
     public DropdownButton getBuildOptionsButton() {
-        return new DropdownButton( ProjectEditorResources.CONSTANTS.BuildAndDeploy() ) {{
+        return new DropdownButton( ProjectEditorResources.CONSTANTS.Build() ) {{
             setSize( MINI );
             setRightDropdown( true );
-            add( new NavLink( ProjectEditorResources.CONSTANTS.Build() ) {{
+            add( new NavLink( ProjectEditorResources.CONSTANTS.Compile() ) {{
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {

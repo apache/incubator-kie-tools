@@ -21,6 +21,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -181,11 +182,14 @@ public class ProjectScreenPresenter
     }
 
     private void adjustBuildOptions() {
+        boolean supportsRuntimeDeploy = ApplicationPreferences.getBooleanPref( "support.runtime.deploy" );
         if ( isRepositoryManaged( repository ) ) {
-            enableBuildAndInstall( true );
+            enableBuild(true, false);
+            enableBuildAndInstall( true, !supportsRuntimeDeploy );
             enableBuildAndDeploy( true );
         } else {
-            enableBuildAndInstall( false );
+            enableBuild(true, true);
+            enableBuildAndInstall( false, !supportsRuntimeDeploy );
             enableBuildAndDeploy( false );
         }
     }
@@ -722,12 +726,23 @@ public class ProjectScreenPresenter
         }
     }
 
-    private void enableBuild( boolean enabled ) {
+    private void enableBuild( boolean enabled, boolean changeTitle ) {
         buildOptions.getMenuWiget().getWidget( 0 ).setVisible( enabled );
+        if ( changeTitle ) {
+            ((NavLink)buildOptions.getMenuWiget().getWidget( 0 )).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
+        } else {
+            ((NavLink)buildOptions.getMenuWiget().getWidget( 0 )).setText( ProjectEditorResources.CONSTANTS.Compile() );
+        }
+
     }
 
-    private void enableBuildAndInstall( boolean enabled ) {
+    private void enableBuildAndInstall( boolean enabled, boolean changeTitle  ) {
         buildOptions.getMenuWiget().getWidget( 1 ).setVisible( enabled );
+        if ( changeTitle ) {
+            ((NavLink)buildOptions.getMenuWiget().getWidget( 1 )).setText( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
+        } else {
+            ((NavLink)buildOptions.getMenuWiget().getWidget( 1 )).setText( ProjectEditorResources.CONSTANTS.BuildAndInstall() );
+        }
     }
 
     private void enableBuildAndDeploy( boolean enabled ) {
