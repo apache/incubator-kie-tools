@@ -42,13 +42,13 @@ public class SecureHeadersFilter implements Filter {
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        if ( request.getScheme().equals( "http" ) ) {
-            addLocation( response );
-            addFrameOptions( response );
-        } else if ( request.getScheme().equals( "https" ) ) {
+        addLocation( response );
+        addFrameOptions( response );
+        addXSSOptions( response );
+
+        if ( request.getScheme().equals( "https" ) ) {
             addStrictTransportSecurity( response );
         }
-        addXSSOptions( response );
 
         chain.doFilter( request, response );
     }
