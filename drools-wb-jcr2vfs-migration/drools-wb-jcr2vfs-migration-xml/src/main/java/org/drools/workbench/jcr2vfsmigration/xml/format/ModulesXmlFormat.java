@@ -28,11 +28,7 @@ public class ModulesXmlFormat implements XmlFormat<Modules> {
 
     public static final String MODULES = "modules";
 
-    private ModuleXmlFormat moduleXmlFormat;
-
-    public ModulesXmlFormat() {
-        this.moduleXmlFormat = new ModuleXmlFormat();
-    }
+    private ModuleXmlFormat moduleXmlFormat = new ModuleXmlFormat();
 
     @Override
     public void format( StringBuilder sb, Modules modules ) {

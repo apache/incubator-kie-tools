@@ -15,8 +15,18 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
-public interface XmlAsset {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
-    AssetType getAssetType();
+public class XmlAssets {
+    private Collection<XmlAsset> cAssets;
 
+    public XmlAssets( Collection<XmlAsset> assets ) {
+        this.cAssets = assets != null ? assets : new ArrayList<XmlAsset>();
+    }
+
+    public Collection<XmlAsset> getAssets() {
+        return Collections.unmodifiableCollection( cAssets );
+    }
 }

@@ -40,10 +40,11 @@ import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetExpor
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
-import org.drools.workbench.jcr2vfsmigration.xml.format.XmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 import org.uberfire.backend.vfs.Path;
 
 public class ModuleAssetExporter {
@@ -70,6 +71,7 @@ public class ModuleAssetExporter {
     PlainTextAssetExporter plainTextAssetExporter;
 
     ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
+    XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
 
     public void exportAll() {
 
@@ -153,74 +155,73 @@ public class ModuleAssetExporter {
                 assetExportFileName );
     }
 
-    public boolean exportModuleAssets( Module jcrModule, String assetFileName ) {
+    private boolean exportModuleAssets( Module jcrModule, String assetFileName ) {
         System.out.println( "  Asset export started for module " + jcrModule.getUuid() );
 
-            StringBuilder xml = new StringBuilder();
-            PrintWriter pw = null;
+        Collection<XmlAsset> assets = new ArrayList<XmlAsset>( 10 );
+
+        StringBuilder xml = new StringBuilder();
+        PrintWriter pw = null;
+        try {
+            pw = fileManager.createAssetExportFileWriter( assetFileName );
+        } catch ( FileNotFoundException e ) {
+            System.out.println( e.getMessage() );
+            return false;
+        }
+
+        boolean hasMorePages = true;
+        int startRowIndex = 0;
+        final int pageSize = 100;
+        PageResponse<AssetPageRow> response;
+        while (hasMorePages) {
+            AssetPageRequest request = new AssetPageRequest(jcrModule.getUuid(),
+                    null, // get all formats
+                    null,
+                    startRowIndex,
+                    pageSize);
+            String assetName="";
             try {
-                pw = fileManager.createAssetExportFileWriter( assetFileName );
-            } catch ( FileNotFoundException e ) {
-                System.out.println( e.getMessage() );
-                return false;
-            }
+                response = jcrRepositoryAssetService.findAssetPage(request);
+                for (AssetPageRow row : response.getPageRowList()) {
+                    AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
+                    assetName =assetItemJCR.getName();
+                    System.out.format("    Asset [%s] with format [%s] is being migrated... %n",
+                            assetItemJCR.getName(), assetItemJCR.getFormat());
+                    //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
+                    //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
 
-            // TODO need 'generic' asset formatter (for just this, or would it make things easier)?
-            xml.append( "<assets>" );
-            boolean hasMorePages = true;
-            int startRowIndex = 0;
-            final int pageSize = 100;
-            PageResponse<AssetPageRow> response;
-            while (hasMorePages) {
-                AssetPageRequest request = new AssetPageRequest(jcrModule.getUuid(),
-                        null, // get all formats
-                        null,
-                        startRowIndex,
-                        pageSize);
-                String assetName="";
-                try {
-                    response = jcrRepositoryAssetService.findAssetPage(request);
-                    for (AssetPageRow row : response.getPageRowList()) {
-                        AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
-                        assetName =assetItemJCR.getName();
-                        System.out.format("    Asset [%s] with format [%s] is being migrated... %n",
-                                assetItemJCR.getName(), assetItemJCR.getFormat());
-                        //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
-                        //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
-
-                        //Migrate historical versions first, this includes the head version(i.e., the latest version)
+                    //Migrate historical versions first, this includes the head version(i.e., the latest version)
 
 // TODO?                        migrateAssetHistory(jcrModule, row.getUuid());
 
-                        //Still need to migrate the "current version" even though in most cases the "current version" (actually it is not a version in version
-                        //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
-                        //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
+                    //Still need to migrate the "current version" even though in most cases the "current version" (actually it is not a version in version
+                    //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
+                    //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
 
-                        XmlAsset asset = export( jcrModule, assetItemJCR, null );
-                        if ( asset != null ) {
-                            XmlFormat xmlFormat = asset.getXmlFormat();
-                            xmlFormat.format( xml, asset );
-                        }
-
-                        System.out.format("    Done.%n");
+                    XmlAsset asset = export( jcrModule, assetItemJCR, null );
+                    if ( asset != null ) {
+                        assets.add( asset );
                     }
-                } catch (SerializationException e) {
-                    System.out.println("SerializationException exporting asset: " + assetName +" from module: " + jcrModule.getName());
-                    return false;
-                } catch (Exception e) {
-                    System.out.println("Exception migrating exporting: " + assetName +" from module: " + jcrModule.getName());
-                    return false;
-                }
 
-                if (response.isLastPage()) {
-                    hasMorePages = false;
-                } else {
-                    startRowIndex += pageSize;
+                    System.out.format("    Done.%n");
                 }
+            } catch (SerializationException e) {
+                System.out.println("SerializationException exporting asset: " + assetName +" from module: " + jcrModule.getName());
+                return false;
+            } catch (Exception e) {
+                System.out.println("Exception migrating exporting: " + assetName +" from module: " + jcrModule.getName());
+                return false;
             }
-            xml.append( "</assets" );
-            pw.print( xml.toString() );
-            pw.close();
+
+            if (response.isLastPage()) {
+                hasMorePages = false;
+            } else {
+                startRowIndex += pageSize;
+            }
+        }
+        xmlAssetsFormat.format( xml, new XmlAssets( assets ) );
+        pw.print( xml.toString() );
+        pw.close();
         return true;
     }
 

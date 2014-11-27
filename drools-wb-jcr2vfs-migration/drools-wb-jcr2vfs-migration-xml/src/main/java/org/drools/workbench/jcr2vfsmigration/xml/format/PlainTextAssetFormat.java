@@ -23,7 +23,7 @@ public class PlainTextAssetFormat implements XmlFormat<PlainTextAsset> {
 
     // TODO move these into (abstract) base class if needed and possible
     private static final String ASSET = "asset";
-    private static final String ASSET_TYPE = "assetType";
+    private static final String ASSET_TYPE = "type";
 
     private static final String TEXT_CONTENT = "textContent";
 
@@ -31,10 +31,9 @@ public class PlainTextAssetFormat implements XmlFormat<PlainTextAsset> {
     public void format( StringBuilder sb, PlainTextAsset plainTextAsset ) {
         if ( sb == null || plainTextAsset == null ) throw new IllegalArgumentException( "No output or plain text asset specified" );
 
-        sb.append( LT ).append( ASSET ).append( GT );
+        sb.append( LT ).append( ASSET ).append( " " ).append( ASSET_TYPE ).append( "=\"" )
+                .append( plainTextAsset.getAssetType().toString() ).append( "\"" ).append( GT );
 
-        sb.append( LT ).append( ASSET_TYPE ).append( GT ).append( plainTextAsset.getAssetType().toString() )
-                .append( LT_SLASH ).append( ASSET_TYPE ).append( GT );
         sb.append( LT ).append( TEXT_CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( plainTextAsset.getContent() ) )
                 .append( LT_SLASH ).append( TEXT_CONTENT ).append( GT );
 

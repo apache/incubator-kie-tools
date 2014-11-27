@@ -15,9 +15,6 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
-import org.drools.workbench.jcr2vfsmigration.xml.format.PlainTextAssetFormat;
-import org.drools.workbench.jcr2vfsmigration.xml.format.XmlFormat;
-
 public class PlainTextAsset extends AbstractXmlAsset {
 
     private String content;
@@ -25,11 +22,6 @@ public class PlainTextAsset extends AbstractXmlAsset {
     public PlainTextAsset( String format, String content ) {
         this.assetType = AssetType.getByName( format );
         this.content = content;
-    }
-
-    @Override
-    public XmlFormat<PlainTextAsset> getXmlFormat() {
-        return new PlainTextAssetFormat();
     }
 
     public String getContent() {
