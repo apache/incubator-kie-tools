@@ -41,4 +41,9 @@ public interface EnumEditorConstants
     String EnumEditorTitle();
 
     String enumResourceTypeDescription();
+
+    String remove();
+
+    String noEnumsDefined();
+
 }
