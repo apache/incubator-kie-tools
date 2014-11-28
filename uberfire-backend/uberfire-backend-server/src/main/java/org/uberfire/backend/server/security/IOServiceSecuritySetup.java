@@ -35,42 +35,42 @@ public class IOServiceSecuritySetup {
 
     @Inject
     @IOSecurityAuth
-    @Any
     private Instance<AuthenticationService> authenticationManagers;
 
     @Inject
     @IOSecurityAuthz
-    @Any
     private Instance<AuthorizationManager> authorizationManagers;
 
     @PostConstruct
     public void setup() {
-        AuthenticationService _authenticationManager = null;
-        AuthorizationManager _authorizationManager = null;
+        final AuthenticationService authenticationManager;
+        final AuthorizationManager authorizationManager;
 
         if ( authenticationManagers.isUnsatisfied() ) {
             final String authType = System.getProperty( "org.uberfire.io.auth", null );
             final String domain = System.getProperty( AUTH_DOMAIN_KEY, JAASAuthenticationService.DEFAULT_DOMAIN );
 
             if ( authType == null || authType.toLowerCase().equals( "jaas" ) || authType.toLowerCase().equals( "container" ) ) {
-                _authenticationManager = new JAASAuthenticationService( domain );
+                authenticationManager = new JAASAuthenticationService( domain );
             } else {
-                _authenticationManager = loadClazz( authType, AuthenticationService.class );
+                authenticationManager = loadClazz( authType, AuthenticationService.class );
             }
+        } else {
+            authenticationManager = authenticationManagers.get();
         }
 
         if ( authorizationManagers.isUnsatisfied() ) {
-            _authorizationManager = new FileSystemAuthorizationManager();
+            authorizationManager = new FileSystemAuthorizationManager();
+        } else {
+            authorizationManager = authorizationManagers.get();
         }
-
-        final AuthorizationManager authorizationManager = _authorizationManager;
-        final AuthenticationService authenticationManager = _authenticationManager;
 
         final FileSystemAuthorizer ioAuthorizationManager = new FileSystemAuthorizer() {
             @Override
             public boolean authorize( final FileSystem fs,
                                       final FileSystemUser fileSystemUser ) {
-                return authorizationManager.authorize( new FileSystemResourceAdaptor( fs ), ( (UserAdapter) fileSystemUser ).getWrappedUser() );
+                return authorizationManager.authorize( new FileSystemResourceAdaptor( fs ),
+                		                               ( (UserAdapter) fileSystemUser ).getWrappedUser() );
             }
         };
 
