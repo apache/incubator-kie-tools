@@ -33,7 +33,6 @@ import org.guvnor.common.services.shared.metadata.model.CategoryItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @ApplicationScoped
@@ -63,11 +62,9 @@ public class CategoryImporter {
             xml = db.parse( categoriesXmlFile );
 
             NodeList children = xml.getChildNodes();
-            if ( children.getLength() != 1 ) throw new IllegalArgumentException( "Wrong categories.xml format" );
-            Node node = children.item( 0 );
-            if (node == null || !"categories".equals( node.getNodeName())) throw new Exception( "Wrong categories.xml format" );
+            if ( children.getLength() > 1 ) throw new IllegalArgumentException( "Wrong categories.xml format" );
 
-            Categories xmlCategories = categoriesXmlFormat.parse( node );
+            Categories xmlCategories = categoriesXmlFormat.parse( children.item( 0 ) );
 
             // Transform xml categories to vfs categories
             org.guvnor.common.services.shared.metadata.model.Categories vfsCategories =

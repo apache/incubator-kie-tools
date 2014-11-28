@@ -24,9 +24,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -39,9 +44,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @ApplicationScoped
-public class ModuleImporter {
+public class ModuleAssetImporter {
 
-    protected static final Logger logger = LoggerFactory.getLogger( ModuleImporter.class );
+    protected static final Logger logger = LoggerFactory.getLogger( ModuleAssetImporter.class );
 
     @Inject
     FileManager fileManager;
@@ -52,7 +57,11 @@ public class ModuleImporter {
     @Inject
     protected ProjectService projectService;
 
+    @Inject
+    PlainTextAssetImporter plainTextAssetImporter;
+
     private ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
+    XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
 
     public void importAll() {
         System.out.println( "  Module import started" );
@@ -64,12 +73,9 @@ public class ModuleImporter {
             DocumentBuilder db = dbf.newDocumentBuilder();
             xml = db.parse( modulesXmlFile );
             NodeList children = xml.getChildNodes();
-            if ( children.getLength() != 1 ) throw new Exception( "Wrong modules.xml format" );
-            Node node = children.item( 0 );
-            if (node == null || !"modules".equals( node.getNodeName()))
-                throw new Exception( "Wrong modules.xml format" );
+            if ( children.getLength() > 1 ) throw new Exception( "Wrong modules.xml format" );
 
-            Modules modules = modulesXmlFormat.parse( node );
+            Modules modules = modulesXmlFormat.parse( children.item( 0 ) );
 
             // import 'normal' modules
             for ( Iterator<Module> moduleIterator = modules.getModules().iterator(); moduleIterator.hasNext(); ) {
@@ -86,8 +92,8 @@ public class ModuleImporter {
     }
 
     private void importModule( Module module ) {
-        //Set up project structure:
 
+        //Set up project structure:
         String normalizedModuleName = module.getNormalizedPackageName();
         String[] nameSplit = normalizedModuleName.split( "\\." );
 
@@ -110,6 +116,54 @@ public class ModuleImporter {
                                    normalizedModuleName,
                                    pom,
                                    "http://localhost" );
+
+        importAssets( module );
+    }
+
+    private void importAssets( Module module ) {
+        System.out.println( "  Assert import for module " + module.getName() + " started" );
+        Document xml = null;
+        try {
+            File assetsXmlFile = fileManager.getAssetExportFile( module.getAssetExportFileName() );
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            xml = db.parse( assetsXmlFile );
+            NodeList rootNodeList = xml.getChildNodes();
+            if ( rootNodeList.getLength() > 1 ) throw new Exception( "Wrong asset file xml format" );
+            Node assetsNode = rootNodeList.item( 0 );
+
+            XmlAssets xmlAssets = xmlAssetsFormat.parse( assetsNode );
+
+            for ( XmlAsset xmlAsset : xmlAssets.getAssets() ) {
+                importAsset( module, xmlAsset );
+            }
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+        System.out.println( "  Assert import for module " + module.getName() + " ended" );
+    }
+
+    private void importAsset( Module module, XmlAsset xmlAsset ) {
+        switch ( xmlAsset.getAssetType() ) {
+            case ENUMERATION:
+            case DSL:
+            case DSL_TEMPLATE_RULE:
+            case RULE_TEMPLATE:
+            case FORM_DEFINITION:
+            case SPRING_CONTEXT:
+            case SERVICE_CONFIG:
+            case WORKITEM_DEFINITION:
+            case CHANGE_SET:
+            case RULE_FLOW_RF:
+            case BPMN_PROCESS:
+            case BPMN2_PROCESS:
+            case FTL:
+            case JSON:
+            case FW: plainTextAssetImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+        }
     }
 
     private org.guvnor.structure.repositories.Repository makeRepository( final Path repositoryRoot ) {
@@ -121,5 +175,4 @@ public class ModuleImporter {
             }
         };
     }
-
 }

@@ -17,6 +17,8 @@ package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
 public interface XmlAsset {
 
+    String getName();
+
     AssetType getAssetType();
 
 }

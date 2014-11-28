@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
+package org.drools.workbench.jcr2vfsmigration.vfsImport.asset;
 
-public abstract class AbstractXmlAsset implements XmlAsset {
+import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 
-    protected String name;
-    protected AssetType assetType;
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public AssetType getAssetType() {
-        return assetType;
-    }
+public interface AssetImporter<T> {
+    void importAsset( Module xmlModule, T xmlAsset );
 }

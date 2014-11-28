@@ -15,24 +15,16 @@
  */
 package org.drools.workbench.jcr2vfsmigration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.io.FileUtils;
-import org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration;
-import org.drools.workbench.jcr2vfsmigration.config.MigrationConfig;
 import org.drools.workbench.jcr2vfsmigration.config.VfrImportConfig;
-import org.drools.workbench.jcr2vfsmigration.migrater.AssetMigrater;
-import org.drools.workbench.jcr2vfsmigration.migrater.CategoryMigrater;
-import org.drools.workbench.jcr2vfsmigration.migrater.ModuleMigrater;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.CategoryImporter;
-import org.drools.workbench.jcr2vfsmigration.vfsImport.ModuleImporter;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.ModuleAssetImporter;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
 import org.slf4j.Logger;
@@ -50,16 +42,13 @@ public class VfsImporter {
     FileManager fileManager;
 
     @Inject
-    protected ModuleImporter moduleImporter;
-
-    @Inject
     protected CategoryImporter categoryImporter;
 
     @Inject
     protected MigrationPathManager migrationPathManager;
 
     @Inject
-    protected AssetMigrater assetMigrater;
+    protected ModuleAssetImporter moduleAssetImporter;
 
     @Inject
     protected BoundSessionContext sessionContext;
@@ -92,9 +81,8 @@ public class VfsImporter {
             //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
             //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
 
-//            moduleImporter.importAll();
             categoryImporter.importAll();
-//            assetMigrater.migrateAll();
+            moduleAssetImporter.importAll();
 
             // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
             endContexts();
@@ -116,77 +104,6 @@ public class VfsImporter {
 //                               migrationConfig.getOutputVfsRepository().getAbsolutePath() );
 //        }
     }
-
-//    protected void setupDirectories() {
-//        guvnorBootstrapConfiguration.getProperties().put( "repository.root.directory", determineJcrRepositoryRootDirectory() );
-////        System.setProperty( "org.uberfire.nio.git.dir", migrationConfig.getOutputVfsRepository().getAbsolutePath() );
-//    }
-
-    /**
-     * Workaround the repository.xml and repository directory layout mess.
-     * <p/>
-     * If repository.root.directory was NOT specified, the layout looks like this:
-     * <pre>
-     * repository.xml
-     * repository
-     * repository/repository
-     * repository/repository/datastore
-     * repository/repository/index
-     * repository/repository/...
-     * repository/version
-     * repository/version/...
-     * repository/workspaces
-     * repository/workspaces/...
-     * </pre>
-     * If repository.root.directory was specified however, the layout looks like this:
-     * <pre>
-     * repository.xml
-     * repository
-     * repository/datastore
-     * repository/index
-     * repository/...
-     * version
-     * version/...
-     * workspaces
-     * workspaces/...
-     * </pre>
-     * @return never null
-     */
-//    protected String determineJcrRepositoryRootDirectory() {
-//        File inputJcrRepository = vfrImportConfig.getInputJcrRepository();
-//        File repositoryXmlFile = new File( inputJcrRepository, "repository.xml" );
-//        if ( !repositoryXmlFile.exists() ) {
-//            throw new IllegalStateException(
-//                    "The repositoryXmlFile (" + repositoryXmlFile.getAbsolutePath() + ") does not exist.\n"
-//                            + "Check your inputJcrRepository (" + inputJcrRepository + ")." );
-//        }
-//        File repositoryDir = new File( inputJcrRepository, "repository" );
-//        if ( !repositoryDir.exists() ) {
-//            // They are using a non-default repository.xml (for example with storage in a database)
-//            return inputJcrRepository.getAbsolutePath();
-//        }
-//        File unnestedVersionDir = new File( inputJcrRepository, "version" );
-//        File nestedVersionDir = new File( repositoryDir, "version" );
-//        if ( unnestedVersionDir.exists() ) {
-//            // repository.root.directory was specified
-//            return inputJcrRepository.getAbsolutePath();
-//        } else if ( nestedVersionDir.exists() ) {
-//            // repository.root.directory was not specified => HACK
-//            try {
-//                FileUtils.copyFile( repositoryXmlFile, new File( repositoryDir, "repository.xml" ) );
-//            } catch ( IOException e ) {
-//                throw new IllegalStateException( "Cannot copy repositoryXmlFile (" + repositoryXmlFile + ").", e );
-//            }
-//            return inputJcrRepository.getAbsolutePath() + "/repository";
-//        } else {
-//            //the "version" dir does not exist if JCR is not using embedded db.
-///*            throw new IllegalStateException(
-//                    "The unnestedVersionDir (" + unnestedVersionDir.getAbsolutePath()
-//                    + ") and the nestedVersionDir (" + nestedVersionDir.getAbsolutePath() + ") does not exist.");*/
-//        }
-//        return inputJcrRepository.getAbsolutePath();
-//
-//    }
 
     protected void startContexts() {
         sessionDataStore = new HashMap<String, Object>();

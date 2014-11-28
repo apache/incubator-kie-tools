@@ -225,7 +225,8 @@ public class ModuleAssetExporter {
         return true;
     }
 
-    private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, Path previousVersionPath) throws SerializationException {
+    private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, Path previousVersionPath) {
+        // todo replace this with a switch based on the xml.AssetType enum
         if ( AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
 //            return factModelsMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {

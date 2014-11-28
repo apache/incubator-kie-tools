@@ -81,7 +81,7 @@ public class JcrExporter {
             //4. Migrate Guvnor package based permissions: admin/package.admin/package.developer/package.readonly
             //(and dont forget to migrate category based permission, ie, analyst/analyst.readonly)
 
-//            categoryExporter.exportAll();
+            categoryExporter.exportAll();
             moduleAssetExporter.exportAll();
 
             // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java

@@ -25,8 +25,7 @@ public class PlainTextAssetExporter implements AssetExporter<PlainTextAsset> {
 
     public PlainTextAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
 
-        if ( jcrModule == null || jcrAssetItem == null ) throw new NullPointerException();
-
+        String name = jcrAssetItem.getName();
         String format = jcrAssetItem.getFormat();
         String content = jcrAssetItem.getContent();
 
@@ -45,6 +44,6 @@ public class PlainTextAssetExporter implements AssetExporter<PlainTextAsset> {
             content = content.replaceAll("org.drools.process.core.","org.drools.core.process.core.");
         }
 
-        return new PlainTextAsset( format, content );
+        return new PlainTextAsset( name, format, content );
     }
 }

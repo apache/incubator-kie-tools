@@ -66,6 +66,10 @@ public class FileManager {
         return doCreateFile( new File( tempDir, fileName + XML_EXTENSION ) );
     }
 
+    public File getAssetExportFile( String fileName ) throws FileNotFoundException {
+        return getFile( fileName + XML_EXTENSION );
+    }
+
     private boolean doCreateFile( File file ) {
         boolean success = false;
         try {

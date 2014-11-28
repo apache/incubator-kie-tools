@@ -133,7 +133,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
 
     private String parsePackageHeaderInfo( Node headerInfoNode ) {
         NodeList headerNodeChildren = headerInfoNode.getChildNodes();
-        if ( headerNodeChildren.getLength() != 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_PACKAGEHEADER );
+        if ( headerNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_PACKAGEHEADER );
         return ExportXmlUtils.parseCdataSection( headerNodeChildren.item( 0 ) );
     }
 }

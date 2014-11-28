@@ -17,6 +17,18 @@ package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
 public enum AssetType {
 
+    DRL_MODEL( "model.drl" ),
+
+    BUSINESS_RULE( "brl" ),
+
+    DECISION_TABLE_GUIDED( "gdst" ),
+    DRL( "drl" ),
+    FUNCTION( "function" ),
+    DECISION_SPREADSHEET_XLS( "xls" ),
+    SCORECARD_SPREADSHEET_XLS( "scxls" ),
+    SCORECARD_GUIDED( "scgd" ),
+    TEST_SCENARIO( "scenario" ),
+
     // Plain text assets
     ENUMERATION( "enumeration" ),
     DSL( "dsl" ),
@@ -34,7 +46,6 @@ public enum AssetType {
     JSON( "json" ),
     FW( "fw" );
 
-
     private String type;
 
     private AssetType( String type ) {
@@ -46,49 +57,7 @@ public enum AssetType {
         return valueOf(name.toUpperCase());
     }
 
-//    XmlFormat<T> getAssetFormatForType( AssetType assetType ) {
-//
-//    }
-
-
-//    public static XXX createDataSetDef(DataSetProviderType type) {
-//        switch (type) {
-//            case STATIC: return new StaticDataSetDef();
-//            case BEAN: return new BeanDataSetDef();
-//            case CSV: return new CSVDataSetDef();
-//        }
-//        throw new RuntimeException("Unknown type: " + type);
-//    }
-
+    public String toString() {
+        return type;
+    }
 }
-/*
-public static final String FUNCTION = "function";
-public static final String MODEL = "jar";
-    public static final String DSL = "dsl";
-public static final String DRL = "drl";
-public static final String BUSINESS_RULE = "brl";
-    public static final String DSL_TEMPLATE_RULE = "dslr";
-public static final String DECISION_SPREADSHEET_XLS = "xls";
-public static final String DECISION_TABLE_GUIDED = "gdst";
-public static final String SCORECARD_SPREADSHEET_XLS = "scxls";
-public static final String SCORECARD_GUIDED = "scgd";
-    public static final String RULE_FLOW_RF = "rf";
-    public static final String BPMN_PROCESS = "bpmn";
-    public static final String BPMN2_PROCESS = "bpmn2";
-    public static final String FORM_DEFINITION = "formdef";
-    public static final String WORKITEM_DEFINITION = "wid";
-    public static final String ENUMERATION = "enumeration";
-public static final String TEST_SCENARIO = "scenario";
-public static final String SIMULATION_TEST = "simulationTest";
-public static final String DRL_MODEL = "model.drl";
-public static final String XML = "xml";
-public static final String PROPERTIES = "properties";
-public static final String CONFIGURATION = "conf";
-public static final String WORKING_SET = "workingset";
-    public static final String RULE_TEMPLATE = "template";
-// public static final String DOCUMENTATION = "pdf";
-public static final String ZIP = "zip";
-    public static final String SPRING_CONTEXT = "springContext";
-    public static final String SERVICE_CONFIG = "serviceConfig";
-    public static final String CHANGE_SET = "changeset";
-*/

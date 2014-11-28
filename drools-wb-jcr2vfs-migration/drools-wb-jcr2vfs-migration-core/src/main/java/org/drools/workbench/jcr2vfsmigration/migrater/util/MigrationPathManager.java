@@ -10,6 +10,8 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Asset;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.repository.AssetItem;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -97,9 +99,39 @@ public class MigrationPathManager {
         return Paths.convert( assetPath );
     }
 
+    public Path generatePathForAsset( org.drools.workbench.jcr2vfsmigration.xml.model.Module xmlModule,
+            XmlAsset xmlAsset,
+            boolean hasDSL ) {
+
+        // In the previous version of the tool, when getting to this point the jcrModule's name had been replaced with the normalized package name
+        String normalizedName = xmlModule.getNormalizedPackageName();
+        final org.uberfire.java.nio.file.Path modulePath = getFileSystem().getPath( "/" + escapePathEntry( normalizedName ) );
+
+        org.uberfire.java.nio.file.Path assetPath = null;
+
+        if ( AssetType.BUSINESS_RULE.equals( xmlAsset.getAssetType() ) && !hasDSL ) {
+            assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + ".rdrl" );
+        } else if ( AssetType.BUSINESS_RULE.equals( xmlAsset.getAssetType() ) && hasDSL ) {
+            assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + ".rdslr" );
+        } else if ( AssetType.FUNCTION.equals( xmlAsset.getAssetType() ) ) {
+            assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + ".drl" );
+        } else if ( AssetType.TEST_SCENARIO.equals( xmlAsset.getAssetType() ) ) {
+            assetPath = modulePath.resolve( "src/test/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + "." + xmlAsset.getAssetType() );
+        } else {
+            assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + "." + xmlAsset.getAssetType() );
+        }
+
+        return Paths.convert( assetPath );
+    }
+
     public Path generatePathForAsset( Module jcrModule,
                                       AssetItem jcrAssetItem ) {
         return generatePathForAsset( jcrModule, jcrAssetItem, false );
+    }
+
+    public Path generatePathForAsset( org.drools.workbench.jcr2vfsmigration.xml.model.Module xmlModule,
+            XmlAsset xmlAsset ) {
+        return generatePathForAsset( xmlModule, xmlAsset, false );
     }
 
     private org.uberfire.java.nio.file.Path getPomDirectoryPath( final Path pathToPomXML ) {

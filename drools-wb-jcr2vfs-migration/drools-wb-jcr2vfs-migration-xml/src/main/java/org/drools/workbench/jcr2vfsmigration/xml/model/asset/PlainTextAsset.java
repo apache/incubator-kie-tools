@@ -19,7 +19,8 @@ public class PlainTextAsset extends AbstractXmlAsset {
 
     private String content;
 
-    public PlainTextAsset( String format, String content ) {
+    public PlainTextAsset( String name, String format, String content ) {
+        this.name = name;
         this.assetType = AssetType.getByName( format );
         this.content = content;
     }
