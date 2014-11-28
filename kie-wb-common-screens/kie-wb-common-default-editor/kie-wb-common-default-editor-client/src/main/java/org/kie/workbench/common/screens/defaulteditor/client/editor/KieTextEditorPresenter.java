@@ -118,6 +118,7 @@ public class KieTextEditorPresenter
 
                 metadata = overview.getMetadata();
 
+                setOriginalHash(view.getContent().hashCode());
             }
         } ).loadOverview( versionRecordManager.getCurrentPath() );
     }
@@ -129,7 +130,7 @@ public class KieTextEditorPresenter
                                          new CommandWithCommitMessage() {
                                              @Override
                                              public void execute( final String commitMessage ) {
-                                                 defaultEditorService.call( getSaveSuccessCallback(),
+                                                 defaultEditorService.call( getSaveSuccessCallback(view.getContent().hashCode()),
                                                                             new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                                                   view.getContent(),
                                                                                                                                                   metadata,

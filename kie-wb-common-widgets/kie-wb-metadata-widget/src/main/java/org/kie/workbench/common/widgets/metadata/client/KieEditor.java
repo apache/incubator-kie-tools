@@ -427,7 +427,7 @@ public abstract class KieEditor {
                 .build();
     }
 
-    protected RemoteCallback<Path> getSaveSuccessCallback() {
+    protected RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {
         return new RemoteCallback<Path>() {
 
             @Override
@@ -435,6 +435,7 @@ public abstract class KieEditor {
                 baseView.hideBusyIndicator();
                 versionRecordManager.reloadVersions(path);
                 notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                setOriginalHash(newHash);
             }
         };
     }
