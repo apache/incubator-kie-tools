@@ -232,7 +232,7 @@ public abstract class KieEditor {
 
                     @Override
                     public void onLostFocus() {
-
+                        onEditTabUnselected();
                     }
                 });
 
@@ -539,6 +539,10 @@ public abstract class KieEditor {
      * Overwrite this if you want to do something special when the editor tab is selected.
      */
     protected void onEditTabSelected() {
+
+    }
+
+    protected void onEditTabUnselected(){
 
     }
 

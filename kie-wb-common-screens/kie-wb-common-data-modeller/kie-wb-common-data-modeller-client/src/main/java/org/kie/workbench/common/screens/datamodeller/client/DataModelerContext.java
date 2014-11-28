@@ -47,33 +47,6 @@ public class DataModelerContext {
 
     private EditorModelContent editorModelContent;
 
-    /**
-     * Status relative to the edition tabs. This is a kind of sub status, that tells us if there are pending changes
-     * in whatever of the edition tabs.
-     * It may happen that there are no pending changes in the edition tabs but the .java file is dirty.
-     * e.g. If you make some changes in the "Editor" tab and goes to the "Source" tab, the code will be automatically
-     * re generated to include the changes. After the code is re regenerated the editionStatus will be changed from
-     * EDITOR_CHANGED to NO_CHANGES. This means that the "Source" tab is synchronized with the "Editor" tab, but the
-     * .java file still needs to be saved. And this the editor as the mail component is dirty.
-     */
-    public static enum EditionStatus {
-
-        /**
-         * No pending changes to process.
-         */
-        NO_CHANGES,
-
-        /**
-         * Changes has been done in "Editor" tab and the code wasn't regenerated yet.
-         */
-        EDITOR_CHANGED,
-
-        /**
-         * Changes has been done in the "Source" tab and the data object wasn't regenerated (parsed) yet.
-         */
-        SOURCE_CHANGED
-    }
-
     public static enum ParseStatus {
 
         /**
@@ -95,8 +68,6 @@ public class DataModelerContext {
         PARSE_ERRORS
     }
 
-    private EditionStatus editionStatus = EditionStatus.NO_CHANGES;
-
     private ParseStatus parseStatus = ParseStatus.NOT_PARSED;
 
     public DataModelerContext() {
@@ -114,10 +85,6 @@ public class DataModelerContext {
 
     public DataModelHelper getHelper() {
         return helper;
-    }
-
-    public void setHelper(DataModelHelper helper) {
-        this.helper = helper;
     }
 
     public Map<String, AnnotationDefinitionTO> getAnnotationDefinitions() {
@@ -158,14 +125,6 @@ public class DataModelerContext {
 
     public void setReadonly( boolean readonly ) {
         this.readonly = readonly;
-    }
-
-    public boolean isEditorChanged() {
-        return editionStatus == EditionStatus.EDITOR_CHANGED;
-    }
-
-    public boolean isSourceChanged() {
-        return editionStatus == EditionStatus.SOURCE_CHANGED;
     }
 
     public void appendPackages(Collection<Package> packages) {
@@ -220,14 +179,6 @@ public class DataModelerContext {
         if (editorModelContent != null) {
             editorModelContent.setDataObject( dataObjectTO );
         }
-    }
-
-    public EditionStatus getEditionStatus() {
-        return editionStatus;
-    }
-
-    public void setEditionStatus( EditionStatus editionStatus ) {
-        this.editionStatus = editionStatus;
     }
 
     public EditorModelContent getEditorModelContent() {
