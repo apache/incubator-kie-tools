@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetImporter;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetWithPackagePropertyImporter;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
@@ -59,6 +60,9 @@ public class ModuleAssetImporter {
 
     @Inject
     PlainTextAssetImporter plainTextAssetImporter;
+
+    @Inject
+    PlainTextAssetWithPackagePropertyImporter plainTextAssetWithPackagePropertyImporter;
 
     private ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
     XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
@@ -163,6 +167,8 @@ public class ModuleAssetImporter {
             case FTL:
             case JSON:
             case FW: plainTextAssetImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+            case DRL:
+            case FUNCTION: plainTextAssetWithPackagePropertyImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
         }
     }
 

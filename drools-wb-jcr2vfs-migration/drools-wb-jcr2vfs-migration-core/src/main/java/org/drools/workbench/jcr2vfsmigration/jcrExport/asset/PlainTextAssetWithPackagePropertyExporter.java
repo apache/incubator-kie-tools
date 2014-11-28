@@ -21,29 +21,39 @@ import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.DRLMigrationUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 
-public class PlainTextAssetExporter
+public class PlainTextAssetWithPackagePropertyExporter
         extends BaseAssetExporter
         implements AssetExporter<PlainTextAsset> {
 
+    @Override
     public PlainTextAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
-
         String name = jcrAssetItem.getName();
         String format = jcrAssetItem.getFormat();
-        String content = jcrAssetItem.getContent();
+
+        StringBuilder sb = new StringBuilder();
+        if ( AssetFormats.DRL.equals( jcrAssetItem.getFormat() ) && jcrAssetItem.getContent().toLowerCase().indexOf("rule ")==-1 ) {
+            sb.append( "rule \"" + jcrAssetItem.getName() + "\"" );
+            sb.append( getExtendExpression(jcrModule,jcrAssetItem,"") );
+            sb.append( "\n" );
+            sb.append( "\n" );
+            sb.append( jcrAssetItem.getContent() );
+            sb.append( "\n" );
+            sb.append( "\n" );
+            sb.append( "end" );
+        }
+        else{
+            sb.append( jcrAssetItem.getContent() );
+            sb.append( "\n" );
+        }
+        String content = sb.toString();
 
         // Support for '#' has been removed from Drools Expert -> replace it with '//'
-        if ( AssetFormats.DSL.equals(format)
-                || AssetFormats.DSL_TEMPLATE_RULE.equals(format)
-                || AssetFormats.RULE_TEMPLATE.equals(format)
-                || AssetFormats.DRL.equals(format)
-                || AssetFormats.FUNCTION.equals(format)) {
+        if (AssetFormats.DSL.equals(jcrAssetItem.getFormat())
+                || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
+                || AssetFormats.RULE_TEMPLATE.equals(jcrAssetItem.getFormat())
+                || AssetFormats.DRL.equals(jcrAssetItem.getFormat())
+                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
             content = DRLMigrationUtils.migrateStartOfCommentChar( content );
-        }
-        if (AssetFormats.RULE_TEMPLATE.equals(format)){
-            content = content.replaceAll("org.drools.guvnor.client.modeldriven.dt.TemplateModel","rule");
-        }
-        if (AssetFormats.WORKITEM_DEFINITION.equals(format)){
-            content = content.replaceAll("org.drools.process.core.","org.drools.core.process.core.");
         }
 
         return new PlainTextAsset( name, format, content );

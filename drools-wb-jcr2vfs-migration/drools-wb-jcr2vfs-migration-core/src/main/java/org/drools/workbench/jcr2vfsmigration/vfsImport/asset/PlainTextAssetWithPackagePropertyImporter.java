@@ -19,17 +19,16 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.workbench.jcr2vfsmigration.migrater.util.DRLMigrationUtils;
+import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
-import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
-public class PlainTextAssetImporter implements AssetImporter<PlainTextAsset> {
+public class PlainTextAssetWithPackagePropertyImporter implements AssetImporter<PlainTextAsset> {
 
     @Inject
     @Named("ioStrategy")
@@ -38,36 +37,30 @@ public class PlainTextAssetImporter implements AssetImporter<PlainTextAsset> {
     @Inject
     protected MigrationPathManager migrationPathManager;
 
+    @Inject
+    PackageImportHelper packageImportHelper;
+
+    @Override
     public void importAsset( Module xmlModule, PlainTextAsset xmlAsset ) {
         Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
 
         String content = xmlAsset.getContent();
 
-        // Support for '#' has been removed from Drools Expert -> replace it with '//'
-        if ( AssetType.DSL.equals(xmlAsset.getAssetType())
-                || AssetType.DSL_TEMPLATE_RULE.equals(xmlAsset.getAssetType())
-                || AssetType.RULE_TEMPLATE.equals(xmlAsset.getAssetType())
-                || AssetType.DRL.equals(xmlAsset.getAssetType())
-                || AssetType.FUNCTION.equals(xmlAsset.getAssetType())) {
-            content = DRLMigrationUtils.migrateStartOfCommentChar( content );
-        }
-        if (AssetType.RULE_TEMPLATE.equals(xmlAsset.getAssetType())){
-            content = content.replaceAll("org.drools.guvnor.client.modeldriven.dt.TemplateModel","rule");
-        }
-        if (AssetType.WORKITEM_DEFINITION.equals(xmlAsset.getAssetType())){
-            content = content.replaceAll("org.drools.process.core.","org.drools.core.process.core.");
-        }
+        String sourceWithImport = packageImportHelper.assertPackageImportDRL( content,
+                path );
+        sourceWithImport = packageImportHelper.assertPackageName( sourceWithImport,
+                path );
 
         ioService.write( nioPath,
-                         content,
-                         (Map) null,    // cast is for disambiguation
+                sourceWithImport,
+                ( Map ) null,    // cast is for disambiguation
 // todo               migrateMetaData(jcrModule, asset),
 // todo               new CommentedOption( asset.getLastContributor(),
 //                        null,
 //                        asset.getCheckinComment(),
 //                        asset.getLastModified().getTime() ) );
-                         new CommentedOption( "" )
-                       );
+                new CommentedOption( "" )
+        );
     }
 }

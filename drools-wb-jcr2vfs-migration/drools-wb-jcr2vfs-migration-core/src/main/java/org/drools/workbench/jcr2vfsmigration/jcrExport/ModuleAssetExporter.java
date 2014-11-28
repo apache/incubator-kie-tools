@@ -37,6 +37,7 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetExporter;
+import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetWithPackagePropertyExporter;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
@@ -69,6 +70,9 @@ public class ModuleAssetExporter {
 
     @Inject
     PlainTextAssetExporter plainTextAssetExporter;
+
+    @Inject
+    PlainTextAssetWithPackagePropertyExporter plainTextAssetWithPackagePropertyExporter;
 
     ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
     XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
@@ -226,7 +230,6 @@ public class ModuleAssetExporter {
     }
 
     private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, Path previousVersionPath) {
-        // todo replace this with a switch based on the xml.AssetType enum
         if ( AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
 //            return factModelsMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
@@ -251,7 +254,7 @@ public class ModuleAssetExporter {
             return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
         } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
-//            return plainTextAssetWithPackagePropertyMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+            return plainTextAssetWithPackagePropertyExporter.export( jcrModule, jcrAssetItem );
         } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                 || AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                 || "png".equals(jcrAssetItem.getFormat())
