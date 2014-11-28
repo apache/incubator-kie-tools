@@ -94,7 +94,7 @@ public class CategoriesEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showSaving();
-                                                 categoryService.call( getSaveSuccessCallback(),
+                                                 categoryService.call( getSaveSuccessCallback(view.getContent().hashCode()),
                                                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                                 view.getContent(),
                                                                                                                                 metadata,

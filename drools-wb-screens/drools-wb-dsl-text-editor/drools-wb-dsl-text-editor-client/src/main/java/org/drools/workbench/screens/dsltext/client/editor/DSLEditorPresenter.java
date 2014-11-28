@@ -137,11 +137,11 @@ public class DSLEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showSaving();
-                                                 dslTextEditorService.call( getSaveSuccessCallback(),
-                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                                     view.getContent(),
-                                                                                                                                     metadata,
-                                                                                                                                     commitMessage );
+                                                 dslTextEditorService.call( getSaveSuccessCallback(view.getContent().hashCode()),
+                                                                            new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                                 view.getContent(),
+                                                                                                                                 metadata,
+                                                                                                                                 commitMessage );
                                              }
                                          }
                                        );

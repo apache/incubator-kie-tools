@@ -115,7 +115,6 @@ public class DRLEditorPresenter
                     return;
                 }
 
-                setOriginalHash(content.getDrl().hashCode());
                 resetEditorPages( content.getOverview() );
                 addSourcePage();
 
@@ -135,6 +134,7 @@ public class DRLEditorPresenter
                                      fullyQualifiedClassNames );
                 }
                 view.hideBusyIndicator();
+                setOriginalHash(view.getContent().hashCode());
             }
 
             private String assertContent( final String drl ) {
@@ -191,11 +191,11 @@ public class DRLEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showSaving();
-                                                 drlTextEditorService.call( getSaveSuccessCallback(),
-                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                                     view.getContent(),
-                                                                                                                                     metadata,
-                                                                                                                                     commitMessage );
+                                                 drlTextEditorService.call( getSaveSuccessCallback(view.getContent().hashCode()),
+                                                                            new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                                 view.getContent(),
+                                                                                                                                 metadata,
+                                                                                                                                 commitMessage );
                                              }
                                          }
                                        );

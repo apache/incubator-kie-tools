@@ -186,7 +186,7 @@ public class GuidedDecisionTableEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showSaving();
-                                                 service.call( getSaveSuccessCallback(),
+                                                 service.call( getSaveSuccessCallback(model.hashCode()),
                                                                new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                         model,
                                                                                                                         metadata,

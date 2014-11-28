@@ -125,7 +125,6 @@ public class GuidedRuleTemplateEditorPresenter
                     return;
                 }
 
-                setOriginalHash(content.getModel().hashCode());
                 resetEditorPages( content.getOverview() );
                 addSourcePage();
 
@@ -164,6 +163,7 @@ public class GuidedRuleTemplateEditorPresenter
                                           model.getImports(),
                                           isReadOnly );
 
+                setOriginalHash(model.hashCode());
                 view.hideBusyIndicator();
             }
         };
@@ -209,11 +209,11 @@ public class GuidedRuleTemplateEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showSaving();
-                                                 service.call( getSaveSuccessCallback(),
-                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                        view.getContent(),
-                                                                                                                        metadata,
-                                                                                                                        commitMessage );
+                                                 service.call( getSaveSuccessCallback(model.hashCode()),
+                                                               new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                    view.getContent(),
+                                                                                                                    metadata,
+                                                                                                                    commitMessage );
                                              }
                                          }
                                        );

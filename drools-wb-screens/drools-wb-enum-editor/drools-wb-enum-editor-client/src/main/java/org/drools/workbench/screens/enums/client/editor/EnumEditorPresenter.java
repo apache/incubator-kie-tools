@@ -137,11 +137,11 @@ public class EnumEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showSaving();
-                                                 enumService.call( getSaveSuccessCallback(),
-                                                                   new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                            view.getContent(),
-                                                                                                                            metadata,
-                                                                                                                            commitMessage );
+                                                 enumService.call( getSaveSuccessCallback(view.getContent().hashCode()),
+                                                                   new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                        view.getContent(),
+                                                                                                                        metadata,
+                                                                                                                        commitMessage );
                                              }
                                          }
                                        );

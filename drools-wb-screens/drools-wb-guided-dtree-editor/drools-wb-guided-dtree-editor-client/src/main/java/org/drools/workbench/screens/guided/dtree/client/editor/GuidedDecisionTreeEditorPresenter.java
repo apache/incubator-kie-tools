@@ -145,7 +145,6 @@ public class GuidedDecisionTreeEditorPresenter
                                                                         model,
                                                                         dataModel );
 
-                setOriginalHash(content.getModel().hashCode());
                 resetEditorPages( content.getOverview() );
 
                 addSourcePage();
@@ -166,6 +165,8 @@ public class GuidedDecisionTreeEditorPresenter
                     final ParserMessagesPopup popup = new ParserMessagesPopup( model );
                     popup.show();
                 }
+
+                setOriginalHash(model.hashCode());
             }
         };
     }
@@ -207,11 +208,11 @@ public class GuidedDecisionTreeEditorPresenter
                                              @Override
                                              public void execute( final String comment ) {
                                                  view.showSaving();
-                                                 service.call( getSaveSuccessCallback(),
-                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                        model,
-                                                                                                                        metadata,
-                                                                                                                        comment );
+                                                 service.call( getSaveSuccessCallback(model.hashCode()),
+                                                               new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                    model,
+                                                                                                                    metadata,
+                                                                                                                    comment );
                                              }
                                          }
                                        );

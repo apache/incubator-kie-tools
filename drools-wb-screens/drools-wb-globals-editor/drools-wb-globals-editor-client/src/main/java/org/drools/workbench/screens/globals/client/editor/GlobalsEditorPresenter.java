@@ -88,7 +88,6 @@ public class GlobalsEditorPresenter
 
                 model = content.getModel();
 
-                setOriginalHash(content.getModel().hashCode());
                 resetEditorPages( content.getOverview() );
                 addSourcePage();
 
@@ -98,6 +97,7 @@ public class GlobalsEditorPresenter
                                  fullyQualifiedClassNames,
                                  isReadOnly );
 
+                setOriginalHash(model.hashCode());
                 view.hideBusyIndicator();
             }
         };
@@ -129,11 +129,11 @@ public class GlobalsEditorPresenter
                                              @Override
                                              public void execute( final String comment ) {
                                                  view.showSaving();
-                                                 globalsEditorService.call( getSaveSuccessCallback(),
-                                                                            new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                                     model,
-                                                                                                                                     metadata,
-                                                                                                                                     comment );
+                                                 globalsEditorService.call( getSaveSuccessCallback(model.hashCode()),
+                                                                            new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                                 model,
+                                                                                                                                 metadata,
+                                                                                                                                 comment );
                                              }
                                          }
                                        );

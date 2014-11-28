@@ -112,15 +112,16 @@ public class WorkItemsEditorPresenter
                     return;
                 }
 
-                setOriginalHash(content.getDefinition().hashCode());
-                resetEditorPages( content.getOverview() );
+                resetEditorPages(content.getOverview());
 
                 metadata = content.getOverview().getMetadata();
 
                 final String definition = content.getDefinition();
                 final List<String> workItemImages = content.getWorkItemImages();
-                view.setContent( definition,
-                                 workItemImages );
+                view.setContent(definition,
+                                workItemImages);
+
+                setOriginalHash(view.getContent().hashCode());
                 view.hideBusyIndicator();
             }
         };
@@ -152,11 +153,11 @@ public class WorkItemsEditorPresenter
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  view.showSaving();
-                                                 workItemsService.call( getSaveSuccessCallback(),
-                                                                        new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                                 view.getContent(),
-                                                                                                                                 metadata,
-                                                                                                                                 commitMessage );
+                                                 workItemsService.call( getSaveSuccessCallback(view.getContent().hashCode()),
+                                                                        new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                             view.getContent(),
+                                                                                                                             metadata,
+                                                                                                                             commitMessage );
                                              }
                                          }
                                        );
