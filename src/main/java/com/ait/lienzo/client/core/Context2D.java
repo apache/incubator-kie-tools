@@ -118,6 +118,11 @@ public class Context2D
         m_jso.arc(x, y, radius, startAngle, endAngle, false);
     }
 
+    public void arcTo(double x1, double y1, double x2, double y2, double radius)
+    {
+        m_jso.arcTo(x1, y1, x2, y2, radius);
+    }
+
     public void setStrokeColor(String color)
     {
         m_jso.setStrokeColor(color);

@@ -307,6 +307,28 @@ public final class Point2D
         return toJSONString();
     }
 
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof Point2D)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        Point2D that = ((Point2D) other);
+
+        return ((that.getX() == getX()) && (that.getY() == getY()));
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
+    }
+
     public final double dot(Point2D p)
     {
         return m_jso.dot(p.getJSO());
