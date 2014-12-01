@@ -909,8 +909,11 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     private void refreshConstraintValueEditorsDropDownData( final SingleFieldConstraint modifiedConstraint ) {
         for ( Map.Entry<SingleFieldConstraint, ConstraintValueEditor> e : constraintValueEditors.entrySet() ) {
-            if ( e.getKey() != modifiedConstraint ) {
-                e.getValue().refreshEditor();
+            final SingleFieldConstraint sfc = e.getKey();
+            if ( sfc.getConstraintValueType() == SingleFieldConstraint.TYPE_LITERAL || sfc.getConstraintValueType() == SingleFieldConstraint.TYPE_ENUM ) {
+                if ( !sfc.equals( modifiedConstraint ) ) {
+                    e.getValue().refreshEditor();
+                }
             }
         }
     }
