@@ -72,8 +72,8 @@ public class TypeChoiceFormPopup
         } );
         addAttribute( TestScenarioConstants.INSTANCE.Fact(),
                       widgets( button,
-                               new InfoPopup( TestScenarioConstants.INSTANCE.Fact(),
-                                              TestScenarioConstants.INSTANCE.Fact() ) ) );
+                               new InfoPopup( TestScenarioConstants.INSTANCE.CreateNewFact(),
+                                              TestScenarioConstants.INSTANCE.CreateNewFactTip() ) ) );
     }
 
     private void addLiteralValueSelection() {

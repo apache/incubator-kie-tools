@@ -215,6 +215,8 @@ public interface
 
     String CreateNewFact();
 
+    String CreateNewFactTip();
+
     String Fact();
 
     String GuidedList();
