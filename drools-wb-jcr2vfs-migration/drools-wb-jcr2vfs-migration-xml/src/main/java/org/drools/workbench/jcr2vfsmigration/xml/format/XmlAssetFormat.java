@@ -48,7 +48,9 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case BPMN2_PROCESS:
             case FTL:
             case JSON:
-            case FW: ptaf.format( sb, ( PlainTextAsset ) xmlAsset ); break;
+            case FW:
+            case DRL :
+            case FUNCTION: ptaf.format( sb, ( PlainTextAsset ) xmlAsset ); break;
         }
     }
 
@@ -75,7 +77,9 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case BPMN2_PROCESS:
             case FTL:
             case JSON:
-            case FW: return ptaf.parse( assetNode );
+            case FW:
+            case DRL:
+            case FUNCTION: return ptaf.parse( assetNode );
         }
         return null;
     }
