@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.AttachmentAssetImporter;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedScoreCardImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetWithPackagePropertyImporter;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
@@ -65,6 +66,9 @@ public class ModuleAssetImporter {
 
     @Inject
     PlainTextAssetWithPackagePropertyImporter plainTextAssetWithPackagePropertyImporter;
+
+    @Inject
+    GuidedScoreCardImporter guidedScoreCardImporter;
 
     @Inject
     AttachmentAssetImporter attachmentAssetImporter;
@@ -188,6 +192,9 @@ public class ModuleAssetImporter {
             case PDF:
             case DOC:
             case ODT: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset ); break;
+
+            case SCORECARD_GUIDED: guidedScoreCardImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+
             default: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset );
         }
     }

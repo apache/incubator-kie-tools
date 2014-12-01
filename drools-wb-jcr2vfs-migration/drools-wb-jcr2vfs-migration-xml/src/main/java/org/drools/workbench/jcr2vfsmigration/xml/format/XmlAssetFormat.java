@@ -52,6 +52,8 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case JSON:
             case FW:
 
+            case SCORECARD_GUIDED:
+
             case DRL :
             case FUNCTION: ptaf.format( sb, ( PlainTextAsset ) xmlAsset ); break;
 
@@ -95,6 +97,8 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case FTL:
             case JSON:
             case FW:
+
+            case SCORECARD_GUIDED:
 
             case DRL:
             case FUNCTION: return ptaf.parse( assetNode );

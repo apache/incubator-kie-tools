@@ -276,7 +276,8 @@ public class ModuleAssetExporter {
             System.out.println("    WARNING: POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by export tool. Please add your POJO model jar to Guvnor manually.");
 
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
-//            return guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+            // No special treatment or attributes needed; use PlainTextAsset
+            return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
 
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
 //            return testScenarioMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
