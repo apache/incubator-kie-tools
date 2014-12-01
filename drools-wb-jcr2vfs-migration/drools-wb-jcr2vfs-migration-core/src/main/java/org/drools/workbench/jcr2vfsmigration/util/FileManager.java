@@ -15,8 +15,12 @@
  */
 package org.drools.workbench.jcr2vfsmigration.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.enterprise.context.ApplicationScoped;
@@ -25,17 +29,21 @@ import javax.enterprise.context.ApplicationScoped;
 public class FileManager {
 
     private static final String XML_EXTENSION = ".xml";
+    private static final String BIN_DIR = "bin";
 
     private static final String MODULES_FILE = "modules" + XML_EXTENSION;
     private static final String CATEGORIES_FILE = "categories" + XML_EXTENSION;
 
     private File tempDir;
+    private File binDir;
 
     public FileManager() {
     }
 
     public void setExportTempDir( File tempDir ) {
         this.tempDir = tempDir;
+        this.binDir = new File( tempDir, BIN_DIR );
+        binDir.mkdirs();
     }
 
     public PrintWriter createModuleExportFileWriter() {
@@ -70,6 +78,58 @@ public class FileManager {
         return getFile( fileName + XML_EXTENSION );
     }
 
+    public boolean writeBinaryContent( String fileName, byte[] bytes ) {
+        if ( fileName == null ) return false;
+        File bFile = new File( binDir, fileName );
+        BufferedOutputStream bos = null;
+        try {
+            bos = new BufferedOutputStream( new FileOutputStream( bFile ) );
+            bos.write( bytes );
+        } catch ( Exception e ) {
+            System.out.println("Error while creating binary file " + fileName + "; " + e.getMessage());
+            return false;
+        } finally {
+            try {
+                if ( bos != null ) bos.close();
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public byte[] readBinaryContent( String fileName ) {
+        if ( fileName == null ) return null;
+        BufferedInputStream bis = null;
+        try {
+            File bFile = getBinaryFile( fileName );
+            bis = new BufferedInputStream( new FileInputStream( bFile ) );
+            byte[] bytes = new byte[ ( int ) bFile.length() ];
+
+            int offset = 0;
+            int numRead = 0;
+            while ( offset < bytes.length &&
+                    ( numRead = bis.read( bytes, offset, bytes.length - offset ) ) >= 0 ) {
+                offset += numRead;
+            }
+
+            if ( offset < bytes.length ) {
+                System.out.println( "Binary file " + fileName + " was not completely read" );
+            }
+
+            return bytes;
+        } catch ( Exception e ) {
+            System.out.println("Error while creating binary file " + fileName + "; " + e.getMessage());
+        } finally {
+            try {
+                if ( bis != null ) bis.close();
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     private boolean doCreateFile( File file ) {
         boolean success = false;
         try {
@@ -101,6 +161,12 @@ public class FileManager {
     private File getFile( String fileName ) throws FileNotFoundException {
         File f = new File( tempDir, fileName );
         if ( !f.exists() ) throw new FileNotFoundException( "File " + fileName + " not found" );
+        return f;
+    }
+
+    private File getBinaryFile( String fileName ) throws FileNotFoundException {
+        File f = new File( binDir, fileName );
+        if ( !f.exists() ) throw new FileNotFoundException( "Binary file " + fileName + " not found" );
         return f;
     }
 }

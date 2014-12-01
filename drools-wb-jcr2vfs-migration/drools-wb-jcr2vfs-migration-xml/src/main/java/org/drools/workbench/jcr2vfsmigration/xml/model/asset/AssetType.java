@@ -24,8 +24,16 @@ public enum AssetType {
     DECISION_TABLE_GUIDED( "gdst" ),
     DRL( "drl" ),
     FUNCTION( "function" ),
+
     DECISION_SPREADSHEET_XLS( "xls" ),
     SCORECARD_SPREADSHEET_XLS( "scxls" ),
+    PNG( "png" ),
+    GIF( "gif" ),
+    JPG( "jpg" ),
+    PDF( "pdf" ),
+    DOC( "doc" ),
+    ODT( "odt" ),
+
     SCORECARD_GUIDED( "scgd" ),
     TEST_SCENARIO( "scenario" ),
 

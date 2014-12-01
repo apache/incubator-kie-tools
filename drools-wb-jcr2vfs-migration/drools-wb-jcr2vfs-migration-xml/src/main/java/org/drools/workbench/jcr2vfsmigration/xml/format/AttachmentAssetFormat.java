@@ -15,51 +15,46 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
-import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
-import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetFormat.*;
 
-// todo extend from base class to avoid code repeat in format and parse methods
-// todo evaluate if having different asset types is really necessary, instead of having 1 generic XmlAsset (which would get
-// rid of some casting probably (see XmlAssetFormat)
-public class PlainTextAssetFormat implements XmlFormat<PlainTextAsset> {
+public class AttachmentAssetFormat implements XmlFormat<AttachmentAsset> {
 
-    private static final String TEXT_CONTENT = "textContent";
+    private static final String ATTACHMENT_FILENAME = "attachmentFileName";
 
     @Override
-    public void format( StringBuilder sb, PlainTextAsset plainTextAsset ) {
-        if ( sb == null || plainTextAsset == null ) throw new IllegalArgumentException( "No output or plain text asset specified" );
+    public void format( StringBuilder sb, AttachmentAsset attachmentAsset ) {
+        if ( sb == null || attachmentAsset == null ) throw new IllegalArgumentException( "No output or attachment asset specified" );
 
         sb.append( LT ).append( ASSET )
-                .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( plainTextAsset.getName() ).append( "\"" )
-                .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( plainTextAsset.getAssetType().toString() ).append( "\"" )
+                .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( attachmentAsset.getName() ).append( "\"" )
+                .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( attachmentAsset.getAssetType().toString() ).append( "\"" )
                 .append( GT );
 
-        sb.append( LT ).append( TEXT_CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( plainTextAsset.getContent() ) )
-                .append( LT_SLASH ).append( TEXT_CONTENT ).append( GT );
+        sb.append( LT ).append( ATTACHMENT_FILENAME ).append( GT ).append( attachmentAsset.getAttachmentFileName() )
+                .append( LT_SLASH ).append( ATTACHMENT_FILENAME ).append( GT );
 
         sb.append( LT_SLASH ).append( ASSET ).append( GT );
-
     }
 
     @Override
-    public PlainTextAsset parse( Node assetNode ) {
+    public AttachmentAsset parse( Node assetNode ) {
         // Null-ness already checked before
         NamedNodeMap assetAttribs = assetNode.getAttributes();
         String name = assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue();
         String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
 
-        String textContent = null;
+        String attachmentFile = null;
         NodeList assetNodeList = assetNode.getChildNodes();
         for ( int i = 0; i < assetNodeList.getLength(); i++ ) {
             Node node = assetNodeList.item( i );
             String nodeContent = node.getTextContent();
-            if ( TEXT_CONTENT.equalsIgnoreCase( node.getNodeName() ) ) textContent = nodeContent;
+            if ( ATTACHMENT_FILENAME.equalsIgnoreCase( node.getNodeName() ) ) attachmentFile = nodeContent;
         }
-        return new PlainTextAsset( name, assetType, textContent );
+        return new AttachmentAsset( name, assetType, attachmentFile );
     }
 }

@@ -16,6 +16,7 @@
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.w3c.dom.NamedNodeMap;
@@ -28,6 +29,7 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
     public static final String ASSET_TYPE = "type";
 
     private static PlainTextAssetFormat ptaf = new PlainTextAssetFormat();
+    private static AttachmentAssetFormat aaf = new AttachmentAssetFormat();
 
     @Override
     public void format( StringBuilder sb, XmlAsset xmlAsset ) {
@@ -49,8 +51,23 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case FTL:
             case JSON:
             case FW:
+
             case DRL :
             case FUNCTION: ptaf.format( sb, ( PlainTextAsset ) xmlAsset ); break;
+
+            case DECISION_SPREADSHEET_XLS:
+            case SCORECARD_SPREADSHEET_XLS:
+            case PNG:
+            case GIF:
+            case JPG:
+            case PDF:
+            case DOC:
+            case ODT: aaf.format( sb, ( AttachmentAsset ) xmlAsset ); break;
+
+            default: {
+                System.out.println( "Attempting to format asset with type " + xmlAsset.getAssetType() + "into attachment asset" );
+                aaf.format( sb, ( AttachmentAsset ) xmlAsset );
+            }
         }
     }
 
@@ -78,9 +95,20 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case FTL:
             case JSON:
             case FW:
+
             case DRL:
             case FUNCTION: return ptaf.parse( assetNode );
+
+            case DECISION_SPREADSHEET_XLS:
+            case SCORECARD_SPREADSHEET_XLS:
+            case PNG:
+            case GIF:
+            case JPG:
+            case PDF:
+            case DOC:
+            case ODT: return aaf.parse( assetNode );
         }
+        System.out.println( "Unknown asset type: " + assetType );
         return null;
     }
 }

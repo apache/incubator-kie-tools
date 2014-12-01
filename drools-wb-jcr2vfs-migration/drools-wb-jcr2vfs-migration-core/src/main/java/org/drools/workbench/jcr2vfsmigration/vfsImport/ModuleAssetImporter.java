@@ -24,12 +24,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.AttachmentAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetWithPackagePropertyImporter;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
@@ -63,6 +65,9 @@ public class ModuleAssetImporter {
 
     @Inject
     PlainTextAssetWithPackagePropertyImporter plainTextAssetWithPackagePropertyImporter;
+
+    @Inject
+    AttachmentAssetImporter attachmentAssetImporter;
 
     private ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
     XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
@@ -140,6 +145,10 @@ public class ModuleAssetImporter {
             XmlAssets xmlAssets = xmlAssetsFormat.parse( assetsNode );
 
             for ( XmlAsset xmlAsset : xmlAssets.getAssets() ) {
+                if ( xmlAsset == null ) {
+                    System.out.println( "WARNING: skipping null asset in import" );
+                    continue;
+                }
                 importAsset( module, xmlAsset );
             }
 
@@ -167,8 +176,18 @@ public class ModuleAssetImporter {
             case FTL:
             case JSON:
             case FW: plainTextAssetImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+
             case DRL:
             case FUNCTION: plainTextAssetWithPackagePropertyImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+
+            case DECISION_SPREADSHEET_XLS:
+            case SCORECARD_SPREADSHEET_XLS:
+            case PNG:
+            case GIF:
+            case JPG:
+            case PDF:
+            case DOC:
+            case ODT: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset ); break;
         }
     }
 

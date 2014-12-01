@@ -44,6 +44,7 @@ import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 import org.uberfire.backend.vfs.Path;
@@ -51,6 +52,7 @@ import org.uberfire.backend.vfs.Path;
 public class ModuleAssetExporter {
 
     private static int assetFileName = 1;
+    private static int attachmentFileNameCounter = 1;
 
     @Inject
     FileManager fileManager;
@@ -202,10 +204,10 @@ public class ModuleAssetExporter {
                     //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
                     //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
 
-                    XmlAsset asset = export( jcrModule, assetItemJCR, null );
+                    XmlAsset asset = export( jcrModule, assetItemJCR, assetFileName, null );
                     if ( asset != null ) {
                         assets.add( asset );
-                    }
+                    } else System.out.println( "WARNING: null asset returned in export: " + assetItemJCR.getName() );
 
                     System.out.format("    Done.%n");
                 }
@@ -229,7 +231,7 @@ public class ModuleAssetExporter {
         return true;
     }
 
-    private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, Path previousVersionPath) {
+    private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName, Path previousVersionPath) {
         if ( AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
 //            return factModelsMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
@@ -263,7 +265,12 @@ public class ModuleAssetExporter {
                 || "pdf".equals(jcrAssetItem.getFormat())
                 || "doc".equals(jcrAssetItem.getFormat())
                 || "odt".equals(jcrAssetItem.getFormat())) {
-//            return attachementAssetMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+
+            // No specific exporter for this, since nothing special needs to be done, just write bytes to file.
+            String attachmentName = assetExportFileName + "_" + attachmentFileNameCounter++;
+            if ( fileManager.writeBinaryContent( attachmentName, jcrAssetItem.getBinaryContentAsBytes() ) )
+                return new AttachmentAsset( jcrAssetItem.getName(), jcrAssetItem.getFormat(), attachmentName );
+
         } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
             System.out.println("    WARNING: POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by export tool. Please add your POJO model jar to Guvnor manually.");
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
