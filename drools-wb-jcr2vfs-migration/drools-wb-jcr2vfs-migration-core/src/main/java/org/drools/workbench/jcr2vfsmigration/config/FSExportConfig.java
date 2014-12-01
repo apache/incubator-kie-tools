@@ -116,48 +116,4 @@ public class FSExportConfig {
         }
         return true;
     }
-
-//    private void deleteFile( File file ) {
-//        if ( file == null ) throw new IllegalArgumentException( "File cannot be null" );
-//        if ( file.isFile() ) file.delete();
-//        else {
-//            for ( File f : file.listFiles() ) {
-//                deleteFile( f );
-//            }
-//        }
-//    }
-
-//    private boolean parseArgOutputVfsRepository( CommandLine commandLine,
-//                                                 HelpFormatter formatter,
-//                                                 Options options ) {
-//        outputRepoName = commandLine.getOptionValue( "r", DEFAULT_MIGRATION_FILE_SYSTEM );
-//        outputVfsRepository = new File( commandLine.getOptionValue( "o", "outputVfs" ) );
-//        forceOverwriteOutputVfsRepository = commandLine.hasOption( "f" );
-//        if ( outputVfsRepository.exists() ) {
-//            if ( forceOverwriteOutputVfsRepository ) {
-//                try {
-//                    FileUtils.deleteDirectory( outputVfsRepository );
-//                } catch ( IOException e ) {
-//                    System.out.println( "Force deleting outputVfsRepository (" + outputVfsRepository.getAbsolutePath() + ") failed: " + e );
-//                    return false;
-//                }
-//            } else {
-//                System.out.println( "The outputVfsRepository (" + outputVfsRepository.getAbsolutePath() + ") already exists." );
-//                return false;
-//            }
-//        }
-//        try {
-//            outputVfsRepository = outputVfsRepository.getCanonicalFile();
-//        } catch ( IOException e ) {
-//            System.out.println( "The outputVfsRepository (" + outputVfsRepository + ") has issues: " + e );
-//            return false;
-//        }
-//        try {
-//            FileUtils.forceMkdir(outputVfsRepository);
-//        } catch (IOException e) {
-//            throw new RuntimeException("Can't create the output VFS directory!", e);
-//        }
-//
-//        return true;
-//    }
 }

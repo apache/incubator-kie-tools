@@ -117,16 +117,11 @@ public class VfrImportConfig {
         }
         try {
             outputVfsRepository = outputVfsRepository.getCanonicalFile();
+            FileUtils.forceMkdir(outputVfsRepository);
         } catch ( IOException e ) {
             System.out.println( "The outputVfsRepository (" + outputVfsRepository + ") has issues: " + e );
             return false;
         }
-        try {
-            FileUtils.forceMkdir(outputVfsRepository);
-        } catch (IOException e) {
-            throw new RuntimeException("Can't create the output VFS directory!", e);
-        }
-
         return true;
     }
 

@@ -63,6 +63,7 @@ public class CategoriesXmlFormat implements XmlFormat<Categories> {
         return new Categories( cCategories );
     }
 
+    // Don't do this in constructor: will lead to stackoverflow because of recursive calls
     private void initialize() {
         if ( categoryXmlFormat == null ) categoryXmlFormat = new CategoryXmlFormat();
     }
