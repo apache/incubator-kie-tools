@@ -188,6 +188,7 @@ public class ModuleAssetImporter {
             case PDF:
             case DOC:
             case ODT: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset ); break;
+            default: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset );
         }
     }
 

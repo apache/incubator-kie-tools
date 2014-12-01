@@ -234,10 +234,13 @@ public class ModuleAssetExporter {
     private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName, Path previousVersionPath) {
         if ( AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
 //            return factModelsMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
 //            return guidedEditorMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+
         } else if (AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAssetItem.getFormat())) {
 //            return guidedDecisionTableMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+
         } else if (AssetFormats.ENUMERATION.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
@@ -254,9 +257,11 @@ public class ModuleAssetExporter {
                 || "json".equals(jcrAssetItem.getFormat())
                 || "fw".equals(jcrAssetItem.getFormat())) {
             return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
+
         } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
             return plainTextAssetWithPackagePropertyExporter.export( jcrModule, jcrAssetItem );
+
         } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                 || AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
                 || "png".equals(jcrAssetItem.getFormat())
@@ -265,24 +270,32 @@ public class ModuleAssetExporter {
                 || "pdf".equals(jcrAssetItem.getFormat())
                 || "doc".equals(jcrAssetItem.getFormat())
                 || "odt".equals(jcrAssetItem.getFormat())) {
-
-            // No specific exporter for this, since nothing special needs to be done, just write bytes to file.
-            String attachmentName = assetExportFileName + "_" + attachmentFileNameCounter++;
-            if ( fileManager.writeBinaryContent( attachmentName, jcrAssetItem.getBinaryContentAsBytes() ) )
-                return new AttachmentAsset( jcrAssetItem.getName(), jcrAssetItem.getFormat(), attachmentName );
+            return exportAttachment( jcrModule, jcrAssetItem, assetExportFileName );
 
         } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
             System.out.println("    WARNING: POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by export tool. Please add your POJO model jar to Guvnor manually.");
+
         } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
 //            return guidedScoreCardMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
 //            return testScenarioMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+
         } else if ("package".equals(jcrAssetItem.getFormat())) {
             //Ignore
+
         } else { //another format is migrated as a attachmentAsset
             System.out.format("    WARNING: asset [%s] with format[%s] is not a known format by export tool. It will be exported as attachmentAsset %n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
-//            return attachementAssetMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+            return exportAttachment( jcrModule, jcrAssetItem, assetExportFileName );
         }
+        return null;
+    }
+
+    private AttachmentAsset exportAttachment( Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
+        // No specific exporter for this, since nothing special needs to be done, just write bytes to file.
+        String attachmentName = assetExportFileName + "_" + attachmentFileNameCounter++;
+        if ( fileManager.writeBinaryContent( attachmentName, jcrAssetItem.getBinaryContentAsBytes() ) )
+            return new AttachmentAsset( jcrAssetItem.getName(), jcrAssetItem.getFormat(), attachmentName );
         return null;
     }
 
