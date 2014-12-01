@@ -98,7 +98,8 @@ public class DataModelerScreenViewImpl
 
     private void updateChangeStatus(DataModelerEvent event) {
         if (context != null && event.isFrom(context.getDataModel())) {
-            dataModelerEvent.fire(new DataModelStatusChangeEvent(null, context.getDataModel(), true, true));
+            context.setEditionStatus( DataModelerContext.EditionStatus.EDITOR_CHANGED );
+            dataModelerEvent.fire(new DataModelStatusChangeEvent(null, context.getDataModel(), false, true));
         }
     }
 
@@ -118,6 +119,10 @@ public class DataModelerScreenViewImpl
 
     private void onDataObjectFieldDeleted(@Observes DataObjectFieldDeletedEvent event) {
         updateChangeStatus(event);
+    }
+
+    private DataModelerContext getContext() {
+        return context;
     }
 
 }

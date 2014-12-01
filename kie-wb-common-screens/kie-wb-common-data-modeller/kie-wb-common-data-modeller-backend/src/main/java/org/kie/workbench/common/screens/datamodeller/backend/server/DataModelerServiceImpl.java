@@ -247,10 +247,10 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
             editorModelContent.setCurrentProjectPackages( projectService.resolvePackages( project ) );
             editorModelContent.setDataModel( dataModelTO );
             editorModelContent.setDataObject( dataModelTO.getDataObjectByClassName( className ) );
-            if ( editorModelContent.getDataObject() != null ) {
-                editorModelContent.setOriginalClassName( className );
-                editorModelContent.setOriginalPackageName( NamingUtils.extractPackageName( className ) );
-            }
+
+            editorModelContent.setOriginalClassName( className );
+            editorModelContent.setOriginalPackageName( NamingUtils.extractPackageName( className ) );
+
 
             //Read the sources for the file being edited.
             if ( ioService.exists( Paths.convert( path ) ) ) {
@@ -1336,6 +1336,9 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
         return javaPath;
     }
 
+    /**
+     * Given a path within a project calculates the expected class name for the given class.
+     */
     private String calculateClassName( Project project,
                                        Path path ) {
 
