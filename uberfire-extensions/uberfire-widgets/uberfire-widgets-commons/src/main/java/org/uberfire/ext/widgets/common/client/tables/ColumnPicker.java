@@ -144,7 +144,7 @@ public class ColumnPicker<T> {
         button.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 if (!button.isActive()) {
-                    showColumnPickerPopup(button.getAbsoluteLeft(),
+                    showColumnPickerPopup(button.getAbsoluteLeft() + button.getOffsetWidth(),
                             button.getAbsoluteTop() + button.getOffsetHeight());
                 } else {
                     popup.hide(false);
@@ -197,8 +197,9 @@ public class ColumnPicker<T> {
             popupContent.add(resetButton);
         }
         popup.setWidget(popupContent);
-        popup.setPopupPosition(left, top);
         popup.show();
+        int finalLeft = left - popup.getOffsetWidth();
+        popup.setPopupPosition(finalLeft, top);
     }
 
     protected void resetTableColumns(int left, int top) {
