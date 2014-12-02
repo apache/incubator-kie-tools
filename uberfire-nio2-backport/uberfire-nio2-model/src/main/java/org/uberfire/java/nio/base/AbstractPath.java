@@ -16,6 +16,10 @@
 
 package org.uberfire.java.nio.base;
 
+import static org.uberfire.commons.data.Pair.newPair;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.commons.validation.Preconditions.checkInstanceOf;
+
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
@@ -25,23 +29,20 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.InvalidPathException;
 import org.uberfire.java.nio.file.LinkOption;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.WatchEvent.Kind;
+import org.uberfire.java.nio.file.WatchEvent.Modifier;
 import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.AttributeView;
-
-import static org.uberfire.commons.data.Pair.*;
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.java.nio.file.WatchEvent.*;
 
 public abstract class AbstractPath<FS extends FileSystem>
         implements Path,
@@ -252,13 +253,9 @@ public abstract class AbstractPath<FS extends FileSystem>
     }
 
     private String encodePath( final String s ) {
-        try {
-            return URIUtil.encodePath( s );
-        } catch ( final URIException e ) {
-        }
-        return null;
+        return EncodingUtil.encodePath(s);
     }
-
+    
     @Override
     public Path toAbsolutePath() throws IOException, SecurityException {
         if ( isAbsolute() ) {
