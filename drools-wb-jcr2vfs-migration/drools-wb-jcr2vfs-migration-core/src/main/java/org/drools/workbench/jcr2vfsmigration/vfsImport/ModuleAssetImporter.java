@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.AttachmentAssetImporter;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedEditorImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedScoreCardImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetWithPackagePropertyImporter;
@@ -33,6 +34,7 @@ import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.BusinessRuleAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
@@ -69,6 +71,9 @@ public class ModuleAssetImporter {
 
     @Inject
     GuidedScoreCardImporter guidedScoreCardImporter;
+
+    @Inject
+    GuidedEditorImporter guidedEditorImporter;
 
     @Inject
     AttachmentAssetImporter attachmentAssetImporter;
@@ -194,6 +199,8 @@ public class ModuleAssetImporter {
             case ODT: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset ); break;
 
             case SCORECARD_GUIDED: guidedScoreCardImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+
+            case BUSINESS_RULE: guidedEditorImporter.importAsset( module, ( BusinessRuleAsset ) xmlAsset ); break;
 
             default: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset );
         }
