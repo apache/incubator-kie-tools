@@ -36,6 +36,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
+import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedDecisionTableExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedEditorExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetWithPackagePropertyExporter;
@@ -79,6 +80,9 @@ public class ModuleAssetExporter {
 
     @Inject
     GuidedEditorExporter guidedEditorExporter;
+
+    @Inject
+    GuidedDecisionTableExporter guidedDecisionTableExporter;
 
     ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
     XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
@@ -243,7 +247,7 @@ public class ModuleAssetExporter {
             return guidedEditorExporter.export( jcrModule, jcrAssetItem );
 
         } else if (AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAssetItem.getFormat())) {
-//            return guidedDecisionTableMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+            return guidedDecisionTableExporter.export( jcrModule, jcrAssetItem );
 
         } else if (AssetFormats.ENUMERATION.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DSL.equals(jcrAssetItem.getFormat())
