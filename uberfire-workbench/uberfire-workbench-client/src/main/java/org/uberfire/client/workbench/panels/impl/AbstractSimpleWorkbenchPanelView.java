@@ -102,7 +102,9 @@ extends AbstractDockingWorkbenchPanelView<P> {
 
     @Override
     public void onResize() {
-        presenter.onResize( getOffsetWidth(), getOffsetHeight() );
+        if ( isAttached() ) {
+            presenter.onResize( getOffsetWidth(), getOffsetHeight() );
+        }
 
         // this will always be true in real life, but during GwtMockito tests it is not
         if ( getWidget() instanceof RequiresResize ) {
