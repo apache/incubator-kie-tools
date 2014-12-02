@@ -17,6 +17,7 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.BusinessRuleAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.w3c.dom.NamedNodeMap;
@@ -30,6 +31,7 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
 
     private static PlainTextAssetFormat ptaf = new PlainTextAssetFormat();
     private static AttachmentAssetFormat aaf = new AttachmentAssetFormat();
+    private static BusinessRuleAssetFormat braf = new BusinessRuleAssetFormat();
 
     @Override
     public void format( StringBuilder sb, XmlAsset xmlAsset ) {
@@ -65,6 +67,8 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case PDF:
             case DOC:
             case ODT: aaf.format( sb, ( AttachmentAsset ) xmlAsset ); break;
+
+            case BUSINESS_RULE: braf.format( sb, ( BusinessRuleAsset ) xmlAsset ); break;
 
             default: {
                 System.out.println( "Attempting to format asset with type " + xmlAsset.getAssetType() + "into attachment asset" );
@@ -111,6 +115,8 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case PDF:
             case DOC:
             case ODT: return aaf.parse( assetNode );
+
+            case BUSINESS_RULE: return braf.parse( assetNode );
         }
         System.out.println( "Unknown asset type: " + assetType );
         return null;
