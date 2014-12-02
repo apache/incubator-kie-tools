@@ -46,8 +46,9 @@ public class GuidedScoreCardImporter implements AssetImporter<PlainTextAsset> {
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
 
         String sourceContent = xmlAsset.getContent();
+        String packageHeader = xmlModule.getPackageHeaderInfo();
         String sourceContentWithPackage = packageImportHelper.assertPackageNameXML( sourceContent, path );
-        sourceContentWithPackage = packageImportHelper.assertPackageImportXML( sourceContentWithPackage, path );
+        sourceContentWithPackage = packageImportHelper.assertPackageImportXML( sourceContentWithPackage, packageHeader, path );
 
         ioService.write( nioPath,
                          sourceContentWithPackage,

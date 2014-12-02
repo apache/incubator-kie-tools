@@ -46,7 +46,8 @@ public class PlainTextAssetWithPackagePropertyImporter implements AssetImporter<
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
 
         String content = xmlAsset.getContent();
-        String sourceWithImport = packageImportHelper.assertPackageImportDRL( content, path );
+        String packageHeader = xmlModule.getPackageHeaderInfo();
+        String sourceWithImport = packageImportHelper.assertPackageImportDRL( content,packageHeader , path );
         sourceWithImport = packageImportHelper.assertPackageName( sourceWithImport, path );
 
         ioService.write( nioPath,

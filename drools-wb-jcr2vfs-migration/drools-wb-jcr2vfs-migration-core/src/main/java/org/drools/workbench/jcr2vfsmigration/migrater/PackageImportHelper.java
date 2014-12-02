@@ -112,13 +112,21 @@ public class PackageImportHelper {
         return xml;
     }
 
+    // Maintained (for now) for legacy purposes
     public String assertPackageImportDRL( final String drl,
+            final Path resource ) {
+        return packageHeaderInfo != null ? assertPackageImportDRL( drl, packageHeaderInfo.getHeader(), resource ) :
+                                           assertPackageImportDRL( drl, "", resource );
+    }
+
+    public String assertPackageImportDRL( final String drl,
+                                          final String packageHeader,
                                           final Path resource ) {
-        if ( packageHeaderInfo.getHeader() == null ) {
+        if ( packageHeader == null ) {
             return drl;
         }
 
-        final Imports imports = ImportsParser.parseImports( packageHeaderInfo.getHeader() );
+        final Imports imports = ImportsParser.parseImports( packageHeader );
         if ( imports == null || drl.toLowerCase().indexOf("import ")!=-1) {
             return drl;
         }
@@ -132,13 +140,21 @@ public class PackageImportHelper {
         return sb.toString();
     }
 
+    // Maintained (for now) for legacy purposes
     public String assertPackageImportXML( final String xml,
                                           final Path resource ) {
-        if ( packageHeaderInfo.getHeader() == null ) {
+        return packageHeaderInfo != null ? assertPackageImportXML( xml, packageHeaderInfo.getHeader(), resource ) :
+                                           assertPackageImportXML( xml, "", resource );
+    }
+
+    public String assertPackageImportXML( final String xml,
+                                          final String packageHeader,
+                                          final Path resource ) {
+        if ( packageHeader == null ) {
             return xml;
         }
 
-        final Imports imports = ImportsParser.parseImports( packageHeaderInfo.getHeader() );
+        final Imports imports = ImportsParser.parseImports( packageHeader );
         if ( imports == null ) {
             return xml;
         }
