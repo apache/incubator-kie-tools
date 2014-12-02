@@ -3,11 +3,13 @@ package org.uberfire.client.workbench.panels;
 public interface DockingWorkbenchPanelPresenter extends WorkbenchPanelPresenter {
 
     /**
-     * Sets the width or height of the given child panel to the given dimension. Width is applied to EAST or WEST
-     * children; height is applied to NORTH and SOUTH children. If the requested space isn't available (for instance
-     * because it is larger than the browser window, or it would make the central panel of this view smaller than its
-     * minimum size) then the largest possible amount will be given to the requested child. Similarly, if the requested
-     * size is less than the child's minimum width or height (as appropriate) then the child will be set to its minimum.
+     * Sets the width or height of the given child panel to the given dimension, leaving room for the existing space
+     * taken up by (recursively) nested panels in the NORTH, SOUTH, EAST, and WEST child positions. Width is applied
+     * to EAST or WEST children; height is applied to NORTH and SOUTH children. If the requested space isn't available
+     * (for instance because it is larger than the browser window, or it would make the central panel of this view
+     * smaller than its minimum size) then the largest possible amount will be given to the requested child.
+     * Similarly, if the requested size is less than the child's minimum width or height (as appropriate) then the
+     * child will be set to its minimum.
      *
      * @param child
      *            the child panel whose size to change

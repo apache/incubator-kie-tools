@@ -183,26 +183,30 @@ public interface PanelDefinition {
     public Integer getHeight();
 
     /**
-     * Set the height of the Panel in pixels
-     * @param height The height, or null if not set
+     * Set the height of this panel in pixels.
+     * 
+     * @param height The height to set. If null, the existing height value is retained.
      */
     public void setHeight( Integer height );
 
     /**
-     * Get the width of the Panel in pixels
-     * @return The width, or null if not set
+     * Get the width of this panel in pixels.
+     * 
+     * @return The width, or null if not set.
      */
     public Integer getWidth();
 
     /**
-     * Set the width of the Panel in pixels
-     * @param width The width, or null if not set
+     * Set the width of this panel in pixels.
+     * 
+     * @param width The width to set. If null, the existing width value is retained.
      */
     public void setWidth( Integer width );
 
     /**
-     * Get the minimum height of the Panel in pixels
-     * @return The minimum height, or null if not set
+     * Get the minimum height of this panel in pixels.
+     * 
+     * @return The minimum height, or null if not set.
      */
     public Integer getMinHeight();
 

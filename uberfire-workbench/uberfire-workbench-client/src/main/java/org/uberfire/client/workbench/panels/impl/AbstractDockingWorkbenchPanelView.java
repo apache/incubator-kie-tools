@@ -129,10 +129,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
         checkNotNull( "childPanelView", childPanelView );
         CompassPosition position = (CompassPosition) checkNotNull( "childPosition", childPosition );
 
-        System.out.println("view.addPanel(): this=" + asWidget().getElement().getId() +
-                           "; child=" + childPanelView.asWidget().getElement().getId() +
-                           "; position=" + childPosition);
-
         if ( viewSplitters.get( position ) != null ) {
             throw new IllegalStateException( "This panel already has a " + position + " child" );
         }
@@ -167,9 +163,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
 
     @Override
     public boolean removePanel( WorkbenchPanelView<?> childView ) {
-        System.out.println("view.removePanel(): parent=" + asWidget().getElement().getId() +
-                           "; child=" + childView.asWidget().getElement().getId());
-
         CompassPosition removalPosition = positionOf( childView );
         if ( removalPosition == null ) {
             System.out.println("  remove failed - no such child view");
@@ -178,8 +171,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
 
         WorkbenchSplitLayoutPanel splitter = viewSplitters.remove( childView );
         splitter.remove( childView.asWidget() );
-        System.out.println("  dropping child panel id=" + childView.asWidget().getElement().getId() + " as requested");
-        System.out.println("   -> dropped panel's children: " + childView.getPresenter().getPanels());
 
         // now search for 'splitter' in all remaining split panels in the map, plus topLevelWidget
         // when found, transfer orphaned children to the same position as splitter was in in its old parent
@@ -189,7 +180,6 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
             if ( orphan != null ) {
                 System.out.println("  splitter@" + System.identityHashCode( splitter ) + " LOSING ORPHAN: " + splitter.getWidgetDirection( w ) + " - " + w);
             }
-            System.out.println("  splitter@" + System.identityHashCode( splitter ) + "  rescuing orphan: " + splitter.getWidgetDirection( w ) + " - " + w );
             orphan = w;
         }
 

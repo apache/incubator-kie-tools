@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.debug.Debug;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.ContextDefinition;
@@ -242,7 +243,9 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     public void setHeight( Integer height ) {
-        this.height = height;
+        if ( height != null ) {
+            this.height = height;
+        }
     }
 
     @Override
@@ -252,7 +255,9 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     public void setWidth( Integer width ) {
-        this.width = width;
+        if ( width != null ) {
+            this.width = width;
+        }
     }
 
     @Override

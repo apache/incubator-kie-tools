@@ -116,21 +116,56 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
                                  Integer pixelHeight ) {
         for ( Map.Entry<Position, WorkbenchPanelPresenter> e : getPanels().entrySet() ) {
             if ( e.getValue() == child ) {
-                Integer size;
+                int size;
                 if ( e.getKey() == CompassPosition.NORTH || e.getKey() == CompassPosition.SOUTH ) {
-                    size = pixelHeight;
+                    if ( pixelHeight == null ) {
+                        return false;
+                    }
+                    size = pixelHeight + nestedPanelHeights( child );
                 } else if ( e.getKey() == CompassPosition.EAST || e.getKey() == CompassPosition.WEST ) {
-                    size = pixelWidth;
+                    if ( pixelWidth == null ) {
+                        return false;
+                    }
+                    size = pixelWidth + nestedPanelWidths( child );
                 } else {
                     throw new AssertionError( "Unexpected child position: " + e.getKey() );
                 }
-                if ( size != null ) {
-                    getPanelView().setChildSize( child.getPanelView(), size );
-                }
+
+                getPanelView().setChildSize( child.getPanelView(), size );
                 return true;
             }
         }
         return false;
+    }
+
+    private int nestedPanelHeights( WorkbenchPanelPresenter child ) {
+        int totalHeight = 0;
+        WorkbenchPanelPresenter northChild = child.getPanels().get( CompassPosition.NORTH );
+        if ( northChild != null ) {
+            totalHeight += northChild.getDefinition().getHeight();
+            totalHeight += nestedPanelHeights( northChild );
+        }
+        WorkbenchPanelPresenter southChild = child.getPanels().get( CompassPosition.SOUTH );
+        if ( southChild != null ) {
+            totalHeight += southChild.getDefinition().getHeight();
+            totalHeight += nestedPanelHeights( southChild );
+        }
+        return totalHeight;
+    }
+
+    private int nestedPanelWidths( WorkbenchPanelPresenter child ) {
+        int totalWidth = 0;
+        WorkbenchPanelPresenter westChild = child.getPanels().get( CompassPosition.WEST );
+        if ( westChild != null ) {
+            totalWidth += westChild.getDefinition().getWidth();
+            totalWidth += nestedPanelWidths( westChild );
+        }
+        WorkbenchPanelPresenter eastChild = child.getPanels().get( CompassPosition.EAST );
+        if ( eastChild != null ) {
+            totalWidth += eastChild.getDefinition().getWidth();
+            totalWidth += nestedPanelWidths( eastChild );
+        }
+        return totalWidth;
     }
 
     @Inject
