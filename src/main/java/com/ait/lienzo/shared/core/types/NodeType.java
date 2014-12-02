@@ -59,4 +59,26 @@ public class NodeType
     {
         return m_prim;
     }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof NodeType)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        NodeType that = ((NodeType) other);
+
+        return ((that.getValue().equals(getValue())) && (that.isPrimitive() == isPrimitive()));
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return getValue().hashCode();
+    }
 }

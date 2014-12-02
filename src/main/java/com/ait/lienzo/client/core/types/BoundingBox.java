@@ -69,6 +69,28 @@ public final class BoundingBox
         return toJSONString();
     }
 
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof BoundingBox)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        BoundingBox that = ((BoundingBox) other);
+
+        return ((that.getX() == getX()) && (that.getY() == getY()) && (that.getWidth() == getWidth()) && (that.getHeight() == getHeight()));
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
+    }
+
     public final static class BoundingBoxJSO extends JavaScriptObject
     {
         protected BoundingBoxJSO()

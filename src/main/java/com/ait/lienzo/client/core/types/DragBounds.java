@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * Class to be used to bound the dragging area of a {@link Shape} 
@@ -183,6 +184,37 @@ public final class DragBounds
     public final DragBoundsJSO getJSO()
     {
         return m_jso;
+    }
+
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof DragBounds)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((DragBounds) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
     }
 
     public static final class DragBoundsJSO extends JavaScriptObject

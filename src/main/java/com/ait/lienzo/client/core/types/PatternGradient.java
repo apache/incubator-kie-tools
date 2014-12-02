@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.types;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.FillRepeat;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * PatternGradient defines the fill style for a {@link Shape} as a Pattern Gradient. 
@@ -81,6 +82,37 @@ public final class PatternGradient implements FillGradient
     public final PatternGradientJSO getJSO()
     {
         return m_jso;
+    }
+
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof PatternGradient)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((PatternGradient) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
     }
 
     public static final class PatternGradientJSO extends GradientJSO

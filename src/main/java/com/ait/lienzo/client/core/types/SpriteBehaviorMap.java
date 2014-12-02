@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.types.BoundingBox.BoundingBoxJSO;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 public final class SpriteBehaviorMap
 {
@@ -119,6 +120,37 @@ public final class SpriteBehaviorMap
             }
         }
         return null;
+    }
+
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof SpriteBehaviorMap)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((SpriteBehaviorMap) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
     }
 
     public static final class SpriteBehaviorMapJSO extends JavaScriptObject

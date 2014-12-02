@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.types;
 import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * Wraps a Shadow JSO providing JS native access to color, blur and coordinates offset.
@@ -210,16 +211,47 @@ public final class Shadow
         return m_jso;
     }
 
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof Shadow)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((Shadow) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
+    }
+
     public static final class ShadowJSO extends JavaScriptObject
     {
         static final native ShadowJSO make(String color, int blur, boolean onfill, Point2DJSO offset)
         /*-{
-			return {
-				color : color,
-				blur : blur,
-				offset : offset,
-				onfill : onfill
-			};
+        	return {
+        		color : color,
+        		blur : blur,
+        		offset : offset,
+        		onfill : onfill
+        	};
         }-*/;
 
         protected ShadowJSO()
@@ -228,45 +260,45 @@ public final class Shadow
 
         public final native String getColor()
         /*-{
-			return this.color;
+        	return this.color;
         }-*/;
 
         public final native void setColor(String color)
         /*-{
-			this.color = color;
+        	this.color = color;
         }-*/;
 
         public final native int getBlur()
         /*-{
-			return this.blur;
+        	return this.blur;
         }-*/;
 
         public final native void setBlur(int blur)
         /*-{
-			this.blur = blur;
+        	this.blur = blur;
         }-*/;
 
         public final native boolean getOnFill()
         /*-{
-			if (this.onfill != undefined) {
-				return this.onfill;
-			}
-			return true;
+        	if (this.onfill != undefined) {
+        		return this.onfill;
+        	}
+        	return true;
         }-*/;
 
         public final native void setOnFill(boolean onfill)
         /*-{
-			this.onfill = onfill;
+        	this.onfill = onfill;
         }-*/;
 
         public final native Point2DJSO getOffset()
         /*-{
-			return this.offset;
+        	return this.offset;
         }-*/;
 
         public final native void setOffset(Point2DJSO offset)
         /*-{
-			this.offset = offset;
+        	this.offset = offset;
         }-*/;
     }
 }

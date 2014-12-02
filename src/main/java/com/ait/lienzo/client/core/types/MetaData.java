@@ -85,7 +85,7 @@ public final class MetaData
         }
         return this;
     }
-    
+
     public final MetaData put(String name, MetaDataArray value)
     {
         if (null != value)
@@ -145,7 +145,7 @@ public final class MetaData
         if (m_jso.typeOf(name) == NativeInternalType.OBJECT)
         {
             NFastStringMapMixedJSO jso = m_jso.getObject(name).cast();
-        
+
             return new MetaData(jso);
         }
         return null;
@@ -156,7 +156,7 @@ public final class MetaData
         if (m_jso.typeOf(name) == NativeInternalType.ARRAY)
         {
             MetaDataArrayJSO jso = m_jso.getArray(name).cast();
-            
+
             return new MetaDataArray(jso);
         }
         return null;
@@ -196,5 +196,25 @@ public final class MetaData
     public String toString()
     {
         return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof MetaData)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((MetaData) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
     }
 }

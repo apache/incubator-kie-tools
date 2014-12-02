@@ -245,6 +245,41 @@ public class Point2DArray implements Iterable<Point2D>
     }
 
     @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof Point2DArray)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        Point2DArray that = ((Point2DArray) other);
+
+        final int leng = size();
+
+        if (that.size() != leng)
+        {
+            return false;
+        }
+        for (int i = 0; i < leng; i++)
+        {
+            if (false == get(i).equals(that.get(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
+    }
+
+    @Override
     public Iterator<Point2D> iterator()
     {
         return getPoints().iterator();

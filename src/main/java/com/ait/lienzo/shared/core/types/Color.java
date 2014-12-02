@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.shared.core.types;
 
+
 /**
  * Color implements the {@link IColor} interface (just like {@link ColorName})
  * so it can be used in all the Lienzo methods that required colors.
@@ -664,5 +665,27 @@ public class Color implements IColor
         if (h * 3 < 2) return m1 + (m2 - m1) * (2.0 / 3 - h) * 6;
 
         return m1;
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof Color)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        Color that = ((Color) other);
+
+        return (that.getR() == getR()) && (that.getG() == getG()) && (that.getB() == getB()) && (that.getA() == getA());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return getRGBA().hashCode();
     }
 }

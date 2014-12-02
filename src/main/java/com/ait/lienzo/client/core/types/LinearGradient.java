@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.shared.core.types.IColor;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * LinearGradient defines the fill style for a {@link Shape} as a Linear Gradient. 
@@ -56,7 +57,7 @@ public final class LinearGradient implements FillGradient
 
         return this;
     }
-    
+
     @Override
     public LinearGradient asLinearGradient()
     {
@@ -80,6 +81,37 @@ public final class LinearGradient implements FillGradient
         return m_jso;
     }
 
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof LinearGradient)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((LinearGradient) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
+    }
+
     public static final class LinearGradientJSO extends GradientJSO
     {
         protected LinearGradientJSO()
@@ -88,26 +120,26 @@ public final class LinearGradient implements FillGradient
 
         public static final native LinearGradientJSO make(double sx, double sy, double ex, double ey)
         /*-{
-			return {
-				start : {
-					x : sx,
-					y : sy,
-				},
-				end : {
-					x : ex,
-					y : ey,
-				},
-				colorStops : [],
-				type : "LinearGradient"
-			};
+        	return {
+        		start : {
+        			x : sx,
+        			y : sy,
+        		},
+        		end : {
+        			x : ex,
+        			y : ey,
+        		},
+        		colorStops : [],
+        		type : "LinearGradient"
+        	};
         }-*/;
 
         public final native void addColorStop(double stop, String color)
         /*-{
-			this.colorStops.push({
-				stop : stop,
-				color : color
-			});
+        	this.colorStops.push({
+        		stop : stop,
+        		color : color
+        	});
         }-*/;
     }
 }

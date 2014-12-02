@@ -30,6 +30,20 @@ import com.google.gwt.json.client.JSONObject;
 
 public class SVGPath extends Shape<SVGPath>
 {
+    private static final int                X        = 0;
+
+    private static final int                L        = 1;
+
+    private static final int                M        = 2;
+
+    private static final int                C        = 3;
+
+    private static final int                Q        = 4;
+
+    private static final int                A        = 5;
+
+    private static final int                Z        = 6;
+
     private static final String[]           COMMANDS = { "m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A" };
 
     private String                          m_path;
@@ -59,7 +73,7 @@ public class SVGPath extends Shape<SVGPath>
     }
 
     @Override
-    protected boolean prepare(Context2D context, Attributes attr, double alpha)
+    protected boolean prepare(final Context2D context, Attributes attr, double alpha)
     {
         final int size = m_list.size();
 
@@ -73,40 +87,40 @@ public class SVGPath extends Shape<SVGPath>
 
         for (int i = 0; i < size; i++)
         {
-            PathEntry entry = m_list.get(i);
+            final PathEntry entry = m_list.get(i);
 
-            double[] p = entry.points;
+            final NFastDoubleArrayJSO p = entry.points;
 
             switch (entry.command)
             {
-                case 'L':
-                    context.lineTo(p[0], p[1]);
-                break;
-                case 'M':
-                    context.moveTo(p[0], p[1]);
-                break;
-                case 'C':
-                    context.bezierCurveTo(p[0], p[1], p[2], p[3], p[4], p[5]);
-                break;
-                case 'Q':
-                    context.quadraticCurveTo(p[0], p[1], p[2], p[3]);
-                break;
-                case 'A':
-                    double cx = p[0];
+                case L:
+                    context.lineTo(p.get(0), p.get(1));
+                    break;
+                case M:
+                    context.moveTo(p.get(0), p.get(1));
+                    break;
+                case C:
+                    context.bezierCurveTo(p.get(0), p.get(1), p.get(2), p.get(3), p.get(4), p.get(5));
+                    break;
+                case Q:
+                    context.quadraticCurveTo(p.get(0), p.get(1), p.get(2), p.get(3));
+                    break;
+                case A:
+                    double cx = p.get(0);
 
-                    double cy = p[1];
+                    double cy = p.get(1);
 
-                    double rx = p[2];
+                    double rx = p.get(2);
 
-                    double ry = p[3];
+                    double ry = p.get(3);
 
-                    double th = p[4];
+                    double th = p.get(4);
 
-                    double dt = p[5];
+                    double dt = p.get(5);
 
-                    double ro = p[6];
+                    double ro = p.get(6);
 
-                    double fs = p[7];
+                    double fs = p.get(7);
 
                     double ra = ((rx > ry) ? rx : ry);
 
@@ -127,12 +141,12 @@ public class SVGPath extends Shape<SVGPath>
                     context.rotate(-ro);
 
                     context.translate(-cx, -cy);
-                break;
-                case 'z':
+                    break;
+                case Z:
                     context.closePath();
 
                     m_fill = true;
-                break;
+                    break;
             }
         }
         return true;
@@ -178,7 +192,7 @@ public class SVGPath extends Shape<SVGPath>
             }
             while (source.size() > 0)
             {
-                char cmd = '\0';
+                int cmd = X;
 
                 NFastDoubleArrayJSO points = NFastDoubleArrayJSO.make();
 
@@ -199,8 +213,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'L';
-                    break;
+                        cmd = L;
+                        break;
                     case 'L':
                         cpx = source.shift();
 
@@ -210,8 +224,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'L';
-                    break;
+                        cmd = L;
+                        break;
                     case 'm':
                         double dx = source.shift();
 
@@ -223,17 +237,17 @@ public class SVGPath extends Shape<SVGPath>
 
                         final int size = m_list.size();
 
-                        if (size > 2 && m_list.get(size - 1).command == 'z')
+                        if (size > 2 && m_list.get(size - 1).command == Z)
                         {
                             for (int idx = size - 2; idx >= 0; idx--)
                             {
                                 PathEntry pe = m_list.get(idx);
 
-                                if (pe.command == 'M')
+                                if (pe.command == M)
                                 {
-                                    cpx = pe.points[0] + dx;
+                                    cpx = pe.points.get(0) + dx;
 
-                                    cpy = pe.points[1] + dy;
+                                    cpy = pe.points.get(1) + dy;
 
                                     break;
                                 }
@@ -245,8 +259,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         chr = 'l';
 
-                        cmd = 'M';
-                    break;
+                        cmd = M;
+                        break;
                     case 'M':
                         cpx = source.shift();
 
@@ -258,8 +272,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         chr = 'L';
 
-                        cmd = 'M';
-                    break;
+                        cmd = M;
+                        break;
                     case 'h':
                         cpx += source.shift();
 
@@ -267,8 +281,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'L';
-                    break;
+                        cmd = L;
+                        break;
                     case 'H':
                         cpx = source.shift();
 
@@ -276,8 +290,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'L';
-                    break;
+                        cmd = L;
+                        break;
                     case 'v':
                         cpy += source.shift();
 
@@ -285,8 +299,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'L';
-                    break;
+                        cmd = L;
+                        break;
                     case 'V':
                         cpy = source.shift();
 
@@ -294,8 +308,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'L';
-                    break;
+                        cmd = L;
+                        break;
                     case 'C':
                         points.add(source.shift());
 
@@ -313,8 +327,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'C';
-                    break;
+                        cmd = C;
+                        break;
                     case 'c':
                         points.add(cpx + source.shift());
 
@@ -332,8 +346,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'C';
-                    break;
+                        cmd = C;
+                        break;
                     case 'S':
                         ctx = cpx;
 
@@ -341,11 +355,11 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = m_list.get(m_list.size() - 1);
 
-                        if (prev.command == 'C')
+                        if (prev.command == C)
                         {
-                            ctx = cpx + (cpx - prev.points[2]);
+                            ctx = cpx + (cpx - prev.points.get(2));
 
-                            cty = cpy + (cpy - prev.points[3]);
+                            cty = cpy + (cpy - prev.points.get(3));
                         }
                         points.add(ctx);
 
@@ -363,8 +377,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'C';
-                    break;
+                        cmd = C;
+                        break;
                     case 's':
                         ctx = cpx;
 
@@ -372,11 +386,11 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = m_list.get(m_list.size() - 1);
 
-                        if (prev.command == 'C')
+                        if (prev.command == C)
                         {
-                            ctx = cpx + (cpx - prev.points[2]);
+                            ctx = cpx + (cpx - prev.points.get(2));
 
-                            cty = cpy + (cpy - prev.points[3]);
+                            cty = cpy + (cpy - prev.points.get(3));
                         }
                         points.add(ctx);
 
@@ -394,8 +408,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'C';
-                    break;
+                        cmd = C;
+                        break;
                     case 'Q':
                         points.add(source.shift());
 
@@ -409,8 +423,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'Q';
-                    break;
+                        cmd = Q;
+                        break;
                     case 'q':
                         points.add(cpx + source.shift());
 
@@ -424,8 +438,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'Q';
-                    break;
+                        cmd = Q;
+                        break;
                     case 'T':
                         ctx = cpx;
 
@@ -433,11 +447,11 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = m_list.get(m_list.size() - 1);
 
-                        if (prev.command == 'Q')
+                        if (prev.command == Q)
                         {
-                            ctx = cpx + (cpx - prev.points[0]);
+                            ctx = cpx + (cpx - prev.points.get(0));
 
-                            cty = cpy + (cpy - prev.points[1]);
+                            cty = cpy + (cpy - prev.points.get(1));
                         }
                         cpx = source.shift();
 
@@ -451,8 +465,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'Q';
-                    break;
+                        cmd = Q;
+                        break;
                     case 't':
                         ctx = cpx;
 
@@ -460,11 +474,11 @@ public class SVGPath extends Shape<SVGPath>
 
                         prev = m_list.get(m_list.size() - 1);
 
-                        if (prev.command == 'Q')
+                        if (prev.command == Q)
                         {
-                            ctx = cpx + (cpx - prev.points[0]);
+                            ctx = cpx + (cpx - prev.points.get(0));
 
-                            cty = cpy + (cpy - prev.points[1]);
+                            cty = cpy + (cpy - prev.points.get(1));
                         }
                         cpx += source.shift();
 
@@ -478,8 +492,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points.add(cpy);
 
-                        cmd = 'Q';
-                    break;
+                        cmd = Q;
+                        break;
                     case 'A':
                         rx = source.shift();
 
@@ -501,8 +515,8 @@ public class SVGPath extends Shape<SVGPath>
 
                         points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
-                        cmd = 'A';
-                    break;
+                        cmd = A;
+                        break;
                     case 'a':
                         rx = source.shift();
 
@@ -524,14 +538,14 @@ public class SVGPath extends Shape<SVGPath>
 
                         points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
-                        cmd = 'A';
-                    break;
+                        cmd = A;
+                        break;
                 }
                 m_list.add(new PathEntry(cmd, points));
             }
             if ((chr == 'z') || (chr == 'Z'))
             {
-                m_list.add(new PathEntry('z', null));
+                m_list.add(new PathEntry(Z, null));
             }
         }
     }
@@ -664,21 +678,21 @@ public class SVGPath extends Shape<SVGPath>
 
     private static final class PathEntry
     {
-        public final char     command;
+        public final int                 command;
 
-        public final double[] points;
+        public final NFastDoubleArrayJSO points;
 
-        private PathEntry(char c, NFastDoubleArrayJSO list)
+        private PathEntry(int c, NFastDoubleArrayJSO list)
         {
             command = c;
 
             if (null != list)
             {
-                points = list.toArray();
+                points = list;
             }
             else
             {
-                points = new double[0];
+                points = NFastDoubleArrayJSO.make();
             }
         }
     }

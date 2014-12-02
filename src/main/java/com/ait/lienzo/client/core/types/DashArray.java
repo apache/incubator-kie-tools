@@ -106,4 +106,41 @@ public final class DashArray
     {
         return toJSONString();
     }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof DashArray)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        DashArray that = ((DashArray) other);
+
+        final int leng = size();
+
+        if (that.size() != leng)
+        {
+            return false;
+        }
+        NFastDoubleArrayJSO o_jso = that.getJSO();
+
+        for (int i = 0; i < leng; i++)
+        {
+            if (o_jso.get(i) != m_jso.get(i))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
+    }
 }

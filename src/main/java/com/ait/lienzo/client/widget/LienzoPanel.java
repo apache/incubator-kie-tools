@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.CursorMap;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.IColor;
@@ -160,6 +161,20 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         onResize();
     }
 
+    public LienzoPanel setTransform(Transform transform)
+    {
+        m_view.setTransform(transform);
+
+        return this;
+    }
+
+    public LienzoPanel draw()
+    {
+        m_view.draw();
+
+        return this;
+    }
+
     /**
      * Adds a layer to the {@link LienzoPanel}.
      * It should be noted that this action will cause a {@link Layer} draw operation, painting all children in the Layer.
@@ -170,6 +185,23 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
     public void add(Layer layer)
     {
         getScene().add(layer);
+    }
+
+    /**
+     * Adds a layer to the {@link LienzoPanel}.
+     * It should be noted that this action will cause a {@link Layer} draw operation, painting all children in the Layer.
+     * 
+     * @param layer
+     * @return
+     */
+    public void add(Layer layer, Layer... layers)
+    {
+        add(layer);
+
+        for (Layer node : layers)
+        {
+            add(node);
+        }
     }
 
     /**

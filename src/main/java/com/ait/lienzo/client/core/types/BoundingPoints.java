@@ -92,6 +92,26 @@ public final class BoundingPoints implements Iterable<Point2D>
     }
 
     @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof BoundingPoints)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((BoundingPoints) other).getArray().equals(getArray());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
+    }
+
+    @Override
     public final Iterator<Point2D> iterator()
     {
         return getPoints().iterator();

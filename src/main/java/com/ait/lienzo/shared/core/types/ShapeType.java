@@ -88,4 +88,26 @@ public class ShapeType
     {
         return m_value;
     }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof ShapeType)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        ShapeType that = ((ShapeType) other);
+
+        return that.getValue().equals(getValue());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return getValue().hashCode();
+    }
 }

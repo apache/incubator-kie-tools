@@ -185,7 +185,7 @@ public final class MetaDataArray
         }
         return null;
     }
-    
+
     public final boolean is(int index, NativeInternalType type)
     {
         return (type == getNativeTypeOf(index));
@@ -210,6 +210,26 @@ public final class MetaDataArray
     public String toString()
     {
         return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof MetaDataArray)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((MetaDataArray) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
     }
 
     public final static class MetaDataArrayJSO extends NBaseNativeArrayJSO<MetaDataArrayJSO>
@@ -286,12 +306,12 @@ public final class MetaDataArray
         /*-{
             this[index] = value;
         }-*/;
-        
+
         final native void set(int index, MetaDataArrayJSO value)
         /*-{
             this[index] = value;
         }-*/;
-        
+
         final native void set(int index, NFastStringMapMixedJSO value)
         /*-{
             this[index] = value;

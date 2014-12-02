@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.shared.core.types.IColor;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * RadialGradient defines the fill style for a {@link Shape} as a Radial Gradient. 
@@ -92,6 +93,37 @@ public final class RadialGradient implements FillGradient
     public final RadialGradientJSO getJSO()
     {
         return m_jso;
+    }
+
+    public final String toJSONString()
+    {
+        return new JSONObject(m_jso).toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
+    }
+
+    @Override
+    public boolean equals(Object other)
+    {
+        if ((other == null) || (false == (other instanceof RadialGradient)))
+        {
+            return false;
+        }
+        if (this == other)
+        {
+            return true;
+        }
+        return ((RadialGradient) other).toJSONString().equals(toJSONString());
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return toJSONString().hashCode();
     }
 
     public static final class RadialGradientJSO extends GradientJSO

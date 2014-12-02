@@ -49,7 +49,7 @@ public final class Curves
         return getBoundingBox(curve.getControlPoints());
     }
 
-    public static final BoundingBox getBoundingBox(final Point2DArray points)
+    private static final BoundingBox getBoundingBox(final Point2DArray points)
     {
         if (null == points)
         {
