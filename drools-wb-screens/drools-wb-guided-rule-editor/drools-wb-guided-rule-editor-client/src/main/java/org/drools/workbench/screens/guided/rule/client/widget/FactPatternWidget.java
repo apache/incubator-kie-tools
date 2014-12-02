@@ -761,6 +761,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         setModified( true );
         final String selected = event.getValue().getValue();
         final String selectedText = event.getValue().getDisplayText();
+        final String originalOperator = constraint.getOperator();
 
         //Prevent recursion once operator change has been applied
         if ( selectedText.equals( constraint.getOperator() ) ) {
@@ -785,7 +786,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         //If new operator requires a comma separated list and old did not, or vice-versa
         //we need to redraw the ConstraintValueEditor for the constraint
-        if ( OperatorsOracle.operatorRequiresList( selected ) != OperatorsOracle.operatorRequiresList( constraint.getOperator() ) ) {
+        if ( OperatorsOracle.operatorRequiresList( selected ) != OperatorsOracle.operatorRequiresList( originalOperator ) ) {
             if ( OperatorsOracle.operatorRequiresList( selected ) == false ) {
                 final String[] oldValueList = constraint.getValue().split( "," );
                 if ( oldValueList.length > 0 ) {
