@@ -34,10 +34,9 @@
 
     <version.org.jboss.errai>2.4.4.Final</version.org.jboss.errai>
 
-    <version.commons-httpclient>3.1</version.commons-httpclient>
     <version.commons-io>2.1</version.commons-io>
     <version.commons-fileupload>1.2.2</version.commons-fileupload>
-    <version.commons-codec>1.4</version.commons-codec>
+    <version.commons-codec>1.6</version.commons-codec>
 
     <version.com.thoughtworks.xstream>1.4.3</version.com.thoughtworks.xstream>
     <version.org.yaml.snakeyaml>1.8</version.org.yaml.snakeyaml>

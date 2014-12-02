@@ -16,13 +16,29 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import static org.eclipse.jgit.api.ListBranchCommand.ListMode.*;
-import static org.eclipse.jgit.lib.Constants.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
-import static org.uberfire.java.nio.file.StandardOpenOption.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
+import static org.eclipse.jgit.api.ListBranchCommand.ListMode.ALL;
+import static org.eclipse.jgit.lib.Constants.DEFAULT_REMOTE_NAME;
+import static org.eclipse.jgit.lib.Constants.DOT_GIT_EXT;
+import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.buildDotFile;
+import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.dot;
+import static org.uberfire.java.nio.file.StandardOpenOption.READ;
+import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.checkPath;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.cloneRepository;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.fixPath;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.getBranch;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.hasBranch;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.listPathContent;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.newRepository;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.pushRepository;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.resolveInputStream;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.resolvePath;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.syncRepository;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.DIRECTORY;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.NOT_FOUND;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,8 +70,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
@@ -87,6 +101,7 @@ import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.commons.config.ConfigProperties.ConfigProperty;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.message.MessageType;
+import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.base.BasicFileAttributesImpl;
@@ -1767,12 +1782,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
 
         final String host = extractHost( uri );
 
-        final String path;
-        try {
-            path = URIUtil.decode( uri.toString() ).substring( getSchemeSize( uri ) + host.length() );
-        } catch ( URIException e ) {
-            return null;
-        }
+        final String path = EncodingUtil.decode( uri.toString() ).substring( getSchemeSize( uri ) + host.length() );
 
         if ( path.startsWith( "/:" ) ) {
             return path.substring( 2 );

@@ -16,17 +16,16 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
-import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
-
-import static org.fest.assertions.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 public class JGitPathTest {
 
@@ -104,12 +103,12 @@ public class JGitPathTest {
     }
 
     @Test
-    public void testSimpleBranchedGitRoot2Spaced() throws URIException {
+    public void testSimpleBranchedGitRoot2Spaced() throws IllegalStateException {
         when(fs.getSeparator()).thenReturn("/");
 
 
 
-        final Path path = JGitPathImpl.create(fs, URIUtil.decode("/path/to/some/some%20place.txt"), "master@my-host", false);
+        final Path path = JGitPathImpl.create(fs, EncodingUtil.decode("/path/to/some/some%20place.txt"), "master@my-host", false);
 
         assertThat(path).isNotNull();
         assertThat(path.isAbsolute()).isTrue();
