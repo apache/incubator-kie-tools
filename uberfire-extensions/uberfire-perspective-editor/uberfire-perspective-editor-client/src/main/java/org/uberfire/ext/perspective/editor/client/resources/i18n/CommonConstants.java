@@ -27,6 +27,10 @@ public interface CommonConstants
 
     String InvalidTagName();
 
+    String InvalidParameterName();
+
+    String DuplicateParameterName();
+
     String LoadPerspective();
 
     String EditHtml();

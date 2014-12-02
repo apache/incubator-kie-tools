@@ -18,7 +18,10 @@ package org.uberfire.ext.perspective.editor.client.panels.components.popup;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.ControlGroup;
+import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -50,6 +53,12 @@ public class EditScreen
 
     @UiField
     TextBox key;
+
+    @UiField
+    ControlGroup paramKeyControlGroup;
+
+    @UiField
+    HelpInline paramKeyInline;
 
     @UiField
     TextBox value;
@@ -103,14 +112,39 @@ public class EditScreen
 
     @UiHandler("add")
     void add( final ClickEvent event ) {
+        final PropertyEditorCategory property = addProperty();
+        if ( property == null ) {
+            return;
+        }
         propertyEditor.setLastOpenAccordionGroupTitle( "Screen Editors" );
-        propertyEditor.handle( generateEvent( addProperty() ) );
+        propertyEditor.handle( generateEvent( property ) );
         key.setText( "" );
         value.setText( "" );
     }
 
     private PropertyEditorCategory addProperty() {
-        PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
+        paramKeyInline.setText( "" );
+        paramKeyControlGroup.setType( ControlGroupType.NONE );
+
+        //Check the Key is valid
+        final NameValidator validator = NameValidator.parameterNameValidator();
+        if ( !validator.isValid( key.getText() ) ) {
+            paramKeyControlGroup.setType( ControlGroupType.ERROR );
+            paramKeyInline.setText( validator.getValidationError() );
+            return null;
+        }
+
+        //Check the Key is unique
+        final PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
+        final ScreenEditor screenEditor = perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
+        for ( ScreenParameter sp : screenEditor.getParameters() ) {
+            if ( key.getText().equals( sp.getKey() ) ) {
+                paramKeyControlGroup.setType( ControlGroupType.ERROR );
+                paramKeyInline.setText( CommonConstants.INSTANCE.DuplicateParameterName() );
+                return null;
+            }
+        }
+
         perspectiveEditor.addParameter( parent.hashCode() + "", new ScreenParameter( key.getText(), value.getText() ) );
         return defaultScreenProperties();
     }

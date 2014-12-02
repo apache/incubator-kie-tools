@@ -34,10 +34,13 @@
   <g:HTMLPanel>
     <b:Accordion>
       <b:AccordionGroup heading="{i18n.AddNewParameter}">
-        <b:Controls>
-          <b:TextBox ui:field="key" placeholder="{i18n.ParamKey}"/>
-          <b:TextBox ui:field="value" placeholder="{i18n.ParamValue}"/>
-        </b:Controls>
+        <b:ControlGroup ui:field="paramKeyControlGroup">
+          <b:Controls>
+            <b:TextBox ui:field="key" placeholder="{i18n.ParamKey}"/>
+            <b:TextBox ui:field="value" placeholder="{i18n.ParamValue}"/>
+            <b:HelpInline ui:field="paramKeyInline"/>
+          </b:Controls>
+        </b:ControlGroup>
         <b:Button icon="SAVE" type="PRIMARY" ui:field="add">
           <ui:text from="{i18n.Add}"/>
         </b:Button>

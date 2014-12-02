@@ -8,16 +8,20 @@ public class NameValidator {
 
     private String error;
 
-    private NameValidator( String error ){
+    private NameValidator( String error ) {
         this.error = error;
     }
 
-    public static NameValidator perspectiveNameValidator(){
-        return new NameValidator( CommonConstants.INSTANCE.InvalidPerspectiveName());
+    public static NameValidator perspectiveNameValidator() {
+        return new NameValidator( CommonConstants.INSTANCE.InvalidPerspectiveName() );
     }
 
-    public static NameValidator tagNameValidator(){
-        return new NameValidator( CommonConstants.INSTANCE.InvalidTagName());
+    public static NameValidator tagNameValidator() {
+        return new NameValidator( CommonConstants.INSTANCE.InvalidTagName() );
+    }
+
+    public static NameValidator parameterNameValidator() {
+        return new NameValidator( CommonConstants.INSTANCE.InvalidParameterName() );
     }
 
     public String getValidationError() {
