@@ -24,7 +24,7 @@ import javax.inject.Named;
 
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.AdaptiveWorkbenchPanelPresenter;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
@@ -39,7 +39,7 @@ public class StandaloneEditorPerspective extends AbstractWorkbenchPerspectiveAct
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( AdaptiveWorkbenchPanelPresenter.class.getName() );
         p.setName( "Standalone Editor Perspective" );
         return p;
     }
