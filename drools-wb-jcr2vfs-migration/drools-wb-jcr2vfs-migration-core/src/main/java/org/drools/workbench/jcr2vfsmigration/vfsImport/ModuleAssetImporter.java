@@ -30,6 +30,7 @@ import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedEditorImporte
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedScoreCardImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.PlainTextAssetWithPackagePropertyImporter;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.TestScenarioImporter;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
@@ -79,6 +80,9 @@ public class ModuleAssetImporter {
 
     @Inject
     GuidedDecisionTableImporter guidedDecisionTableImporter;
+
+    @Inject
+    TestScenarioImporter testScenarioImporter;
 
     @Inject
     AttachmentAssetImporter attachmentAssetImporter;
@@ -208,6 +212,8 @@ public class ModuleAssetImporter {
             case BUSINESS_RULE: guidedEditorImporter.importAsset( module, ( BusinessRuleAsset ) xmlAsset ); break;
 
             case DECISION_TABLE_GUIDED: guidedDecisionTableImporter.importAsset( module, ( GuidedDecisionTableAsset ) xmlAsset ); break;
+
+            case TEST_SCENARIO: testScenarioImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
 
             default: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset );
         }

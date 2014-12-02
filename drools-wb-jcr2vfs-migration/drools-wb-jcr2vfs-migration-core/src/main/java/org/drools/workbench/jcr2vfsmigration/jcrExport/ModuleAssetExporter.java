@@ -288,7 +288,8 @@ public class ModuleAssetExporter {
             return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
 
         } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
-//            return testScenarioMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+            // No special treatment or attributes needed; use PlainTextAsset
+            return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
 
         } else if ("package".equals(jcrAssetItem.getFormat())) {
             //Ignore
