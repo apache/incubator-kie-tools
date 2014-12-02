@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -38,6 +39,10 @@ import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
@@ -248,8 +253,13 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void setPOM( POM pom ) {
-        pomEditorPanel.setPOM( pom, false );
+    public boolean confirmClose() {
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+    }
+
+    @Override
+    public void setPOM(POM pom) {
+        pomEditorPanel.setPOM(pom, false);
     }
 
     @Override

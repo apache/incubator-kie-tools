@@ -65,6 +65,7 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -102,6 +103,7 @@ public class ProjectScreenPresenter
 
     private Menus menus;
     private ProjectScreenModel model;
+    private Integer originalHash;
     private PlaceRequest placeRequest;
     private boolean building = false;
 
@@ -170,6 +172,14 @@ public class ProjectScreenPresenter
         this.placeRequest = placeRequest;
     }
 
+    @OnMayClose
+    public boolean onMayClose() {
+        if ( isDirty() ) {
+            return view.confirmClose();
+        }
+        return true;
+    }
+
     public void selectedPathChanged( @Observes final ProjectContextChangeEvent event ) {
         showCurrentProjectInfoIfAny( event.getProject() );
         this.repository = event.getRepository();
@@ -222,6 +232,7 @@ public class ProjectScreenPresenter
                         view.setImportsMetadata( model.getProjectImportsMetaData() );
 
                         view.hideBusyIndicator();
+                        originalHash = model.hashCode();
 
                         updateEditorTitle();
                     }
@@ -433,31 +444,115 @@ public class ProjectScreenPresenter
         };
     }
 
-    private Command getBuildCommand() {
+    private Command getSafeExecutedCommand( final Command command ) {
         return new Command() {
             @Override
             public void execute() {
                 if ( building ) {
                     view.showABuildIsAlreadyRunning();
-                } else {
-                    YesNoCancelPopup yesNoCancelPopup = createYesNoCancelPopup();
+                } else if ( isDirty() ) {
+                    YesNoCancelPopup yesNoCancelPopup = createYesNoCancelPopup( getSaveAndExecuteCommand( command ), command );
                     yesNoCancelPopup.setCloseVisible( false );
                     yesNoCancelPopup.show();
+                } else {
+                    command.execute();
                 }
             }
         };
     }
 
-    private YesNoCancelPopup createYesNoCancelPopup() {
+    private Command getBuildCommand() {
+        return new Command() {
+            @Override
+            public void execute() {
+                view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
+                if ( isRepositoryManaged( repository ) ) {
+                    buildOnly();
+                } else {
+                    build();
+                }
+            }
+        };
+    }
+
+    private Command getBuildAndInstallCommand() {
+        return new Command() {
+            @Override public void execute() {
+                building = true;
+                assetManagementServices.call(new RemoteCallback<Long>() {
+                                                 @Override
+                                                 public void callback(Long taskId) {
+                                                     notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                             NotificationEvent.NotificationType.SUCCESS));
+                                                     view.hideBusyIndicator();
+                                                     building = false;
+                                                 }
+                                             }, new ErrorCallback<Message>() {
+                                                 @Override
+                                                 public boolean error(Message message, Throwable throwable) {
+                                                     building = false;
+                                                     ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+                                                     return true;
+                                                 }
+                                             }).buildProject(repository.getAlias(), branch, project.getProjectName(), null, null, null, false);
+
+
+            }
+        };
+    }
+
+    private Command getBuildAndDeployCommand(final String username, final String password, final String serverURL) {
+        return new Command() {
+            @Override public void execute() {
+                building = true;
+                assetManagementServices.call(new RemoteCallback<Long>() {
+                                                 @Override
+                                                 public void callback(Long taskId) {
+                                                     notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
+                                                             NotificationEvent.NotificationType.SUCCESS));
+                                                     view.hideBusyIndicator();
+                                                     building = false;
+                                                 }
+                                             }, new ErrorCallback<Message>() {
+                                                 @Override
+                                                 public boolean error(Message message, Throwable throwable) {
+                                                     building = false;
+                                                     ErrorPopup.showMessage("Unexpected error encountered : " + throwable.getMessage());
+                                                     return true;
+                                                 }
+                                             }).buildProject(repository.getAlias(), branch, project.getProjectName(), username, password, serverURL, true);
+
+            }
+        };
+    }
+
+    private Command getSaveAndExecuteCommand( final Command command ) {
+        return new Command() {
+            @Override
+            public void execute() {
+                saveProject( new RemoteCallback<Void>() {
+                    @Override
+                    public void callback( Void v ) {
+                        notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
+                                NotificationEvent.NotificationType.SUCCESS ) );
+                        originalHash = model.hashCode();
+                        command.execute();
+                    }
+                } );
+            }
+        };
+    }
+
+    private YesNoCancelPopup createYesNoCancelPopup(Command yesCommand, Command noCommand) {
         return YesNoCancelPopup.newYesNoCancelPopup(
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.Information(),
                 ProjectEditorResources.CONSTANTS.SaveBeforeBuildAndDeploy(),
-                getYesCommand(),
+                yesCommand,
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
                 ButtonType.PRIMARY,
                 IconType.SAVE,
 
-                getNoCommand(),
+                noCommand,
                 org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
                 ButtonType.DANGER,
                 IconType.WARNING_SIGN,
@@ -477,41 +572,6 @@ public class ProjectScreenPresenter
         };
     }
 
-    private Command getNoCommand() {
-        return new Command() {
-            @Override
-            public void execute() {
-                view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                if ( isRepositoryManaged( repository ) ) {
-                    buildOnly();
-                } else {
-                    build();
-                }
-            }
-        };
-    }
-
-    private Command getYesCommand() {
-        return new Command() {
-            @Override
-            public void execute() {
-                saveProject( new RemoteCallback<Void>() {
-                    @Override
-                    public void callback( Void v ) {
-                        view.switchBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                        notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                                                       NotificationEvent.NotificationType.SUCCESS ) );
-                        if ( isRepositoryManaged( repository ) ) {
-                            buildOnly();
-                        } else {
-                            build();
-                        }
-                    }
-                } );
-            }
-        };
-    }
-
     private void build() {
         building = true;
         buildServiceCaller.call( getBuildSuccessCallback(),
@@ -525,53 +585,15 @@ public class ProjectScreenPresenter
     }
 
     public void triggerBuild() {
-        getBuildCommand().execute();
+        getSafeExecutedCommand( getBuildCommand() ).execute();
     }
 
     public void triggerBuildAndInstall() {
-        building = true;
-
-        assetManagementServices.call( new RemoteCallback<Long>() {
-                                          @Override
-                                          public void callback( Long taskId ) {
-                                              notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
-                                                                                             NotificationEvent.NotificationType.SUCCESS ) );
-                                              view.hideBusyIndicator();
-                                              building = false;
-                                          }
-                                      }, new ErrorCallback<Message>() {
-                                          @Override
-                                          public boolean error( Message message,
-                                                                Throwable throwable ) {
-                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
-                                              return true;
-                                          }
-                                      }
-                                    ).buildProject( repository.getAlias(), branch, project.getProjectName(), null, null, null, false );
+        getSafeExecutedCommand( getBuildAndInstallCommand() ).execute();
     }
 
-    public void triggerBuildAndDeploy( String username,
-                                       String password,
-                                       String serverURL ) {
-        building = true;
-
-        assetManagementServices.call( new RemoteCallback<Long>() {
-                                          @Override
-                                          public void callback( Long taskId ) {
-                                              notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildProcessStarted(),
-                                                                                             NotificationEvent.NotificationType.SUCCESS ) );
-                                              view.hideBusyIndicator();
-                                              building = false;
-                                          }
-                                      }, new ErrorCallback<Message>() {
-                                          @Override
-                                          public boolean error( Message message,
-                                                                Throwable throwable ) {
-                                              ErrorPopup.showMessage( "Unexpected error encountered : " + throwable.getMessage() );
-                                              return true;
-                                          }
-                                      }
-                                    ).buildProject( repository.getAlias(), branch, project.getProjectName(), username, password, serverURL, true );
+    public void triggerBuildAndDeploy(String username, String password, String serverURL) {
+        getSafeExecutedCommand( getBuildAndDeployCommand( username, password, serverURL ) ).execute();
     }
 
     private Command getSaveCommand() {
@@ -584,6 +606,7 @@ public class ProjectScreenPresenter
                         view.hideBusyIndicator();
                         notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
                                                                        NotificationEvent.NotificationType.SUCCESS ) );
+                        originalHash = model.hashCode();
                     }
                 } );
             }
@@ -709,6 +732,15 @@ public class ProjectScreenPresenter
     public void onDeploymentDescriptorSelected() {
         placeManager.goTo( PathFactory.newPath( "kie-deployment-descriptor.xml",
                                                 project.getRootPath().toURI() + "/src/main/resources/META-INF/kie-deployment-descriptor.xml" ) );
+    }
+
+    private boolean isDirty( ) {
+        Integer currentHash = model != null ? model.hashCode() : null;
+        if ( originalHash == null ) {
+            return currentHash != null;
+        } else {
+            return !originalHash.equals( currentHash );
+        }
     }
 
     private class BuildFailureErrorCallback

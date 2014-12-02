@@ -70,4 +70,32 @@ public class ListenerModel {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        ListenerModel that = ( ListenerModel ) o;
+
+        if ( kind != that.kind ) {
+            return false;
+        }
+        if ( type != null ? !type.equals( that.type ) : that.type != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = kind != null ? kind.hashCode() : 0;
+        result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        return result;
+    }
 }

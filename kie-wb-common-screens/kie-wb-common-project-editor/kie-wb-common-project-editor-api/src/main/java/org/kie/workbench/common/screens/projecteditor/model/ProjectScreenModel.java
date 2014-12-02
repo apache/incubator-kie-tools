@@ -110,4 +110,68 @@ public class ProjectScreenModel {
     public void setPathToImports(Path pathToImports) {
         this.pathToImports = pathToImports;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        ProjectScreenModel that = ( ProjectScreenModel ) o;
+
+        if ( KModule != null ? !KModule.equals( that.KModule ) : that.KModule != null ) {
+            return false;
+        }
+        if ( KModuleMetaData != null ? !KModuleMetaData.equals( that.KModuleMetaData ) : that.KModuleMetaData != null ) {
+            return false;
+        }
+        if ( POMMetaData != null ? !POMMetaData.equals( that.POMMetaData ) : that.POMMetaData != null ) {
+            return false;
+        }
+        if ( pathToImports != null ? !pathToImports.equals( that.pathToImports ) : that.pathToImports != null ) {
+            return false;
+        }
+        if ( pathToKModule != null ? !pathToKModule.equals( that.pathToKModule ) : that.pathToKModule != null ) {
+            return false;
+        }
+        if ( pathToPOM != null ? !pathToPOM.equals( that.pathToPOM ) : that.pathToPOM != null ) {
+            return false;
+        }
+        if ( pom != null ? !pom.equals( that.pom ) : that.pom != null ) {
+            return false;
+        }
+        if ( projectCategories != null ? !projectCategories.equals( that.projectCategories ) : that.projectCategories != null ) {
+            return false;
+        }
+        if ( projectCategoriesMetaData != null ? !projectCategoriesMetaData.equals( that.projectCategoriesMetaData ) : that.projectCategoriesMetaData != null ) {
+            return false;
+        }
+        if ( projectImports != null ? !projectImports.equals( that.projectImports ) : that.projectImports != null ) {
+            return false;
+        }
+        if ( projectImportsMetaData != null ? !projectImportsMetaData.equals( that.projectImportsMetaData ) : that.projectImportsMetaData != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pom != null ? pom.hashCode() : 0;
+        result = 31 * result + ( KModule != null ? KModule.hashCode() : 0 );
+        result = 31 * result + ( POMMetaData != null ? POMMetaData.hashCode() : 0 );
+        result = 31 * result + ( KModuleMetaData != null ? KModuleMetaData.hashCode() : 0 );
+        result = 31 * result + ( projectImports != null ? projectImports.hashCode() : 0 );
+        result = 31 * result + ( projectImportsMetaData != null ? projectImportsMetaData.hashCode() : 0 );
+        result = 31 * result + ( projectCategories != null ? projectCategories.hashCode() : 0 );
+        result = 31 * result + ( projectCategoriesMetaData != null ? projectCategoriesMetaData.hashCode() : 0 );
+        result = 31 * result + ( pathToPOM != null ? pathToPOM.hashCode() : 0 );
+        result = 31 * result + ( pathToKModule != null ? pathToKModule.hashCode() : 0 );
+        result = 31 * result + ( pathToImports != null ? pathToImports.hashCode() : 0 );
+        return result;
+    }
 }

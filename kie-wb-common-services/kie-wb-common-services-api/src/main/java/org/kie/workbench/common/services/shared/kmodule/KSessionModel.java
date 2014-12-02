@@ -96,4 +96,56 @@ public class KSessionModel
     public void setListeners(List<ListenerModel> listeners) {
         this.listeners = listeners;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        KSessionModel that = ( KSessionModel ) o;
+
+        if ( theDefault != that.theDefault ) {
+            return false;
+        }
+        if ( clockType != that.clockType ) {
+            return false;
+        }
+        if ( listeners != null ? !listeners.equals( that.listeners ) : that.listeners != null ) {
+            return false;
+        }
+        if ( logger != null ? !logger.equals( that.logger ) : that.logger != null ) {
+            return false;
+        }
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+            return false;
+        }
+        if ( scope != null ? !scope.equals( that.scope ) : that.scope != null ) {
+            return false;
+        }
+        if ( type != null ? !type.equals( that.type ) : that.type != null ) {
+            return false;
+        }
+        if ( workItemHandelerModels != null ? !workItemHandelerModels.equals( that.workItemHandelerModels ) : that.workItemHandelerModels != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        result = 31 * result + ( clockType != null ? clockType.hashCode() : 0 );
+        result = 31 * result + ( theDefault ? 1 : 0 );
+        result = 31 * result + ( scope != null ? scope.hashCode() : 0 );
+        result = 31 * result + ( workItemHandelerModels != null ? workItemHandelerModels.hashCode() : 0 );
+        result = 31 * result + ( listeners != null ? listeners.hashCode() : 0 );
+        result = 31 * result + ( logger != null ? logger.hashCode() : 0 );
+        return result;
+    }
 }

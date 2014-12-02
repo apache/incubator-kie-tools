@@ -42,4 +42,40 @@ public class FileLogger
     public void setInterval(int interval) {
         this.interval = interval;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        FileLogger that = ( FileLogger ) o;
+
+        if ( interval != that.interval ) {
+            return false;
+        }
+        if ( threaded != that.threaded ) {
+            return false;
+        }
+        if ( file != null ? !file.equals( that.file ) : that.file != null ) {
+            return false;
+        }
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + ( file != null ? file.hashCode() : 0 );
+        result = 31 * result + ( threaded ? 1 : 0 );
+        result = 31 * result + interval;
+        return result;
+    }
 }

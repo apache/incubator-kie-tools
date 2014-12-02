@@ -76,4 +76,40 @@ public class KModuleModel
     public void setGroupArtifactVersion(POM groupArtifactVersion) {
         this.groupArtifactVersion = groupArtifactVersion;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        KModuleModel that = ( KModuleModel ) o;
+
+        if ( groupArtifactVersion != null ? !groupArtifactVersion.equals( that.groupArtifactVersion ) : that.groupArtifactVersion != null ) {
+            return false;
+        }
+        if ( kBases != null ? !kBases.equals( that.kBases ) : that.kBases != null ) {
+            return false;
+        }
+        if ( kBasesPath != null ? !kBasesPath.equals( that.kBasesPath ) : that.kBasesPath != null ) {
+            return false;
+        }
+        if ( kModulePath != null ? !kModulePath.equals( that.kModulePath ) : that.kModulePath != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = kBases != null ? kBases.hashCode() : 0;
+        result = 31 * result + ( kBasesPath != null ? kBasesPath.hashCode() : 0 );
+        result = 31 * result + ( kModulePath != null ? kModulePath.hashCode() : 0 );
+        result = 31 * result + ( groupArtifactVersion != null ? groupArtifactVersion.hashCode() : 0 );
+        return result;
+    }
 }
