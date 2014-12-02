@@ -24,6 +24,7 @@ public class PropertyEditorFieldInfo {
     private int priority = Integer.MAX_VALUE;
     private List<PropertyFieldValidator> validators = new ArrayList<PropertyFieldValidator>();
     private String key;
+    private boolean isRemovalSupported = false;
 
     public PropertyEditorFieldInfo() {
     }
@@ -100,6 +101,11 @@ public class PropertyEditorFieldInfo {
         return this;
     }
 
+    public PropertyEditorFieldInfo withRemovalSupported( boolean isRemovalSupported ) {
+        this.isRemovalSupported = isRemovalSupported;
+        return this;
+    }
+
     public List<String> getComboValues() {
         return comboValues;
     }
@@ -114,6 +120,10 @@ public class PropertyEditorFieldInfo {
 
     public String getCurrentStringValue() {
         return currentStringValue;
+    }
+
+    public boolean isRemovalSupported() {
+        return isRemovalSupported;
     }
 
     public void setCurrentStringValue( String currentStringValue ) {

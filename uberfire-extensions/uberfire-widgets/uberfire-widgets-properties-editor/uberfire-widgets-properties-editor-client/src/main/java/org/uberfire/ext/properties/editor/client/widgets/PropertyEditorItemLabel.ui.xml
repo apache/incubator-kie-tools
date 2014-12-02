@@ -2,5 +2,5 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui" >
 
 
-  <b:Paragraph ui:field='label'  addStyleNames="control-label span6"/>
+  <b:Paragraph ui:field='label'  addStyleNames="control-label span4"/>
 </ui:UiBinder>

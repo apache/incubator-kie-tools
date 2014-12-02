@@ -15,6 +15,9 @@
 */
 package org.uberfire.ext.perspective.editor.client.panels.components.popup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -70,18 +73,19 @@ public class EditScreen
         propertyEditor.handle( generateEvent( defaultScreenProperties() ) );
 
         add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     } )
+                new Command() {
+                    @Override
+                    public void execute() {
+                        okButton();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        cancelButton();
+                    }
+                }
+        )
            );
     }
 
@@ -113,42 +117,68 @@ public class EditScreen
 
     private PropertyEditorCategory defaultScreenProperties() {
         PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
-        ScreenEditor screenEditor = perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
+        final ScreenEditor screenEditor = perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
 
-        PropertyEditorCategory category = new PropertyEditorCategory( "Screen Editors" );
+        //Override getFields() so we can remove Parameter from ScreenEditor when collection is modified by PropertiesWidget
+        PropertyEditorCategory category = new PropertyEditorCategory( "Screen Editors" ) {
+
+            @Override
+            public List<PropertyEditorFieldInfo> getFields() {
+                return new ArrayList<PropertyEditorFieldInfo>( super.getFields() ) {
+
+                    @Override
+                    public boolean remove( Object o ) {
+                        if ( o instanceof PropertyEditorFieldInfo ) {
+                            final PropertyEditorFieldInfo info = (PropertyEditorFieldInfo) o;
+                            screenEditor.removeParameter( info.getLabel() );
+                        }
+                        return super.remove( o );
+                    }
+                };
+            }
+        };
+
         boolean alreadyHasScreenNameParameter = false;
-        for ( ScreenParameter key : screenEditor.getParameters() ) {
+        for ( final ScreenParameter key : screenEditor.getParameters() ) {
             if ( key.getKey().equals( ScreenEditor.PLACE_NAME_KEY ) ) {
                 alreadyHasScreenNameParameter = true;
             }
-            category.withField(
-                    new PropertyEditorFieldInfo( key.getKey(), key.getValue(), PropertyEditorType.TEXT )
-                            .withKey( parent.hashCode() + "" ).withValidators( new PropertyFieldValidator() {
-                        @Override
-                        public boolean validate( Object value ) {
-                            return true;
-                        }
+            category.withField( new PropertyEditorFieldInfo( key.getKey(),
+                                                             key.getValue(),
+                                                             PropertyEditorType.TEXT )
+                                        .withKey( parent.hashCode() + "" )
+                                        .withRemovalSupported( !key.getKey().equals( ScreenEditor.PLACE_NAME_KEY ) )
+                                        .withValidators( new PropertyFieldValidator() {
+                                            @Override
+                                            public boolean validate( Object value ) {
+                                                return true;
+                                            }
 
-                        @Override
-                        public String getValidatorErrorMessage() {
-                            return "";
-                        }
-                    } ) );
+                                            @Override
+                                            public String getValidatorErrorMessage() {
+                                                return "";
+                                            }
+                                        } ) );
         }
-        if ( !alreadyHasScreenNameParameter ) {
-            category.withField(
-                    new PropertyEditorFieldInfo( ScreenEditor.PLACE_NAME_KEY, "", PropertyEditorType.TEXT )
-                            .withKey( parent.hashCode() + "" ).withValidators( new PropertyFieldValidator() {
-                        @Override
-                        public boolean validate( Object value ) {
-                            return true;
-                        }
 
-                        @Override
-                        public String getValidatorErrorMessage() {
-                            return "";
-                        }
-                    } ) );
+        if ( !alreadyHasScreenNameParameter ) {
+            category.withField( new PropertyEditorFieldInfo( ScreenEditor.PLACE_NAME_KEY,
+                                                             "",
+                                                             PropertyEditorType.TEXT )
+                                        .withKey( parent.hashCode() + "" )
+                                        .withValidators( new PropertyFieldValidator() {
+                                            @Override
+                                            public boolean validate( Object value ) {
+                                                return true;
+                                            }
+
+                                            @Override
+                                            public String getValidatorErrorMessage() {
+                                                return "";
+                                            }
+                                        } ) );
+            screenEditor.addParameters( new ScreenParameter( ScreenEditor.PLACE_NAME_KEY,
+                                                             "" ) );
         }
 
         return category;

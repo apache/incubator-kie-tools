@@ -2,5 +2,5 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
 
 
-  <g:FlowPanel ui:field='item' addStyleNames="span6 controls"/>
+  <g:FlowPanel ui:field='item' addStyleNames="span12 controls"/>
 </ui:UiBinder>

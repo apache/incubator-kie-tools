@@ -2,7 +2,6 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
   <ui:style>
     .margin {
-
       margin-bottom:0px !important;
     }
   </ui:style>

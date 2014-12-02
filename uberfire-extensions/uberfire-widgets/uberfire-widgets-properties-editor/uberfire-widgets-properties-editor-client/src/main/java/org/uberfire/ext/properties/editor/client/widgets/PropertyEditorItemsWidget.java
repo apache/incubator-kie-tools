@@ -16,7 +16,7 @@ public class PropertyEditorItemsWidget extends Composite {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void add( Composite item ) {
+    public void add( Widget item ) {
         items.add( item );
     }
 

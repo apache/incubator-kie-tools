@@ -71,7 +71,8 @@ public class PerspectiveEditorUI implements EditorWidget {
         PropertyEditorFieldInfo property = event.getProperty();
         if ( property.getEventId().equalsIgnoreCase( PROPERTY_EDITOR_KEY ) ) {
             ScreenEditor screenEditor = screenProperties.get( property.getKey() );
-            screenEditor.addParameters( new ScreenParameter( property.getLabel(), property.getCurrentStringValue() ) );
+            screenEditor.setParameterValue( property.getLabel(),
+                                            property.getCurrentStringValue() );
             screenProperties.put( property.getKey(), screenEditor );
         }
     }

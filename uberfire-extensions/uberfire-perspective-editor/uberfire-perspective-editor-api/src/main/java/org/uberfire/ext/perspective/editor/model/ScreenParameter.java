@@ -5,12 +5,14 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class ScreenParameter {
 
-    public String key;
-    public String value;
+    private String key;
+    private String value;
 
-    public ScreenParameter(){}
+    public ScreenParameter() {
+    }
 
-    public ScreenParameter( String key, String value ) {
+    public ScreenParameter( String key,
+                            String value ) {
         this.key = key;
         this.value = value;
     }
@@ -21,5 +23,9 @@ public class ScreenParameter {
 
     public String getValue() {
         return value;
+    }
+
+    public void setValue( String value ) {
+        this.value = value;
     }
 }

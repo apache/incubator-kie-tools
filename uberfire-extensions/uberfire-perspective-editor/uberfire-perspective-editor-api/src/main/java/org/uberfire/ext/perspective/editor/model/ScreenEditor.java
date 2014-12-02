@@ -2,6 +2,7 @@ package org.uberfire.ext.perspective.editor.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -43,23 +44,41 @@ public class ScreenEditor {
     }
 
     public void addParameters( ScreenParameter param ) {
-        if(param.getKey().equalsIgnoreCase( PLACE_NAME_KEY )){
+        if ( param.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
             this.placeName = param.getValue();
         }
-        else{
-            parameters.add( param );
+        parameters.add( param );
+    }
+
+    public void removeParameter( final String parameterName ) {
+        final Iterator<ScreenParameter> itr = parameters.iterator();
+        while ( itr.hasNext() ) {
+            final ScreenParameter sp = itr.next();
+            if ( sp.getKey().equals( parameterName ) ) {
+                itr.remove();
+                if ( sp.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
+                    this.placeName = null;
+                }
+            }
+        }
+    }
+
+    public void setParameterValue( final String parameterName,
+                                   final String parameterValue ) {
+        for ( ScreenParameter sp : parameters ) {
+            if ( sp.getKey().equals( parameterName ) ) {
+                sp.setValue( parameterValue );
+            }
         }
     }
 
     public void setParameters( List<ScreenParameter> parameters ) {
         for ( ScreenParameter param : parameters ) {
-            if(param.getKey().equalsIgnoreCase( PLACE_NAME_KEY )){
+            if ( param.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
                 this.placeName = param.getValue();
             }
-            else{
-                this.parameters = parameters;
-            }
         }
+        this.parameters = parameters;
     }
 
     public void setPlaceName( String placeName ) {

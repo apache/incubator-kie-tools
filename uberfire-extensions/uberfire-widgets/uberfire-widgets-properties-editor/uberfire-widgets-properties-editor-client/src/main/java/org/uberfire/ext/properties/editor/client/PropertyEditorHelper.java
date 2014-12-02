@@ -5,11 +5,14 @@ import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.github.gwtbootstrap.client.ui.event.ShowEvent;
 import com.github.gwtbootstrap.client.ui.event.ShowHandler;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.properties.editor.client.fields.PropertyEditorFieldType;
 import org.uberfire.ext.properties.editor.client.widgets.AbstractPropertyEditorWidget;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorErrorWidget;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemLabel;
+import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemRemovalButton;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemsWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
@@ -33,17 +36,19 @@ public class PropertyEditorHelper {
         extractEditorFrom( propertyEditorWidget, propertyMenu, event, "" );
     }
 
-   static void createCategory( final PropertyEditorWidget propertyEditorWidget,
-                                        Accordion propertyMenu,
-                                        final PropertyEditorCategory category,
-                                        String propertyNameFilter ) {
+    static void createCategory( final PropertyEditorWidget propertyEditorWidget,
+                                Accordion propertyMenu,
+                                final PropertyEditorCategory category,
+                                String propertyNameFilter ) {
 
         AccordionGroup categoryAccordion = createAccordionGroup( propertyEditorWidget, category );
         boolean categoryHasActiveChilds = false;
-        for ( PropertyEditorFieldInfo field : category.getFields() ) {
+        for ( final PropertyEditorFieldInfo field : category.getFields() ) {
             if ( isAMatchOfFilter( propertyNameFilter, field ) ) {
                 categoryHasActiveChilds = true;
-                categoryAccordion.add( createItemsWidget( field ) );
+                categoryAccordion.add( createItemsWidget( field,
+                                                          category,
+                                                          categoryAccordion ) );
             }
 
         }
@@ -53,7 +58,7 @@ public class PropertyEditorHelper {
     }
 
     static AccordionGroup createAccordionGroup( final PropertyEditorWidget propertyEditorWidget,
-                                                        final PropertyEditorCategory category ) {
+                                                final PropertyEditorCategory category ) {
         AccordionGroup categoryAccordion = GWT.create( AccordionGroup.class );
         categoryAccordion.setHeading( category.getName() );
         categoryAccordion.addShowHandler( new ShowHandler() {
@@ -68,15 +73,29 @@ public class PropertyEditorHelper {
         return categoryAccordion;
     }
 
-    static PropertyEditorItemsWidget createItemsWidget( PropertyEditorFieldInfo field ) {
+    static PropertyEditorItemsWidget createItemsWidget( PropertyEditorFieldInfo field,
+                                                        PropertyEditorCategory category,
+                                                        AccordionGroup categoryAccordion ) {
         PropertyEditorItemsWidget items = GWT.create( PropertyEditorItemsWidget.class );
         items.add( createLabel( field ) );
         items.add( createField( field, items ) );
+        if ( field.isRemovalSupported() ) {
+            items.add( createRemovalButton( field,
+                                            category,
+                                            items,
+                                            categoryAccordion ) );
+        }
         return items;
     }
 
+    static PropertyEditorItemLabel createLabel( PropertyEditorFieldInfo field ) {
+        PropertyEditorItemLabel item = GWT.create( PropertyEditorItemLabel.class );
+        item.setText( field.getLabel() );
+        return item;
+    }
+
     static PropertyEditorItemWidget createField( PropertyEditorFieldInfo field,
-                                                         PropertyEditorItemsWidget parent ) {
+                                                 PropertyEditorItemsWidget parent ) {
         PropertyEditorItemWidget itemWidget = GWT.create( PropertyEditorItemWidget.class );
         PropertyEditorErrorWidget errorWidget = GWT.create( PropertyEditorErrorWidget.class );
         PropertyEditorFieldType editorFieldType = PropertyEditorFieldType.getFieldTypeFrom( field );
@@ -90,19 +109,28 @@ public class PropertyEditorHelper {
     }
 
     static void createErrorHandlingInfraStructure( PropertyEditorItemsWidget parent,
-                                                           PropertyEditorItemWidget itemWidget,
-                                                           PropertyEditorErrorWidget errorWidget,
-                                                           Widget widget ) {
+                                                   PropertyEditorItemWidget itemWidget,
+                                                   PropertyEditorErrorWidget errorWidget,
+                                                   Widget widget ) {
         AbstractPropertyEditorWidget abstractPropertyEditorWidget = (AbstractPropertyEditorWidget) widget;
         abstractPropertyEditorWidget.setErrorWidget( errorWidget );
         abstractPropertyEditorWidget.setParent( parent );
         itemWidget.add( widget );
     }
 
-    static PropertyEditorItemLabel createLabel( PropertyEditorFieldInfo field ) {
-        PropertyEditorItemLabel item = GWT.create( PropertyEditorItemLabel.class );
-        item.setText( field.getLabel() );
-        return item;
+    static PropertyEditorItemRemovalButton createRemovalButton( final PropertyEditorFieldInfo field,
+                                                                final PropertyEditorCategory category,
+                                                                final PropertyEditorItemsWidget items,
+                                                                final AccordionGroup categoryAccordion ) {
+        PropertyEditorItemRemovalButton button = new PropertyEditorItemRemovalButton();
+        button.addClickHandler( new ClickHandler() {
+            @Override
+            public void onClick( ClickEvent event ) {
+                category.getFields().remove( field );
+                categoryAccordion.remove( items );
+            }
+        } );
+        return button;
     }
 
     public static boolean validade( PropertyEditorEvent event ) {
@@ -117,7 +145,7 @@ public class PropertyEditorHelper {
     }
 
     static boolean isAMatchOfFilter( String propertyNameFilter,
-                                             PropertyEditorFieldInfo field ) {
+                                     PropertyEditorFieldInfo field ) {
         if ( propertyNameFilter.isEmpty() ) {
             return true;
         }

@@ -2,6 +2,7 @@ package org.uberfire.ext.properties.editor.client.widgets;
 
 import com.github.gwtbootstrap.client.ui.Paragraph;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -12,12 +13,12 @@ public class PropertyEditorErrorWidget extends Composite {
     @UiField
     Paragraph label;
 
-
     public PropertyEditorErrorWidget() {
         initWidget( uiBinder.createAndBindUi( this ) );
+        getElement().getStyle().setDisplay( Style.Display.NONE );
     }
 
-    public void setText(String text){
+    public void setText( String text ) {
         label.setText( text );
     }
 
