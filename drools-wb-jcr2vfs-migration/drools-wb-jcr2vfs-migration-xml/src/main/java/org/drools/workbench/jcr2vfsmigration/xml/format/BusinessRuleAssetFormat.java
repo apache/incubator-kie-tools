@@ -25,7 +25,7 @@ import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetFormat.*;
 
 public class BusinessRuleAssetFormat implements XmlFormat<BusinessRuleAsset> {
 
-    private static final String TEXT_CONTENT = "textContent";
+    private static final String CONTENT = "content";
     private static final String HAS_DRL = "hasDrl";
 
     @Override
@@ -37,8 +37,8 @@ public class BusinessRuleAssetFormat implements XmlFormat<BusinessRuleAsset> {
                 .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( businessRuleAsset.getAssetType().toString() ).append( "\"" )
                 .append( GT );
 
-        sb.append( LT ).append( TEXT_CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( businessRuleAsset.getContent() ) )
-                .append( LT_SLASH ).append( TEXT_CONTENT ).append( GT );
+        sb.append( LT ).append( CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( businessRuleAsset.getContent() ) )
+                .append( LT_SLASH ).append( CONTENT ).append( GT );
 
         sb.append( LT ).append( HAS_DRL ).append( GT ).append( businessRuleAsset.hasDSLSentences() ? "true" : "false" )
                 .append( LT_SLASH ).append( HAS_DRL ).append( GT );
@@ -54,17 +54,17 @@ public class BusinessRuleAssetFormat implements XmlFormat<BusinessRuleAsset> {
         String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
 
         Boolean hasDSL = false;
-        String textContent = null;
+        String content = null;
         NodeList assetNodeList = assetNode.getChildNodes();
         for ( int i = 0; i < assetNodeList.getLength(); i++ ) {
             Node node = assetNodeList.item( i );
             String nodeContent = node.getTextContent();
-            if ( TEXT_CONTENT.equalsIgnoreCase( node.getNodeName() ) ) {
-                textContent = nodeContent;
+            if ( CONTENT.equalsIgnoreCase( node.getNodeName() ) ) {
+                content = nodeContent;
             } else if ( HAS_DRL.equalsIgnoreCase( node.getNodeName() ) ) {
                 hasDSL = Boolean.valueOf( nodeContent );
             }
         }
-        return new BusinessRuleAsset( name, assetType, textContent, hasDSL );
+        return new BusinessRuleAsset( name, assetType, content, hasDSL );
     }
 }
