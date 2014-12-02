@@ -222,6 +222,8 @@ public interface CommonConstants
 
     String UploadFileTypeNotSupported();
 
+    String UploadFileTypeSupportedExtensions0( String validFileExtensions );
+
     String UploadGenericError();
 
     String NoSuchFileTabTitle();

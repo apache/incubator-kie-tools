@@ -115,13 +115,23 @@ public class AttachmentFileWidget extends Composite {
                         }
                     }
                     if ( !isValid ) {
-                        Window.alert( CommonConstants.INSTANCE.UploadFileTypeNotSupported() );
+                        Window.alert( CommonConstants.INSTANCE.UploadFileTypeNotSupported() + "\n\n" + CommonConstants.INSTANCE.UploadFileTypeSupportedExtensions0( makeValidFileExtensionsText() ) );
                         event.cancel();
                         executeCallback( errorCallback );
                         return;
                     }
                 }
+
             }
+
+            private String makeValidFileExtensionsText() {
+                final StringBuilder sb = new StringBuilder();
+                for ( int i = 0; i < validFileExtensions.length; i++ ) {
+                    sb.append( "\"" ).append( validFileExtensions[ i ] ).append( ( ( i < validFileExtensions.length - 1 ? "\", " : "\"" ) ) );
+                }
+                return sb.toString();
+            }
+
         } );
 
         form.addSubmitCompleteHandler( new Form.SubmitCompleteHandler() {
