@@ -2,7 +2,8 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.Timer;
+import com.github.gwtbootstrap.client.ui.event.ShownEvent;
+import com.github.gwtbootstrap.client.ui.event.ShownHandler;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -31,6 +32,16 @@ public class DependencySelectorPopupViewImpl
         add( dependencyPagedJarTable );
         setPixelSize( 800,
                       500 );
+
+        //Need to refresh the grid to load content after the popup is shown
+        addShownHandler( new ShownHandler() {
+
+            @Override
+            public void onShown( final ShownEvent shownEvent ) {
+                dependencyPagedJarTable.refresh();
+            }
+
+        } );
     }
 
     @Override
@@ -38,19 +49,4 @@ public class DependencySelectorPopupViewImpl
         this.presenter = presenter;
     }
 
-    @Override
-    public void show() {
-        super.show();
-
-        /*
-           We need to give time for the popup to show up,
-           before loading the content.
-         */
-        new Timer() {
-            @Override
-            public void run() {
-                dependencyPagedJarTable.refresh();
-            }
-        }.schedule( 1000 );
-    }
 }
