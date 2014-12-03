@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.uberfire.ext.plugin.event.MediaAdded;
 import org.uberfire.ext.plugin.model.Media;
@@ -24,6 +23,7 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.server.BaseUploadServlet;
 import org.uberfire.server.MimeType;
+import org.uberfire.java.nio.EncodingUtil;
 
 public class PluginMediaServlet
         extends BaseUploadServlet {
@@ -81,7 +81,7 @@ public class PluginMediaServlet
         String mime = null;
         InputStream in;
 
-        final String filename = URIUtil.decode( req.getRequestURI().substring( req.getContextPath().length() ) );
+        final String filename = EncodingUtil.decode( req.getRequestURI().substring( req.getContextPath().length() ) );
         final Path mediaPath = fileSystem.getPath( "plugins", filename.replace( pattern, "/" ) );
         if ( !ioService.exists( mediaPath ) ) {
             mime = "image/png";
