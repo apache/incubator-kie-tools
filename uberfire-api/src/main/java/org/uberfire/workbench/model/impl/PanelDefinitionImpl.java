@@ -242,9 +242,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     public void setHeight( Integer height ) {
-        if ( height != null ) {
-            this.height = height;
-        }
+        this.height = height;
     }
 
     @Override
@@ -254,9 +252,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     public void setWidth( Integer width ) {
-        if ( width != null ) {
-            this.width = width;
-        }
+        this.width = width;
     }
 
     @Override

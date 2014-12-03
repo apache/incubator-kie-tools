@@ -22,7 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 public class SimpleWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelViewTest {
 
     @InjectMocks
-    private SimpleWorkbenchPanelViewUnitTestWrapper view;
+    private SimpleWorkbenchPanelView view;
 
     @Mock
     private PanelManager panelManager;
@@ -67,9 +67,8 @@ public class SimpleWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelV
     }
 
     @Test
-    public void shouldPropagateResizeWhenAttached() {
+    public void onResize() {
 
-        view.forceAttachedState( true );
         view.setPixelSize( 10, 10 );
         view.onResize();
 
@@ -79,17 +78,5 @@ public class SimpleWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelV
         verify( topLevelWidget ).onResize();
     }
 
-    @Test
-    public void shouldNotPropagateResizeWhenNotAttached() {
-
-        view.forceAttachedState( false );
-        view.setPixelSize( 10, 10 );
-        view.onResize();
-
-        // unfortunately, setPixelSize() doesn't have any side effects during unit tests so we can't verify the arguments
-        verify( presenter, never() ).onResize( any( Integer.class ), any( Integer.class ) );
-
-        verify( topLevelWidget ).onResize();
-    }
 
 }

@@ -49,20 +49,4 @@ public class PanelDefinitionImplTest {
         assertTrue( panelDefinition.getParts().contains( part ) );
     }
 
-    @Test
-    public void widthShouldNotRevertToNullOnceSet() throws Exception {
-        assertNull( panelDefinition.getWidth() );
-        panelDefinition.setWidth( 1234 );
-        panelDefinition.setWidth( null );
-        assertEquals( (Integer) 1234, panelDefinition.getWidth() );
-    }
-
-    @Test
-    public void heightShouldNotRevertToNullOnceSet() throws Exception {
-        assertNull( panelDefinition.getHeight() );
-        panelDefinition.setHeight( 1234 );
-        panelDefinition.setHeight( null );
-        assertEquals( (Integer) 1234, panelDefinition.getHeight() );
-    }
-
 }
