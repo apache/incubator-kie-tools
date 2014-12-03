@@ -19,10 +19,9 @@ public class AttachmentAsset extends AbstractXmlAsset {
 
     private String attachmentFileName;
 
-
     public AttachmentAsset( String name, String format, String attachmentFileName ) {
         this.name = name;
-        this.assetType = AssetType.getByName( format );
+        this.assetType = AssetType.getByType( format );
         this.attachmentFileName = attachmentFileName;
     }
 

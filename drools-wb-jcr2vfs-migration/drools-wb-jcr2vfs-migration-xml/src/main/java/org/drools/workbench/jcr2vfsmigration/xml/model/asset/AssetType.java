@@ -60,9 +60,14 @@ public enum AssetType {
         this.type = type;
     }
 
-    public static AssetType getByName( String name ) {
-        if (name == null || name.length() == 0) return null;
-        return valueOf(name.toUpperCase());
+    // Type the is being exported is the format String as in 5.6.x's AssetFormats class
+    public static AssetType getByType( String type ) {
+        if ( type != null && type.length() > 0 ) {;
+            for ( AssetType assetType : values() ) {
+                if ( type.equalsIgnoreCase( assetType.type ) ) return assetType;
+            }
+        }
+        return null;
     }
 
     public String toString() {

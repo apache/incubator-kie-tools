@@ -22,7 +22,7 @@ public class GuidedDecisionTableAsset extends AbstractXmlAsset {
 
     public GuidedDecisionTableAsset( String name, String format, String content, String extendedRule ) {
         this.name = name;
-        this.assetType = AssetType.getByName( format );
+        this.assetType = AssetType.getByType( format );
         this.content = content;
         this.extendedRule = extendedRule;
     }
