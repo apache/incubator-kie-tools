@@ -55,6 +55,7 @@ public class RowEditorWidgetUI implements EditorWidget {
 
     public void removeFromParent() {
         parent.removeChild( this );
+
     }
 
     @Override

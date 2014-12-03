@@ -18,19 +18,20 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.perspective.editor.client.panels.components.HTMLView;
+import org.uberfire.ext.perspective.editor.client.panels.components.ScreenView;
+import org.uberfire.ext.perspective.editor.client.panels.dnd.DropColumnPanel;
 import org.uberfire.ext.perspective.editor.client.structure.ColumnEditorUI;
+import org.uberfire.ext.perspective.editor.client.structure.EditorWidget;
 import org.uberfire.ext.perspective.editor.client.structure.PerspectiveEditorUI;
 import org.uberfire.ext.perspective.editor.client.structure.RowEditorWidgetUI;
 import org.uberfire.ext.perspective.editor.model.ColumnEditor;
 import org.uberfire.ext.perspective.editor.model.HTMLEditor;
 import org.uberfire.ext.perspective.editor.model.RowEditor;
 import org.uberfire.ext.perspective.editor.model.ScreenEditor;
-import org.uberfire.ext.perspective.editor.client.panels.components.ScreenView;
-import org.uberfire.ext.perspective.editor.client.panels.dnd.DropColumnPanel;
-import org.uberfire.ext.perspective.editor.client.structure.EditorWidget;
 
 public class RowView extends Composite {
 
+    private DropColumnPanel oldDropColumnPanel;
     private RowEditorWidgetUI row;
 
     @UiField
@@ -62,12 +63,23 @@ public class RowView extends Composite {
     }
 
     public RowView( ColumnEditorUI parent,
-                    String rowSpamString ) {
+                    String rowSpamString,
+                    DropColumnPanel oldDropColumnPanel ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         this.editorWidget = parent;
+        this.oldDropColumnPanel = oldDropColumnPanel;
         this.row = new RowEditorWidgetUI( parent, fluidContainer, rowSpamString );
         build();
 
+    }
+
+    private RowView( ColumnEditorUI parent,
+                     List<String> rowSpans,  DropColumnPanel oldDropColumnPanel ) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+        this.editorWidget = parent;
+        this.oldDropColumnPanel = oldDropColumnPanel;
+        this.row = new RowEditorWidgetUI( parent, fluidContainer, rowSpans );
+        build();
     }
 
     public RowView( PerspectiveEditorUI parent,
@@ -78,29 +90,22 @@ public class RowView extends Composite {
         reload( rowEditor.getColumnEditors() );
     }
 
-    private RowView( ColumnEditorUI parent,
-                     List<String> rowSpans ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        this.editorWidget = parent;
-        this.row = new RowEditorWidgetUI( parent, fluidContainer, rowSpans );
-        build();
 
-    }
 
     private FluidRow generateColumns( List<ColumnEditor> columnEditors ) {
         FluidRow rowWidget = new FluidRow();
         rowWidget.getElement().getStyle().setProperty( "marginBottom", "15px" );
 
         for ( ColumnEditor columnEditor : columnEditors ) {
-            Column column = createColumn( columnEditor);
+            Column column = createColumn( columnEditor );
             ColumnEditorUI parent = new ColumnEditorUI( row, column, columnEditor.getSpan() );
-
-            if(!columnEditor.hasElements()) {
-                generateDropColumnPanel( columnEditor, column, parent );
+            DropColumnPanel dropColumnPanel = null;
+            if ( !columnEditor.hasElements() ) {
+               dropColumnPanel = generateDropColumnPanel( column, parent );
             }
 
             for ( RowEditor editor : columnEditor.getRows() ) {
-                column.add( new RowView( parent, editor.getRowSpam() ) );
+                column.add( new RowView( parent, editor.getRowSpam(), dropColumnPanel ) );
             }
             for ( ScreenEditor editor : columnEditor.getScreens() ) {
                 column.add( new ScreenView( parent, editor ) );
@@ -140,10 +145,11 @@ public class RowView extends Composite {
         return column;
     }
 
-    private void generateDropColumnPanel( ColumnEditor columnEditor,
-                                          Column column,
-                                          ColumnEditorUI parent ) {
-        column.add( new DropColumnPanel( parent ) );
+    private DropColumnPanel generateDropColumnPanel( Column column,
+                                                     ColumnEditorUI parent ) {
+        final DropColumnPanel drop = new DropColumnPanel( parent );
+        column.add( drop );
+        return drop;
     }
 
     private Column createColumn( String span ) {
@@ -192,10 +198,21 @@ public class RowView extends Composite {
             @Override
             public void onClick( ClickEvent event ) {
                 editorWidget.getWidget().remove( RowView.this );
+                if ( parentIsAColumn() ) {
+                    attachDropColumnPanel();
+                }
                 row.removeFromParent();
             }
         } );
         return remove;
+    }
+
+    private void attachDropColumnPanel() {
+        editorWidget.getWidget().add( oldDropColumnPanel );
+    }
+
+    private boolean parentIsAColumn() {
+        return oldDropColumnPanel != null;
     }
 
     private Label generateLabel( String row ) {

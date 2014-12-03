@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import org.uberfire.ext.perspective.editor.client.panels.dnd.DropColumnPanel;
 
 public class ColumnEditorUI implements EditorWidget {
 

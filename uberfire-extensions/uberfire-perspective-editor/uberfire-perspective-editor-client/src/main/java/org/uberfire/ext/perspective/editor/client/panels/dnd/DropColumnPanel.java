@@ -47,25 +47,29 @@ public class DropColumnPanel extends FlowPanel {
                                     String gridData = event.getData( DragType.GRID.name() );
                                     handleGridDrop( gridData );
                                 }
-                                if ( isAScreenDrop( event ) ) {
+                                else if ( isAScreenDrop( event ) ) {
                                     handleScreenDrop( event );
                                 }
-                                if ( isAExternalComponentDrop( event ) ) {
+                                else if ( isAExternalComponentDrop( event ) ) {
                                     handleExternalScreenDrop( event );
                                 }
-                                if ( isHtmlDrop( event ) ) {
+                                else if ( isHtmlDrop( event ) ) {
                                     handleHTMLDrop();
                                 }
+                                removeDropBorder();
                             }
                         }
 
                       );
     }
 
+    private void removeDropBorder() {
+        getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
+    }
+
     private void handleExternalScreenDrop( DropEvent event ) {
         parent.getWidget().remove( this );
         parent.getWidget().add( new ScreenView( parent, DragType.EXTERNAL, event.getData( DragType.EXTERNAL.name() ) ) );
-        getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
     }
 
     private void handleHTMLDrop() {
@@ -77,13 +81,11 @@ public class DropColumnPanel extends FlowPanel {
     private void handleScreenDrop( DropEvent event ) {
         parent.getWidget().remove( this );
         parent.getWidget().add( new ScreenView( parent, DragType.SCREEN ) );
-        getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
     }
 
     private void handleGridDrop( String grid ) {
         parent.getWidget().remove( this );
-        parent.getWidget().add( new RowView( parent, grid ) );
-        getElement().getStyle().setBorderStyle( Style.BorderStyle.NONE );
+        parent.getWidget().add( new RowView( parent, grid, this ) );
     }
 
     private boolean isAScreenDrop( DropEvent event ) {
