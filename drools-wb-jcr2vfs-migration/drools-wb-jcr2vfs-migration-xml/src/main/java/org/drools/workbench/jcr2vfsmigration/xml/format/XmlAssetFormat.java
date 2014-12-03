@@ -18,6 +18,7 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.BusinessRuleAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.GuidedDecisionTableAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
@@ -34,6 +35,7 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
     private static AttachmentAssetFormat aaf = new AttachmentAssetFormat();
     private static BusinessRuleAssetFormat braf = new BusinessRuleAssetFormat();
     private static GuidedDecisionTableAssetFormat gdtaf = new GuidedDecisionTableAssetFormat();
+    private static DataModelAssetFormat dmaf = new DataModelAssetFormat();
 
     @Override
     public void format( StringBuilder sb, XmlAsset xmlAsset ) {
@@ -76,6 +78,8 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
 
             case DECISION_TABLE_GUIDED: gdtaf.format( sb, ( GuidedDecisionTableAsset ) xmlAsset ); break;
 
+            case DRL_MODEL: dmaf.format( sb, ( DataModelAsset ) xmlAsset ); break;
+
             default: {
                 System.out.println( "Attempting to format asset with type " + xmlAsset.getAssetType() + "into attachment asset" );
                 aaf.format( sb, ( AttachmentAsset ) xmlAsset );
@@ -91,7 +95,7 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
         if ( assetAttribs == null ) throw new RuntimeException( "Wrong asset xml format; missing type" );
         String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
 
-        switch ( AssetType.getByName( assetType ) ) {
+        switch ( AssetType.getByType( assetType ) ) {
             case ENUMERATION:
             case DSL:
             case DSL_TEMPLATE_RULE:
@@ -127,6 +131,8 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case BUSINESS_RULE: return braf.parse( assetNode );
 
             case DECISION_TABLE_GUIDED: return gdtaf.parse( assetNode );
+
+            case DRL_MODEL: return dmaf.parse( assetNode );
         }
         System.out.println( "Unknown asset type: " + assetType );
         return null;

@@ -1,14 +1,21 @@
 package org.drools.workbench.jcr2vfsmigration.xml;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.drools.workbench.jcr2vfsmigration.xml.format.CategoriesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
+import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Categories;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -136,11 +143,51 @@ public class XmlTester {
         }
     }
 
+    public void testDataModelAssetFormat() {
+        DataModelAsset dma = new DataModelAsset( "testModel", AssetType.DRL_MODEL.toString() );
+        DataModelAsset.DataModelObject dmo1 = dma.addDataModelObject( "obj1", "java.lang.Object" );
+        dmo1.addObjectProperty( "ob1.prop1", "java.lang.String" );
+        dmo1.addObjectProperty( "ob1.prop2", "java.lang.Integer" );
+        dmo1.addObjectProperty( "ob1.prop3", "java.lang.Long" );
+        dmo1.addObjectProperty( "ob1.prop4", "java.lang.String" );
+        dmo1.addObjectAnnotation( "Role", "Key", "role1" );
+        dmo1.addObjectAnnotation( "Equals", "Key", "0" );
+
+        DataModelAsset.DataModelObject dmo2 = dma.addDataModelObject( "obj2", "java.lang.Object" );
+        dmo2.addObjectProperty( "ob2.prop1", "java.lang.String" );
+        dmo2.addObjectProperty( "ob2.prop2", "java.lang.Integer" );
+        dmo2.addObjectAnnotation( "Equals", "Key", "1" );
+
+        Collection<XmlAsset> assets = new ArrayList<XmlAsset>();
+        assets.add( dma );
+        XmlAssets xmlAssets = new XmlAssets( assets );
+
+        XmlAssetsFormat xaf = new XmlAssetsFormat();
+        StringBuilder sb = new StringBuilder();
+        xaf.format( sb, xmlAssets );
+        System.out.println( sb.toString() );
+
+        InputSource is = new InputSource( new StringReader( sb.toString() ) );
+        Document xml = null;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            xml = db.parse( is );
+            NodeList children = xml.getChildNodes();
+            if ( children.getLength() != 1 ) throw new IllegalArgumentException( "Wrong xml format" );
+            Node node = children.item( 0 );
+            XmlAssets assetsReadFromXml = xaf.parse( node );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main( String[] args ) {
         XmlTester xt = new XmlTester();
         xt.testModules();
         xt.testCategories();
         xt.testMap();
         xt.testPackageHeader();
+        xt.testDataModelAssetFormat();
     }
 }
