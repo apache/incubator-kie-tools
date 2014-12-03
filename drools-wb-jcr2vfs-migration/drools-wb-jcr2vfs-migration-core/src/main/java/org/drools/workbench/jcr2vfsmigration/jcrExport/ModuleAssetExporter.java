@@ -41,6 +41,7 @@ import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedDecisionTable
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedEditorExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetWithPackagePropertyExporter;
+import org.drools.workbench.jcr2vfsmigration.migrater.GlobalParser;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
@@ -56,6 +57,7 @@ public class ModuleAssetExporter {
 
     private static int assetFileName = 1;
     private static int attachmentFileNameCounter = 1;
+    private static final String GLOBAL_KEYWORD = "global ";
 
     @Inject
     private FileManager fileManager;
@@ -159,6 +161,17 @@ public class ModuleAssetExporter {
             throw new IllegalStateException( e );
         }
 
+        // Export globalsString
+        StringBuffer sbGlobal = new StringBuffer();
+        List<String> lGlobals = GlobalParser.parseGlobals( packageHeaderInfo );
+        if (lGlobals.size() > 0) {
+            for(String global : lGlobals) {
+                sbGlobal.append(GLOBAL_KEYWORD);
+                sbGlobal.append(global);
+                sbGlobal.append("\n");
+            }
+        }
+
         String assetExportFileName = setupAssetExportFile( jcrModule.getUuid() );
 
         boolean assetExportSuccess = exportModuleAssets( jcrModule, assetExportFileName );
@@ -169,6 +182,7 @@ public class ModuleAssetExporter {
                 moduleName,
                 normalizedPackageName,
                 packageHeaderInfo,
+                sbGlobal.toString(),
                 jcrModule.getCatRules(),
                 assetExportFileName );
     }

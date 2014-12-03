@@ -25,6 +25,7 @@ public class Module {
     private String name;
     private String normalizedPackageName;
     private String packageHeaderInfo;
+    private String globalsString;
     private Map<String, String> catRules;
     private String assetExportFileName;
 
@@ -33,6 +34,7 @@ public class Module {
                    String name,
                    String normalizedPackageName,
                    String packageHeaderInfo,
+                   String globalsString,
                    Map<String, String> catRules,
                    String assetExportFileName ) {
         this.type = type;
@@ -41,6 +43,7 @@ public class Module {
         this.normalizedPackageName = normalizedPackageName != null ? normalizedPackageName : "";
         // todo check if null values should be allowed (see PackageImportHelper#l118/l138
         this.packageHeaderInfo = packageHeaderInfo != null ? packageHeaderInfo : "";
+        this.globalsString = globalsString != null ? globalsString : "";
         this.catRules = catRules != null ? catRules : new HashMap<String, String>();
         // todo asset file name could be null, take into account when importing
         this.assetExportFileName = assetExportFileName;
@@ -64,6 +67,10 @@ public class Module {
 
     public String getPackageHeaderInfo() {
         return packageHeaderInfo;
+    }
+
+    public String getGlobalsString() {
+        return globalsString;
     }
 
     public Map<String, String> getCatRules() {

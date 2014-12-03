@@ -32,6 +32,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     public static final String MODULE_NAME = "name";
     public static final String MODULE_NORM_PACKAGENAME = "normalizedPackageName";
     public static final String MODULE_PACKAGEHEADER = "packageHeaderInfo";
+    public static final String MODULE_GLOBALS = "globals";
     public static final String MODULE_CATRULES = "catRules";
     public static final String MODULE_ASSET_FILE = "assetExportFileName";
 
@@ -55,6 +56,9 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         // Package header info
         sb.append( formatPackageHeaderInfo( module.getPackageHeaderInfo() ) );
 
+        // Globals String
+        sb.append( formatGlobals( module.getGlobalsString() ) );
+
         // Category rules
         sb.append( formatCatRules( module ) );
 
@@ -70,6 +74,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         String normalizedPackageName = null;
         String uuid = null;
         String packageHeaderInfo = null;
+        String globals = null;
         ModuleType type = null;
         Map<String, String> catRules = null;
         String assetExportFileName = null;
@@ -88,6 +93,8 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                 type = ModuleType.getByName( nodeContent );
             } else if ( MODULE_PACKAGEHEADER.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 packageHeaderInfo = parsePackageHeaderInfo( propertyNode );
+            } else if ( MODULE_GLOBALS.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
+                globals = parseGlobals( propertyNode );
             } else if ( MODULE_CATRULES.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 catRules = parseCatRules( propertyNode );
             } else if ( MODULE_ASSET_FILE.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
@@ -99,6 +106,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                            name,
                            normalizedPackageName,
                            packageHeaderInfo,
+                           globals,
                            catRules,
                            assetExportFileName );
     }
@@ -135,5 +143,21 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         NodeList headerNodeChildren = headerInfoNode.getChildNodes();
         if ( headerNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_PACKAGEHEADER );
         return ExportXmlUtils.parseCdataSection( headerNodeChildren.item( 0 ) );
+    }
+
+    private String formatGlobals( String globals ) {
+        StringBuilder sbGlobals = new StringBuilder( LT );
+        sbGlobals.append( MODULE_GLOBALS ).append( GT );
+        if ( StringUtils.isNotBlank( globals ) ) {
+            sbGlobals.append( ExportXmlUtils.formatCdataSection( globals ) );
+        }
+        sbGlobals.append( LT_SLASH ).append( MODULE_GLOBALS ).append( GT );
+        return sbGlobals.toString();
+    }
+
+    private String parseGlobals( Node globalsNode ) {
+        NodeList globalsNodeChildren = globalsNode.getChildNodes();
+        if ( globalsNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_GLOBALS );
+        return ExportXmlUtils.parseCdataSection( globalsNodeChildren.item( 0 ) );
     }
 }

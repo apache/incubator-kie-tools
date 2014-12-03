@@ -17,11 +17,14 @@ package org.drools.workbench.jcr2vfsmigration.vfsImport;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.AttachmentAssetImporter;
@@ -49,7 +52,10 @@ import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.base.options.CommentedOption;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -60,10 +66,20 @@ public class ModuleAssetImporter {
     protected static final Logger logger = LoggerFactory.getLogger( ModuleAssetImporter.class );
 
     @Inject
+    private Paths paths;
+
+    @Inject
     private FileManager fileManager;
 
     @Inject
     private MigrationPathManager migrationPathManager;
+
+    @Inject
+    private PackageImportHelper packageImportHelper;
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     private FactModelImporter factModelImporter;
@@ -150,6 +166,27 @@ public class ModuleAssetImporter {
                                    "http://localhost" );
 
         importAssets( module );
+
+        // Import globals
+        String globals = module.getGlobalsString();
+        if( globals == null || "".equals( globals ) ) return;
+
+        Path path = migrationPathManager.generatePathForGlobal( module );
+        final org.uberfire.java.nio.file.Path nioPath = paths.convert( path );
+
+        String contentWithImport = packageImportHelper.assertPackageImportDRL( globals, module.getPackageHeaderInfo(), path );
+        String contentWithPackage = packageImportHelper.assertPackageName( contentWithImport, null );
+
+        ioService.write( nioPath,
+                         contentWithPackage,
+                         ( Map ) null,    // cast is for disambiguation
+// todo               migrateMetaData(jcrModule, asset),
+// todo               new CommentedOption( asset.getLastContributor(),
+//                        null,
+//                        asset.getCheckinComment(),
+//                        asset.getLastModified().getTime() ) );
+                         new CommentedOption( "" )
+        );
     }
 
     private void importAssets( Module module ) {

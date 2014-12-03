@@ -77,6 +77,16 @@ public class MigrationPathManager {
         return Paths.convert( assetPath );
     }
 
+    public Path generatePathForGlobal( org.drools.workbench.jcr2vfsmigration.xml.model.Module xmlModule ) {
+        // the equivalent of jcrModule.getName() is xmlModule.getNormalizedPackageName(), since in the original migration
+        // the jcrModule name is replaced with the normalized package name.
+        final org.uberfire.java.nio.file.Path modulePath = getFileSystem().getPath( "/" + escapePathEntry( xmlModule.getNormalizedPackageName() ) );
+
+        org.uberfire.java.nio.file.Path assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( xmlModule.getNormalizedPackageName() ) + "/" + "globals.gdrl" );
+
+        return Paths.convert( assetPath );
+    }
+
     public Path generatePathForAsset( Module jcrModule,
                                       AssetItem jcrAssetItem,
                                       boolean hasDSL ) {
