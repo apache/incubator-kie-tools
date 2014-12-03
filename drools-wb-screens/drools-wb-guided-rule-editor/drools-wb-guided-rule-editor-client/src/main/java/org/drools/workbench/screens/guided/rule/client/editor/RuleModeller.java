@@ -44,7 +44,6 @@ import org.drools.workbench.screens.guided.rule.client.resources.images.GuidedRu
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeEvent;
 import org.drools.workbench.screens.guided.rule.client.widget.FactTypeKnownValueChangeHandler;
 import org.drools.workbench.screens.guided.rule.client.widget.RuleModellerWidget;
-import org.guvnor.common.services.shared.security.UserCapabilities;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.CommonAltedImages;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
@@ -335,10 +334,6 @@ public class RuleModeller extends Composite
     }
 
     private boolean showAttributes() {
-        if ( !UserCapabilities.canSeeModulesTree() ) {
-            return false;
-        }
-
         return !this.configuration.isHideAttributes();
     }
 
@@ -394,7 +389,7 @@ public class RuleModeller extends Composite
                                                                  eventBus,
                                                                  action,
                                                                  readOnly );
-            w.addOnModifiedCommand(this.onWidgetModifiedCommand);
+            w.addOnModifiedCommand( this.onWidgetModifiedCommand );
 
             widget.add( wrapRHSWidget( model,
                                        i,
@@ -434,7 +429,7 @@ public class RuleModeller extends Composite
 
             if ( !w.isFactTypeKnown() ) {
                 addInvalidPatternIcon();
-                addFactTypeKnownValueChangeHandler(w, currentLayoutRow);
+                addFactTypeKnownValueChangeHandler( w, currentLayoutRow );
             }
 
             final int index = i;
@@ -506,40 +501,40 @@ public class RuleModeller extends Composite
             IPattern pattern = model.lhs[ i ];
 
             final RuleModellerWidget widget = getWidgetFactory().getWidget( this,
-                                                                 eventBus,
-                                                                 pattern,
-                                                                 readOnly );
-            widget.addOnModifiedCommand(this.onWidgetModifiedCommand);
+                                                                            eventBus,
+                                                                            pattern,
+                                                                            readOnly );
+            widget.addOnModifiedCommand( this.onWidgetModifiedCommand );
 
-            vert.add(wrapLHSWidget(model,
-                    i,
-                    widget));
-            vert.add(spacerWidget());
+            vert.add( wrapLHSWidget( model,
+                                     i,
+                                     widget ) );
+            vert.add( spacerWidget() );
 
             layout.setWidget( currentLayoutRow,
                               0,
                               new DirtyableHorizontalPane() );
-            layout.setWidget(currentLayoutRow,
-                    1,
-                    new DirtyableHorizontalPane());
+            layout.setWidget( currentLayoutRow,
+                              1,
+                              new DirtyableHorizontalPane() );
 
-            layout.setWidget(currentLayoutRow,
-                    2,
-                    this.wrapLineNumber(i + 1,
-                            true));
-            layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow,
-                    2,
-                    HasHorizontalAlignment.ALIGN_CENTER);
-            layout.getFlexCellFormatter().setVerticalAlignment(currentLayoutRow,
-                    2,
-                    HasVerticalAlignment.ALIGN_MIDDLE);
+            layout.setWidget( currentLayoutRow,
+                              2,
+                              this.wrapLineNumber( i + 1,
+                                                   true ) );
+            layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
+                                                                  2,
+                                                                  HasHorizontalAlignment.ALIGN_CENTER );
+            layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
+                                                                2,
+                                                                HasVerticalAlignment.ALIGN_MIDDLE );
 
-            layout.setWidget(currentLayoutRow,
-                    3,
-                    vert);
-            layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow,
-                    3,
-                    HasHorizontalAlignment.ALIGN_LEFT);
+            layout.setWidget( currentLayoutRow,
+                              3,
+                              vert );
+            layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
+                                                                  3,
+                                                                  HasHorizontalAlignment.ALIGN_LEFT );
             layout.getFlexCellFormatter().setVerticalAlignment( currentLayoutRow,
                                                                 3,
                                                                 HasVerticalAlignment.ALIGN_TOP );
@@ -549,7 +544,7 @@ public class RuleModeller extends Composite
 
             if ( !widget.isFactTypeKnown() ) {
                 addInvalidPatternIcon();
-                addFactTypeKnownValueChangeHandler(widget, currentLayoutRow);
+                addFactTypeKnownValueChangeHandler( widget, currentLayoutRow );
             }
 
             final int index = i;
@@ -584,18 +579,19 @@ public class RuleModeller extends Composite
 
     }
 
-    private void addFactTypeKnownValueChangeHandler(final RuleModellerWidget widget, final int layoutRow) {
-        widget.addFactTypeKnownValueChangeHandler(new FactTypeKnownValueChangeHandler() {
+    private void addFactTypeKnownValueChangeHandler( final RuleModellerWidget widget,
+                                                     final int layoutRow ) {
+        widget.addFactTypeKnownValueChangeHandler( new FactTypeKnownValueChangeHandler() {
             @Override
-            public void onValueChanged(FactTypeKnownValueChangeEvent factTypeKnownValueChangeEvent) {
-                    if (!widget.isFactTypeKnown()) {
+            public void onValueChanged( FactTypeKnownValueChangeEvent factTypeKnownValueChangeEvent ) {
+                if ( !widget.isFactTypeKnown() ) {
                     addInvalidPatternIcon();
                 } else {
-                    clearLineIcons(layoutRow,
-                            0);
+                    clearLineIcons( layoutRow,
+                                    0 );
                 }
             }
-        });
+        } );
     }
 
     private void addInvalidPatternIcon() {
