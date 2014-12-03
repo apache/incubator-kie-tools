@@ -36,6 +36,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
+import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.FactModelExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedDecisionTableExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedEditorExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetExporter;
@@ -57,32 +58,35 @@ public class ModuleAssetExporter {
     private static int attachmentFileNameCounter = 1;
 
     @Inject
-    FileManager fileManager;
+    private FileManager fileManager;
 
     @Inject
-    protected MigrationPathManager migrationPathManager;
+    private MigrationPathManager migrationPathManager;
 
     @Inject
-    protected RepositoryModuleService jcrRepositoryModuleService;
+    private RepositoryModuleService jcrRepositoryModuleService;
 
     @Inject
-    protected RepositoryAssetService jcrRepositoryAssetService;
+    private RepositoryAssetService jcrRepositoryAssetService;
 
     @Inject
     @Preferred
     private RulesRepository rulesRepository;
 
     @Inject
-    PlainTextAssetExporter plainTextAssetExporter;
+    private PlainTextAssetExporter plainTextAssetExporter;
 
     @Inject
-    PlainTextAssetWithPackagePropertyExporter plainTextAssetWithPackagePropertyExporter;
+    private PlainTextAssetWithPackagePropertyExporter plainTextAssetWithPackagePropertyExporter;
 
     @Inject
-    GuidedEditorExporter guidedEditorExporter;
+    private GuidedEditorExporter guidedEditorExporter;
 
     @Inject
-    GuidedDecisionTableExporter guidedDecisionTableExporter;
+    private GuidedDecisionTableExporter guidedDecisionTableExporter;
+
+    @Inject
+    private FactModelExporter factModelExporter;
 
     ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
     XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
@@ -241,7 +245,7 @@ public class ModuleAssetExporter {
 
     private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName, Path previousVersionPath) {
         if ( AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
-//            return factModelsMigrater.migrate(jcrModule, jcrAssetItem, previousVersionPath);
+            return factModelExporter.export( jcrModule, jcrAssetItem );
 
         } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
             return guidedEditorExporter.export( jcrModule, jcrAssetItem );

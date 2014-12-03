@@ -25,6 +25,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.AttachmentAssetImporter;
+import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.FactModelImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedDecisionTableImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedEditorImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedScoreCardImporter;
@@ -37,6 +38,7 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.BusinessRuleAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.GuidedDecisionTableAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
@@ -58,37 +60,40 @@ public class ModuleAssetImporter {
     protected static final Logger logger = LoggerFactory.getLogger( ModuleAssetImporter.class );
 
     @Inject
-    FileManager fileManager;
+    private FileManager fileManager;
 
     @Inject
-    protected MigrationPathManager migrationPathManager;
+    private MigrationPathManager migrationPathManager;
 
     @Inject
-    protected ProjectService projectService;
+    private FactModelImporter factModelImporter;
 
     @Inject
-    PlainTextAssetImporter plainTextAssetImporter;
+    private ProjectService projectService;
 
     @Inject
-    PlainTextAssetWithPackagePropertyImporter plainTextAssetWithPackagePropertyImporter;
+    private PlainTextAssetImporter plainTextAssetImporter;
 
     @Inject
-    GuidedScoreCardImporter guidedScoreCardImporter;
+    private PlainTextAssetWithPackagePropertyImporter plainTextAssetWithPackagePropertyImporter;
 
     @Inject
-    GuidedEditorImporter guidedEditorImporter;
+    private GuidedScoreCardImporter guidedScoreCardImporter;
 
     @Inject
-    GuidedDecisionTableImporter guidedDecisionTableImporter;
+    private GuidedEditorImporter guidedEditorImporter;
 
     @Inject
-    TestScenarioImporter testScenarioImporter;
+    private GuidedDecisionTableImporter guidedDecisionTableImporter;
 
     @Inject
-    AttachmentAssetImporter attachmentAssetImporter;
+    private TestScenarioImporter testScenarioImporter;
+
+    @Inject
+    private AttachmentAssetImporter attachmentAssetImporter;
 
     private ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
-    XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
+    private XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
 
     public void importAll() {
         System.out.println( "  Module import started" );
@@ -179,6 +184,8 @@ public class ModuleAssetImporter {
 
     private void importAsset( Module module, XmlAsset xmlAsset ) {
         switch ( xmlAsset.getAssetType() ) {
+            case DRL_MODEL: factModelImporter.importAsset( module, ( DataModelAsset ) xmlAsset ); break;
+
             case ENUMERATION:
             case DSL:
             case DSL_TEMPLATE_RULE:
