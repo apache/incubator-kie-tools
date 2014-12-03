@@ -82,6 +82,7 @@ public class EditJavaSourceWidget extends Composite implements RequiresResize {
 
     public void setReadonly( boolean readonly ) {
         textArea.setReadOnly( readonly );
+        textArea.getElement().getStyle().setBackgroundColor( "#FFFFFF" );
     }
 
     public HandlerRegistration addChangeHandler( ChangeHandler handler ) {
