@@ -1,9 +1,13 @@
 package org.uberfire.ext.perspective.editor.client.panels.dnd;
 
+import javax.enterprise.event.Event;
+
 import com.github.gwtbootstrap.client.ui.InputAddOn;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.AlternateSize;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -11,14 +15,16 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.ext.perspective.editor.client.util.DragType;
 import org.uberfire.ext.perspective.editor.client.api.ExternalPerspectiveEditorComponent;
+import org.uberfire.ext.perspective.editor.client.util.DragType;
+import org.uberfire.workbench.events.NotificationEvent;
 
 public class DragGridElement extends Composite {
 
+    private final Event<NotificationEvent> ufNotification;
     private ExternalPerspectiveEditorComponent externalComponent;
     private DragType type;
-    private String dragText;
+    private String dragValue;
 
     @UiField
     InputAddOn move;
@@ -26,9 +32,12 @@ public class DragGridElement extends Composite {
     TextBox textBox;
 
     public DragGridElement( DragType type,
-                            final String dragText ) {
+                            final String dragText,
+                            Event<NotificationEvent> ufNotification
+                          ) {
         initWidget( uiBinder.createAndBindUi( this ) );
-        this.dragText = dragText;
+        this.ufNotification = ufNotification;
+        this.dragValue = dragText;
         this.type = type;
         build();
     }
@@ -37,7 +46,8 @@ public class DragGridElement extends Composite {
                             String dragText,
                             ExternalPerspectiveEditorComponent externalPerspectiveEditorComponent ) {
         initWidget( uiBinder.createAndBindUi( this ) );
-        this.dragText = dragText;
+        this.ufNotification = null;
+        this.dragValue = dragText;
         this.type = type;
         this.externalComponent = externalPerspectiveEditorComponent;
         build();
@@ -59,7 +69,7 @@ public class DragGridElement extends Composite {
                 String text = extractText();
                 event.setData( type.name(), text );
                 if ( isAExternalComponent( type ) ) {
-                    event.setData( type.name(), externalComponent.getClass().getName()  );
+                    event.setData( type.name(), externalComponent.getClass().getName() );
                 }
                 event.getDataTransfer().setDragImage( move.getElement(), 10, 10 );
             }
@@ -78,7 +88,7 @@ public class DragGridElement extends Composite {
 
     private void createComponentWidget() {
         textBox = new TextBox();
-        textBox.setPlaceholder( dragText );
+        textBox.setPlaceholder( dragValue );
         textBox.setReadOnly( true );
         textBox.setAlternateSize( AlternateSize.MEDIUM );
         move.add( textBox );
@@ -86,9 +96,30 @@ public class DragGridElement extends Composite {
 
     private void createTextBox() {
         textBox = new TextBox();
-        textBox.setText( dragText );
+        textBox.setText( dragValue );
         textBox.setAlternateSize( AlternateSize.SMALL );
+        textBox.addBlurHandler( new BlurHandler() {
+            @Override
+            public void onBlur( BlurEvent event ) {
+                GridValueValidator grid = new GridValueValidator();
+                if ( !grid.isValid( textBox.getText() ) ) {
+                    ufNotification.fire( new NotificationEvent(grid.getValidationError(), NotificationEvent.NotificationType.ERROR ) );
+                    returnToOldValue();
+                }
+                else{
+                    updateValue();
+                }
+            }
+        } );
         move.add( textBox );
+    }
+
+    private void updateValue() {
+        dragValue = textBox.getText();
+    }
+
+    private void returnToOldValue() {
+        textBox.setText( dragValue );
     }
 
     interface MyUiBinder extends UiBinder<Widget, DragGridElement> {

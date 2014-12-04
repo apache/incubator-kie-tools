@@ -41,12 +41,10 @@ public class RowEditorWidgetUI implements EditorWidget {
     }
 
     private void parseRowSpanString( String rowSpamString ) {
-        //ederign validate
         String[] spans = rowSpamString.split( " " );
         for ( String span : spans ) {
             rowSpans.add( span );
         }
-
     }
 
     public void addChild( EditorWidget columnEditor ) {

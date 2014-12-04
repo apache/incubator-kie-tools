@@ -44,4 +44,6 @@ public interface CommonConstants
     String ParamKey();
 
     String ParamValue();
+
+    String InvalidGridConfiguration();
 }

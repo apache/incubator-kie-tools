@@ -38,7 +38,6 @@ public class DropRowPanel extends FlowPanel {
             @Override
             public void onDrop( DropEvent event ) {
                 event.preventDefault();
-
                 if ( isAGridDrop( event ) ) {
                     String gridData = event.getData( DragType.GRID.name() );
                     handleGridDrop( gridData );

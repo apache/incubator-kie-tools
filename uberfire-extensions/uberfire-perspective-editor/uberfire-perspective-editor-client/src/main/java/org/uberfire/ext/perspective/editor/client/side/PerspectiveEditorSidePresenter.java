@@ -2,25 +2,23 @@ package org.uberfire.ext.perspective.editor.client.side;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
-import org.uberfire.ext.perspective.editor.client.panels.dnd.DragGridElement;
-import org.uberfire.ext.perspective.editor.client.util.DragType;
-import org.uberfire.ext.perspective.editor.client.api.ExternalPerspectiveEditorComponent;
-import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
-import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
-import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
-import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.perspective.editor.client.api.ExternalPerspectiveEditorComponent;
+import org.uberfire.ext.perspective.editor.client.panels.dnd.DragGridElement;
+import org.uberfire.ext.perspective.editor.client.util.DragType;
 import org.uberfire.lifecycle.OnOpen;
+import org.uberfire.workbench.events.NotificationEvent;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "PerspectiveEditorSidePresenter")
@@ -38,10 +36,13 @@ public class PerspectiveEditorSidePresenter {
     private PlaceManager placeManager;
 
     @Inject
-    PerspectiveEditorSidePresenterHelper helper;
+    private PerspectiveEditorSidePresenterHelper helper;
 
     @Inject
-    Instance<ExternalPerspectiveEditorComponent> externalComponents;
+    private Instance<ExternalPerspectiveEditorComponent> externalComponents;
+
+    @Inject
+    private Event<NotificationEvent> ufNotification;
 
     @PostConstruct
     public void init() {
@@ -60,26 +61,19 @@ public class PerspectiveEditorSidePresenter {
 
     }
 
-    private void setupTest() {
-        PropertyEditorCategory category = new PropertyEditorCategory( "teste" )
-                .withField( new PropertyEditorFieldInfo( "teste", PropertyEditorType.TEXT ) );
-        PropertyEditorEvent event = new PropertyEditorEvent( "id", category );
-    }
-
     private AccordionGroup generateComponent() {
-
         AccordionGroup accordion = new AccordionGroup();
         accordion.setHeading( "Components" );
         accordion.setIcon( IconType.FOLDER_OPEN );
-        accordion.add( new DragGridElement( DragType.SCREEN, DragType.SCREEN.label() ) );
-        accordion.add( new DragGridElement( DragType.HTML, DragType.HTML.label() ) );
+        accordion.add( new DragGridElement( DragType.SCREEN, DragType.SCREEN.label(), ufNotification ) );
+        accordion.add( new DragGridElement( DragType.HTML, DragType.HTML.label(), ufNotification ) );
         generateExternalComponents( accordion );
         return accordion;
     }
 
     private void generateExternalComponents( AccordionGroup accordion ) {
         for ( ExternalPerspectiveEditorComponent externalPerspectiveEditorComponent : helper.lookupExternalComponents() ) {
-            accordion.add( new  DragGridElement( DragType.EXTERNAL, externalPerspectiveEditorComponent.getPlaceName(), externalPerspectiveEditorComponent ) );
+            accordion.add( new DragGridElement( DragType.EXTERNAL, externalPerspectiveEditorComponent.getPlaceName(), externalPerspectiveEditorComponent ) );
         }
     }
 
@@ -88,9 +82,9 @@ public class PerspectiveEditorSidePresenter {
         accordion.setHeading( "Grid System" );
         accordion.setIcon( IconType.TH );
         accordion.setDefaultOpen( true );
-        accordion.add( new DragGridElement( DragType.GRID, "12" ) );
-        accordion.add( new DragGridElement( DragType.GRID, "6 6" ) );
-        accordion.add( new DragGridElement( DragType.GRID, "4 4 4" ) );
+        accordion.add( new DragGridElement( DragType.GRID, "12", ufNotification ) );
+        accordion.add( new DragGridElement( DragType.GRID, "6 6", ufNotification ) );
+        accordion.add( new DragGridElement( DragType.GRID, "4 4 4", ufNotification ) );
         return accordion;
     }
 

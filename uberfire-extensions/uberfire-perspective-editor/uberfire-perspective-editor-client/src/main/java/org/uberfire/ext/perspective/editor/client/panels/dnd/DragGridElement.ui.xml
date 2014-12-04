@@ -24,7 +24,7 @@
     .center { text-align:center; }
   </ui:style>
   <g:FlowPanel>
-  <b:InputAddOn appendIcon="MOVE" ui:field="move" styleName="{style.center}">
+    <b:InputAddOn appendIcon="MOVE" ui:field="move" styleName="{style.center}">
   </b:InputAddOn>
   </g:FlowPanel>
 </ui:UiBinder>
