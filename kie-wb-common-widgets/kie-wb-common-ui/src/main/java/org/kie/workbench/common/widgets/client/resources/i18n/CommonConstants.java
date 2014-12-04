@@ -246,4 +246,6 @@ public interface CommonConstants
 
     String FailedToGenerateSource();
 
+    String About();
+
 }

@@ -78,8 +78,6 @@
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
 
-
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-client-all</artifactId>
@@ -192,6 +190,14 @@
       <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
       <resource>
         <directory>src/main/resources</directory>
+      </resource>
+      <!-- About popup -->
+      <resource>
+        <directory>src/main/java/</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>org/kie/workbench/common/widgets/client/popups/about/AboutPopup.ui.xml</include>
+        </includes>
       </resource>
     </resources>
   </build>
