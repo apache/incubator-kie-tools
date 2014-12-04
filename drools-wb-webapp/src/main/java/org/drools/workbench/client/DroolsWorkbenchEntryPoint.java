@@ -46,6 +46,7 @@ import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
 import org.uberfire.client.menu.CustomSplashHelp;
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.ActivityManager;
@@ -151,6 +152,8 @@ public class DroolsWorkbenchEntryPoint {
                 .endMenu()
                 .newTopLevelCustomMenu( iocManager.lookupBean( CustomSplashHelp.class ).getInstance() )
                 .endMenu()
+                .newTopLevelCustomMenu( iocManager.lookupBean( AboutMenuBuilder.class ).getInstance() )
+                .endMenu()
                 .build();
 
         menubar.addMenus( menus );
@@ -216,18 +219,19 @@ public class DroolsWorkbenchEntryPoint {
 
     private void logout() {
         authService.call( new RemoteCallback<Void>() {
-            @Override
-            public void callback( Void response ) {
-                redirect( GWT.getHostPageBaseURL() + "login.jsp" );
-            }
-        }, new BusErrorCallback() {
-            @Override
-            public boolean error( Message message,
-                                  Throwable throwable ) {
-                Window.alert( "Logout failed: " + throwable );
-                return true;
-            }
-        } ).logout();
+                              @Override
+                              public void callback( Void response ) {
+                                  redirect( GWT.getHostPageBaseURL() + "login.jsp" );
+                              }
+                          }, new BusErrorCallback() {
+                              @Override
+                              public boolean error( Message message,
+                                                    Throwable throwable ) {
+                                  Window.alert( "Logout failed: " + throwable );
+                                  return true;
+                              }
+                          }
+                        ).logout();
     }
 
     //Fade out the "Loading application" pop-up
