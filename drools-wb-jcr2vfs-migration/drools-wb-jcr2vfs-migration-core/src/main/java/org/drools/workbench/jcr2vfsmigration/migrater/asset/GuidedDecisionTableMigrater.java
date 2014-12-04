@@ -4,14 +4,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.httpclient.util.URIUtil;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
-import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageHeaderInfo;
 import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
@@ -25,8 +22,8 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardCopyOption;
+
 
 @ApplicationScoped
 public class GuidedDecisionTableMigrater extends BaseAssetMigrater {

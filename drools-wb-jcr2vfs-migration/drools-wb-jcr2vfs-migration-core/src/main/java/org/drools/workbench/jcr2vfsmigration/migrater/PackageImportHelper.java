@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.Charset;
 import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -18,7 +17,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.google.common.base.Charsets;
-import org.apache.commons.httpclient.util.URIUtil;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
@@ -29,6 +27,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.java.nio.EncodingUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -49,8 +48,8 @@ public class PackageImportHelper {
         try{
             pkName =pkg.getPackageName();
 
-            if(pkName!=null && pkg.getPackageName().endsWith(URIUtil.decode(resource.getFileName()))){
-                pkName = pkg.getPackageName().substring(0,pkg.getPackageName().indexOf(URIUtil.decode(resource.getFileName()))-1);
+            if(pkName!=null && pkg.getPackageName().endsWith(EncodingUtil.decode(resource.getFileName()))){
+                pkName = pkg.getPackageName().substring(0,pkg.getPackageName().indexOf(EncodingUtil.decode(resource.getFileName()))-1);
             }
         }catch (Exception e){
         }
@@ -223,8 +222,8 @@ public class PackageImportHelper {
             String pkName =null;
             try{
                 pkName =pkg.getPackageName();
-                if(pkName!=null && pkg.getPackageName().endsWith(URIUtil.decode(resource.getFileName()))){
-                    pkName = pkg.getPackageName().substring(0,pkg.getPackageName().indexOf(URIUtil.decode(resource.getFileName()))-1);
+                if(pkName!=null && pkg.getPackageName().endsWith(EncodingUtil.decode(resource.getFileName()))){
+                    pkName = pkg.getPackageName().substring(0,pkg.getPackageName().indexOf(EncodingUtil.decode(resource.getFileName()))-1);
                 }
             }catch (Exception e){
 
