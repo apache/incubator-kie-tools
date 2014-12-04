@@ -70,7 +70,6 @@ public class VfsImporter {
 
         try {
             migrationPathManager.setRepoName( vfsImportConfig.getOutputRepoName(), vfsImportConfig.getOutputVfsRepository().getCanonicalPath() );
-//            setupDirectories();
             startContexts();
 
             //TO-DO-LIST:
@@ -88,21 +87,9 @@ public class VfsImporter {
             endContexts();
         } catch ( Throwable t ) {
             //We print out whatever unexpected exceptions we got here
-            Jcr2VfsMigrationApp.hasErrors = true;
             t.printStackTrace();
         }
 
-        // TODO
-//        if ( Jcr2VfsMigrationApp.hasWarnings ) {
-//            System.out.format( "Migration ended with warnings. Written into outputVfsRepository ({%s}).%n",
-//                               migrationConfig.getOutputVfsRepository().getAbsolutePath() );
-//        } else if ( Jcr2VfsMigrationApp.hasErrors ) {
-//            System.out.format( "Migration ended with errors. Written into outputVfsRepository ({%s}).%n",
-//                               migrationConfig.getOutputVfsRepository().getAbsolutePath() );
-//        } else {
-//            System.out.format( "Migration ended. Written into outputVfsRepository ({%s}).%n",
-//                               migrationConfig.getOutputVfsRepository().getAbsolutePath() );
-//        }
     }
 
     protected void startContexts() {
@@ -128,5 +115,4 @@ public class VfsImporter {
             sessionContext.dissociate( sessionDataStore );
         }
     }
-
 }

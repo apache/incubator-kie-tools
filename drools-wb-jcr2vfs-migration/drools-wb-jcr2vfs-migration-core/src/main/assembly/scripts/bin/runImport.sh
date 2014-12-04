@@ -1,9 +1,9 @@
 #!/bin/sh
 
-mainClass=org.drools.workbench.jcr2vfsmigration.JcrExporterLauncher
+mainClass=org.drools.workbench.jcr2vfsmigration.VfsImporterLauncher
 
-# echo "Usage: ./runExport.sh"
-# echo "For example: ./runExport.sh"
+# echo "Usage: ./runImport.sh"
+# echo "For example: ./runImport.sh"
 # echo "Some notes:"
 # echo "- Working dir should be the directory of this script."
 # echo "- Java is recommended to be JDK and java 6 for optimal performance"
@@ -11,7 +11,7 @@ mainClass=org.drools.workbench.jcr2vfsmigration.JcrExporterLauncher
 # echo "  For example (linux): export JAVA_HOME=/usr/lib/jvm/java-6-sun"
 # echo "  For example (mac): export JAVA_HOME=/Library/Java/Home"
 # echo
-# echo "Starting export app..."
+# echo "Starting import app..."
 
 # following jar has to be first on classpath because of https://bugzilla.redhat.com/show_bug.cgi?id=987920
 DROOLSJBPM5_UBERJAR=`find ../libs -name "guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5*"`

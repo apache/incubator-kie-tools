@@ -92,18 +92,6 @@ public class JcrExporter {
             //We print out whatever unexpected exceptions we got here
             t.printStackTrace();
         }
-
-        // TODO
-//        if ( Jcr2VfsMigrationApp.hasWarnings ) {
-//            System.out.format( "Migration ended with warnings. Written into outputVfsRepository ({%s}).%n",
-//                    migrationConfig.getOutputVfsRepository().getAbsolutePath() );
-//        } else if ( Jcr2VfsMigrationApp.hasErrors ) {
-//            System.out.format( "Migration ended with errors. Written into outputVfsRepository ({%s}).%n",
-//                    migrationConfig.getOutputVfsRepository().getAbsolutePath() );
-//        } else {
-//            System.out.format( "Migration ended. Written into outputVfsRepository ({%s}).%n",
-//                    migrationConfig.getOutputVfsRepository().getAbsolutePath() );
-//        }
     }
 
     protected void setupDirectories() {
@@ -199,5 +187,4 @@ public class JcrExporter {
             sessionContext.dissociate( sessionDataStore );
         }
     }
-
 }

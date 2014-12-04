@@ -51,14 +51,14 @@ public class PlainTextAssetWithPackagePropertyImporter implements AssetImporter<
         sourceWithImport = packageImportHelper.assertPackageName( sourceWithImport, path );
 
         ioService.write( nioPath,
-                sourceWithImport,
-                ( Map ) null,    // cast is for disambiguation
+                         sourceWithImport,
+                         ( Map ) null,    // cast is for disambiguation
 // todo               migrateMetaData(jcrModule, asset),
 // todo               new CommentedOption( asset.getLastContributor(),
 //                        null,
 //                        asset.getCheckinComment(),
 //                        asset.getLastModified().getTime() ) );
-                new CommentedOption( "" )
+                         new CommentedOption( "" )
         );
     }
 }

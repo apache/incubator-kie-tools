@@ -46,10 +46,6 @@ public class JcrExporterLauncher {
             shutdown();
             System.exit( 0 );
         }
-
-//        if ( hasErrors ) {
-//            throw new RuntimeException( "Migration ended with errors - see log for more details." );
-//        }
     }
 
     public void launchExport( String... args ) {

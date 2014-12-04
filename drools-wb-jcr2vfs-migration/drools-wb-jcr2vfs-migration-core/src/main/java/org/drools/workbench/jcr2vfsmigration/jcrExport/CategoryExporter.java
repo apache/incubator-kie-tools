@@ -34,10 +34,6 @@ public class CategoryExporter {
 
     protected static final Logger logger = LoggerFactory.getLogger(CategoryExporter.class);
 
-    public static final String CATEGORIES = "categories";
-    public static final String CATEGORY = "category";
-    public static final String CATEGORY_NAME = "name";
-
     @Inject
     protected RepositoryCategoryService jcrRepositoryCategoryService;
 

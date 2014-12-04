@@ -20,8 +20,6 @@ import org.jboss.weld.environment.se.WeldContainer;
 
 public class VfsImporterLauncher {
 
-    public static boolean hasErrors = false;
-    public static boolean hasWarnings = false;
     private Weld weld;
     private WeldContainer weldContainer;
     private VfsImporter vfsImporter;
@@ -35,7 +33,7 @@ public class VfsImporterLauncher {
         try {
             new VfsImporterLauncher().run( args );
         } catch ( Exception e ) {
-            // stacktrace should not be printed to stdout (the exception should be already logged)
+            e.printStackTrace();
             System.exit( -1 );
         }
     }
@@ -52,10 +50,6 @@ public class VfsImporterLauncher {
         } finally {
             shutdown();
         }
-
-//        if ( hasErrors ) {
-//            throw new RuntimeException( "Migration ended with errors - see log for more details." );
-//        }
     }
 
     public void launchImport( String... args ) {
