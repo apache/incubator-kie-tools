@@ -91,4 +91,9 @@ public interface CommonConstants
 
     String ExceptionGeneric0( final String message );
 
+    String ItemDeletedSuccessfully();
+    String DeletePopupTitle();
+    String DeletePopupDelete();
+
+
 }

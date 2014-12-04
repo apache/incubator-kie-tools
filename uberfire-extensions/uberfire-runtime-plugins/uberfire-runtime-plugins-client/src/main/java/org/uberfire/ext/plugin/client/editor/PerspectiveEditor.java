@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Dropdown;
@@ -51,10 +52,15 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.popups.DeletePopup;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.ext.plugin.client.code.CodeList.*;
@@ -105,6 +111,12 @@ public class PerspectiveEditor
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private Event<NotificationEvent> notification;
+
+    @Inject
+    private BusyIndicatorView busyIndicatorView;
 
     private PlaceRequest place;
 
@@ -198,8 +210,7 @@ public class PerspectiveEditor
         }, new Command() {
             @Override
             public void execute() {
-                pluginServices.call().delete( plugin );
-                placeManager.forceClosePlace( place );
+                onDelete();
             }
         } );
     }
@@ -249,4 +260,29 @@ public class PerspectiveEditor
         leftHorizontalSplit.getElement().getStyle().setTop( topArea.getOffsetHeight() - 6, Style.Unit.PX );
         editorResizing.execute();
     }
+
+    protected void onDelete() {
+        final DeletePopup popup = new DeletePopup(
+
+                new Command() {
+                    @Override
+                    public void execute() {
+                        pluginServices.call( new RemoteCallback<Void>() {
+
+                            @Override
+                            public void callback( final Void response ) {
+                                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.SUCCESS));
+                                placeManager.closePlace(place);
+                                busyIndicatorView.hideBusyIndicator();
+                            }
+                        }, new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete(plugin);
+
+
+                    }
+                }
+        );
+
+        popup.show();
+    }
+
 }
