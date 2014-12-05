@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -38,6 +40,9 @@ import org.uberfire.workbench.model.menu.Menus;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -90,6 +95,43 @@ public class PanelManagerImpl implements PanelManager {
 
     @Inject
     private BeanFactory beanFactory;
+
+    /**
+     * Registration for the native preview handler that watches for ^M events and maximizes/restores the current panel.
+     */
+    private HandlerRegistration globalHandlerRegistration;
+
+    /**
+     * The currently maximized panel. Set to null when a panel is not maximized.
+     */
+    private WorkbenchPanelPresenter maximizedPanel = null;
+
+    @PostConstruct
+    private void setup() {
+        globalHandlerRegistration = com.google.gwt.user.client.Event.addNativePreviewHandler( new NativePreviewHandler() {
+
+            @Override
+            public void onPreviewNativeEvent( NativePreviewEvent event ) {
+                if ( event.getTypeInt() == com.google.gwt.user.client.Event.ONKEYPRESS &&
+                        event.getNativeEvent().getCharCode() == 'm' &&
+                        event.getNativeEvent().getCtrlKey() ) {
+                    if ( maximizedPanel != null ) {
+                        maximizedPanel.unmaximize();
+                        maximizedPanel = null;
+                    } else if ( activePart != null ) {
+                        WorkbenchPanelPresenter activePanelPresenter = mapPanelDefinitionToPresenter.get( activePart.getParentPanel() );
+                        activePanelPresenter.maximize();
+                        maximizedPanel = activePanelPresenter;
+                    }
+                }
+            }
+        } );
+    }
+
+    @PreDestroy
+    private void teardown() {
+        globalHandlerRegistration.removeHandler();
+    }
 
     protected BeanFactory getBeanFactory() {
         return beanFactory;

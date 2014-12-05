@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -28,11 +26,9 @@ public abstract class AbstractDockingWorkbenchPanelPresenter<P extends AbstractW
 extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPresenter {
 
     public AbstractDockingWorkbenchPanelPresenter( WorkbenchPanelView<P> view,
-                                                   PerspectiveManager perspectiveManager,
-                                                   Event<MaximizePlaceEvent> maximizePanelEvent ) {
+                                                   PerspectiveManager perspectiveManager ) {
         super( view,
-               perspectiveManager,
-               maximizePanelEvent );
+               perspectiveManager );
     }
 
     /**

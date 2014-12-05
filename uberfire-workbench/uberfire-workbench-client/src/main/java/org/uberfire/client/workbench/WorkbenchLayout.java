@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Used by the workbench to construct the outer most DOM structure (header, footer and perspective container).
@@ -67,4 +68,19 @@ public interface WorkbenchLayout {
      */
     void resizeTo(int width, int height);
 
+    /**
+     * Makes the given widget fill the entire space normally dedicated to the perspective container. Has no effect if
+     * the given widget is already maximized.
+     *
+     * @param w the Widget to maximize.
+     */
+    void maximize( Widget w );
+
+    /**
+     * Restores a previously maximized widget to its original size and position. Has no effect if the given widget is
+     * not currently in a maximized state set up by {@link #maximize(Widget)}.
+     *
+     * @param w the Widget to restore to its original size and location.
+     */
+    void unmaximize( Widget w );
 }

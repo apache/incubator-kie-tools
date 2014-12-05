@@ -19,7 +19,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PartManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -43,13 +43,13 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     private LayoutPanelPresenter presenter;
 
     @Inject
-    private PlaceManager placeManager;
-
-    @Inject
     private PartManager partManager;
 
-    public LayoutPanelView() {
+    @Inject
+    private WorkbenchLayout workbenchLayout;
 
+    @Inject
+    public LayoutPanelView() {
         layout = new LayoutPanel();
         layout.setStyleName("fill-layout");
     }
@@ -130,5 +130,15 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
         } else {
             asWidget().getElement().setAttribute( "id", elementId );
         }
+    }
+
+    @Override
+    public void maximize() {
+        workbenchLayout.maximize( asWidget() );
+    }
+
+    @Override
+    public void unmaximize() {
+        workbenchLayout.unmaximize( asWidget() );
     }
 }

@@ -16,11 +16,9 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 
 /**
  * Exactly like {@link SimpleWorkbenchPanelPresenter} but has drag and drop enabled by default.
@@ -30,9 +28,8 @@ public class SimpleDnDWorkbenchPanelPresenter extends AbstractDockingWorkbenchPa
 
     @Inject
     public SimpleDnDWorkbenchPanelPresenter( final SimpleDnDWorkbenchPanelView view,
-                                             final PerspectiveManager perspectiveManager,
-                                             final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, perspectiveManager, maximizePanelEvent );
+                                             final PerspectiveManager perspectiveManager ) {
+        super( view, perspectiveManager );
         view.enableDnd();
     }
 

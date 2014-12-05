@@ -1,6 +1,8 @@
 package org.uberfire.client.workbench;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -11,19 +13,103 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The default layout implementation.
  */
 @ApplicationScoped
 public class WorkbenchLayoutImpl implements WorkbenchLayout {
+
+    /**
+     * Holder for style information that was modified in order to maximize a panel.
+     */
+    public class OriginalStyleInfo {
+
+        private String position;
+        private String top;
+        private String left;
+        private String width;
+        private String height;
+        private String zIndex;
+
+        /**
+         * Restores to {@code w} all style values to those most recently set on this instance.
+         *
+         * @param w the widget to restore styles on.
+         */
+        public void restore( Widget w ) {
+            Style style = w.getElement().getStyle();
+            style.setProperty( "position", position );
+            style.setProperty( "top", top );
+            style.setProperty( "left", left );
+            style.setProperty( "width", width );
+            style.setProperty( "height", height );
+            style.setProperty( "zIndex", zIndex );
+        }
+
+        public String getPosition() {
+            return position;
+        }
+
+        public void setPosition( String position ) {
+            this.position = position;
+        }
+
+        public String getTop() {
+            return top;
+        }
+
+        public void setTop( String top ) {
+            this.top = top;
+        }
+
+        public String getLeft() {
+            return left;
+        }
+
+        public void setLeft( String left ) {
+            this.left = left;
+        }
+
+        public String getWidth() {
+            return width;
+        }
+
+        public void setWidth( String width ) {
+            this.width = width;
+        }
+
+        public String getHeight() {
+            return height;
+        }
+
+        public void setHeight( String height ) {
+            this.height = height;
+        }
+
+        public String getZIndex() {
+            return zIndex;
+        }
+
+        public void setZIndex( String zIndex ) {
+            this.zIndex = zIndex;
+        }
+
+    }
+
+    private static final int MAXIMIZED_PANEL_Z_INDEX = 100000;
 
     /**
      * Top-level widget of the whole workbench layout. This panel contains the nested container panels for headers,
@@ -129,6 +215,73 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         // The dragBoundary can't be a LayoutPanel, so it doesn't support ProvidesResize/RequiresResize.
         // We start the cascade of onResize() calls at its immediate child.
         perspectiveRootContainer.onResize();
+
+        updateMaximizedPanelSizes();
+    }
+
+    private void updateMaximizedPanelSizes() {
+        for ( Widget w : maximizedWidgetOriginalStyles.keySet() ) {
+            Style style = w.getElement().getStyle();
+            style.setTop( perspectiveRootContainer.getAbsoluteTop(), Unit.PX );
+            style.setLeft( perspectiveRootContainer.getAbsoluteLeft(), Unit.PX );
+            style.setWidth( perspectiveRootContainer.getOffsetWidth(), Unit.PX );
+            style.setHeight( perspectiveRootContainer.getOffsetHeight(), Unit.PX );
+        }
+    }
+
+    private final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles = new HashMap<Widget, OriginalStyleInfo>();
+
+    @Override
+    public void maximize( Widget w ) {
+        if ( maximizedWidgetOriginalStyles.get( w ) != null ) {
+            return;
+        }
+
+        // this allows application-specified background colour, animation, borders, etc.
+        w.addStyleName( "uf-maximized-panel" );
+
+        Style style = w.getElement().getStyle();
+        OriginalStyleInfo backup = new OriginalStyleInfo();
+
+        backup.setPosition( style.getPosition() );
+        style.setPosition( Position.FIXED );
+
+        backup.setTop( style.getTop() );
+        style.setTop( perspectiveRootContainer.getAbsoluteTop(), Unit.PX );
+
+        backup.setLeft( style.getLeft() );
+        style.setLeft( perspectiveRootContainer.getAbsoluteLeft(), Unit.PX );
+
+        backup.setWidth( style.getWidth() );
+        style.setWidth( perspectiveRootContainer.getOffsetWidth(), Unit.PX );
+
+        backup.setHeight( style.getHeight() );
+        style.setHeight( perspectiveRootContainer.getOffsetHeight(), Unit.PX );
+
+        backup.setZIndex( style.getZIndex() );
+        style.setZIndex( MAXIMIZED_PANEL_Z_INDEX );
+
+        maximizedWidgetOriginalStyles.put( w, backup );
+
+        if ( w instanceof RequiresResize ) {
+            ((RequiresResize) w).onResize();
+        }
+    }
+
+    @Override
+    public void unmaximize( Widget w ) {
+
+        w.removeStyleName( "uf-maximized-panel" );
+
+        OriginalStyleInfo originalStyleInfo = maximizedWidgetOriginalStyles.remove( w );
+        if ( originalStyleInfo != null ) {
+            originalStyleInfo.restore( w );
+        }
+
+        if ( w instanceof RequiresResize ) {
+            ((RequiresResize) w).onResize();
+        }
+
     }
 
 }

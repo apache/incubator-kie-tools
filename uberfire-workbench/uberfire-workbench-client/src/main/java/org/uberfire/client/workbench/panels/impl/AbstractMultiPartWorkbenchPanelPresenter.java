@@ -20,12 +20,9 @@ import static org.uberfire.workbench.model.ContextDisplayMode.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.event.Event;
-
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -44,9 +41,8 @@ extends AbstractDockingWorkbenchPanelPresenter<P> {
 
     protected AbstractMultiPartWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
                                                         final ActivityManager activityManager,
-                                                        final PerspectiveManager perspectiveManager,
-                                                        final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, perspectiveManager, maximizePanelEvent );
+                                                        final PerspectiveManager perspectiveManager ) {
+        super( view, perspectiveManager );
         this.activityManager = activityManager;
     }
 

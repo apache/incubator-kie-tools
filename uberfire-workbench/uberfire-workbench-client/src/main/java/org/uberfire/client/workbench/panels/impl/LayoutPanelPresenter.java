@@ -1,12 +1,12 @@
 /*
  * Copyright 2012 JBoss Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,12 +16,10 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 
 // TODO (hbraun) needs javadoc
 @Dependent
@@ -29,9 +27,8 @@ public class LayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<Layout
 
     @Inject
     public LayoutPanelPresenter(@Named("LayoutPanelView") final LayoutPanelView view,
-                                final PerspectiveManager perspectiveManager,
-                                final Event<MaximizePlaceEvent> maximizePanelEvent ) {
-        super( view, perspectiveManager, maximizePanelEvent );
+                                final PerspectiveManager perspectiveManager ) {
+        super( view, perspectiveManager );
     }
 
     @Override

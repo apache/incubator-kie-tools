@@ -3,15 +3,12 @@ package org.uberfire.client.workbench.panels.impl;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-import javax.enterprise.event.Event;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.ContextActivity;
 import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
@@ -33,7 +30,6 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 public abstract class AbstractWorkbenchPanelPresenterTest {
 
     @Mock protected PerspectiveManager mockPerspectiveManager;
-    @Mock protected Event<MaximizePlaceEvent> maximizePanelEvent;
     @Mock protected ActivityManager mockActivityManager;
     @Mock protected View mockPartView;
     @Mock protected WorkbenchPartPresenter mockPartPresenter;

@@ -90,3 +90,12 @@
 .navbar-fixed-top, .navbar-fixed-bottom {
     position: static !important;
 }
+
+/* Styles prefixed with uf- are not obfuscated and can be overridden in application stylesheets. */
+@external .uf-*;
+
+/* Maximized panels must have an opaque background. The application can override the default (white) in its own stylesheet.
+   Size and position are handled programmatically in the WorkbenchLayout implementation. */
+.uf-maximized-panel {
+	background-color: #fff;
+}

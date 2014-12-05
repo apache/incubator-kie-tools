@@ -59,6 +59,10 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
     @Inject
     protected BeanFactory factory;
 
+    /**
+     * The topmost widget (closest to DOM root) that this panel view manages. Contains either partViewContainer itself
+     * (when there are no child panels) or a splitter (when there is at least one child panel).
+     */
     @Inject
     private SimpleLayoutPanel topLevelWidget;
 
@@ -328,5 +332,21 @@ extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
                 widget.onResize();
             }
         } );
+    }
+
+    /**
+     * Overridden to maximize the widget returned by {@link #getPartViewContainer()}.
+     */
+    @Override
+    public void maximize() {
+        workbenchLayout.maximize( getPartViewContainer() );
+    }
+
+    /**
+     * Overridden to match {@link #maximize()}.
+     */
+    @Override
+    public void unmaximize() {
+        workbenchLayout.unmaximize( getPartViewContainer() );
     }
 }

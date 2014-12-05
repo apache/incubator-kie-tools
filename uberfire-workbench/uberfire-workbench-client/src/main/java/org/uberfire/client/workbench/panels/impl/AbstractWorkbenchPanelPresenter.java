@@ -21,10 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 
 import org.uberfire.client.mvp.PerspectiveManager;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -47,15 +45,12 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     private final WorkbenchPanelView<P> view;
     protected final PerspectiveManager perspectiveManager;
     private PanelDefinition definition;
-    private final Event<MaximizePlaceEvent> maximizePanelEvent;
     protected final Map<Position, WorkbenchPanelPresenter> childPanels = new HashMap<Position, WorkbenchPanelPresenter>();
 
     public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
-                                            final PerspectiveManager perspectiveManager,
-                                            final Event<MaximizePlaceEvent> maximizePanelEvent ) {
+                                            final PerspectiveManager perspectiveManager ) {
         this.view = view;
         this.perspectiveManager = perspectiveManager;
-        this.maximizePanelEvent = maximizePanelEvent;
     }
 
     /**
@@ -201,11 +196,12 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
 
     @Override
     public void maximize() {
-        if ( !getDefinition().isRoot() ) {
-            for ( final PartDefinition part : getDefinition().getParts() ) {
-                maximizePanelEvent.fire( new MaximizePlaceEvent( part.getPlace() ) );
-            }
-        }
+        view.maximize();
+    }
+
+    @Override
+    public void unmaximize() {
+        view.unmaximize();
     }
 
     @Override

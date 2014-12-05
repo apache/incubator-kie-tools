@@ -3,10 +3,12 @@ package org.uberfire.client.workbench.panels.impl;
 import java.util.IdentityHashMap;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.TemplatedActivity;
+import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -40,6 +42,9 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
     private String elementId;
 
     private final IdentityHashMap<WorkbenchPanelView<?>, NamedPosition> childPanelPositions = new IdentityHashMap<WorkbenchPanelView<?>, NamedPosition>();
+
+    @Inject
+    private WorkbenchLayout workbenchLayout;
 
     @Override
     public void init( TemplatedWorkbenchPanelPresenter presenter ) {
@@ -149,5 +154,15 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
                 asWidget().getElement().setAttribute( "id", elementId );
             }
         }
+    }
+
+    @Override
+    public void maximize() {
+        workbenchLayout.maximize( asWidget() );
+    }
+
+    @Override
+    public void unmaximize() {
+        workbenchLayout.unmaximize( asWidget() );
     }
 }

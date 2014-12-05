@@ -17,6 +17,7 @@ package org.uberfire.client.workbench.panels;
 
 import java.util.Map;
 
+import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -145,7 +146,16 @@ public interface WorkbenchPanelPresenter {
 
     public boolean selectPart( final PartDefinition part );
 
+    /**
+     * Makes this panel's view take up most of the space on the workbench. The exact meaning of "maximize" is left to
+     * the implementation of {@link WorkbenchLayout}.
+     */
     public void maximize();
+
+    /**
+     * Restores this panel's view to its original unmaximized size and position.
+     */
+    public void unmaximize();
 
     /**
      * Returns the view that was given to this panel when it was first created.

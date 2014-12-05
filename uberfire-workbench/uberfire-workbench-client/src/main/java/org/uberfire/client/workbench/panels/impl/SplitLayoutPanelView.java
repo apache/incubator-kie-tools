@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.commons.data.Pair;
@@ -51,6 +52,9 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
 
     @Inject
     PlaceManager placeManager;
+
+    @Inject
+    private WorkbenchLayout workbenchLayout;
 
     public SplitLayoutPanelView() {
         layout = new SplitLayoutPanel(2);
@@ -155,4 +159,13 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
         }
     }
 
+    @Override
+    public void maximize() {
+        workbenchLayout.maximize( asWidget() );
+    }
+
+    @Override
+    public void unmaximize() {
+        workbenchLayout.unmaximize( asWidget() );
+    }
 }
