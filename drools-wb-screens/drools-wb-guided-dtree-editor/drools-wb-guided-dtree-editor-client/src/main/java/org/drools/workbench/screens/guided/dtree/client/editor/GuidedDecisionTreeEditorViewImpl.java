@@ -78,9 +78,4 @@ public class GuidedDecisionTreeEditorViewImpl
                                     isReadOnly );
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
 }

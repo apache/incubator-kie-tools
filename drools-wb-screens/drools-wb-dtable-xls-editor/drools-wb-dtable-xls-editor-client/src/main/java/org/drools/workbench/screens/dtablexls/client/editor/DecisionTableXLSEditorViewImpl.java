@@ -186,8 +186,4 @@ public class DecisionTableXLSEditorViewImpl
         notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
 }

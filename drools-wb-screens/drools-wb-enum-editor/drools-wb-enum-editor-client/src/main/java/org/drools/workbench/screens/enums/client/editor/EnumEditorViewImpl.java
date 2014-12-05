@@ -165,8 +165,4 @@ public class EnumEditorViewImpl
         return sb.toString();
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
 }

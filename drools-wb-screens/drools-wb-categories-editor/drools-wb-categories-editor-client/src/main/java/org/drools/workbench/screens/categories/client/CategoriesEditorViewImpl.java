@@ -131,11 +131,6 @@ public class CategoriesEditorViewImpl
         return explorer.getCategories();
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
     public class CategoryEditor extends FormStylePopup {
 
         private final CategoryItem parent;

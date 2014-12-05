@@ -84,9 +84,4 @@ public class GuidedDecisionTableEditorViewImpl
         }
         editor.onFocus();
     }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
 }

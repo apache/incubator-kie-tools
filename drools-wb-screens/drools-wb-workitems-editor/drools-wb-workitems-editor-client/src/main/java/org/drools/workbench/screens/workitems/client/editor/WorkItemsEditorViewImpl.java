@@ -87,11 +87,6 @@ public class WorkItemsEditorViewImpl
     public String getContent() {
         return workItemWidget.getContent();
     }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
     
     @Override
     public void onElementSelected( final String title,

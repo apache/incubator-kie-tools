@@ -138,11 +138,6 @@ public class GlobalsEditorViewImpl
         this.isReadOnly = isReadOnly;
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
     @UiHandler("addGlobalButton")
     public void onClickAddGlobalButton( final ClickEvent event ) {
         addGlobalPopup.setContent( addGlobalCommand,

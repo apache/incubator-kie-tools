@@ -141,7 +141,6 @@ public class GuidedRuleEditorPresenter
                 }
 
                 GuidedRuleEditorPresenter.this.model = content.getModel();
-                GuidedRuleEditorPresenter.this.originalHash = content.getModel().hashCode();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
                 oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getPathToLatest(),
                         model,

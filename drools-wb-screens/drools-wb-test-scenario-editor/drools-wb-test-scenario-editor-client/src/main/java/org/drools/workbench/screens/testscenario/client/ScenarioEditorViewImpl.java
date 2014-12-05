@@ -364,8 +364,4 @@ public class ScenarioEditorViewImpl
                 CommonConstants.INSTANCE.NoSuchFileTabTitle());
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
-    }
 }

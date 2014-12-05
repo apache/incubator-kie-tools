@@ -79,8 +79,4 @@ public class GuidedRuleTemplateDataViewImpl
         } );
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
-    }
 }

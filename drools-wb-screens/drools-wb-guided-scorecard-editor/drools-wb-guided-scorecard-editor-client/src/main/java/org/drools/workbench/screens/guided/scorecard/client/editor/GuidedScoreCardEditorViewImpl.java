@@ -45,11 +45,6 @@ public class GuidedScoreCardEditorViewImpl
     }
 
     @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
-    @Override
     public void refreshFactTypes() {
         editor.refreshFactTypes();
     }

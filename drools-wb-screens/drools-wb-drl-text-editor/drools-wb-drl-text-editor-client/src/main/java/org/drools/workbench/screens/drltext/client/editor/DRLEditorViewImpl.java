@@ -125,10 +125,4 @@ public class DRLEditorViewImpl
         return ruleContentWidget.getContent();
     }
 
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
 }
