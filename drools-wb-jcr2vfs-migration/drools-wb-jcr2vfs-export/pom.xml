@@ -44,6 +44,7 @@
 
   <dependencies>
 
+    <!-- Referenced because uses FileManager -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-jcr2vfs-migration-core</artifactId>

@@ -18,7 +18,7 @@ package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.repository.AssetItem;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.DRLMigrationUtils;
+import org.drools.workbench.jcr2vfsmigration.util.ExportUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 
 public class PlainTextAssetWithPackagePropertyExporter
@@ -53,7 +53,7 @@ public class PlainTextAssetWithPackagePropertyExporter
                 || AssetFormats.RULE_TEMPLATE.equals(jcrAssetItem.getFormat())
                 || AssetFormats.DRL.equals(jcrAssetItem.getFormat())
                 || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
-            content = DRLMigrationUtils.migrateStartOfCommentChar( content );
+            content = ExportUtils.migrateStartOfCommentChar( content );
         }
 
         return new PlainTextAsset( name, format, content );

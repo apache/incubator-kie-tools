@@ -41,8 +41,7 @@ import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedDecisionTable
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedEditorExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.PlainTextAssetWithPackagePropertyExporter;
-import org.drools.workbench.jcr2vfsmigration.migrater.GlobalParser;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
+import org.drools.workbench.jcr2vfsmigration.util.ExportUtils;
 import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
@@ -62,7 +61,7 @@ public class ModuleAssetExporter {
     private FileManager fileManager;
 
     @Inject
-    private MigrationPathManager migrationPathManager;
+    private ExportUtils exportUtils;
 
     @Inject
     private RepositoryModuleService jcrRepositoryModuleService;
@@ -136,7 +135,7 @@ public class ModuleAssetExporter {
 
         // Save module name for later
         String moduleName = jcrModule.getName();
-        String normalizedPackageName = migrationPathManager.normalizePackageName( jcrModule.getName() );
+        String normalizedPackageName = exportUtils.normalizePackageName( jcrModule.getName() );
         jcrModule.setName( normalizedPackageName );
 
         // Export package header info
@@ -162,7 +161,7 @@ public class ModuleAssetExporter {
 
         // Export globalsString
         StringBuffer sbGlobal = new StringBuffer();
-        List<String> lGlobals = GlobalParser.parseGlobals( packageHeaderInfo );
+        List<String> lGlobals = ExportUtils.parseGlobals( packageHeaderInfo );
         if (lGlobals.size() > 0) {
             for(String global : lGlobals) {
                 sbGlobal.append(GLOBAL_KEYWORD);
