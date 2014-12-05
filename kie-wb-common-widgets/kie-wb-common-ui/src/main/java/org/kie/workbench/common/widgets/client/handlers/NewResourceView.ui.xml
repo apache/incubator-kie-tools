@@ -32,7 +32,7 @@
       <b:ControlGroup ui:field="fileNameGroup">
         <b:ControlLabel for="fileName">
           <font color="red">*</font>
-            <base:InlineLabel text="{i18n.resourceName}"/>
+            <base:InlineLabel ui:field="fileTypeLabel" text="{i18n.resourceName}"/>
         </b:ControlLabel>
         <b:Controls>
           <b:TextBox b:id="fileName" ui:field="fileNameTextBox" placeholder="{i18n.resourceNamePlaceholder}"/>
@@ -40,9 +40,9 @@
         </b:Controls>
       </b:ControlGroup>
       
-      <b:ControlGroup>
+      <b:ControlGroup ui:field="handlerExtensionsGroup">
           <b:ControlLabel>
-              <base:InlineLabel text="{i18n.location}"/>
+              <base:InlineLabel text="{i18n.packageName}"/>
         </b:ControlLabel>
         <b:Controls addStyleNames="readonly">
             <g:VerticalPanel ui:field="handlerExtensions"/>

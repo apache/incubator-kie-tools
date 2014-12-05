@@ -16,23 +16,15 @@
 
 package org.kie.workbench.common.widgets.client.handlers;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Callback;
-import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 @ApplicationScoped
 public class NewResourcePresenter {
@@ -47,83 +39,26 @@ public class NewResourcePresenter {
 
         void setActiveHandler( final NewResourceHandler activeHandler );
 
-        void setHandlers( final List<NewResourceHandler> handlers );
-
-        void enableHandler( final NewResourceHandler handler,
-                            final boolean enabled );
-
         void setTitle( String title );
 
     }
-
-    @Inject
-    //This is used to get Active Package when New Resource Popup is shown.
-    protected ProjectContext context;
-
-    @Inject
-    private SyncBeanManager iocBeanManager;
-
-    @Inject
-    private Caller<KieProjectService> projectService;
 
     @Inject
     private View view;
 
     private NewResourceHandler activeHandler = null;
 
-    private final List<NewResourceHandler> handlers = new LinkedList<NewResourceHandler>();
-
     @PostConstruct
     private void setup() {
         view.init( this );
-        final Collection<IOCBeanDef<NewResourceHandler>> handlerBeans = iocBeanManager.lookupBeans( NewResourceHandler.class );
-        for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
-            final NewResourceHandler handler = handlerBean.getInstance();
-            handlers.add( handler );
-        }
-        view.setHandlers( handlers );
-    }
-
-    private void enableNewResourceHandlers( final ProjectContext context ) {
-        for ( final NewResourceHandler handler : this.handlers ) {
-            handler.acceptContext( context,
-                                   new Callback<Boolean, Void>() {
-                                       @Override
-                                       public void onFailure( Void reason ) {
-                                           // Nothing to do there right now.
-                                       }
-
-                                       @Override
-                                       public void onSuccess( final Boolean result ) {
-                                           if ( result != null ) {
-                                               view.enableHandler( handler,
-                                                                   result );
-                                           }
-                                       }
-                                   } );
-
-        }
-    }
-
-    public void show() {
-        show( null );
     }
 
     public void show( final NewResourceHandler handler ) {
-        activeHandler = handler;
-        if ( activeHandler == null ) {
-            activeHandler = handlers.get( 0 );
-        }
+        activeHandler = PortablePreconditions.checkNotNull( "handler",
+                                                            handler );
         view.show();
         view.setActiveHandler( activeHandler );
         view.setTitle( NewItemPopupConstants.INSTANCE.popupTitle() + " " + getActiveHandlerDescription() );
-
-        //Enable applicable handlers
-        enableNewResourceHandlers( context );
-    }
-
-    void setActiveHandler( final NewResourceHandler handler ) {
-        activeHandler = handler;
     }
 
     public void validate( final String fileName,
@@ -150,7 +85,7 @@ public class NewResourcePresenter {
         view.hide();
     }
 
-    public String getActiveHandlerDescription() {
+    private String getActiveHandlerDescription() {
         if ( activeHandler != null ) {
             return activeHandler.getDescription();
         } else {

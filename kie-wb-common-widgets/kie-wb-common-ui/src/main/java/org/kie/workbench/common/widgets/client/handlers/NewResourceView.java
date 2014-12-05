@@ -16,21 +16,16 @@
 
 package org.kie.workbench.common.widgets.client.handlers;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
-import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.github.gwtbootstrap.client.ui.TextBox;
+import com.github.gwtbootstrap.client.ui.base.InlineLabel;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.github.gwtbootstrap.client.ui.event.ShownEvent;
-import com.github.gwtbootstrap.client.ui.event.ShownHandler;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -56,8 +51,6 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
 
     private NewResourcePresenter presenter;
 
-    private final Map<NewResourceHandler, RadioButton> handlerToWidgetMap = new HashMap<NewResourceHandler, RadioButton>();
-
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
@@ -72,8 +65,6 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
         }
     };
 
-    private Widget activeHandlerWidget = null;
-
     private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
                                                                                       cancelCommand );
 
@@ -81,10 +72,16 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
     ControlGroup fileNameGroup;
 
     @UiField
+    InlineLabel fileTypeLabel;
+
+    @UiField
     TextBox fileNameTextBox;
 
     @UiField
     HelpInline fileNameHelpInline;
+
+    @UiField
+    ControlGroup handlerExtensionsGroup;
 
     @UiField
     VerticalPanel handlerExtensions;
@@ -94,21 +91,11 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
 
         add( uiBinder.createAndBindUi( this ) );
         add( footer );
-
-        addShownHandler( new ShownHandler() {
-            @Override
-            public void onShown( ShownEvent shownEvent ) {
-                if ( activeHandlerWidget != null ) {
-                    activeHandlerWidget.getElement().scrollIntoView();
-                }
-            }
-        } );
     }
 
     @Override
     public void init( final NewResourcePresenter presenter ) {
         this.presenter = presenter;
-
     }
 
     @Override
@@ -123,53 +110,18 @@ public class NewResourceView extends BaseModal implements NewResourcePresenter.V
     @Override
     public void setActiveHandler( final NewResourceHandler handler ) {
         final List<Pair<String, ? extends IsWidget>> extensions = handler.getExtensions();
+        final boolean showExtensions = !( extensions == null || extensions.isEmpty() );
+        fileTypeLabel.setText( handler.getDescription() );
+
         handlerExtensions.clear();
-        handlerExtensions.setVisible( !( extensions == null || extensions.isEmpty() ) );
-        if ( extensions != null ) {
+        handlerExtensionsGroup.getElement().getStyle().setDisplay( showExtensions ? Style.Display.BLOCK : Style.Display.NONE );
+        if ( showExtensions ) {
             for ( Pair<String, ? extends IsWidget> extension : extensions ) {
                 final ControlGroup cg = new ControlGroup();
                 cg.add( extension.getK2() );
                 handlerExtensions.add( cg );
             }
         }
-
-        //Select handler
-        final RadioButton option = handlerToWidgetMap.get( handler );
-        activeHandlerWidget = option;
-        if ( option != null ) {
-            option.setValue( true,
-                             true );
-        }
-
-    }
-
-    @Override
-    public void setHandlers( final List<NewResourceHandler> handlers ) {
-        //Sort handlers by description
-        Collections.sort( handlers, new Comparator<NewResourceHandler>() {
-            @Override
-            public int compare( final NewResourceHandler o1,
-                                final NewResourceHandler o2 ) {
-                return o1.getDescription().compareToIgnoreCase( o2.getDescription() );
-            }
-        } );
-
-    }
-
-    @Override
-    public void enableHandler( final NewResourceHandler handler,
-                               final boolean enabled ) {
-        final RadioButton handlerOption = this.handlerToWidgetMap.get( handler );
-        if ( handlerOption == null ) {
-            return;
-        }
-        handlerOption.setEnabled( enabled );
-    }
-
-    private void selectNewResourceHandler( final NewResourceHandler handler ) {
-        setActiveHandler( handler );
-        footer.enableOkButton( true );
-        presenter.setActiveHandler( handler );
     }
 
     private void onOKButtonClick() {

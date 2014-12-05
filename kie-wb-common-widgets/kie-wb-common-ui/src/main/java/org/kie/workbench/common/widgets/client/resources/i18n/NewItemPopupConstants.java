@@ -36,7 +36,7 @@ public interface NewItemPopupConstants
 
     String resourceName();
 
-    String location();
+    String packageName();
 
     String resourceNamePlaceholder();
 
