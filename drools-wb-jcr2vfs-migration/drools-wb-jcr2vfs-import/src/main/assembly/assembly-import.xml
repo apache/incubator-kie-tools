@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+
+  <id>assembly-import</id>
+  <formats>
+    <format>dir</format>
+    <format>zip</format>
+  </formats>
+
+  <includeBaseDirectory>true</includeBaseDirectory>
+
+  <fileSets>
+    <fileSet>
+      <directory>src/main/assembly/scripts</directory>
+      <lineEnding>unix</lineEnding>
+      <filtered>true</filtered>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>**/*.sh</include>
+      </includes>
+      <fileMode>755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/assembly/scripts</directory>
+      <lineEnding>dos</lineEnding>
+      <filtered>true</filtered>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>**/*.bat</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+
+  <dependencySets>
+    <!-- Binaries -->
+    <dependencySet>
+      <excludes>
+        <exclude>*:sources</exclude>
+        <!-- keep the alphabetical order! -->
+        <exclude>com.allen-sauer.gwt.dnd:gwt-dnd</exclude>
+        <exclude>com.github.gwtbootstrap:gwt-bootstrap</exclude>
+        <exclude>com.google.gwt:gwt-user</exclude>
+        <!-- org.javassist:javassist is included -->
+        <exclude>javassist:javassist</exclude>
+        <exclude>org.apache.ant:ant*</exclude>
+        <exclude>org.jboss.errai:*</exclude>
+        <exclude>org.jboss.resteasy:*</exclude>
+        <exclude>org.jgroups:jgroups</exclude>
+        <exclude>org.kie:kie-ci</exclude>
+        <exclude>xml-apis:xml-apis</exclude>
+      </excludes>
+      <includes>
+        <include>*:*</include>
+      </includes>
+      <outputDirectory>libs</outputDirectory>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>

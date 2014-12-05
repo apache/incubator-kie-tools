@@ -21,19 +21,15 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.workbench.jcr2vfsmigration.config.VfrImportConfig;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
+import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.CategoryImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.ModuleAssetImporter;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class VfsImporter {
-
-    protected static final Logger logger = LoggerFactory.getLogger( VfsImporter.class );
 
     @Inject
     protected VfrImportConfig vfsImportConfig;

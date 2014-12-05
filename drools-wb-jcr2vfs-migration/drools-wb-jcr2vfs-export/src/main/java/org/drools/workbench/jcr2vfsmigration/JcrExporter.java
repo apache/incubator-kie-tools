@@ -23,10 +23,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.guvnor.server.repository.GuvnorBootstrapConfiguration;
+import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.config.FSExportConfig;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.ModuleAssetExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.CategoryExporter;
-import org.drools.workbench.jcr2vfsmigration.util.FileManager;
 import org.jboss.weld.context.bound.BoundRequestContext;
 import org.jboss.weld.context.bound.BoundSessionContext;
 

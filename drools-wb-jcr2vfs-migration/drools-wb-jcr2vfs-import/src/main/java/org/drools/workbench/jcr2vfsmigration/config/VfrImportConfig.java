@@ -25,13 +25,9 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
 public class VfrImportConfig {
-
-    protected static final Logger logger = LoggerFactory.getLogger( VfrImportConfig.class );
 
     private static String DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
 

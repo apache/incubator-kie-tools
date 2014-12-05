@@ -24,9 +24,9 @@ import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.drools.workbench.jcr2vfsmigration.migrater.PackageImportHelper;
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.util.PackageImportHelper;
+import org.drools.workbench.jcr2vfsmigration.common.FileManager;
+import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.AttachmentAssetImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.FactModelImporter;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.asset.GuidedDecisionTableImporter;
@@ -50,8 +50,6 @@ import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
@@ -62,8 +60,6 @@ import org.w3c.dom.NodeList;
 
 @ApplicationScoped
 public class ModuleAssetImporter {
-
-    protected static final Logger logger = LoggerFactory.getLogger( ModuleAssetImporter.class );
 
     @Inject
     private Paths paths;

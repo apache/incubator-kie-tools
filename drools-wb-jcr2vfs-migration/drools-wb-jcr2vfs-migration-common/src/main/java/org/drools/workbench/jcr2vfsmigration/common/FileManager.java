@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.workbench.jcr2vfsmigration.util;
+package org.drools.workbench.jcr2vfsmigration.common;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

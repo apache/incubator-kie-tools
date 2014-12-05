@@ -23,22 +23,18 @@ import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.drools.workbench.jcr2vfsmigration.migrater.util.MigrationPathManager;
-import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
+import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.CategoriesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Categories;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Category;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 @ApplicationScoped
 public class CategoryImporter {
-
-    protected static final Logger logger = LoggerFactory.getLogger(CategoryImporter.class);
 
     @Inject
     FileManager fileManager;

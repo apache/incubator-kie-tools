@@ -22,7 +22,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.RepositoryCategoryService;
-import org.drools.workbench.jcr2vfsmigration.util.FileManager;
+import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.format.CategoriesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Categories;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Category;

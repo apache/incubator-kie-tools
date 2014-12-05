@@ -1,21 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2014 JBoss Inc
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -24,10 +9,11 @@
     <version>6.3.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-wb-jcr2vfs-export</artifactId>
+  <artifactId>drools-wb-jcr2vfs-import</artifactId>
 
-  <name>Drools Workbench - JCR to XML export utility</name>
-  <description>Exports the data of Guvnor 5 to XML</description>
+  <name>Drools Workbench - XML to VFS import utility</name>
+  <description>Imports the data from XML into VFS</description>
+
   <!--
     TODO declare the drools-wb-jcr2vfs-migration-xml artifact version like this for now, when this gets merged into master,
     TODO then declare the new module in the drools-bom inside droolsjbpm-build-bootstrap
@@ -60,22 +46,6 @@
       <artifactId>drools-wb-jcr2vfs-migration-common</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
-      <classifier>war-as-jar</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
-      <classifier>jars-as-uberjar</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>droolsjbpm-ide-common</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>commons-cli</groupId>
@@ -83,35 +53,81 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
     </dependency>
 
-    <!-- Introduced by drools-wb-jcr2vfs-migration-xml -->
+
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-repository</artifactId>
+      <artifactId>drools-workbench-models-guided-dtable</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp-core</artifactId>
+      <artifactId>drools-workbench-models-commons</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>guvnor-api</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-services-api</artifactId>
     </dependency>
+
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-services-api</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-data-modeller-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-data-modeller-core</artifactId>
+    </dependency>
+
+
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-server</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-nio2-model</artifactId>
+    </dependency>
+
 
     <!-- Weld Modules -->
     <dependency>
@@ -141,7 +157,7 @@
         </executions>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/assembly-export.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-import.xml</descriptor>
             <!-- Must be last -->
           </descriptors>
           <appendAssemblyId>false</appendAssemblyId>
