@@ -26,6 +26,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.versionhistory.event.VersionSelectedEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -47,6 +48,7 @@ public class VersionHistoryPresenter
     private Path path;
     private String version;
     private List<VersionRecord> records;
+    private ParameterizedCommand<VersionRecord> onCurrentVersionRefreshed;
 
     @Inject
     public VersionHistoryPresenter(
@@ -86,6 +88,7 @@ public class VersionHistoryPresenter
                 Collections.reverse(records);
                 VersionHistoryPresenter.this.records = records;
                 view.refreshGrid();
+                doOnCurrentVersionRefreshed( version );
             }
         };
     }
@@ -119,5 +122,20 @@ public class VersionHistoryPresenter
     public void refresh(String version) {
         this.version = version;
         loadContent();
+    }
+
+    public void setOnCurrentVersionRefreshed( ParameterizedCommand<VersionRecord> onCurrentVersionRefreshed ) {
+        this.onCurrentVersionRefreshed = onCurrentVersionRefreshed;
+    }
+
+    private void doOnCurrentVersionRefreshed( String version ) {
+        if ( onCurrentVersionRefreshed != null && records != null && version != null ) {
+            for ( VersionRecord record : records ) {
+                if ( version.equals( record.id() ) ) {
+                    onCurrentVersionRefreshed.execute( record );
+                    break;
+                }
+            }
+        }
     }
 }

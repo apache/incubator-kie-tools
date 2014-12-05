@@ -38,6 +38,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class OverviewWidgetViewImpl
         extends Composite
@@ -96,6 +98,13 @@ public class OverviewWidgetViewImpl
         this.discussionArea = discussionArea;
 
         this.versionHistory = versionHistory;
+
+        versionHistory.setOnCurrentVersionRefreshed( new ParameterizedCommand<VersionRecord>() {
+            @Override public void execute( VersionRecord record ) {
+                metadata.setNote( record.comment() );
+                setLastModified( record.author(), record.date() );
+            }
+        } );
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
