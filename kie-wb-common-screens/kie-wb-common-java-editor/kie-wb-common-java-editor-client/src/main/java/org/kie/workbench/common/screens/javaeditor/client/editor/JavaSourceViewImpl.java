@@ -46,8 +46,4 @@ public class JavaSourceViewImpl
         javaSourceViewer.clearContent();
     }
 
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
-    }
 }

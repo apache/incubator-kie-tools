@@ -2,93 +2,27 @@ package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
+import org.guvnor.common.services.project.model.ProjectImports;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
-import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
-import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.ext.widgets.common.client.common.MultiPageEditorView;
-import org.uberfire.ext.widgets.common.client.common.Page;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class ProjectImportsScreenViewImpl
-        extends MultiPageEditorView
+        extends KieEditorViewImpl
         implements ProjectImportsScreenView {
 
-    private MetadataWidget metadataWidget;
+    private ImportsWidgetPresenter importsWidget;
 
-    private Presenter presenter;
+    public ProjectImportsScreenViewImpl() {
+    }
 
     @Inject
-    public ProjectImportsScreenViewImpl( final BusyIndicatorView busyIndicatorView ) {
-        super();
-        this.metadataWidget = new MetadataWidget( busyIndicatorView );
-
+    public ProjectImportsScreenViewImpl(ImportsWidgetPresenter importsWidget) {
+        this.importsWidget = importsWidget;
+        initWidget(this.importsWidget.asWidget());
     }
 
     @Override
-    public void setPresenter( final Presenter presenter ) {
-        this.presenter = presenter;
+    public void setContent(ProjectImports model, boolean isReadOnly) {
+        importsWidget.setContent(model, isReadOnly);
     }
-
-    @Override
-    public void setImports( ImportsWidgetPresenter importsWidgetPresenter ) {
-        addPage( new Page( importsWidgetPresenter,
-                           ImportConstants.INSTANCE.Imports() ) {
-            @Override
-            public void onFocus() {
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-
-        addPage( new Page( metadataWidget,
-                           MetadataConstants.INSTANCE.Metadata() ) {
-            @Override
-            public void onFocus() {
-                presenter.onShowMetadata();
-            }
-
-            @Override
-            public void onLostFocus() {
-            }
-        } );
-    }
-
-    @Override
-    public void setMetadata( final Metadata metadata ) {
-        metadataWidget.setContent( metadata,
-                                   false );
-    }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public Metadata getMetadata() {
-        return metadataWidget.getContent();
-    }
-
-    @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
-
 }

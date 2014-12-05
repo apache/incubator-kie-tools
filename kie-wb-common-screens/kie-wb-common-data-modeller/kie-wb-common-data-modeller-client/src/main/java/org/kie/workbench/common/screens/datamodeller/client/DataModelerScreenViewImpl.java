@@ -86,11 +86,6 @@ public class DataModelerScreenViewImpl
     }
 
     @Override
-    public boolean confirmClose() {
-        return Window.confirm( Constants.INSTANCE.modelEditor_discard_changes_message());
-    }
-
-    @Override
     public void refreshTypeLists( boolean keepSelection ) {
         dataObjectBrowser.refreshTypeList( keepSelection );
         modelPropertiesEditor.refreshTypeList( keepSelection );

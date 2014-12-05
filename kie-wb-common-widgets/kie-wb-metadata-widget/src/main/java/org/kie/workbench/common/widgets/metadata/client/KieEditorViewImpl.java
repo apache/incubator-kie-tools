@@ -63,4 +63,8 @@ public abstract class KieEditorViewImpl
         BusyPopup.close();
     }
 
+    @Override
+    public boolean confirmClose() {
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+    }
 }

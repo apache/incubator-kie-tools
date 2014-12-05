@@ -1,29 +1,15 @@
 package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
-public interface ProjectImportsScreenView extends HasBusyIndicator,
+public interface ProjectImportsScreenView extends KieEditorView,
                                                   IsWidget {
 
-    interface Presenter {
-
-        void onShowMetadata();
-
-    }
-
-    void setPresenter( final Presenter presenter );
-
-    void setMetadata( final Metadata metadata );
-
-    Metadata getMetadata();
-
-    void setImports( ImportsWidgetPresenter importsWidgetPresenter );
-
-    boolean confirmClose();
-
-    void alertReadOnly();
+    void setContent(ProjectImports model, boolean isReadOnly);
 
 }

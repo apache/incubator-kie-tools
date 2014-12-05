@@ -16,142 +16,126 @@
 
 package org.kie.workbench.common.screens.projectimportsscreen.client.forms;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.shared.metadata.MetadataService;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.structure.client.file.CommandWithCommitMessage;
 import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.projectimportsscreen.client.resources.i18n.ProjectConfigScreenConstants;
 import org.kie.workbench.common.screens.projectimportsscreen.client.type.ProjectImportsResourceType;
+import org.kie.workbench.common.services.shared.project.ProjectImportsContent;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
+import org.kie.workbench.common.widgets.metadata.client.KieEditor;
+import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
-@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectImportsResourceType.class })
+@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = {ProjectImportsResourceType.class})
 public class ProjectImportsScreenPresenter
-        implements ProjectImportsScreenView.Presenter {
-
-    private BusyIndicatorView busyIndicatorView;
-    private Event<NotificationEvent> notification;
+        extends KieEditor {
 
     private ProjectImportsScreenView view;
 
     private Caller<ProjectImportsService> importsService;
-    private Caller<MetadataService> metadataService;
 
-    private FileMenuBuilder menuBuilder;
-    private Menus menus;
-
-    private Path path;
-    private ProjectImports content;
-    private ImportsWidgetPresenter importsWidget;
-
-    private boolean isReadOnly;
+    private ProjectImports model;
 
     public ProjectImportsScreenPresenter() {
     }
 
     @Inject
-    public ProjectImportsScreenPresenter( @New final ProjectImportsScreenView view,
-                                          @New final FileMenuBuilder menuBuilder,
-                                          @New final ImportsWidgetPresenter importsWidget,
-                                          final Event<NotificationEvent> notification,
-                                          final BusyIndicatorView busyIndicatorView,
-                                          final Caller<ProjectImportsService> importsService,
-                                          final Caller<MetadataService> metadataService ) {
+    public ProjectImportsScreenPresenter(final ProjectImportsScreenView view,
+                                         final Caller<ProjectImportsService> importsService) {
+        super(view);
         this.view = view;
-        this.menuBuilder = menuBuilder;
-        this.importsWidget = importsWidget;
         this.importsService = importsService;
-        this.metadataService = metadataService;
-        this.busyIndicatorView = busyIndicatorView;
-        this.notification = notification;
-
-        view.setImports( importsWidget );
-
-        view.setPresenter( this );
     }
 
     @OnStartup
-    public void init( final Path path,
-                      final PlaceRequest place ) {
-        this.path = checkNotNull( "path",
-                                  path );
-        this.isReadOnly = place.getParameter( "readOnly", null ) != null;
+    public void init(final ObservablePath path,
+                     final PlaceRequest place) {
 
-        makeMenuBar();
+        super.init(path,
+                   place,
+                   new ProjectImportsResourceType());
 
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-
-        importsService.call( getModelSuccessCallback(),
-                             new HasBusyIndicatorDefaultErrorCallback( view ) ).load( path );
     }
 
-    private RemoteCallback<ProjectImports> getModelSuccessCallback() {
-        return new RemoteCallback<ProjectImports>() {
+    private RemoteCallback<ProjectImportsContent> getModelSuccessCallback() {
+        return new RemoteCallback<ProjectImportsContent>() {
 
             @Override
-            public void callback( final ProjectImports projectImports ) {
-                content = projectImports;
-                importsWidget.setContent( content, isReadOnly );
+            public void callback(final ProjectImportsContent content) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if (versionRecordManager.getCurrentPath() == null) {
+                    return;
+                }
+
+                model = content.getModel();
+
+                resetEditorPages(content.getOverview());
+
+                view.setContent(model, isReadOnly);
+
+                setOriginalHash(content.getModel().hashCode());
+
             }
         };
     }
 
-    private void makeMenuBar() {
-        if ( isReadOnly ) {
-            menus = menuBuilder.addRestoreVersion( path ).build();
-        } else {
-            menus = menuBuilder
-                    .addSave( new Command() {
-                        @Override
-                        public void execute() {
-                            onSave();
-                        }
-                    } )
-                    .addCopy( path )
-                    .addRename( path )
-                    .addDelete( path )
-                    .build();
-        }
+    protected void makeMenuBar() {
+        menus = menuBuilder
+                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
+                    @Override
+                    public void execute() {
+                        onSave();
+                    }
+                }))
+                .addCopy(versionRecordManager.getCurrentPath(),
+                         fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                           fileNameValidator)
+                .addDelete(versionRecordManager.getPathToLatest())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                .build();
     }
 
-    private void onSave() {
-        new SaveOperationService().save( path,
-                                         new CommandWithCommitMessage() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                                 importsService.call( getSaveSuccessCallback(),
-                                                                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( path,
-                                                                                                                                            content,
-                                                                                                                                            view.getMetadata(),
-                                                                                                                                            commitMessage );
-                                             }
-                                         }
+    @Override
+    protected void loadContent() {
+        view.showLoading();
+        importsService.call(getModelSuccessCallback(),
+                            new HasBusyIndicatorDefaultErrorCallback(view)).loadContent(versionRecordManager.getCurrentPath());
+    }
+
+    protected void save() {
+        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
+                                        new CommandWithCommitMessage() {
+                                            @Override
+                                            public void execute(final String commitMessage) {
+                                                view.showSaving();
+                                                importsService.call(getSaveSuccessCallback(),
+                                                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                         model,
+                                                                                                                         metadata,
+                                                                                                                         commitMessage);
+                                            }
+                                        }
                                        );
 
     }
@@ -160,49 +144,37 @@ public class ProjectImportsScreenPresenter
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback( final Path path ) {
-                busyIndicatorView.hideBusyIndicator();
-                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+            public void callback(final Path path) {
+                view.hideBusyIndicator();
+                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+                setOriginalHash(model.hashCode());
             }
         };
     }
 
     @WorkbenchPartTitle
-    public String getTitle() {
+    public String getTitleText() {
         return ProjectConfigScreenConstants.INSTANCE.ExternalImports();
     }
 
     @WorkbenchPartView
-    public Widget asWidget() {
-        return view.asWidget();
-    }
-
-    @Override
-    public void onShowMetadata() {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        metadataService.call( getMetadataSuccessCallback(),
-                              new HasBusyIndicatorDefaultErrorCallback( view ) ).getMetadata( path );
-    }
-
-    private RemoteCallback<Metadata> getMetadataSuccessCallback() {
-        return new RemoteCallback<Metadata>() {
-
-            @Override
-            public void callback( final Metadata metadata ) {
-                view.setMetadata( metadata );
-                view.hideBusyIndicator();
-            }
-        };
+    public IsWidget asWidget() {
+        return super.getWidget();
     }
 
     @OnClose
     public void onClose() {
-        this.path = null;
+        versionRecordManager.clear();
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    @OnMayClose
+    public boolean mayClose() {
+        return super.mayClose(model.hashCode());
     }
 
 }

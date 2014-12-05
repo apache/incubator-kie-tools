@@ -17,16 +17,30 @@
 package org.kie.workbench.common.services.shared.project;
 
 import org.guvnor.common.services.project.model.ProjectImports;
-import org.guvnor.common.services.shared.file.SupportsRead;
-import org.guvnor.common.services.shared.file.SupportsUpdate;
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.Path;
+import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Remote
-public interface ProjectImportsService
-        extends SupportsRead<ProjectImports>,
-        SupportsUpdate<ProjectImports> {
+@Portable
+public class ProjectImportsContent {
 
-        ProjectImportsContent loadContent(Path path);
+    private ProjectImports model;
+    private Overview       overview;
 
+    public ProjectImportsContent() {
+    }
+
+    public ProjectImportsContent(ProjectImports model,
+                                 Overview overview) {
+
+        this.model = model;
+        this.overview = overview;
+    }
+
+    public ProjectImports getModel() {
+        return model;
+    }
+
+    public Overview getOverview() {
+        return overview;
+    }
 }

@@ -26,6 +26,8 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.services.backend.service.KieService;
+import org.kie.workbench.common.services.shared.project.ProjectImportsContent;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -34,21 +36,29 @@ import org.uberfire.io.IOService;
 @Service
 @ApplicationScoped
 public class ProjectImportsServiceImpl
+        extends KieService
         implements ProjectImportsService {
 
-
-    protected IOService ioService;
+    protected IOService                          ioService;
     protected ProjectConfigurationContentHandler projectConfigurationContentHandler;
-    private MetadataService metadataService;
+    private   MetadataService                    metadataService;
 
     public ProjectImportsServiceImpl() {
     }
 
     @Inject
-    public ProjectImportsServiceImpl(@Named("ioStrategy") IOService ioService, ProjectConfigurationContentHandler projectConfigurationContentHandler, MetadataService metadataService) {
+    public ProjectImportsServiceImpl(@Named("ioStrategy") IOService ioService,
+                                     ProjectConfigurationContentHandler projectConfigurationContentHandler,
+                                     MetadataService metadataService) {
         this.ioService = ioService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
         this.metadataService = metadataService;
+    }
+
+    @Override
+    public ProjectImportsContent loadContent(final Path path) {
+        return new ProjectImportsContent(load(path),
+                                         loadOverview(path));
     }
 
     @Override
@@ -59,14 +69,14 @@ public class ProjectImportsServiceImpl
 
     @Override
     public Path save(final Path resource,
-            final ProjectImports projectImports,
-            final Metadata metadata,
-            final String comment) {
+                     final ProjectImports projectImports,
+                     final Metadata metadata,
+                     final String comment) {
         try {
             ioService.write(Paths.convert(resource),
-                    projectConfigurationContentHandler.toString(projectImports),
-                    metadataService.setUpAttributes(resource,
-                            metadata));
+                            projectConfigurationContentHandler.toString(projectImports),
+                            metadataService.setUpAttributes(resource,
+                                                            metadata));
 
             //The pom.xml, kmodule.xml and project.imports are all saved from ProjectScreenPresenter
             //We only raise InvalidateDMOProjectCacheEvent and ResourceUpdatedEvent(pom.xml) events once
