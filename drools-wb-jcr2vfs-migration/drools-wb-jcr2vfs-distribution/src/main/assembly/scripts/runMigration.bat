@@ -1,10 +1,11 @@
 @ECHO OFF
 
 setLocal EnableDelayedExpansion
-set mainClass=org.drools.workbench.jcr2vfsmigration.JcrExporterLauncher
+set exporterMainClass=org.drools.workbench.jcr2vfsmigration.JcrExporterLauncher
+set importerMainClass=org.drools.workbench.jcr2vfsmigration.VfsImporterLauncher
 
-rem echo "Usage: runExport.bat"
-rem echo "For example: runExport.bat"
+rem echo "Usage: runMigration.bat"
+rem echo "For example: runMigration.bat"
 rem echo "Some notes:"
 rem echo "- Working dir should be the directory of this script."
 rem echo "- Java is recommended to be JDK and java 6 for optimal performance"
@@ -12,7 +13,6 @@ rem echo "- The environment variable JAVA_HOME should be set to the JDK installa
 rem echo "  For example: set JAVA_HOME="C:\Program Files\Java\jdk1.6.0"
 rem echo
 rem echo "Starting export app..."
-
 
 set CMD_LINE_ARGS=
 :setArgs
@@ -22,9 +22,12 @@ shift
 goto setArgs
 :doneSetArgs
 
-rem You can use -Xmx128m or less too, but it might be slower
 if exist %JAVA_HOME%\bin\java.exe (
-    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp ..\libs\guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.6.0.Final-jars-as-uberjar.jar;..\libs\*; %mainClass% %CMD_LINE_ARGS%
+    set JAVA_BIN=%JAVA_HOME%\bin\java
 ) else (
-    java -Xms256m -Xmx512m -cp ..\libs\guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar-5.6.0.Final-jars-as-uberjar.jar;..\libs\*; %mainClass% %CMD_LINE_ARGS%
+    set JAVA_BIN=java
 )
+
+%JAVA_BIN% -Xms256m -Xmx1024m -cp ..\jcr-exporter-libs\*; %exporterMainClass%
+
+%JAVA_BIN% -Xms256m -Xmx1024m -cp ..\vfs-importer-libs\*; %importerMainClass%

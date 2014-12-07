@@ -67,12 +67,12 @@
     </dependencies>
   </dependencyManagement>
 
-
   <modules>
     <module>drools-wb-jcr2vfs-migration-xml</module>
     <module>drools-wb-jcr2vfs-migration-common</module>
     <module>drools-wb-jcr2vfs-export</module>
     <module>drools-wb-jcr2vfs-import</module>
+    <module>drools-wb-jcr2vfs-distribution</module>
     <!--<module>drools-wb-jcr2vfs-migration-core</module>-->
   </modules>
 

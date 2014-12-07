@@ -3,10 +3,10 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-  <id>assembly-import</id>
+  <id>assembly-jcr2vfs-distribution</id>
   <formats>
-    <format>dir</format>
     <format>zip</format>
+    <format>dir</format>
   </formats>
 
   <includeBaseDirectory>true</includeBaseDirectory>
@@ -16,7 +16,7 @@
       <directory>src/main/assembly/scripts</directory>
       <lineEnding>unix</lineEnding>
       <filtered>true</filtered>
-      <outputDirectory></outputDirectory>
+      <outputDirectory>bin</outputDirectory>
       <includes>
         <include>**/*.sh</include>
       </includes>
@@ -26,7 +26,7 @@
       <directory>src/main/assembly/scripts</directory>
       <lineEnding>dos</lineEnding>
       <filtered>true</filtered>
-      <outputDirectory></outputDirectory>
+      <outputDirectory>bin</outputDirectory>
       <includes>
         <include>**/*.bat</include>
       </includes>
@@ -34,27 +34,22 @@
   </fileSets>
 
   <dependencySets>
-    <!-- Binaries -->
+    <!-- JCR Exporter Dependencies-->
     <dependencySet>
-      <excludes>
-        <exclude>*:sources</exclude>
-        <!-- keep the alphabetical order! -->
-        <exclude>com.allen-sauer.gwt.dnd:gwt-dnd</exclude>
-        <exclude>com.github.gwtbootstrap:gwt-bootstrap</exclude>
-        <exclude>com.google.gwt:gwt-user</exclude>
-        <!-- org.javassist:javassist is included -->
-        <exclude>javassist:javassist</exclude>
-        <exclude>org.apache.ant:ant*</exclude>
-        <exclude>org.jboss.errai:*</exclude>
-        <exclude>org.jboss.resteasy:*</exclude>
-        <exclude>org.jgroups:jgroups</exclude>
-        <exclude>org.kie:kie-ci</exclude>
-        <exclude>xml-apis:xml-apis</exclude>
-      </excludes>
       <includes>
-        <include>*:*</include>
+        <include>org.drools:drools-wb-jcr2vfs-export:zip:with-deps</include>
       </includes>
-      <outputDirectory>libs</outputDirectory>
+      <unpack>true</unpack>
+      <outputDirectory>jcr-exporter-libs</outputDirectory>
+    </dependencySet>
+
+    <!--VFS Importer Dependencies-->
+    <dependencySet>
+      <includes>
+        <include>org.drools:drools-wb-jcr2vfs-import:zip:with-deps</include>
+      </includes>
+      <unpack>true</unpack>
+      <outputDirectory>vfs-importer-libs</outputDirectory>
     </dependencySet>
   </dependencySets>
 
