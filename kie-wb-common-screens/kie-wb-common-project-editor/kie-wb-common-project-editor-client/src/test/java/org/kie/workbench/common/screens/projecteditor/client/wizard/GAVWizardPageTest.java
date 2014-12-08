@@ -93,18 +93,18 @@ public class GAVWizardPageTest {
 
         @Override
         public ProjectScreenService call() {
-            return null;
+            return mock( ProjectScreenService.class );
         }
 
         @Override
         public ProjectScreenService call( RemoteCallback<?> remoteCallback ) {
-            return null;
+            return mock( ProjectScreenService.class );
         }
 
         @Override
         public ProjectScreenService call( RemoteCallback<?> remoteCallback,
                                           ErrorCallback<?> errorCallback ) {
-            return null;
+            return mock( ProjectScreenService.class );
         }
     }
 }

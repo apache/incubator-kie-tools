@@ -72,6 +72,7 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.uberfire.backend.server.cluster" )
                 .addPackage( "org.kie.workbench.common.services.backend.project" )
                 .addPackage( "org.kie.workbench.common.services.backend.builder" )
+                .addPackage( "org.kie.workbench.common.services.backend.source" )
                 .addPackage( "org.picketlink.internal" )
                 .addPackage( "org.picketlink.producer" )
                 .addPackage( "org.picketlink.credential" )
