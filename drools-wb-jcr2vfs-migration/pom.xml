@@ -16,53 +16,44 @@
 
   <properties>
     <version.org.drools.jcrGuvnor>5.6.0.Final</version.org.drools.jcrGuvnor>
-    <version.migrate.org.jbpm.bpmn2>5.5.0.CR1</version.migrate.org.jbpm.bpmn2>
-    <version.org.apache.lucene.core>2.4.1</version.org.apache.lucene.core>
+    <version.org.apache.lucene.jcrGuvnor>2.4.1</version.org.apache.lucene.jcrGuvnor>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-bpmn2</artifactId>
-        <version>${version.migrate.org.jbpm.bpmn2}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-core</artifactId>
-        <version>${version.org.apache.lucene.core}</version>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-wb-jcr2vfs-migration-common</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>droolsjbpm-ide-common</artifactId>
-        <version>${version.org.drools.jcrGuvnor}</version>
+        <artifactId>drools-wb-jcr2vfs-migration-xml</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>guvnor-repository</artifactId>
-        <version>${version.org.drools.jcrGuvnor}</version>
+        <artifactId>drools-wb-jcr2vfs-export</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>guvnor-webapp-core</artifactId>
-        <version>${version.org.drools.jcrGuvnor}</version>
+        <artifactId>drools-wb-jcr2vfs-export</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+        <classifier>with-deps</classifier>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
-        <version>${version.org.drools.jcrGuvnor}</version>
-        <classifier>jars-as-uberjar</classifier>
+        <artifactId>drools-wb-jcr2vfs-import</artifactId>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
-        <version>${version.org.drools.jcrGuvnor}</version>
-        <classifier>war-as-jar</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.pdfbox</groupId>
-        <artifactId>pdfbox-app</artifactId>
-        <version>1.8.6</version>
+        <artifactId>drools-wb-jcr2vfs-import</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
+        <classifier>with-deps</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -32,7 +32,7 @@
   <dependencyManagement>
     <dependencies>
       <!-- Importing the droolsjbpm-parent ensures that artifacts from Drools/jBPM 5.x are used.
-           Without importing the parent, versions of transitive dependencies would still be resolvod
+           Without importing the parent, versions of transitive dependencies would still be resolved
            according the configuration in kie-parent-with-dependencies 6.x -->
       <dependency>
         <groupId>org.drools</groupId>
@@ -40,6 +40,18 @@
         <version>${version.org.drools.jcrGuvnor}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnor-jcr2vfs-migration-droolsjbpm-as-uberjar</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+        <classifier>jars-as-uberjar</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>guvnor-jcr2vfs-migration-webapp-drools-as-jar</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+        <classifier>war-as-jar</classifier>
       </dependency>
       <dependency>
         <groupId>org.apache.lucene</groupId>
