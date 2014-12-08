@@ -31,9 +31,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Importing the droolsjbpm-parent ensures that artifacts from Drools/jBPM 5.x are used.
-           Without importing the parent, versions of transitive dependencies would still be resolved
-           according the configuration in kie-parent-with-dependencies 6.x -->
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>droolsjbpm-parent</artifactId>
@@ -130,12 +127,23 @@
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
+      <exclusions>
+        <!-- The droolsjbpm-parent declares version 1.2 which does not seem to publicly available anymore.
+             Excluding the artifact here and explicitly depending on jboss-el-api_2.2_spec (see below),
+             which is available. The version difference - 1.2 vs 2.2 - should not an issue. -->
+        <exclusion>
+          <groupId>javax.el</groupId>
+          <artifactId>el-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-
+    <dependency>
+      <groupId>org.jboss.spec.javax.el</groupId>
+      <artifactId>jboss-el-api_2.2_spec</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
