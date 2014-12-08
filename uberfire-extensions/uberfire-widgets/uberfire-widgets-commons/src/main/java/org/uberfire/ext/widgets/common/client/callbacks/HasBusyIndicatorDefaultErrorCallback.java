@@ -17,7 +17,8 @@ package org.uberfire.ext.widgets.common.client.callbacks;
 
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-import org.uberfire.commons.validation.PortablePreconditions;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * Default Error handler for all views that support HasBusyIndicator
@@ -27,16 +28,14 @@ public class HasBusyIndicatorDefaultErrorCallback extends DefaultErrorCallback {
     protected HasBusyIndicator view;
 
     public HasBusyIndicatorDefaultErrorCallback( final HasBusyIndicator view ) {
-        this.view = PortablePreconditions.checkNotNull( "view",
-                                                        view );
+        this.view = checkNotNull( "view", view );
     }
 
     @Override
     public boolean error( final Message message,
                           final Throwable throwable ) {
         view.hideBusyIndicator();
-        return super.error( message,
-                            throwable );
+        return super.error( message, throwable );
     }
 
 }

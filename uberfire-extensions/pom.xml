@@ -41,6 +41,7 @@
     <module>uberfire-security</module>
     <module>uberfire-metadata</module>
     <module>uberfire-widgets</module>
+    <module>uberfire-commons-editor</module>
     <module>uberfire-runtime-plugins</module>
     <module>uberfire-perspective-editor</module>
     <module>uberfire-wires</module>
