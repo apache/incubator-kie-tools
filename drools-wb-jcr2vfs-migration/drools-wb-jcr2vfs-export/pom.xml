@@ -28,28 +28,28 @@
 
   <name>Drools Workbench - JCR to XML export utility</name>
   <description>Exports the data of Guvnor 5 to XML</description>
-  <!--
-    TODO declare the drools-wb-jcr2vfs-migration-xml artifact version like this for now, when this gets merged into master,
-    TODO then declare the new module in the drools-bom inside droolsjbpm-build-bootstrap
-  -->
+
   <dependencyManagement>
     <dependencies>
+      <!-- Importing the droolsjbpm-parent ensures that artifacts from Drools/jBPM 5.x are used.
+           Without importing the parent, versions of transitive dependencies would still be resolvod
+           according the configuration in kie-parent-with-dependencies 6.x -->
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-wb-jcr2vfs-migration-xml</artifactId>
-        <version>6.3.0-SNAPSHOT</version>
+        <artifactId>droolsjbpm-parent</artifactId>
+        <version>${version.org.drools.jcrGuvnor}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
-
       <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-wb-jcr2vfs-migration-common</artifactId>
-        <version>6.3.0-SNAPSHOT</version>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${version.org.apache.lucene.jcrGuvnor}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-jcr2vfs-migration-xml</artifactId>
