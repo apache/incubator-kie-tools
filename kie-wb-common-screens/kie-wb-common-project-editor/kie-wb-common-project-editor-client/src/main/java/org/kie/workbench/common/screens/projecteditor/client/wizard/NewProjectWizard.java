@@ -106,7 +106,7 @@ public class NewProjectWizard
         // hence package names, it is sanitized in the ProjectService.newProject() method.
         pom = new POM();
         pom.setName( projectName );
-        pom.getGav().setArtifactId( projectName );
+        pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
         pom.getGav().setVersion( "1.0" );
         gavWizardPage.setPom( pom );
     }
@@ -121,9 +121,18 @@ public class NewProjectWizard
         pom = new POM();
         pom.setName( projectName );
         pom.getGav().setGroupId( groupId );
-        pom.getGav().setArtifactId( projectName );
+        pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
         pom.getGav().setVersion( version );
         gavWizardPage.setPom( pom );
+    }
+
+    //The projectName has been validated as a FileSystem folder name, which may not be consistent with Maven ArtifactID
+    //naming restrictions (see org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX). Therefore we'd
+    //best sanitize the projectName
+    private String sanitizeProjectName( final String projectName ) {
+        //Only [A-Za-z0-9_\-.] are valid so strip everything else out
+        return projectName.replaceAll( "[^A-Za-z0-9_\\-.]",
+                                       "" );
     }
 
     @Override

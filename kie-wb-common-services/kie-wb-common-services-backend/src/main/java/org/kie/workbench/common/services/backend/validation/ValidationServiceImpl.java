@@ -106,7 +106,7 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public Map<String, Boolean> evaluateIdentifiers( String[] identifiers ) {
+    public Map<String, Boolean> evaluateJavaIdentifiers( String[] identifiers ) {
         Map<String, Boolean> result = new HashMap<String, Boolean>( identifiers.length );
         if ( identifiers != null && identifiers.length > 0 ) {
             for ( String s : identifiers ) {
@@ -118,7 +118,7 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public Map<String, Boolean> evaluateArtifactIdentifiers( String[] identifiers ) {
+    public Map<String, Boolean> evaluateMavenIdentifiers( String[] identifiers ) {
         Map<String, Boolean> result = new HashMap<String, Boolean>( identifiers.length );
         if ( identifiers != null && identifiers.length > 0 ) {
             for ( String s : identifiers ) {
@@ -133,7 +133,7 @@ public class ValidationServiceImpl implements ValidationService {
         try {
             new TimeIntervalParser().parse( timerInterval );
             return true;
-        } catch (RuntimeException e) {
+        } catch ( RuntimeException e ) {
             return false;
         }
     }

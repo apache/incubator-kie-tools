@@ -34,19 +34,19 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
+import org.guvnor.common.services.project.client.GroupIdChangeHandler;
 import org.guvnor.common.services.project.client.POMEditorPanel;
+import org.guvnor.common.services.project.client.VersionChangeHandler;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.kie.workbench.common.screens.projecteditor.client.forms.DependencyGrid;
 import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditorPanel;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -138,6 +138,7 @@ public class ProjectScreenViewImpl
         this.importsPageMetadata = new MetadataWidget( busyIndicatorView );
         deckPanel.add( importsPageMetadata );
 
+        addPOMEditorChangeHandlers();
     }
 
     public void setPresenter( Presenter presenter ) {
@@ -258,8 +259,8 @@ public class ProjectScreenViewImpl
     }
 
     @Override
-    public void setPOM(POM pom) {
-        pomEditorPanel.setPOM(pom, false);
+    public void setPOM( POM pom ) {
+        pomEditorPanel.setPOM( pom, false );
     }
 
     @Override
@@ -346,4 +347,41 @@ public class ProjectScreenViewImpl
             deploymentDescriptorButton.setVisible( supports.booleanValue() );
         }
     }
+
+    private void addPOMEditorChangeHandlers() {
+        this.pomEditorPanel.addGroupIdChangeHandler( new GroupIdChangeHandler() {
+            @Override
+            public void onChange( String newGroupId ) {
+                presenter.validateGroupID( newGroupId );
+            }
+        } );
+        this.pomEditorPanel.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
+            @Override
+            public void onChange( String newArtifactId ) {
+                presenter.validateArtifactID( newArtifactId );
+            }
+        } );
+        this.pomEditorPanel.addVersionChangeHandler( new VersionChangeHandler() {
+            @Override
+            public void onChange( String newVersion ) {
+                presenter.validateVersion( newVersion );
+            }
+        } );
+    }
+
+    @Override
+    public void setValidGroupID( final boolean isValid ) {
+        pomEditorPanel.setValidGroupID( isValid );
+    }
+
+    @Override
+    public void setValidArtifactID( final boolean isValid ) {
+        pomEditorPanel.setValidArtifactID( isValid );
+    }
+
+    @Override
+    public void setValidVersion( final boolean isValid ) {
+        pomEditorPanel.setValidVersion( isValid );
+    }
+
 }

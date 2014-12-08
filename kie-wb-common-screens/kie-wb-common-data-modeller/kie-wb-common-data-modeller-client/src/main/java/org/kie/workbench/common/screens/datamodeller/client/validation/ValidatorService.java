@@ -61,7 +61,7 @@ public class ValidatorService {
                 },
                 new DataModelerErrorCallback( "An error occurred during the server validation process" )
         )
-                .evaluateIdentifiers( new String[]{ identifier } );
+                .evaluateJavaIdentifiers( new String[]{ identifier } );
     }
 
     public void isValidPackageIdentifier( String identifier,
@@ -83,7 +83,7 @@ public class ValidatorService {
                 },
                 new DataModelerErrorCallback( "An error occurred during the server validation process" )
         )
-                .evaluateIdentifiers( packageTerms );
+                .evaluateJavaIdentifiers( packageTerms );
     }
 
     public void isValidTimerInterval( String expression, final ValidatorCallback callback ) {

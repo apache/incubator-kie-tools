@@ -66,6 +66,7 @@ public class GAVWizardPage
         this.pomEditor.addGroupIdChangeHandler( new GroupIdChangeHandler() {
             @Override
             public void onChange( String newGroupId ) {
+                validateGroupId( pomEditor.getPom().getGav().getGroupId() );
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 GAVWizardPage.this.wizardPageStatusChangeEvent.fire( event );
             }
@@ -73,6 +74,7 @@ public class GAVWizardPage
         this.pomEditor.addArtifactIdChangeHandler( new ArtifactIdChangeHandler() {
             @Override
             public void onChange( String newArtifactId ) {
+                validateArtifactId( pomEditor.getPom().getGav().getArtifactId() );
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 GAVWizardPage.this.wizardPageStatusChangeEvent.fire( event );
             }
@@ -80,6 +82,7 @@ public class GAVWizardPage
         this.pomEditor.addVersionChangeHandler( new VersionChangeHandler() {
             @Override
             public void onChange( String newVersion ) {
+                validateVersion( pomEditor.getPom().getGav().getVersion() );
                 final WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( GAVWizardPage.this );
                 GAVWizardPage.this.wizardPageStatusChangeEvent.fire( event );
             }
@@ -87,14 +90,45 @@ public class GAVWizardPage
     }
 
     public void setPom( final POM pom ) {
-
         this.pomEditor.setPOM( pom,
                                false );
 
         if ( hasParent( pom ) ) {
             pomEditor.disableGroupID( view.InheritedFromAParentPOM() );
             pomEditor.disableVersion( view.InheritedFromAParentPOM() );
+            validateArtifactId( pom.getGav().getArtifactId() );
+        } else {
+            validateGroupId( pom.getGav().getGroupId() );
+            validateArtifactId( pom.getGav().getArtifactId() );
+            validateVersion( pom.getGav().getVersion() );
         }
+    }
+
+    private void validateGroupId( final String groupId ) {
+        projectScreenService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean result ) {
+                pomEditor.setValidGroupID( Boolean.TRUE.equals( result ) );
+            }
+        } ).validateGroupId( groupId );
+    }
+
+    private void validateArtifactId( final String artifactId ) {
+        projectScreenService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean result ) {
+                pomEditor.setValidArtifactID( Boolean.TRUE.equals( result ) );
+            }
+        } ).validateArtifactId( artifactId );
+    }
+
+    private void validateVersion( final String version ) {
+        projectScreenService.call( new RemoteCallback<Boolean>() {
+            @Override
+            public void callback( final Boolean result ) {
+                pomEditor.setValidVersion( Boolean.TRUE.equals( result ) );
+            }
+        } ).validateVersion( version );
     }
 
     private boolean hasParent( POM pom ) {

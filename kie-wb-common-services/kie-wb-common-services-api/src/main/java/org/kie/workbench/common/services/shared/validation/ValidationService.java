@@ -37,9 +37,9 @@ public interface ValidationService {
 
     public boolean isFileNameValid( final String fileName );
 
-    public Map<String, Boolean> evaluateIdentifiers( final String[] identifiers );
+    public Map<String, Boolean> evaluateJavaIdentifiers( final String[] identifiers );
 
-    public Map<String, Boolean> evaluateArtifactIdentifiers( final String[] identifiers );
+    public Map<String, Boolean> evaluateMavenIdentifiers( final String[] identifiers );
 
     public boolean isTimerIntervalValid( final String timerInterval );
 

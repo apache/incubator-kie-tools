@@ -138,17 +138,36 @@ public class ProjectScreenServiceImpl
         final String artifactId = pom.getGav().getArtifactId();
         final String version = pom.getGav().getVersion();
 
-        final String[] groupIdComponents = ( groupId == null ? new String[]{ } : groupId.split( "\\.",
-                                                                                                -1 ) );
-        final String[] artifactIdComponents = ( artifactId == null ? new String[]{ } : artifactId.split( "\\.",
-                                                                                                         -1 ) );
-
         final boolean validName = !( name == null || name.isEmpty() ) && validationService.isProjectNameValid( name );
-        final boolean validGroupId = !( groupIdComponents.length == 0 || validationService.evaluateIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ) );
-        final boolean validArtifactId = !( artifactIdComponents.length == 0 || validationService.evaluateArtifactIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
-        final boolean validVersion = !( version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ) );
+        final boolean validGroupId = validateGroupId( groupId );
+        final boolean validArtifactId = validateArtifactId( artifactId );
+        final boolean validVersion = validateVersion( version );
 
         return validName && validGroupId && validArtifactId && validVersion;
+    }
+
+    @Override
+    public boolean validateGroupId( final String groupId ) {
+        //See org.apache.maven.model.validation.DefaultModelValidator. Both GroupID and ArtifactID are checked against "[A-Za-z0-9_\\-.]+"
+        final String[] groupIdComponents = ( groupId == null ? new String[]{ } : groupId.split( "\\.",
+                                                                                                -1 ) );
+        final boolean validGroupId = !( groupIdComponents.length == 0 || validationService.evaluateMavenIdentifiers( groupIdComponents ).containsValue( Boolean.FALSE ) );
+        return validGroupId;
+    }
+
+    @Override
+    public boolean validateArtifactId( final String artifactId ) {
+        //See org.apache.maven.model.validation.DefaultModelValidator. Both GroupID and ArtifactID are checked against "[A-Za-z0-9_\\-.]+"
+        final String[] artifactIdComponents = ( artifactId == null ? new String[]{ } : artifactId.split( "\\.",
+                                                                                                         -1 ) );
+        final boolean validArtifactId = !( artifactIdComponents.length == 0 || validationService.evaluateMavenIdentifiers( artifactIdComponents ).containsValue( Boolean.FALSE ) );
+        return validArtifactId;
+    }
+
+    @Override
+    public boolean validateVersion( final String version ) {
+        final boolean validVersion = !( version == null || version.isEmpty() || !version.matches( "^[a-zA-Z0-9\\.\\-_]+$" ) );
+        return validVersion;
     }
 
     private CommentedOption makeCommentedOption( final String commitMessage ) {
