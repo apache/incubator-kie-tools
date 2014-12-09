@@ -44,8 +44,9 @@ import org.guvnor.structure.client.validation.ValidatorCallback;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
+import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.NewBranchEvent;
-import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
@@ -635,11 +636,11 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         refresh( false );
     }
 
-    public void onRepositoryAdded( @Observes final NewRepositoryEvent event ) {
+    public void onRepoAddedToOrganizationaUnitEvent( @Observes final RepoAddedToOrganizationaUnitEvent event ) {
         if ( !getView().isVisible() ) {
             return;
         }
-        final Repository repository = event.getNewRepository();
+        final Repository repository = event.getRepository();
         if ( repository == null ) {
             return;
         }
@@ -647,6 +648,13 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                              identity ) ) {
             refresh( false );
         }
+    }
+
+    public void onRepoRemovedFromOrganizationalUnitEvent( @Observes final RepoRemovedFromOrganizationalUnitEvent event ) {
+        if ( !getView().isVisible() ) {
+            return;
+        }
+        refresh( false );
     }
 
     public void onRepositoryRemovedEvent( @Observes RepositoryRemovedEvent event ) {
