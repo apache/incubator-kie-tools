@@ -51,6 +51,7 @@ public class PagedTable<T>
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
+        this.dataGrid.setHeight((pageSize * 40)+15+"px");
         
     }
 
@@ -61,6 +62,7 @@ public class PagedTable<T>
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
+        this.dataGrid.setHeight((pageSize * 40)+15+"px");
     }
     
     
@@ -72,6 +74,7 @@ public class PagedTable<T>
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
+        this.dataGrid.setHeight((pageSize * 40)+15+"px");
     }
     
     protected Widget makeWidget() {
