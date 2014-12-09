@@ -10,18 +10,21 @@ import java.util.Random;
 
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.Container;
+import com.github.gwtbootstrap.client.ui.FluidContainer;
+import com.github.gwtbootstrap.client.ui.FluidRow;
 import com.github.gwtbootstrap.client.ui.Row;
+import com.github.gwtbootstrap.client.ui.base.DivWidget;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.perspective.editor.model.ColumnEditor;
 import org.uberfire.ext.perspective.editor.model.HTMLEditor;
 import org.uberfire.ext.perspective.editor.model.PerspectiveEditor;
 import org.uberfire.ext.perspective.editor.model.RowEditor;
 import org.uberfire.ext.perspective.editor.model.ScreenEditor;
 import org.uberfire.ext.perspective.editor.model.ScreenParameter;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.NamedPosition;
@@ -41,7 +44,7 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
-    private Container mainPanel;
+    private FluidContainer mainPanel;
 
     private List<Target> screensToLoad = new ArrayList<Target>();
 
@@ -54,20 +57,32 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
     public void build( PerspectiveEditor editor ) {
         this.editor = editor;
         this.screensToLoad.clear();
-        mainPanel = new Container();
+        mainPanel = new FluidContainer();
         mainPanel.getElement().setId( "mainContainer" );
         List<RowEditor> rows = this.editor.getRows();
+        extractRows( rows, mainPanel );
+    }
+
+    private void extractRows( List<RowEditor> rows,
+                              DivWidget parentWidget ) {
         for ( RowEditor rowEditor : rows ) {
-            Row row = new Row();
+            FluidRow row = new FluidRow();
             for ( ColumnEditor columnEditor : rowEditor.getColumnEditors() ) {
                 Column column = new Column( new Integer( columnEditor.getSpan() ) );
-                // ederign should also get nested rows in columns
-                generateScreens( columnEditor, column );
-                generateHTML( columnEditor, column );
+                if ( columnHasNestedRows( columnEditor ) ) {
+                    extractRows( columnEditor.getRows(), column );
+                } else {
+                    generateScreens( columnEditor, column );
+                    generateHTML( columnEditor, column );
+                }
                 row.add( column );
             }
-            mainPanel.add( row );
+            parentWidget.add( row );
         }
+    }
+
+    private boolean columnHasNestedRows( ColumnEditor columnEditor ) {
+        return columnEditor.getRows() != null && !columnEditor.getRows().isEmpty();
     }
 
     private void generateHTML( ColumnEditor columnEditor,
@@ -166,7 +181,7 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     @Override
     public void onOpen() {
-        for ( Target target : screensToLoad) {
+        for ( Target target : screensToLoad ) {
             final Column column = target.getColumn();
             final FlowPanel panel = target.getPanel();
             final int height = 400;

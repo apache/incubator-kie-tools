@@ -69,6 +69,9 @@ public class ScreenEditor {
             if ( sp.getKey().equals( parameterName ) ) {
                 sp.setValue( parameterValue );
             }
+            if ( parameterName.equalsIgnoreCase( PLACE_NAME_KEY ) ) {
+                this.placeName = parameterValue;
+            }
         }
     }
 
@@ -86,6 +89,13 @@ public class ScreenEditor {
     }
 
     public String getPlaceName() {
+        if ( this.placeName == null || this.placeName.isEmpty() ) {
+            for ( ScreenParameter parameter : parameters ) {
+                if ( parameter.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
+                    this.placeName = parameter.getValue();
+                }
+            }
+        }
         return placeName;
     }
 
