@@ -21,10 +21,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.NewItemPopupConstants;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
 @ApplicationScoped
 public class NewResourcePresenter {

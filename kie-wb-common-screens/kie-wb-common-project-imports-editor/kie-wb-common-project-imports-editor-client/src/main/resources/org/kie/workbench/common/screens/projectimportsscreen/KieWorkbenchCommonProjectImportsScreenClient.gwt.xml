@@ -28,6 +28,8 @@
 
   <inherits name="org.uberfire.UberfireWorkbench"/>
 
+  <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorClient'/>
+
   <inherits name='org.guvnor.m2repo.GuvnorM2RepoEditorClient'/>
   <inherits name='org.guvnor.common.services.project.GuvnorProjectAPI'/>
 

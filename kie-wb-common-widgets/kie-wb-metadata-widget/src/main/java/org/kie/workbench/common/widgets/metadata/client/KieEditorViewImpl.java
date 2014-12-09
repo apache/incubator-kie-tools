@@ -16,55 +16,10 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import org.kie.workbench.common.widgets/**/.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 
 public abstract class KieEditorViewImpl
-        extends Composite
+        extends BaseEditorViewImpl
         implements KieEditorView {
 
-    protected KieEditorTitle title = new KieEditorTitle();
-
-    @Override
-    public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
-    }
-
-    @Override
-    public void showLoading() {
-        showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-    }
-
-    @Override
-    public void showSaving() {
-        showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-    }
-
-    @Override
-    public KieEditorTitle getTitleWidget() {
-        return title;
-    }
-
-    @Override
-    public void refreshTitle( String fileName,
-                              String description ) {
-        title.setText( fileName, description );
-    }
-
-    @Override
-    public void showBusyIndicator( String message ) {
-        BusyPopup.showMessage( message );
-    }
-
-    @Override
-    public void hideBusyIndicator() {
-        BusyPopup.close();
-    }
-
-    @Override
-    public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
-    }
 }

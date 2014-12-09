@@ -8,10 +8,6 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
-import org.guvnor.common.services.shared.file.CopyService;
-import org.guvnor.common.services.shared.file.DeleteService;
-import org.guvnor.common.services.shared.file.RenameService;
-import org.guvnor.structure.client.file.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -19,7 +15,16 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.resources.i18n.ToolsMenuConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.DeletePopup;
+import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.service.CopyService;
+import org.uberfire.ext.editor.commons.service.DeleteService;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 
@@ -105,7 +110,7 @@ public class ProjectMenu {
                 @Override
                 public void execute() {
 
-                    new DeletePopup( new CommandWithCommitMessage() {
+                    new DeletePopup( new ParameterizedCommand<String>() {
                         @Override
                         public void execute( String payload ) {
                             deleteService.call().delete(

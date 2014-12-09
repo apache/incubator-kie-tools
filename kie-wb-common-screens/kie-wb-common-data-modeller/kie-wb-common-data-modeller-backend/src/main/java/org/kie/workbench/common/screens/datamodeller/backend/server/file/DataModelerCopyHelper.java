@@ -18,8 +18,8 @@ package org.kie.workbench.common.screens.datamodeller.backend.server.file;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.guvnor.common.services.backend.file.CopyHelper;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
 @ApplicationScoped
@@ -31,12 +31,15 @@ public class DataModelerCopyHelper extends DataModelerServiceRefactoringHelper i
     }
 
     @Override
-    public void postProcess( Path source, Path destination ) {
+    public void postProcess( Path source,
+                             Path destination ) {
         _postProcess( source, destination );
     }
 
     @Override
-    protected CommentedOption makeCommentedOption( Path source, Path destination, String comment ) {
+    protected CommentedOption makeCommentedOption( Path source,
+                                                   Path destination,
+                                                   String comment ) {
         return serviceHelper.makeCommentedOption( "File [" + source.toURI() + "] copied to [" + destination.toURI() + "]." );
     }
 }

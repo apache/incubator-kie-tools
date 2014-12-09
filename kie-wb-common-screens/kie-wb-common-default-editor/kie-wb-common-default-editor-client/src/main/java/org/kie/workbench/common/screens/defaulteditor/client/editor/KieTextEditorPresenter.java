@@ -21,8 +21,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.guvnor.structure.client.file.CommandWithCommitMessage;
-import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
@@ -34,11 +32,12 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextResourceType;
-import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -127,7 +126,7 @@ public class KieTextEditorPresenter
     protected void save() {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
         new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new CommandWithCommitMessage() {
+                                         new ParameterizedCommand<String>() {
                                              @Override
                                              public void execute( final String commitMessage ) {
                                                  defaultEditorService.call( getSaveSuccessCallback(view.getContent().hashCode()),

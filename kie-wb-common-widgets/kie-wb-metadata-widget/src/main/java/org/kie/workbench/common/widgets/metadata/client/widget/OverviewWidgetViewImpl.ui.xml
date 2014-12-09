@@ -21,7 +21,7 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
              xmlns:metadata='urn:import:org.kie.workbench.common.widgets.metadata.client.widget'
              xmlns:discussion='urn:import:org.kie.workbench.common.widgets.client.discussion'
-             xmlns:versionHistory='urn:import:org.kie.workbench.common.widgets.client.versionhistory'
+             xmlns:versionHistory='urn:import:org.uberfire.ext.editor.commons.client.history'
              xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants"/>

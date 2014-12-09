@@ -33,14 +33,6 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.structure.client.file.CommandWithCommitMessage;
-import org.guvnor.structure.client.file.CommandWithFileNameAndCommitMessage;
-import org.guvnor.structure.client.file.CopyPopup;
-import org.guvnor.structure.client.file.DeletePopup;
-import org.guvnor.structure.client.file.FileNameAndCommitMessage;
-import org.guvnor.structure.client.file.RenamePopup;
-import org.guvnor.structure.client.validation.Validator;
-import org.guvnor.structure.client.validation.ValidatorCallback;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
@@ -71,8 +63,16 @@ import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.DeletePopup;
+import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.impl.authz.RuntimeAuthorizationManager;
 import org.uberfire.workbench.events.ResourceAddedEvent;
@@ -213,7 +213,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     @Override
     public void deleteItem( final FolderItem folderItem ) {
 
-        final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
+        final DeletePopup popup = new DeletePopup( new ParameterizedCommand<String>() {
             @Override
             public void execute( final String comment ) {
                 getView().showBusyIndicator( CommonConstants.INSTANCE.Deleting() );

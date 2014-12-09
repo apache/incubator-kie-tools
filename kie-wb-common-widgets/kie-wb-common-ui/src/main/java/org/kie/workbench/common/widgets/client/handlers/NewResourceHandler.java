@@ -21,8 +21,8 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.structure.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**

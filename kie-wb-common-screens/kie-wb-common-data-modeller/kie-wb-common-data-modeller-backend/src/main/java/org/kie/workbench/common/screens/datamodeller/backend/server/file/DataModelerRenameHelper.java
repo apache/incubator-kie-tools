@@ -18,8 +18,8 @@ package org.kie.workbench.common.screens.datamodeller.backend.server.file;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.guvnor.common.services.backend.file.RenameHelper;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.java.nio.base.options.CommentedOption;
 
 @ApplicationScoped

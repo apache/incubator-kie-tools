@@ -18,11 +18,11 @@ package org.kie.workbench.common.widgets.client.popups.validation;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.guvnor.structure.client.validation.Validator;
-import org.guvnor.structure.client.validation.ValidatorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 
 /**
  * Default validation of resource file names

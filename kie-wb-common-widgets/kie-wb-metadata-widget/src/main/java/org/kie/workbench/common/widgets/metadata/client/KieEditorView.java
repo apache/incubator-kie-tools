@@ -16,24 +16,9 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+import org.uberfire.ext.editor.commons.client.BaseEditorView;
 
 public interface KieEditorView
-        extends HasBusyIndicator,
-                IsWidget {
-
-    void showLoading();
-
-    void showSaving();
-
-    void alertReadOnly();
-
-    KieEditorTitle getTitleWidget();
-
-    void refreshTitle( String fileName,
-                       String description );
-
-    boolean confirmClose();
+        extends BaseEditorView {
 
 }

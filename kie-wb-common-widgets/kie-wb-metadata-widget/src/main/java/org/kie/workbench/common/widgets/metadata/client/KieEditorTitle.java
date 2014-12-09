@@ -16,21 +16,9 @@
 
 package org.kie.workbench.common.widgets.metadata.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.ext.editor.commons.client.EditorTitle;
 
 public class KieEditorTitle
-        implements IsWidget {
+        extends EditorTitle {
 
-    private Label layout = new Label();
-
-    public void setText(String fileName, String fileType) {
-        layout.setText(fileName + " - " + fileType);
-    }
-
-    @Override
-    public Widget asWidget() {
-        return layout;
-    }
 }

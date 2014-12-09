@@ -20,15 +20,12 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
-import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class OverviewWidgetPresenterTest {
 

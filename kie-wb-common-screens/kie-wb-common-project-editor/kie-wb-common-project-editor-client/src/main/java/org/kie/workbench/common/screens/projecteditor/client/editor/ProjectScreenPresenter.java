@@ -32,13 +32,6 @@ import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
-import org.guvnor.structure.client.file.CommandWithCommitMessage;
-import org.guvnor.structure.client.file.CommandWithFileNameAndCommitMessage;
-import org.guvnor.structure.client.file.CopyPopup;
-import org.guvnor.structure.client.file.DeletePopup;
-import org.guvnor.structure.client.file.FileNameAndCommitMessage;
-import org.guvnor.structure.client.file.RenamePopup;
-import org.guvnor.structure.client.file.SaveOperationService;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
@@ -50,7 +43,6 @@ import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectN
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.PathFactory;
@@ -60,6 +52,13 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.DeletePopup;
+import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
+import org.uberfire.ext.editor.commons.client.file.RenamePopup;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
+import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -315,10 +314,10 @@ public class ProjectScreenPresenter
     }
 
     private void disableMenus() {
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.COPY ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.RENAME ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( FileMenuBuilder.MenuItems.VALIDATE ).setEnabled( false );
+        menus.getItemsMap().get( MenuItems.COPY ).setEnabled( false );
+        menus.getItemsMap().get( MenuItems.RENAME ).setEnabled( false );
+        menus.getItemsMap().get( MenuItems.DELETE ).setEnabled( false );
+        menus.getItemsMap().get( MenuItems.VALIDATE ).setEnabled( false );
     }
 
     private void reload() {
@@ -367,7 +366,7 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                final DeletePopup popup = new DeletePopup( new CommandWithCommitMessage() {
+                final DeletePopup popup = new DeletePopup( new ParameterizedCommand<String>() {
                     @Override
                     public void execute( final String comment ) {
                         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
@@ -658,7 +657,7 @@ public class ProjectScreenPresenter
 
     private void save( final RemoteCallback callback ) {
         new SaveOperationService().save( pathToPomXML,
-                                         new CommandWithCommitMessage() {
+                                         new ParameterizedCommand<String>() {
                                              @Override
                                              public void execute( final String comment ) {
 
