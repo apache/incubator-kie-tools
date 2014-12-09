@@ -43,6 +43,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
 import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
@@ -73,8 +74,9 @@ public class ScenarioEditorViewImpl
     private BulkRunTestScenarioEditor bulkRunTestScenarioEditor;
 
     private Caller<RuleNamesService> ruleNameService;
-    private OverviewWidgetPresenter overviewWidget;
-    private Callback<Scenario> updateModelCallback;
+    private OverviewWidgetPresenter  overviewWidget;
+    private Callback<Scenario>       updateModelCallback;
+    private VersionRecordManager     versionRecordManager;
 
     @Inject
     public ScenarioEditorViewImpl(
@@ -111,7 +113,6 @@ public class ScenarioEditorViewImpl
                            final boolean isReadOnly,
                            final Scenario scenario,
                            final Overview overview,
-                           final String version,
                            final AsyncPackageDataModelOracle oracle,
                            final Caller<ScenarioTestEditorService> service,
                            final Callback<Scenario> updateModelCallback) {
@@ -120,17 +121,17 @@ public class ScenarioEditorViewImpl
         multiPage.clear();
 
         multiPage.addWidget(layout,
-                TestScenarioConstants.INSTANCE.TestScenario());
-        addOverviewPage(path, overview, version);
+                            TestScenarioConstants.INSTANCE.TestScenario());
+        addOverviewPage(path, overview);
         multiPage.addWidget(importsWidget,
-                CommonConstants.INSTANCE.ConfigTabTitle());
+                            CommonConstants.INSTANCE.ConfigTabTitle());
 
         addBulkRunTestScenarioPanel(path,
-                isReadOnly);
+                                    isReadOnly);
 
         setScenario(path,
-                scenario,
-                oracle);
+                    scenario,
+                    oracle);
 
         if (!isReadOnly) {
             addTestRunnerWidget(
@@ -143,19 +144,30 @@ public class ScenarioEditorViewImpl
         renderEditor();
 
         initImportsTab(oracle,
-                scenario.getImports(),
-                isReadOnly);
+                       scenario.getImports(),
+                       isReadOnly);
     }
 
-    private void addOverviewPage(ObservablePath path, Overview overview, String version) {
-        multiPage.addWidget(overviewWidget,
-                CommonConstants.INSTANCE.Overview());
-        overviewWidget.setContent(overview, path, version);
+    private void addOverviewPage(ObservablePath path, Overview overview) {
+        multiPage.addPage(
+                new Page(this.overviewWidget,
+                         CommonConstants.INSTANCE.Overview()) {
+                    @Override
+                    public void onFocus() {
+                        overviewWidget.refresh(versionRecordManager.getVersion());
+                    }
+
+                    @Override
+                    public void onLostFocus() {
+
+                    }
+                });
+        overviewWidget.setContent(overview, path);
     }
 
     private void createWidgetForEditorLayout(final FlexTable editorLayout,
-            final int layoutRow,
-            final int layoutColumn,
+                                             final int layoutRow,
+                                             final int layoutColumn,
             final Widget widget) {
         editorLayout.setWidget(layoutRow,
                 layoutColumn,
@@ -344,9 +356,8 @@ public class ScenarioEditorViewImpl
                 readOnly);
     }
 
-    @Override
-    public void showSaveSuccessful() {
-        notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+    @Override public void setVersionRecordManager(VersionRecordManager versionRecordManager) {
+        this.versionRecordManager=versionRecordManager;
     }
 
     void setShowResults(boolean showResults) {
@@ -357,11 +368,5 @@ public class ScenarioEditorViewImpl
         return scenarioWidgetComponentCreator.getScenario();
     }
 
-    @Override
-    public void handleNoSuchFileException() {
-        multiPage.clear();
-        multiPage.addWidget(new NoSuchFileWidget(),
-                CommonConstants.INSTANCE.NoSuchFileTabTitle());
-    }
 
 }

@@ -82,6 +82,7 @@ public class ScenarioEditorPresenter
         super.init( path,
                     place,
                     type );
+        view.setVersionRecordManager(versionRecordManager);
     }
 
     @Override
@@ -113,7 +114,6 @@ public class ScenarioEditorPresenter
                                  isReadOnly,
                                  scenario,
                                  content.getOverview(),
-                                 versionRecordManager.getVersion(),
                                  oracle,
                                  service,
                                  new Callback<Scenario>(){
@@ -126,7 +126,6 @@ public class ScenarioEditorPresenter
 
                 view.hideBusyIndicator();
                 
-//                setOriginalHash(scenario.hashCode());
             }
         };
     }

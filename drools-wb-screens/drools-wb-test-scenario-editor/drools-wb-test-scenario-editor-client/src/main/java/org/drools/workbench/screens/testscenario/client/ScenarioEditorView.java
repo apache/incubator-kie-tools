@@ -6,6 +6,7 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.callbacks.Callback;
@@ -18,12 +19,9 @@ public interface ScenarioEditorView
                     final boolean isReadOnly,
                     final Scenario scenario,
                     final Overview overview,
-                    final String version,
                     final AsyncPackageDataModelOracle oracle,
                     final Caller<ScenarioTestEditorService> service, Callback<Scenario> callback);
 
-    void showSaveSuccessful();
-
-    void handleNoSuchFileException();
+    void setVersionRecordManager(VersionRecordManager versionRecordManager);
 
 }
