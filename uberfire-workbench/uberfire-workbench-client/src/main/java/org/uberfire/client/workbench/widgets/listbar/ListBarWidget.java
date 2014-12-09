@@ -24,11 +24,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.util.Layouts;
@@ -39,6 +39,7 @@ import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.DragArea;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.workbench.widgets.panel.MaximizeToggleButton;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.authz.AuthorizationManager;
@@ -106,6 +107,12 @@ extends ResizeComposite implements MultiPartWidget {
 
     private static ListBarWidgetBinder uiBinder = GWT.create( ListBarWidgetBinder.class );
 
+    /**
+     * Preferences bean that applications can optionally provide. If this injection is unsatisfied, default settings are used.
+     */
+    @Inject
+    Instance<ListbarPreferences> optionalListBarPrefs;
+
     @Inject
     PanelManager panelManager;
 
@@ -143,6 +150,9 @@ extends ResizeComposite implements MultiPartWidget {
     ButtonGroup closeButtonContainer;
 
     @UiField
+    MaximizeToggleButton maximizeButton;
+
+    @UiField
     FlowPanel content;
 
     @UiField
@@ -162,9 +172,10 @@ extends ResizeComposite implements MultiPartWidget {
     boolean isDndEnabled = true;
     Pair<PartDefinition, FlowPanel> currentPart;
 
-    public ListBarWidget() {
+    @PostConstruct
+    void postConstruct() {
         initWidget( uiBinder.createAndBindUi( this ) );
-
+        maximizeButton.setVisible( false );
         setup( true, true );
         scheduleResize();
     }
@@ -210,12 +221,16 @@ extends ResizeComposite implements MultiPartWidget {
     }
 
     boolean isPropertyListbarContextDisable() {
-        try {
-            final IOCBeanDef<ListbarPreferences> beanDef = IOC.getBeanManager().lookupBean( ListbarPreferences.class );
-            return beanDef == null || beanDef.getInstance().isContextEnabled();
-        } catch ( IOCResolutionException exception ) {
+        if ( optionalListBarPrefs.isUnsatisfied() ) {
+            return true;
         }
-        return true;
+
+        // as of Errai 3.0.4.Final, Instance.isUnsatisfied() always returns false. The try-catch is a necessary safety net.
+        try {
+            return optionalListBarPrefs.get().isContextEnabled();
+        } catch ( IOCResolutionException e ) {
+            return true;
+        }
     }
 
     public void enableDnd() {
@@ -593,7 +608,9 @@ extends ResizeComposite implements MultiPartWidget {
 
         @Override
         public void onResize() {
-            int width = content.getOffsetWidth() - 10;
+            int contentAbsoluteRight = content.getAbsoluteLeft() + content.getOffsetWidth();
+            int caretAbsoluteRight = dropdownCaretContainer.getAbsoluteLeft() + dropdownCaretContainer.getOffsetWidth();
+            int width = content.getOffsetWidth() - ( contentAbsoluteRight - caretAbsoluteRight );
             if ( width > 0 ) {
                 setWidth( width + "px" );
             }
@@ -613,4 +630,21 @@ extends ResizeComposite implements MultiPartWidget {
         } );
     }
 
+    /**
+     * Returns the toggle button, which is initially hidden, that can be used to trigger maximizing and unmaximizing
+     * of the panel containing this list bar. Make the button visible by calling {@link Widget#setVisible(boolean)}
+     * and set its maximize and unmaximize actions with {@link MaximizeToggleButton#setMaximizeCommand(Command)} and
+     * {@link MaximizeToggleButton#setUnmaximizeCommand(Command)}.
+     */
+    public MaximizeToggleButton getMaximizeButton() {
+        return maximizeButton;
+    }
+
+    public boolean isDndEnabled() {
+        return isDndEnabled;
+    }
+
+    public boolean isMultiPart() {
+        return isMultiPart;
+    }
 }

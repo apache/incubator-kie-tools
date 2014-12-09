@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.PanelManager;
@@ -44,6 +47,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.Widget;
 
+@Dependent
 public class UberTabPanel extends ResizeComposite implements MultiPartWidget, ClickHandler {
 
     static class ResizeTabPanel extends TabPanel implements RequiresResize, ProvidesResize {
@@ -99,12 +103,18 @@ public class UberTabPanel extends ResizeComposite implements MultiPartWidget, Cl
      *            the PanelManager that will be called upon to close a place when the user clicks on its tab's close
      *            button. (TODO: change to PlaceManager).
      */
+    @Inject
     public UberTabPanel( PanelManager panelManager ) {
         this( panelManager,
               new DropdownTab( "More..." ) );
     }
 
-    protected UberTabPanel( PanelManager panelManager, DropdownTab dropdownTab ) {
+    /**
+     * Exposed for testing (GWTMockito doesn't like us creating real GWTBootstrap widgetsn, so this allows the option
+     * of passing in mocks). For production code, use the public constructor.
+     */
+    UberTabPanel( PanelManager panelManager,
+                  DropdownTab dropdownTab ) {
         this.panelManager = checkNotNull( "panelManager", panelManager );
         this.dropdownTab = checkNotNull( "dropdownTab", dropdownTab );
         tabPanel = new ResizeTabPanel( ABOVE );

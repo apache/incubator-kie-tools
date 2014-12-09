@@ -23,6 +23,8 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.client.workbench.widgets.panel.ContextPanel;
+import org.uberfire.client.workbench.widgets.panel.MaximizeToggleButton;
+import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
 import com.google.gwt.dom.client.Style;
@@ -43,19 +45,34 @@ extends AbstractDockingWorkbenchPanelView<P> {
 
     @PostConstruct
     void setup() {
-        setupListBarDragAndDrop();
+        setupListBar();
 
         getPartViewContainer().add( contextWidget );
         getPartViewContainer().add( listBar );
     }
 
-    private void setupListBarDragAndDrop() {
+    private void setupListBar() {
         listBar.setDndManager( dndManager );
         listBar.setup( false, false );
         addOnFocusHandler( listBar );
         addSelectionHandler( listBar );
         listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
         Layouts.setToFillParent( listBar );
+
+        final MaximizeToggleButton maximizeButton = listBar.getMaximizeButton();
+        maximizeButton.setVisible( true );
+        maximizeButton.setMaximizeCommand( new Command() {
+            @Override
+            public void execute() {
+                maximize();
+            }
+        } );
+        maximizeButton.setUnmaximizeCommand( new Command() {
+            @Override
+            public void execute() {
+                unmaximize();
+            }
+        } );
     }
 
     public void enableDnd() {
@@ -110,5 +127,17 @@ extends AbstractDockingWorkbenchPanelView<P> {
         if ( getWidget() instanceof RequiresResize ) {
             super.onResize();
         }
+    }
+
+    @Override
+    public void maximize() {
+        super.maximize();
+        listBar.getMaximizeButton().setMaximized( true );
+    }
+
+    @Override
+    public void unmaximize() {
+        super.unmaximize();
+        listBar.getMaximizeButton().setMaximized( false );
     }
 }

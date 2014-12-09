@@ -24,6 +24,15 @@ extends AbstractDockingWorkbenchPanelView<P> {
         widget = setupWidget();
         widget.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
         Layouts.setToFillParent( widget.asWidget() );
+        populatePartViewContainer();
+    }
+
+    /**
+     * Fills the partViewContainer with the contextWidget and the content widget obtained from {@link #setupWidget()}.
+     * Can be used as a hook for subclasses to add their own stuff either before or after the
+     * {@code super.populatePartViewContainer()} call.
+     */
+    protected void populatePartViewContainer() {
         getPartViewContainer().add( contextWidget );
         getPartViewContainer().add( widget );
     }

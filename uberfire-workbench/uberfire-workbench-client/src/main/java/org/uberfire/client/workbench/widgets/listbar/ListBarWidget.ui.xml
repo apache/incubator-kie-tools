@@ -18,7 +18,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:tb="urn:import:com.github.gwtbootstrap.client.ui"
-             xmlns:uf="urn:import:org.uberfire.client.workbench.widgets.listbar">
+             xmlns:uf="urn:import:org.uberfire.client.workbench.widgets.listbar"
+             xmlns:ufp="urn:import:org.uberfire.client.workbench.widgets.panel">
 
   <ui:with field="res" type="org.uberfire.client.resources.WorkbenchResources"/>
 
@@ -59,6 +60,9 @@
           </tb:ButtonGroup>
           <tb:ButtonGroup ui:field="dropdownCaretContainer">
             <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
+          </tb:ButtonGroup>
+          <tb:ButtonGroup>
+            <ufp:MaximizeToggleButton ui:field="maximizeButton"/>
           </tb:ButtonGroup>
         </g:FlowPanel>
 
