@@ -20,7 +20,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
 import org.kie.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
-import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialEventTypeRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
@@ -90,7 +89,7 @@ public class SocialHomePageMainPresenter {
     private Caller<SocialUserServiceAPI> socialUserService;
 
     @Inject
-    private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
+    private DefaultSocialLinkCommandGenerator linkCommandGenerator;
 
     @AfterInitialization
     public void init() {
@@ -162,13 +161,7 @@ public class SocialHomePageMainPresenter {
     }
 
     private ParameterizedCommand<LinkCommandParams> generateLinkCommand() {
-        return new ParameterizedCommand<LinkCommandParams>() {
-            @Override
-            public void execute( LinkCommandParams parameters ) {
-                placeManager.goTo( "AuthoringPerspective" );
-                socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
-            }
-        };
+        return linkCommandGenerator.generateLinkCommand();
     }
 
     private boolean loggedUserFollowSelectedUser( SocialUser socialUser ) {

@@ -15,11 +15,11 @@ import org.kie.uberfire.social.activities.client.gravatar.GravatarBuilder;
 import org.kie.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.kie.uberfire.social.activities.client.widgets.userbox.UserBoxView;
-import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
+import org.kie.workbench.common.screens.social.hp.client.homepage.DefaultSocialLinkCommandGenerator;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserEditedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
@@ -52,9 +52,6 @@ public class UserHomePageMainPresenter {
 
     @Inject
     private IconLocator iconLocator;
-
-    @Inject
-    private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
     
     @Inject
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
@@ -82,6 +79,9 @@ public class UserHomePageMainPresenter {
 
     @Inject
     private Event<UserHomepageSelectedEvent> userHomepageSelectedEvent;
+
+    @Inject
+    private DefaultSocialLinkCommandGenerator linkCommandGenerator;
 
 
     //control race conditions due to assync system (cdi x UF lifecycle)
@@ -161,13 +161,7 @@ public class UserHomePageMainPresenter {
     }
 
     private ParameterizedCommand<LinkCommandParams> generateLinkCommand() {
-        return new ParameterizedCommand<LinkCommandParams>() {
-            @Override
-            public void execute( LinkCommandParams parameters ) {
-                placeManager.goTo( "AuthoringPerspective" );
-                socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
-            }
-        };
+        return linkCommandGenerator.generateLinkCommand();
     }
 
     private void generateConnectionsList( final SocialUser socialUser ) {

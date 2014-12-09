@@ -2,7 +2,6 @@ package org.kie.workbench.common.screens.social.hp.client.homepage;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.NavLink;
@@ -12,7 +11,6 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
 import org.kie.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
-import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.uberfire.social.activities.model.SocialPaged;
 import org.kie.uberfire.social.activities.model.SocialUser;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
@@ -49,10 +47,10 @@ public class SocialHomePageSidePresenter {
     private User loggedUser;
 
     @Inject
-    private Event<SocialFileSelectedEvent> socialFileSelectedEvent;
+    private IconLocator iconLocator;
 
     @Inject
-    private IconLocator iconLocator;
+    private DefaultSocialLinkCommandGenerator linkCommandGenerator;
 
     @PostConstruct
     public void init() {
@@ -78,14 +76,9 @@ public class SocialHomePageSidePresenter {
     }
 
     private ParameterizedCommand<LinkCommandParams> generateLinkCommand() {
-        return new ParameterizedCommand<LinkCommandParams>() {
-            @Override
-            public void execute( LinkCommandParams parameters ) {
-                placeManager.goTo( "AuthoringPerspective" );
-                socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
-            }
-        };
+       return linkCommandGenerator.generateLinkCommand();
     }
+
     @WorkbenchPartTitle
     public String getTitle() {
         return Constants.INSTANCE.RecentAssets();
