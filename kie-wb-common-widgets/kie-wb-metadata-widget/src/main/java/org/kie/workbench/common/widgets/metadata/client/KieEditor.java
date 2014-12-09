@@ -143,7 +143,6 @@ public abstract class KieEditor extends BaseEditor {
 
     protected void resetEditorPages( final Overview overview ) {
 
-        versionRecordManager.setVersions(overview.getMetadata().getVersion());
         this.overviewWidget.setContent(overview, versionRecordManager.getPathToLatest());
         this.metadata = overview.getMetadata();
 
