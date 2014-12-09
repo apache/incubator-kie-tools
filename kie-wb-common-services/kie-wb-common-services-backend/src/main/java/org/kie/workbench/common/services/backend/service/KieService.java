@@ -19,6 +19,7 @@ package org.kie.workbench.common.services.backend.service;
 import java.util.Date;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -35,10 +36,10 @@ import org.uberfire.rpc.SessionInfo;
 
 public abstract class KieService {
 
-    private static final Logger logger = LoggerFactory.getLogger( KieService.class );
+    private static final Logger logger = LoggerFactory.getLogger(KieService.class);
 
     @Inject
-    protected MetadataService metadataService;
+    protected MetadataServerSideService metadataService;
 
     @Inject
     protected SourceServices sourceServices;
@@ -52,39 +53,39 @@ public abstract class KieService {
     @Inject
     protected SessionInfo sessionInfo;
 
-    public Overview loadOverview( final Path path ) {
+    public Overview loadOverview(final Path path) {
         final Overview overview = new Overview();
 
         try {
             // Some older versions in our example do not have metadata. This should be impossible in any kie-wb version
-            overview.setMetadata( metadataService.getMetadata( path ) );
-        } catch ( Exception e ) {
-            logger.warn( "No metadata found for file: " + path.getFileName() + ", full path [" + path.toString() + "]" );
+            overview.setMetadata(metadataService.getMetadata(path));
+        } catch (Exception e) {
+            logger.warn("No metadata found for file: " + path.getFileName() + ", full path [" + path.toString() + "]");
         }
 
         //Some resources are not within a Project (e.g. categories.xml) so don't assume we can set the project name
-        final KieProject project = projectService.resolveProject( path );
-        if ( project == null ) {
-            logger.info( "File: " + path.getFileName() + ", full path [" + path.toString() + "] was not within a Project. Project Name cannot be set." );
+        final KieProject project = projectService.resolveProject(path);
+        if (project == null) {
+            logger.info("File: " + path.getFileName() + ", full path [" + path.toString() + "] was not within a Project. Project Name cannot be set.");
         } else {
-            overview.setProjectName( project.getProjectName() );
+            overview.setProjectName(project.getProjectName());
         }
 
         return overview;
     }
 
-    public String getSource( final Path path )
+    public String getSource(final Path path)
             throws SourceGenerationFailedException {
-        final org.uberfire.java.nio.file.Path convertedPath = Paths.convert( path );
+        final org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
 
-        if ( sourceServices.hasServiceFor( convertedPath ) ) {
+        if (sourceServices.hasServiceFor(convertedPath)) {
             return sourceServices.getServiceFor(convertedPath).getSource(convertedPath);
         } else {
             return "";
         }
     }
 
-    protected CommentedOption makeCommentedOption( final String commitMessage ) {
+    protected CommentedOption makeCommentedOption(final String commitMessage) {
         final String name = identity.getIdentifier();
         final Date when = new Date();
         final CommentedOption co = new CommentedOption( sessionInfo.getId(),
