@@ -66,6 +66,11 @@
       <artifactId>drools-wb-guided-rule-editor-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-api</artifactId>
+    </dependency>
+
     <!-- Needed for DataModelOracle builder used in tests -->
     <dependency>
       <groupId>org.kie.workbench.services</groupId>

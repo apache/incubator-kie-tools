@@ -17,17 +17,17 @@ package org.drools.workbench.screens.guided.dtree.service;
 
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.screens.guided.dtree.model.GuidedDecisionTreeEditorContent;
-import org.guvnor.common.services.shared.file.SupportsCopy;
-import org.guvnor.common.services.shared.file.SupportsCreate;
-import org.guvnor.common.services.shared.file.SupportsDelete;
-import org.guvnor.common.services.shared.file.SupportsRead;
-import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.source.ViewSourceService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
+import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
+import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
+import org.uberfire.ext.editor.commons.service.support.SupportsRead;
+import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 
 @Remote
 public interface GuidedDecisionTreeEditorService

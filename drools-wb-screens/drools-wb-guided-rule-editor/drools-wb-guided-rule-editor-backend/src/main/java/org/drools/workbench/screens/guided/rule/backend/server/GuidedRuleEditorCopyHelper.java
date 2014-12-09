@@ -24,10 +24,10 @@ import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceI
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
-import org.guvnor.common.services.backend.file.CopyHelper;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.io.IOService;
 import org.uberfire.workbench.type.FileNameUtil;
 

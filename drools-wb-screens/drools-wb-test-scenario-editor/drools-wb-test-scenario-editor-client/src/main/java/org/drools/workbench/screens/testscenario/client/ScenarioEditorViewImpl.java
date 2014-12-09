@@ -22,7 +22,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -43,15 +43,13 @@ import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.client.versionhistory.VersionRecordManager;
-import org.kie.workbench.common.widgets.client.widget.NoSuchFileWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
-import com.google.gwt.user.client.ui.FlexTable;
+import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
 import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -60,7 +58,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class ScenarioEditorViewImpl
         extends KieEditorViewImpl
         implements ScenarioEditorView,
-        ScenarioParentWidget {
+                   ScenarioParentWidget {
 
     private final Event<NotificationEvent> notification;
     private final VerticalPanel layout = new VerticalPanel();
@@ -168,10 +166,10 @@ public class ScenarioEditorViewImpl
     private void createWidgetForEditorLayout(final FlexTable editorLayout,
                                              final int layoutRow,
                                              final int layoutColumn,
-            final Widget widget) {
+                                             final Widget widget) {
         editorLayout.setWidget(layoutRow,
-                layoutColumn,
-                widget);
+                               layoutColumn,
+                               widget);
     }
 
     public void renderEditor() {
@@ -194,73 +192,73 @@ public class ScenarioEditorViewImpl
             if (fixture instanceof ExecutionTrace) {
                 ExecutionTrace currentExecutionTrace = (ExecutionTrace) fixture;
                 createWidgetForEditorLayout(editorLayout,
-                        layoutRow,
-                        0,
-                        scenarioWidgetComponentCreator.createExpectPanel(currentExecutionTrace));
+                                            layoutRow,
+                                            0,
+                                            scenarioWidgetComponentCreator.createExpectPanel(currentExecutionTrace));
 
                 executionTraceLine++;
                 if (executionTraceLine >= listExecutionTrace.size()) {
                     executionTraceLine = listExecutionTrace.size() - 1;
                 }
                 createWidgetForEditorLayout(editorLayout,
-                        layoutRow,
-                        1,
-                        scenarioWidgetComponentCreator.createExecutionWidget(currentExecutionTrace));
+                                            layoutRow,
+                                            1,
+                                            scenarioWidgetComponentCreator.createExecutionWidget(currentExecutionTrace));
                 editorLayout.getFlexCellFormatter().setHorizontalAlignment(layoutRow,
-                        2,
-                        HasHorizontalAlignment.ALIGN_LEFT);
+                                                                           2,
+                                                                           HasHorizontalAlignment.ALIGN_LEFT);
 
                 previousExecutionTrace = currentExecutionTrace;
 
             } else if (fixture instanceof FixturesMap) {
                 createWidgetForEditorLayout(editorLayout,
-                        layoutRow,
-                        0,
-                        scenarioWidgetComponentCreator.createGivenLabelButton(listExecutionTrace,
-                                executionTraceLine,
-                                previousExecutionTrace)
-                );
+                                            layoutRow,
+                                            0,
+                                            scenarioWidgetComponentCreator.createGivenLabelButton(listExecutionTrace,
+                                                                                                  executionTraceLine,
+                                                                                                  previousExecutionTrace)
+                                           );
                 layoutRow++;
                 createWidgetForEditorLayout(editorLayout,
-                        layoutRow,
-                        1,
-                        scenarioWidgetComponentCreator.createGivenPanel(listExecutionTrace,
-                                executionTraceLine,
-                                (FixturesMap) fixture)
-                );
+                                            layoutRow,
+                                            1,
+                                            scenarioWidgetComponentCreator.createGivenPanel(listExecutionTrace,
+                                                                                            executionTraceLine,
+                                                                                            (FixturesMap) fixture)
+                                           );
             } else if (fixture instanceof CallFixtureMap) {
                 createWidgetForEditorLayout(editorLayout,
-                        layoutRow,
-                        0,
-                        scenarioWidgetComponentCreator.createCallMethodLabelButton(listExecutionTrace,
-                                executionTraceLine,
-                                previousExecutionTrace)
-                );
+                                            layoutRow,
+                                            0,
+                                            scenarioWidgetComponentCreator.createCallMethodLabelButton(listExecutionTrace,
+                                                                                                       executionTraceLine,
+                                                                                                       previousExecutionTrace)
+                                           );
                 layoutRow++;
                 createWidgetForEditorLayout(editorLayout,
-                        layoutRow,
-                        1,
-                        scenarioWidgetComponentCreator.createCallMethodOnGivenPanel(listExecutionTrace,
-                                executionTraceLine,
-                                (CallFixtureMap) fixture)
-                );
+                                            layoutRow,
+                                            1,
+                                            scenarioWidgetComponentCreator.createCallMethodOnGivenPanel(listExecutionTrace,
+                                                                                                        executionTraceLine,
+                                                                                                        (CallFixtureMap) fixture)
+                                           );
             } else {
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get(0);
 
                 if (first instanceof VerifyFact) {
                     createWidgetForEditorLayout(editorLayout,
-                            layoutRow,
-                            1,
-                            scenarioWidgetComponentCreator.createVerifyFactsPanel(listExecutionTrace,
-                                    executionTraceLine,
-                                    fixturesList)
-                    );
+                                                layoutRow,
+                                                1,
+                                                scenarioWidgetComponentCreator.createVerifyFactsPanel(listExecutionTrace,
+                                                                                                      executionTraceLine,
+                                                                                                      fixturesList)
+                                               );
                 } else if (first instanceof VerifyRuleFired) {
                     createWidgetForEditorLayout(editorLayout,
-                            layoutRow,
-                            1,
-                            scenarioWidgetComponentCreator.createVerifyRulesFiredWidget(fixturesList));
+                                                layoutRow,
+                                                1,
+                                                scenarioWidgetComponentCreator.createVerifyRulesFiredWidget(fixturesList));
                 }
 
             }
@@ -269,36 +267,36 @@ public class ScenarioEditorViewImpl
 
         // add more execution sections.
         createWidgetForEditorLayout(editorLayout,
-                layoutRow,
-                0,
-                scenarioWidgetComponentCreator.createAddExecuteButton());
+                                    layoutRow,
+                                    0,
+                                    scenarioWidgetComponentCreator.createAddExecuteButton());
         layoutRow++;
         createWidgetForEditorLayout(editorLayout,
-                layoutRow,
-                0,
-                scenarioWidgetComponentCreator.createSmallLabel());
+                                    layoutRow,
+                                    0,
+                                    scenarioWidgetComponentCreator.createSmallLabel());
 
         // config section
         createWidgetForEditorLayout(editorLayout,
-                layoutRow,
-                1,
-                scenarioWidgetComponentCreator.createConfigWidget());
+                                    layoutRow,
+                                    1,
+                                    scenarioWidgetComponentCreator.createConfigWidget());
 
         layoutRow++;
 
         // global section
         HorizontalPanel horizontalPanel = scenarioWidgetComponentCreator.createHorizontalPanel();
         createWidgetForEditorLayout(editorLayout,
-                layoutRow,
-                0,
-                horizontalPanel);
+                                    layoutRow,
+                                    0,
+                                    horizontalPanel);
 
         createWidgetForEditorLayout(editorLayout,
-                layoutRow,
-                1,
-                scenarioWidgetComponentCreator.createGlobalPanel(scenarioHelper,
-                        previousExecutionTrace)
-        );
+                                    layoutRow,
+                                    1,
+                                    scenarioWidgetComponentCreator.createGlobalPanel(scenarioHelper,
+                                                                                     previousExecutionTrace)
+                                   );
     }
 
     private void addTestRunnerWidget(
@@ -324,7 +322,7 @@ public class ScenarioEditorViewImpl
     }
 
     private void addBulkRunTestScenarioPanel(final Path path,
-            final boolean isReadOnly) {
+                                             final boolean isReadOnly) {
         multiPage.addPage(new Page(bulkRunTestScenarioEditor, TestScenarioConstants.INSTANCE.TestScenarios()) {
             @Override
             public void onFocus() {
@@ -338,22 +336,22 @@ public class ScenarioEditorViewImpl
     }
 
     private void setScenario(final Path path,
-            final Scenario scenario,
-            final AsyncPackageDataModelOracle oracle) {
+                             final Scenario scenario,
+                             final AsyncPackageDataModelOracle oracle) {
         scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator(this,
-                path,
-                oracle,
-                scenario,
-                ruleNameService);
+                                                                            path,
+                                                                            oracle,
+                                                                            scenario,
+                                                                            ruleNameService);
         scenarioWidgetComponentCreator.setShowResults(false);
     }
 
     private void initImportsTab(final AsyncPackageDataModelOracle oracle,
-            final Imports imports,
-            final boolean readOnly) {
+                                final Imports imports,
+                                final boolean readOnly) {
         importsWidget.setContent(oracle,
-                imports,
-                readOnly);
+                                 imports,
+                                 readOnly);
     }
 
     @Override public void setVersionRecordManager(VersionRecordManager versionRecordManager) {

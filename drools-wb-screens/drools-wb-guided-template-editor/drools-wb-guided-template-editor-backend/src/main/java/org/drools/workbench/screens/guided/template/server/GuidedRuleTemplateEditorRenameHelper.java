@@ -23,10 +23,10 @@ import org.drools.workbench.models.guided.template.backend.RuleTemplateModelXMLP
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleEditorServiceUtilities;
 import org.drools.workbench.screens.guided.template.type.GuidedRuleTemplateResourceTypeDefinition;
-import org.guvnor.common.services.backend.file.RenameHelper;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.io.IOService;
 import org.uberfire.workbench.type.FileNameUtil;
 

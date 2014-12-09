@@ -39,9 +39,9 @@ import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionFieldValue;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
-import org.guvnor.structure.client.file.CommandWithPayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.client.callbacks.Callback;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class ActionFieldValueEditor extends Composite {
 
@@ -57,7 +57,7 @@ public class ActionFieldValueEditor extends Composite {
     private final ActionFieldValue afv;
     private final List<ActionFieldValue> afvs;
     private final AsyncPackageDataModelOracle oracle;
-    private final CommandWithPayload<ActionFieldValue> onDeleteCallback;
+    private final ParameterizedCommand<ActionFieldValue> onDeleteCallback;
 
     private final ValueEditorFactory valueEditorFactory = new ValueEditorFactory() {
         @Override
@@ -87,7 +87,7 @@ public class ActionFieldValueEditor extends Composite {
                                    final ActionFieldValue afv,
                                    final List<ActionFieldValue> afvs,
                                    final AsyncPackageDataModelOracle oracle,
-                                   final CommandWithPayload<ActionFieldValue> onDeleteCallback ) {
+                                   final ParameterizedCommand<ActionFieldValue> onDeleteCallback ) {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         this.className = className;

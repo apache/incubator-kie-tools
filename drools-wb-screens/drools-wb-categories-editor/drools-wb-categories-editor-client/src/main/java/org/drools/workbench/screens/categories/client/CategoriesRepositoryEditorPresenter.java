@@ -26,8 +26,6 @@ import org.drools.workbench.screens.categories.client.type.CategoryDefinitionRes
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.CategoriesModelContent;
-import org.guvnor.structure.client.file.CommandWithCommitMessage;
-import org.guvnor.structure.client.file.SaveOperationService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
@@ -37,12 +35,13 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
-import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -117,7 +116,7 @@ public class CategoriesRepositoryEditorPresenter {
 
     public void onSave() {
         new SaveOperationService().save(path,
-                new CommandWithCommitMessage() {
+                new ParameterizedCommand<String>() {
                     @Override
                     public void execute(final String commitMessage) {
                         view.showSaving();

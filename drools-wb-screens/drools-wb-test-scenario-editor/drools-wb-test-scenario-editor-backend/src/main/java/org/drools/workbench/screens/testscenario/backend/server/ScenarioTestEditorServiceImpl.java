@@ -35,9 +35,6 @@ import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedFilter;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
-import org.guvnor.common.services.shared.file.CopyService;
-import org.guvnor.common.services.shared.file.DeleteService;
-import org.guvnor.common.services.shared.file.RenameService;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.test.TestResultMessage;
@@ -59,6 +56,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.CopyService;
+import org.uberfire.ext.editor.commons.service.DeleteService;
+import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
@@ -240,8 +240,8 @@ public class ScenarioTestEditorServiceImpl extends KieService implements Scenari
     }
 
     @Override
-    public TestScenarioResult runScenario(final Path path,
-                                          final Scenario scenario) {
+    public TestScenarioResult runScenario( final Path path,
+                                           final Scenario scenario ) {
         try {
 
             final KieProject project = projectService.resolveProject( path );

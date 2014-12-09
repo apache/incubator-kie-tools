@@ -24,6 +24,8 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
+
   <inherits name='org.drools.workbench.screens.testscenario.DroolsWorkbenchTestScenarioEditorAPI'/>
   <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
   <inherits name="org.drools.workbench.screens.guided.rule.DroolsWorkbenchGuidedRuleEditorClient"/>

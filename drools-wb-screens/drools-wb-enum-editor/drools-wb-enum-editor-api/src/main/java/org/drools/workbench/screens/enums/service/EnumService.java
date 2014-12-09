@@ -18,15 +18,15 @@ package org.drools.workbench.screens.enums.service;
 
 import org.drools.workbench.screens.enums.model.EnumModelContent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
-import org.guvnor.common.services.shared.file.SupportsCopy;
-import org.guvnor.common.services.shared.file.SupportsCreate;
-import org.guvnor.common.services.shared.file.SupportsDelete;
-import org.guvnor.common.services.shared.file.SupportsRead;
-import org.guvnor.common.services.shared.file.SupportsRename;
 import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.validation.ValidationService;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
+import org.uberfire.ext.editor.commons.service.support.SupportsCreate;
+import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
+import org.uberfire.ext.editor.commons.service.support.SupportsRead;
+import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 
 @Remote
 public interface EnumService

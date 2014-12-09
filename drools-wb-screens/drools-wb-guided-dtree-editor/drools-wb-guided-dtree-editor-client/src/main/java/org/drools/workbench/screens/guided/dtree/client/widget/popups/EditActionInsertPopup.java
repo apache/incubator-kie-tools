@@ -41,10 +41,10 @@ import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionFi
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.impl.ActionInsertNodeImpl;
 import org.drools.workbench.screens.guided.dtree.client.resources.i18n.GuidedDecisionTreeConstants;
 import org.drools.workbench.screens.guided.dtree.client.widget.utils.ValueUtilities;
-import org.guvnor.structure.client.file.CommandWithPayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.mvp.ParameterizedCommand;
 
 public class EditActionInsertPopup extends BaseModal {
 
@@ -62,7 +62,7 @@ public class EditActionInsertPopup extends BaseModal {
 
     private final AsyncPackageDataModelOracle oracle;
 
-    private final CommandWithPayload<ActionFieldValue> onDeleteCallback = new CommandWithPayload<ActionFieldValue>() {
+    private final ParameterizedCommand<ActionFieldValue> onDeleteCallback = new ParameterizedCommand<ActionFieldValue>() {
         @Override
         public void execute( final ActionFieldValue afv ) {
             if ( clone.getFieldValues() == null ) {

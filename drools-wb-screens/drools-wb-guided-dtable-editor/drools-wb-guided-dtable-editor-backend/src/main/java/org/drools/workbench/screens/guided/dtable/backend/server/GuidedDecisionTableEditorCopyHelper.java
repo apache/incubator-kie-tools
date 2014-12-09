@@ -23,9 +23,9 @@ import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.backend.server.GuidedRuleEditorServiceUtilities;
-import org.guvnor.common.services.backend.file.CopyHelper;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.io.IOService;
 import org.uberfire.workbench.type.FileNameUtil;
 
