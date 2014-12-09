@@ -12,7 +12,7 @@ importerMainClass=org.drools.workbench.jcr2vfsmigration.VfsImporterLauncher
 # echo "  For example (linux): export JAVA_HOME=/usr/lib/jvm/java-6-sun"
 # echo "  For example (mac): export JAVA_HOME=/Library/Java/Home"
 # echo
-# echo "Starting the jcr2vfs migraiton app..."
+# echo "Starting the jcr2vfs migraton app..."
 
 if [ ! -z "$JAVA_HOME" -a -f "$JAVA_HOME/bin/java" ]; then
    JAVA_BIN=$JAVA_HOME/bin/java
@@ -20,9 +20,9 @@ else
    JAVA_BIN=java
 fi
 
-$JAVA_BIN -Xms256m -Xmx1024m -cp "../jcr-exporter-libs/*" ${exporterMainClass}
+$JAVA_BIN -Xms256m -Xmx1024m -cp "../jcr-exporter-libs/*" ${exporterMainClass} -i $2 -o "./temp" -f
 
-$JAVA_BIN -Xms256m -Xmx1024m -cp "../vfs-importer-libs/*" ${importerMainClass}
+$JAVA_BIN -Xms256m -Xmx1024m -cp "../vfs-importer-libs/*" ${importerMainClass} -i "./temp" -o $4 -f
 
 if [ $? != 0 ] ; then
     echo
