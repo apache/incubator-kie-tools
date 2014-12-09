@@ -51,7 +51,7 @@ public class OverviewWidgetPresenter
         this.clientTypeRegistry = clientTypeRegistry;
     }
     
-    public void setContent(Overview overview, ObservablePath path, String version) {
+    public void setContent(Overview overview, ObservablePath path) {
 
         this.overview = overview;
 

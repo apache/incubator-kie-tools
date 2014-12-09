@@ -38,13 +38,11 @@ public class OverviewWidgetPresenterTest {
 
     private Overview overview;
 
-    private VersionRecordManager versionRecordManager;
 
     @Before
     public void setUp() throws Exception {
         ClientTypeRegistry clientTypeRegistry = mock(ClientTypeRegistry.class);
         view = mock(OverviewScreenView.class);
-        versionRecordManager = mock(VersionRecordManager.class);
 
         editor = new OverviewWidgetPresenter(
                 clientTypeRegistry,
@@ -66,7 +64,7 @@ public class OverviewWidgetPresenterTest {
         overview.setMetadata(metadata);
 
         ObservablePath observablePath = mock(ObservablePath.class);
-        editor.setContent(overview, observablePath, versionRecordManager.getVersion());
+        editor.setContent(overview, observablePath);
 
         presenter.onDescriptionEdited("Hello");
 
