@@ -17,7 +17,7 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
