@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.types.PathPartList.PathPartListJSO;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
 import com.ait.lienzo.client.core.types.RadialGradient;
@@ -526,5 +527,78 @@ public final class NativeContext2D extends JavaScriptObject
     public final native String getGlobalCompositeOperation()
     /*-{
     	return this.globalCompositeOperation;
+    }-*/;
+
+    public final native boolean path(PathPartListJSO list)
+    /*-{
+        var fill = false;
+        
+        this.beginPath();
+
+        for (i = 0; i < list.length; i++)
+        {
+            var entry = list[i];
+
+            var p = entry.points;
+
+            switch (entry.command)
+            {
+                case 1:
+                    this.lineTo(p[0], p[1]);
+                    break;
+                case 2:
+                    this.moveTo(p[0], p[1]);
+                    break;
+                case 3:
+                    this.bezierCurveTo(p[0], p[1], p[2], p[3], p[4], p[5]);
+                    break;
+                case 4:
+                    this.quadraticCurveTo(p[0], p[1], p[2], p[3]);
+                    break;
+                case 5:
+                    var cx = p[0];
+
+                    var cy = p[1];
+
+                    var rx = p[2];
+
+                    var ry = p[3];
+
+                    var th = p[4];
+
+                    var dt = p[5];
+
+                    var ro = p[6];
+
+                    var fs = p[7];
+
+                    var ra = ((rx > ry) ? rx : ry);
+
+                    var sx = ((rx > ry) ? 1 : (rx / ry));
+
+                    var sy = ((rx > ry) ? (ry / rx) : 1);
+
+                    this.translate(cx, cy);
+
+                    this.rotate(ro);
+
+                    this.scale(sx, sy);
+
+                    this.arc(0, 0, ra, th, th + dt, (1 - fs) > 0);
+
+                    this.scale(1 / sx, 1 / sy);
+
+                    this.rotate(-ro);
+
+                    this.translate(-cx, -cy);
+                    break;
+                case 6:
+                    this.closePath();
+
+                    fill = true;
+                    break;
+            }
+        }
+        return fill;
     }-*/;
 }

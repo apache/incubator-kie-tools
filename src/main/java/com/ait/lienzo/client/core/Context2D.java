@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.LinearGradient;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
@@ -289,6 +290,11 @@ public class Context2D
     public void setMiterLimit(double limit)
     {
         m_jso.setMiterLimit(limit);
+    }
+    
+    public boolean path(PathPartList list)
+    {
+        return m_jso.path(list.getJSO());
     }
 
     public boolean isSupported(String feature)
