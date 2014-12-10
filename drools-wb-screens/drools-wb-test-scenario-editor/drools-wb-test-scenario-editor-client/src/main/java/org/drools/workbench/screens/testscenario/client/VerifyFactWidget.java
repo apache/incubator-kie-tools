@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.List;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,6 +34,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
@@ -83,24 +86,39 @@ public class VerifyFactWidget extends Composite {
         final ClickHandler handler = new ClickHandler() {
             public void onClick( ClickEvent w ) {
 
-                final ListBox b = new ListBox();
+                final ListBox fieldsListBox = new ListBox();
                 VerifyFactWidget.this.oracle.getFieldCompletions( type,
                                                                   new Callback<ModelField[]>() {
                                                                       @Override
                                                                       public void callback( final ModelField[] fields ) {
+
+                                                                          // Add fields
                                                                           for ( int i = 0; i < fields.length; i++ ) {
-                                                                              b.addItem( fields[ i ].getName() );
+                                                                              fieldsListBox.addItem(fields[i].getName());
                                                                           }
+
+                                                                          // Add methods
+                                                                          oracle.getMethodInfos(type,
+                                                                                                new Callback<List<MethodInfo>>() {
+                                                                                                    @Override
+                                                                                                    public void callback(List<MethodInfo> result) {
+                                                                                                        for (MethodInfo info : result) {
+                                                                                                            if (info.getParams().isEmpty() && !"void".equals(info.getReturnClassType())) {
+                                                                                                                fieldsListBox.addItem(info.getName());
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                });
                                                                       }
                                                                   } );
 
                 final FormStylePopup pop = new FormStylePopup( TestScenarioAltedImages.INSTANCE.RuleAsset(),
                                                                TestScenarioConstants.INSTANCE.ChooseAFieldToAdd() );
-                pop.addRow( b );
+                pop.addRow( fieldsListBox );
                 pop.add( new ModalFooterOKCancelButtons( new Command() {
                     @Override
                     public void execute() {
-                        String f = b.getItemText( b.getSelectedIndex() );
+                        String f = fieldsListBox.getItemText( fieldsListBox.getSelectedIndex() );
                         vf.getFieldValues().add( new VerifyField( f,
                                                                   "",
                                                                   "==" ) );
