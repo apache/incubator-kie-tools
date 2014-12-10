@@ -12,4 +12,6 @@ public interface Constants
 
     String RecentAssets();
 
+    String Error_NoAccessRightsToOrganizationalUnits();
+
 }
