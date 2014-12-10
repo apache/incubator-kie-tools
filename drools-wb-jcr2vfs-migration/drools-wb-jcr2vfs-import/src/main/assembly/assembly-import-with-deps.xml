@@ -23,9 +23,9 @@
         <!-- org.javassist:javassist is included -->
         <exclude>javassist:javassist</exclude>
         <exclude>org.apache.ant:ant*</exclude>
-        <exclude>org.jboss.errai:*</exclude>
+        <!--<exclude>org.jboss.errai:*</exclude>-->
         <exclude>org.jboss.resteasy:*</exclude>
-        <exclude>org.jgroups:jgroups</exclude>
+        <!--<exclude>org.jgroups:jgroups</exclude>-->
         <exclude>org.kie:kie-ci</exclude>
         <exclude>xml-apis:xml-apis</exclude>
       </excludes>
