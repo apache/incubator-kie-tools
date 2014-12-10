@@ -197,6 +197,20 @@ public class PanelManagerTest {
     }
 
     @Test
+    public void addPanelAtRootPositionShouldReturnRootPanel() throws Exception {
+        when( beanFactory.newRootPanel( any( PerspectiveActivity.class ),
+                                        eq( testPerspectiveDef.getRoot() ) )).thenReturn( testPerspectiveRootPanelPresenter );
+        when( testPerspectiveRootPanelPresenter.getDefaultChildType() ).thenReturn( null );
+        PerspectiveActivity testPerspectiveActivity = mock( PerspectiveActivity.class );
+        panelManager.setRoot( testPerspectiveActivity, testPerspectiveDef.getRoot() );
+        
+        PanelDefinition notActuallyAdded = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition result = panelManager.addWorkbenchPanel( testPerspectiveDef.getRoot(),
+                                                                 notActuallyAdded,
+                                                                 CompassPosition.ROOT );
+        assertSame( result, testPerspectiveDef.getRoot() );
+    }
+    @Test
     public void addedPanelsShouldBeRemembered() throws Exception {
         PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
         testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );

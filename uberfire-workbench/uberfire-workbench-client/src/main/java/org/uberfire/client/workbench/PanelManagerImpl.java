@@ -342,29 +342,26 @@ public class PanelManagerImpl implements PanelManager {
                                                targetPanelPresenter );
         }
 
-        String defaultChildType = targetPanelPresenter.getDefaultChildType();
-        if ( defaultChildType == null ) {
-            throw new IllegalArgumentException( "Target panel (type " + targetPanelPresenter.getClass().getName() + ")"
-                    + " does not allow child panels" );
-        }
-
-        if ( childPanel.getPanelType().equals( PanelDefinition.PARENT_CHOOSES_TYPE ) ) {
-            childPanel.setPanelType( defaultChildType );
-        }
-
         PanelDefinition newPanel;
         if ( position == CompassPosition.ROOT ) {
-            // TODO not sure if this is needed/used anymore
             newPanel = rootPanelDef;
         } else if ( position == CompassPosition.SELF ) {
-            // TODO not sure if this is needed/used anymore
             newPanel = targetPanelPresenter.getDefinition();
         } else {
+            String defaultChildType = targetPanelPresenter.getDefaultChildType();
+            if ( defaultChildType == null ) {
+                throw new IllegalArgumentException( "Target panel (type " + targetPanelPresenter.getClass().getName() + ")"
+                        + " does not allow child panels" );
+            }
+
+            if ( childPanel.getPanelType().equals( PanelDefinition.PARENT_CHOOSES_TYPE ) ) {
+                childPanel.setPanelType( defaultChildType );
+            }
+
             final WorkbenchPanelPresenter childPanelPresenter = beanFactory.newWorkbenchPanel( childPanel );
             mapPanelDefinitionToPresenter.put( childPanel,
                                                childPanelPresenter );
 
-            // TODO (hbraun): why no remove callback before the addPanel invocation?
             targetPanelPresenter.addPanel( childPanelPresenter,
                                            position );
             newPanel = childPanel;
