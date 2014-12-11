@@ -141,6 +141,41 @@ public class ClassMethodInspectorTest {
         }
     }
 
+    @Test
+    public void testMultiParameterSetter() throws Exception {
+        final ClassMethodInspector ext = new ClassMethodInspector( MultiParameterSetter.class,
+                                                                   new JavaTypeSystemTranslator() );
+
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         checkBlackList( s ) );
+        }
+        assertEquals( 1,
+                      ext.getMethodNames().size() );
+    }
+
+    @Test
+    public void testGetterWithParameters() throws Exception {
+        final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class,
+                                                                   new JavaTypeSystemTranslator() );
+
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         checkBlackList( s ) );
+        }
+    }
+
+    @Test
+    public void testBooleanGetterWithParameters() throws Exception {
+        final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class,
+                                                                   new JavaTypeSystemTranslator() );
+
+        for ( String s : ext.getMethodNames() ) {
+            assertFalse( "Method " + s + " is not allowed.",
+                         checkBlackList( s ) );
+        }
+    }
+
     private boolean checkBlackList( String methodName ) {
         return ( "hashCode".equals( methodName )
                 || "equals".equals( methodName )
@@ -250,6 +285,31 @@ public class ClassMethodInspectorTest {
 
         public Collection values() {
             return null;
+        }
+
+    }
+
+    public static class MultiParameterSetter {
+
+        public void setSomething( String a,
+                                  String b ) {
+
+        }
+
+    }
+
+    public static class GetterWithParameters {
+
+        public void getSomething( String a ) {
+
+        }
+
+    }
+
+    public static class BooleanGetterWithParameters {
+
+        public void isSomething( String a ) {
+
         }
 
     }

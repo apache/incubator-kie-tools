@@ -91,11 +91,34 @@ public class ClassMethodInspector {
      * @param m
      */
     private boolean isNotGetterOrSetter( final Method m ) {
-        String name = m.getName();
-        return !( ( name.length() > 3 && ( name.startsWith( "set" ) || name.startsWith( "get" ) ) ) ||
-                ( name.length() > 2 && name.startsWith( "is" )
-                        && ( Boolean.class.isAssignableFrom( m.getReturnType() ) || Boolean.TYPE == m.getReturnType() ) ) );
+        return !( isSetter( m ) || isGetter( m ) || isBooleanGetter( m ) );
+    }
 
+    private boolean isSetter( final Method m ) {
+        String name = m.getName();
+        int parameterCount = m.getParameterTypes().length;
+        if ( parameterCount != 1 ) {
+            return false;
+        }
+        return ( name.length() > 3 && name.startsWith( "set" ) );
+    }
+
+    private boolean isGetter( final Method m ) {
+        String name = m.getName();
+        int parameterCount = m.getParameterTypes().length;
+        if ( parameterCount != 0 ) {
+            return false;
+        }
+        return ( name.length() > 3 && name.startsWith( "get" ) );
+    }
+
+    private boolean isBooleanGetter( final Method m ) {
+        String name = m.getName();
+        int parameterCount = m.getParameterTypes().length;
+        if ( parameterCount != 0 ) {
+            return false;
+        }
+        return ( name.length() > 2 && name.startsWith( "is" ) && ( Boolean.class.isAssignableFrom( m.getReturnType() ) || Boolean.TYPE == m.getReturnType() ) );
     }
 
     public List<String> getMethodNames() {
