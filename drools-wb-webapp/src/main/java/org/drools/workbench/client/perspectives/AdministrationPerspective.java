@@ -152,7 +152,7 @@ public class AdministrationPerspective {
                 new Command() {
                     @Override
                     public void execute() {
-                        placeManager.goTo( "org.guvnor.organizationalunit.manager.OrganizationalUnitManager" );
+                        placeManager.goTo( "org.kie.workbench.common.screens.organizationalunit.manager.OrganizationalUnitManager" );
                     }
                 } ).endMenu().build().getItems().get( 0 ) );
         return menuItems;
