@@ -6,5 +6,6 @@
   <inherits name="org.uberfire.wbtest.UberFireClientIntegrationTest"/>
 
   <source path='gwttest'/>
+  <source path='testutil'/>
 
 </module>

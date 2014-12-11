@@ -1,7 +1,7 @@
 package org.uberfire.wbtest.gwttest;
 
 import static org.uberfire.debug.Debug.*;
-import static org.uberfire.wbtest.gwttest.TestingPredicates.*;
+import static org.uberfire.wbtest.testutil.TestingPredicates.*;
 
 import java.util.Arrays;
 import java.util.Collection;

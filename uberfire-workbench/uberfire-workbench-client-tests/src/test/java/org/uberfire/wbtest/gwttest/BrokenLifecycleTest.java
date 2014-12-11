@@ -3,7 +3,7 @@ package org.uberfire.wbtest.gwttest;
 import static com.google.common.base.Predicates.*;
 import static org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase.*;
 import static org.uberfire.debug.Debug.*;
-import static org.uberfire.wbtest.gwttest.TestingPredicates.*;
+import static org.uberfire.wbtest.testutil.TestingPredicates.*;
 
 import java.util.ArrayList;
 import java.util.List;

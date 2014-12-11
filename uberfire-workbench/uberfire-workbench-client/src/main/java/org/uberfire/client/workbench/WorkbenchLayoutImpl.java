@@ -13,9 +13,12 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -216,7 +219,12 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         // We start the cascade of onResize() calls at its immediate child.
         perspectiveRootContainer.onResize();
 
-        updateMaximizedPanelSizes();
+        new Timer() {
+            @Override
+            public void run() {
+                updateMaximizedPanelSizes();
+            }
+        }.schedule( 5 );
     }
 
     private void updateMaximizedPanelSizes() {
@@ -226,6 +234,10 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
             style.setLeft( perspectiveRootContainer.getAbsoluteLeft(), Unit.PX );
             style.setWidth( perspectiveRootContainer.getOffsetWidth(), Unit.PX );
             style.setHeight( perspectiveRootContainer.getOffsetHeight(), Unit.PX );
+            
+            if ( w instanceof RequiresResize ) {
+                ((RequiresResize) w).onResize();
+            }
         }
     }
 

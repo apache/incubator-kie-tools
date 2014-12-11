@@ -96,4 +96,10 @@ extends AbstractMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
         super.unmaximize();
         maximizeButton.setMaximized( false );
     }
+
+    @Override
+    public void setElementId( String elementId ) {
+        super.setElementId( elementId );
+        maximizeButton.ensureDebugId( elementId + "-maximizeButton" );
+    }
 }

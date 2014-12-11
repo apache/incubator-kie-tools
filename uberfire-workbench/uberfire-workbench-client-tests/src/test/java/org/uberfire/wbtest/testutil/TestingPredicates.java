@@ -1,4 +1,4 @@
-package org.uberfire.wbtest.gwttest;
+package org.uberfire.wbtest.testutil;
 
 import org.uberfire.wbtest.client.main.DefaultScreenActivity;
 import org.uberfire.wbtest.client.panels.docking.NestingScreen;

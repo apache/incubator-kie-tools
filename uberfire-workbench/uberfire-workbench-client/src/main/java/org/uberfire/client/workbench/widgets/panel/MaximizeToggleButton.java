@@ -31,19 +31,26 @@ public class MaximizeToggleButton extends Button {
         addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                final boolean wasMaximized = maximized;
-                setMaximized( !wasMaximized );
-                if ( wasMaximized ) {
-                    if ( unmaximizeCommand != null ) {
-                        unmaximizeCommand.execute();
-                    }
-                } else {
-                    if ( maximizeCommand != null ) {
-                        maximizeCommand.execute();
-                    }
-                }
+                click();
             }
         } );
+    }
+
+    /**
+     * Normally invoked automatically when this button gets clicked. Exposed for testing purposes.
+     */
+    public void click() {
+        final boolean wasMaximized = maximized;
+        setMaximized( !wasMaximized );
+        if ( wasMaximized ) {
+            if ( unmaximizeCommand != null ) {
+                unmaximizeCommand.execute();
+            }
+        } else {
+            if ( maximizeCommand != null ) {
+                maximizeCommand.execute();
+            }
+        }
     }
 
     /**

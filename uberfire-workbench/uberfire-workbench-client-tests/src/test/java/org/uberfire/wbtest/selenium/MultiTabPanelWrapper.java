@@ -7,17 +7,14 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
- * A Selenium Page Object for interacting with UberTabPanel.
+ * A Selenium Page Object for interacting with a MultiTabWorkbenchPanelView.
  */
-public class UberTabPanelWrapper {
+public class MultiTabPanelWrapper extends AbstractWorkbenchPanelWrapper {
 
-    private final WebDriver driver;
-
-    public UberTabPanelWrapper( WebDriver driver ) {
-        this.driver = PortablePreconditions.checkNotNull( "driver", driver );
+    public MultiTabPanelWrapper( WebDriver driver, String panelId ) {
+        super( driver, panelId );
     }
 
     /**
@@ -125,4 +122,5 @@ public class UberTabPanelWrapper {
         WebElement tab = driver.findElement( By.partialLinkText( label ) );
         tab.findElement( By.tagName( "button" ) ).click();
     }
+
 }

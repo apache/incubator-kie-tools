@@ -20,6 +20,11 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 @Named( "org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity" )
 public class TabbedPerspectiveActivity extends AbstractTestPerspectiveActivity {
 
+    /**
+     * The ID to pass to UberTabPanelWrapper to get the tab panel wrapper for this perspective.
+     */
+    public static final String TABBED_PANEL_ID = "tabbedPerspectiveDefault";
+
     @Inject
     public TabbedPerspectiveActivity( PlaceManager placeManager ) {
         super( placeManager );
@@ -31,7 +36,7 @@ public class TabbedPerspectiveActivity extends AbstractTestPerspectiveActivity {
         pdef.setName( "TabbedPerspectiveActivity" );
 
         DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest( ResizeTestScreenActivity.class.getName() );
-        destintationPlace.addParameter( "debugId", "tabbedPerspectiveDefault" );
+        destintationPlace.addParameter( "debugId", TABBED_PANEL_ID );
         pdef.getRoot().addPart( new PartDefinitionImpl( destintationPlace ) );
         return pdef;
     }

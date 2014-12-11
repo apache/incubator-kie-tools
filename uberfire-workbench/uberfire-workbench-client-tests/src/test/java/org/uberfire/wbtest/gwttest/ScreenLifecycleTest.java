@@ -1,6 +1,6 @@
 package org.uberfire.wbtest.gwttest;
 
-import static org.uberfire.wbtest.gwttest.TestingPredicates.*;
+import static org.uberfire.wbtest.testutil.TestingPredicates.*;
 
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.client.mvp.PlaceManager;

@@ -77,4 +77,10 @@ extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
         super.unmaximize();
         listBar.getMaximizeButton().setMaximized( false );
     }
+    
+    @Override
+    public void setElementId( String elementId ) {
+        super.setElementId( elementId );
+        listBar.getMaximizeButton().ensureDebugId( elementId + "-maximizeButton" );
+    }
 }

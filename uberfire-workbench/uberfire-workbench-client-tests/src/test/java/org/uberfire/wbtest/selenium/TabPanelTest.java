@@ -18,13 +18,14 @@ import org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity;
 
 public class TabPanelTest extends AbstractSeleniumTest {
 
-    private UberTabPanelWrapper tabPanel;
+    private MultiTabPanelWrapper tabPanel;
 
     @Before
     public void setup() {
-        tabPanel = new UberTabPanelWrapper( driver );
         driver.get( baseUrl + "#" + TabbedPerspectiveActivity.class.getName() );
         waitForTabbedPerspective();
+
+        tabPanel = new MultiTabPanelWrapper( driver, TabbedPerspectiveActivity.TABBED_PANEL_ID );
 
         // close the screen that appeared by default with the tabbed perspective
         // (this also tests that the last/only tab can be closed properly)
