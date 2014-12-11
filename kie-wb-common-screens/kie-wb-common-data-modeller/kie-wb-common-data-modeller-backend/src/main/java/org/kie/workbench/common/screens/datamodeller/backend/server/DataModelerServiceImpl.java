@@ -792,7 +792,7 @@ public class DataModelerServiceImpl extends KieService implements DataModelerSer
             //Start IOService bath processing. IOService batch processing causes a blocking operation on the file system
             //to it must be treated carefully.
             CommentedOption option = serviceHelper.makeCommentedOption( commitMessage );
-            ioService.startBatch();
+            ioService.startBatch( Paths.convert( project.getRootPath() ).getFileSystem() );
             onBatch = true;
 
             generateModel( dataModel, project, option );
