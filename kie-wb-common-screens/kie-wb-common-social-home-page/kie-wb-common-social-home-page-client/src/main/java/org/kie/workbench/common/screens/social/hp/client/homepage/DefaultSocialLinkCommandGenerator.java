@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.social.OrganizationalUnitEventType;
 import org.jboss.errai.security.shared.api.Role;
@@ -29,10 +30,10 @@ import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
 import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
 @ApplicationScoped
 public class DefaultSocialLinkCommandGenerator {
@@ -61,6 +62,8 @@ public class DefaultSocialLinkCommandGenerator {
                     onVFSLinkEvent( parameters );
                 } else if ( isOrganizationalUnitEvent( parameters.getEventType() ) ) {
                     onOrganizationalUnitEvent( parameters );
+                } else if ( isProjectEvent( parameters.getEventType() )) {
+                    onProjectEvent( parameters );
                 }
             }
         };
@@ -92,6 +95,11 @@ public class DefaultSocialLinkCommandGenerator {
         }
     }
 
+    private void onProjectEvent( LinkCommandParams parameters ) {
+        placeManager.goTo( "AuthoringPerspective" );
+        socialFileSelectedEvent.fire( new SocialFileSelectedEvent( parameters.getEventType(), parameters.getLink() ) );
+    }
+
     private boolean isOrganizationalUnitEvent( String eventType ) {
 
         return OrganizationalUnitEventType.NEW_ORGANIZATIONAL_UNIT.name().equals( eventType ) ||
@@ -99,6 +107,10 @@ public class DefaultSocialLinkCommandGenerator {
                 OrganizationalUnitEventType.REPO_ADDED_TO_ORGANIZATIONAL_UNIT.name().equals( eventType ) ||
                 OrganizationalUnitEventType.REPO_REMOVED_FROM_ORGANIZATIONAL_UNIT.name().equals( eventType );
 
+    }
+
+    private boolean isProjectEvent( String eventType ) {
+        return ProjectEventType.NEW_PROJECT.name().equals( eventType );
     }
 
     private boolean hasAccessRightsForFeature( String feature ) {

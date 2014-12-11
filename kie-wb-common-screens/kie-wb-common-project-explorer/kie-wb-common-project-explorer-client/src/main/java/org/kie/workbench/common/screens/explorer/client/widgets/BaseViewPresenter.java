@@ -33,6 +33,7 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
+import org.guvnor.common.services.project.social.ProjectEventType;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
@@ -870,6 +871,8 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( isRepositoryEvent( eventType ) ) {
             //the event is relative to a Repository and not to a file.
             placeManager.goTo( "repositoryStructureScreen" );
+        } else if ( isProjectEvent( eventType ) ) {
+            placeManager.goTo( "projectScreen" );
         } else {
             placeManager.goTo( path );
         }
@@ -892,6 +895,10 @@ public abstract class BaseViewPresenter implements ViewPresenter {
             return true;
         }
         return false;
+    }
+
+    private boolean isProjectEvent( String eventType ) {
+        return ProjectEventType.NEW_PROJECT.name().equals( eventType );
     }
 
     private void setupActiveContextFor( final Path path ) {
