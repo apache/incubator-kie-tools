@@ -490,12 +490,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
         public DSLVariableValue getSelectedValue() {
-            int selectedIndex = resultWidget.getSelectedIndex();
-            if ( selectedIndex != -1 ) {
-                return new DSLVariableValue( resultWidget.getValue( selectedIndex ) );
-            } else {
-                return new DSLVariableValue( "" );
-            }
+            return new DSLVariableValue( resultWidget.getValue() );
         }
 
         public void refreshDropDownData() {
