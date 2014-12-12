@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
+import java.util.Collection;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -356,6 +357,17 @@ public class ProjectScreenPresenter
                             public IsWidget build() {
                                 return buildOptions;
                             }
+
+                            @Override
+                            public Collection<String> getRoles() {
+                                return kieACL.getGrantedRoles( F_PROJECT_AUTHORING_BUILDANDDEPLOY );
+                            }
+
+                            @Override
+                            public String getSignatureId() {
+                                return "org.kie.workbench.common.screens.projecteditor.client.editor.ProjectScreenPresenterActivity#buildButton";
+                            }
+
                         };
                     }
                 } ).endMenu()
