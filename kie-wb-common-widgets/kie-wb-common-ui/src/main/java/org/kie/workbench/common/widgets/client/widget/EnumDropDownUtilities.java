@@ -131,15 +131,12 @@ public class EnumDropDownUtilities {
         if ( isMultipleSelect && trimmedCurrentValue != null ) {
             trimmedCurrentValue = currentValue.replace( "\"",
                                                         "" );
-            trimmedCurrentValue = trimmedCurrentValue.replaceAll( "\\s+",
-                                                                  "" );
             trimmedCurrentValue = trimmedCurrentValue.replace( "(",
                                                                "" );
             trimmedCurrentValue = trimmedCurrentValue.replace( ")",
                                                                "" );
-            trimmedCurrentValue = trimmedCurrentValue.trim();
-            if ( trimmedCurrentValue.indexOf( "," ) > 0 ) {
-                currentValues.addAll( Arrays.asList( trimmedCurrentValue.split( "," ) ) );
+            for ( String val : Arrays.asList( trimmedCurrentValue.split( "," ) ) ) {
+                currentValues.add( val.trim() );
             }
         } else {
             currentValues.add( currentValue );

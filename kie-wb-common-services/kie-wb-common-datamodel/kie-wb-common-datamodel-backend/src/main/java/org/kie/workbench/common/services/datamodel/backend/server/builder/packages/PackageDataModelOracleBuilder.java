@@ -103,38 +103,42 @@ public final class PackageDataModelOracleBuilder {
     private void populateDSLSentences( final DSLTokenizedMappingFile dslLoader ) {
         for ( DSLMappingEntry entry : dslLoader.getMapping().getEntries() ) {
             if ( entry.getSection() == DSLMappingEntry.CONDITION ) {
-                addDSLConditionSentence( entry.getMappingKey() );
+                addDSLConditionSentence( entry );
             } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {
-                addDSLActionSentence( entry.getMappingKey() );
+                addDSLActionSentence( entry );
             } else if ( entry.getSection() == DSLMappingEntry.KEYWORD ) {
-                addDSLKeywordMapping( entry.getMappingKey() );
+                addDSLKeywordMapping( entry );
             } else if ( entry.getSection() == DSLMappingEntry.ANY ) {
-                addDSLAnyScopeMapping( entry.getMappingKey() );
+                addDSLAnyScopeMapping( entry );
             }
         }
     }
 
-    private void addDSLConditionSentence( final String definition ) {
+    private void addDSLConditionSentence( final DSLMappingEntry definition ) {
         final DSLSentence sentence = new DSLSentence();
-        sentence.setDefinition( definition );
+        sentence.setDrl( definition.getMappingValue() );
+        sentence.setDefinition( definition.getMappingKey() );
         this.dslConditionSentences.add( sentence );
     }
 
-    private void addDSLActionSentence( final String definition ) {
+    private void addDSLActionSentence( final DSLMappingEntry definition ) {
         final DSLSentence sentence = new DSLSentence();
-        sentence.setDefinition( definition );
+        sentence.setDrl( definition.getMappingValue() );
+        sentence.setDefinition( definition.getMappingKey() );
         this.dslActionSentences.add( sentence );
     }
 
-    private void addDSLKeywordMapping( final String definition ) {
+    private void addDSLKeywordMapping( final DSLMappingEntry definition ) {
         final DSLSentence sentence = new DSLSentence();
-        sentence.setDefinition( definition );
+        sentence.setDrl( definition.getMappingValue() );
+        sentence.setDefinition( definition.getMappingKey() );
         this.dslKeywordItems.add( sentence );
     }
 
-    private void addDSLAnyScopeMapping( final String definition ) {
+    private void addDSLAnyScopeMapping( final DSLMappingEntry definition ) {
         final DSLSentence sentence = new DSLSentence();
-        sentence.setDefinition( definition );
+        sentence.setDrl( definition.getMappingValue() );
+        sentence.setDefinition( definition.getMappingKey() );
         this.dslAnyScopeItems.add( sentence );
     }
 
