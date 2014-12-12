@@ -10,8 +10,8 @@
   <artifactId>kie-wb-common-social-home-page-backend</artifactId>
   <packaging>jar</packaging>
 
-  <name>Kie Workbench - Social Home Page - Backend</name>
-  <description>Kie Workbench - Server Component - Backend</description>
+  <name>Kie Workbench - Common - Social Home Page - Backend</name>
+  <description>Kie Workbench - Common - Social Home Page - Backend</description>
 
   <dependencies>
 

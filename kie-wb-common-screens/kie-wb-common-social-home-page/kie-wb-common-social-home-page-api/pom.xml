@@ -9,8 +9,8 @@
 
   <artifactId>kie-wb-common-social-home-page-api</artifactId>
 
-  <name>Kie Workbench - Social Home Page - API</name>
-  <description>Kie Workbench - Social Home Page - API</description>
+  <name>Kie Workbench - Common - Social Home Page - API</name>
+  <description>Kie Workbench - Common - Social Home Page - API</description>
 
   <dependencies>
     <!-- Project Dependencies -->

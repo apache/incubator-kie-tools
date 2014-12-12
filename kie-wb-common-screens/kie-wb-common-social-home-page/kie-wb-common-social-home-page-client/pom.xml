@@ -9,8 +9,8 @@
 
   <artifactId>kie-wb-common-social-home-page-client</artifactId>
 
-  <name>Kie Workbench - Social Home Page - Client</name>
-  <description>Kie Workbench - Social Home Page - Client</description>
+  <name>Kie Workbench - Common - Social Home Page - Client</name>
+  <description>Kie Workbench - Common - Social Home Page - Client</description>
 
   <dependencies>
 
