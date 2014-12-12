@@ -131,8 +131,7 @@ public class NewProjectWizard
     //best sanitize the projectName
     private String sanitizeProjectName( final String projectName ) {
         //Only [A-Za-z0-9_\-.] are valid so strip everything else out
-        return projectName.replaceAll( "[^A-Za-z0-9_\\-.]",
-                                       "" );
+        return projectName != null ? projectName.replaceAll( "[^A-Za-z0-9_\\-.]", "" ) : projectName;
     }
 
     @Override
