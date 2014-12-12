@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.oracle.DropDownData;
+import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
 import org.drools.workbench.models.datamodel.rule.DSLComplexVariableValue;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
@@ -138,6 +139,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
             DSLVariableValue value = dslValues.get( index );
             Widget varWidget = processVariable( currVariable,
+                                                sentence,
                                                 value );
             lineWidgets.add( varWidget );
             index++;
@@ -170,8 +172,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         for ( Widget widg : lineWidgets ) {
             addWidget( widg );
         }
-
-        updateEnumDropDowns();
     }
 
     private int getIndexForEndOfVariable( String dsl,
@@ -202,6 +202,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     }
 
     public Widget processVariable( String currVariable,
+                                   DSLSentence sentence,
                                    DSLVariableValue value ) {
 
         Widget result = null;
@@ -215,6 +216,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         if ( currVariable.contains( ":" ) ) {
             if ( currVariable.contains( ":" + DSLSentence.ENUM_TAG + ":" ) ) {
                 result = getEnumDropdown( currVariable,
+                                          sentence,
                                           value );
             } else if ( currVariable.contains( ":" + DSLSentence.DATE_TAG + ":" ) ) {
                 result = getDateSelector( currVariable,
@@ -239,25 +241,46 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         return result;
     }
 
-    public Widget getEnumDropdown( String variableDef,
-                                   DSLVariableValue value ) {
-
+    private Widget getEnumDropdown( String variableDef,
+                                    DSLSentence sentence,
+                                    DSLVariableValue value ) {
+        final boolean multipleSelect = isMultipleSelect( variableDef,
+                                                         sentence );
         DSLDropDown resultWidget = new DSLDropDown( variableDef,
-                                                    value );
+                                                    value,
+                                                    multipleSelect );
         dropDownWidgets.add( resultWidget );
         return resultWidget;
     }
 
-    public Widget getBox( DSLVariableValue variableDef,
-                          String regex ) {
+    private boolean isMultipleSelect( final String variableDef,
+                                      final DSLSentence sentence ) {
+        final String variableName = variableDef.substring( 0,
+                                                           variableDef.indexOf( ":" ) );
+        final String variableNameMarker = "{" + variableName + "}";
+        final String drl = sentence.getDrl();
+        final String normalizedDrl = drl.trim().replaceAll( "\"", "" ).replaceAll( " +", " " );
+        final String normalizedDrlFragment = normalizedDrl.substring( 0,
+                                                                      normalizedDrl.indexOf( variableNameMarker ) );
+        for ( String listOperator : OperatorsOracle.EXPLICIT_LIST_OPERATORS ) {
+            final String listOperatorMarker = " " + listOperator + " ";
+            if ( normalizedDrlFragment.indexOf( listOperatorMarker ) == normalizedDrlFragment.length() - listOperatorMarker.length() ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Widget getBox( DSLVariableValue variableDef,
+                           String regex ) {
         return this.getBox( variableDef,
                             regex,
                             false );
     }
 
-    public Widget getBox( DSLVariableValue variableDef,
-                          String regex,
-                          boolean readonly ) {
+    private Widget getBox( DSLVariableValue variableDef,
+                           String regex,
+                           boolean readonly ) {
 
         FieldEditor currentBox = new FieldEditor();
         currentBox.setVisibleLength( variableDef.getValue().length() + 1 );
@@ -269,8 +292,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         return currentBox;
     }
 
-    public Widget getCheckbox( String variableDef,
-                               DSLVariableValue value ) {
+    private Widget getCheckbox( String variableDef,
+                                DSLVariableValue value ) {
         return new DSLCheckBox( variableDef,
                                 value );
     }
@@ -286,8 +309,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
      * @param value
      * @return
      */
-    public Widget getCustomFormEditor( String variableDef,
-                                       DSLVariableValue value ) {
+    private Widget getCustomFormEditor( String variableDef,
+                                        DSLVariableValue value ) {
 
         //Parse Fact Type and Field for retrieving Custom Form configuration
         //from WorkingSetManager
@@ -444,7 +467,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         DSLVariableValue selectedValue;
 
         public DSLDropDown( final String variableDef,
-                            final DSLVariableValue value ) {
+                            final DSLVariableValue value,
+                            final boolean multipleSelect ) {
 
             //Parse Fact Type and Field for retrieving DropDown data from Suggestion Completion Engine
             //Format for the drop-down definition within a DSLSentence is <varName>:<type>:<Fact.field>
@@ -463,6 +487,9 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
                 public void valueChanged( String newText,
                                           String newValue ) {
+                    if ( selectedValue.getValue().equals( newValue ) ) {
+                        return;
+                    }
 
                     selectedValue = new DSLVariableValue( newValue );
 
@@ -470,7 +497,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     //An improvement would be to determine the chain of dependent drop-downs and only update
                     //children of the one whose value changes. However in reality DSLSentences only contain
                     //a couple of drop-downs so it's quicker to simply update them all.
-                    updateEnumDropDowns();
+                    updateEnumDropDowns( DSLDropDown.this );
                 }
             };
 
@@ -478,6 +505,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             resultWidget = new EnumDropDown( value.getValue(),
                                              handler,
                                              dropDownData,
+                                             multipleSelect,
                                              modeller.getPath() );
 
             //Wrap widget within a HorizontalPanel to add a space before and after the Widget
@@ -490,7 +518,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
         public DSLVariableValue getSelectedValue() {
-            return new DSLVariableValue( resultWidget.getValue() );
+            return selectedValue;
         }
 
         public void refreshDropDownData() {
@@ -672,19 +700,22 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     //An improvement would be to determine the chain of dependent drop-downs and only update children of the
     //one whose value changes. However in reality DSLSentences only contain a couple of drop-downs so it's 
     //quicker to simply update them all.
-    private void updateEnumDropDowns() {
+    private void updateEnumDropDowns( final DSLDropDown source ) {
 
         //Copy selections in UI to data-model, used to drive dependent drop-downs
         updateSentence();
 
+        final int sourceIndex = dropDownWidgets.indexOf( source );
         for ( DSLDropDown dd : dropDownWidgets ) {
-            dd.refreshDropDownData();
-
-            //Copy selections in UI to data-model again, as updating the drop-downs
-            //can lead to some selected values being cleared when dependent drop-downs
-            //are used.
-            updateSentence();
+            if ( dropDownWidgets.indexOf( dd ) > sourceIndex ) {
+                dd.refreshDropDownData();
+            }
         }
+
+        //Copy selections in UI to data-model again, as updating the drop-downs
+        //can lead to some selected values being cleared when dependent drop-downs
+        //are used.
+        updateSentence();
     }
 
     private WorkingSetManager getWorkingSetManager() {
