@@ -581,12 +581,22 @@ public class Builder {
 
         m.setId( message.getId() );
         m.setLine( message.getLine() );
-        if ( message.getPath() != null && !message.getPath().isEmpty() ) {
-            m.setPath( handles.get( RESOURCE_PATH + "/" + getBaseFileName( message.getPath() ) ) );
-        }
+        m.setPath( convertPath( message.getPath() ) );
         m.setColumn( message.getColumn() );
         m.setText( message.getText() );
         return m;
+    }
+
+    private org.uberfire.backend.vfs.Path convertPath( String kieBuilderPath ) {
+        if ( kieBuilderPath == null || kieBuilderPath.isEmpty() ) return null;
+
+        //look for a resource related path
+        org.uberfire.backend.vfs.Path path = handles.get( RESOURCE_PATH + "/" + getBaseFileName( kieBuilderPath ) );
+        if ( path == null ) {
+            //give a second chance, it might be a java resource error. Java paths has the form src/main/java/org/File.java
+            path = handles.get( getBaseFileName( kieBuilderPath ) );
+        }
+        return path;
     }
 
     private BuildMessage convertValidationMessage( final ValidationMessage message ) {
