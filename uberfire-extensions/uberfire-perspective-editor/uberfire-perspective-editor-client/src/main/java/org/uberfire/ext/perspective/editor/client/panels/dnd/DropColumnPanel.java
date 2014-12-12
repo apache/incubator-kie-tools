@@ -97,19 +97,19 @@ public class DropColumnPanel extends FlowPanel {
     }
 
     private boolean isAExternalComponent( DropEvent event ) {
-        return ( !event.getData( DragType.EXTERNAL.name() ).isEmpty() );
+        return ( event.getData( DragType.EXTERNAL.name() ) != null ) &&( !event.getData( DragType.EXTERNAL.name() ).isEmpty() );
     }
 
     private boolean isARegularScreenEvent( DropEvent event ) {
-        return ( !event.getData( DragType.SCREEN.name() ).isEmpty() );
+        return ( event.getData( DragType.SCREEN.name() ) != null ) && ( !event.getData( DragType.SCREEN.name() ).isEmpty() );
     }
 
     private boolean isAGridDrop( DropEvent event ) {
-        return !event.getData( DragType.GRID.name() ).isEmpty();
+        return ( event.getData( DragType.GRID.name() ) != null ) && ( !event.getData( DragType.GRID.name() ).isEmpty() );
     }
 
     private boolean isHtmlDrop( DropEvent event ) {
-        return !event.getData( DragType.HTML.name() ).isEmpty();
+        return ( event.getData( DragType.HTML.name() ) != null ) && (!event.getData( DragType.HTML.name() ).isEmpty());
     }
 
     private HandlerRegistration addDropHandler( DropHandler handler ) {
