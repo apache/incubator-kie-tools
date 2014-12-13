@@ -21,23 +21,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.IOException;
-import org.uberfire.java.nio.file.DirectoryStream;
-import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.java.nio.file.FileVisitResult;
-import org.uberfire.java.nio.file.NotDirectoryException;
-import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.SimpleFileVisitor;
-import org.uberfire.java.nio.file.StandardDeleteOption;
-import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
-import org.uberfire.rpc.SessionInfo;
-import org.uberfire.ext.plugin.exception.PluginAlreadyExists;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.plugin.event.MediaDeleted;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
+import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.event.PluginSaved;
+import org.uberfire.ext.plugin.exception.PluginAlreadyExists;
 import org.uberfire.ext.plugin.model.CodeType;
 import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
@@ -51,6 +41,24 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.model.RuntimePlugin;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.ext.plugin.type.TypeConverterUtil;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.FileAlreadyExistsException;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileVisitResult;
+import org.uberfire.java.nio.file.NotDirectoryException;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.SimpleFileVisitor;
+import org.uberfire.java.nio.file.StandardDeleteOption;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
+import org.uberfire.rpc.SessionInfo;
+import org.uberfire.rpc.impl.SessionInfoImpl;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import static org.uberfire.backend.server.util.Paths.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -85,7 +93,25 @@ public class PluginServicesImpl implements PluginServices {
     private Event<PluginSaved> pluginSavedEvent;
 
     @Inject
+    private Event<PluginRenamed> pluginRenamedEvent;
+
+    @Inject
     private Event<MediaDeleted> mediaDeletedEvent;
+
+    @Inject
+    private Event<ResourceDeletedEvent> resourceDeletedEvent;
+
+    @Inject
+    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
+
+    @Inject
+    private Event<ResourceCopiedEvent> resourceCopiedEvent;
+
+    @Inject
+    private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private User identity;
 
     private Gson gson;
 
@@ -208,7 +234,7 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public void save( final PluginSimpleContent plugin ) {
+    public org.uberfire.backend.vfs.Path save( final PluginSimpleContent plugin ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
@@ -238,6 +264,8 @@ public class PluginServicesImpl implements PluginServices {
         createRegistry( plugin );
 
         updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+
+        return plugin.getPath();
     }
 
     private Path getDependencyPath( final Path pluginPath,
@@ -415,12 +443,71 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public void delete( final Plugin plugin ) {
+    public void delete( final org.uberfire.backend.vfs.Path path,
+                        final String comment ) {
+        final Plugin plugin = getPluginContent( path );
         final Path pluginPath = convert( plugin.getPath() );
         if ( ioService.exists( pluginPath ) ) {
-            ioService.delete( pluginPath.getParent(), StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+            ioService.deleteIfExists( pluginPath.getParent(), StandardDeleteOption.NON_EMPTY_DIRECTORIES, commentedOption( comment ) );
             pluginDeletedEvent.fire( new PluginDeleted( plugin.getName(), plugin.getType(), sessionInfo ) );
+            resourceDeletedEvent.fire( new ResourceDeletedEvent( plugin.getPath(), comment, sessionInfo ) );
         }
+    }
+
+    @Override
+    public org.uberfire.backend.vfs.Path copy( final org.uberfire.backend.vfs.Path path,
+                                               final String newName,
+                                               final String comment ) {
+
+        final Path newPath = getPluginPath( newName );
+        if ( ioService.exists( newPath ) ) {
+            throw new RuntimeException( new FileAlreadyExistsException( newPath.toString() ) );
+        }
+
+        ioService.copy( convert( path ).getParent(), newPath, commentedOption( comment ) );
+
+        final org.uberfire.backend.vfs.Path result = convert( newPath.resolve( path.getFileName() ) );
+
+        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
+                                                           result,
+                                                           comment,
+                                                           sessionInfo != null ? sessionInfo : new SessionInfoImpl( "--", identity ) ) );
+
+        pluginAddedEvent.fire( new PluginAdded( getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ), sessionInfo ) );
+
+        return result;
+    }
+
+    @Override
+    public org.uberfire.backend.vfs.Path rename( final org.uberfire.backend.vfs.Path path,
+                                                 final String newName,
+                                                 final String comment ) {
+        final Path newPath = getPluginPath( newName );
+        if ( ioService.exists( newPath ) ) {
+            throw new RuntimeException( new FileAlreadyExistsException( newPath.toString() ) );
+        }
+
+        ioService.move( convert( path ).getParent(), newPath, commentedOption( comment ) );
+
+        final org.uberfire.backend.vfs.Path result = convert( newPath.resolve( path.getFileName() ) );
+
+        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
+                                                             result,
+                                                             comment,
+                                                             sessionInfo != null ? sessionInfo : new SessionInfoImpl( "--", identity ) ) );
+
+        final String oldPluginName = convert( path ).getParent().getFileName().toString();
+
+        pluginRenamedEvent.fire( new PluginRenamed( oldPluginName, getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ), sessionInfo ) );
+
+        return result;
+    }
+
+    private CommentedOption commentedOption( final String comment ) {
+        return new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
+                                    identity.getIdentifier(),
+                                    null,
+                                    comment );
     }
 
     @Override
@@ -437,7 +524,7 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public void save( final DynamicMenu plugin ) {
+    public org.uberfire.backend.vfs.Path save( final DynamicMenu plugin ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
@@ -453,6 +540,8 @@ public class PluginServicesImpl implements PluginServices {
         ioService.write( menuItemsPath, sb.toString() );
 
         updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+
+        return plugin.getPath();
     }
 
     @Override

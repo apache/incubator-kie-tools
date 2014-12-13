@@ -5,25 +5,13 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.rpc.SessionInfo;
 
 @Portable
-public class PluginAdded {
-
-    private Plugin plugin;
-    private SessionInfo sessionInfo;
+public class PluginAdded extends BaseNewPlugin {
 
     public PluginAdded() {
     }
 
-    public PluginAdded( Plugin plugin,
-                        SessionInfo sessionInfo ) {
-        this.plugin = plugin;
-        this.sessionInfo = sessionInfo;
-    }
-
-    public Plugin getPlugin() {
-        return plugin;
-    }
-
-    public SessionInfo getSessionInfo() {
-        return sessionInfo;
+    public PluginAdded( final Plugin plugin,
+                        final SessionInfo sessionInfo ) {
+        super( plugin, sessionInfo );
     }
 }

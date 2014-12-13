@@ -94,4 +94,16 @@ public interface CommonConstants
     String More();
 
     String ShowAll();
+
+    String Deleting();
+
+    String ItemDeletedSuccessfully();
+
+    String ItemRenamedSuccessfully();
+
+    String Renaming();
+
+    String Copying();
+
+    String ItemCopiedSuccessfully();
 }

@@ -34,7 +34,11 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.editor.commons.client.file.DeletePopup;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
 import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
 import org.uberfire.ext.plugin.model.Framework;
@@ -44,14 +48,7 @@ import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -161,7 +158,6 @@ public class SplashEditor
         }, new Command() {
             @Override
             public void execute() {
-                onDelete();
             }
         } );
     }
@@ -190,28 +186,4 @@ public class SplashEditor
         htmlPanel.setHeight( getParent().getParent().getOffsetHeight() + "px" );
         editor.onResize();
     }
-    protected void onDelete() {
-        final DeletePopup popup = new DeletePopup(
-
-                new Command() {
-                    @Override
-                    public void execute() {
-                        pluginServices.call( new RemoteCallback<Void>() {
-
-                            @Override
-                            public void callback( final Void response ) {
-                                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.SUCCESS));
-                                placeManager.closePlace(place);
-                                busyIndicatorView.hideBusyIndicator();
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete(plugin);
-
-
-                    }
-                }
-        );
-
-        popup.show();
-    }
-
 }

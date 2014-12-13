@@ -32,4 +32,32 @@ public class DynamicMenuItem {
     public void setMenuLabel( String menuLabel ) {
         this.menuLabel = menuLabel;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof DynamicMenuItem ) ) {
+            return false;
+        }
+
+        DynamicMenuItem that = (DynamicMenuItem) o;
+
+        if ( activityId != null ? !activityId.equals( that.activityId ) : that.activityId != null ) {
+            return false;
+        }
+        if ( menuLabel != null ? !menuLabel.equals( that.menuLabel ) : that.menuLabel != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = activityId != null ? activityId.hashCode() : 0;
+        result = 31 * result + ( menuLabel != null ? menuLabel.hashCode() : 0 );
+        return result;
+    }
 }

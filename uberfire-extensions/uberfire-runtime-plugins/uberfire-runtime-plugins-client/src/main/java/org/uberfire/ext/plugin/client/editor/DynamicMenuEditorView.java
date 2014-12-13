@@ -16,11 +16,8 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
-import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonCell;
@@ -46,45 +43,33 @@ import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.editor.commons.client.file.DeletePopup;
-import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
-import org.uberfire.ext.plugin.model.DynamicMenu;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
-import org.uberfire.ext.plugin.model.Plugin;
-import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.ext.plugin.service.PluginServices;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.NotificationEvent;
-import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "Dynamic Menu Editor", supportedTypes = { DynamicMenuResourceType.class }, priority = Integer.MAX_VALUE)
-public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuItem> {
+public class DynamicMenuEditorView
+        extends BaseEditorViewImpl
+        implements UberView<DynamicMenuEditorPresenter>,
+                   Editor<DynamicMenuItem> {
 
     interface ViewBinder
             extends
-            UiBinder<Widget, DynamicMenuEditor> {
+            UiBinder<Widget, DynamicMenuEditorView> {
 
     }
 
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    interface Driver extends SimpleBeanEditorDriver<DynamicMenuItem, DynamicMenuEditorView> {
+
+    }
+
+    final private Driver driver = GWT.create( Driver.class );
+
+    final private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
     @UiField
     TextBox activityId;
@@ -115,76 +100,22 @@ public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuIt
     @UiField
     Button cancelButton;
 
-    @Inject
-    private Caller<PluginServices> pluginServices;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private Event<NotificationEvent> notification;
-
-    @Inject
-    private BusyIndicatorView busyIndicatorView;
-
-    private PlaceRequest place;
-
-    interface Driver extends SimpleBeanEditorDriver<DynamicMenuItem, DynamicMenuEditor> {
-
-    }
-
-    private Driver driver = GWT.create( Driver.class );
-
-    private ListDataProvider<DynamicMenuItem> dataProvider = new ListDataProvider<DynamicMenuItem>();
-
-    private DynamicMenu menuItem;
-
-    private org.uberfire.backend.vfs.Path path;
-
-    private Plugin plugin;
+    private DynamicMenuEditorPresenter presenter;
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Override
+    public void init( final DynamicMenuEditorPresenter presenter ) {
+        this.presenter = presenter;
 
         driver.initialize( this );
 
         setMenuItem( new DynamicMenuItem() );
 
         initTable( menuItems );
-    }
-
-    @OnStartup
-    public void onStartup( final org.uberfire.backend.vfs.Path path,
-                           final PlaceRequest place ) {
-        pluginServices.call( new RemoteCallback<DynamicMenu>() {
-
-            @Override
-            public void callback( final DynamicMenu response ) {
-                menuItem = response;
-                for ( final DynamicMenuItem menuItem : response.getMenuItems() ) {
-                    dataProvider.getList().add( menuItem );
-                }
-            }
-        } ).getDynamicMenuContent( path );
-        this.place = place;
-        this.path = path;
-        plugin = new Plugin( place.getParameter( "name", "" ), PluginType.DYNAMIC_MENU, path );
-    }
-
-    @WorkbenchMenu
-    public Menus getMenu() {
-        return new PluginsCommonMenu().build( new Command() {
-            @Override
-            public void execute() {
-                pluginServices.call().save( new DynamicMenu( menuItem.getName(), PluginType.DYNAMIC_MENU, path, new ArrayList<DynamicMenuItem>( dataProvider.getList() ) ) );
-            }
-        }, new Command() {
-            @Override
-            public void execute() {
-                onDelete();
-            }
-        } );
     }
 
     private void initTable( final AbstractCellTable<DynamicMenuItem> exampleTable ) {
@@ -228,9 +159,7 @@ public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuIt
             public void update( final int index,
                                 final DynamicMenuItem object,
                                 final String value ) {
-                dataProvider.getList().remove( object );
-                dataProvider.flush();
-                dataProvider.refresh();
+                presenter.removeObject( object );
             }
         } );
 
@@ -242,8 +171,7 @@ public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuIt
 
             @Override
             public void onSelectionChange( SelectionChangeEvent event ) {
-                DynamicMenuItem person = selectionModel.getSelectedObject();
-                DynamicMenuEditor.this.driver.edit( person );
+                driver.edit( selectionModel.getSelectedObject() );
             }
         } );
 
@@ -251,12 +179,11 @@ public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuIt
 
         exampleTable.setSelectionModel( selectionModel );
 
-        dataProvider.addDataDisplay( exampleTable );
+        presenter.setDataDisplay( exampleTable );
     }
 
     @UiHandler("okButton")
     public void onClick( ClickEvent e ) {
-
         final DynamicMenuItem menuItem = driver.flush();
 
         boolean hasError = false;
@@ -278,7 +205,7 @@ public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuIt
             return;
         }
 
-        addMenuItem( menuItem );
+        presenter.addMenuItem( menuItem );
 
         setMenuItem( new DynamicMenuItem() );
     }
@@ -288,23 +215,8 @@ public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuIt
         setMenuItem( new DynamicMenuItem() );
     }
 
-    private void addMenuItem( final DynamicMenuItem menuItem ) {
-
-        DynamicMenuItem existingItem = null;
-        for ( final DynamicMenuItem item : dataProvider.getList() ) {
-            if ( menuItem.getMenuLabel().equals( item.getMenuLabel() ) ) {
-                existingItem = item;
-                break;
-            }
-        }
-        if ( existingItem == null ) {
-            dataProvider.getList().add( menuItem );
-        } else {
-            menuItems.getSelectionModel().setSelected( menuItem, false );
-            dataProvider.refresh();
-        }
-
-        dataProvider.flush();
+    public void setSelected( final DynamicMenuItem menuItem ) {
+        menuItems.getSelectionModel().setSelected( menuItem, false );
     }
 
     public void setMenuItem( final DynamicMenuItem menuItem ) {
@@ -316,34 +228,4 @@ public class DynamicMenuEditor extends Composite implements Editor<DynamicMenuIt
         menuLabelControlGroup.setType( ControlGroupType.NONE );
         menuLabelHelpInline.setText( "" );
     }
-
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return "Dynamic Menu Editor [" + plugin.getName() + "]";
-    }
-    protected void onDelete() {
-        final DeletePopup popup = new DeletePopup(
-
-                new Command() {
-                    @Override
-                    public void execute() {
-                        pluginServices.call( new RemoteCallback<Void>() {
-
-                            @Override
-                            public void callback( final Void response ) {
-                                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully(), NotificationEvent.NotificationType.SUCCESS));
-                                placeManager.closePlace(place);
-                                busyIndicatorView.hideBusyIndicator();
-                            }
-                        }, new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete(menuItem);
-
-
-                    }
-                }
-        );
-
-        popup.show();
-    }
-
-
 }

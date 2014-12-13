@@ -31,8 +31,7 @@ public interface BaseEditorView
 
     EditorTitle getTitleWidget();
 
-    void refreshTitle( String fileName,
-                       String description );
+    void refreshTitle( final String value );
 
     boolean confirmClose();
 

@@ -15,32 +15,54 @@
  */
 package org.uberfire.ext.editor.commons.client.menu;
 
+import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.validation.Validator;
+import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
+import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
+import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-public interface BasicFileMenuBuilder<T> {
+public interface BasicFileMenuBuilder {
 
     Menus build();
 
-    T addSave( final MenuItem menuItem );
+    BasicFileMenuBuilder addSave( final MenuItem menuItem );
 
-    T addSave( final Command command );
+    BasicFileMenuBuilder addSave( final Command command );
 
-    T addDelete( final Command command );
+    BasicFileMenuBuilder addDelete( final Path path,
+                                    final Caller<? extends SupportsDelete> deleteCaller );
 
-    T addRename( final Command command );
+    BasicFileMenuBuilder addDelete( final Command command );
 
-    T addCopy( final Command command );
+    BasicFileMenuBuilder addRename( final Command command );
 
-    T addValidate( final Command command );
+    BasicFileMenuBuilder addRename( final Path path,
+                                    final Caller<? extends SupportsRename> renameCaller );
 
-    T addRestoreVersion( final Path path );
+    BasicFileMenuBuilder addRename( final Path path,
+                                    final Validator validator,
+                                    final Caller<? extends SupportsRename> renameCaller );
 
-    T addCommand( final String caption,
-                  final Command command );
+    BasicFileMenuBuilder addCopy( final Command command );
 
-    T addNewTopLevelMenu( final MenuItem menu );
+    BasicFileMenuBuilder addCopy( final Path path,
+                                  final Caller<? extends SupportsCopy> copyCaller );
+
+    BasicFileMenuBuilder addCopy( final Path path,
+                                  final Validator validator,
+                                  final Caller<? extends SupportsCopy> copyCaller );
+
+    BasicFileMenuBuilder addValidate( final Command command );
+
+    BasicFileMenuBuilder addRestoreVersion( final Path path );
+
+    BasicFileMenuBuilder addCommand( final String caption,
+                                     final Command command );
+
+    BasicFileMenuBuilder addNewTopLevelMenu( final MenuItem menu );
 
 }

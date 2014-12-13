@@ -15,6 +15,9 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
+import javax.enterprise.context.Dependent;
+
+@Dependent
 public class BusyIndicatorView implements HasBusyIndicator {
 
     @Override

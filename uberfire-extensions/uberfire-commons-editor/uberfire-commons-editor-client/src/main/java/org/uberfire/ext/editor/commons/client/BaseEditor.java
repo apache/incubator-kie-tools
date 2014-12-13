@@ -16,12 +16,17 @@
 
 package org.uberfire.ext.editor.commons.client;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -29,9 +34,14 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.menu.BasicFileMenuBuilder;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
-import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
+import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
+import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
+import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
@@ -40,6 +50,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
 
 public abstract class BaseEditor {
@@ -64,6 +75,15 @@ public abstract class BaseEditor {
     @Inject
     protected VersionRecordManager versionRecordManager;
 
+    @Inject
+    @New
+    private BasicFileMenuBuilder menuBuilder;
+
+    @Inject
+    protected DefaultFileNameValidator fileNameValidator;
+
+    protected Set<MenuItems> menuItems = new HashSet<MenuItems>();
+
     protected PlaceRequest place;
     private ClientResourceType type;
     protected Integer originalHash;
@@ -78,17 +98,20 @@ public abstract class BaseEditor {
 
     protected void init( final ObservablePath path,
                          final PlaceRequest place,
-                         final ClientResourceType type ) {
-        init( path, place, type, true, false );
+                         final ClientResourceType type,
+                         final MenuItems... menuItems ) {
+        init( path, place, type, true, false, menuItems );
     }
 
     protected void init( final ObservablePath path,
                          final PlaceRequest place,
                          final ClientResourceType type,
                          final boolean addFileChangeListeners,
-                         final boolean displayShowMoreVersions ) {
+                         final boolean displayShowMoreVersions,
+                         final MenuItems... menuItems ) {
         this.place = place;
         this.type = type;
+        this.menuItems.addAll( Arrays.asList( menuItems ) );
         this.displayShowMoreVersions = displayShowMoreVersions;
 
         baseView.showLoading();
@@ -124,18 +147,47 @@ public abstract class BaseEditor {
         loadContent();
     }
 
-    protected abstract void showVersions();
+    protected void showVersions() {
 
-    protected abstract void makeMenuBar();
+    }
+
+    /**
+     * If you want to customize the menu override this method.
+     */
+    protected void makeMenuBar() {
+        if ( menuItems.contains( SAVE ) ) {
+            menuBuilder.addSave( new Command() {
+                @Override
+                public void execute() {
+                    onSave();
+                }
+            } );
+        }
+
+        if ( menuItems.contains( COPY ) ) {
+            menuBuilder.addCopy( versionRecordManager.getCurrentPath(),
+                                 fileNameValidator,
+                                 getCopyServiceCaller() );
+        }
+        if ( menuItems.contains( RENAME ) ) {
+            menuBuilder.addRename( versionRecordManager.getPathToLatest(),
+                                   fileNameValidator,
+                                   getRenameServiceCaller() );
+        }
+        if ( menuItems.contains( DELETE ) ) {
+            menuBuilder.addDelete( versionRecordManager.getCurrentPath(), getDeleteServiceCaller() );
+        }
+        if ( menuItems.contains( HISTORY ) ) {
+            menuBuilder.addNewTopLevelMenu( versionRecordManager.buildMenu() );
+        }
+
+        menus = menuBuilder.build();
+    }
 
     private void selectVersion( VersionRecord versionRecord ) {
         baseView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
 
-        if ( versionRecordManager.isLatest( versionRecord ) ) {
-            isReadOnly = false;
-        } else {
-            isReadOnly = true;
-        }
+        isReadOnly = !versionRecordManager.isLatest( versionRecord );
 
         versionRecordManager.setVersion( versionRecord.id() );
 
@@ -245,7 +297,7 @@ public abstract class BaseEditor {
     }
 
     private void refreshTitle() {
-        baseView.refreshTitle( versionRecordManager.getCurrentPath().getFileName(), type.getDescription() );
+        baseView.refreshTitle( getTitleText() );
     }
 
     protected void onSave() {
@@ -289,30 +341,8 @@ public abstract class BaseEditor {
                            ).show();
     }
 
-//    /**
-//     * If you want to customize the menu override this method.
-//     */
-//    protected void makeMenuBar() {
-//        menus = menuBuilder
-//                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
-//                    @Override
-//                    public void execute() {
-//                        onSave();
-//                    }
-//                } ) )
-//                .addCopy( versionRecordManager.getCurrentPath(),
-//                          fileNameValidator )
-//                .addRename( versionRecordManager.getPathToLatest(),
-//                            fileNameValidator )
-//                .addDelete( versionRecordManager.getPathToLatest() )
-//                .addValidate( onValidate() )
-//                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
-//                .build();
-//    }
-
     protected RemoteCallback<Path> getSaveSuccessCallback( final int newHash ) {
         return new RemoteCallback<Path>() {
-
             @Override
             public void callback( final Path path ) {
                 baseView.hideBusyIndicator();
@@ -343,7 +373,7 @@ public abstract class BaseEditor {
     }
 
     private void disableMenus() {
-        disableMenuItem( MenuItems.COPY );
+        disableMenuItem( COPY );
         disableMenuItem( MenuItems.RENAME );
         disableMenuItem( MenuItems.DELETE );
         disableMenuItem( MenuItems.VALIDATE );
@@ -375,6 +405,18 @@ public abstract class BaseEditor {
      */
     protected void save() {
 
+    }
+
+    protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
+        return null;
+    }
+
+    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
+        return null;
+    }
+
+    protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
+        return null;
     }
 
     public boolean mayClose( Integer currentHash ) {

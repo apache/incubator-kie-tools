@@ -48,9 +48,8 @@ public abstract class BaseEditorViewImpl
     }
 
     @Override
-    public void refreshTitle( String fileName,
-                              String description ) {
-        title.setText( fileName, description );
+    public void refreshTitle( final String value ) {
+        title.setText( value );
     }
 
     @Override

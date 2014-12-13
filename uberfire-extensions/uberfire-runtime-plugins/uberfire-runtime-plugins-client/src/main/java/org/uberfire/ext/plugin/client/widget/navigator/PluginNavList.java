@@ -47,16 +47,6 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
-import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
-import org.uberfire.ext.plugin.client.type.PerspectivePluginResourceType;
-import org.uberfire.ext.plugin.client.type.ScreenPluginResourceType;
-import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
-import org.uberfire.ext.plugin.event.PluginAdded;
-import org.uberfire.ext.plugin.event.PluginDeleted;
-import org.uberfire.ext.plugin.model.Activity;
-import org.uberfire.ext.plugin.model.Plugin;
-import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.client.editor.JSEditorActivity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
@@ -69,6 +59,18 @@ import org.uberfire.client.screen.JSWorkbenchScreenActivity;
 import org.uberfire.client.splash.JSSplashScreenActivity;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
+import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
+import org.uberfire.ext.plugin.client.type.PerspectivePluginResourceType;
+import org.uberfire.ext.plugin.client.type.ScreenPluginResourceType;
+import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
+import org.uberfire.ext.plugin.event.BaseNewPlugin;
+import org.uberfire.ext.plugin.event.PluginAdded;
+import org.uberfire.ext.plugin.event.PluginDeleted;
+import org.uberfire.ext.plugin.event.PluginRenamed;
+import org.uberfire.ext.plugin.model.Activity;
+import org.uberfire.ext.plugin.model.Plugin;
+import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 import static org.uberfire.ext.plugin.type.TypeConverterUtil.*;
@@ -251,7 +253,19 @@ public class PluginNavList extends Composite {
     }
 
     public void onPlugInAdded( @Observes final PluginAdded pluginAdded ) {
-        navLists.get( pluginAdded.getPlugin().getType() ).add( makeItemNavLink( pluginAdded.getPlugin() ) );
+        addNewPlugin( pluginAdded );
+    }
+
+    public void addNewPlugin( final BaseNewPlugin newPlugin ) {
+        navLists.get( newPlugin.getPlugin().getType() ).add( makeItemNavLink( newPlugin.getPlugin() ) );
+    }
+
+    public void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
+        final Widget nav = pluginRef.get( pluginRenamed.getOldPluginName() );
+        if ( nav != null ) {
+            nav.removeFromParent();
+        }
+        addNewPlugin( pluginRenamed );
     }
 
     public void onPlugInDeleted( @Observes final PluginDeleted pluginDeleted ) {

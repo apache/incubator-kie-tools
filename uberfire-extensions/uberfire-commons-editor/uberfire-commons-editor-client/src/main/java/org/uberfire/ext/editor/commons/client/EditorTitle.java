@@ -25,6 +25,10 @@ public class EditorTitle
 
     private Label layout = new Label();
 
+    public void setText( final String value ) {
+        layout.setText( value );
+    }
+
     public void setText( String fileName,
                          String fileType ) {
         layout.setText( fileName + " - " + fileType );
