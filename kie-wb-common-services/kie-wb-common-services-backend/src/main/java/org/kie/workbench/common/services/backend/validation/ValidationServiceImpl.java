@@ -15,16 +15,9 @@
  */
 package org.kie.workbench.common.services.backend.validation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.drools.core.base.evaluators.TimeIntervalParser;
@@ -37,12 +30,11 @@ import org.uberfire.backend.vfs.Path;
  */
 @Service
 @ApplicationScoped
-public class ValidationServiceImpl implements ValidationService {
+public class ValidationServiceImpl
+        implements ValidationService {
 
-    @Any
     @Inject
-    private Instance<FileNameValidator> fileNameValidatorBeans;
-    private List<FileNameValidator> fileNameValidators = new ArrayList<FileNameValidator>();
+    private org.uberfire.ext.editor.commons.service.ValidationService validationService;
 
     @Inject
     private PackageNameValidator packageNameValidator;
@@ -52,23 +44,6 @@ public class ValidationServiceImpl implements ValidationService {
 
     @Inject
     private JavaFileNameValidator javaFileNameValidator;
-
-    @PostConstruct
-    public void configureValidators() {
-        for ( FileNameValidator fileNameValidator : fileNameValidatorBeans ) {
-            fileNameValidators.add( fileNameValidator );
-        }
-
-        //Sort ascending, so we can check which validator supports a particular case by priority
-        Collections.sort( fileNameValidators,
-                          new Comparator<FileNameValidator>() {
-                              @Override
-                              public int compare( final FileNameValidator o1,
-                                                  final FileNameValidator o2 ) {
-                                  return o2.getPriority() - o1.getPriority();
-                              }
-                          } );
-    }
 
     @Override
     public boolean isProjectNameValid( final String projectName ) {
@@ -81,28 +56,18 @@ public class ValidationServiceImpl implements ValidationService {
     }
 
     @Override
-    public boolean isFileNameValid( final String fileName ) {
-        for ( FileNameValidator fileNameValidator : fileNameValidators ) {
-            if ( fileNameValidator.accept( fileName ) ) {
-                return fileNameValidator.isValid( fileName );
-            }
-        }
-        return false;
-    }
-
-    @Override
     public boolean isFileNameValid( final Path path,
                                     final String fileName ) {
-        for ( FileNameValidator fileNameValidator : fileNameValidators ) {
-            if ( fileNameValidator.accept( path ) ) {
-                return fileNameValidator.isValid( fileName );
-            }
-        }
-        return false;
+        return validationService.isFileNameValid( path, fileName );
     }
 
     public boolean isJavaFileNameValid( final String fileName ) {
         return javaFileNameValidator.isValid( fileName );
+    }
+
+    @Override
+    public boolean isFileNameValid( String fileName ) {
+        return validationService.isFileNameValid( fileName );
     }
 
     @Override

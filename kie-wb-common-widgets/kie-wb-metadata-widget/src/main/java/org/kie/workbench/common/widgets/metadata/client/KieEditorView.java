@@ -21,4 +21,7 @@ import org.uberfire.ext.editor.commons.client.BaseEditorView;
 public interface KieEditorView
         extends BaseEditorView {
 
+    void refreshTitle( final String fileName,
+                       final String description );
+
 }

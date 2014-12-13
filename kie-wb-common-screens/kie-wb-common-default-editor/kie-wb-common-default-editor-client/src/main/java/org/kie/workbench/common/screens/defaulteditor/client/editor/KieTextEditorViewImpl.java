@@ -59,6 +59,11 @@ public class KieTextEditorViewImpl
     }
 
     @Override
+    public void refreshTitle( final String value ) {
+        kieEditorTitle.setText( value );
+    }
+
+    @Override
     public void refreshTitle( final String fileName,
                               final String description ) {
         kieEditorTitle.setText( fileName,
@@ -82,6 +87,6 @@ public class KieTextEditorViewImpl
 
     @Override
     public boolean confirmClose() {
-        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
+        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
     }
 }

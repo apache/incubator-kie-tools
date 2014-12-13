@@ -22,4 +22,9 @@ public abstract class KieEditorViewImpl
         extends BaseEditorViewImpl
         implements KieEditorView {
 
+    @Override
+    public void refreshTitle( String fileName,
+                              String description ) {
+        title.setText( fileName, description );
+    }
 }

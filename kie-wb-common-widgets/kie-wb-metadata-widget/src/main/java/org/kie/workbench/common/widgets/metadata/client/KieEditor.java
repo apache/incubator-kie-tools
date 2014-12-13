@@ -26,7 +26,6 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
-import org.kie.workbench.common.widgets.client.popups.validation.DefaultFileNameValidator;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.source.ViewDRLSourceWidget;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
@@ -53,9 +52,6 @@ public abstract class KieEditor extends BaseEditor {
 
     @Inject
     private OverviewWidgetPresenter overviewWidget;
-
-    @Inject
-    protected DefaultFileNameValidator fileNameValidator;
 
     @Inject
     @New
@@ -129,10 +125,6 @@ public abstract class KieEditor extends BaseEditor {
 
     protected void addPage( Page page ) {
         multiPage.addPage( page );
-    }
-
-    public void setOriginalHash( Integer originalHash ) {
-        this.originalHash = originalHash;
     }
 
     protected void resetEditorPages( final Overview overview ) {
