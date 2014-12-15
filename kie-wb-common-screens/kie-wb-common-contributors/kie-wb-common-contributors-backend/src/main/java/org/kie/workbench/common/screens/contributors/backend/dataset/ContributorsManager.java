@@ -43,6 +43,12 @@ import org.uberfire.commons.services.cdi.Startup;
 import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.workbench.events.ResourceAddedEvent;
+import org.uberfire.workbench.events.ResourceBatchChangesEvent;
+import org.uberfire.workbench.events.ResourceCopiedEvent;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
+import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
@@ -101,17 +107,25 @@ public class ContributorsManager {
             String org = orgUnit.getName();
             Collection<Repository> repoList = orgUnit.getRepositories();
 
-            for (Repository repo : repoList) {
-                String repoAlias = repo.getAlias();
+            if (repoList.isEmpty()) {
+                dsBuilder.row(org, null, null, "Empty organizational unit", null);
+            } else {
+                for (Repository repo : repoList) {
+                    String repoAlias = repo.getAlias();
+                    List<VersionRecord> recordList = repositoryService.getRepositoryHistoryAll(repoAlias);
 
-                List<VersionRecord> recordList = repositoryService.getRepositoryHistoryAll(repoAlias);
-                for (VersionRecord record : recordList) {
-                    String alias = record.author();
-                    String author = authorMappings.getProperty(alias);
-                    if (author == null) author = alias;
-                    String msg = record.comment();
-                    Date date = record.date();
-                    dsBuilder.row(org, repoAlias, author, msg, date);
+                    if (recordList.isEmpty()) {
+                        dsBuilder.row(org, repoAlias, null, "Empty repository", null);
+                    } else {
+                        for (VersionRecord record : recordList) {
+                            String alias = record.author();
+                            String author = authorMappings.getProperty(alias);
+                            if (author == null) author = alias;
+                            String msg = record.comment();
+                            Date date = record.date();
+                            dsBuilder.row(org, repoAlias, author, msg, date);
+                        }
+                    }
                 }
             }
         }
@@ -121,7 +135,7 @@ public class ContributorsManager {
         dataSetManager.registerDataSet(dataSet);
     }
 
-    // Keep synced the contributions data set with the changes made into the org>repos hierarchy
+    // Keep synced the contributions data set with the changes made into the org>repos>commits hierarchy
 
     public void onRepoAddedToOrgUnit(@Observes final RepoAddedToOrganizationaUnitEvent event) {
         checkNotNull("event", event);
@@ -133,7 +147,42 @@ public class ContributorsManager {
         initDataSets();
     }
 
+    public void onOrganizationUnitAdded(@Observes final NewOrganizationalUnitEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
     public void onOrganizationUnitRemoved(@Observes final RemoveOrganizationalUnitEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void processResourceAdd(@Observes final ResourceAddedEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void processResourceDelete(@Observes final ResourceDeletedEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void processResourceUpdate(@Observes final ResourceUpdatedEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void processResourceCopied(@Observes final ResourceCopiedEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void processResourceRenamed(@Observes final ResourceRenamedEvent event) {
+        checkNotNull("event", event);
+        initDataSets();
+    }
+
+    public void processBatchChanges(@Observes final ResourceBatchChangesEvent event) {
         checkNotNull("event", event);
         initDataSets();
     }
