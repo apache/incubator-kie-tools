@@ -44,7 +44,6 @@ public class JcrExporterLauncher {
             launchExport( args );
         } finally {
             shutdown();
-            System.exit( 0 );
         }
     }
 
