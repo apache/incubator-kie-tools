@@ -99,9 +99,9 @@ fi
 EXPORTER_MAIN_CLASS=org.drools.workbench.jcr2vfsmigration.JcrExporterLauncher
 IMPORTER_MAIN_CLASS=org.drools.workbench.jcr2vfsmigration.VfsImporterLauncher
 
-${JAVA_BIN} -Xms256m -Xmx1024m -cp "../jcr-exporter-libs/*" ${EXPORTER_MAIN_CLASS} ${EXPORT_ARGS}
+${JAVA_BIN} -Xms256m -Xmx1024m -cp "../jcr-exporter-libs/*" -Dlogback.configurationFile="../conf/logback.xml" ${EXPORTER_MAIN_CLASS} ${EXPORT_ARGS}
 
-${JAVA_BIN} -Xms256m -Xmx1024m -cp "../vfs-importer-libs/*" ${IMPORTER_MAIN_CLASS} ${IMPORT_ARGS}
+${JAVA_BIN} -Xms256m -Xmx1024m -cp "../vfs-importer-libs/*" -Dlogback.configurationFile="../conf/logback.xml" ${IMPORTER_MAIN_CLASS} ${IMPORT_ARGS}
 
 if [ $? != 0 ] ; then
     echo
