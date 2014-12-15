@@ -42,6 +42,18 @@
       </includes>
       <outputDirectory></outputDirectory>
     </dependencySet>
+    <!-- Need to use new dependencySet for the logback-classic and set scope to "test",
+         otherwise it gets excluded by default (because of the "test" scope). Using
+         "test" scope directly in the previous dependencySet would bring all the test
+         dependencies which is not desired. -->
+    <dependencySet>
+      <includes>
+        <include>ch.qos.logback:logback-classic</include>
+      </includes>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <scope>test</scope>
+      <outputDirectory></outputDirectory>
+    </dependencySet>
   </dependencySets>
 
 </assembly>
