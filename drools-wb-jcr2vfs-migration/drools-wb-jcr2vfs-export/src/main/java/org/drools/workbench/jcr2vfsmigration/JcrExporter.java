@@ -87,6 +87,7 @@ public class JcrExporter {
             // TODO migration result instead of changing JcrExporterLauncher's state
             //We print out whatever unexpected exceptions we got here
             t.printStackTrace();
+            throw new RuntimeException("Unexpected error encountered while exporting the content of JCR repository!", t);
         }
     }
 
