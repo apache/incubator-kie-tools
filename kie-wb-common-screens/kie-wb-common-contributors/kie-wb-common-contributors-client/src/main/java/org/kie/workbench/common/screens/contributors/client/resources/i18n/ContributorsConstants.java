@@ -29,4 +29,19 @@ public interface ContributorsConstants
 
     String contributorsPerspectiveName();
     String contributorsDataSetOutdated();
+    String numberOfCommits();
+    String numberOfCommitsEvolution();
+    String date();
+    String organizationalUnit();
+    String numberOfRepositories();
+    String numberOfContributors();
+    String commitsPerOrganization();
+    String years();
+    String quarters();
+    String dayOfWeek();
+    String author();
+    String repository();
+    String topContributor();
+    String commit();
+    String commits();
 }
