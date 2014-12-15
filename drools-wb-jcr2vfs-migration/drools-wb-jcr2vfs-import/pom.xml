@@ -122,6 +122,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -155,6 +161,12 @@
       <artifactId>weld-se-core</artifactId>
     </dependency>
 
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
