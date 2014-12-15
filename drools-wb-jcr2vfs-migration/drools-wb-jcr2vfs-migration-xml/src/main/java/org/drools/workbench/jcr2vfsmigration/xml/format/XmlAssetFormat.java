@@ -42,6 +42,8 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
         if ( sb == null || xmlAsset == null ) throw new IllegalArgumentException( "No output or asset specified" );
 
         switch ( xmlAsset.getAssetType() ) {
+            case IGNORED: return;
+
             case ENUMERATION:
             case DSL:
             case DSL_TEMPLATE_RULE:

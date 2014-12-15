@@ -54,7 +54,9 @@ public enum AssetType {
     JSON( "json" ),
     FW( "fw" ),
 
-    UNSUPPORTED( "misc" );
+    UNSUPPORTED( "misc" ),
+
+    IGNORED( "ignore" );
 
     private String type;
 

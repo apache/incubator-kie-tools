@@ -48,6 +48,7 @@ import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.IgnoredAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 
@@ -228,10 +229,7 @@ public class ModuleAssetExporter {
                     //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
                     //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
 
-                    XmlAsset asset = export( jcrModule, assetItemJCR, assetFileName );
-                    if ( asset != null ) {
-                        assets.add( asset );
-                    } else System.out.println( "WARNING: null asset returned in export: " + assetItemJCR.getName() );
+                    assets.add( export( jcrModule, assetItemJCR, assetFileName ) );
 
                     System.out.format("    Done.%n");
                 }
@@ -314,15 +312,15 @@ public class ModuleAssetExporter {
             System.out.format("    WARNING: asset [%s] with format[%s] is not a known format by export tool. It will be exported as attachmentAsset %n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
             return exportAttachment( jcrModule, jcrAssetItem, assetExportFileName );
         }
-        return null;
+        return new IgnoredAsset();
     }
 
     private AttachmentAsset exportAttachment( Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
         // No specific exporter for this, since nothing special needs to be done, just write bytes to file.
         String attachmentName = assetExportFileName + "_" + attachmentFileNameCounter++;
-        if ( fileManager.writeBinaryContent( attachmentName, jcrAssetItem.getBinaryContentAsBytes() ) )
-            return new AttachmentAsset( jcrAssetItem.getName(), jcrAssetItem.getFormat(), attachmentName );
-        return null;
+        if ( !fileManager.writeBinaryContent( attachmentName, jcrAssetItem.getBinaryContentAsBytes() ) )
+            System.out.println( "WARNING: no binary content was written for asset " + jcrAssetItem.getName() );
+        return new AttachmentAsset( jcrAssetItem.getName(), jcrAssetItem.getFormat(), attachmentName );
     }
 
     // Attempt creation of the asset export file firstly with the module's uuid. If this were null or the file could not
