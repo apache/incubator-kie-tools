@@ -15,9 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -33,6 +29,9 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.menu.MenuSplashList;
 import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
@@ -57,21 +56,26 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
+import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
 public class PlaceManagerImpl
-implements PlaceManager {
+        implements PlaceManager {
 
-    /** Activities that have been created by us but not destroyed (TODO: move this state tracking to ActivityManager!). */
+    /**
+     * Activities that have been created by us but not destroyed (TODO: move this state tracking to ActivityManager!).
+     */
     private final Map<PlaceRequest, Activity> existingWorkbenchActivities = new HashMap<PlaceRequest, Activity>();
 
-    /** Places that are currently open in the current perspective. */
+    /**
+     * Places that are currently open in the current perspective.
+     */
     private final Map<PlaceRequest, PartDefinition> visibleWorkbenchParts = new HashMap<PlaceRequest, PartDefinition>();
 
-    /** Custom panels we have opened but not yet closed. */
+    /**
+     * Custom panels we have opened but not yet closed.
+     */
     private final Map<PlaceRequest, PanelDefinition> customPanels = new HashMap<PlaceRequest, PanelDefinition>();
 
     private final Map<PlaceRequest, Command> onOpenCallbacks = new HashMap<PlaceRequest, Command>();
@@ -260,13 +264,11 @@ implements PlaceManager {
     /**
      * Resolves the given place request into an Activity instance, if one can be found. If not, this method substitutes
      * special "not found" or "too many" place requests when the resolution doesn't work.
-     * <p>
+     * <p/>
      * The behaviour of this method is affected by the boolean-valued
      * {@code org.uberfire.client.mvp.PlaceManagerImpl.ignoreUnkownPlaces} property in {@link UberFirePreferences}.
-     *
-     * @param place
-     *            A non-null place request that could have originated from within application code, from within the
-     *            framework, or by parsing a hash fragment from a browser history event.
+     * @param place A non-null place request that could have originated from within application code, from within the
+     * framework, or by parsing a hash fragment from a browser history event.
      * @return a non-null ResolvedRequest, where:
      *         <ul>
      *         <li>the Activity value is either the unambiguous resolved Activity instance, or null if the activity was
@@ -471,14 +473,12 @@ implements PlaceManager {
      * Finds and opens the splash screen for the given place, if such a splash screen exists. The splash screen might
      * not actually display; each splash screen keeps track of its own preference setting for whether or not the user
      * wants to see it.
-     * <p>
+     * <p/>
      * Whether or not it chooses to display itself, the splash screen will be recorded in
      * {@link #availableSplashScreens} for lookup (for example, see {@link MenuSplashList}) and later disposal.
      * Internally, this method should be called every time any part or perspective is added to the workbench, and called
      * again when that part or perspective is removed.
-     *
-     * @param place
-     *            the place that has just been added to the workbench. Must not be null.
+     * @param place the place that has just been added to the workbench. Must not be null.
      */
     private void addSplashScreenFor( final PlaceRequest place ) {
         final SplashScreenActivity splashScreen = activityManager.getSplashScreenInterceptor( place );
@@ -492,17 +492,15 @@ implements PlaceManager {
                 activityManager.destroyActivity( splashScreen );
                 return;
             }
-            newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
         }
+        newSplashScreenActiveEvent.fire( new NewSplashScreenActiveEvent() );
     }
 
     /**
      * Closes the splash screen associated with the given place request, if any. Internally, this method should be
      * invoked every time a part or perspective is removed from the workbench (cleaning up after the corresponding
      * earlier call to {@link #addSplashScreenFor(PlaceRequest)}.
-     *
-     * @param place
-     *            the place whose opening may have triggered a splash screen to launch. Must not be null.
+     * @param place the place whose opening may have triggered a splash screen to launch. Must not be null.
      */
     private void closeSplashScreen( final PlaceRequest place ) {
         SplashScreenActivity splashScreenActivity = availableSplashScreens.remove( place.getIdentifier() );
@@ -534,10 +532,9 @@ implements PlaceManager {
     /**
      * Returns all the PlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
-     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
-     * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
-     * set; instead, call this method again for current information.
+     *         further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
+     *         set; instead, call this method again for current information.
      */
     public Collection<PlaceRequest> getActivePlaceRequests() {
         return unmodifiableCollection( existingWorkbenchActivities.keySet() );
@@ -546,10 +543,9 @@ implements PlaceManager {
     /**
      * Returns all the PathPlaceRequests that map to activies that are currently in the open state and accessible
      * somewhere in the current perspective.
-     *
      * @return an unmodifiable view of the current active place requests. This view may or may not update after
-     * further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
-     * set; instead, call this method again for current information.
+     *         further calls into PlaceManager that modify the workbench state. It's best not to hold on to the returned
+     *         set; instead, call this method again for current information.
      */
     public Collection<PathPlaceRequest> getActivePlaceRequestsWithPath() {
         ArrayList<PathPlaceRequest> pprs = new ArrayList<PathPlaceRequest>();
@@ -719,7 +715,8 @@ implements PlaceManager {
         }
     }
 
-    private void closePlace( final PlaceRequest place, final boolean force ) {
+    private void closePlace( final PlaceRequest place,
+                             final boolean force ) {
 
         final Activity activity = existingWorkbenchActivities.get( place );
         if ( activity == null ) {
@@ -813,10 +810,12 @@ implements PlaceManager {
      * The result of an attempt to resolve a PlaceRequest to an Activity.
      */
     private static class ResolvedRequest {
+
         private final Activity activity;
         private final PlaceRequest placeRequest;
 
-        public ResolvedRequest(final Activity resolvedActivity, final PlaceRequest substitutePlace ) {
+        public ResolvedRequest( final Activity resolvedActivity,
+                                final PlaceRequest substitutePlace ) {
             this.activity = resolvedActivity;
             this.placeRequest = substitutePlace;
         }

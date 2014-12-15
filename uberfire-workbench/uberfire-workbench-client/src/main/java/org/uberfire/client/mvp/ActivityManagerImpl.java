@@ -16,15 +16,12 @@
 
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.*;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -37,6 +34,8 @@ import org.uberfire.client.mvp.ActivityLifecycleError.LifecyclePhase;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.authz.AuthorizationManager;
+
+import static java.util.Collections.*;
 
 @ApplicationScoped
 public class ActivityManagerImpl implements ActivityManager {
@@ -77,8 +76,10 @@ public class ActivityManagerImpl implements ActivityManager {
         SplashScreenActivity resultBean = null;
         for ( SplashScreenActivity splashScreen : activityBeansCache.getSplashScreens() ) {
             if ( splashScreen.intercept( placeRequest ) ) {
-                resultBean = splashScreen;
-                break;
+                if ( splashScreen.isEnabled() ) {
+                    resultBean = splashScreen;
+                    break;
+                }
             }
         }
 
@@ -166,9 +167,7 @@ public class ActivityManagerImpl implements ActivityManager {
      * with the activity cache (the only way to look up the BeanDef for a runtime plugin activity). Beans that are not
      * started (or were started but have been shut down) will cause an NPE if the fallback to the activity beans cache
      * happens.
-     *
-     * @param startedActivity
-     *            an activity that is in the <i>started</i> or <i>open</i> state.
+     * @param startedActivity an activity that is in the <i>started</i> or <i>open</i> state.
      */
     private Class<?> getBeanScope( Activity startedActivity ) {
 
@@ -189,7 +188,9 @@ public class ActivityManagerImpl implements ActivityManager {
         final Set<T> activities = new HashSet<T>( activityBeans.size() );
 
         for ( final IOCBeanDef<T> activityBean : activityBeans ) {
-            if ( !activityBean.isActivated() ) continue;
+            if ( !activityBean.isActivated() ) {
+                continue;
+            }
             final T instance = activityBean.getInstance();
             if ( authzManager.authorize( instance, identity ) ) {
                 activities.add( instance );
@@ -216,8 +217,11 @@ public class ActivityManagerImpl implements ActivityManager {
         return null;
     }
 
-    private <T extends Activity> T startIfNecessary( T activity, PlaceRequest place ) {
-        if (activity == null) return null;
+    private <T extends Activity> T startIfNecessary( T activity,
+                                                     PlaceRequest place ) {
+        if ( activity == null ) {
+            return null;
+        }
         try {
             if ( !startedActivities.containsKey( activity ) ) {
                 startedActivities.put( activity, place );
@@ -234,12 +238,12 @@ public class ActivityManagerImpl implements ActivityManager {
     /**
      * Starts the activities in the given set. If any are null or throw an exception from their <code>onStartup()</code>
      * method, they will not appear in the returned set.
-     *
      * @param activities
      * @param place
      * @return
      */
-    private Set<Activity> startIfNecessary( Set<Activity> activities, PlaceRequest place ) {
+    private Set<Activity> startIfNecessary( Set<Activity> activities,
+                                            PlaceRequest place ) {
         Set<Activity> validatedActivities = new HashSet<Activity>();
         for ( Activity activity : activities ) {
             Activity validated = startIfNecessary( activity, place );
@@ -252,9 +256,7 @@ public class ActivityManagerImpl implements ActivityManager {
 
     /**
      * Gets the bean definition of the activity associated with the given place ID, if one exists.
-     *
-     * @param identifier
-     *            the place ID. Null is permitted, but always resolves to an empty collection.
+     * @param identifier the place ID. Null is permitted, but always resolves to an empty collection.
      * @return an unmodifiable collection with zero or one item, depending on if the resolution was successful.
      */
     private Collection<IOCBeanDef<Activity>> resolveById( final String identifier ) {
@@ -262,11 +264,11 @@ public class ActivityManagerImpl implements ActivityManager {
             return emptyList();
         }
 
-        IOCBeanDef<Activity> beanDefActivity = activityBeansCache.getActivity(identifier);
-        if (beanDefActivity == null) {
+        IOCBeanDef<Activity> beanDefActivity = activityBeansCache.getActivity( identifier );
+        if ( beanDefActivity == null ) {
             return emptyList();
         }
-        return singletonList(beanDefActivity);
+        return singletonList( beanDefActivity );
     }
 
     private Set<IOCBeanDef<Activity>> resolveByPath( final PathPlaceRequest place ) {

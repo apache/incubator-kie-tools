@@ -15,10 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 public interface SplashScreenActivity extends Activity {
 
@@ -35,5 +34,7 @@ public interface SplashScreenActivity extends Activity {
     SplashScreenFilter getFilter();
 
     Boolean intercept( final PlaceRequest intercepted );
+
+    boolean isEnabled();
 
 }

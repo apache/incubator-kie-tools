@@ -28,4 +28,6 @@ public @interface WorkbenchSplashScreen {
 
     String identifier();
 
+    boolean isEnabled() default true;
+
 }

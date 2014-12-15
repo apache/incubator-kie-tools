@@ -17,7 +17,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 
 @Dependent
-@Named( "org.uberfire.wbtest.client.breakable.BreakableSplashScreen" )
+@Named("org.uberfire.wbtest.client.breakable.BreakableSplashScreen")
 public class BreakableSplashScreen extends AbstractTestSplashScreenActivity {
 
     private LifecyclePhase brokenLifecycle;
@@ -85,4 +85,10 @@ public class BreakableSplashScreen extends AbstractTestSplashScreenActivity {
     public SplashScreenFilter getFilter() {
         return new SplashScreenFilterImpl( "ThisFilterNotUsed", true, Collections.<String>emptyList() );
     }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
 }

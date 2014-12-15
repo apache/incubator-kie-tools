@@ -1,7 +1,6 @@
 package org.uberfire.annotations.processors.facades;
 
 import java.util.Map;
-
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -23,27 +22,29 @@ public class ClientAPIModule {
     public static final String IS_DEFAULT = "isDefault";
     public static final String IS_TRANSIENT = "isTransient";
     public static final String IS_TEMPLATE = "isTemplate";
+    public static final String IS_ENABLED = "isEnabled";
     public static final String VALUE = "value";
 
-    private ClientAPIModule() {}
+    private ClientAPIModule() {
+    }
 
-    public static final String workbenchSplashScreen =  "org.uberfire.client.annotations.WorkbenchSplashScreen";
-    public static final String workbenchPerspective =  "org.uberfire.client.annotations.WorkbenchPerspective";
-    public static final String workbenchPopup =  "org.uberfire.client.annotations.WorkbenchPopup";
-    public static final String workbenchScreen =  "org.uberfire.client.annotations.WorkbenchScreen";
-    public static final String workbenchContext =  "org.uberfire.client.annotations.WorkbenchContext";
-    public static final String workbenchEditor =  "org.uberfire.client.annotations.WorkbenchEditor";
-    public static final String defaultPosition =  "org.uberfire.client.annotations.DefaultPosition";
-    public static final String workbenchPartTitle =  "org.uberfire.client.annotations.WorkbenchPartTitle";
-    public static final String workbenchContextId =  "org.uberfire.client.annotations.WorkbenchContextId";
-    public static final String workbenchPartTitleDecoration =  "org.uberfire.client.annotations.WorkbenchPartTitleDecoration";
-    public static final String workbenchPartView =  "org.uberfire.client.annotations.WorkbenchPartView";
-    public static final String workbenchMenu =  "org.uberfire.client.annotations.WorkbenchMenu";
-    public static final String workbenchToolBar =  "org.uberfire.client.annotations.WorkbenchToolBar";
-    public static final String perspective =  "org.uberfire.client.annotations.Perspective";
-    public static final String splashFilter =  "org.uberfire.client.annotations.SplashFilter";
-    public static final String splashBodyHeight =  "org.uberfire.client.annotations.SplashBodyHeight";
-    public static final String intercept =  "org.uberfire.client.annotations.Intercept";
+    public static final String workbenchSplashScreen = "org.uberfire.client.annotations.WorkbenchSplashScreen";
+    public static final String workbenchPerspective = "org.uberfire.client.annotations.WorkbenchPerspective";
+    public static final String workbenchPopup = "org.uberfire.client.annotations.WorkbenchPopup";
+    public static final String workbenchScreen = "org.uberfire.client.annotations.WorkbenchScreen";
+    public static final String workbenchContext = "org.uberfire.client.annotations.WorkbenchContext";
+    public static final String workbenchEditor = "org.uberfire.client.annotations.WorkbenchEditor";
+    public static final String defaultPosition = "org.uberfire.client.annotations.DefaultPosition";
+    public static final String workbenchPartTitle = "org.uberfire.client.annotations.WorkbenchPartTitle";
+    public static final String workbenchContextId = "org.uberfire.client.annotations.WorkbenchContextId";
+    public static final String workbenchPartTitleDecoration = "org.uberfire.client.annotations.WorkbenchPartTitleDecoration";
+    public static final String workbenchPartView = "org.uberfire.client.annotations.WorkbenchPartView";
+    public static final String workbenchMenu = "org.uberfire.client.annotations.WorkbenchMenu";
+    public static final String workbenchToolBar = "org.uberfire.client.annotations.WorkbenchToolBar";
+    public static final String perspective = "org.uberfire.client.annotations.Perspective";
+    public static final String splashFilter = "org.uberfire.client.annotations.SplashFilter";
+    public static final String splashBodyHeight = "org.uberfire.client.annotations.SplashBodyHeight";
+    public static final String intercept = "org.uberfire.client.annotations.Intercept";
     public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";
 
     public static String getWorkbenchScreenClass() {
@@ -134,6 +135,21 @@ public class ClientAPIModule {
     }
 
     /**
+     * Returns the value of the Boolean-valued Annotation parameter on the given type, ignoring any default value that
+     * exists on the annotation. Returns false if the type lacks the given annotation, or if the annotation
+     * lacks the given parameter.
+     */
+    private static Boolean getAnnotationBooleanParam( TypeElement target,
+                                                      String annotationClassName,
+                                                      String annotationParamName ) {
+        AnnotationValue paramValue = getAnnotationParamValue( target, annotationClassName, annotationParamName );
+        if ( paramValue == null ) {
+            return null;
+        }
+        return Boolean.parseBoolean( paramValue.getValue().toString() );
+    }
+
+    /**
      * Returns the value associated with the given parameter of the given annotation on the given class element,
      * ignoring any default value that exists on the annotation. Returns null if the type lacks the given annotation, or
      * if the annotation lacks the given parameter.
@@ -183,6 +199,11 @@ public class ClientAPIModule {
         return getAnnotationStringParam( classElement, workbenchSplashScreen, IDENTIFIER );
     }
 
+    public static boolean getWbSplashScreenIsEnabledValueOnClass( TypeElement classElement ) {
+        final Boolean bool = getAnnotationBooleanParam( classElement, workbenchSplashScreen, IS_ENABLED );
+        return bool == null || bool;
+    }
+
     public static String getWbScreenIdentifierValueOnClass( TypeElement classElement ) {
         return getAnnotationStringParam( classElement, workbenchScreen, IDENTIFIER );
     }
@@ -191,7 +212,8 @@ public class ClientAPIModule {
         return getAnnotationStringParam( classElement, workbenchContext, IDENTIFIER );
     }
 
-    public static boolean isATemplate( Elements elementUtils, Element element ) {
+    public static boolean isATemplate( Elements elementUtils,
+                                       Element element ) {
         return GeneratorUtils.getAnnotation( elementUtils, element, workbenchPanel ) != null;
     }
 }

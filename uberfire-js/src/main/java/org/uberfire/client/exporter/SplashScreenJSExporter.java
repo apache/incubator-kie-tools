@@ -1,9 +1,8 @@
 package org.uberfire.client.exporter;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
-
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
@@ -13,7 +12,7 @@ import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.splash.JSNativeSplashScreen;
 import org.uberfire.client.splash.JSSplashScreenActivity;
 
-import com.google.gwt.core.client.JavaScriptObject;
+import static org.jboss.errai.ioc.client.QualifierUtil.*;
 
 @ApplicationScoped
 public class SplashScreenJSExporter implements UberfireJSExporter {
@@ -22,10 +21,10 @@ public class SplashScreenJSExporter implements UberfireJSExporter {
     public void export() {
         publish();
     }
+
     private native void publish() /*-{
         $wnd.$registerSplashScreen = @org.uberfire.client.exporter.SplashScreenJSExporter::registerSplashScreen(Ljava/lang/Object;);
     }-*/;
-
 
     public static void registerSplashScreen( final Object _obj ) {
         final JavaScriptObject obj = (JavaScriptObject) _obj;

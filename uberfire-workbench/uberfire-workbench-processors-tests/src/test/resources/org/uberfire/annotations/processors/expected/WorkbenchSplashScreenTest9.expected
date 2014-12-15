@@ -37,24 +37,24 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 @ApplicationScoped
 @Generated("org.uberfire.annotations.processors.WorkbenchSplashScreenProcessor")
-@Named("test7")
+@Named("test9")
 @IsSplashScreen
 @ActivatedBy(org.uberfire.annotations.processors.TestBeanActivator.class)
 /*
  * WARNING! This class is generated. Do not modify.
  */
-public class WorkbenchSplashScreenTest7Activity extends AbstractSplashScreenActivity {
+public class WorkbenchSplashScreenTest9Activity extends AbstractSplashScreenActivity {
 
     private static final Collection<String> ROLES = Collections.emptyList();
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
     @Inject
-    private WorkbenchSplashScreenTest7 realPresenter;
+    private WorkbenchSplashScreenTest9 realPresenter;
 
     @Inject
     //Constructor injection for testing
-    public WorkbenchSplashScreenTest7Activity(final PlaceManager placeManager) {
+    public WorkbenchSplashScreenTest9Activity(final PlaceManager placeManager) {
         super( placeManager );
     }
 
@@ -75,7 +75,7 @@ public class WorkbenchSplashScreenTest7Activity extends AbstractSplashScreenActi
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return false;
     }
 
     @Override
@@ -90,6 +90,6 @@ public class WorkbenchSplashScreenTest7Activity extends AbstractSplashScreenActi
 
     @Override
     public String getSignatureId() {
-        return "org.uberfire.annotations.processors.WorkbenchSplashScreenTest7Activity";
+        return "org.uberfire.annotations.processors.WorkbenchSplashScreenTest9Activity";
     }
 }

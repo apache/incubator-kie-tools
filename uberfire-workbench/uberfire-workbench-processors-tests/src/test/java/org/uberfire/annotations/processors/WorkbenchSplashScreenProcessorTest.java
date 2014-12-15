@@ -15,18 +15,15 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for Splash Screen related class generation
@@ -149,6 +146,25 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         } ), pathCompilationUnit );
         assertFailedCompilation( diagnostics );
         assertCompilationMessage( diagnostics, Kind.ERROR, -1, -1,
-                                "Found multiple @OnStartup methods. Each class can declare at most one." );
+                                  "Found multiple @OnStartup methods. Each class can declare at most one." );
     }
+
+    @Test
+    public void testWorkbenchSplashScreenIsEnabled() throws FileNotFoundException {
+        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest9";
+        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchSplashScreenTest9.expected";
+
+        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
+                getProcessorUnderTest(),
+                pathCompilationUnit );
+
+        assertSuccessfulCompilation( diagnostics );
+        assertNotNull( result.getActualCode() );
+        assertNotNull( result.getExpectedCode() );
+        assertEquals( result.getActualCode(),
+                      result.getExpectedCode() );
+    }
+
 }

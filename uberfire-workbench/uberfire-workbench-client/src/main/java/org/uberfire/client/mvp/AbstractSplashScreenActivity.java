@@ -18,14 +18,13 @@ package org.uberfire.client.mvp;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Implementation of behaviour common to all splash screen activities. Concrete implementations are typically not written by
@@ -52,7 +51,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     }
 
     @Override
-    public void onStartup(PlaceRequest place) {
+    public void onStartup( PlaceRequest place ) {
         super.onStartup( place );
         wbServices.loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
             @Override
@@ -122,4 +121,5 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
             wbServices.save( splashFilter );
         }
     }
+
 }

@@ -17,20 +17,20 @@ package org.uberfire.client.splash;
 
 import java.util.Collection;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
-
 public class JSSplashScreenActivity implements SplashScreenActivity {
 
     private Boolean showAgain;
+    private Boolean isEnabled;
     private SplashScreenFilter splashFilter;
 
     private final JSNativeSplashScreen nativeSplashScreen;
@@ -39,6 +39,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     public JSSplashScreenActivity( final JSNativeSplashScreen nativeSplashScreen ) {
         this.nativeSplashScreen = nativeSplashScreen;
+        this.isEnabled = nativeSplashScreen.isEnabled();
         this.splashFilter = nativeSplashScreen.buildFilter();
     }
 
@@ -139,6 +140,11 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
     }
 
     private void saveState() {

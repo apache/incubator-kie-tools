@@ -59,6 +59,13 @@ public class JSNativeSplashScreen extends JSNativePlugin {
         return new SplashScreenFilterImpl( getId(), displayNextTime, toCollection( interceptionPoints ) );
     }
 
+    public boolean isEnabled() {
+        if ( hasBooleanProperty( obj, "enabled" ) ) {
+            return getIsEnabled( obj );
+        }
+        return true;
+    }
+
     private Collection<String> toCollection( final JsArrayString interceptionPoints ) {
         if ( interceptionPoints == null || interceptionPoints.length() == 0 ) {
             return emptyList();
@@ -98,6 +105,10 @@ public class JSNativeSplashScreen extends JSNativePlugin {
 
     private static native int getBodyHeight( final JavaScriptObject o ) /*-{
         return o.body_height;
+    }-*/;
+
+    private static native boolean getIsEnabled( final JavaScriptObject o ) /*-{
+        return o.enabled;
     }-*/;
 
 }
