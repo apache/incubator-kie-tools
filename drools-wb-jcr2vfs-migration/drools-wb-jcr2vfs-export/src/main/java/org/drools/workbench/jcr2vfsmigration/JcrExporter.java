@@ -82,7 +82,7 @@ public class JcrExporter {
 
             // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
             endContexts();
-            System.out.format( "Export from jcr ended." );
+            System.out.println( "Export from jcr ended." );
         } catch ( Throwable t ) {
             // TODO migration result instead of changing JcrExporterLauncher's state
             //We print out whatever unexpected exceptions we got here
