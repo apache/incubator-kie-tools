@@ -49,7 +49,9 @@
   </ui:style>
 
   <g:FlowPanel styleName="{style.contextArea} {res.CSS.listbar}">
-    <g:Image ui:field="logo" styleName="{style.logo}"/>
+    <g:HTMLPanel styleName="{style.logo}">
+      <img src="images/logo.png"/>
+    </g:HTMLPanel>
     <g:FlowPanel ui:field="contextMenuArea" styleName="{style.contextMenu}"/>
     <g:FlowPanel addStyleNames="{style.search}">
       <b:Form type="SEARCH" addStyleNames="{style.searchForm}">
