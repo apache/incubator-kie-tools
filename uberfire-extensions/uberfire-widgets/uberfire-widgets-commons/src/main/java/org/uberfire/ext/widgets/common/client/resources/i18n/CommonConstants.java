@@ -96,4 +96,5 @@ public interface CommonConstants
     String DeletePopupDelete();
 
 
+    String Version();
 }

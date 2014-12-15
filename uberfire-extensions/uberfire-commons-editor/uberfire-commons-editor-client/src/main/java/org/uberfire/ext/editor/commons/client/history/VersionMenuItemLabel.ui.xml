@@ -21,7 +21,7 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
     >
 
-  <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18n" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
 
   <ui:style type="org.uberfire.ext.editor.commons.client.history.VersionMenuItemLabel.VersionMenuItemStyle">
     .normal {
