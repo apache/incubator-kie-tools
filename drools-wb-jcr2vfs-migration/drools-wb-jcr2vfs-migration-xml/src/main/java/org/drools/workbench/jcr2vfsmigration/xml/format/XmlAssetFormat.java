@@ -80,8 +80,10 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
 
             case DRL_MODEL: dmaf.format( sb, ( DataModelAsset ) xmlAsset ); break;
 
+            case UNSUPPORTED:
+
             default: {
-                System.out.println( "Attempting to format asset with type " + xmlAsset.getAssetType() + "into attachment asset" );
+                System.out.println( "Formatting asset with type " + xmlAsset.getAssetType() + " into attachment asset" );
                 aaf.format( sb, ( AttachmentAsset ) xmlAsset );
             }
         }
@@ -93,6 +95,7 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
 
         NamedNodeMap assetAttribs = assetNode.getAttributes();
         if ( assetAttribs == null ) throw new RuntimeException( "Wrong asset xml format; missing type" );
+        String name = assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue();
         String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
 
         switch ( AssetType.getByType( assetType ) ) {
@@ -133,8 +136,13 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case DECISION_TABLE_GUIDED: return gdtaf.parse( assetNode );
 
             case DRL_MODEL: return dmaf.parse( assetNode );
+
+            case UNSUPPORTED:
+
+            default: {
+                System.out.println( "Attempting to parse asset " + name + " into attachment asset" );
+                return aaf.parse( assetNode );
+            }
         }
-        System.out.println( "Unknown asset type: " + assetType );
-        return null;
     }
 }

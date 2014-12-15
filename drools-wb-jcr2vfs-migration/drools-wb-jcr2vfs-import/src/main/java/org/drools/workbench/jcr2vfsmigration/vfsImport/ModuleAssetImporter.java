@@ -255,6 +255,8 @@ public class ModuleAssetImporter {
 
             case TEST_SCENARIO: testScenarioImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
 
+            case UNSUPPORTED:
+
             default: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset );
         }
     }

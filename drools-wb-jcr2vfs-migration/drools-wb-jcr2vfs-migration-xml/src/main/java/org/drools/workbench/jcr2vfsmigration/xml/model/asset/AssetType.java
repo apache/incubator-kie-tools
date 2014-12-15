@@ -52,7 +52,9 @@ public enum AssetType {
     BPMN2_PROCESS( "bpmn2" ),
     FTL( "ftl" ),
     JSON( "json" ),
-    FW( "fw" );
+    FW( "fw" ),
+
+    UNSUPPORTED( "misc" );
 
     private String type;
 
@@ -67,7 +69,7 @@ public enum AssetType {
                 if ( type.equalsIgnoreCase( assetType.type ) ) return assetType;
             }
         }
-        return null;
+        return UNSUPPORTED;
     }
 
     public String toString() {
