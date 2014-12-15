@@ -19,8 +19,9 @@ package org.drools.workbench.jcr2vfsmigration.cdi;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
+import javax.inject.Inject;
 
+import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
 
@@ -29,9 +30,12 @@ public class SessionInfoFactory {
 
     private SessionInfo sessionInfo;
 
+    @Inject
+    User identity;
+
     @PostConstruct
     public void onStartup() {
-        this.sessionInfo = new SessionInfoImpl();
+        this.sessionInfo = new SessionInfoImpl( "testUserSessionId", identity);
     }
 
     @Produces
