@@ -24,10 +24,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.drools.workbench.client.resources.AppResource;
 import org.uberfire.client.workbench.widgets.menu.PespectiveContextMenusPresenter;
 
 /**
@@ -46,9 +44,6 @@ public class ComplementNavAreaView
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
 
-    @UiField(provided = true)
-    public Image logo;
-
     @UiField
     public FlowPanel contextMenuArea;
 
@@ -57,7 +52,6 @@ public class ComplementNavAreaView
 
     @PostConstruct
     public void init() {
-        logo = new Image( AppResource.INSTANCE.images().logo() );
         initWidget( uiBinder.createAndBindUi( this ) );
         contextMenuArea.add( contextMenu.getView() );
     }
