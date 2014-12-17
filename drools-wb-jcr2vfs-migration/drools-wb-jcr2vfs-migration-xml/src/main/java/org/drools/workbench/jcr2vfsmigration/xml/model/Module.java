@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,9 @@ public class Module {
     private ModuleType type;
     private String uuid;
     private String name;
+    private String lastContributor;
+    private String checkinComment;
+    private Date lastModified;
     private String normalizedPackageName;
     private String packageHeaderInfo;
     private String globalsString;
@@ -32,6 +36,9 @@ public class Module {
     public Module( ModuleType type,
                    String uuid,
                    String name,
+                   String lastContributor,
+                   String checkinComment,
+                   Date lastModified,
                    String normalizedPackageName,
                    String packageHeaderInfo,
                    String globalsString,
@@ -40,6 +47,9 @@ public class Module {
         this.type = type;
         this.uuid = uuid;
         this.name = name;
+        this.lastContributor = lastContributor;
+        this.checkinComment = checkinComment;
+        this.lastModified = lastModified;
         this.normalizedPackageName = normalizedPackageName != null ? normalizedPackageName : "";
         // todo check if null values should be allowed (see PackageImportHelper#l118/l138
         this.packageHeaderInfo = packageHeaderInfo != null ? packageHeaderInfo : "";
@@ -59,6 +69,18 @@ public class Module {
 
     public String getName() {
         return name;
+    }
+
+    public String getLastContributor() {
+        return lastContributor;
+    }
+
+    public String getCheckinComment() {
+        return checkinComment;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
     }
 
     public String getNormalizedPackageName() {

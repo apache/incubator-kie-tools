@@ -27,7 +27,6 @@ public class PlainTextAssetExporter
 
     public PlainTextAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
 
-        String name = jcrAssetItem.getName();
         String format = jcrAssetItem.getFormat();
         String content = jcrAssetItem.getContent();
 
@@ -46,6 +45,11 @@ public class PlainTextAssetExporter
             content = content.replaceAll("org.drools.process.core.","org.drools.core.process.core.");
         }
 
-        return new PlainTextAsset( name, format, content );
+        return new PlainTextAsset( jcrAssetItem.getName(),
+                                   format,
+                                   jcrAssetItem.getLastContributor(),
+                                   jcrAssetItem.getCheckinComment(),
+                                   jcrAssetItem.getLastModified().getTime(),
+                                   content );
     }
 }

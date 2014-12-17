@@ -15,39 +15,25 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
+import java.util.Date;
+
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetFormat.*;
-
-public class AttachmentAssetFormat implements XmlFormat<AttachmentAsset> {
+public class AttachmentAssetFormat extends XmlAssetFormat {
 
     private static final String ATTACHMENT_FILENAME = "attachmentFileName";
 
-    @Override
-    public void format( StringBuilder sb, AttachmentAsset attachmentAsset ) {
-        if ( sb == null || attachmentAsset == null ) throw new IllegalArgumentException( "No output or attachment asset specified" );
-
-        sb.append( LT ).append( ASSET )
-                .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( attachmentAsset.getName() ).append( "\"" )
-                .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( attachmentAsset.getAssetType().toString() ).append( "\"" )
-                .append( GT );
-
-        sb.append( LT ).append( ATTACHMENT_FILENAME ).append( GT ).append( attachmentAsset.getAttachmentFileName() )
+    protected String doFormat( AttachmentAsset attachmentAsset ) {
+        StringBuilder sb = new StringBuilder( LT )
+                .append( ATTACHMENT_FILENAME ).append( GT ).append( attachmentAsset.getAttachmentFileName() )
                 .append( LT_SLASH ).append( ATTACHMENT_FILENAME ).append( GT );
 
-        sb.append( LT_SLASH ).append( ASSET ).append( GT );
+        return sb.toString();
     }
 
-    @Override
-    public AttachmentAsset parse( Node assetNode ) {
-        // Null-ness already checked before
-        NamedNodeMap assetAttribs = assetNode.getAttributes();
-        String name = assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue();
-        String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
-
+    protected AttachmentAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
         String attachmentFile = null;
         NodeList assetNodeList = assetNode.getChildNodes();
         for ( int i = 0; i < assetNodeList.getLength(); i++ ) {
@@ -55,6 +41,6 @@ public class AttachmentAssetFormat implements XmlFormat<AttachmentAsset> {
             String nodeContent = node.getTextContent();
             if ( ATTACHMENT_FILENAME.equalsIgnoreCase( node.getNodeName() ) ) attachmentFile = nodeContent;
         }
-        return new AttachmentAsset( name, assetType, attachmentFile );
+        return new AttachmentAsset( name, format, lastContributor, checkinComment, lastModified, attachmentFile );
     }
 }

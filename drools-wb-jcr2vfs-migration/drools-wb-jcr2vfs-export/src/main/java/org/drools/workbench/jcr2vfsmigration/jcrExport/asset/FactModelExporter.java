@@ -38,7 +38,11 @@ public class FactModelExporter implements AssetExporter<DataModelAsset> {
     @Override
     public DataModelAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
 
-        DataModelAsset dma = new DataModelAsset( jcrAssetItem.getName(), jcrAssetItem.getFormat() );
+        DataModelAsset dma = new DataModelAsset( jcrAssetItem.getName(),
+                                                 jcrAssetItem.getFormat(),
+                                                 jcrAssetItem.getLastContributor(),
+                                                 jcrAssetItem.getCheckinComment(),
+                                                 jcrAssetItem.getLastModified().getTime() );
 
         // At this point the module's name is normalized already
         String normalizedPackageName = jcrModule.getName();

@@ -53,12 +53,10 @@ public class GuidedScoreCardImporter implements AssetImporter<PlainTextAsset> {
         ioService.write( nioPath,
                          sourceContentWithPackage,
                          ( Map ) null,    // cast is for disambiguation
-// todo               migrateMetaData(jcrModule, asset),
-// todo               new CommentedOption( asset.getLastContributor(),
-//                        null,
-//                        asset.getCheckinComment(),
-//                        asset.getLastModified().getTime() ) );
-                         new CommentedOption( "" )
+                         new CommentedOption( xmlAsset.getLastContributor(),
+                             null,
+                             xmlAsset.getCheckinComment(),
+                             xmlAsset.getLastModified() )
         );
     }
 }

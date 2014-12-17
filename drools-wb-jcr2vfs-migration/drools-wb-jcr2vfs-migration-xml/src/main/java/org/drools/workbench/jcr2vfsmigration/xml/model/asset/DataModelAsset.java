@@ -17,15 +17,20 @@ package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
-public class DataModelAsset extends AbstractXmlAsset {
+public class DataModelAsset extends BaseXmlAsset {
 
     private Collection<DataModelObject> dataObjects;
 
-    public DataModelAsset( String name, String format ) {
-        this.name = name;
-        this.assetType = AssetType.getByType( format );
+    public DataModelAsset( String name,
+                           String format,
+                           String lastContributor,
+                           String checkinComment,
+                           Date lastModified ) {
+
+        super(name, format, lastContributor, checkinComment, lastModified);
         this.dataObjects = new ArrayList<DataModelObject>();
     }
 
@@ -38,7 +43,6 @@ public class DataModelAsset extends AbstractXmlAsset {
     public Iterator<DataModelObject> modelObjects() {
         return dataObjects.iterator();
     }
-
 
     public interface DataModelObject {
         String getName();

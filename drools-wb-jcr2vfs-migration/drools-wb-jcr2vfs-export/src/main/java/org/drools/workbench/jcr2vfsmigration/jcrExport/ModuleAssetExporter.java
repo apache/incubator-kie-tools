@@ -179,6 +179,9 @@ public class ModuleAssetExporter {
         return new org.drools.workbench.jcr2vfsmigration.xml.model.Module( moduleType,
                 jcrModule.getUuid(),
                 moduleName,
+                jcrModule.getLastContributor(),
+                jcrModule.getCheckinComment(),
+                jcrModule.getLastModified(),
                 normalizedPackageName,
                 packageHeaderInfo,
                 sbGlobal.toString(),
@@ -320,7 +323,12 @@ public class ModuleAssetExporter {
         String attachmentName = assetExportFileName + "_" + attachmentFileNameCounter++;
         if ( !fileManager.writeBinaryContent( attachmentName, jcrAssetItem.getBinaryContentAsBytes() ) )
             System.out.println( "WARNING: no binary content was written for asset " + jcrAssetItem.getName() );
-        return new AttachmentAsset( jcrAssetItem.getName(), jcrAssetItem.getFormat(), attachmentName );
+        return new AttachmentAsset( jcrAssetItem.getName(),
+                jcrAssetItem.getFormat(),
+                jcrAssetItem.getLastContributor(),
+                jcrAssetItem.getCheckinComment(),
+                jcrAssetItem.getLastModified().getTime(),
+                attachmentName );
     }
 
     // Attempt creation of the asset export file firstly with the module's uuid. If this were null or the file could not

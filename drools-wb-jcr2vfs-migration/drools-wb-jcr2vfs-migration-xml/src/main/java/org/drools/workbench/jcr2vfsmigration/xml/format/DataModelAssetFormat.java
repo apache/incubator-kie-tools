@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
+import java.util.Date;
 import java.util.Iterator;
 
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
@@ -24,7 +25,7 @@ import org.w3c.dom.NodeList;
 
 import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetFormat.*;
 
-public class DataModelAssetFormat implements XmlFormat<DataModelAsset> {
+public class DataModelAssetFormat extends XmlAssetFormat {
 
     private static final String MODEL_OBJ = "modelObject";
     private static final String MODEL_OBJ_NAME = "objName";
@@ -39,14 +40,8 @@ public class DataModelAssetFormat implements XmlFormat<DataModelAsset> {
     private static final String MODEL_OBJ_ANN_KEY = "objAnnKey";
     private static final String MODEL_OBJ_ANN_VALUE = "objAnnValue";
 
-    @Override
-    public void format( StringBuilder sb, DataModelAsset dataModelAsset ) {
-        if ( sb == null || dataModelAsset == null ) throw new IllegalArgumentException( "No output or data model asset asset specified" );
-
-        sb.append( LT ).append( ASSET )
-            .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( dataModelAsset.getName() ).append( "\"" )
-            .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( dataModelAsset.getAssetType().toString() ).append( "\"" )
-            .append( GT );
+    protected String doFormat( DataModelAsset dataModelAsset ) {
+        StringBuilder sb = new StringBuilder();
 
         for ( Iterator<DataModelAsset.DataModelObject> objectIt = dataModelAsset.modelObjects(); objectIt.hasNext(); ) {
             DataModelAsset.DataModelObject obj = objectIt.next();
@@ -74,18 +69,12 @@ public class DataModelAssetFormat implements XmlFormat<DataModelAsset> {
 
             sb.append( LT_SLASH ).append( MODEL_OBJ ).append( GT );
         }
-
-        sb.append( LT_SLASH ).append( ASSET ).append( GT );
+        return sb.toString();
     }
 
-    @Override
-    public DataModelAsset parse( Node assetNode ) {
-        // Null-ness already checked before
-        NamedNodeMap assetAttribs = assetNode.getAttributes();
-        String name = assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue();
-        String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
+    protected DataModelAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
 
-        DataModelAsset dataModel = new DataModelAsset( name, assetType );
+        DataModelAsset dataModel = new DataModelAsset( name, format, lastContributor, checkinComment, lastModified );
 
         NodeList modelNodeList = assetNode.getChildNodes();
         for ( int i = 0; i < modelNodeList.getLength(); i++ ) {

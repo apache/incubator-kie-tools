@@ -26,11 +26,14 @@ public class GuidedDecisionTableExporter
     @Override
     public GuidedDecisionTableAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
 
-        String name = jcrAssetItem.getName();
-        String format = jcrAssetItem.getFormat();
-        String content = jcrAssetItem.getContent();
         String extendedRule = getExtendedRuleFromCategoryRules(jcrModule,jcrAssetItem,"");
 
-        return new GuidedDecisionTableAsset( name, format, content, extendedRule );
+        return new GuidedDecisionTableAsset( jcrAssetItem.getName(),
+                                             jcrAssetItem.getFormat(),
+                                             jcrAssetItem.getLastContributor(),
+                                             jcrAssetItem.getCheckinComment(),
+                                             jcrAssetItem.getLastModified().getTime(),
+                                             jcrAssetItem.getContent(),
+                                             extendedRule );
     }
 }

@@ -3,6 +3,7 @@ package org.drools.workbench.jcr2vfsmigration.xml;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -144,7 +145,7 @@ public class XmlTester {
     }
 
     public void testDataModelAssetFormat() {
-        DataModelAsset dma = new DataModelAsset( "testModel", AssetType.DRL_MODEL.toString() );
+        DataModelAsset dma = new DataModelAsset( "testModel", AssetType.DRL_MODEL.toString(), "testUser", "", new Date() );
         DataModelAsset.DataModelObject dmo1 = dma.addDataModelObject( "obj1", "java.lang.Object" );
         dmo1.addObjectProperty( "ob1.prop1", "java.lang.String" );
         dmo1.addObjectProperty( "ob1.prop2", "java.lang.Integer" );

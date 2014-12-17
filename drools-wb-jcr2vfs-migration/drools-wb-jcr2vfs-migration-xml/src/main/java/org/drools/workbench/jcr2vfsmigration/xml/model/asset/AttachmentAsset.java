@@ -15,13 +15,20 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
-public class AttachmentAsset extends AbstractXmlAsset {
+import java.util.Date;
+
+public class AttachmentAsset extends BaseXmlAsset {
 
     private String attachmentFileName;
 
-    public AttachmentAsset( String name, String format, String attachmentFileName ) {
-        this.name = name;
-        this.assetType = AssetType.getByType( format );
+    public AttachmentAsset( String name,
+                            String format,
+                            String lastContributor,
+                            String checkinComment,
+                            Date lastModified,
+                            String attachmentFileName ) {
+
+        super(name, format, lastContributor, checkinComment, lastModified);
         this.attachmentFileName = attachmentFileName;
     }
 

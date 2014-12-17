@@ -15,10 +15,18 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
+import java.util.Date;
+
 public interface XmlAsset {
 
     String getName();
 
     AssetType getAssetType();
+
+    public String getLastContributor();
+
+    public String getCheckinComment();
+
+    public Date getLastModified();
 
 }

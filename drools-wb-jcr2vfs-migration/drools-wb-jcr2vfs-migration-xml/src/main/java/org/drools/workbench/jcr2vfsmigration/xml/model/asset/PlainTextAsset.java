@@ -15,13 +15,20 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
-public class PlainTextAsset extends AbstractXmlAsset {
+import java.util.Date;
+
+public class PlainTextAsset extends BaseXmlAsset {
 
     private String content;
 
-    public PlainTextAsset( String name, String format, String content ) {
-        this.name = name;
-        this.assetType = AssetType.getByType( format );
+    public PlainTextAsset( String name,
+                           String format,
+                           String lastContributor,
+                           String checkinComment,
+                           Date lastModified,
+                           String content ) {
+
+        super(name, format, lastContributor, checkinComment, lastModified);
         this.content = content;
     }
 

@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
+import java.util.Date;
+
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.BusinessRuleAsset;
@@ -22,14 +24,9 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.GuidedDecisionTableAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-public class XmlAssetFormat implements XmlFormat<XmlAsset> {
-
-    public static final String ASSET = "asset";
-    public static final String ASSET_NAME = "name";
-    public static final String ASSET_TYPE = "type";
+public class XmlAssetFormat extends AbstractXmlFormat {
 
     private static PlainTextAssetFormat ptaf = new PlainTextAssetFormat();
     private static AttachmentAssetFormat aaf = new AttachmentAssetFormat();
@@ -38,12 +35,9 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
     private static DataModelAssetFormat dmaf = new DataModelAssetFormat();
 
     @Override
-    public void format( StringBuilder sb, XmlAsset xmlAsset ) {
-        if ( sb == null || xmlAsset == null ) throw new IllegalArgumentException( "No output or asset specified" );
+    public String formatAssetAsString( XmlAsset xmlAsset ) {
 
         switch ( xmlAsset.getAssetType() ) {
-            case IGNORED: return;
-
             case ENUMERATION:
             case DSL:
             case DSL_TEMPLATE_RULE:
@@ -65,7 +59,7 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case TEST_SCENARIO:
 
             case DRL :
-            case FUNCTION: ptaf.format( sb, ( PlainTextAsset ) xmlAsset ); break;
+            case FUNCTION: return ptaf.doFormat( ( PlainTextAsset ) xmlAsset );
 
             case DECISION_SPREADSHEET_XLS:
             case SCORECARD_SPREADSHEET_XLS:
@@ -74,33 +68,27 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case JPG:
             case PDF:
             case DOC:
-            case ODT: aaf.format( sb, ( AttachmentAsset ) xmlAsset ); break;
+            case ODT: return aaf.doFormat( ( AttachmentAsset ) xmlAsset );
 
-            case BUSINESS_RULE: braf.format( sb, ( BusinessRuleAsset ) xmlAsset ); break;
+            case BUSINESS_RULE: return braf.doFormat( ( BusinessRuleAsset ) xmlAsset );
 
-            case DECISION_TABLE_GUIDED: gdtaf.format( sb, ( GuidedDecisionTableAsset ) xmlAsset ); break;
+            case DECISION_TABLE_GUIDED: return gdtaf.doFormat( ( GuidedDecisionTableAsset ) xmlAsset );
 
-            case DRL_MODEL: dmaf.format( sb, ( DataModelAsset ) xmlAsset ); break;
+            case DRL_MODEL: return dmaf.doFormat( ( DataModelAsset ) xmlAsset );
 
             case UNSUPPORTED:
 
             default: {
                 System.out.println( "Formatting asset with type " + xmlAsset.getAssetType() + " into attachment asset" );
-                aaf.format( sb, ( AttachmentAsset ) xmlAsset );
+                return aaf.doFormat( ( AttachmentAsset ) xmlAsset );
             }
         }
     }
 
     @Override
-    public XmlAsset parse( Node assetNode ) {
-        if ( assetNode == null || !ASSET.equals( assetNode.getNodeName() ) ) throw new IllegalArgumentException( "No input asset node specified for parsing" );
+    public XmlAsset parseStringToXmlAsset( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
 
-        NamedNodeMap assetAttribs = assetNode.getAttributes();
-        if ( assetAttribs == null ) throw new RuntimeException( "Wrong asset xml format; missing type" );
-        String name = assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue();
-        String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
-
-        switch ( AssetType.getByType( assetType ) ) {
+        switch ( AssetType.getByType( format ) ) {
             case ENUMERATION:
             case DSL:
             case DSL_TEMPLATE_RULE:
@@ -122,7 +110,7 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case TEST_SCENARIO:
 
             case DRL:
-            case FUNCTION: return ptaf.parse( assetNode );
+            case FUNCTION: return ptaf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
 
             case DECISION_SPREADSHEET_XLS:
             case SCORECARD_SPREADSHEET_XLS:
@@ -131,19 +119,19 @@ public class XmlAssetFormat implements XmlFormat<XmlAsset> {
             case JPG:
             case PDF:
             case DOC:
-            case ODT: return aaf.parse( assetNode );
+            case ODT: return aaf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
 
-            case BUSINESS_RULE: return braf.parse( assetNode );
+            case BUSINESS_RULE: return braf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
 
-            case DECISION_TABLE_GUIDED: return gdtaf.parse( assetNode );
+            case DECISION_TABLE_GUIDED: return gdtaf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
 
-            case DRL_MODEL: return dmaf.parse( assetNode );
+            case DRL_MODEL: return dmaf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
 
             case UNSUPPORTED:
 
             default: {
                 System.out.println( "Attempting to parse asset " + name + " into attachment asset" );
-                return aaf.parse( assetNode );
+                return aaf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
             }
         }
     }

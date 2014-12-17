@@ -85,12 +85,10 @@ public class GuidedDecisionTableImporter implements AssetImporter<GuidedDecision
         ioService.write( nioPath,
                          sourceContent,
                          (Map) null,    // cast is for disambiguation
-// todo               migrateMetaData(jcrModule, asset),
-// todo               new CommentedOption( asset.getLastContributor(),
-//                        null,
-//                        asset.getCheckinComment(),
-//                        asset.getLastModified().getTime() ) );
-                         new CommentedOption( "" )
+                         new CommentedOption( xmlAsset.getLastContributor(),
+                             null,
+                             xmlAsset.getCheckinComment(),
+                             xmlAsset.getLastModified() )
         );
     }
 }

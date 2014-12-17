@@ -27,8 +27,6 @@ public class PlainTextAssetWithPackagePropertyExporter
 
     @Override
     public PlainTextAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
-        String name = jcrAssetItem.getName();
-        String format = jcrAssetItem.getFormat();
 
         StringBuilder sb = new StringBuilder();
         if ( AssetFormats.DRL.equals( jcrAssetItem.getFormat() ) && jcrAssetItem.getContent().toLowerCase().indexOf("rule ")==-1 ) {
@@ -56,6 +54,11 @@ public class PlainTextAssetWithPackagePropertyExporter
             content = ExportUtils.migrateStartOfCommentChar( content );
         }
 
-        return new PlainTextAsset( name, format, content );
+        return new PlainTextAsset( jcrAssetItem.getName(),
+                                   jcrAssetItem.getFormat(),
+                                   jcrAssetItem.getLastContributor(),
+                                   jcrAssetItem.getCheckinComment(),
+                                   jcrAssetItem.getLastModified().getTime(),
+                                   content );
     }
 }

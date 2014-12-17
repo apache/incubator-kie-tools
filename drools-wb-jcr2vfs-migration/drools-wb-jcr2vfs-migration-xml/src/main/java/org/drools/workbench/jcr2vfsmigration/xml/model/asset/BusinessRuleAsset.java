@@ -15,14 +15,22 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
-public class BusinessRuleAsset extends AbstractXmlAsset {
+import java.util.Date;
+
+public class BusinessRuleAsset extends BaseXmlAsset {
 
     private String content;
     private boolean hasDSLSentences = false;
 
-    public BusinessRuleAsset( String name, String format, String content, boolean hasDSLSentences ) {
-        this.name = name;
-        this.assetType = AssetType.getByType( format );
+    public BusinessRuleAsset( String name,
+                              String format,
+                              String lastContributor,
+                              String checkinComment,
+                              Date lastModified,
+                              String content,
+                              boolean hasDSLSentences ) {
+
+        super(name, format, lastContributor, checkinComment, lastModified);
         this.content = content;
         this.hasDSLSentences = hasDSLSentences;
     }

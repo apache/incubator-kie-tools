@@ -15,44 +15,30 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
+import java.util.Date;
+
 import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.BusinessRuleAsset;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetFormat.*;
-
-public class BusinessRuleAssetFormat implements XmlFormat<BusinessRuleAsset> {
+public class BusinessRuleAssetFormat extends XmlAssetFormat {
 
     private static final String CONTENT = "content";
     private static final String HAS_DRL = "hasDrl";
 
-    @Override
-    public void format( StringBuilder sb, BusinessRuleAsset businessRuleAsset ) {
-        if ( sb == null || businessRuleAsset == null ) throw new IllegalArgumentException( "No output or business rule asset specified" );
-
-        sb.append( LT ).append( ASSET )
-                .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( businessRuleAsset.getName() ).append( "\"" )
-                .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( businessRuleAsset.getAssetType().toString() ).append( "\"" )
-                .append( GT );
-
-        sb.append( LT ).append( CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( businessRuleAsset.getContent() ) )
+    protected String doFormat( BusinessRuleAsset businessRuleAsset ) {
+        StringBuilder sb = new StringBuilder()
+                .append( LT ).append( CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( businessRuleAsset.getContent() ) )
                 .append( LT_SLASH ).append( CONTENT ).append( GT );
 
         sb.append( LT ).append( HAS_DRL ).append( GT ).append( businessRuleAsset.hasDSLSentences() ? "true" : "false" )
                 .append( LT_SLASH ).append( HAS_DRL ).append( GT );
 
-        sb.append( LT_SLASH ).append( ASSET ).append( GT );
+        return sb.toString();
     }
 
-    @Override
-    public BusinessRuleAsset parse( Node assetNode ) {
-        // Null-ness already checked before
-        NamedNodeMap assetAttribs = assetNode.getAttributes();
-        String name = assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue();
-        String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
-
+    protected BusinessRuleAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
         Boolean hasDSL = false;
         String content = null;
         NodeList assetNodeList = assetNode.getChildNodes();
@@ -65,6 +51,6 @@ public class BusinessRuleAssetFormat implements XmlFormat<BusinessRuleAsset> {
                 hasDSL = Boolean.valueOf( nodeContent );
             }
         }
-        return new BusinessRuleAsset( name, assetType, content, hasDSL );
+        return new BusinessRuleAsset( name, format, lastContributor, checkinComment, lastModified, content, hasDSL );
     }
 }

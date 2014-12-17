@@ -15,10 +15,25 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
-public abstract class AbstractXmlAsset implements XmlAsset {
+import java.util.Date;
+
+public abstract class BaseXmlAsset implements XmlAsset {
 
     protected String name;
     protected AssetType assetType;
+    protected String lastContributor;
+    protected String checkinComment;
+    protected Date lastModified;
+
+    protected BaseXmlAsset() {}
+
+    protected BaseXmlAsset( String name, String format, String lastContributor, String checkinComment, Date lastModified ) {
+        this.name = name;
+        this.assetType = AssetType.getByType( format );
+        this.lastContributor = lastContributor;
+        this.checkinComment = checkinComment;
+        this.lastModified = lastModified;
+    }
 
     @Override
     public String getName() {
@@ -28,5 +43,17 @@ public abstract class AbstractXmlAsset implements XmlAsset {
     @Override
     public AssetType getAssetType() {
         return assetType;
+    }
+
+    public String getLastContributor() {
+        return lastContributor;
+    }
+
+    public String getCheckinComment() {
+        return checkinComment;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
     }
 }

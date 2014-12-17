@@ -59,12 +59,10 @@ public class GuidedEditorImporter implements AssetImporter<BusinessRuleAsset> {
         ioService.write( nioPath,
                          sourceDRLWithImport,
                          (Map) null,    // cast is for disambiguation
-// todo               migrateMetaData(jcrModule, asset),
-// todo               new CommentedOption( asset.getLastContributor(),
-//                        null,
-//                        asset.getCheckinComment(),
-//                        asset.getLastModified().getTime() ) );
-                         new CommentedOption( "" )
+                         new CommentedOption( xmlAsset.getLastContributor(),
+                             null,
+                             xmlAsset.getCheckinComment(),
+                             xmlAsset.getLastModified() )
         );
     }
 }

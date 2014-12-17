@@ -15,44 +15,30 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
+import java.util.Date;
+
 import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.GuidedDecisionTableAsset;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetFormat.*;
-
-public class GuidedDecisionTableAssetFormat implements XmlFormat<GuidedDecisionTableAsset> {
+public class GuidedDecisionTableAssetFormat extends XmlAssetFormat {
 
     private static final String CONTENT = "content";
     private static final String EXTENDED_RULE = "extendedRule";
 
-    @Override
-    public void format( StringBuilder sb, GuidedDecisionTableAsset guidedDecisionTableAsset ) {
-        if ( sb == null || guidedDecisionTableAsset == null ) throw new IllegalArgumentException( "No output or guided decision table asset asset specified" );
-
-        sb.append( LT ).append( ASSET )
-                .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( guidedDecisionTableAsset.getName() ).append( "\"" )
-                .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( guidedDecisionTableAsset.getAssetType().toString() ).append( "\"" )
-                .append( GT );
-
-        sb.append( LT ).append( CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( guidedDecisionTableAsset.getContent() ) )
+    protected String doFormat( GuidedDecisionTableAsset guidedDecisionTableAsset ) {
+        StringBuilder sb = new StringBuilder( LT )
+                .append( CONTENT ).append( GT ).append( ExportXmlUtils.formatCdataSection( guidedDecisionTableAsset.getContent() ) )
                 .append( LT_SLASH ).append( CONTENT ).append( GT );
 
         sb.append( LT ).append( EXTENDED_RULE ).append( GT ).append( ExportXmlUtils.formatCdataSection( guidedDecisionTableAsset.getExtendedRule() ) )
                 .append( LT_SLASH ).append( EXTENDED_RULE ).append( GT );
 
-        sb.append( LT_SLASH ).append( ASSET ).append( GT );
+        return sb.toString();
     }
 
-    @Override
-    public GuidedDecisionTableAsset parse( Node assetNode ) {
-        // Null-ness already checked before
-        NamedNodeMap assetAttribs = assetNode.getAttributes();
-        String name = assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue();
-        String assetType = assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue();
-
+    protected GuidedDecisionTableAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
         String content = null;
         String extendedRule = null;
         NodeList assetNodeList = assetNode.getChildNodes();
@@ -65,6 +51,6 @@ public class GuidedDecisionTableAssetFormat implements XmlFormat<GuidedDecisionT
                 extendedRule = nodeContent;
             }
         }
-        return new GuidedDecisionTableAsset( name, assetType, content, extendedRule );
+        return new GuidedDecisionTableAsset( name, format, lastContributor, checkinComment, lastModified, content, extendedRule );
     }
 }

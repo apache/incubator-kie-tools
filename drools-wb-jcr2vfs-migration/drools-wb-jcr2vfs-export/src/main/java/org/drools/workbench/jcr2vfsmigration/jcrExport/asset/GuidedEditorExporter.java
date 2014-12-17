@@ -38,8 +38,6 @@ public class GuidedEditorExporter
     @Override
     public BusinessRuleAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
 
-        String name = jcrAssetItem.getName();
-        String format = jcrAssetItem.getFormat();
         String content = jcrAssetItem.getContent();
 
         RuleModel ruleModel = BRXMLPersistence.getInstance().unmarshal( content );
@@ -54,6 +52,12 @@ public class GuidedEditorExporter
         content = sb.toString().replaceAll( "#", "//" );
         content = getExtendExpression( jcrModule, jcrAssetItem, content);
 
-        return new BusinessRuleAsset( name, format, content, hasDSL );
+        return new BusinessRuleAsset( jcrAssetItem.getName(),
+                                      jcrAssetItem.getFormat(),
+                                      jcrAssetItem.getLastContributor(),
+                                      jcrAssetItem.getCheckinComment(),
+                                      jcrAssetItem.getLastModified().getTime(),
+                                      content,
+                                      hasDSL );
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.jcr2vfsmigration.xml.format;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,15 +27,18 @@ import org.w3c.dom.NodeList;
 
 public class ModuleXmlFormat implements XmlFormat<Module> {
 
-    public static final String MODULE = "module";
-    public static final String MODULE_UUID = "uuid";
-    public static final String MODULE_TYPE = "type";
-    public static final String MODULE_NAME = "name";
-    public static final String MODULE_NORM_PACKAGENAME = "normalizedPackageName";
-    public static final String MODULE_PACKAGEHEADER = "packageHeaderInfo";
-    public static final String MODULE_GLOBALS = "globals";
-    public static final String MODULE_CATRULES = "catRules";
-    public static final String MODULE_ASSET_FILE = "assetExportFileName";
+    protected static final String MODULE = "module";
+    protected static final String MODULE_UUID = "uuid";
+    protected static final String MODULE_TYPE = "type";
+    protected static final String MODULE_NAME = "name";
+    protected static final String MODULE_LAST_CONTRIBUTOR = "lastContrib";
+    protected static final String MODULE_CHECKIN_COMMENT = "comment";
+    protected static final String MODULE_LAST_MODIFIED = "lastModif";
+    protected static final String MODULE_NORM_PACKAGENAME = "normalizedPackageName";
+    protected static final String MODULE_PACKAGEHEADER = "packageHeaderInfo";
+    protected static final String MODULE_GLOBALS = "globals";
+    protected static final String MODULE_CATRULES = "catRules";
+    protected static final String MODULE_ASSET_FILE = "assetExportFileName";
 
     @Override
     public void format( StringBuilder sb, Module module ) {
@@ -48,6 +52,18 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                 .append( MODULE_TYPE ).append( GT );
         sb.append( LT ).append( MODULE_NAME ).append( GT ).append( module.getName() ).append( LT_SLASH )
                 .append( MODULE_NAME ).append( GT );
+
+        String lastContributor = StringUtils.isNotBlank( module.getLastContributor() ) ? module.getLastContributor() : "--";
+        sb.append( LT ).append( MODULE_LAST_CONTRIBUTOR ).append( GT ).append( lastContributor ).append( LT_SLASH )
+                .append( MODULE_LAST_CONTRIBUTOR ).append( GT );
+
+        // Check-in comment as CData section
+        sb.append( formatCheckinComment( module.getCheckinComment() ) );
+
+        Date lastModified = module.getLastModified() != null ? module.getLastModified() : new Date();
+        sb.append( LT ).append( MODULE_LAST_MODIFIED ).append( GT ).append( lastModified.getTime() ).append( LT_SLASH )
+                .append( MODULE_LAST_MODIFIED ).append( GT );
+
         sb.append( LT ).append( MODULE_NORM_PACKAGENAME ).append( GT ).append( module.getNormalizedPackageName() )
                 .append( LT_SLASH ).append( MODULE_NORM_PACKAGENAME ).append( GT );
         sb.append( LT ).append( MODULE_ASSET_FILE ).append( GT ).append( module.getAssetExportFileName() )
@@ -71,6 +87,9 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         if ( moduleNode == null || !MODULE.equals( moduleNode.getNodeName() ) ) throw new IllegalArgumentException( "No input module node specified for parsing" );
 
         String name = null;
+        String lastContributor = null;
+        String checkinComment = null;
+        Date lastModified = null;
         String normalizedPackageName = null;
         String uuid = null;
         String packageHeaderInfo = null;
@@ -85,6 +104,12 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
             String nodeContent = propertyNode.getTextContent();
             if ( MODULE_NAME.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 name = nodeContent;
+            } else if ( MODULE_LAST_CONTRIBUTOR.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
+                 lastContributor = nodeContent;
+            } else if ( MODULE_CHECKIN_COMMENT.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
+                checkinComment = parseCheckinComment( propertyNode );
+            } else if ( MODULE_LAST_MODIFIED.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
+                lastModified = new Date( Long.parseLong( nodeContent, 10 ) );
             } else if ( MODULE_NORM_PACKAGENAME.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                 normalizedPackageName = nodeContent;
             } else if ( MODULE_UUID.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
@@ -104,11 +129,30 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         return new Module( type,
                            uuid,
                            name,
+                           lastContributor,
+                           checkinComment,
+                           lastModified,
                            normalizedPackageName,
                            packageHeaderInfo,
                            globals,
                            catRules,
                            assetExportFileName );
+    }
+
+    private String formatCheckinComment( String checkinComment ) {
+        StringBuilder sbCheckinComment = new StringBuilder( LT );
+        sbCheckinComment.append( MODULE_CHECKIN_COMMENT ).append( GT );
+        if ( StringUtils.isNotBlank( checkinComment ) ) {
+            sbCheckinComment.append( ExportXmlUtils.formatCdataSection( checkinComment ) );
+        }
+        sbCheckinComment.append( LT_SLASH ).append( MODULE_CHECKIN_COMMENT ).append( GT );
+        return sbCheckinComment.toString();
+    }
+
+    private String parseCheckinComment( Node checkinCommentNode ) {
+        NodeList checkinCommentNodeChildren = checkinCommentNode.getChildNodes();
+        if ( checkinCommentNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_CHECKIN_COMMENT );
+        return ExportXmlUtils.parseCdataSection( checkinCommentNodeChildren.item( 0 ) );
     }
 
     private String formatCatRules( Module module ) {

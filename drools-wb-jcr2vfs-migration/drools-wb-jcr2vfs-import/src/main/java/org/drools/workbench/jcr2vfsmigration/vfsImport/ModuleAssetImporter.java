@@ -176,12 +176,10 @@ public class ModuleAssetImporter {
         ioService.write( nioPath,
                          contentWithPackage,
                          ( Map ) null,    // cast is for disambiguation
-// todo               migrateMetaData(jcrModule, asset),
-// todo               new CommentedOption( asset.getLastContributor(),
-//                        null,
-//                        asset.getCheckinComment(),
-//                        asset.getLastModified().getTime() ) );
-                         new CommentedOption( "" )
+                         new CommentedOption( module.getLastContributor(),
+                                              null,
+                                              module.getCheckinComment(),
+                                              module.getLastModified() )
         );
     }
 

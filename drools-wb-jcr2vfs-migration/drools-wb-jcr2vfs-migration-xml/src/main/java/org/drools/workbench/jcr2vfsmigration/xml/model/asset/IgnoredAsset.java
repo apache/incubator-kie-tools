@@ -16,7 +16,7 @@
 package org.drools.workbench.jcr2vfsmigration.xml.model.asset;
 
 // Dummy asset for ignored artefacts, to avoid returning nulls
-public class IgnoredAsset extends AbstractXmlAsset {
+public class IgnoredAsset extends BaseXmlAsset {
 
     public IgnoredAsset(){}
 
