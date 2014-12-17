@@ -201,7 +201,8 @@ public class ExpressionBuilder extends RuleModellerWidget
             FactPattern fact = getRuleModel().getLHSBoundFact( attrib );
             ExpressionPart variable;
             if ( fact != null ) {
-                variable = new ExpressionVariable( fact );
+                variable = new ExpressionVariable( fact.getBoundName(),
+                                                   fact.getFactType() );
             } else {
                 //if the variable is not bound to a Fact Pattern then it must be bound to a Field
                 String lhsBindingType = getRuleModel().getLHSBindingType( attrib );

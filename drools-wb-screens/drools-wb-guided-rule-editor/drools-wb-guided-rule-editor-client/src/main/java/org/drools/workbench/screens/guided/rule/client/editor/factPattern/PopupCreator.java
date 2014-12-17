@@ -249,7 +249,7 @@ public class PopupCreator {
             public void onClick( ClickEvent event ) {
                 SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
                 con.setConstraintValueType( SingleFieldConstraint.TYPE_UNDEFINED );
-                con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern ) ) );
+                con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern.getFactType() ) ) );
                 hasConstraints.addConstraint( con );
                 modeller.refreshWidget();
                 popup.hide();
@@ -367,7 +367,7 @@ public class PopupCreator {
                     SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
                     con.setConstraintValueType( SingleFieldConstraint.TYPE_UNDEFINED );
                     fp.addConstraint( con );
-                    con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern ) ) );
+                    con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern.getFactType() ) ) );
                     modeller.refreshWidget();
                     popup.hide();
                 }
