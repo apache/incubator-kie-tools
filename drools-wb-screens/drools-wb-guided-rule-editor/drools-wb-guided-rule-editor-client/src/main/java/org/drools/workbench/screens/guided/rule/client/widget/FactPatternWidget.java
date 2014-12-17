@@ -818,8 +818,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                con.getExpressionLeftSide() ) );
             } else {
                 final DRLConstraintValueBuilder constraintValueBuilder = DRLConstraintValueBuilder.getBuilder( getRuleDialect() );
-                final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( con.getExpressionLeftSide().getBinding(),
-                                                                                         constraintValueBuilder );
+                final ToStringExpressionVisitor visitor = new ToStringExpressionVisitor( constraintValueBuilder );
                 ab.add( new SmallLabel( con.getExpressionLeftSide().getText( visitor ) ) );
             }
         } else {

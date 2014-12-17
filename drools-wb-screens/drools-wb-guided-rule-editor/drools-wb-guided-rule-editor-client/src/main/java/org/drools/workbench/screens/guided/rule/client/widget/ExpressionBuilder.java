@@ -118,32 +118,41 @@ public class ExpressionBuilder extends RuleModellerWidget
         panel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
         panel.setStylePrimaryName( GuidedRuleEditorResources.INSTANCE.css().container() );
 
+        initializeWidgets();
+
+        initWidget( panel );
+    }
+
+    private void initializeWidgets() {
+        panel.clear();
         StringBuilder bindingLabel = new StringBuilder();
         String binding = getBoundText();
-        if ( binding != null && !binding.equals( "" ) ) {
-            bindingLabel.append( "<b>" );
-            bindingLabel.append( binding );
-            bindingLabel.append( "</b>" );
-        }
+        bindingLabel.append( "<b>" );
+        bindingLabel.append( binding );
+        bindingLabel.append( "</b>" );
+        bindingLabel.append( ":" );
 
-        if ( expression == null || expression.isEmpty() ) {
+        if ( isExpressionEmpty() ) {
             if ( this.readOnly ) {
                 panel.add( new SmallLabel( "<b>-</b>" ) );
             } else {
                 panel.add( createStartPointWidget() );
             }
+
         } else {
             if ( this.readOnly ) {
                 panel.add( createBindingWidgetForExpression( bindingLabel.toString() ) );
                 panel.add( createWidgetForExpression() );
             } else {
-                bindingLabel.append( "." );
                 panel.add( createBindingWidgetForExpression( bindingLabel.toString() ) );
                 panel.add( createWidgetForExpression() );
                 panel.add( getWidgetForCurrentType() );
             }
         }
-        initWidget( panel );
+    }
+
+    private boolean isExpressionEmpty() {
+        return expression == null || expression.isEmpty();
     }
 
     private String getBoundText() {
@@ -155,7 +164,6 @@ public class ExpressionBuilder extends RuleModellerWidget
 
     private Widget createStartPointWidget() {
         ListBox startPoint = new ListBox();
-        panel.add( startPoint );
 
         startPoint.addItem( GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
                             "" );
@@ -226,19 +234,14 @@ public class ExpressionBuilder extends RuleModellerWidget
     }
 
     private void onStartPointChangeUpdateWidget() {
-        final Widget w = getWidgetForCurrentType();
-        if ( !expression.isEmpty() ) {
-            panel.add( createWidgetForExpression() );
-        }
-        if ( w != null ) {
-            panel.add( w );
-        }
+        initializeWidgets();
+
         fireExpressionChangeEvent();
         fireExpressionTypeChangeEvent();
     }
 
     private Widget getWidgetForCurrentType() {
-        if ( expression.isEmpty() ) {
+        if ( isExpressionEmpty() ) {
             return createStartPointWidget();
         }
 
@@ -255,8 +258,10 @@ public class ExpressionBuilder extends RuleModellerWidget
         final ListBox listBox = new ListBox();
         listBox.addItem( GuidedRuleEditorResources.CONSTANTS.ChooseDotDotDot(),
                          "" );
-        listBox.addItem( "<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
-                         DELETE_VALUE );
+        if ( includeDeleteOption() ) {
+            listBox.addItem( "<==" + GuidedRuleEditorResources.CONSTANTS.DeleteItem(),
+                             DELETE_VALUE );
+        }
         listBox.addItem( "-- Text --",
                          TEXT_VALUE );
 
@@ -273,6 +278,17 @@ public class ExpressionBuilder extends RuleModellerWidget
                                       } );
 
         return listBox;
+    }
+
+    private boolean includeDeleteOption() {
+        if ( expression.getParts().size() == 0 ) {
+            return false;
+        } else if ( expression.getParts().size() == 1 ) {
+            if ( expression.getParts().get( 0 ) instanceof ExpressionUnboundFact ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void onChangeSelection( String value ) {
@@ -324,15 +340,8 @@ public class ExpressionBuilder extends RuleModellerWidget
     }
 
     private void onChangeSelectionUpdateExpressionWidget( final String oldType ) {
-        Widget w = getWidgetForCurrentType();
+        initializeWidgets();
 
-        panel.clear();
-        if ( !expression.isEmpty() ) {
-            panel.add( createWidgetForExpression() );
-        }
-        if ( w != null ) {
-            panel.add( w );
-        }
         fireExpressionChangeEvent();
         fireExpressionTypeChangeEvent( oldType );
     }
@@ -481,6 +490,9 @@ public class ExpressionBuilder extends RuleModellerWidget
         popup.setWidth( 500 + "px" );
         HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
+        if ( expression.isBound() ) {
+            varName.setText( expression.getBinding() );
+        }
         Button ok = new Button( HumanReadableConstants.INSTANCE.Set() );
         vn.add( new Label( GuidedRuleEditorResources.CONSTANTS.BindTheExpressionToAVariable() ) );
         vn.add( varName );
