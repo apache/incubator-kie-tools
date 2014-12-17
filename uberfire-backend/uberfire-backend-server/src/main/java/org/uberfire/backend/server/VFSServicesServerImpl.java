@@ -111,6 +111,11 @@ public class VFSServicesServerImpl implements VFSService {
             attributes.put( "lastModifiedTime", new Date( ( (FileTime) _lastModifiedTime ).toMillis() ) );
         }
 
+        final Object _lastAccessTime = attributes.get( "lastAccessTime" );
+        if ( _lastAccessTime != null ) {
+            attributes.put( "lastAccessTime", new Date( ( (FileTime) _lastAccessTime ).toMillis() ) );
+        }
+
         final Object _creationTime = attributes.get( "creationTime" );
         if ( _creationTime != null ) {
             attributes.put( "creationTime", new Date( ( (FileTime) _creationTime ).toMillis() ) );
