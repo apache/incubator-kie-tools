@@ -18,7 +18,12 @@ public class Properties extends HashMap<String, Object> {
     }
 
     public Properties( final Map<String, Object> original ) {
-        putAll( original );
+        for ( Map.Entry<String, Object> e : original.entrySet() ) {
+            if ( e.getValue() != null ) {
+                put( e.getKey(),
+                     e.getValue() );
+            }
+        }
     }
 
     public Object put( final String key,

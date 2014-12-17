@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -54,6 +56,24 @@ public class PropertiesTest {
         loadProperties.load( in );
 
         assertEquals( 0, loadProperties.size() );
+    }
+
+    @Test
+    public void testNullValues() throws IOException {
+        final Map<String, Object> original = new HashMap<String, Object>();
+        original.put( "key1",
+                      "value1" );
+        original.put( "key2",
+                      null );
+
+        final Properties properties = new Properties( original );
+
+        assertEquals( 1,
+                      properties.size() );
+        assertTrue( properties.containsKey( "key1" ) );
+        assertEquals( "value1",
+                      properties.get( "key1" ) );
+        assertFalse( properties.containsKey( "key2" ) );
     }
 
 }

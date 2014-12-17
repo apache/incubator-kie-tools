@@ -1014,7 +1014,7 @@ public final class JGitUtil {
 
             @Override
             public FileTime lastAccessTime() {
-                return null;
+                return lastModifiedTime();
             }
 
             @Override
@@ -1098,7 +1098,7 @@ public final class JGitUtil {
 
             @Override
             public FileTime lastAccessTime() {
-                return null;
+                return lastModifiedTime();
             }
 
             @Override
