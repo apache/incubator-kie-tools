@@ -53,11 +53,6 @@ public class PlainTextAssetWithPackagePropertyImporter implements AssetImporter<
         ioService.write( nioPath,
                          sourceWithImport,
                          ( Map ) null,    // cast is for disambiguation
-// todo               migrateMetaData(jcrModule, asset),
-// todo               new CommentedOption( asset.getLastContributor(),
-//                        null,
-//                        asset.getCheckinComment(),
-//                        asset.getLastModified().getTime() ) );
                          new CommentedOption( "" )
         );
     }
