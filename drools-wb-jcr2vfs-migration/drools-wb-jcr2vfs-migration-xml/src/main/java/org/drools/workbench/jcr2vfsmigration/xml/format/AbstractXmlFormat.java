@@ -87,7 +87,7 @@ public abstract class AbstractXmlFormat implements XmlFormat<XmlAsset> {
         NamedNodeMap assetAttribs = assetNode.getAttributes();
 
         Node commentNode = assetNode.getFirstChild();
-        String checkinComment = ExportXmlUtils.parseCdataSection( commentNode.getFirstChild() ); // Need the CData node
+        String checkinComment = ExportXmlUtils.parseCdataSection( commentNode ); // Need the CData parent-node
 
         return new XmlGenericAttributes( assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue(),
                                           assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue(),

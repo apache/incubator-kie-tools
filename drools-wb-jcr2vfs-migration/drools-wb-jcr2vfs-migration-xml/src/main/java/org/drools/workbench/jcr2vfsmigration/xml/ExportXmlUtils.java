@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -29,9 +30,8 @@ public class ExportXmlUtils {
     private static final String CDATA_SECTION = "#cdata-section";
 
     public static String formatCdataSection( String content ) {
-        if ( content.contains( CDATA_CLOSE ) ) throw new RuntimeException( "Illegal close of CDATA section inside " + content );
         StringBuilder sb = new StringBuilder( CDATA_OPEN );
-        sb.append( content ).append( CDATA_CLOSE );
+        sb.append( escapeContent( content ) ).append( CDATA_CLOSE );
         return sb.toString();
     }
 
@@ -50,11 +50,19 @@ public class ExportXmlUtils {
         return sb.toString();
     }
 
-    public static String parseCdataSection( Node cdataNode ) {
-        if ( cdataNode != null && CDATA_SECTION.equalsIgnoreCase( cdataNode.getNodeName() ) ) {
-            return cdataNode.getTextContent();
+    // A CData parent node can contain several CData sections, if the content contained any nested CData section(s).
+    public static String parseCdataSection( Node cdataParentNode ) {
+        if ( cdataParentNode == null ) return "";
+        StringBuilder sb = new StringBuilder();
+        NodeList cdataParentNodeChildren = cdataParentNode.getChildNodes();
+        if ( cdataParentNodeChildren != null && cdataParentNodeChildren.getLength() > 0 ) {
+            for ( int i = 0; i < cdataParentNodeChildren.getLength(); i++ ) {
+                Node cdataNode = cdataParentNodeChildren.item( i );
+                if ( CDATA_SECTION.equalsIgnoreCase( cdataNode.getNodeName() ) ) sb.append( cdataNode.getTextContent() );
+                else System.out.println( "WARNING: only expected CData sections, ignoring: " + cdataNode.getNodeName() );
+            }
         }
-        return "";
+        return sb.toString();
     }
 
     public static Map<String, String> parseMap( Node mapNode ) {
@@ -78,5 +86,12 @@ public class ExportXmlUtils {
             }
         }
         return map;
+    }
+
+    // Transforms possible nested CData sections in successive ones, by replacing the "]]>" end sequence with "]]]]><![CDATA[>",
+    // which effectively stops and restarts the internal cdata sections.
+    private static String escapeContent( String s ) {
+        if ( StringUtils.isBlank( s ) ) return "";
+        return s.replaceAll( "]]>", "]]]]><![CDATA[>" );
     }
 }

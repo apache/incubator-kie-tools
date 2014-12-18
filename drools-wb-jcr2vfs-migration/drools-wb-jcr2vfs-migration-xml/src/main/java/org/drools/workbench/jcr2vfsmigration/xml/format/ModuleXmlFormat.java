@@ -150,9 +150,9 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     }
 
     private String parseCheckinComment( Node checkinCommentNode ) {
-        NodeList checkinCommentNodeChildren = checkinCommentNode.getChildNodes();
-        if ( checkinCommentNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_CHECKIN_COMMENT );
-        return ExportXmlUtils.parseCdataSection( checkinCommentNodeChildren.item( 0 ) );
+        if ( !MODULE_CHECKIN_COMMENT.equalsIgnoreCase( checkinCommentNode.getNodeName() ) )
+            throw new IllegalArgumentException( "Wrong xml format: " + MODULE_CHECKIN_COMMENT );
+        return ExportXmlUtils.parseCdataSection( checkinCommentNode ); // Need the CData parent-node
     }
 
     private String formatCatRules( Module module ) {
@@ -184,9 +184,9 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     }
 
     private String parsePackageHeaderInfo( Node headerInfoNode ) {
-        NodeList headerNodeChildren = headerInfoNode.getChildNodes();
-        if ( headerNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_PACKAGEHEADER );
-        return ExportXmlUtils.parseCdataSection( headerNodeChildren.item( 0 ) );
+        if ( !MODULE_PACKAGEHEADER.equalsIgnoreCase( headerInfoNode.getNodeName() ) )
+            throw new IllegalArgumentException( "Wrong xml format: " + MODULE_PACKAGEHEADER );
+        return ExportXmlUtils.parseCdataSection( headerInfoNode ); // Need the CData parent-node
     }
 
     private String formatGlobals( String globals ) {
@@ -200,8 +200,8 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     }
 
     private String parseGlobals( Node globalsNode ) {
-        NodeList globalsNodeChildren = globalsNode.getChildNodes();
-        if ( globalsNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_GLOBALS );
-        return ExportXmlUtils.parseCdataSection( globalsNodeChildren.item( 0 ) );
+        if ( !MODULE_GLOBALS.equalsIgnoreCase( globalsNode.getNodeName() ) )
+            throw new IllegalArgumentException( "Wrong xml format: " + MODULE_GLOBALS );
+        return ExportXmlUtils.parseCdataSection( globalsNode ); // Need the CData parent-node
     }
 }
