@@ -35,7 +35,7 @@
   </ui:style>
 
   <g:HTMLPanel>
-    <kie:BaseModal ui:field="popup" title=" Edit my infos" backdrop="STATIC" keyboard="true" animation="true">
+    <kie:BaseModal ui:field="popup" title=" Edit user profile" backdrop="STATIC" keyboard="true" animation="true">
       <b:Well>
         <b:Fieldset>
           <b:ControlGroup>
