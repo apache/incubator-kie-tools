@@ -18,6 +18,7 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -45,9 +46,10 @@ public class DataModelAssetFormat extends XmlAssetFormat {
 
         for ( Iterator<DataModelAsset.DataModelObject> objectIt = dataModelAsset.modelObjects(); objectIt.hasNext(); ) {
             DataModelAsset.DataModelObject obj = objectIt.next();
+            String objSuperType = StringUtils.isNotBlank( obj.getSuperType() ) ? obj.getSuperType() : "";
             sb.append( LT ).append( MODEL_OBJ )
                 .append( " " ).append( MODEL_OBJ_NAME ).append( "=\"" ).append( obj.getName() ).append( "\"" )
-                .append( " " ).append( MODEL_OBJ_SUPERTYPE ).append( "=\"" ).append( obj.getSuperType() ).append( "\"" )
+                .append( " " ).append( MODEL_OBJ_SUPERTYPE ).append( "=\"" ).append( objSuperType ).append( "\"" )
                 .append( GT );
 
             for ( Iterator<DataModelAsset.DataObjectProperty> propIt = obj.properties(); propIt.hasNext(); ) {
