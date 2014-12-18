@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -58,7 +59,7 @@ public class BuildServiceImpl
     private Instance<PostBuildHandler> handlers;
 
     @Inject
-    protected User identity;
+    protected Instance<User> identity;
 
     public BuildServiceImpl() {
         //Empty constructor for Weld
@@ -82,7 +83,7 @@ public class BuildServiceImpl
         try {
             final BuildResults results = doBuild( project );
             StringBuffer message = new StringBuffer();
-            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ identity.getIdentifier()+ ") completed.\n");
+            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ getIdentifier() + ") completed.\n");
             message.append(" Build: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
 
             BuildMessage infoMsg = new BuildMessage();
@@ -114,7 +115,7 @@ public class BuildServiceImpl
             //Build
             final BuildResults results = doBuild( project );
             StringBuffer message = new StringBuffer();
-            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ identity.getIdentifier()+ ") completed.\n");
+            message.append("Build of project '" + project.getProjectName() +"' (requested by "+ getIdentifier() + ") completed.\n");
             message.append(" Build: " + (results.getErrorMessages().isEmpty()?"SUCCESSFUL":"FAILURE"));
 
             //Deploy, if no errors
@@ -271,6 +272,17 @@ public class BuildServiceImpl
             logger.error( e.getMessage(),
                           e );
             throw ExceptionUtilities.handleException( e );
+        }
+    }
+
+    protected String getIdentifier() {
+        if ( identity.isUnsatisfied() ) {
+            return "system";
+        }
+        try {
+            return identity.get().getIdentifier();
+        } catch ( ContextNotActiveException e ) {
+            return "system";
         }
     }
 
