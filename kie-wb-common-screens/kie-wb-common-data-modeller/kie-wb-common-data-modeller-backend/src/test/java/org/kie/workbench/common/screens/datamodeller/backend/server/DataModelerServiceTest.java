@@ -27,53 +27,16 @@ import static org.junit.Assert.*;
 /**
  * Tests for DataModelService
  */
-public class DataModelerServiceTest {
-
-    private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
-    private BeanManager beanManager;
-    private Paths paths;
-
-    @Before
-    public void setUp() throws Exception {
-        //Bootstrap WELD container
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
-        //Instantiate Paths used in tests for Path conversion
-        final Bean pathsBean = (Bean) beanManager.getBeans( Paths.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( pathsBean );
-        paths = (Paths) beanManager.getReference( pathsBean,
-                                                  Paths.class,
-                                                  cc );
-
-        //Ensure URLs use the default:// scheme
-        fs.forceAsDefault();
-    }
+public class DataModelerServiceTest extends DataModelerServiceBaseTest {
 
     @Test
     public void testDataModelerService() throws Exception {
-
-        //Create DataModelerService bean
-        final Bean dataModelServiceBean = (Bean) beanManager.getBeans( DataModelerService.class ).iterator().next();
-        final CreationalContext cc = beanManager.createCreationalContext( dataModelServiceBean );
-        final DataModelerService dataModelService = (DataModelerService) beanManager.getReference( dataModelServiceBean,
-                                                                                                   DataModelerService.class,
-                                                                                                   cc );
-
-        //Create ProjectServiceBean
-        final Bean projectServiceBean = (Bean) beanManager.getBeans( KieProjectService.class ).iterator().next();
-        final CreationalContext pscc = beanManager.createCreationalContext( projectServiceBean );
-        final KieProjectService projectService = (KieProjectService) beanManager.getReference( projectServiceBean,
-                                                                                               KieProjectService.class,
-                                                                                               pscc );
 
         final URL packageUrl = this.getClass().getResource( "/DataModelerTest1" );
         final org.uberfire.java.nio.file.Path nioPackagePath = fs.getPath( packageUrl.toURI() );
         final Path packagePath = paths.convert( nioPackagePath );
 
         KieProject project = projectService.resolveProject( packagePath );
-
-        systemAnnotations = dataModelService.getAnnotationDefinitions();
 
         DataModelTO dataModelOriginalTO = createModel();
         DataModelTO dataModelTO = dataModelService.loadModel( project );
@@ -92,8 +55,6 @@ public class DataModelerServiceTest {
         }
 
     }
-
-    Map<String, AnnotationDefinitionTO> systemAnnotations = null;
 
     private DataModelTO createModel() {
         DataModelTO dataModelTO = new DataModelTO();
@@ -174,40 +135,6 @@ public class DataModelerServiceTest {
 
         return dataModelTO;
 
-    }
-
-    private DataObjectTO createDataObject( String name,
-                                           String packageName,
-                                           String superClassName ) {
-        return new DataObjectTO( name, packageName, superClassName );
-    }
-
-    private ObjectPropertyTO addProperty( DataObjectTO dataObjectTO,
-                                          String name,
-                                          String className,
-                                          boolean baseType,
-                                          boolean multiple,
-                                          String bag ) {
-        //todo set modifiers.
-        ObjectPropertyTO propertyTO = new ObjectPropertyTO( name, className, multiple, baseType, bag, -1 );
-        return propertyTO;
-    }
-
-    private AnnotationTO createAnnotation( Map<String, AnnotationDefinitionTO> systemAnnotations,
-                                           String name,
-                                           String className,
-                                           String memberName,
-                                           String value ) {
-        AnnotationDefinitionTO annotationDefinitionTO = systemAnnotations.get( className );
-
-        AnnotationTO annotationTO = new AnnotationTO( annotationDefinitionTO );
-        annotationTO.setName( name );
-        annotationTO.setClassName( className );
-        if ( memberName != null ) {
-            annotationTO.setValue( memberName, value );
-        }
-
-        return annotationTO;
     }
 
 }

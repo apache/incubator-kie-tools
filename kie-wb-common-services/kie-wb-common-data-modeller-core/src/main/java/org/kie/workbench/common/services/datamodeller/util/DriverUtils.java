@@ -7,17 +7,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.core.base.ClassTypeResolver;
-import org.jboss.forge.roaster.model.Abstractable;
-import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.Member;
 import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.VisibilityScoped;
-import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.Import;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.JavaSource;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.parser.descr.ClassOrInterfaceTypeDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
@@ -82,6 +77,16 @@ public class DriverUtils {
         packageName = javaClassSource.getPackage();
         //add current package too, if not added, the class type resolver don't resolve current package classes.
         if (packageName != null && !"".equals( packageName )) classImports.add( packageName + ".*" );
+
+        //add current file inner types as import clauses to help the ClassTypeResolver to find variables of inner types
+        //It was detected that current ClassTypeResolver don't resolve inner classes well.
+        //workaround for BZ https://bugzilla.redhat.com/show_bug.cgi?id=1172711
+        List<JavaSource<?>> innerTypes = javaClassSource.getNestedTypes();
+        if ( innerTypes != null ) {
+            for (JavaSource<?> type : innerTypes ) {
+                classImports.add( packageName + "." + javaClassSource.getName() + "." + type.getName() );
+            }
+        }
 
         return new ClassTypeResolver( classImports, classLoader );
     }
@@ -232,6 +237,11 @@ public class DriverUtils {
         if ( type.isParameterized() && type.getTypeArguments().size() > 1 ) return false;
 
         try {
+
+            Class<?> clazz = classTypeResolver.resolveType( type.getName() );
+
+            if ( clazz.isEnum() || clazz.isAnonymousClass() || clazz.isLocalClass() || clazz.isMemberClass() ) return false;
+
             if (type.isParameterized()) {
                 Class<?> bag = classTypeResolver.resolveType( type.getName() );
                 if (!Collection.class.isAssignableFrom( bag )) return false;
