@@ -19,7 +19,6 @@ package org.uberfire.ext.plugin.client.editor;
 import java.util.ArrayList;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -27,37 +26,29 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
-import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
-import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "Dynamic Menu Editor", supportedTypes = { DynamicMenuResourceType.class }, priority = Integer.MAX_VALUE)
 public class DynamicMenuEditorPresenter
-        extends BaseEditor {
+        extends RuntimePluginBaseEditor {
 
     @Inject
     private DynamicMenuResourceType resourceType;
@@ -72,18 +63,17 @@ public class DynamicMenuEditorPresenter
 
     private DynamicMenu menuItem;
 
-    private Plugin plugin;
-
     @Inject
     public DynamicMenuEditorPresenter( final DynamicMenuEditorView baseView ) {
         super( baseView );
     }
 
-    @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
-        this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.DYNAMIC_MENU, path );
+    protected ClientResourceType getResourceType() {
+        return resourceType;
+    }
+
+    protected PluginType getPluginType() {
+        return PluginType.DYNAMIC_MENU;
     }
 
     @WorkbenchPartTitleDecoration
@@ -93,7 +83,7 @@ public class DynamicMenuEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitleText() {
-        return "Dynamic Menu Editor [" + plugin.getName() + "]";
+        return "Dynamic Menu Editor [" + this.plugin.getName() + "]";
     }
 
     @WorkbenchMenu
@@ -101,13 +91,6 @@ public class DynamicMenuEditorPresenter
         return menus;
     }
 
-    protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
-        if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
-                pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
-            plugin = new Plugin( pluginRenamed.getPlugin().getName(), PluginType.DYNAMIC_MENU, pluginRenamed.getPlugin().getPath() );
-            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
-        }
-    }
 
     public void addMenuItem( final DynamicMenuItem menuItem ) {
         DynamicMenuItem existingItem = null;
@@ -120,7 +103,7 @@ public class DynamicMenuEditorPresenter
         if ( existingItem == null ) {
             dataProvider.getList().add( menuItem );
         } else {
-            ( (DynamicMenuEditorView) baseView ).setSelected( menuItem );
+            ( ( DynamicMenuEditorView ) baseView ).setSelected( menuItem );
             dataProvider.refresh();
         }
 
@@ -158,7 +141,7 @@ public class DynamicMenuEditorPresenter
 
     @WorkbenchPartView
     public UberView<DynamicMenuEditorPresenter> getWidget() {
-        return (UberView<DynamicMenuEditorPresenter>) super.baseView;
+        return ( UberView<DynamicMenuEditorPresenter> ) super.baseView;
     }
 
     @OnMayClose

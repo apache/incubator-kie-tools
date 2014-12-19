@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.editor.client.Editor;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 
@@ -43,7 +42,7 @@ import static org.uberfire.ext.plugin.client.code.CodeList.*;
 public class EditorPlugInEditorView
         extends BaseEditorViewImpl
         implements UberView<EditorPlugInEditorPresenter>,
-        Editor<RuntimePlugin>, RequiresResize {
+        RequiresResize {
 
     interface ViewBinder
             extends
@@ -79,7 +78,7 @@ public class EditorPlugInEditorView
         htmlPanel.add( presenter.editor );
     }
 
-    private void setFramework( final Collection<Framework> frameworks ) {
+    protected void setFramework( final Collection<Framework> frameworks ) {
         if ( frameworks != null && !frameworks.isEmpty() ) {
             final Framework framework = frameworks.iterator().next();
             for ( int i = 0; i < this.framework.getItemCount(); i++ ) {
@@ -92,7 +91,7 @@ public class EditorPlugInEditorView
         framework.setSelectedIndex( 0 );
     }
 
-    private Collection<Framework> getFrameworks() {
+    protected Collection<Framework> getFrameworks() {
         if ( framework.getValue().equalsIgnoreCase( "(Framework)" ) ) {
             return Collections.emptyList();
         }

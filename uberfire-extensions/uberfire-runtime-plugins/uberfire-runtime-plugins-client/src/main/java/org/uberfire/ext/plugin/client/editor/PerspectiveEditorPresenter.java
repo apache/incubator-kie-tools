@@ -19,36 +19,29 @@ package org.uberfire.ext.plugin.client.editor;
 import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.PerspectivePluginResourceType;
-import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.*;
 import org.uberfire.ext.plugin.service.PluginServices;
 
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "Perspective PlugIn Editor", supportedTypes = { PerspectivePluginResourceType.class }, priority = Integer.MAX_VALUE)
 public class PerspectiveEditorPresenter
-        extends BaseEditor {
+        extends RuntimePluginBaseEditor {
 
     @Inject
     private PerspectivePluginResourceType resourceType;
@@ -59,20 +52,17 @@ public class PerspectiveEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Plugin plugin;
-
-
     @Inject
     public PerspectiveEditorPresenter( final PerspectiveEditorView baseView ) {
         super( baseView );
     }
 
-    @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
-        this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.PERSPECTIVE, path );
-        this.place = place;
+    protected ClientResourceType getResourceType() {
+        return resourceType;
+    }
+
+    protected PluginType getPluginType() {
+        return PluginType.PERSPECTIVE;
     }
 
     @WorkbenchPartTitleDecoration
@@ -82,20 +72,12 @@ public class PerspectiveEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitleText() {
-        return "Perspective PlugIn Editor [" + plugin.getName() + "]";
+        return "Perspective PlugIn Editor [" + this.plugin.getName() + "]";
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
-    }
-
-    protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
-        if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
-                pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
-            this.plugin = new Plugin( pluginRenamed.getPlugin().getName(), PluginType.PERSPECTIVE, pluginRenamed.getPlugin().getPath() );
-            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, "Perspective PlugIn Editor [" + pluginRenamed.getPlugin().getName() + "]", getTitle() ) );
-        }
     }
 
     @Override
@@ -140,6 +122,5 @@ public class PerspectiveEditorPresenter
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
         return pluginServices;
     }
-
 
 }

@@ -23,7 +23,6 @@ import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.NavPills;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.editor.client.Editor;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -49,7 +48,7 @@ import static org.uberfire.ext.plugin.client.code.CodeList.*;
 public class PerspectiveEditorView
         extends BaseEditorViewImpl
         implements UberView<PerspectiveEditorPresenter>,
-        Editor<RuntimePlugin>, RequiresResize {
+        RequiresResize {
 
     interface ViewBinder
             extends
@@ -94,8 +93,6 @@ public class PerspectiveEditorView
 
     protected PluginContent pluginContent;
 
-    private PerspectiveEditorPresenter presenter;
-
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -103,8 +100,6 @@ public class PerspectiveEditorView
 
     @Override
     public void init( final PerspectiveEditorPresenter presenter ) {
-        this.presenter = presenter;
-
         htmlPanel.getElement().getStyle().setBackgroundColor( "#F6F6F6" );
 
         setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_SHUTDOWN, DIVIDER, PANEL_TYPE );

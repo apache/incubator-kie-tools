@@ -19,38 +19,30 @@ package org.uberfire.ext.plugin.client.editor;
 import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.ScreenPluginResourceType;
 import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
-import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.*;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "Screen PlugIn Editor", supportedTypes = { ScreenPluginResourceType.class }, priority = Integer.MAX_VALUE)
 public class ScreenEditorPresenter
-        extends BaseEditor {
+        extends RuntimePluginBaseEditor {
 
     @Inject
     private ScreenPluginResourceType resourceType;
@@ -67,18 +59,18 @@ public class ScreenEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
-    private Plugin plugin;
 
     @Inject
     public ScreenEditorPresenter( final ScreenEditorView baseView ) {
         super( baseView );
     }
 
-    @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
-        this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.SCREEN, path );
+    protected ClientResourceType getResourceType(){
+        return resourceType;
+    }
+
+    protected PluginType getPluginType(){
+        return PluginType.SCREEN;
     }
 
     @WorkbenchPartTitleDecoration
@@ -88,7 +80,7 @@ public class ScreenEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitleText() {
-        return "Screen PlugIn Editor [" + plugin.getName() + "]";
+        return "Screen PlugIn Editor [" + this.plugin.getName() + "]";
     }
 
     @WorkbenchMenu
@@ -96,13 +88,6 @@ public class ScreenEditorPresenter
         return menus;
     }
 
-    protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
-        if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
-                pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
-            this.plugin = new Plugin( pluginRenamed.getPlugin().getName(), PluginType.SCREEN, pluginRenamed.getPlugin().getPath() );
-            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, "Screen PlugIn Editor [" + pluginRenamed.getPlugin().getName() + "]", getTitle() ) );
-        }
-    }
 
     @Override
     protected void loadContent() {

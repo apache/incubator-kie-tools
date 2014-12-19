@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.editor.client.Editor;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -40,7 +39,7 @@ import static org.uberfire.ext.plugin.client.code.CodeList.*;
 public class SplashEditorView
         extends BaseEditorViewImpl
         implements UberView<SplashEditorPresenter>,
-        Editor<RuntimePlugin>, RequiresResize {
+        RequiresResize {
 
     interface ViewBinder
             extends
@@ -73,7 +72,6 @@ public class SplashEditorView
         htmlPanel.add( presenter.editor );
     }
 
-
     protected void setFramework( final Collection<Framework> frameworks ) {
         if ( frameworks != null && !frameworks.isEmpty() ) {
             final Framework framework = frameworks.iterator().next();
@@ -87,7 +85,6 @@ public class SplashEditorView
         this.framework.setSelectedIndex( 0 );
     }
 
-
     protected Collection<Framework> getFrameworks() {
         if ( framework.getValue().equalsIgnoreCase( "(Framework)" ) ) {
             return Collections.emptyList();
@@ -96,7 +93,6 @@ public class SplashEditorView
             add( Framework.valueOf( framework.getValue().toUpperCase() ) );
         }};
     }
-
 
     @Override
     public void onResize() {

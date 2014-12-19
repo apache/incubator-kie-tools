@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.editor.client.Editor;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -47,7 +46,7 @@ import static org.uberfire.ext.plugin.client.code.CodeList.*;
 public class ScreenEditorView
         extends BaseEditorViewImpl
         implements UberView<ScreenEditorPresenter>,
-        Editor<RuntimePlugin>, RequiresResize {
+        RequiresResize {
 
     interface ViewBinder
             extends

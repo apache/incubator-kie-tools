@@ -19,38 +19,31 @@ package org.uberfire.ext.plugin.client.editor;
 import com.google.gwt.user.client.ui.*;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
 import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
-import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.*;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 
 @Dependent
 @WorkbenchEditor(identifier = "Splash PlugIn Editor", supportedTypes = { SplashPluginResourceType.class }, priority = Integer.MAX_VALUE)
 public class SplashEditorPresenter
-        extends BaseEditor {
+        extends RuntimePluginBaseEditor {
 
     @Inject
     private SplashPluginResourceType resourceType;
@@ -67,20 +60,18 @@ public class SplashEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
-    private PlaceRequest place;
-
-    private Plugin plugin;
 
     @Inject
     public SplashEditorPresenter( final SplashEditorView baseView ) {
         super( baseView );
     }
 
-    @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
-        this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.SPLASH, path );
+    protected ClientResourceType getResourceType(){
+        return resourceType;
+    }
+
+    protected PluginType getPluginType(){
+        return PluginType.SPLASH;
     }
 
     @WorkbenchPartTitleDecoration
@@ -90,7 +81,7 @@ public class SplashEditorPresenter
 
     @WorkbenchPartTitle
     public String getTitleText() {
-        return "SplashScreen PlugIn Editor [" + plugin.getName() + "]";
+        return "SplashScreen PlugIn Editor [" + this.plugin.getName() + "]";
     }
 
 
@@ -99,13 +90,6 @@ public class SplashEditorPresenter
         return menus;
     }
 
-    protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
-        if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
-                pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
-            this.plugin = new Plugin( pluginRenamed.getPlugin().getName(), PluginType.SPLASH, pluginRenamed.getPlugin().getPath() );
-            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, "SplashScreen PlugIn Editor [" + pluginRenamed.getPlugin().getName() + "]", getTitle() ) );
-        }
-    }
 
     @Override
     protected void loadContent() {
