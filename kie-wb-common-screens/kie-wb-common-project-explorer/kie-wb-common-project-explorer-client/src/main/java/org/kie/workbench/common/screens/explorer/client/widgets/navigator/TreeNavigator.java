@@ -98,18 +98,24 @@ public class TreeNavigator extends Composite implements Navigator {
         if ( item == null ) {
             if ( content.getSegments().isEmpty() ) {
                 final FolderItem rootItem = content.getItem();
-                item = new TreeItem( TreeItem.Type.FOLDER, rootItem.getFileName().replaceAll( " ", "\u00a0" ) );
+                item = new TreeItem( TreeItem.Type.FOLDER,
+                                     rootItem.getFileName().replaceAll( " ",
+                                                                        "\u00a0" ) );
                 tree.addItem( item );
                 item.setUserObject( rootItem );
             } else {
-                final TreeItem parent = loadRoots( content.getSegments(), siblings );
-                item = parent.addItem( TreeItem.Type.FOLDER, content.getItem().getFileName().replaceAll( " ", "\u00a0" ) );
+                final TreeItem parent = loadRoots( content.getSegments(),
+                                                   siblings );
+                item = loadSiblings( content.getItem(),
+                                     new TreeNavigatorItemImpl( parent ),
+                                     siblings );
                 item.setUserObject( content.getItem() );
-                loadSiblings( content.getItem(), new TreeNavigatorItemImpl( parent ), siblings );
             }
         }
 
-        item.setState( TreeItem.State.OPEN, true, false );
+        item.setState( TreeItem.State.OPEN,
+                       true,
+                       false );
         tree.setSelectedItem( item );
 
         loadContent( new TreeNavigatorItemImpl( item ), content );
@@ -136,7 +142,9 @@ public class TreeNavigator extends Composite implements Navigator {
         for ( final FolderItem segment : segments ) {
             TreeItem item;
             if ( tree.isEmpty() ) {
-                item = new TreeItem( TreeItem.Type.FOLDER, segment.getFileName().replaceAll( " ", "\u00a0" ) );
+                item = new TreeItem( TreeItem.Type.FOLDER,
+                                     segment.getFileName().replaceAll( " ",
+                                                                       "\u00a0" ) );
                 item.setUserObject( segment );
                 tree.addItem( item );
                 parent = item;
@@ -146,9 +154,10 @@ public class TreeNavigator extends Composite implements Navigator {
                 } else {
                     item = findItemInTree( segment );
                     if ( item == null ) {
-                        item = parent.addItem( TreeItem.Type.FOLDER, segment.getFileName().replaceAll( " ", "\u00a0" ) );
+                        item = loadSiblings( segment,
+                                             new TreeNavigatorItemImpl( parent ),
+                                             siblings );
                         item.setUserObject( segment );
-                        loadSiblings( segment, new TreeNavigatorItemImpl( parent ), siblings );
                     } else if ( needsLoading( item ) ) {
                         item.getChild( 0 ).getElement().getStyle().setDisplay( Style.Display.NONE );
                     }
@@ -159,13 +168,14 @@ public class TreeNavigator extends Composite implements Navigator {
         return parent;
     }
 
-    private void loadSiblings( final FolderItem item,
-                               final TreeNavigatorItemImpl parent,
-                               final Map<FolderItem, List<FolderItem>> siblings ) {
+    private TreeItem loadSiblings( final FolderItem item,
+                                   final TreeNavigatorItemImpl parent,
+                                   final Map<FolderItem, List<FolderItem>> siblings ) {
         final List<FolderItem> mySiblings = siblings.get( item );
         if ( mySiblings != null && !mySiblings.isEmpty() ) {
             for ( final FolderItem sibling : new ArrayList<FolderItem>( mySiblings ) ) {
-                final TreeItem existingSibling = findItemInChildren( parent.parent, sibling );
+                final TreeItem existingSibling = findItemInChildren( parent.parent,
+                                                                     sibling );
                 if ( existingSibling == null ) {
                     if ( sibling.getType().equals( FolderItemType.FOLDER ) ) {
                         parent.addDirectory( sibling );
@@ -179,6 +189,8 @@ public class TreeNavigator extends Composite implements Navigator {
                 siblings.remove( item );
             }
         }
+        return findItemInChildren( parent.parent,
+                                   item );
     }
 
     private TreeItem findItemInChildren( final TreeItem item,
