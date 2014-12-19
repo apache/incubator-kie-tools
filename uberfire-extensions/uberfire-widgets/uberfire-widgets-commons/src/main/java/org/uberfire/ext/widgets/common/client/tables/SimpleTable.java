@@ -377,7 +377,6 @@ public class SimpleTable<T>
 
             }
         } );
-        column.setDataStoreName( caption );
         return header;
     }
 
