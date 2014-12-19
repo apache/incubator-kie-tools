@@ -390,7 +390,7 @@ public class Sprite extends Shape<Sprite>
                 {
                     m_inited = true;
 
-                    if (isAutoPlay())
+                    if (attr.isAutoPlay())
                     {
                         play();
                     }

@@ -122,9 +122,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * Shapes should apply the non-Transform related attributes (such a colors, strokeWidth etc.)
      * and draw the Shape's details (such as the the actual lines and fills.)
      */
-    protected void drawWithoutTransforms(Context2D context)
+    @Override
+    protected void drawWithoutTransforms(Context2D context, double alpha)
     {
-        double alpha = getGlobalAlpha();
+        Attributes attr = getAttributes();
+
+        alpha = alpha * attr.getAlpha();
 
         if (alpha <= 0)
         {
@@ -133,8 +136,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         m_apsh = false;
 
         m_fill = false;
-
-        Attributes attr = getAttributes();
 
         if (prepare(context, attr, alpha))
         {
@@ -178,6 +179,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      */
     protected void fill(Context2D context, Attributes attr, double alpha)
     {
+        alpha = alpha * attr.getFillAlpha();
+
+        if (alpha <= 0)
+        {
+            return;
+        }
         boolean filled = attr.isDefined(Attribute.FILL);
 
         if ((filled) || (attr.isFillShapeForSelection()))
@@ -206,7 +213,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
             doApplyShadow(context, attr);
 
-            context.setGlobalAlpha(alpha * getFillAlpha());
+            context.setGlobalAlpha(alpha);
 
             String fill = attr.getFillColor();
 
@@ -261,8 +268,14 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param attr
      * @return boolean
      */
-    protected boolean setStrokeParams(Context2D context, Attributes attr, double alpha)
+    protected boolean setStrokeParams(final Context2D context, final Attributes attr, double alpha)
     {
+        alpha = alpha * attr.getStrokeAlpha();
+
+        if (alpha <= 0)
+        {
+            return false;
+        }
         double width = attr.getStrokeWidth();
 
         String color = attr.getStrokeColor();
@@ -296,12 +309,16 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         }
         else
         {
-            context.setGlobalAlpha(alpha * getStrokeAlpha());
+            context.setGlobalAlpha(alpha);
         }
         context.setStrokeColor(color);
 
         context.setStrokeWidth(width);
 
+        if (false == attr.hasExtraStrokeAttributes())
+        {
+            return true;
+        }
         boolean isdashed = false;
 
         if (attr.isDefined(Attribute.DASH_ARRAY))
@@ -478,30 +495,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     public ShapeType getShapeType()
     {
         return m_type;
-    }
-
-    /**
-     * Returns global alpha value.
-     * 
-     * @return double
-     */
-    public final double getGlobalAlpha()
-    {
-        double alpha = 1;
-
-        Node<?> node = this;
-
-        while (null != node)
-        {
-            Attributes attr = node.getAttributes();
-
-            if (attr.isDefined(Attribute.ALPHA))
-            {
-                alpha = alpha * attr.getAlpha();
-            }
-            node = node.getParent();
-        }
-        return alpha;
     }
 
     @Override

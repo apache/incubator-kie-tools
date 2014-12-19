@@ -395,7 +395,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * to the current context, draws the node (and it's children, if any)
      * and restores the context.
      */
-    public void drawWithTransforms(Context2D context)
+    public void drawWithTransforms(Context2D context, double alpha)
     {
         if (context.isDrag() || isVisible())
         {
@@ -403,9 +403,11 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
             Transform xfrm = getNodeTransform();
 
-            context.transform(xfrm);
-
-            drawWithoutTransforms(context);
+            if (false == xfrm.isIdentity())
+            {
+                context.transform(xfrm);
+            }
+            drawWithoutTransforms(context, alpha);
 
             context.restore();
         }
@@ -422,7 +424,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @param context
      */
-    protected void drawWithoutTransforms(Context2D context)
+    protected void drawWithoutTransforms(Context2D context, double alpha)
     {
     }
 
@@ -470,8 +472,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     {
         Transform xfrm = new Transform();
 
-        Attributes attr = getAttributes();
+        final Attributes attr = getAttributes();
 
+        if (false == attr.hasTransformAttributes())
+        {
+            return xfrm;
+        }
         double x = attr.getX();
 
         double y = attr.getY();
@@ -488,7 +494,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
         else
         {
-            // Otherwise use ROTATION, SCALE and OFFSET
+            // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
 
             double r = attr.getRotation();
 

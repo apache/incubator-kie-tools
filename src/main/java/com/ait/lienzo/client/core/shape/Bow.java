@@ -82,19 +82,19 @@ public class Bow extends Shape<Bow>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double end = getEndAngle();
+        final double end = attr.getEndAngle();
 
-        final double beg = getStartAngle();
+        final double beg = attr.getStartAngle();
 
         if (beg == end)
         {
             return false;
         }
-        final double ord = getOuterRadius();
+        final double ord = attr.getOuterRadius();
 
-        final double ird = getInnerRadius();
+        final double ird = attr.getInnerRadius();
 
-        final boolean ccw = isCounterClockwise();
+        final boolean ccw = attr.isCounterClockwise();
 
         if ((ord > 0) && (ird > 0))
         {

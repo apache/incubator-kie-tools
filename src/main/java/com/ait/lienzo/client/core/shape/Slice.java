@@ -82,15 +82,15 @@ public class Slice extends Shape<Slice>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double beg = getStartAngle();
+        final double beg = attr.getStartAngle();
 
-        final double end = getEndAngle();
+        final double end = attr.getEndAngle();
 
         if (beg == end)
         {
             return false;
         }
-        final double r = getRadius();
+        final double r = attr.getRadius();
 
         if (r > 0)
         {
@@ -102,7 +102,7 @@ public class Slice extends Shape<Slice>
             }
             context.beginPath();
 
-            context.arc(0, 0, r, beg, end, isCounterClockwise());
+            context.arc(0, 0, r, beg, end, attr.isCounterClockwise());
 
             if (pacman)
             {

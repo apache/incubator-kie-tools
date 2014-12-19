@@ -58,13 +58,13 @@ public class Parallelogram extends Shape<Parallelogram>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double wide = getWidth();
+        final double wide = attr.getWidth();
 
-        final double high = getHeight();
+        final double high = attr.getHeight();
 
         if ((wide > 0) && (high > 0))
         {
-            final double skew = getSkew();
+            final double skew = attr.getSkew();
 
             context.beginPath();
 

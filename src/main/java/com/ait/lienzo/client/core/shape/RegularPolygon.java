@@ -96,9 +96,9 @@ public class RegularPolygon extends Shape<RegularPolygon>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final int s = getSides();
+        final int s = attr.getSides();
 
-        final double r = getRadius();
+        final double r = attr.getRadius();
 
         if ((s > 2) && (r > 0))
         {

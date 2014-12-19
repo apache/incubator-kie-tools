@@ -77,7 +77,7 @@ public class BezierCurve extends Shape<BezierCurve>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        Point2DArray points = getControlPoints();
+        Point2DArray points = attr.getControlPoints();
 
         if ((points != null) && (points.size() == 4))
         {

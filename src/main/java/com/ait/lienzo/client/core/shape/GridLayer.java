@@ -331,7 +331,7 @@ public class GridLayer extends Layer
     }
 
     @Override
-    protected void drawWithoutTransforms(Context2D context)
+    protected void drawWithoutTransforms(Context2D context, double alpha)
     {
         if (false == isVisible())
         {
@@ -474,7 +474,7 @@ public class GridLayer extends Layer
 
                         p2.setY(y);
                     }
-                    line.drawWithTransforms(context);
+                    line.drawWithTransforms(context, alpha);
                 }
                 line.setStrokeWidth(previousLineWidth); // restore stroke width
 
@@ -485,7 +485,7 @@ public class GridLayer extends Layer
             }
         }
         // Draw children (if any)
-        super.drawWithoutTransforms(context);
+        super.drawWithoutTransforms(context, alpha);
     }
 
     @Override

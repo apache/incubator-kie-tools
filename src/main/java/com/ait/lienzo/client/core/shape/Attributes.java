@@ -114,7 +114,7 @@ public class Attributes
         {
             alpha = 0;
         }
-        if (alpha > 1)
+        else if (alpha > 1)
         {
             alpha = 1;
         }
@@ -123,15 +123,15 @@ public class Attributes
 
     public final double getFillAlpha()
     {
-        if (isDefined(Attribute.FILL_ALPHA))
+        if (typeOf(Attribute.FILL_ALPHA) == NativeInternalType.NUMBER)
         {
-            double alpha = getDouble(Attribute.FILL_ALPHA.getProperty());
+            double alpha = m_jso.getDouble(Attribute.FILL_ALPHA.getProperty());
 
             if (alpha < 0)
             {
                 alpha = 0;
             }
-            if (alpha > 1)
+            else if (alpha > 1)
             {
                 alpha = 1;
             }
@@ -146,7 +146,7 @@ public class Attributes
         {
             alpha = 0;
         }
-        if (alpha > 1)
+        else if (alpha > 1)
         {
             alpha = 1;
         }
@@ -155,15 +155,15 @@ public class Attributes
 
     public final double getStrokeAlpha()
     {
-        if (isDefined(Attribute.STROKE_ALPHA))
+        if (typeOf(Attribute.STROKE_ALPHA) == NativeInternalType.NUMBER)
         {
-            double alpha = getDouble(Attribute.STROKE_ALPHA.getProperty());
+            double alpha = m_jso.getDouble(Attribute.STROKE_ALPHA.getProperty());
 
             if (alpha < 0)
             {
                 alpha = 0;
             }
-            if (alpha > 1)
+            else if (alpha > 1)
             {
                 alpha = 1;
             }
@@ -186,13 +186,7 @@ public class Attributes
 
     public final String getFillColor()
     {
-        String fill = getString(Attribute.FILL.getProperty());
-
-        if ((null != fill) && (false == (fill = fill.trim()).isEmpty()))
-        {
-            return fill;
-        }
-        return fill;
+        return getString(Attribute.FILL.getProperty());
     }
 
     public final void setFillGradient(LinearGradient gradient)
@@ -314,11 +308,7 @@ public class Attributes
 
     public final double getMiterLimit()
     {
-        if (isDefined(Attribute.MITER_LIMIT))
-        {
-            return getDouble(Attribute.MITER_LIMIT.getProperty());
-        }
-        return 10;
+        return getDouble(Attribute.MITER_LIMIT.getProperty());
     }
 
     public final void setStrokeWidth(double width)
@@ -975,15 +965,15 @@ public class Attributes
 
     public final double getAlpha()
     {
-        if (isDefined(Attribute.ALPHA))
+        if (typeOf(Attribute.ALPHA) == NativeInternalType.NUMBER)
         {
-            double alpha = getDouble(Attribute.ALPHA.getProperty());
+            double alpha = m_jso.getDouble(Attribute.ALPHA.getProperty());
 
             if (alpha < 0)
             {
                 alpha = 0;
             }
-            if (alpha > 1)
+            else if (alpha > 1)
             {
                 alpha = 1;
             }
@@ -1214,11 +1204,7 @@ public class Attributes
 
     public final boolean isLoop()
     {
-        if (isDefined(Attribute.LOOP))
-        {
-            return getBoolean(Attribute.LOOP.getProperty());
-        }
-        return false;
+        return getBoolean(Attribute.LOOP.getProperty());
     }
 
     public final void setPlaybackRate(double rate)
@@ -1250,21 +1236,21 @@ public class Attributes
 
     public final double getVolume()
     {
-        if (isDefined(Attribute.VOLUME))
+        if (typeOf(Attribute.VOLUME) == NativeInternalType.NUMBER)
         {
-            double volume = getDouble(Attribute.VOLUME.getProperty());
+            double volume = m_jso.getDouble(Attribute.VOLUME.getProperty());
 
-            if (volume > 1.0)
+            if (volume < 0)
             {
-                volume = 1.0;
+                volume = 0;
             }
-            else if (volume < 0.0)
+            else if (volume > 1)
             {
-                volume = 0.0;
+                volume = 1;
             }
             return volume;
         }
-        return 0.0;
+        return 0.5;
     }
 
     public final void setAutoPlay(boolean play)
@@ -1274,11 +1260,7 @@ public class Attributes
 
     public final boolean isAutoPlay()
     {
-        if (isDefined(Attribute.AUTO_PLAY))
-        {
-            return getBoolean(Attribute.AUTO_PLAY.getProperty());
-        }
-        return false;
+        return getBoolean(Attribute.AUTO_PLAY.getProperty());
     }
 
     public final void setShowPoster(boolean show)
@@ -1288,26 +1270,22 @@ public class Attributes
 
     public final boolean isShowPoster()
     {
-        if (isDefined(Attribute.SHOW_POSTER))
-        {
-            return getBoolean(Attribute.SHOW_POSTER.getProperty());
-        }
-        return false;
+        return getBoolean(Attribute.SHOW_POSTER.getProperty());
     }
 
     public final double getCurveFactor()
     {
-        if (isDefined(Attribute.CURVE_FACTOR))
+        if (typeOf(Attribute.CURVE_FACTOR) == NativeInternalType.NUMBER)
         {
-            double factor = getDouble(Attribute.CURVE_FACTOR.getProperty());
+            double factor = m_jso.getDouble(Attribute.CURVE_FACTOR.getProperty());
 
             if (factor <= 0)
             {
-                return 0.5;
+                factor = 0.5;
             }
-            if (factor > 1)
+            else if (factor > 1)
             {
-                return 1;
+                factor = 1;
             }
             return factor;
         }
@@ -1329,17 +1307,17 @@ public class Attributes
 
     public final double getAngleFactor()
     {
-        if (isDefined(Attribute.ANGLE_FACTOR))
+        if (typeOf(Attribute.ANGLE_FACTOR) == NativeInternalType.NUMBER)
         {
-            double factor = getDouble(Attribute.ANGLE_FACTOR.getProperty());
+            double factor = m_jso.getDouble(Attribute.ANGLE_FACTOR.getProperty());
 
             if (factor < 0)
             {
-                return 0;
+                factor = 0;
             }
-            if (factor > 1)
+            else if (factor > 1)
             {
-                return 1;
+                factor = 1;
             }
             return factor;
         }
@@ -1348,11 +1326,7 @@ public class Attributes
 
     public final boolean getLineFlatten()
     {
-        if (isDefined(Attribute.LINE_FLATTEN))
-        {
-            return getBoolean(Attribute.LINE_FLATTEN.getProperty());
-        }
-        return false;
+        return getBoolean(Attribute.LINE_FLATTEN.getProperty());
     }
 
     public final void setLineFlatten(boolean flat)
@@ -1402,6 +1376,26 @@ public class Attributes
     {
         return getDouble(Attribute.DASH_OFFSET.getProperty());
     }
+
+    public final boolean hasTransformAttributes()
+    {
+        return hasTransformAttributes(m_jso);
+    }
+
+    public final boolean hasExtraStrokeAttributes()
+    {
+        return hasExtraStrokeAttributes(m_jso);
+    }
+
+    private final native boolean hasTransformAttributes(NFastStringMapMixedJSO jso)
+    /*-{
+        return ((jso.x !== undefined) || (jso.y !== undefined) || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined) || (jso.transform !== undefined));
+    }-*/;
+
+    private final native boolean hasExtraStrokeAttributes(NFastStringMapMixedJSO jso)
+    /*-{
+        return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined) || (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
+    }-*/;
 
     public final void put(String name, String value)
     {
@@ -1695,17 +1689,7 @@ public class Attributes
 
     public final boolean isDefined(Attribute attr)
     {
-        if (null == attr)
-        {
-            return false;
-        }
-        String prop = attr.getProperty();
-
-        if (null == prop)
-        {
-            return false;
-        }
-        return m_jso.isDefined(prop);
+        return m_jso.isDefined(attr.getProperty());
     }
 
     public final void delete(String name)
@@ -1715,15 +1699,6 @@ public class Attributes
 
     public final NativeInternalType typeOf(Attribute attr)
     {
-        if (null != attr)
-        {
-            String prop = attr.getProperty();
-
-            if (null != prop)
-            {
-                return m_jso.typeOf(prop);
-            }
-        }
-        return NativeInternalType.UNDEFINED;
+        return m_jso.typeOf(attr.getProperty());
     }
 }

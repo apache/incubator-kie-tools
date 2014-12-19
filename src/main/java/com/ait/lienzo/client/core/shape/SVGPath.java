@@ -62,12 +62,6 @@ public class SVGPath extends Shape<SVGPath>
     @Override
     protected boolean prepare(final Context2D context, Attributes attr, double alpha)
     {
-        final int size = m_list.size();
-
-        if (size < 1)
-        {
-            return false;
-        }
         m_fill = context.path(m_list);
 
         return true;

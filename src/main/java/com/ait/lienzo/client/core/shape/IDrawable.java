@@ -144,7 +144,7 @@ public interface IDrawable<T>
      * 
      * @param context
      */
-    public void drawWithTransforms(Context2D context);
+    public void drawWithTransforms(Context2D context, double alpha);
 
     /**
      * Move the object's {@link Layer} one level up
@@ -173,6 +173,6 @@ public interface IDrawable<T>
      * @return T instance of the drawn object
      */
     public T moveToBottom();
-    
+
     public boolean removeFromParent();
 }

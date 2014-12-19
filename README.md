@@ -29,7 +29,7 @@ SNAPSHOT:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.20-SNAPSHOT</version>
+  <version>2.0.21-SNAPSHOT</version>
 </dependency>
 ```
 

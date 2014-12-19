@@ -63,7 +63,7 @@ public class Circle extends Shape<Circle>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double r = getRadius();
+        final double r = attr.getRadius();
 
         if (r > 0)
         {

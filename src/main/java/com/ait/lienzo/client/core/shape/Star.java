@@ -104,11 +104,11 @@ public class Star extends Shape<Star>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final int s = getStarPoints();
+        final int s = attr.getStarPoints();
 
-        final double ir = getInnerRadius();
+        final double ir = attr.getInnerRadius();
 
-        final double or = getOuterRadius();
+        final double or = attr.getOuterRadius();
 
         if ((s > 4) && (ir > 0) && (or > 0) && (or > ir))
         {

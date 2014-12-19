@@ -71,7 +71,7 @@ public class Spline extends Shape<Spline>
     {
         if (null == m_points)
         {
-            m_points = convertToPathPoints(getControlPoints());
+            m_points = convertToPathPoints(attr.getControlPoints());
         }
         if (m_points.length < 3)
         {
@@ -89,7 +89,7 @@ public class Spline extends Shape<Spline>
         {
             calculateControlPoints();
         }
-        boolean lineFlatten = getLineFlatten();
+        boolean lineFlatten = attr.getLineFlatten();
 
         context.beginPath();
 

@@ -82,11 +82,11 @@ public class Chord extends Shape<Chord>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double r = getRadius();
+        final double r = attr.getRadius();
 
-        final double beg = getStartAngle();
+        final double beg = attr.getStartAngle();
 
-        final double end = getEndAngle();
+        final double end = attr.getEndAngle();
 
         if (r > 0)
         {
@@ -98,7 +98,7 @@ public class Chord extends Shape<Chord>
             }
             else
             {
-                context.arc(0, 0, r, beg, end, isCounterClockwise());
+                context.arc(0, 0, r, beg, end, attr.isCounterClockwise());
             }
             context.closePath();
 

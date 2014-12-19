@@ -18,7 +18,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '2.0.20-SNAPSHOT'
+version = '2.0.21-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -42,7 +42,7 @@ sourceSets {
 }
 
 dependencies {
-    compile 'com.google.gwt:gwt-user:2.6.1'
+    compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.6.1')
 }
 
 uploadArchives {

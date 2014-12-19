@@ -574,7 +574,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                         context.transform(transform);
                     }
-                    drawWithTransforms(context);
+                    drawWithTransforms(context, 1);
 
                     if (transform != null)
                     {
@@ -600,7 +600,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                                 context.transform(transform);
                             }
-                            drawWithTransforms(context);
+                            drawWithTransforms(context, 1);
 
                             if (transform != null)
                             {

@@ -19,8 +19,10 @@ package com.ait.lienzo.client.widget;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.shared.core.types.NodeType;
 
 /**
  * DragContext maintains information during a Drag operation of a Node.
@@ -102,7 +104,10 @@ public class DragContext
 
         m_dragConstraints = node.getDragConstraints();
 
-        if (m_dragConstraints != null) m_dragConstraints.startDrag(this);
+        if (m_dragConstraints != null)
+        {
+            m_dragConstraints.startDrag(this);
+        }
     }
 
     /**
@@ -117,9 +122,34 @@ public class DragContext
 
         context.transform(m_localToGlobal);
 
-        m_node.drawWithTransforms(context);
+        m_node.drawWithTransforms(context, getNodeParentsAlpha(m_node.asNode()));
 
         context.restore();
+    }
+
+    /**
+     * Returns global alpha value.
+     * 
+     * @return double
+     */
+    private final double getNodeParentsAlpha(Node<?> node)
+    {
+        double alpha = 1;
+
+        node = node.getParent();
+
+        while (null != node)
+        {
+            alpha = alpha * node.getAttributes().getAlpha();
+
+            node = node.getParent();
+
+            if ((null != node) && (node.getNodeType() == NodeType.LAYER))
+            {
+                node = null;
+            }
+        }
+        return alpha;
     }
 
     /**

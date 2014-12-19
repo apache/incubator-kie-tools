@@ -74,9 +74,9 @@ public class Ring extends Shape<Ring>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double ord = getOuterRadius();
+        final double ord = attr.getOuterRadius();
 
-        final double ird = getInnerRadius();
+        final double ird = attr.getInnerRadius();
 
         if ((ord > 0) && (ird > 0) && (ord > ird))
         {
@@ -104,7 +104,7 @@ public class Ring extends Shape<Ring>
             {
                 context.beginPath();
 
-                context.arc(0, 0, getOuterRadius(), 0, Math.PI * 2, false);
+                context.arc(0, 0, attr.getOuterRadius(), 0, Math.PI * 2, false);
 
                 context.closePath();
 
@@ -112,7 +112,7 @@ public class Ring extends Shape<Ring>
 
                 context.beginPath();
 
-                context.arc(0, 0, getInnerRadius(), 0, Math.PI * 2, true);
+                context.arc(0, 0, attr.getInnerRadius(), 0, Math.PI * 2, true);
 
                 context.closePath();
 
@@ -126,7 +126,7 @@ public class Ring extends Shape<Ring>
 
             context.beginPath();
 
-            context.arc(0, 0, getOuterRadius(), 0, Math.PI * 2, false);
+            context.arc(0, 0, attr.getOuterRadius(), 0, Math.PI * 2, false);
 
             context.closePath();
 
@@ -134,7 +134,7 @@ public class Ring extends Shape<Ring>
 
             context.beginPath();
 
-            context.arc(0, 0, getInnerRadius(), 0, Math.PI * 2, true);
+            context.arc(0, 0, attr.getInnerRadius(), 0, Math.PI * 2, true);
 
             context.closePath();
 

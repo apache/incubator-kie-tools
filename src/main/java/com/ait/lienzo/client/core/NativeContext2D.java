@@ -535,7 +535,7 @@ public final class NativeContext2D extends JavaScriptObject
         
         this.beginPath();
 
-        for (i = 0; i < list.length; i++)
+        for (i = 0, z = list.length; i < z; i++)
         {
             var entry = list[i];
 

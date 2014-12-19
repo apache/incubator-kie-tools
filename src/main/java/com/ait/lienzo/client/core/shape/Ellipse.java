@@ -78,9 +78,9 @@ public class Ellipse extends Shape<Ellipse>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double w = getWidth();
+        final double w = attr.getWidth();
 
-        final double h = getHeight();
+        final double h = attr.getHeight();
 
         if ((w > 0) && (h > 0))
         {

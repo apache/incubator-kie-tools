@@ -64,7 +64,7 @@ public class Polygon extends Shape<Polygon>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        Point2DArray list = getPoints();
+        Point2DArray list = attr.getPoints();
 
         if ((null != list) && (list.size() > 2))
         {

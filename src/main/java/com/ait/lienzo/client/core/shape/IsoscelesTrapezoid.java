@@ -42,11 +42,11 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     @Override
     protected boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double hig = getHeight();
+        final double hig = attr.getHeight();
 
-        final double top = getTopWidth();
+        final double top = attr.getTopWidth();
 
-        final double bot = getBottomWidth();
+        final double bot = attr.getBottomWidth();
 
         if ((hig > 0) && (top > 0) && (bot > 0))
         {

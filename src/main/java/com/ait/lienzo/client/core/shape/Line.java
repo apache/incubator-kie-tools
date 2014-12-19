@@ -79,7 +79,7 @@ public class Line extends Shape<Line>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        Point2DArray list = getPoints();
+        Point2DArray list = attr.getPoints();
 
         if ((null != list) && (list.size() == 2))
         {
@@ -87,7 +87,7 @@ public class Line extends Shape<Line>
             {
                 if (false == LienzoCore.get().isNativeLineDashSupported())
                 {
-                    DashArray dash = getDashArray();
+                    DashArray dash = attr.getDashArray();
 
                     if (dash != null)
                     {

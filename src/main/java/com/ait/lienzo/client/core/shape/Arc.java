@@ -83,13 +83,13 @@ public class Arc extends Shape<Arc>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        final double r = getRadius();
+        final double r = attr.getRadius();
 
         if (r > 0)
         {
             context.beginPath();
 
-            context.arc(0, 0, r, getStartAngle(), getEndAngle(), isCounterClockwise());
+            context.arc(0, 0, r, attr.getStartAngle(), attr.getEndAngle(), attr.isCounterClockwise());
 
             return true;
         }

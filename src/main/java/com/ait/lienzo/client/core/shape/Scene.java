@@ -661,7 +661,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(scratch.getContext());
+                        layer.drawWithTransforms(scratch.getContext(), 1);
                     }
                 }
             }
@@ -689,7 +689,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(scratch.getContext());
+                    background.drawWithTransforms(scratch.getContext(), 1);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -697,7 +697,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(scratch.getContext());
+                        layer.drawWithTransforms(scratch.getContext(), 1);
                     }
                 }
             }
@@ -727,7 +727,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(scratch.getContext());
+                        layer.drawWithTransforms(scratch.getContext(), 1);
                     }
                 }
             }
@@ -755,7 +755,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(scratch.getContext());
+                    background.drawWithTransforms(scratch.getContext(), 1);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -763,7 +763,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(scratch.getContext());
+                        layer.drawWithTransforms(scratch.getContext(), 1);
                     }
                 }
             }

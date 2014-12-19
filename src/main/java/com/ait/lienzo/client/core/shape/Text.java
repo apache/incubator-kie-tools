@@ -150,9 +150,9 @@ public class Text extends Shape<Text>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        String text = getText();
+        String text = attr.getText();
 
-        double size = getFontSize();
+        double size = attr.getFontSize();
 
         if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
         {
@@ -160,13 +160,13 @@ public class Text extends Shape<Text>
         }
         if (attr.isDefined(Attribute.TEXT_BASELINE))
         {
-            context.setTextBaseline(getTextBaseLine());
+            context.setTextBaseline(attr.getTextBaseLine());
         }
         if (attr.isDefined(Attribute.TEXT_ALIGN))
         {
-            context.setTextAlign(getTextAlign());
+            context.setTextAlign(attr.getTextAlign());
         }
-        context.setTextFont(getFontStyle() + " " + size + "pt " + getFontFamily());
+        context.setTextFont(attr.getFontStyle() + " " + size + "pt " + attr.getFontFamily());
 
         return true;
     }
@@ -193,20 +193,20 @@ public class Text extends Shape<Text>
 
                         double high = size.getHeight();
 
-                        context.getJSO().fillTextWithGradient(getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), getColorKey());
+                        context.getJSO().fillTextWithGradient(attr.getText(), 0, 0, 0, 0, wide + (wide / 6), high + (high / 6), getColorKey());
                     }
                     else
                     {
                         Layer layer = getLayer();
 
-                        context.getJSO().fillTextWithGradient(getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), getColorKey());
+                        context.getJSO().fillTextWithGradient(attr.getText(), 0, 0, 0, 0, layer.getWidth(), layer.getHeight(), getColorKey());
                     }
                 }
                 else
                 {
                     context.setFillColor(getColorKey());
 
-                    context.fillText(getText(), 0, 0);
+                    context.fillText(attr.getText(), 0, 0);
                 }
                 context.restore();
 
@@ -222,7 +222,7 @@ public class Text extends Shape<Text>
 
             doApplyShadow(context, attr);
 
-            context.setGlobalAlpha(alpha * getFillAlpha());
+            context.setGlobalAlpha(alpha * attr.getFillAlpha());
 
             String fill = attr.getFillColor();
 
@@ -230,7 +230,7 @@ public class Text extends Shape<Text>
             {
                 context.setFillColor(fill);
 
-                context.fillText(getText(), 0, 0);
+                context.fillText(attr.getText(), 0, 0);
 
                 setWasFilledFlag(true);
             }
@@ -244,7 +244,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asLinearGradient());
 
-                        context.fillText(getText(), 0, 0);
+                        context.fillText(attr.getText(), 0, 0);
 
                         setWasFilledFlag(true);
                     }
@@ -252,7 +252,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asRadialGradient());
 
-                        context.fillText(getText(), 0, 0);
+                        context.fillText(attr.getText(), 0, 0);
 
                         setWasFilledFlag(true);
                     }
@@ -260,7 +260,7 @@ public class Text extends Shape<Text>
                     {
                         context.setFillGradient(grad.asPatternGradient());
 
-                        context.fillText(getText(), 0, 0);
+                        context.fillText(attr.getText(), 0, 0);
 
                         setWasFilledFlag(true);
                     }
@@ -281,7 +281,7 @@ public class Text extends Shape<Text>
             {
                 context.beginPath();
 
-                context.strokeText(getText(), 0, 0);
+                context.strokeText(attr.getText(), 0, 0);
 
                 context.closePath();
             }
@@ -291,7 +291,7 @@ public class Text extends Shape<Text>
 
                 context.beginPath();
 
-                context.strokeText(getText(), 0, 0);
+                context.strokeText(attr.getText(), 0, 0);
 
                 context.closePath();
             }
