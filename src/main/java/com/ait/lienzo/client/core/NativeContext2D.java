@@ -531,18 +531,17 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native boolean path(PathPartListJSO list)
     /*-{
+        var leng = list.length;
+        if (leng < 1) {
+            return false;
+        }
+        var indx = 0;
         var fill = false;
-        
         this.beginPath();
-
-        for (i = 0, z = list.length; i < z; i++)
-        {
-            var entry = list[i];
-
-            var p = entry.points;
-
-            switch (entry.command)
-            {
+        while (indx < leng) {
+            var e = list[indx++];
+            var p = e.points;
+            switch (e.command) {
                 case 1:
                     this.lineTo(p[0], p[1]);
                     break;
@@ -556,45 +555,23 @@ public final class NativeContext2D extends JavaScriptObject
                     this.quadraticCurveTo(p[0], p[1], p[2], p[3]);
                     break;
                 case 5:
-                    var cx = p[0];
-
-                    var cy = p[1];
-
                     var rx = p[2];
-
                     var ry = p[3];
-
                     var th = p[4];
-
-                    var dt = p[5];
-
-                    var ro = p[6];
-
-                    var fs = p[7];
-
-                    var ra = ((rx > ry) ? rx : ry);
-
-                    var sx = ((rx > ry) ? 1 : (rx / ry));
-
-                    var sy = ((rx > ry) ? (ry / rx) : 1);
-
-                    this.translate(cx, cy);
-
-                    this.rotate(ro);
-
-                    this.scale(sx, sy);
-
-                    this.arc(0, 0, ra, th, th + dt, (1 - fs) > 0);
-
-                    this.scale(1 / sx, 1 / sy);
-
-                    this.rotate(-ro);
-
-                    this.translate(-cx, -cy);
+                    this.save();
+                    this.translate(p[0], p[1]);
+                    this.rotate(p[6]);
+                    if(rx > ry) {
+                        this.scale(1, (ry / rx));
+                        this.arc(0, 0, rx, th, th + p[5], (1 - p[7]) > 0);
+                    } else {
+                        this.scale((rx / ry), 1);
+                        this.arc(0, 0, ry, th, th + p[5], (1 - p[7]) > 0);
+                    }
+                    this.restore();
                     break;
                 case 6:
                     this.closePath();
-
                     fill = true;
                     break;
             }

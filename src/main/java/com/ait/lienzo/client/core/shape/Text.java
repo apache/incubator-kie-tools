@@ -173,6 +173,12 @@ public class Text extends Shape<Text>
 
     protected void fill(Context2D context, Attributes attr, double alpha)
     {
+        alpha = alpha * attr.getFillAlpha();
+
+        if (alpha <= 0)
+        {
+            return;
+        }
         boolean filled = attr.isDefined(Attribute.FILL);
 
         if ((filled) || (attr.isFillShapeForSelection()))
@@ -222,7 +228,7 @@ public class Text extends Shape<Text>
 
             doApplyShadow(context, attr);
 
-            context.setGlobalAlpha(alpha * attr.getFillAlpha());
+            context.setGlobalAlpha(alpha);
 
             String fill = attr.getFillColor();
 

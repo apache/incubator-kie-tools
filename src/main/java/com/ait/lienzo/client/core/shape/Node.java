@@ -70,7 +70,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.MetaData;
-import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -401,9 +400,9 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         {
             context.save();
 
-            Transform xfrm = getNodeTransform();
+            Transform xfrm = getPossibleNodeTransform();
 
-            if (false == xfrm.isIdentity())
+            if (null != xfrm)
             {
                 context.transform(xfrm);
             }
@@ -447,37 +446,37 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     {
         Transform xfrm = new Transform();
 
-        NFastArrayList<Node<?>> list = new NFastArrayList<Node<?>>();
+        getAbsoluteTransformFromParents(this, xfrm);
 
-        list.add(this);
-
-        Node<?> parent = getParent();
-
-        while (null != parent)
-        {
-            list.add(parent);
-
-            parent = parent.getParent();
-        }
-        int size = list.size(); // TODO no need to use a list
-
-        for (int i = size - 1; i >= 0; i--)
-        {
-            xfrm.multiply(list.get(i).getNodeTransform());
-        }
         return xfrm;
     }
 
-    public Transform getNodeTransform()
+    private final void getAbsoluteTransformFromParents(Node<?> root, Transform xfrm)
     {
-        Transform xfrm = new Transform();
+        if (null == root)
+        {
+            return;
+        }
+        getAbsoluteTransformFromParents(root.getParent(), xfrm);
 
+        Transform temp = root.getPossibleNodeTransform();
+
+        if (temp != null)
+        {
+            xfrm.multiply(temp);
+        }
+    }
+
+    protected final Transform getPossibleNodeTransform()
+    {
         final Attributes attr = getAttributes();
 
         if (false == attr.hasTransformAttributes())
         {
-            return xfrm;
+            return null;
         }
+        Transform xfrm = new Transform();
+
         double x = attr.getX();
 
         double y = attr.getY();
@@ -486,78 +485,91 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         {
             xfrm.translate(x, y);
         }
-        Transform tran;
-
-        if ((attr.isDefined(Attribute.TRANSFORM)) && (null != (tran = getTransform())))
+        if (attr.isDefined(Attribute.TRANSFORM))
         {
-            xfrm.multiply(tran);
+            Transform tran = attr.getTransform();
+
+            if (null != tran)
+            {
+                xfrm.multiply(tran);
+
+                return xfrm;
+            }
         }
-        else
+        // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
+
+        double r = attr.getRotation();
+
+        if (r != 0)
         {
-            // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
+            Point2D offset = attr.getOffset();
 
-            double r = attr.getRotation();
-
-            if (r != 0)
+            if (null != offset)
             {
-                Point2D offset = attr.getOffset();
+                x = offset.getX();
 
-                if (null != offset)
+                y = offset.getY();
+
+                if ((x != 0) || (y != 0))
                 {
-                    x = offset.getX();
-
-                    y = offset.getY();
-
-                    if ((x != 0) || (y != 0))
-                    {
-                        xfrm.translate(x, y);
-                    }
-                    xfrm.rotate(r);
-
-                    if ((x != 0) || (y != 0))
-                    {
-                        xfrm.translate(-1 * x, -1 * y);
-                    }
+                    xfrm.translate(x, y);
                 }
-                else
+                xfrm.rotate(r);
+
+                if ((x != 0) || (y != 0))
                 {
-                    xfrm.rotate(r);
+                    xfrm.translate(-1 * x, -1 * y);
                 }
             }
-            if (attr.isDefined(Attribute.SCALE))
+            else
             {
-                Point2D scale = attr.getScale();
+                xfrm.rotate(r);
+            }
+        }
+        if (attr.isDefined(Attribute.SCALE))
+        {
+            Point2D scale = attr.getScale();
 
-                if (null != scale)
+            if (null != scale)
+            {
+                x = scale.getX();
+
+                y = scale.getY();
+
+                if ((x != 1) || (y != 1))
                 {
-                    x = scale.getX();
-
-                    y = scale.getY();
-
-                    if ((x != 1) || (y != 1))
-                    {
-                        xfrm.scale(x, y);
-                    }
+                    xfrm.scale(x, y);
                 }
             }
-            if (attr.isDefined(Attribute.SHEAR))
+        }
+        if (attr.isDefined(Attribute.SHEAR))
+        {
+            Point2D shear = attr.getShear();
+
+            if (null != shear)
             {
-                Point2D shear = attr.getShear();
+                x = shear.getX();
 
-                if (null != shear)
+                y = shear.getY();
+
+                if ((x != 0) || (y != 0))
                 {
-                    x = shear.getX();
-
-                    y = shear.getY();
-
-                    if ((x != 0) || (y != 0))
-                    {
-                        xfrm.shear(x, y);
-                    }
+                    xfrm.shear(x, y);
                 }
             }
         }
         return xfrm;
+    }
+
+    public Transform getNodeTransform()
+    {
+        Transform xfrm = getPossibleNodeTransform();
+
+        if (null != xfrm)
+        {
+            return xfrm;
+        }
+        return new Transform();
     }
 
     public T setTransform(Transform transform)

@@ -291,7 +291,7 @@ public class Context2D
     {
         m_jso.setMiterLimit(limit);
     }
-    
+
     public boolean path(PathPartList list)
     {
         return m_jso.path(list.getJSO());
