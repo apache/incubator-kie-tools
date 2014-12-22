@@ -2,7 +2,6 @@ package org.uberfire.server;
 
 import java.io.IOException;
 import java.util.Iterator;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
-public abstract class BaseUploadServlet extends HttpServlet {
+public abstract class BaseUploadServlet extends BaseFilteredServlet {
 
     private static final Logger logger = LoggerFactory.getLogger( BaseUploadServlet.class );
 

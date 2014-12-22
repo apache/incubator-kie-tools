@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileUploadException;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.Path;
 
 public class FileUploadServlet
         extends BaseUploadServlet {
@@ -32,8 +33,17 @@ public class FileUploadServlet
 
         try {
             if ( request.getParameter( PARAM_PATH ) != null ) {
+
+                final URI uri = new URI( request.getParameter( PARAM_PATH ) );
+
+                if ( !validateAccess( uri, response ) ) {
+                    return;
+                }
+
+                final Path path = ioService.get( uri );
+
                 writeFile( ioService,
-                           ioService.get( new URI( request.getParameter( PARAM_PATH ) ) ),
+                           path,
                            getFileItem( request ) );
 
                 writeResponse( response,
@@ -52,8 +62,16 @@ public class FileUploadServlet
                     targetFileName = providedFileName + getExtension( originalFileName );
                 }
 
+                final URI uri = new URI( request.getParameter( PARAM_FOLDER ) + "/" + targetFileName );
+
+                if ( !validateAccess( uri, response ) ) {
+                    return;
+                }
+
+                final Path path = ioService.get( uri );
+
                 writeFile( ioService,
-                           ioService.get( new URI( request.getParameter( PARAM_FOLDER ) + "/" + targetFileName ) ),
+                           path,
                            getFileItem( request ) );
 
                 writeResponse( response,
