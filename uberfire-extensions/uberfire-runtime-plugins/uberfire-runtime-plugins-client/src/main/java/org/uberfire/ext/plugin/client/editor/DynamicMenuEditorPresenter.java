@@ -16,26 +16,14 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
-import java.util.ArrayList;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.client.annotations.WorkbenchEditor;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
-import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
-import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
 import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
@@ -44,6 +32,11 @@ import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import java.util.ArrayList;
 
 @Dependent
 @WorkbenchEditor(identifier = "Dynamic Menu Editor", supportedTypes = { DynamicMenuResourceType.class }, priority = Integer.MAX_VALUE)
@@ -153,16 +146,6 @@ public class DynamicMenuEditorPresenter
         return new DynamicMenu( menuItem.getName(), PluginType.DYNAMIC_MENU, versionRecordManager.getCurrentPath(), new ArrayList<DynamicMenuItem>( dataProvider.getList() ) );
     }
 
-    protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
-        return pluginServices;
-    }
 
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return pluginServices;
-    }
-
-    protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
-        return pluginServices;
-    }
 
 }

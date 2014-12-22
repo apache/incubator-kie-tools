@@ -16,18 +16,18 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
-import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
 import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
-import org.uberfire.ext.plugin.model.*;
+import org.uberfire.ext.plugin.model.Media;
+import org.uberfire.ext.plugin.model.PluginContent;
+import org.uberfire.ext.plugin.model.PluginSimpleContent;
+import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -44,16 +44,13 @@ public class EditorPlugInEditorPresenter
         extends RuntimePluginBaseEditor {
 
     @Inject
+    protected GeneralPluginEditor editor;
+    @Inject
     private EditorPluginResourceType resourceType;
-
     @Inject
     private Caller<PluginServices> pluginServices;
-
     @Inject
     private Event<NotificationEvent> notification;
-
-    @Inject
-    protected GeneralPluginEditor editor;
 
     @Inject
     public EditorPlugInEditorPresenter( final EditorPlugInEditorView baseView ) {
@@ -115,7 +112,6 @@ public class EditorPlugInEditorPresenter
         return super.mayClose( getContent().hashCode() );
     }
 
-
     public PluginSimpleContent getContent() {
         return new PluginSimpleContent( editor.getContent(),
                 editor.getTemplate(),
@@ -123,18 +119,6 @@ public class EditorPlugInEditorPresenter
                 editor.getCodeMap(),
                 ( ( EditorPlugInEditorView ) baseView ).getFrameworks(),
                 editor.getContent().getLanguage() );
-    }
-
-    protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
-        return pluginServices;
-    }
-
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return pluginServices;
-    }
-
-    protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
-        return pluginServices;
     }
 
 }

@@ -16,19 +16,17 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.*;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
-import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
-import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.client.type.PerspectivePluginResourceType;
-import org.uberfire.ext.plugin.model.*;
+import org.uberfire.ext.plugin.model.PluginContent;
+import org.uberfire.ext.plugin.model.PluginSimpleContent;
+import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
-
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -108,19 +106,6 @@ public class PerspectiveEditorPresenter
 
     public PluginSimpleContent getContent() {
         return ( ( PerspectiveEditorView ) baseView ).getContent();
-    }
-
-
-    protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
-        return pluginServices;
-    }
-
-    protected Caller<? extends SupportsRename> getRenameServiceCaller() {
-        return pluginServices;
-    }
-
-    protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
-        return pluginServices;
     }
 
 }
