@@ -39,52 +39,52 @@ public class GitIOServiceDotFileTest extends CommonIOExceptionsServiceDotFileTes
 
     @Override
     protected int testFileAttrSize4() {
-        return 8;
+        return 9;
     }
 
     @Override
     protected int testFileAttrSize3() {
-        return 11;
-    }
-
-    @Override
-    protected int testFileAttrSize2() {
-        return 11;
-    }
-
-    @Override
-    protected int testFileAttrSize1() {
-        return 11;
-    }
-
-    @Override
-    protected int testDirectoryAttrSize4() {
-        return 8;
-    }
-
-    @Override
-    protected int testDirectoryAttrSize3() {
-        return 11;
-    }
-
-    @Override
-    protected int testDirectoryAttrSize2() {
         return 12;
     }
 
     @Override
+    protected int testFileAttrSize2() {
+        return 12;
+    }
+
+    @Override
+    protected int testFileAttrSize1() {
+        return 12;
+    }
+
+    @Override
+    protected int testDirectoryAttrSize4() {
+        return 9;
+    }
+
+    @Override
+    protected int testDirectoryAttrSize3() {
+        return 12;
+    }
+
+    @Override
+    protected int testDirectoryAttrSize2() {
+        return 13;
+    }
+
+    @Override
     protected int testDirectoryAttrSize1() {
-        return 11;
+        return 12;
     }
 
     @Override
     protected int createDirectoriesAttrSize() {
-        return 9;
+        return 10;
     }
 
     @Override
     protected int testNewByteChannelAttrSize() {
-        return 9;
+        return 10;
     }
 
     @Test
@@ -137,7 +137,7 @@ public class GitIOServiceDotFileTest extends CommonIOExceptionsServiceDotFileTes
 
         final Map<String, Object> attrsValue = ioService().readAttributes( path );
 
-        assertEquals( 8, attrsValue.size() );
+        assertEquals( 9, attrsValue.size() );
         assertTrue( attrsValue.containsKey( "my_new_key" ) );
 
         ioService().setAttributes( path, new FileAttribute<Object>() {
@@ -154,7 +154,7 @@ public class GitIOServiceDotFileTest extends CommonIOExceptionsServiceDotFileTes
 
         final Map<String, Object> attrsValue2 = ioService().readAttributes( path );
 
-        assertEquals( 7, attrsValue2.size() );
+        assertEquals( 8, attrsValue2.size() );
         assertFalse( attrsValue2.containsKey( "my_new_key" ) );
     }
 
