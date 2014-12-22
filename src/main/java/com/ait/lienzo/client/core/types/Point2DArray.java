@@ -71,38 +71,7 @@ public class Point2DArray implements Iterable<Point2D>
 
     public final BoundingBox getBoundingBox()
     {
-        double minx = 0;
-
-        double miny = 0;
-
-        double maxx = 0;
-
-        double maxy = 0;
-
-        final int size = size();
-
-        if (size > 0)
-        {
-            Point2DJSO point = m_jso.get(0);
-
-            minx = maxx = point.getX();
-
-            miny = maxy = point.getY();
-
-            for (int i = 1; i < size; i++)
-            {
-                point = m_jso.get(i);
-
-                minx = Math.min(minx, point.getX());
-
-                miny = Math.min(miny, point.getY());
-
-                maxx = Math.max(maxx, point.getX());
-
-                maxy = Math.max(maxy, point.getY());
-            }
-        }
-        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
+        return new BoundingBox(this);
     }
 
     /**

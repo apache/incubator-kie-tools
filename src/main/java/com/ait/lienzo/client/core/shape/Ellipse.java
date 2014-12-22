@@ -57,11 +57,11 @@ public class Ellipse extends Shape<Ellipse>
     @Override
     public BoundingBox getBoundingBox()
     {
-        final double w = getWidth();
+        final double w = getWidth() / 2;
 
-        final double h = getHeight();
+        final double h = getHeight() / 2;
 
-        return new BoundingBox(0 - (w / 2), 0 - (h / 2), w, h);
+        return new BoundingBox(0 - w, 0 - h, w, h);
     }
 
     @Override

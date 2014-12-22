@@ -53,7 +53,7 @@ public class PolyLine extends Shape<PolyLine>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getPoints().getBoundingBox();
+        return new BoundingBox(getPoints());
     }
 
     /**

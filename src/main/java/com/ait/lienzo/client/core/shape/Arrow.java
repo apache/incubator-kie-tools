@@ -102,7 +102,7 @@ public class Arrow extends Shape<Arrow>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getPolygon().getBoundingBox();
+        return new BoundingBox(getPolygon());
     }
 
     /**

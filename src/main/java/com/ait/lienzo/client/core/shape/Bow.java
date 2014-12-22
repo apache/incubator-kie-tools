@@ -71,7 +71,7 @@ public class Bow extends Shape<Bow>
     {
         final double radius = Math.max(getInnerRadius(), getOuterRadius());
 
-        return new BoundingBox(0 - radius, 0 - radius, 2 * radius, 2 * radius);
+        return new BoundingBox(0 - radius, 0 - radius, radius, radius);
     }
 
     /**

@@ -55,7 +55,7 @@ public class Triangle extends Shape<Triangle>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getPoints().getBoundingBox();
+        return new BoundingBox(getPoints());
     }
 
     /**

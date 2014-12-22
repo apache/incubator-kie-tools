@@ -17,15 +17,40 @@
 package com.ait.lienzo.client.core.types;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 
 public final class BoundingBox
 {
     private final BoundingBoxJSO m_jso;
 
-    public BoundingBox(double x, double y, double width, double height)
+    public BoundingBox()
     {
-        this(BoundingBoxJSO.make(x, y, width, height));
+        this(BoundingBoxJSO.make(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE));
+    }
+
+    public BoundingBox(BoundingBox bbox)
+    {
+        this(BoundingBoxJSO.make(bbox.m_jso.getMinX(), bbox.m_jso.getMinY(), bbox.m_jso.getMaxX(), bbox.m_jso.getMaxY()));
+    }
+
+    public BoundingBox(double minx, double miny, double maxx, double maxy)
+    {
+        this(BoundingBoxJSO.make(minx, miny, maxx, maxy));
+    }
+
+    public BoundingBox(Point2D point, Point2D... points)
+    {
+        this();
+
+        add(point, points);
+    }
+
+    public BoundingBox(Point2DArray points)
+    {
+        this();
+
+        add(points);
     }
 
     public BoundingBox(BoundingBoxJSO jso)
@@ -33,24 +58,91 @@ public final class BoundingBox
         m_jso = jso;
     }
 
+    public final BoundingBox addX(double x)
+    {
+        m_jso.addX(x);
+
+        return this;
+    }
+
+    public final BoundingBox addY(double y)
+    {
+        m_jso.addY(y);
+
+        return this;
+    }
+
+    public final BoundingBox add(double x, double y)
+    {
+        m_jso.addX(x);
+
+        m_jso.addY(y);
+
+        return this;
+    }
+
+    public final BoundingBox add(BoundingBox bbox)
+    {
+        m_jso.addX(bbox.m_jso.getMinX());
+
+        m_jso.addY(bbox.m_jso.getMinY());
+
+        m_jso.addX(bbox.m_jso.getMaxX());
+
+        m_jso.addY(bbox.m_jso.getMaxY());
+
+        return this;
+    }
+
+    public final BoundingBox add(Point2D point, Point2D... points)
+    {
+        add(point);
+
+        for (Point2D p : points)
+        {
+            add(p);
+        }
+        return this;
+    }
+
+    public final BoundingBox add(Point2DArray points)
+    {
+        final int size = points.size();
+
+        for (int i = 0; i < size; i++)
+        {
+            add(points.get(i));
+        }
+        return this;
+    }
+
+    public final BoundingBox add(Point2D point)
+    {
+        m_jso.addX(point.getX());
+
+        m_jso.addY(point.getY());
+
+        return this;
+    }
+
     public final double getX()
     {
-        return m_jso.getX();
+        return m_jso.getMinX();
     }
 
     public final double getY()
     {
-        return m_jso.getY();
+        return m_jso.getMinY();
     }
 
     public final double getWidth()
     {
-        return m_jso.getWidth();
+        return m_jso.getMaxX() - m_jso.getMinX();
     }
 
     public final double getHeight()
     {
-        return m_jso.getHeight();
+        return m_jso.getMaxY() - m_jso.getMinY();
     }
 
     public final BoundingBoxJSO getJSO()
@@ -60,7 +152,7 @@ public final class BoundingBox
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return new JSONObject().put("x", new JSONNumber(getX())).isObject().put("y", new JSONNumber(getY())).isObject().put("width", new JSONNumber(getWidth())).isObject().put("height", new JSONNumber(getHeight())).toString();
     }
 
     @Override
@@ -97,29 +189,49 @@ public final class BoundingBox
         {
         }
 
-        final static native BoundingBoxJSO make(double x, double y, double width, double height)
+        final static native BoundingBoxJSO make(double minx, double miny, double maxx, double maxy)
         /*-{
-            return {x: x, y: y, width: width, height: height};
+            return {minx: minx, miny: miny, maxx: maxx, maxy: maxy};
         }-*/;
 
-        final native double getX()
+        final native double getMinX()
         /*-{
-            return this.x;
+            return this.minx;
         }-*/;
 
-        final native double getY()
+        final native double getMinY()
         /*-{
-            return this.y;
+            return this.miny;
         }-*/;
 
-        final native double getWidth()
+        final native double getMaxX()
         /*-{
-            return this.width;
+            return this.maxx;
         }-*/;
 
-        final native double getHeight()
+        final native double getMaxY()
         /*-{
-            return this.height;
+            return this.maxy;
+        }-*/;
+
+        final native void addX(double x)
+        /*-{
+            if (x < this.minx) {
+                this.minx = x;
+            }
+            if (x > this.maxx) {
+                this.maxx = x;
+            }
+        }-*/;
+
+        final native void addY(double y)
+        /*-{
+            if (y < this.miny) {
+                this.miny = y;
+            }
+            if (y > this.maxy) {
+                this.maxy = y;
+            }
         }-*/;
     }
 }

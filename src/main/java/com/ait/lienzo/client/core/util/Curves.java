@@ -49,7 +49,7 @@ public final class Curves
         return getBoundingBox(curve.getControlPoints());
     }
 
-    private static final BoundingBox getBoundingBox(final Point2DArray points)
+    public static final BoundingBox getBoundingBox(final Point2DArray points)
     {
         if (null == points)
         {
@@ -101,7 +101,7 @@ public final class Curves
 
             maxy = Math.max(y, maxy);
         }
-        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
+        return new BoundingBox(minx, miny, maxx, maxy);
     }
 
     private static final NFastDoubleArrayJSO getInflections(final Point2DArray points, final NFastDoubleArrayJSO xval, final NFastDoubleArrayJSO yval)

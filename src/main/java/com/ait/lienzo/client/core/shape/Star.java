@@ -93,7 +93,7 @@ public class Star extends Shape<Star>
                 maxy = Math.max(maxy, y);
             }
         }
-        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
+        return new BoundingBox(minx, miny, maxx, maxy);
     }
 
     /**

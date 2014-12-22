@@ -68,7 +68,7 @@ public class Line extends Shape<Line>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getPoints().getBoundingBox();
+        return new BoundingBox(getPoints());
     }
 
     /**

@@ -53,7 +53,7 @@ public class Polygon extends Shape<Polygon>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getPoints().getBoundingBox();
+        return new BoundingBox(getPoints());
     }
 
     /**

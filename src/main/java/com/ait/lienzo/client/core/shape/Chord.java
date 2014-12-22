@@ -71,7 +71,7 @@ public class Chord extends Shape<Chord>
     {
         final double radius = getRadius();
 
-        return new BoundingBox(0 - radius, 0 - radius, 2 * radius, 2 * radius);
+        return new BoundingBox(0 - radius, 0 - radius, radius, radius);
     }
 
     /**

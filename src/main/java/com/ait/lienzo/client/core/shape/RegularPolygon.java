@@ -85,7 +85,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
                 maxy = Math.max(maxy, y);
             }
         }
-        return new BoundingBox(minx, miny, maxx - minx, maxy - miny);
+        return new BoundingBox(minx, miny, maxx, maxy);
     }
 
     /**
