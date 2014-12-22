@@ -67,15 +67,15 @@ public class SVGPath extends Shape<SVGPath>
         }
         final BoundingBox bbox = new BoundingBox();
 
+        double oldx = 0;
+
+        double oldy = 0;
+
         for (int i = 0; i < size; i++)
         {
             final PathPartEntryJSO part = m_list.get(i);
 
             final NFastDoubleArrayJSO p = part.getPoints();
-
-            double oldx = 0;
-
-            double oldy = 0;
 
             switch (part.getCommand())
             {
