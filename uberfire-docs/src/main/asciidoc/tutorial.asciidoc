@@ -202,7 +202,7 @@ using. Add this inside the `<project>` element, after the
     <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
     <maven.gwt.plugin.version>2.5.1</maven.gwt.plugin.version>
     <uberfire.version>0.5.0-SNAPSHOT</uberfire.version>
-    <errai.version>3.0.3-SNAPSHOT</errai.version>
+    <errai.version>3.0.4.Final</errai.version>
     <errai.devmode.version>${errai.version}</errai.devmode.version>
     <errai.jboss.home>${user.home}/wildfly-8.1.0.Final</errai.jboss.home>
     <jboss.spec.version>3.0.2.Final</jboss.spec.version>
@@ -887,6 +887,19 @@ The `<pluginManagement>` section goes inside the `<build>` section
                     <versionRange>[2.4.0,)</versionRange>
                     <goals>
                       <goal>resources</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <versionRange>[1.7,)</versionRange>
+                    <goals>
+                      <goal>add-source</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
