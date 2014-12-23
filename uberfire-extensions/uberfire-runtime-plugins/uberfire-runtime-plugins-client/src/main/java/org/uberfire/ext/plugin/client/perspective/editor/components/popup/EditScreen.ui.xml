@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:uf='urn:import:org.uberfire.ext.properties.editor.client'>
+
+
+  <ui:with field="i18n" type="org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .mandatory-field {
+      color: #FF0000 !important;
+    }
+  </ui:style>
+
+  <g:HTMLPanel>
+    <b:Accordion>
+      <b:AccordionGroup heading="{i18n.AddNewParameter}">
+        <b:ControlGroup ui:field="paramKeyControlGroup">
+          <b:Controls>
+            <b:TextBox ui:field="key" placeholder="{i18n.ParamKey}"/>
+            <b:TextBox ui:field="value" placeholder="{i18n.ParamValue}"/>
+            <b:HelpInline ui:field="paramKeyInline"/>
+          </b:Controls>
+        </b:ControlGroup>
+        <b:Button icon="SAVE" type="PRIMARY" ui:field="add">
+          <ui:text from="{i18n.Add}"/>
+        </b:Button>
+      </b:AccordionGroup>
+    </b:Accordion>
+
+    <uf:PropertyEditorWidget ui:field="propertyEditor"/>
+
+  </g:HTMLPanel>
+
+</ui:UiBinder>

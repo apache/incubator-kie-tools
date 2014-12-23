@@ -22,6 +22,8 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.ext.plugin.editor.NewPerspectiveEditorEvent;
+import org.uberfire.ext.plugin.editor.PerspectiveEditor;
 import org.uberfire.ext.plugin.event.MediaDeleted;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
@@ -34,6 +36,7 @@ import org.uberfire.ext.plugin.model.DynamicMenuItem;
 import org.uberfire.ext.plugin.model.Framework;
 import org.uberfire.ext.plugin.model.Language;
 import org.uberfire.ext.plugin.model.Media;
+import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
@@ -109,6 +112,9 @@ public class PluginServicesImpl implements PluginServices {
 
     @Inject
     private Event<ResourceRenamedEvent> resourceRenamedEvent;
+
+    @Inject
+    private Event<NewPerspectiveEditorEvent> newPerspectiveEventEvent;
 
     @Inject
     private User identity;
@@ -524,6 +530,24 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
+    public PerspectiveEditorModel getPerspectiveEditor( org.uberfire.backend.vfs.Path path ) {
+        final String pluginName = convert( path ).getParent().getFileName().toString();
+
+        return loadPerspectiveEditor( pluginName, path );
+    }
+
+    private PerspectiveEditorModel loadPerspectiveEditor( String pluginName,
+                                                          org.uberfire.backend.vfs.Path path ) {
+        final Path path1 = getPerspectiveEditorPath( getPluginPath( pluginName ) );
+        if ( ioService.exists( path1 ) ) {
+            String fileContent = ioService.readAllString( path1 );
+            PerspectiveEditor perspectiveEditor = gson.fromJson( fileContent, PerspectiveEditor.class );
+            return new PerspectiveEditorModel( pluginName, TypeConverterUtil.fromPath( path ), path, perspectiveEditor );
+        }
+        return  new PerspectiveEditorModel( pluginName, TypeConverterUtil.fromPath( path ), path );
+    }
+
+    @Override
     public org.uberfire.backend.vfs.Path save( final DynamicMenu plugin ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
@@ -532,7 +556,7 @@ public class PluginServicesImpl implements PluginServices {
             ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
         }
 
-        final Path menuItemsPath = getMenuItemsPath( getPluginPath( plugin.getName() ) );
+        final Path menuItemsPath = getPerspectiveEditorPath( getPluginPath( plugin.getName() ) );
         final StringBuilder sb = new StringBuilder();
         for ( DynamicMenuItem item : plugin.getMenuItems() ) {
             sb.append( item.getActivityId() ).append( " / " ).append( item.getMenuLabel() ).append( "\n" );
@@ -541,6 +565,28 @@ public class PluginServicesImpl implements PluginServices {
 
         updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
 
+        return plugin.getPath();
+    }
+
+    @Override
+    public org.uberfire.backend.vfs.Path save( final
+                                               PerspectiveEditorModel plugin ) {
+        final Path pluginPath = convert( plugin.getPath() );
+        final boolean isNewPlugin = !ioService.exists( pluginPath );
+
+        if ( isNewPlugin ) {
+            ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
+        }
+
+        final Path itemsPath = getPerspectiveEditorPath( getPluginPath( plugin.getName() ) );
+
+        String perspectiveContent = gson.toJson( plugin.getPerspectiveModel() );
+
+        ioService.write( itemsPath, perspectiveContent.toString() );
+
+        updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+
+        newPerspectiveEventEvent.fire( new NewPerspectiveEditorEvent( plugin.getPerspectiveModel() ) );
         return plugin.getPath();
     }
 
@@ -574,6 +620,36 @@ public class PluginServicesImpl implements PluginServices {
         return result;
     }
 
+    @Override
+    public Collection<PerspectiveEditorModel> listPerspectiveEditor() {
+        final Collection<PerspectiveEditorModel> result = new ArrayList<PerspectiveEditorModel>();
+        final Path plugins = fileSystem.getPath( "plugins", "/" );
+
+        if ( ioService.exists( plugins ) ) {
+            walkFileTree( checkNotNull( "root", plugins ),
+                          new SimpleFileVisitor<Path>() {
+                              @Override
+                              public FileVisitResult visitFile( final Path file,
+                                                                final BasicFileAttributes attrs ) throws IOException {
+                                  try {
+                                      checkNotNull( "file", file );
+                                      checkNotNull( "attrs", attrs );
+
+                                      if ( file.getFileName().toString().equalsIgnoreCase( "perspective_layout.plugin" ) && attrs.isRegularFile() ) {
+                                          final PerspectiveEditorModel perspectiveEditor = getPerspectiveEditor( convert( file ) );
+                                           result.add( perspectiveEditor );
+                                      }
+                                  } catch ( final Exception ex ) {
+                                      return FileVisitResult.TERMINATE;
+                                  }
+                                  return FileVisitResult.CONTINUE;
+                              }
+                          } );
+        }
+
+        return result;
+    }
+
     private Collection<DynamicMenuItem> loadMenuItems( String pluginName ) {
         final Collection<DynamicMenuItem> result = new ArrayList<DynamicMenuItem>();
         final Path menuItemsPath = getMenuItemsPath( getPluginPath( pluginName ) );
@@ -593,4 +669,7 @@ public class PluginServicesImpl implements PluginServices {
         return rootPlugin.resolve( "info.dynamic" );
     }
 
+    private Path getPerspectiveEditorPath( final Path rootPlugin ) {
+        return rootPlugin.resolve( "perspective.editor" );
+    }
 }

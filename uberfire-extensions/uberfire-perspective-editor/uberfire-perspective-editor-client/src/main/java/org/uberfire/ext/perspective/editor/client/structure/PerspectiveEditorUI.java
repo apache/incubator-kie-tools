@@ -66,16 +66,17 @@ public class PerspectiveEditorUI implements EditorWidget {
         return rowEditors;
     }
 
-    public void observeEditComponentEventFromPropertyEditor( @Observes PropertyEditorChangeEvent event ) {
-
-        PropertyEditorFieldInfo property = event.getProperty();
-        if ( property.getEventId().equalsIgnoreCase( PROPERTY_EDITOR_KEY ) ) {
-            ScreenEditor screenEditor = screenProperties.get( property.getKey() );
-            screenEditor.setParameterValue( property.getLabel(),
-                                            property.getCurrentStringValue() );
-            screenProperties.put( property.getKey(), screenEditor );
-        }
-    }
+//Ignored (now on plugin editor)
+//    public void observeEditComponentEventFromPropertyEditor( @Observes PropertyEditorChangeEvent event ) {
+//
+//        PropertyEditorFieldInfo property = event.getProperty();
+//        if ( property.getEventId().equalsIgnoreCase( PROPERTY_EDITOR_KEY ) ) {
+//            ScreenEditor screenEditor = screenProperties.get( property.getKey() );
+//            screenEditor.setParameterValue( property.getLabel(),
+//                                            property.getCurrentStringValue() );
+//            screenProperties.put( property.getKey(), screenEditor );
+//        }
+//    }
 
     public void loadEditExternalComponentEvent( String hashcode,
                                                 String componentFQCN,

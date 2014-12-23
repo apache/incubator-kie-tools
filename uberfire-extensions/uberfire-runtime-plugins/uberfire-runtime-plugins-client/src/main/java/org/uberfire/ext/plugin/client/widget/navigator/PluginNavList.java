@@ -61,6 +61,7 @@ import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 import org.uberfire.ext.plugin.client.type.DynamicMenuResourceType;
 import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
+import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.client.type.PerspectivePluginResourceType;
 import org.uberfire.ext.plugin.client.type.ScreenPluginResourceType;
 import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
@@ -99,6 +100,9 @@ public class PluginNavList extends Composite {
     private PerspectivePluginResourceType perspectivePluginResourceType;
 
     @Inject
+    private PerspectiveLayoutPluginResourceType perspectiveLayoutPluginResourceType;
+
+    @Inject
     private ScreenPluginResourceType screenPluginResourceType;
 
     @Inject
@@ -127,6 +131,7 @@ public class PluginNavList extends Composite {
         final Map<ClientResourceType, Set<Activity>> classified = new LinkedHashMap<ClientResourceType, Set<Activity>>();
 
         classified.put( perspectivePluginResourceType, new HashSet<Activity>() );
+        classified.put( perspectiveLayoutPluginResourceType, new HashSet<Activity>() );
         classified.put( screenPluginResourceType, new HashSet<Activity>() );
         classified.put( editorPluginResourceType, new HashSet<Activity>() );
         classified.put( splashPluginResourceType, new HashSet<Activity>() );
@@ -209,7 +214,6 @@ public class PluginNavList extends Composite {
                 pluginsList.add( new Divider() );
             }
         }
-
     }
 
     private String getName( final IOCBeanDef<?> beanDef ) {

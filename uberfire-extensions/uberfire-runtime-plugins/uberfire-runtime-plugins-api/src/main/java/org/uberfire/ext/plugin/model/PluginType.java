@@ -4,6 +4,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum PluginType {
-    PERSPECTIVE, SCREEN, EDITOR, SPLASH, DYNAMIC_MENU
+    PERSPECTIVE, PERSPECTIVE_LAYOUT, SCREEN, EDITOR, SPLASH, DYNAMIC_MENU
 
 }

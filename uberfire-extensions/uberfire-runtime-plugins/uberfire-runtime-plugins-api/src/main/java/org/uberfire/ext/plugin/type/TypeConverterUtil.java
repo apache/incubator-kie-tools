@@ -1,7 +1,7 @@
 package org.uberfire.ext.plugin.type;
 
-import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public final class TypeConverterUtil {
@@ -11,6 +11,7 @@ public final class TypeConverterUtil {
     private static final EditorPluginResourceTypeDefinition editorDefinition = new EditorPluginResourceTypeDefinition();
     private static final SplashPluginResourceTypeDefinition splashDefinition = new SplashPluginResourceTypeDefinition();
     private static final DynamicMenuResourceTypeDefinition dynamicMenuDefinition = new DynamicMenuResourceTypeDefinition();
+    private static final PerspectiveLayoutPluginResourceTypeDefinition perspectiveLayoutPluginResourceTypeDefinition = new PerspectiveLayoutPluginResourceTypeDefinition();
 
     public static PluginType fromPath( final Path path ) {
         if ( perspectiveDefinition.accept( path ) ) {
@@ -28,12 +29,23 @@ public final class TypeConverterUtil {
         if ( dynamicMenuDefinition.accept( path ) ) {
             return PluginType.DYNAMIC_MENU;
         }
+
+        if ( dynamicMenuDefinition.accept( path ) ) {
+            return PluginType.DYNAMIC_MENU;
+        }
+        if ( perspectiveLayoutPluginResourceTypeDefinition.accept( path ) ) {
+            return PluginType.PERSPECTIVE_LAYOUT;
+        }
+
         return null;
     }
 
     public static PluginType fromResourceType( final ResourceTypeDefinition resource ) {
         if ( resource instanceof PerspectivePluginResourceTypeDefinition ) {
             return PluginType.PERSPECTIVE;
+        }
+        if ( resource instanceof PerspectiveLayoutPluginResourceTypeDefinition ) {
+            return PluginType.PERSPECTIVE_LAYOUT;
         }
         if ( resource instanceof ScreenPluginResourceTypeDefinition ) {
             return PluginType.SCREEN;

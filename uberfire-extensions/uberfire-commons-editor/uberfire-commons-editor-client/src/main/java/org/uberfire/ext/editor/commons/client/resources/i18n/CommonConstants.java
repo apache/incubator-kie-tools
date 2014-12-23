@@ -33,6 +33,8 @@ public interface CommonConstants
 
     String Save();
 
+    String Tags();
+
     String Cancel();
 
     String CopyPopupTitle();
@@ -106,4 +108,5 @@ public interface CommonConstants
     String Copying();
 
     String ItemCopiedSuccessfully();
+
 }

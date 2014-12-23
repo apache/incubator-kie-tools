@@ -9,6 +9,7 @@ import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.Media;
+import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
@@ -34,11 +35,17 @@ public interface PluginServices
 
     PluginContent getPluginContent( final Path path );
 
+    PerspectiveEditorModel getPerspectiveEditor( org.uberfire.backend.vfs.Path path );
+
     void deleteMedia( final Media media );
 
     DynamicMenu getDynamicMenuContent( final Path path );
 
     Path save( final DynamicMenu menu );
 
+    Path save( final PerspectiveEditorModel plugin );
+
     Collection<DynamicMenu> listDynamicMenus();
+
+    Collection<PerspectiveEditorModel> listPerspectiveEditor();
 }

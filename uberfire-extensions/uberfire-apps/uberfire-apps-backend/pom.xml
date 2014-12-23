@@ -23,12 +23,12 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-perspective-editor-api</artifactId>
+      <artifactId>uberfire-runtime-plugins-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-perspective-editor-backend</artifactId>
+      <artifactId>uberfire-runtime-plugins-backend</artifactId>
     </dependency>
 
     <dependency>

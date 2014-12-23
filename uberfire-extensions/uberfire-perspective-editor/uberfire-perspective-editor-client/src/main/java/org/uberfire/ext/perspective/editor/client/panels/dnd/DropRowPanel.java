@@ -58,7 +58,7 @@ public class DropRowPanel extends FlowPanel {
     }
 
     private boolean isAGridDrop( DropEvent event ) {
-        return !event.getData( DragType.GRID.name() ).isEmpty();
+        return ( event.getData( DragType.GRID.name() ) != null ) && ( !event.getData( DragType.GRID.name() ).isEmpty() );
     }
 
     private void handleGridDrop( String grid ) {

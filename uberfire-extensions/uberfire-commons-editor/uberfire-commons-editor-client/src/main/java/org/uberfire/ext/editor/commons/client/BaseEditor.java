@@ -77,7 +77,7 @@ public abstract class BaseEditor {
 
     @Inject
     @New
-    private BasicFileMenuBuilder menuBuilder;
+    protected BasicFileMenuBuilder menuBuilder;
 
     @Inject
     protected DefaultFileNameValidator fileNameValidator;
@@ -144,7 +144,15 @@ public abstract class BaseEditor {
 
         makeMenuBar();
 
+        buildMenuBar();
+
         loadContent();
+    }
+
+    private void buildMenuBar() {
+        if ( menuBuilder != null ) {
+            menus = menuBuilder.build();
+        }
     }
 
     protected void showVersions() {
@@ -180,8 +188,6 @@ public abstract class BaseEditor {
         if ( menuItems.contains( HISTORY ) ) {
             menuBuilder.addNewTopLevelMenu( versionRecordManager.buildMenu() );
         }
-
-        menus = menuBuilder.build();
     }
 
     private void selectVersion( VersionRecord versionRecord ) {

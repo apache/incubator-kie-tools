@@ -8,6 +8,7 @@
   <source path='exception'/>
   <source path='model'/>
   <source path='service'/>
+  <source path='editor'/>
   <source path='type'/>
 
 </module>

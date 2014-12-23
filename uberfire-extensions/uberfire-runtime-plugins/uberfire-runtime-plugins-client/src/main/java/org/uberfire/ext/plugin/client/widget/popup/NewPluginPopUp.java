@@ -134,6 +134,9 @@ public class NewPluginPopUp extends Composite {
             case PERSPECTIVE:
                 title = "New Perspective Plugin...";
                 break;
+            case PERSPECTIVE_LAYOUT:
+                title = "New Perspective Layout Plugin...";
+                break;
             case SCREEN:
                 title = "New Screen Plugin...";
                 break;

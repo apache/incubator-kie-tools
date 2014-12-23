@@ -1,6 +1,7 @@
 package org.uberfire.ext.apps.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,9 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.ext.apps.api.AppsPersistenceAPI;
 import org.uberfire.ext.apps.api.Directory;
-import org.uberfire.ext.perspective.editor.PerspectiveEditorPersistence;
-import org.uberfire.ext.perspective.editor.model.PerspectiveEditor;
+import org.uberfire.ext.plugin.editor.PerspectiveEditor;
+import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
+import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
@@ -36,7 +38,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     private FileSystem fileSystem;
 
     @Inject
-    PerspectiveEditorPersistence perspectiveEditorPersistence;
+    PluginServices pluginServices;
 
     @PostConstruct
     public void setup() {
@@ -53,9 +55,11 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     }
 
     private Map<String, List<String>> generateTagMap() {
+
         Map<String, List<String>> tagsMap = new HashMap<String, List<String>>();
-        final List<PerspectiveEditor> perspectiveEditors = perspectiveEditorPersistence.loadAll();
-        for ( PerspectiveEditor perspectiveEditor : perspectiveEditors ) {
+        final Collection<PerspectiveEditorModel> perspectiveEditors =  pluginServices.listPerspectiveEditor();
+        for ( PerspectiveEditorModel perspectiveEditorModel : perspectiveEditors ) {
+            final PerspectiveEditor perspectiveEditor = perspectiveEditorModel.getPerspectiveModel();
             for ( String tag : perspectiveEditor.getTags() ) {
                 List<String> perspectives = tagsMap.get( tag.toUpperCase() );
                 if ( perspectives == null ) {

@@ -82,6 +82,7 @@ public class PluginExplorerScreen
             @Override
             public void callback( final Collection<Plugin> response ) {
                 pluginNavList.setup( response );
+
             }
         } ).listPlugins();
         htmlPanel.add( pluginNavList );
@@ -121,6 +122,14 @@ public class PluginExplorerScreen
                     @Override
                     public void onClick( ClickEvent event ) {
                         placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.PERSPECTIVE.toString() ) );
+                    }
+                } );
+            }} );
+            add( new NavLink( "New Perspective Layout" ) {{
+                addClickHandler( new ClickHandler() {
+                    @Override
+                    public void onClick( ClickEvent event ) {
+                        placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.PERSPECTIVE_LAYOUT.toString() ) );
                     }
                 } );
             }} );
