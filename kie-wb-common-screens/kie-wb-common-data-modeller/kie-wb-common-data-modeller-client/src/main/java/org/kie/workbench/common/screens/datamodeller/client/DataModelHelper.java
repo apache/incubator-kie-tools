@@ -167,6 +167,11 @@ public class DataModelHelper {
         return baseTypesByClassName.containsKey(type);
     }
 
+    public Boolean isPrimitiveType(String type) {
+        PropertyTypeTO propertyTypeTO;
+        return ( propertyTypeTO = baseTypesByClassName.get( type ) ) != null && propertyTypeTO.isPrimitive();
+    }
+
     /**
      * Evaluate if an object can safely extend another one (at least as far as the extension hierarchy is concerned).
      * @param offspringCandidate The class name of the extending object

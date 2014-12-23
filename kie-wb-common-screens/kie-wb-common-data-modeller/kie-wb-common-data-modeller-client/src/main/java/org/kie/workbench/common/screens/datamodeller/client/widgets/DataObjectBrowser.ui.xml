@@ -58,8 +58,14 @@
                 <td style="padding-left: 4px;">
                   <b:ListBox ui:field="newPropertyType"></b:ListBox>
                 </td>
-                <td colspan="2" align="right" style="padding-left: 4px;">
-                  <b:Button ui:field="newPropertyButton" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/>
+
+                <td style="padding-left: 4px;" colspan="2">
+                  <table width="100%">
+                    <tr>
+                      <td width="60%"><b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}"><b:CheckBox ui:field="isNewPropertyMultiple" text="{i18n.objectBrowser_typeLabelMultiple}"/></b:Tooltip></td>
+                      <td><b:Button ui:field="newPropertyButton" styleName="btn btn-primary" text="{i18n.objectBrowser_create}"/></td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
             </table>

@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.CellTable;
+import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.TooltipCellDecorator;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
@@ -33,6 +34,8 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -127,6 +130,9 @@ public class DataObjectBrowser extends Composite {
     com.github.gwtbootstrap.client.ui.ListBox newPropertyType;
 
     @UiField
+    CheckBox isNewPropertyMultiple;
+
+    @UiField
     Button newPropertyButton;
 
     private DataObjectTO dataObject;
@@ -155,6 +161,12 @@ public class DataObjectBrowser extends Composite {
         newPropertyId.getElement().getStyle().setWidth( 180, Style.Unit.PX );
         newPropertyLabel.getElement().getStyle().setWidth( 160, Style.Unit.PX );
         newPropertyType.getElement().getStyle().setWidth( 200, Style.Unit.PX );
+        newPropertyType.addChangeHandler( new ChangeHandler() {
+            @Override
+            public void onChange( ChangeEvent event ) {
+                selectedTypeChanged();
+            }
+        } );
 
         objectName.setText( "" );
 
@@ -415,7 +427,8 @@ public class DataObjectBrowser extends Composite {
     private void createNewProperty( final DataObjectTO dataObject,
                                     final String propertyName,
                                     final String propertyLabel,
-                                    final String propertyType ) {
+                                    final String propertyType,
+                                    final Boolean isMultiple ) {
         if ( dataObject != null ) {
             validatorService.isValidIdentifier( propertyName, new ValidatorCallback() {
                 @Override
@@ -434,12 +447,12 @@ public class DataObjectBrowser extends Composite {
                         @Override
                         public void onSuccess() {
                             if ( propertyType != null && !"".equals( propertyType ) && !DataModelerUtils.NOT_SELECTED.equals( propertyType ) ) {
-                                Boolean isMultiple = DataModelerUtils.isMultipleType( propertyType );
-                                String canonicalType = isMultiple ? DataModelerUtils.getCanonicalClassName( propertyType ) : propertyType;
+
+                                boolean multiple = isMultiple && !getContext().getHelper().isPrimitiveType( propertyType ); //extra check
                                 ObjectPropertyTO property = new ObjectPropertyTO( propertyName,
-                                                                                  canonicalType,
-                                                                                  isMultiple,
-                                                                                  getContext().getHelper().isBaseType( canonicalType ) );
+                                                                                  propertyType,
+                                                                                  multiple,
+                                                                                  getContext().getHelper().isBaseType( propertyType ) );
                                 if ( propertyLabel != null && !"".equals( propertyLabel ) ) {
                                     property.addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
                                 }
@@ -630,9 +643,21 @@ public class DataObjectBrowser extends Composite {
         }
 
         if ( property.isMultiple() ) {
-            displayName += DataModelerUtils.MULTIPLE;
+            displayName += " ["+Constants.INSTANCE.objectBrowser_typeLabelMultiple()+"]";
         }
         return displayName;
+    }
+
+    private void selectedTypeChanged() {
+        String selectedType = newPropertyType.getValue();
+        if ( getContext() != null && getContext().getHelper() != null ) {
+            if ( getContext().getHelper().isPrimitiveType( selectedType ) ) {
+                isNewPropertyMultiple.setEnabled( false );
+                isNewPropertyMultiple.setValue( false );
+            } else {
+                isNewPropertyMultiple.setEnabled( true );
+            }
+        }
     }
 
     private DataModelTO getDataModel() {
@@ -667,6 +692,8 @@ public class DataObjectBrowser extends Composite {
         newPropertyLabel.setText( null );
         initTypeList();
         newPropertyType.setSelectedValue( DataModelerUtils.NOT_SELECTED );
+        isNewPropertyMultiple.setValue( false );
+        isNewPropertyMultiple.setEnabled( true );
     }
 
     private void setReadonly( boolean readonly ) {
@@ -705,7 +732,8 @@ public class DataObjectBrowser extends Composite {
         createNewProperty( dataObject,
                            DataModelerUtils.unCapitalize( newPropertyId.getText() ),
                            newPropertyLabel.getText(),
-                           newPropertyType.getValue() );
+                           newPropertyType.getValue(),
+                           isNewPropertyMultiple.getValue() );
         //}
     }
 

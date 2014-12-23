@@ -47,21 +47,6 @@ public class DataModelerUtils {
     public static final String CHAR = "char";
     public static final String BOOLEAN = "boolean";
 
-    public static Boolean isMultipleType(String type) {
-        return type.lastIndexOf(DataModelerUtils.MULTIPLE) >= 0;
-    }
-
-    // Returns the object's type without the multiple ('[0..N]') extension, in case of a multiple type.
-    public static String getCanonicalClassName(String type) {
-        if (type != null && !"".equals(type)) {
-            if (isMultipleType(type)) {
-                int i = type.lastIndexOf(DataModelerUtils.MULTIPLE);
-                return type.substring(0, i);
-            }
-        }
-        return type;
-    }
-
     /*
      * Returns the data-object's class name or the label, in case the object has one.
      */
@@ -364,12 +349,9 @@ public class DataModelerUtils {
             if ( !baseType.getValue().isPrimitive() ) {
 
                 String baseClassName = baseType.getValue().getClassName();
-                String baseClassName_m = baseClassName + DataModelerUtils.MULTIPLE;
                 String baseClassLabel = baseType.getKey();
-                String baseClassLabel_m = baseClassLabel + DataModelerUtils.MULTIPLE;
 
                 typeSelector.addItem( baseClassLabel, baseClassName );
-                typeSelector.addItem( baseClassLabel_m, baseClassName_m );
             }
         }
 
@@ -377,11 +359,8 @@ public class DataModelerUtils {
             // collect all model types, ordered
             for ( DataObjectTO dataObject : dataObjects ) {
                 String className = dataObject.getClassName();
-                String className_m = className + DataModelerUtils.MULTIPLE;
                 String classLabel = DataModelerUtils.getDataObjectFullLabel( dataObject );
-                String classLabel_m = classLabel + DataModelerUtils.MULTIPLE;
                 sortedModelTypeNames.put( classLabel, className );
-                sortedModelTypeNames.put( classLabel_m, className_m );
                 if ( selectedType != null && selectedType.equals( className ) ) {
                     selectedTypeIncluded = true;
                 }
@@ -392,9 +371,7 @@ public class DataModelerUtils {
         if ( externalClasses != null ) {
             for ( DataObjectTO externalDataObject : externalClasses ) {
                 String extClass = externalDataObject.getClassName();
-                String extClass_m = extClass + DataModelerUtils.MULTIPLE;
                 sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
-                sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m );
                 if ( selectedType != null && selectedType.equals( extClass ) ) {
                     selectedTypeIncluded = true;
                 }
@@ -406,9 +383,7 @@ public class DataModelerUtils {
             //uncommon case. A field was loaded but the class isn't within the model or externall classes.
 
             String extClass = selectedType;
-            String extClass_m = extClass + DataModelerUtils.MULTIPLE;
             sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
-            sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass_m, extClass_m );
         }
 
         //add project classes to the selector.
@@ -429,7 +404,7 @@ public class DataModelerUtils {
         }
 
         if ( selectedType != null ) {
-            String selectedValue = selectedType + ( selectedTypeMultiple ? MULTIPLE : "" );
+            String selectedValue = selectedType;
             typeSelector.setSelectedValue( selectedValue );
         }
     }

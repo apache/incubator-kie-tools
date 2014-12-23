@@ -147,6 +147,10 @@ public interface Constants extends Messages {
 
     public String objectBrowser_typeLabel();
 
+    public String objectBrowser_typeLabelMultiple();
+
+    public String objectBrowser_typeLabelMultipleTooltip();
+
     public String objectBrowser_labelPlaceholder();
 
     public String objectBrowser_readonlyLabel();

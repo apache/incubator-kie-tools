@@ -35,6 +35,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -97,6 +98,9 @@ public class DataObjectFieldEditor extends Composite {
     ListBox typeSelector;
 
     @UiField
+    CheckBox isTypeMultiple;
+
+    @UiField
     CheckBox equalsSelector;
 
     @UiField
@@ -138,6 +142,13 @@ public class DataObjectFieldEditor extends Composite {
             }
         } );
 
+        isTypeMultiple.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange( ValueChangeEvent<Boolean> event ) {
+                typeMultipleChanged( event );
+            }
+        } );
+
         positionSelector.addChangeHandler( new ChangeHandler() {
             public void onChange( ChangeEvent event ) {
                 positionChanged( event );
@@ -175,6 +186,7 @@ public class DataObjectFieldEditor extends Composite {
     public void setContext( DataModelerContext context ) {
         this.context = context;
         initTypeList();
+        isTypeMultiple.setEnabled( false );
     }
 
     private DataModelTO getDataModel() {
@@ -193,6 +205,7 @@ public class DataObjectFieldEditor extends Composite {
         label.setEnabled( value );
         description.setEnabled( value );
         typeSelector.setEnabled( value );
+        isTypeMultiple.setEnabled( value );
         equalsSelector.setEnabled( value );
         positionSelector.setEnabled( value );
     }
@@ -448,26 +461,44 @@ public class DataObjectFieldEditor extends Composite {
 
         String oldValue = getObjectField().getClassName();
         String type = typeSelector.getValue();
-        if ( DataModelerUtils.isMultipleType( type ) ) {
-            type = DataModelerUtils.getCanonicalClassName( type );
-            getObjectField().setMultiple( true );
-            if ( getObjectField().getBag() == null ) {
-                getObjectField().setBag( ObjectPropertyTO.DEFAULT_PROPERTY_BAG );
-            }
-        } else {
-            getObjectField().setMultiple( false );
-        }
-        getObjectField().setClassName( type );
+        boolean multiple = isTypeMultiple.getValue();
+        typeChanged( oldValue, type, multiple );
+    }
 
-        if ( getContext().getHelper().isBaseType( type ) ) {
+    private void typeMultipleChanged( ValueChangeEvent<Boolean> event ) {
+        typeChanged( typeSelector.getValue(), typeSelector.getValue(), event.getValue() );
+    }
+
+    private void typeChanged( String oldType, String newType, boolean isMultiple ) {
+        if ( getObjectField() == null ) {
+            return;
+        }
+
+        boolean multiple = isMultiple;
+
+        if ( getContext().getHelper().isPrimitiveType( newType ) ) {
+            isTypeMultiple.setEnabled( false );
+            isTypeMultiple.setValue( false );
+            multiple = false;
+        } else {
+            isTypeMultiple.setEnabled( true );
+        }
+
+        getObjectField().setClassName( newType );
+        getObjectField().setMultiple( multiple );
+        if ( multiple && getObjectField().getBag() == null ) {
+            getObjectField().setBag( ObjectPropertyTO.DEFAULT_PROPERTY_BAG );
+        }
+
+        if ( getContext().getHelper().isBaseType( newType ) ) {
             getObjectField().setBaseType( true );
         } else {
             // Un-reference former type reference and set the new one
             getObjectField().setBaseType( false );
-            getContext().getHelper().dataObjectUnReferenced( oldValue, getDataObject().getClassName() );
-            getContext().getHelper().dataObjectReferenced( type, getDataObject().getClassName() );
+            getContext().getHelper().dataObjectUnReferenced( oldType, getDataObject().getClassName() );
+            getContext().getHelper().dataObjectReferenced( newType, getDataObject().getClassName() );
         }
-        notifyFieldChange( "className", oldValue, type );
+        notifyFieldChange( "className", oldType, newType );
     }
 
     @UiHandler("equalsSelector")
@@ -510,11 +541,19 @@ public class DataObjectFieldEditor extends Composite {
 
         String currentFieldType = null;
         boolean currentFieldTypeMultiple = false;
+        isTypeMultiple.setEnabled( true );
+        isTypeMultiple.setValue( false );
 
         if ( getDataModel() != null ) {
             if ( getDataObject() != null && getObjectField() != null ) {
                 currentFieldType = getObjectField().getClassName();
                 currentFieldTypeMultiple = getObjectField().isMultiple();
+                if ( getContext().getHelper().isPrimitiveType( currentFieldType ) ) {
+                    isTypeMultiple.setEnabled( false );
+                    isTypeMultiple.setValue( false );
+                } else {
+                    isTypeMultiple.setValue( currentFieldTypeMultiple );
+                }
             }
             DataModelerUtils.initTypeList( typeSelector, getContext().getHelper().getOrderedBaseTypes().values(), getDataModel().getDataObjects(), getDataModel().getExternalClasses(), currentFieldType, currentFieldTypeMultiple );
         } else {
@@ -528,12 +567,6 @@ public class DataObjectFieldEditor extends Composite {
         if ( keepSelection && selectedValue != null ) {
             typeSelector.setSelectedValue( selectedValue );
         }
-    }
-
-    private void setSelectedType() {
-        String type = getObjectField() != null ?
-                ( getObjectField().getClassName() + ( getObjectField().isMultiple() ? DataModelerUtils.MULTIPLE : "" ) ) : null;
-        typeSelector.setSelectedValue( type );
     }
 
     private void initPositions() {
