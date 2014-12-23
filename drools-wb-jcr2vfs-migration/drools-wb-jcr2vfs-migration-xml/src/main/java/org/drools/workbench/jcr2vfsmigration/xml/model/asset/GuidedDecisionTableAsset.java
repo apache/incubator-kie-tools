@@ -30,7 +30,7 @@ public class GuidedDecisionTableAsset extends BaseXmlAsset {
                                      String content,
                                      String extendedRule ) {
 
-        super(name, format, lastContributor, checkinComment, lastModified);
+        super( name, format, lastContributor, checkinComment, lastModified );
         this.content = content;
         this.extendedRule = extendedRule;
     }

@@ -30,7 +30,7 @@ public class DataModelAsset extends BaseXmlAsset {
                            String checkinComment,
                            Date lastModified ) {
 
-        super(name, format, lastContributor, checkinComment, lastModified);
+        super( name, format, lastContributor, checkinComment, lastModified );
         this.dataObjects = new ArrayList<DataModelObject>();
     }
 

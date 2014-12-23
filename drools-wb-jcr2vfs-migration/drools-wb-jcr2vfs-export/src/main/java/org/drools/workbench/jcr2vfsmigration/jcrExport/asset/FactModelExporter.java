@@ -25,31 +25,31 @@ import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.Asset;
-import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 
-public class FactModelExporter implements AssetExporter<DataModelAsset> {
+public class FactModelExporter
+        extends BaseAssetExporter
+        implements AssetExporter<DataModelAsset, ExportContext> {
 
     @Inject
     private RepositoryAssetService jcrRepositoryAssetService;
 
     @Override
-    public DataModelAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
+    public DataModelAsset export( ExportContext exportContext ) {
 
-        DataModelAsset dma = new DataModelAsset( jcrAssetItem.getName(),
-                                                 jcrAssetItem.getFormat(),
-                                                 jcrAssetItem.getLastContributor(),
-                                                 jcrAssetItem.getCheckinComment(),
-                                                 jcrAssetItem.getLastModified().getTime() );
+        DataModelAsset dma = new DataModelAsset( exportContext.getJcrAssetItem().getName(),
+                                                 exportContext.getJcrAssetItem().getFormat(),
+                                                 exportContext.getJcrAssetItem().getLastContributor(),
+                                                 exportContext.getJcrAssetItem().getCheckinComment(),
+                                                 exportContext.getJcrAssetItem().getLastModified().getTime() );
 
         // At this point the module's name is normalized already
-        String normalizedPackageName = jcrModule.getName();
+        String normalizedPackageName = exportContext.getJcrModule().getName();
 
         Asset jcrAsset = null;
         try {
-            jcrAsset = jcrRepositoryAssetService.loadRuleAsset( jcrAssetItem.getUUID() );
+            jcrAsset = jcrRepositoryAssetService.loadRuleAsset( exportContext.getJcrAssetItem().getUUID() );
         } catch ( SerializationException e ) {
             System.out.println( "Error: " + e.getMessage() );
             return null;

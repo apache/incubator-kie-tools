@@ -26,7 +26,7 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.w3c.dom.Node;
 
-public class XmlAssetFormat extends AbstractXmlFormat {
+public class XmlAssetFormat extends AbstractXmlAssetFormat {
 
     private static PlainTextAssetFormat ptaf = new PlainTextAssetFormat();
     private static AttachmentAssetFormat aaf = new AttachmentAssetFormat();
@@ -86,7 +86,12 @@ public class XmlAssetFormat extends AbstractXmlFormat {
     }
 
     @Override
-    public XmlAsset parseStringToXmlAsset( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
+    public XmlAsset parseStringToXmlAsset( String name,
+            String format,
+            String lastContributor,
+            String checkinComment,
+            Date lastModified,
+            Node assetNode ) {
 
         switch ( AssetType.getByType( format ) ) {
             case ENUMERATION:

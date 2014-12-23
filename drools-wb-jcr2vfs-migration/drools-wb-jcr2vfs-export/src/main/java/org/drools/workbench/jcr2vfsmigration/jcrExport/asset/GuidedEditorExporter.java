@@ -17,46 +17,44 @@ package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 
 import javax.inject.Inject;
 
-import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
 import org.drools.guvnor.server.repository.Preferred;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
-import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.BusinessRuleAsset;
 
 public class GuidedEditorExporter
         extends BaseAssetExporter
-        implements AssetExporter<BusinessRuleAsset> {
+        implements AssetExporter<BusinessRuleAsset, ExportContext> {
 
     @Inject
     @Preferred
     private RulesRepository rulesRepository;
 
     @Override
-    public BusinessRuleAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
+    public BusinessRuleAsset export( ExportContext exportContext ) {
 
-        String content = jcrAssetItem.getContent();
+        String content = exportContext.getJcrAssetItem().getContent();
 
         RuleModel ruleModel = BRXMLPersistence.getInstance().unmarshal( content );
         boolean hasDSL = ruleModel.hasDSLSentences();
 
         StringBuilder sb = new StringBuilder();
-        BRMSPackageBuilder builder = new BRMSPackageBuilder( rulesRepository.loadModuleByUUID( jcrModule.getUuid() ) );
+        BRMSPackageBuilder builder = new BRMSPackageBuilder( rulesRepository.loadModuleByUUID( exportContext.getJcrModule().getUuid() ) );
         BRLContentHandler handler = new BRLContentHandler();
-        handler.assembleDRL( builder, jcrAssetItem, sb );
+        handler.assembleDRL( builder, exportContext.getJcrAssetItem(), sb );
 
         //Support for # has been removed from Drools Expert
         content = sb.toString().replaceAll( "#", "//" );
-        content = getExtendExpression( jcrModule, jcrAssetItem, content);
+        content = getExtendExpression( exportContext.getJcrModule(), exportContext.getJcrAssetItem(), content);
 
-        return new BusinessRuleAsset( jcrAssetItem.getName(),
-                                      jcrAssetItem.getFormat(),
-                                      jcrAssetItem.getLastContributor(),
-                                      jcrAssetItem.getCheckinComment(),
-                                      jcrAssetItem.getLastModified().getTime(),
+        return new BusinessRuleAsset( exportContext.getJcrAssetItem().getName(),
+                                      exportContext.getJcrAssetItem().getFormat(),
+                                      exportContext.getJcrAssetItem().getLastContributor(),
+                                      exportContext.getJcrAssetItem().getCheckinComment(),
+                                      exportContext.getJcrAssetItem().getLastModified().getTime(),
                                       content,
                                       hasDSL );
     }

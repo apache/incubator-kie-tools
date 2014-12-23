@@ -15,9 +15,6 @@
  */
 package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.repository.AssetItem;
-
-public interface AssetExporter<T> {
-    T export( Module jcrModule, AssetItem jcrAssetItem );
+public interface AssetExporter<T, C> {
+    T export( C exportConText );
 }

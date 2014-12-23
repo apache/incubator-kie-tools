@@ -24,6 +24,7 @@ public abstract class BaseXmlAsset implements XmlAsset {
     protected String lastContributor;
     protected String checkinComment;
     protected Date lastModified;
+    protected XmlAssets assetHistory;
 
     protected BaseXmlAsset() {}
 
@@ -55,5 +56,15 @@ public abstract class BaseXmlAsset implements XmlAsset {
 
     public Date getLastModified() {
         return lastModified;
+    }
+
+    @Override
+    public XmlAssets getAssetHistory() {
+        return assetHistory;
+    }
+
+    @Override
+    public void setAssetHistory( XmlAssets assetHistory ) {
+        this.assetHistory = assetHistory != null ? assetHistory : new XmlAssets();
     }
 }

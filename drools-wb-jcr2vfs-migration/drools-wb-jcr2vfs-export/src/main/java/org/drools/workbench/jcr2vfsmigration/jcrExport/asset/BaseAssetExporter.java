@@ -23,7 +23,7 @@ import org.drools.guvnor.client.rpc.Module;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 
-public class BaseAssetExporter {
+public abstract class BaseAssetExporter {
 
     /**
      * Retrieves form jcrModule the categoryRules and deduce the rule to extend depending of the assetItem categories
@@ -33,32 +33,32 @@ public class BaseAssetExporter {
      * @param ruleDelimiter The delimiter used to contruct the return value
      * @return the rule to extend depending of the asset category and the category rules defined by package between ruleDelimiter
      */
-    public String getExtendedRuleFromCategoryRules(Module jcrModule, AssetItem jcrAssetItem,String ruleDelimiter) {
+    protected String getExtendedRuleFromCategoryRules( Module jcrModule, AssetItem jcrAssetItem, String ruleDelimiter ) {
 
         HashMap catRuleHashMap = new HashMap();
         String ruleName;
         // Retrieve the module ruleCategories and constuct a hashmap, catRuleHashMap {"categoryName","ruleToExtend"}
-        if (jcrModule.getCatRules() != null &&
+        if ( jcrModule.getCatRules() != null &&
                 jcrModule.getCatRules().keySet() != null &&
-                jcrModule.getCatRules().keySet().size() > 0) {  // categoryRules threatament
-            for (Iterator it = jcrModule.getCatRules().keySet().iterator(); it.hasNext(); ) {
+                jcrModule.getCatRules().keySet().size() > 0 ) {  // categoryRules threatament
+            for ( Iterator it = jcrModule.getCatRules().keySet().iterator(); it.hasNext(); ) {
                 ruleName = (String) it.next();
-                catRuleHashMap.put(jcrModule.getCatRules().get(ruleName), ruleName);
+                catRuleHashMap.put( jcrModule.getCatRules().get( ruleName ), ruleName );
             }
         }
         // Now iterate by the asset categories, and construct  the extendRuleExpression if the category is in catRuleHashMap
         List<CategoryItem> assetCategories = jcrAssetItem.getCategories();
         StringBuilder extendCategoriesBuilder = new StringBuilder();
         int i = 0;
-        for (CategoryItem categoryItem : assetCategories) {
-            ruleName = (String) catRuleHashMap.get(categoryItem.getName());
+        for ( CategoryItem categoryItem : assetCategories ) {
+            ruleName = (String) catRuleHashMap.get( categoryItem.getName() );
             if (ruleName != null) {
                 if (i != 0) extendCategoriesBuilder.append(", ");
                 // prepared for multiple hierarchy,
                 // but in the old platform the multiple hierarchy was not supported
-                extendCategoriesBuilder.append(ruleDelimiter);
-                extendCategoriesBuilder.append(ruleName);
-                extendCategoriesBuilder.append(ruleDelimiter);
+                extendCategoriesBuilder.append( ruleDelimiter );
+                extendCategoriesBuilder.append( ruleName );
+                extendCategoriesBuilder.append( ruleDelimiter );
                 i++;
             }
         }
@@ -77,19 +77,19 @@ public class BaseAssetExporter {
      * @return the content passed with the extend expression if it's necessary.
      */
     // If content has an extend expression adds the rules added by the module hierarchy category rules
-    public String getExtendExpression(Module jcrModule, AssetItem jcrAssetItem, String content) {
-        String extendedRules = getExtendedRuleFromCategoryRules(jcrModule, jcrAssetItem,"\"");
-        if (extendedRules != null && extendedRules.trim().length() > 0) {
-            String[] contentSplit = content.split("\n");
+    protected String getExtendExpression( Module jcrModule, AssetItem jcrAssetItem, String content ) {
+        String extendedRules = getExtendedRuleFromCategoryRules( jcrModule, jcrAssetItem,"\"" );
+        if ( extendedRules != null && extendedRules.trim().length() > 0 ) {
+            String[] contentSplit = content.split( "\n" );
             String ruleName = contentSplit[0];
-            if (ruleName.indexOf(" extends ") == -1) {
+            if ( ruleName.indexOf(" extends " ) == -1 ) {
                 contentSplit[0] += " extends " + extendedRules;
             } else {
                 contentSplit[0] += "," + extendedRules;
             }
             StringBuilder contentWithExtendsBuilder = new StringBuilder();
-            for (String s : contentSplit) {
-                contentWithExtendsBuilder.append(s);
+            for ( String s : contentSplit ) {
+                contentWithExtendsBuilder.append( s );
                 contentWithExtendsBuilder.append("\n");
             }
             return contentWithExtendsBuilder.toString();

@@ -28,7 +28,7 @@ public class PlainTextAsset extends BaseXmlAsset {
                            Date lastModified,
                            String content ) {
 
-        super(name, format, lastContributor, checkinComment, lastModified);
+        super( name, format, lastContributor, checkinComment, lastModified );
         this.content = content;
     }
 

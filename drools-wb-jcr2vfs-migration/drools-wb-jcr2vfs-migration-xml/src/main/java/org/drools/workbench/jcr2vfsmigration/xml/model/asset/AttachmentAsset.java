@@ -28,7 +28,7 @@ public class AttachmentAsset extends BaseXmlAsset {
                             Date lastModified,
                             String attachmentFileName ) {
 
-        super(name, format, lastContributor, checkinComment, lastModified);
+        super( name, format, lastContributor, checkinComment, lastModified );
         this.attachmentFileName = attachmentFileName;
     }
 

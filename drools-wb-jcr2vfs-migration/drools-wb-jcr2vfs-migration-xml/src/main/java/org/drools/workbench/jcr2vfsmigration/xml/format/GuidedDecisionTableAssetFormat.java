@@ -38,7 +38,13 @@ public class GuidedDecisionTableAssetFormat extends XmlAssetFormat {
         return sb.toString();
     }
 
-    protected GuidedDecisionTableAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
+    protected GuidedDecisionTableAsset doParse( String name,
+                                                String format,
+                                                String lastContributor,
+                                                String checkinComment,
+                                                Date lastModified,
+                                                Node assetNode ) {
+
         String content = null;
         String extendedRule = null;
         NodeList assetNodeList = assetNode.getChildNodes();

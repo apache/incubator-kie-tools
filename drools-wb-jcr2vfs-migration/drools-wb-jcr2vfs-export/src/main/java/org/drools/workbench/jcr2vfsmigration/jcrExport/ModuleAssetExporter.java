@@ -18,7 +18,9 @@ package org.drools.workbench.jcr2vfsmigration.jcrExport;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -29,6 +31,8 @@ import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.Module;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryModuleService;
 import org.drools.guvnor.server.repository.Preferred;
@@ -37,6 +41,8 @@ import org.drools.repository.ModuleItem;
 import org.drools.repository.ModuleIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.workbench.jcr2vfsmigration.common.FileManager;
+import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.AttachmentAssetExporter;
+import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.ExportContext;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.FactModelExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedDecisionTableExporter;
 import org.drools.workbench.jcr2vfsmigration.jcrExport.asset.GuidedEditorExporter;
@@ -47,7 +53,6 @@ import org.drools.workbench.jcr2vfsmigration.xml.format.ModulesXmlFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetsFormat;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Modules;
-import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.IgnoredAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
@@ -55,7 +60,6 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 public class ModuleAssetExporter {
 
     private static int assetFileName = 1;
-    private static int attachmentFileNameCounter = 1;
     private static final String GLOBAL_KEYWORD = "global ";
 
     @Inject
@@ -88,6 +92,9 @@ public class ModuleAssetExporter {
 
     @Inject
     private FactModelExporter factModelExporter;
+
+    @Inject
+    private AttachmentAssetExporter attachmentAssetExporter;
 
     ModulesXmlFormat modulesXmlFormat = new ModulesXmlFormat();
     XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
@@ -217,22 +224,19 @@ public class ModuleAssetExporter {
             try {
                 response = jcrRepositoryAssetService.findAssetPage(request);
                 for (AssetPageRow row : response.getPageRowList()) {
-                    AssetItem assetItemJCR = rulesRepository.loadAssetByUUID(row.getUuid());
+                    AssetItem assetItemJCR = rulesRepository.loadAssetByUUID( row.getUuid() );
                     assetName =assetItemJCR.getName();
                     System.out.format("    Asset [%s] with format [%s] is being migrated... %n",
                             assetItemJCR.getName(), assetItemJCR.getFormat());
                     //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
                     //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
 
-                    //Migrate historical versions first, this includes the head version(i.e., the latest version)
-
-// TODO?                        migrateAssetHistory(jcrModule, row.getUuid());
-
                     //Still need to migrate the "current version" even though in most cases the "current version" (actually it is not a version in version
                     //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
                     //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
-
-                    assets.add( export( jcrModule, assetItemJCR, assetFileName ) );
+                    XmlAsset xmlAsset = export( ExportContext.getInstance( jcrModule, assetItemJCR, assetFileName ) );
+                    xmlAsset.setAssetHistory( exportAssetHistory( ExportContext.getInstance( jcrModule, row.getUuid() ) ) );
+                    assets.add( xmlAsset );
 
                     System.out.format("    Done.%n");
                 }
@@ -256,79 +260,108 @@ public class ModuleAssetExporter {
         return true;
     }
 
-    private XmlAsset export(Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
-        if ( AssetFormats.DRL_MODEL.equals(jcrAssetItem.getFormat())) {
-            return factModelExporter.export( jcrModule, jcrAssetItem );
+    private XmlAsset export( ExportContext exportContext ) {
+        String name = exportContext.getJcrAssetItem().getName();
+        String format = exportContext.getJcrAssetItem().getFormat();
 
-        } else if (AssetFormats.BUSINESS_RULE.equals(jcrAssetItem.getFormat())) {
-            return guidedEditorExporter.export( jcrModule, jcrAssetItem );
+        if ( AssetFormats.DRL_MODEL.equals( format ) ) {
+            return factModelExporter.export( exportContext );
 
-        } else if (AssetFormats.DECISION_TABLE_GUIDED.equals(jcrAssetItem.getFormat())) {
-            return guidedDecisionTableExporter.export( jcrModule, jcrAssetItem );
+        } else if (AssetFormats.BUSINESS_RULE.equals( format )) {
+            return guidedEditorExporter.export( exportContext );
 
-        } else if (AssetFormats.ENUMERATION.equals(jcrAssetItem.getFormat())
-                || AssetFormats.DSL.equals(jcrAssetItem.getFormat())
-                || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
-                || AssetFormats.RULE_TEMPLATE.equals(jcrAssetItem.getFormat())
-                || AssetFormats.FORM_DEFINITION.equals(jcrAssetItem.getFormat())
-                || AssetFormats.SPRING_CONTEXT.equals(jcrAssetItem.getFormat())
-                || AssetFormats.SERVICE_CONFIG.equals(jcrAssetItem.getFormat())
-                || AssetFormats.WORKITEM_DEFINITION.equals(jcrAssetItem.getFormat())
-                || AssetFormats.CHANGE_SET.equals(jcrAssetItem.getFormat())
-                || AssetFormats.RULE_FLOW_RF.equals(jcrAssetItem.getFormat())
-                || AssetFormats.BPMN_PROCESS.equals(jcrAssetItem.getFormat())
-                || AssetFormats.BPMN2_PROCESS.equals(jcrAssetItem.getFormat())
-                || "ftl".equals(jcrAssetItem.getFormat())
-                || "json".equals(jcrAssetItem.getFormat())
-                || "fw".equals(jcrAssetItem.getFormat())) {
-            return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
+        } else if (AssetFormats.DECISION_TABLE_GUIDED.equals( format )) {
+            return guidedDecisionTableExporter.export( exportContext );
 
-        } else if (AssetFormats.DRL.equals(jcrAssetItem.getFormat())
-                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
-            return plainTextAssetWithPackagePropertyExporter.export( jcrModule, jcrAssetItem );
+        } else if (AssetFormats.ENUMERATION.equals( format )
+                || AssetFormats.DSL.equals( format )
+                || AssetFormats.DSL_TEMPLATE_RULE.equals( format )
+                || AssetFormats.RULE_TEMPLATE.equals( format )
+                || AssetFormats.FORM_DEFINITION.equals( format )
+                || AssetFormats.SPRING_CONTEXT.equals( format )
+                || AssetFormats.SERVICE_CONFIG.equals( format )
+                || AssetFormats.WORKITEM_DEFINITION.equals( format )
+                || AssetFormats.CHANGE_SET.equals( format )
+                || AssetFormats.RULE_FLOW_RF.equals( format )
+                || AssetFormats.BPMN_PROCESS.equals( format )
+                || AssetFormats.BPMN2_PROCESS.equals( format )
+                || "ftl".equals( format )
+                || "json".equals( format )
+                || "fw".equals( format )) {
+            return plainTextAssetExporter.export( exportContext );
 
-        } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
-                || AssetFormats.SCORECARD_SPREADSHEET_XLS.equals(jcrAssetItem.getFormat())
-                || "png".equals(jcrAssetItem.getFormat())
-                || "gif".equals(jcrAssetItem.getFormat())
-                || "jpg".equals(jcrAssetItem.getFormat())
-                || "pdf".equals(jcrAssetItem.getFormat())
-                || "doc".equals(jcrAssetItem.getFormat())
-                || "odt".equals(jcrAssetItem.getFormat())) {
-            return exportAttachment( jcrModule, jcrAssetItem, assetExportFileName );
+        } else if (AssetFormats.DRL.equals( format )
+                || AssetFormats.FUNCTION.equals( format )) {
+            return plainTextAssetWithPackagePropertyExporter.export( exportContext );
 
-        } else if (AssetFormats.MODEL.equals(jcrAssetItem.getFormat())) {
-            System.out.println("    WARNING: POJO Model jar [" + jcrAssetItem.getName() + "] is not supported by export tool. Please add your POJO model jar to Guvnor manually.");
+        } else if (AssetFormats.DECISION_SPREADSHEET_XLS.equals( format )
+                || AssetFormats.SCORECARD_SPREADSHEET_XLS.equals( format )
+                || "png".equals( format )
+                || "gif".equals( format )
+                || "jpg".equals( format )
+                || "pdf".equals( format )
+                || "doc".equals( format )
+                || "odt".equals( format )) {
+            return attachmentAssetExporter.export( exportContext );
 
-        } else if (AssetFormats.SCORECARD_GUIDED.equals(jcrAssetItem.getFormat())) {
+        } else if (AssetFormats.MODEL.equals( format )) {
+            System.out.println("    WARNING: POJO Model jar [" + name + "] is not supported by export tool. Please add your POJO model jar to Guvnor manually.");
+
+        } else if (AssetFormats.SCORECARD_GUIDED.equals( format )) {
             // No special treatment or attributes needed; use PlainTextAsset
-            return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
+            return plainTextAssetExporter.export( exportContext );
 
-        } else if (AssetFormats.TEST_SCENARIO.equals(jcrAssetItem.getFormat())) {
+        } else if (AssetFormats.TEST_SCENARIO.equals( format )) {
             // No special treatment or attributes needed; use PlainTextAsset
-            return plainTextAssetExporter.export( jcrModule, jcrAssetItem );
+            return plainTextAssetExporter.export( exportContext );
 
-        } else if ("package".equals(jcrAssetItem.getFormat())) {
+        } else if ("package".equals( format )) {
             //Ignore
 
         } else { //another format is migrated as a attachmentAsset
-            System.out.format("    WARNING: asset [%s] with format[%s] is not a known format by export tool. It will be exported as attachmentAsset %n", jcrAssetItem.getName(), jcrAssetItem.getFormat());
-            return exportAttachment( jcrModule, jcrAssetItem, assetExportFileName );
+            System.out.format("    WARNING: asset [%s] with format[%s] is not a known format by export tool. It will be exported as attachmentAsset %n", name, format );
+            return attachmentAssetExporter.export( exportContext );
         }
         return new IgnoredAsset();
     }
 
-    private AttachmentAsset exportAttachment( Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
-        // No specific exporter for this, since nothing special needs to be done, just write bytes to file.
-        String attachmentName = assetExportFileName + "_" + attachmentFileNameCounter++;
-        if ( !fileManager.writeBinaryContent( attachmentName, jcrAssetItem.getBinaryContentAsBytes() ) )
-            System.out.println( "WARNING: no binary content was written for asset " + jcrAssetItem.getName() );
-        return new AttachmentAsset( jcrAssetItem.getName(),
-                jcrAssetItem.getFormat(),
-                jcrAssetItem.getLastContributor(),
-                jcrAssetItem.getCheckinComment(),
-                jcrAssetItem.getLastModified().getTime(),
-                attachmentName );
+    private XmlAssets exportAssetHistory( ExportContext historyContext ) throws SerializationException {
+        XmlAssets xmlAssets = new XmlAssets();
+
+        //loadItemHistory wont return the current version
+        String currentVersionAssetName="";
+        try {
+            TableDataResult history = jcrRepositoryAssetService.loadItemHistory( historyContext.getAssetUUID() );
+            TableDataRow[] rows = history.data;
+            Arrays.sort( rows,
+                    new Comparator<TableDataRow>() {
+                        public int compare( TableDataRow r1,
+                                TableDataRow r2 ) {
+                            Integer v2 = Integer.valueOf( r2.values[ 0 ] );
+                            Integer v1 = Integer.valueOf( r1.values[ 0 ] );
+
+                            return v1.compareTo( v2 );
+                        }
+                    } );
+
+            String historicalAssetExportFileName = "h_" + historyContext.getAssetExportFileName();
+            for (TableDataRow row : rows) {
+                AssetItem historicalAssetJCR = rulesRepository.loadAssetByUUID( row.id );
+                currentVersionAssetName = historicalAssetJCR.getName();
+
+                ExportContext historicalAssetExportContext = ExportContext.getInstance( historyContext.getJcrModule(),
+                                                                                        historicalAssetJCR,
+                                                                                        historicalAssetExportFileName );
+                xmlAssets.addAsset( export( historicalAssetExportContext ) );
+
+                System.out.format( "    Asset (%s) with format (%s) migrated: version [%s], comment[%s], lastModified[%s]",
+                        historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(), historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified().getTime() );
+            }
+        } catch ( RuntimeException e ){
+            System.out.println( "Exception migrating assetHistory at version: " + currentVersionAssetName +
+                    " from module: " + historyContext.getJcrModule().getName() );
+        }
+        return  xmlAssets;
     }
 
     // Attempt creation of the asset export file firstly with the module's uuid. If this were null or the file could not

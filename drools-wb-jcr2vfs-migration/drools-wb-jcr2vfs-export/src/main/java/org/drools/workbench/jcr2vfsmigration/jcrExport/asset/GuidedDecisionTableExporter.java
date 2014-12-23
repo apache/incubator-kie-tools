@@ -15,25 +15,23 @@
  */
 package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.GuidedDecisionTableAsset;
 
 public class GuidedDecisionTableExporter
         extends BaseAssetExporter
-        implements AssetExporter<GuidedDecisionTableAsset> {
+        implements AssetExporter<GuidedDecisionTableAsset, ExportContext> {
 
     @Override
-    public GuidedDecisionTableAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
+    public GuidedDecisionTableAsset export( ExportContext exportContext ) {
 
-        String extendedRule = getExtendedRuleFromCategoryRules(jcrModule,jcrAssetItem,"");
+        String extendedRule = getExtendedRuleFromCategoryRules(exportContext.getJcrModule(), exportContext.getJcrAssetItem(),"");
 
-        return new GuidedDecisionTableAsset( jcrAssetItem.getName(),
-                                             jcrAssetItem.getFormat(),
-                                             jcrAssetItem.getLastContributor(),
-                                             jcrAssetItem.getCheckinComment(),
-                                             jcrAssetItem.getLastModified().getTime(),
-                                             jcrAssetItem.getContent(),
+        return new GuidedDecisionTableAsset( exportContext.getJcrAssetItem().getName(),
+                                             exportContext.getJcrAssetItem().getFormat(),
+                                             exportContext.getJcrAssetItem().getLastContributor(),
+                                             exportContext.getJcrAssetItem().getCheckinComment(),
+                                             exportContext.getJcrAssetItem().getLastModified().getTime(),
+                                             exportContext.getJcrAssetItem().getContent(),
                                              extendedRule );
     }
 }

@@ -33,13 +33,21 @@ public class AttachmentAssetFormat extends XmlAssetFormat {
         return sb.toString();
     }
 
-    protected AttachmentAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
+    protected AttachmentAsset doParse( String name,
+                                       String format,
+                                       String lastContributor,
+                                       String checkinComment,
+                                       Date lastModified,
+                                       Node assetNode ) {
+
         String attachmentFile = null;
         NodeList assetNodeList = assetNode.getChildNodes();
         for ( int i = 0; i < assetNodeList.getLength(); i++ ) {
             Node node = assetNodeList.item( i );
             String nodeContent = node.getTextContent();
-            if ( ATTACHMENT_FILENAME.equalsIgnoreCase( node.getNodeName() ) ) attachmentFile = nodeContent;
+            if ( ATTACHMENT_FILENAME.equalsIgnoreCase( node.getNodeName() ) ) {
+                attachmentFile = nodeContent;
+            }
         }
         return new AttachmentAsset( name, format, lastContributor, checkinComment, lastModified, attachmentFile );
     }

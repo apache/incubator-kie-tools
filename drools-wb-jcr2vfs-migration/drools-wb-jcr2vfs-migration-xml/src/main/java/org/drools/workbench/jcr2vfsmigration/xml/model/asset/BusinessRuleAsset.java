@@ -30,7 +30,7 @@ public class BusinessRuleAsset extends BaseXmlAsset {
                               String content,
                               boolean hasDSLSentences ) {
 
-        super(name, format, lastContributor, checkinComment, lastModified);
+        super( name, format, lastContributor, checkinComment, lastModified );
         this.content = content;
         this.hasDSLSentences = hasDSLSentences;
     }

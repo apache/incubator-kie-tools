@@ -21,10 +21,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
+import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-public abstract class AbstractXmlFormat implements XmlFormat<XmlAsset> {
+public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
 
     protected static final String ASSET = "asset";
     protected static final String ASSET_NAME = "name";
@@ -32,6 +34,9 @@ public abstract class AbstractXmlFormat implements XmlFormat<XmlAsset> {
     protected static final String ASSET_LAST_CONTRIBUTOR = "lastContrib";
     protected static final String ASSET_LAST_MODIFIED = "lastModif";
     protected static final String ASSET_CHECKIN_COMMENT = "comment";
+    protected static final String ASSET_HISTORY = "history";
+
+    private XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
 
     @Override
     public void format( StringBuilder sb, XmlAsset xmlAsset ) {
@@ -50,17 +55,35 @@ public abstract class AbstractXmlFormat implements XmlFormat<XmlAsset> {
 
         XmlGenericAttributes genericAttributes = parseGenericNodeContent( assetNode );
 
-        return parseStringToXmlAsset( genericAttributes.getAssetName(),
-                                      genericAttributes.getAssetFormat(),
-                                      genericAttributes.getAssetLastContributor(),
-                                      genericAttributes.getAssetCheckinComment(),
-                                      genericAttributes.getAssetLastModified(),
-                                      assetNode );
+        XmlAsset xmlAsset = parseStringToXmlAsset( genericAttributes.getAssetName(),
+                                                   genericAttributes.getAssetFormat(),
+                                                   genericAttributes.getAssetLastContributor(),
+                                                   genericAttributes.getAssetCheckinComment(),
+                                                   genericAttributes.getAssetLastModified(),
+                                                   assetNode );
+
+        xmlAsset.setAssetHistory( parseAssetHistory( assetNode ) );
+
+        return xmlAsset;
     }
 
     protected abstract String formatAssetAsString( XmlAsset xmlAsset );
 
-    protected abstract XmlAsset parseStringToXmlAsset( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode );
+    protected abstract XmlAsset parseStringToXmlAsset( String name,
+                                                       String format,
+                                                       String lastContributor,
+                                                       String checkinComment,
+                                                       Date lastModified,
+                                                       Node assetNode );
+
+    protected XmlAssets parseAssetHistory( Node assetNode ) {
+        NodeList assetNodeChildren = assetNode.getChildNodes();
+        for ( int i = 0; i < assetNodeChildren.getLength(); i++ ) {
+            Node node = assetNodeChildren.item( i );
+            if ( ASSET_HISTORY.equals( node.getNodeName() ) ) return xmlAssetsFormat.parse( node );
+        }
+        return new XmlAssets();
+    }
 
     private void formatAssetStart( StringBuilder sb, XmlAsset xmlAsset) {
         String lastContributor = StringUtils.isNotBlank( xmlAsset.getLastContributor() ) ? xmlAsset.getLastContributor() : "--";
@@ -79,6 +102,11 @@ public abstract class AbstractXmlFormat implements XmlFormat<XmlAsset> {
     }
 
     private void formatAssetEnd( StringBuilder sb, XmlAsset xmlAsset) {
+        // Format asset history
+        sb.append( LT ).append( ASSET_HISTORY ).append( GT );
+        xmlAssetsFormat.format( sb, xmlAsset.getAssetHistory() );
+        sb.append( LT_SLASH ).append( ASSET_HISTORY ).append( GT );
+
         sb.append( LT_SLASH ).append( ASSET ).append( GT );
     }
 

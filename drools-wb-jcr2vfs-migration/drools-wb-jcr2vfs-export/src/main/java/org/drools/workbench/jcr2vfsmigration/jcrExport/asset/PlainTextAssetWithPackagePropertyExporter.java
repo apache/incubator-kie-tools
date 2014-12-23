@@ -16,49 +16,49 @@
 package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.util.ExportUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 
 public class PlainTextAssetWithPackagePropertyExporter
         extends BaseAssetExporter
-        implements AssetExporter<PlainTextAsset> {
+        implements AssetExporter<PlainTextAsset, ExportContext> {
 
     @Override
-    public PlainTextAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
+    public PlainTextAsset export( ExportContext exportContext ) {
+
+        String format = exportContext.getJcrAssetItem().getFormat();
 
         StringBuilder sb = new StringBuilder();
-        if ( AssetFormats.DRL.equals( jcrAssetItem.getFormat() ) && jcrAssetItem.getContent().toLowerCase().indexOf("rule ")==-1 ) {
-            sb.append( "rule \"" + jcrAssetItem.getName() + "\"" );
-            sb.append( getExtendExpression(jcrModule,jcrAssetItem,"") );
+        if ( AssetFormats.DRL.equals( format ) && exportContext.getJcrAssetItem().getContent().toLowerCase().indexOf("rule ")==-1 ) {
+            sb.append( "rule \"" + exportContext.getJcrAssetItem().getName() + "\"" );
+            sb.append( getExtendExpression( exportContext.getJcrModule(), exportContext.getJcrAssetItem(), "") );
             sb.append( "\n" );
             sb.append( "\n" );
-            sb.append( jcrAssetItem.getContent() );
+            sb.append( exportContext.getJcrAssetItem().getContent() );
             sb.append( "\n" );
             sb.append( "\n" );
             sb.append( "end" );
         }
         else{
-            sb.append( jcrAssetItem.getContent() );
+            sb.append( exportContext.getJcrAssetItem().getContent() );
             sb.append( "\n" );
         }
         String content = sb.toString();
 
         // Support for '#' has been removed from Drools Expert -> replace it with '//'
-        if (AssetFormats.DSL.equals(jcrAssetItem.getFormat())
-                || AssetFormats.DSL_TEMPLATE_RULE.equals(jcrAssetItem.getFormat())
-                || AssetFormats.RULE_TEMPLATE.equals(jcrAssetItem.getFormat())
-                || AssetFormats.DRL.equals(jcrAssetItem.getFormat())
-                || AssetFormats.FUNCTION.equals(jcrAssetItem.getFormat())) {
+        if (AssetFormats.DSL.equals(format)
+                || AssetFormats.DSL_TEMPLATE_RULE.equals(format)
+                || AssetFormats.RULE_TEMPLATE.equals(format)
+                || AssetFormats.DRL.equals(format)
+                || AssetFormats.FUNCTION.equals(format)) {
             content = ExportUtils.migrateStartOfCommentChar( content );
         }
 
-        return new PlainTextAsset( jcrAssetItem.getName(),
-                                   jcrAssetItem.getFormat(),
-                                   jcrAssetItem.getLastContributor(),
-                                   jcrAssetItem.getCheckinComment(),
-                                   jcrAssetItem.getLastModified().getTime(),
+        return new PlainTextAsset( exportContext.getJcrAssetItem().getName(),
+                                   format,
+                                   exportContext.getJcrAssetItem().getLastContributor(),
+                                   exportContext.getJcrAssetItem().getCheckinComment(),
+                                   exportContext.getJcrAssetItem().getLastModified().getTime(),
                                    content );
     }
 }

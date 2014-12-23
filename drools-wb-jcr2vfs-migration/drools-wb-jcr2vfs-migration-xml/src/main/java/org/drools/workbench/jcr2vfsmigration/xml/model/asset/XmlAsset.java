@@ -29,4 +29,8 @@ public interface XmlAsset {
 
     public Date getLastModified();
 
+    public XmlAssets getAssetHistory();
+
+    // Setter for asset's history. Concession in order to avoid convoluted code.
+    public void setAssetHistory( XmlAssets assetHistory );
 }

@@ -22,8 +22,16 @@ import java.util.Collections;
 public class XmlAssets {
     private Collection<XmlAsset> cAssets;
 
+    public XmlAssets() {
+        this.cAssets = new ArrayList<XmlAsset>();
+    }
+
     public XmlAssets( Collection<XmlAsset> assets ) {
         this.cAssets = assets != null ? assets : new ArrayList<XmlAsset>();
+    }
+
+    public void addAsset( XmlAsset xmlAsset ) {
+        this.cAssets.add( xmlAsset );
     }
 
     public Collection<XmlAsset> getAssets() {

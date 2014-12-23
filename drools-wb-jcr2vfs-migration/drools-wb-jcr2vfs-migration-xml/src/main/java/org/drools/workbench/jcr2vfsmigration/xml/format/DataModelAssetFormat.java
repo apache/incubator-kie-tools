@@ -74,7 +74,12 @@ public class DataModelAssetFormat extends XmlAssetFormat {
         return sb.toString();
     }
 
-    protected DataModelAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
+    protected DataModelAsset doParse( String name,
+                                      String format,
+                                      String lastContributor,
+                                      String checkinComment,
+                                      Date lastModified,
+                                      Node assetNode ) {
 
         DataModelAsset dataModel = new DataModelAsset( name, format, lastContributor, checkinComment, lastModified );
 

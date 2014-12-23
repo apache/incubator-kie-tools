@@ -16,19 +16,17 @@
 package org.drools.workbench.jcr2vfsmigration.jcrExport.asset;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.Module;
-import org.drools.repository.AssetItem;
 import org.drools.workbench.jcr2vfsmigration.util.ExportUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.PlainTextAsset;
 
 public class PlainTextAssetExporter
         extends BaseAssetExporter
-        implements AssetExporter<PlainTextAsset> {
+        implements AssetExporter<PlainTextAsset, ExportContext> {
 
-    public PlainTextAsset export( Module jcrModule, AssetItem jcrAssetItem ) {
+    public PlainTextAsset export( ExportContext exportContext ) {
 
-        String format = jcrAssetItem.getFormat();
-        String content = jcrAssetItem.getContent();
+        String format = exportContext.getJcrAssetItem().getFormat();
+        String content = exportContext.getJcrAssetItem().getContent();
 
         // Support for '#' has been removed from Drools Expert -> replace it with '//'
         if ( AssetFormats.DSL.equals(format)
@@ -45,11 +43,11 @@ public class PlainTextAssetExporter
             content = content.replaceAll("org.drools.process.core.","org.drools.core.process.core.");
         }
 
-        return new PlainTextAsset( jcrAssetItem.getName(),
+        return new PlainTextAsset( exportContext.getJcrAssetItem().getName(),
                                    format,
-                                   jcrAssetItem.getLastContributor(),
-                                   jcrAssetItem.getCheckinComment(),
-                                   jcrAssetItem.getLastModified().getTime(),
+                                   exportContext.getJcrAssetItem().getLastContributor(),
+                                   exportContext.getJcrAssetItem().getCheckinComment(),
+                                   exportContext.getJcrAssetItem().getLastModified().getTime(),
                                    content );
     }
 }

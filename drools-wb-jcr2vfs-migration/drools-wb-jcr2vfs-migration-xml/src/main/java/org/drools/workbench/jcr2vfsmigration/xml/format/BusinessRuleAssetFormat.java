@@ -38,7 +38,13 @@ public class BusinessRuleAssetFormat extends XmlAssetFormat {
         return sb.toString();
     }
 
-    protected BusinessRuleAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
+    protected BusinessRuleAsset doParse( String name,
+                                         String format,
+                                         String lastContributor,
+                                         String checkinComment,
+                                         Date lastModified,
+                                         Node assetNode ) {
+
         Boolean hasDSL = false;
         String content = null;
         NodeList assetNodeList = assetNode.getChildNodes();

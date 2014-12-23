@@ -34,13 +34,21 @@ public class PlainTextAssetFormat extends XmlAssetFormat {
         return sb.toString();
     }
 
-    protected PlainTextAsset doParse( String name, String format, String lastContributor, String checkinComment, Date lastModified, Node assetNode ) {
+    protected PlainTextAsset doParse( String name,
+            String format,
+            String lastContributor,
+            String checkinComment,
+            Date lastModified,
+            Node assetNode ) {
+
         String textContent = null;
         NodeList assetNodeList = assetNode.getChildNodes();
         for ( int i = 0; i < assetNodeList.getLength(); i++ ) {
             Node node = assetNodeList.item( i );
             String nodeContent = node.getTextContent();
-            if ( TEXT_CONTENT.equalsIgnoreCase( node.getNodeName() ) ) textContent = nodeContent;
+            if ( TEXT_CONTENT.equalsIgnoreCase( node.getNodeName() ) ) {
+                textContent = nodeContent;
+            }
         }
         return new PlainTextAsset( name, format, lastContributor, checkinComment, lastModified, textContent );
     }
