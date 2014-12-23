@@ -16,7 +16,7 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import static org.uberfire.workbench.model.CompassPosition.*;
 
 @ApplicationScoped
-@WorkbenchPerspective(identifier = "PlugInAuthoringPerspective", isDefault = true)
+@WorkbenchPerspective(identifier = "PlugInAuthoringPerspective")
 public class PlugInAuthoringPerspective {
 
     @Perspective
