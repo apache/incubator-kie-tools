@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
@@ -36,9 +37,16 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.kie.workbench.common.services.shared.project.KieProject;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.StandardCopyOption;
 
 public class FactModelImporter implements AssetImporter<DataModelAsset> {
+
+    @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     private MigrationPathManager migrationPathManager;
@@ -53,10 +61,16 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
     private Map<String, AnnotationDefinitionTO> annotationDefinitions;
 
     @Override
-    public void importAsset( Module xmlModule, DataModelAsset xmlAsset ) {
+    public Path importAsset( Module xmlModule, DataModelAsset xmlAsset, Path previousVersionPath ) {
 
         String normalizedPackageName = xmlModule.getNormalizedPackageName();
         Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
+
+        //The asset was renamed in this version. We move this asset first.
+        if ( previousVersionPath != null && !previousVersionPath.equals( path ) ) {
+            ioService.move( Paths.convert( previousVersionPath ), Paths.convert( path ), StandardCopyOption.REPLACE_EXISTING );
+        }
+
         KieProject project = projectService.resolveProject( path );
 
         initBasePropertyTypes();
@@ -123,8 +137,9 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
 
             dataModelTO.getDataObjects().add( dataObject );
         }
-
         modelerService.saveModel( dataModelTO, project );
+
+        return path;
     }
 
     private void initBasePropertyTypes() {

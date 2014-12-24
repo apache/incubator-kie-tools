@@ -38,7 +38,6 @@ public class CategoryXmlFormat implements XmlFormat<Category> {
         initialize();
         sb.append( LT ).append( CATEGORY ).append( " " ).append( CATEGORY_NAME ).append( "=\"" ).append( category.getName() ).append( "\"" ).append( GT );
         if ( category.getCategories() != null ) {
-            if ( categoriesXmlFormat == null ) categoriesXmlFormat = new CategoriesXmlFormat();
             categoriesXmlFormat.format( sb, category.getCategories() );
         }
         sb.append( LT_SLASH ).append( CATEGORY ).append( GT );

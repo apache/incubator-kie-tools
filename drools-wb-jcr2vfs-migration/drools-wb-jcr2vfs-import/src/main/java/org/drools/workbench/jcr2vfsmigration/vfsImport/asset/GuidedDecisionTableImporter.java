@@ -31,6 +31,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardCopyOption;
 
 public class GuidedDecisionTableImporter implements AssetImporter<GuidedDecisionTableAsset> {
 
@@ -45,10 +46,15 @@ public class GuidedDecisionTableImporter implements AssetImporter<GuidedDecision
     private ProjectService projectService;
 
     @Override
-    public void importAsset( Module xmlModule, GuidedDecisionTableAsset xmlAsset ) {
+    public Path importAsset( Module xmlModule, GuidedDecisionTableAsset xmlAsset, Path previousVersionPath ) {
 
         Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+
+        //The asset was renamed in this version. We move this asset first.
+        if ( previousVersionPath != null && !previousVersionPath.equals( path ) ) {
+            ioService.move( Paths.convert( previousVersionPath ), nioPath, StandardCopyOption.REPLACE_EXISTING );
+        }
 
         String packageHeader = xmlModule.getPackageHeaderInfo();
         String content = xmlAsset.getContent();
@@ -90,5 +96,6 @@ public class GuidedDecisionTableImporter implements AssetImporter<GuidedDecision
                              xmlAsset.getCheckinComment(),
                              xmlAsset.getLastModified() )
         );
+        return path;
     }
 }

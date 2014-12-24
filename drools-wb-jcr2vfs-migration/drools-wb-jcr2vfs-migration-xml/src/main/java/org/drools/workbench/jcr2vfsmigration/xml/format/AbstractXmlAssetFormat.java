@@ -83,7 +83,7 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
         NodeList assetNodeChildren = assetNode.getChildNodes();
         for ( int i = 0; i < assetNodeChildren.getLength(); i++ ) {
             Node node = assetNodeChildren.item( i );
-            if ( ASSET_HISTORY.equals( node.getNodeName() ) ) return xmlAssetsFormat.parse( node );
+            if ( ASSET_HISTORY.equals( node.getNodeName() ) ) return xmlAssetsFormat.parse( node.getFirstChild() );
         }
         return new XmlAssets();
     }

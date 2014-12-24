@@ -16,7 +16,8 @@
 package org.drools.workbench.jcr2vfsmigration.vfsImport.asset;
 
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
+import org.uberfire.backend.vfs.Path;
 
 public interface AssetImporter<T> {
-    void importAsset( Module xmlModule, T xmlAsset );
+    Path importAsset( Module xmlModule, T xmlAsset, Path previousVersionPath );
 }

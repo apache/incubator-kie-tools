@@ -27,6 +27,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardCopyOption;
 
 public class AttachmentAssetImporter implements AssetImporter<AttachmentAsset> {
 
@@ -41,9 +42,14 @@ public class AttachmentAssetImporter implements AssetImporter<AttachmentAsset> {
     FileManager fileManager;
 
     @Override
-    public void importAsset( Module xmlModule, AttachmentAsset xmlAsset ) {
+    public Path importAsset( Module xmlModule, AttachmentAsset xmlAsset, Path previousVersionPath ) {
         Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+
+        //The asset was renamed in this version. We move this asset first.
+        if( previousVersionPath != null && !previousVersionPath.equals( path ) ) {
+            ioService.move( Paths.convert( previousVersionPath ), nioPath, StandardCopyOption.REPLACE_EXISTING );
+        }
 
         String attachmentFileName = xmlAsset.getAttachmentFileName();
         byte[] attachment = fileManager.readBinaryContent( attachmentFileName );
@@ -56,5 +62,6 @@ public class AttachmentAssetImporter implements AssetImporter<AttachmentAsset> {
                              xmlAsset.getCheckinComment(),
                              xmlAsset.getLastModified() )
         );
+        return path;
     }
 }

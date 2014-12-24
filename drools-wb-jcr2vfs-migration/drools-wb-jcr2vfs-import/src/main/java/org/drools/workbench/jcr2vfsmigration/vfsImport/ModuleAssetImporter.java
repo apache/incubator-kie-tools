@@ -203,7 +203,8 @@ public class ModuleAssetImporter {
                     System.out.println( "WARNING: skipping null asset in import" );
                     continue;
                 }
-                importAsset( module, xmlAsset );
+                importAssetHistory( module, xmlAsset );
+                importAsset( module, xmlAsset, null );
             }
 
         } catch ( Exception e ) {
@@ -213,9 +214,9 @@ public class ModuleAssetImporter {
         System.out.println( "  Assert import for module " + module.getName() + " ended" );
     }
 
-    private void importAsset( Module module, XmlAsset xmlAsset ) {
+    private Path importAsset( Module module, XmlAsset xmlAsset, Path previousVersionPath ) {
         switch ( xmlAsset.getAssetType() ) {
-            case DRL_MODEL: factModelImporter.importAsset( module, ( DataModelAsset ) xmlAsset ); break;
+            case DRL_MODEL: return factModelImporter.importAsset( module, ( DataModelAsset ) xmlAsset, previousVersionPath );
 
             case ENUMERATION:
             case DSL:
@@ -231,10 +232,10 @@ public class ModuleAssetImporter {
             case BPMN2_PROCESS:
             case FTL:
             case JSON:
-            case FW: plainTextAssetImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+            case FW: return plainTextAssetImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
 
             case DRL:
-            case FUNCTION: plainTextAssetWithPackagePropertyImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+            case FUNCTION: return plainTextAssetWithPackagePropertyImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
 
             case DECISION_SPREADSHEET_XLS:
             case SCORECARD_SPREADSHEET_XLS:
@@ -243,19 +244,28 @@ public class ModuleAssetImporter {
             case JPG:
             case PDF:
             case DOC:
-            case ODT: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset ); break;
+            case ODT: return attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset, previousVersionPath );
 
-            case SCORECARD_GUIDED: guidedScoreCardImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+            case SCORECARD_GUIDED: return guidedScoreCardImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
 
-            case BUSINESS_RULE: guidedEditorImporter.importAsset( module, ( BusinessRuleAsset ) xmlAsset ); break;
+            case BUSINESS_RULE: return guidedEditorImporter.importAsset( module, ( BusinessRuleAsset ) xmlAsset, previousVersionPath );
 
-            case DECISION_TABLE_GUIDED: guidedDecisionTableImporter.importAsset( module, ( GuidedDecisionTableAsset ) xmlAsset ); break;
+            case DECISION_TABLE_GUIDED: return guidedDecisionTableImporter.importAsset( module, ( GuidedDecisionTableAsset ) xmlAsset, previousVersionPath );
 
-            case TEST_SCENARIO: testScenarioImporter.importAsset( module, ( PlainTextAsset ) xmlAsset ); break;
+            case TEST_SCENARIO: return testScenarioImporter.importAsset( module, ( PlainTextAsset ) xmlAsset, previousVersionPath );
 
             case UNSUPPORTED:
 
-            default: attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset );
+            default: return attachmentAssetImporter.importAsset( module, ( AttachmentAsset ) xmlAsset, previousVersionPath );
+        }
+    }
+
+    private void importAssetHistory( Module module, XmlAsset xmlAsset ) {
+        Path previousVersionPath = null;
+        XmlAssets history = xmlAsset.getAssetHistory();
+        if ( history == null || history.getAssets().size() == 0 ) return;
+        for ( XmlAsset hAsset : history.getAssets() ) {
+            previousVersionPath = importAsset( module, hAsset, previousVersionPath );
         }
     }
 

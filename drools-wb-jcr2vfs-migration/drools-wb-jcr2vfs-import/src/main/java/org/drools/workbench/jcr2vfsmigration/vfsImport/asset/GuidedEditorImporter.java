@@ -27,6 +27,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardCopyOption;
 
 public class GuidedEditorImporter implements AssetImporter<BusinessRuleAsset> {
 
@@ -41,7 +42,7 @@ public class GuidedEditorImporter implements AssetImporter<BusinessRuleAsset> {
     PackageImportHelper packageImportHelper;
 
     @Override
-    public void importAsset( Module xmlModule, BusinessRuleAsset xmlAsset ) {
+    public Path importAsset( Module xmlModule, BusinessRuleAsset xmlAsset, Path previousVersionPath ) {
         Path path;
         if ( xmlAsset.hasDSLSentences() ) {
             path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, true );
@@ -49,6 +50,11 @@ public class GuidedEditorImporter implements AssetImporter<BusinessRuleAsset> {
             path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, false );
         }
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+
+        //The asset was renamed in this version. We move this asset first.
+        if ( previousVersionPath != null && !previousVersionPath.equals( path ) ) {
+            ioService.move( Paths.convert( previousVersionPath ), nioPath, StandardCopyOption.REPLACE_EXISTING );
+        }
 
         String content = xmlAsset.getContent();
         String packageHeader = xmlModule.getPackageHeaderInfo();
@@ -64,5 +70,6 @@ public class GuidedEditorImporter implements AssetImporter<BusinessRuleAsset> {
                              xmlAsset.getCheckinComment(),
                              xmlAsset.getLastModified() )
         );
+        return path;
     }
 }

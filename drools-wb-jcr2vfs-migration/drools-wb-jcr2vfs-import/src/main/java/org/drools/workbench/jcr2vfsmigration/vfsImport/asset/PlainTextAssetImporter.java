@@ -26,6 +26,7 @@ import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.StandardCopyOption;
 
 public class PlainTextAssetImporter implements AssetImporter<PlainTextAsset> {
 
@@ -36,9 +37,14 @@ public class PlainTextAssetImporter implements AssetImporter<PlainTextAsset> {
     @Inject
     protected MigrationPathManager migrationPathManager;
 
-    public void importAsset( Module xmlModule, PlainTextAsset xmlAsset ) {
+    public Path importAsset( Module xmlModule, PlainTextAsset xmlAsset, Path previousVersionPath ) {
         Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
+
+        //The asset was renamed in this version. We move this asset first.
+        if ( previousVersionPath != null && !previousVersionPath.equals( path ) ) {
+            ioService.move( Paths.convert( previousVersionPath ), nioPath, StandardCopyOption.REPLACE_EXISTING );
+        }
 
         // Content already transformed in the exporter
         String content = xmlAsset.getContent();
@@ -51,5 +57,6 @@ public class PlainTextAssetImporter implements AssetImporter<PlainTextAsset> {
                              xmlAsset.getCheckinComment(),
                              xmlAsset.getLastModified() )
         );
+        return path;
     }
 }
