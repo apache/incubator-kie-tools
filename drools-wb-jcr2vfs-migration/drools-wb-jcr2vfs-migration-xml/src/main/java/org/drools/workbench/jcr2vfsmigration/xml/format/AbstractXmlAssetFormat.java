@@ -36,13 +36,15 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
     protected static final String ASSET_CHECKIN_COMMENT = "comment";
     protected static final String ASSET_HISTORY = "history";
 
-    private XmlAssetsFormat xmlAssetsFormat = new XmlAssetsFormat();
+    private XmlAssetsFormat xmlAssetsFormat;
 
     @Override
     public void format( StringBuilder sb, XmlAsset xmlAsset ) {
         if ( sb == null || xmlAsset == null ) throw new IllegalArgumentException( "No output or asset specified" );
 
         if ( AssetType.IGNORED.equals( xmlAsset.getAssetType() ) ) return;
+
+        initialize();
 
         formatAssetStart( sb, xmlAsset );
         sb.append( formatAssetAsString( xmlAsset ) );
@@ -53,8 +55,9 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
     public XmlAsset parse( Node assetNode ) {
         if ( assetNode == null || !ASSET.equals( assetNode.getNodeName() ) ) throw new IllegalArgumentException( "No input asset node specified for parsing" );
 
-        XmlGenericAttributes genericAttributes = parseGenericNodeContent( assetNode );
+        initialize();
 
+        XmlGenericAttributes genericAttributes = parseGenericNodeContent( assetNode );
         XmlAsset xmlAsset = parseStringToXmlAsset( genericAttributes.getAssetName(),
                                                    genericAttributes.getAssetFormat(),
                                                    genericAttributes.getAssetLastContributor(),
@@ -102,10 +105,12 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
     }
 
     private void formatAssetEnd( StringBuilder sb, XmlAsset xmlAsset) {
-        // Format asset history
-        sb.append( LT ).append( ASSET_HISTORY ).append( GT );
-        xmlAssetsFormat.format( sb, xmlAsset.getAssetHistory() );
-        sb.append( LT_SLASH ).append( ASSET_HISTORY ).append( GT );
+        // Format asset history, (it won't if we're in the process of formatting a history asset )
+        if ( xmlAsset.getAssetHistory() != null ) {
+            sb.append( LT ).append( ASSET_HISTORY ).append( GT );
+            xmlAssetsFormat.format( sb, xmlAsset.getAssetHistory() );
+            sb.append( LT_SLASH ).append( ASSET_HISTORY ).append( GT );
+        }
 
         sb.append( LT_SLASH ).append( ASSET ).append( GT );
     }
@@ -123,6 +128,10 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
                                          checkinComment,
                                          new Date( Long.parseLong( assetAttribs.getNamedItem( ASSET_LAST_MODIFIED ).getNodeValue(), 10 ) )
         );
+    }
+
+    private void initialize() {
+        if ( xmlAssetsFormat == null ) xmlAssetsFormat = new XmlAssetsFormat();
     }
 
     private class XmlGenericAttributes {

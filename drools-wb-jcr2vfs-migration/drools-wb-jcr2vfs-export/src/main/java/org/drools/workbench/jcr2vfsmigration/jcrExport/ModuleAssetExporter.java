@@ -235,7 +235,7 @@ public class ModuleAssetExporter {
                     //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
                     //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
                     XmlAsset xmlAsset = export( ExportContext.getInstance( jcrModule, assetItemJCR, assetFileName ) );
-                    xmlAsset.setAssetHistory( exportAssetHistory( ExportContext.getInstance( jcrModule, row.getUuid() ) ) );
+                    xmlAsset.setAssetHistory( exportAssetHistory( ExportContext.getInstance( jcrModule, row.getUuid(), assetFileName ) ) );
                     assets.add( xmlAsset );
 
                     System.out.format("    Done.%n");

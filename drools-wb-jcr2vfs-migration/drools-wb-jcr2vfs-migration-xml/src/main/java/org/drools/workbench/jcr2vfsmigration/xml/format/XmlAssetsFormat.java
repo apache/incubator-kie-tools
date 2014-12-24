@@ -28,13 +28,15 @@ public class XmlAssetsFormat implements XmlFormat<XmlAssets> {
 
     public static final String ASSETS = "assets";
 
-    private XmlAssetFormat xmlAssetFormat = new XmlAssetFormat();
+    private XmlAssetFormat xmlAssetFormat;
 
     @Override
     public void format( StringBuilder sb, XmlAssets xmlAssets ) {
         if ( sb == null || xmlAssets == null ) throw new IllegalArgumentException( "No output or assets specified" );
-        sb.append( LT ).append( ASSETS ).append( GT );
 
+        initialize();
+
+        sb.append( LT ).append( ASSETS ).append( GT );
         for ( Iterator<XmlAsset> it = xmlAssets.getAssets().iterator(); it.hasNext(); ) {
             xmlAssetFormat.format( sb, it.next() );
         }
@@ -45,6 +47,8 @@ public class XmlAssetsFormat implements XmlFormat<XmlAssets> {
     @Override
     public XmlAssets parse( Node assetsNode ) {
         if ( assetsNode == null || !ASSETS.equals( assetsNode.getNodeName() ) ) throw new IllegalArgumentException( "No input assets node specified for parsing" );
+
+        initialize();
         Collection<XmlAsset> assets = new ArrayList<XmlAsset>( 10 );
 
         NodeList assetNodes = assetsNode.getChildNodes();
@@ -56,5 +60,9 @@ public class XmlAssetsFormat implements XmlFormat<XmlAssets> {
             }
         }
         return new XmlAssets( assets );
+    }
+
+    private void initialize() {
+        if ( xmlAssetFormat == null ) xmlAssetFormat = new XmlAssetFormat();
     }
 }

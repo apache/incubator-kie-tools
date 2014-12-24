@@ -25,9 +25,10 @@ public class ExportContext {
     private String assetUUID;
     private String assetExportFileName;
 
-    private ExportContext( Module jcrModule, String assetUUID ) {
+    private ExportContext( Module jcrModule, String assetUUID, String assetExportFileName ) {
         this.jcrModule = jcrModule;
         this.assetUUID = assetUUID;
+        this.assetExportFileName = assetExportFileName;
     }
 
     private ExportContext( Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
@@ -36,8 +37,8 @@ public class ExportContext {
         this.assetExportFileName = assetExportFileName;
     }
 
-    public static ExportContext getInstance( Module jcrModule, String assetUUID ) {
-        return new ExportContext( jcrModule, assetUUID );
+    public static ExportContext getInstance( Module jcrModule, String assetUUID, String assetExportFileName ) {
+        return new ExportContext( jcrModule, assetUUID, assetExportFileName );
     }
 
     public static ExportContext getInstance( Module jcrModule, AssetItem jcrAssetItem, String assetExportFileName ) {
