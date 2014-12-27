@@ -23,6 +23,9 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.types.PathPartEntryJSO;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -30,15 +33,9 @@ import com.google.gwt.json.client.JSONObject;
 
 public class Spline extends Shape<Spline>
 {
-    private int                         m_begindex = 0;
+    private boolean            m_fill = false;
 
-    private int                         m_endindex = 0;
-
-    private boolean                     m_closed   = false;
-
-    private PathPoint[]                 m_points   = null;
-
-    private NFastArrayList<PathPoint[]> m_carray   = null;
+    private final PathPartList m_list = new PathPartList();
 
     /**
      * Constructor. Creates an instance of a spline.
@@ -58,7 +55,7 @@ public class Spline extends Shape<Spline>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getControlPoints().getBoundingBox();
+        return m_list.getBoundingBox();
     }
 
     /**
@@ -69,106 +66,71 @@ public class Spline extends Shape<Spline>
     @Override
     public boolean prepare(Context2D context, Attributes attr, double alpha)
     {
-        if (null == m_points)
+        if (m_list.size() < 1)
         {
-            m_points = convertToPathPoints(attr.getControlPoints());
+            parse(convertToPathPoints(attr.getControlPoints()));
         }
-        if (m_points.length < 3)
+        if (m_list.size() < 1)
         {
-            if (m_points.length > 1)
-            {
-                context.beginPath();
-
-                context.moveTo(m_points[0].x, m_points[0].y);
-
-                context.lineTo(m_points[1].x, m_points[1].y);
-            }
-            return true;
+            return false;
         }
-        if (null == m_carray)
-        {
-            calculateControlPoints();
-        }
-        boolean lineFlatten = attr.getLineFlatten();
+        m_fill = context.path(m_list);
 
-        context.beginPath();
-
-        context.moveTo(m_points[0].x, m_points[0].y);
-
-        if (m_begindex == 1)
-        {
-            PathPoint point = m_carray.get(1)[0];
-
-            context.quadraticCurveTo(point.x, point.y, m_points[1].x, m_points[1].y);
-        }
-        int i;
-
-        for (i = m_begindex; i < (m_endindex - 1); i++)
-        {
-            boolean line = lineFlatten && ((i > 0 && Math.atan2(m_points[i].y - m_points[i - 1].y, m_points[i].x - m_points[i - 1].x) == Math.atan2(m_points[i + 1].y - m_points[i].y, m_points[i + 1].x - m_points[i].x)) || (i < m_points.length - 2 && Math.atan2(m_points[i + 2].y - m_points[i + 1].y, m_points[i + 2].x - m_points[i + 1].x) == Math.atan2(m_points[i + 1].y - m_points[i].y, m_points[i + 1].x - m_points[i].x)));
-
-            if (line)
-            {
-                context.lineTo(m_points[i + 1].x, m_points[i + 1].y);
-            }
-            else
-            {
-                PathPoint p1 = m_carray.get(i)[1];
-
-                PathPoint p2 = m_carray.get(i + 1)[0];
-
-                context.bezierCurveTo(p1.x, p1.y, p2.x, p2.y, m_points[i + 1].x, m_points[i + 1].y);
-            }
-        }
-        if (m_endindex == (m_points.length - 1))
-        {
-            PathPoint point = m_carray.get(i)[1];
-
-            context.quadraticCurveTo(point.x, point.y, m_points[i + 1].x, m_points[i + 1].y);
-        }
         return true;
     }
 
     @Override
     public void fill(Context2D context, Attributes attr, double alpha)
     {
-        if (m_closed)
+        if (m_fill)
         {
             super.fill(context, attr, alpha);
         }
     }
 
-    private final void calculateControlPoints()
+    private final void parse(PathPoint[] points)
     {
+        if (points.length < 3)
+        {
+            if (points.length > 1)
+            {
+                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[0].x, points[0].y)));
+
+                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[1].x, points[1].y)));
+            }
+            return;
+        }
         double curveFactor = getCurveFactor();
 
         double angleFactor = getAngleFactor();
 
-        m_begindex = 1;
+        boolean closed = false;
 
-        m_endindex = m_points.length - 1;
+        int begindex = 1;
 
-        if ((m_points[0].x == m_points[m_points.length - 1].x) && (m_points[0].y == m_points[m_points.length - 1].y))
+        int endindex = points.length - 1;
+
+        if ((points[0].x == points[points.length - 1].x) && (points[0].y == points[points.length - 1].y))
         {
-            m_begindex = 0;
+            begindex = 0;
 
-            m_endindex = m_points.length;
+            endindex = points.length;
 
-            m_closed = true;
+            closed = true;
         }
         else
         {
-            m_closed = false;
+            closed = false;
         }
-        m_carray = new NFastArrayList<PathPoint[]>();
+        NFastArrayList<PathPoint[]> carray = new NFastArrayList<PathPoint[]>();
 
-        for (int i = m_begindex; i < m_endindex; i++)
+        for (int i = begindex; i < endindex; i++)
         {
-            PathPoint p0 = ((i - 1) < 0) ? m_points[m_points.length - 2] : m_points[i - 1];
+            PathPoint p0 = ((i - 1) < 0) ? points[points.length - 2] : points[i - 1];
 
-            PathPoint p1 = m_points[i];
+            PathPoint p1 = points[i];
 
-            PathPoint p2 = ((i + 1) == m_points.length) ? m_points[1] : m_points[i + 1];
+            PathPoint p2 = ((i + 1) == points.length) ? points[1] : points[i + 1];
 
             double a = PathPoint.distance(p0, p1);
 
@@ -268,12 +230,51 @@ public class Spline extends Shape<Spline>
 
             if (PathPoint.distance(cp2, p2) > PathPoint.distance(cp1, p2))
             {
-                m_carray.add(i, PathPoint.toArray(cp2, cp1));
+                carray.add(i, PathPoint.toArray(cp2, cp1));
             }
             else
             {
-                m_carray.add(i, PathPoint.toArray(cp1, cp2));
+                carray.add(i, PathPoint.toArray(cp1, cp2));
             }
+        }
+        boolean lineFlatten = getLineFlatten();
+
+        m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[0].x, points[0].y)));
+
+        if (begindex == 1)
+        {
+            PathPoint point = carray.get(1)[0];
+
+            m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(point.x, point.y, points[1].x, points[1].y)));
+        }
+        int i;
+
+        for (i = begindex; i < (endindex - 1); i++)
+        {
+            boolean line = lineFlatten && ((i > 0 && Math.atan2(points[i].y - points[i - 1].y, points[i].x - points[i - 1].x) == Math.atan2(points[i + 1].y - points[i].y, points[i + 1].x - points[i].x)) || (i < points.length - 2 && Math.atan2(points[i + 2].y - points[i + 1].y, points[i + 2].x - points[i + 1].x) == Math.atan2(points[i + 1].y - points[i].y, points[i + 1].x - points[i].x)));
+
+            if (line)
+            {
+                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[i + 1].x, points[i + 1].y)));
+            }
+            else
+            {
+                PathPoint p1 = carray.get(i)[1];
+
+                PathPoint p2 = carray.get(i + 1)[0];
+
+                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(p1.x, p1.y, p2.x, p2.y, points[i + 1].x, points[i + 1].y)));
+            }
+        }
+        if (endindex == (points.length - 1))
+        {
+            PathPoint point = carray.get(i)[1];
+
+            m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(point.x, point.y, points[i + 1].x, points[i + 1].y)));
+        }
+        if (closed)
+        {
+            m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
         }
     }
 
@@ -299,9 +300,7 @@ public class Spline extends Shape<Spline>
     {
         getAttributes().setControlPoints(points);
 
-        m_points = null;
-
-        m_carray = null;
+        m_list.clear();
 
         return this;
     }
@@ -315,9 +314,7 @@ public class Spline extends Shape<Spline>
     {
         getAttributes().setCurveFactor(factor);
 
-        m_points = null;
-
-        m_carray = null;
+        m_list.clear();
 
         return this;
     }
@@ -331,9 +328,7 @@ public class Spline extends Shape<Spline>
     {
         getAttributes().setAngleFactor(factor);
 
-        m_points = null;
-
-        m_carray = null;
+        m_list.clear();
 
         return this;
     }
@@ -346,6 +341,8 @@ public class Spline extends Shape<Spline>
     public Spline setLineFlatten(boolean flat)
     {
         getAttributes().setLineFlatten(flat);
+
+        m_list.clear();
 
         return this;
     }
