@@ -56,6 +56,11 @@ public final class Point2D
     {
         this(Point2DJSO.make(x, y));
     }
+    
+    public Point2D(Point2D p)
+    {
+        this(Point2DJSO.make(p.getX(), p.getY()));
+    }
 
     public final Point2D copy()
     {
@@ -166,6 +171,33 @@ public final class Point2D
         return new Point2D(m_jso.add(p.getJSO()));
     }
 
+    public final void offset(double x, double y)
+    {
+        m_jso.offset(x, y);
+    }
+
+    public final void offset(Point2D p)
+    {
+        m_jso.offset(p.getJSO());
+    }
+
+    public final void normalize(double length)
+    {
+        double x = getX();
+
+        double y = getY();
+
+        if (((x == 0) && (y == 0)) || (length == 0))
+        {
+            return;
+        }
+        double angle = Math.atan2(y, x);
+
+        setX(Math.cos(angle) * length);
+
+        setY(Math.sin(angle) * length);
+    }
+    
     /**
      * Returns a new point by subtracting the coordinates of this point and point P,
      * i.e. (this.x - p.x, this.y - p.y)
@@ -381,7 +413,7 @@ public final class Point2D
      * @param angle in radians
      * @return Point2D
      */
-    public static final Point2D fromPolar(double radius, double angle)
+    public static final Point2D polar(double radius, double angle)
     {
         return new Point2D(radius * Math.cos(angle), radius * Math.sin(angle));
     }
@@ -462,6 +494,18 @@ public final class Point2D
         		x : this.x + jso.x,
         		y : this.y + jso.y
         	};
+        }-*/;
+
+        public final native void offset(double x, double y)
+        /*-{
+            this.x += x;
+            this.y += y;
+        }-*/;
+
+        public final native void offset(Point2DJSO jso)
+        /*-{
+            this.x += jso.x;
+            this.y += jso.y;
         }-*/;
 
         public final native Point2DJSO sub(Point2DJSO jso)

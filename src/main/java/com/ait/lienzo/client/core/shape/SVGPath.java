@@ -25,9 +25,6 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.lienzo.client.core.util.Curves;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
@@ -59,53 +56,7 @@ public class SVGPath extends Shape<SVGPath>
     @Override
     public BoundingBox getBoundingBox()
     {
-        final int size = m_list.size();
-
-        if (size < 1)
-        {
-            return new BoundingBox(0, 0, 0, 0);
-        }
-        final BoundingBox bbox = new BoundingBox();
-
-        double oldx = 0;
-
-        double oldy = 0;
-
-        for (int i = 0; i < size; i++)
-        {
-            final PathPartEntryJSO part = m_list.get(i);
-
-            final NFastDoubleArrayJSO p = part.getPoints();
-
-            switch (part.getCommand())
-            {
-                case PathPartEntryJSO.LINETO_ABSOLUTE:
-                    bbox.add(oldx = p.get(0), oldy = p.get(1));
-                    break;
-                case PathPartEntryJSO.MOVETO_ABSOLUTE:
-                    bbox.add(oldx = p.get(0), oldy = p.get(1));
-                    break;
-                case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE:
-                    bbox.add(Curves.getBoundingBox(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(p.get(2), p.get(3)), new Point2D(oldx = p.get(4), oldy = p.get(5)))));
-                    break;
-                case PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE:
-                    bbox.add(Curves.getBoundingBox(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(oldx = p.get(2), oldy = p.get(3)))));
-                    break;
-                case PathPartEntryJSO.ARCTO_ABSOLUTE:
-                    double cx = p.get(0);
-                    double cy = p.get(1);
-                    double rx = p.get(2);
-                    double ry = p.get(3);
-                    bbox.addX(cx + rx);
-                    bbox.addX(cx - rx);
-                    bbox.addY(cy + ry);
-                    bbox.addY(cy - ry);
-                    oldx = p.get(8);
-                    oldy = p.get(9);
-                    break;
-            }
-        }
-        return bbox;
+        return m_list.getBoundingBox();
     }
 
     @Override
@@ -583,25 +534,7 @@ public class SVGPath extends Shape<SVGPath>
         {
             dt = dt + 2 * Math.PI;
         }
-        NFastDoubleArrayJSO points = NFastDoubleArrayJSO.make();
-
-        points.add(cx);
-
-        points.add(cy);
-
-        points.add(rx);
-
-        points.add(ry);
-
-        points.add(th);
-
-        points.add(dt);
-
-        points.add(ps);
-
-        points.add(fs);
-
-        return points;
+        return NFastDoubleArrayJSO.make(cx, cy, rx, ry, th, dt, ps, fs);
     }
 
     @Override

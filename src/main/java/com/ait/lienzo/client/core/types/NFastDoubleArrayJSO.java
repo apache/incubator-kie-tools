@@ -29,6 +29,19 @@ public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO
         return NBaseNativeArrayJSO.make().cast();
     }
 
+    public static NFastDoubleArrayJSO make(double d, double... list)
+    {
+        NFastDoubleArrayJSO jso = make();
+
+        jso.push(d);
+
+        for (int i = 0, s = list.length; i < s; i++)
+        {
+            jso.push(list[i]);
+        }
+        return jso;
+    }
+
     public final double[] toArray()
     {
         final int size = size();
@@ -81,7 +94,7 @@ public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO
             return a;
         },[]);
     }-*/;
-    
+
     public final native boolean contains(double value)
     /*-{
         return (value in this);

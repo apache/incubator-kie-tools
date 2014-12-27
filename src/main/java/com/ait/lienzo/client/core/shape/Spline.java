@@ -441,11 +441,11 @@ public class Spline extends Shape<Spline>
             {
                 return;
             }
-            double angle = Math.atan2(y, x);
+            double scale = length / Math.sqrt((x * x) + (y * y));
 
-            x = Math.cos(angle) * length;
+            x = x * scale;
 
-            y = Math.sin(angle) * length;
+            y = y * scale;
         }
 
         public final void offset(double dx, double dy)
@@ -466,7 +466,7 @@ public class Spline extends Shape<Spline>
 
         public static final PathPoint polar(double length, double angle)
         {
-            return new PathPoint(length * Math.sin(angle), length * Math.cos(angle));
+            return new PathPoint(length * Math.cos(angle), length * Math.sin(angle));
         }
 
         public static final PathPoint[] toArray(PathPoint... points)
