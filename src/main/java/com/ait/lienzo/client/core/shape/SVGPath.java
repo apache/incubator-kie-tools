@@ -31,6 +31,10 @@ import com.google.gwt.json.client.JSONObject;
 
 public class SVGPath extends Shape<SVGPath>
 {
+    private static final double   TWO_PI   = (2.0 * Math.PI);
+
+    private static final double   PI_180   = (Math.PI / 180.0);
+
     private static final String[] COMMANDS = { "m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A" };
 
     private String                m_path;
@@ -77,13 +81,13 @@ public class SVGPath extends Shape<SVGPath>
         {
             path = path.replaceAll(COMMANDS[n], "#" + COMMANDS[n]);
         }
-        String[] list = path.split("#");
+        final String[] list = path.split("#");
 
         double cpx = 0;
 
         double cpy = 0;
 
-        for (int n = 1; n < list.length; n++)
+        for (int n = 1, l = list.length; n < l; n++)
         {
             String str = list[n];
 
@@ -91,7 +95,7 @@ public class SVGPath extends Shape<SVGPath>
 
             str = str.substring(1).replaceAll(",-", "-").replaceAll("-", ",-").replaceAll("e,-", "e-");
 
-            String[] pts = str.split(",");
+            final String[] pts = str.split(",");
 
             int beg = 0;
 
@@ -99,23 +103,21 @@ public class SVGPath extends Shape<SVGPath>
             {
                 beg = 1;
             }
-            NFastDoubleArrayJSO source = NFastDoubleArrayJSO.make();
+            final NFastDoubleArrayJSO source = NFastDoubleArrayJSO.make();
 
-            for (int i = beg; i < pts.length; i++)
+            for (int i = beg, z = pts.length; i < z; i++)
             {
-                source.add(Double.valueOf(pts[i]).doubleValue());
+                source.push(Double.valueOf(pts[i]).doubleValue());
             }
             PathPartEntryJSO prev;
 
             double ctx, cty;
 
-            double rx, ry, ps, fa, fs, x1, y1;
-
             while (source.size() > 0)
             {
                 int cmd = PathPartEntryJSO.UNDEFINED_PATH_PART;
 
-                NFastDoubleArrayJSO points = NFastDoubleArrayJSO.make();
+                final NFastDoubleArrayJSO points = NFastDoubleArrayJSO.make();
 
                 switch (chr)
                 {
@@ -124,9 +126,9 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy += source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.LINETO_ABSOLUTE;
                         break;
@@ -135,16 +137,16 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy = source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.LINETO_ABSOLUTE;
                         break;
                     case 'm':
-                        double dx = source.shift();
+                        final double dx = source.shift();
 
-                        double dy = source.shift();
+                        final double dy = source.shift();
 
                         cpx += dx;
 
@@ -168,9 +170,9 @@ public class SVGPath extends Shape<SVGPath>
                                 }
                             }
                         }
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         chr = 'l';
 
@@ -181,9 +183,9 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy = source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         chr = 'L';
 
@@ -192,74 +194,74 @@ public class SVGPath extends Shape<SVGPath>
                     case 'h':
                         cpx += source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.LINETO_ABSOLUTE;
                         break;
                     case 'H':
                         cpx = source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.LINETO_ABSOLUTE;
                         break;
                     case 'v':
                         cpy += source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.LINETO_ABSOLUTE;
                         break;
                     case 'V':
                         cpy = source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.LINETO_ABSOLUTE;
                         break;
                     case 'C':
-                        points.add(source.shift());
+                        points.push(source.shift());
 
-                        points.add(source.shift());
+                        points.push(source.shift());
 
-                        points.add(source.shift());
+                        points.push(source.shift());
 
-                        points.add(source.shift());
+                        points.push(source.shift());
 
                         cpx = source.shift();
 
                         cpy = source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE;
                         break;
                     case 'c':
-                        points.add(cpx + source.shift());
+                        points.push(cpx + source.shift());
 
-                        points.add(cpy + source.shift());
+                        points.push(cpy + source.shift());
 
-                        points.add(cpx + source.shift());
+                        points.push(cpx + source.shift());
 
-                        points.add(cpy + source.shift());
+                        points.push(cpy + source.shift());
 
                         cpx += source.shift();
 
                         cpy += source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE;
                         break;
@@ -276,21 +278,21 @@ public class SVGPath extends Shape<SVGPath>
 
                             cty = cpy + (cpy - prev.getPoints().get(3));
                         }
-                        points.add(ctx);
+                        points.push(ctx);
 
-                        points.add(cty);
+                        points.push(cty);
 
-                        points.add(source.shift());
+                        points.push(source.shift());
 
-                        points.add(source.shift());
+                        points.push(source.shift());
 
                         cpx = source.shift();
 
                         cpy = source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE;
                         break;
@@ -307,51 +309,51 @@ public class SVGPath extends Shape<SVGPath>
 
                             cty = cpy + (cpy - prev.getPoints().get(3));
                         }
-                        points.add(ctx);
+                        points.push(ctx);
 
-                        points.add(cty);
+                        points.push(cty);
 
-                        points.add(cpx + source.shift());
+                        points.push(cpx + source.shift());
 
-                        points.add(cpy + source.shift());
+                        points.push(cpy + source.shift());
 
                         cpx += source.shift();
 
                         cpy += source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE;
                         break;
                     case 'Q':
-                        points.add(source.shift());
+                        points.push(source.shift());
 
-                        points.add(source.shift());
+                        points.push(source.shift());
 
                         cpx = source.shift();
 
                         cpy = source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE;
                         break;
                     case 'q':
-                        points.add(cpx + source.shift());
+                        points.push(cpx + source.shift());
 
-                        points.add(cpy + source.shift());
+                        points.push(cpy + source.shift());
 
                         cpx += source.shift();
 
                         cpy += source.shift();
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE;
                         break;
@@ -372,13 +374,13 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy = source.shift();
 
-                        points.add(ctx);
+                        points.push(ctx);
 
-                        points.add(cty);
+                        points.push(cty);
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE;
                         break;
@@ -399,70 +401,74 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy += source.shift();
 
-                        points.add(ctx);
+                        points.push(ctx);
 
-                        points.add(cty);
+                        points.push(cty);
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE;
                         break;
                     case 'A':
-                        rx = source.shift();
+                    {
+                        final double rx = source.shift();
 
-                        ry = source.shift();
+                        final double ry = source.shift();
 
-                        ps = source.shift();
+                        final double ps = source.shift();
 
-                        fa = source.shift();
+                        final double fa = source.shift();
 
-                        fs = source.shift();
+                        final double fs = source.shift();
 
-                        x1 = cpx;
+                        final double x1 = cpx;
 
-                        y1 = cpy;
+                        final double y1 = cpy;
 
                         cpx = source.shift();
 
                         cpy = source.shift();
 
-                        points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
+                        convertEndpointToCenterParameterization(points, x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.ARCTO_ABSOLUTE;
                         break;
+                    }
                     case 'a':
-                        rx = source.shift();
+                    {
+                        final double rx = source.shift();
 
-                        ry = source.shift();
+                        final double ry = source.shift();
 
-                        ps = source.shift();
+                        final double ps = source.shift();
 
-                        fa = source.shift();
+                        final double fa = source.shift();
 
-                        fs = source.shift();
+                        final double fs = source.shift();
 
-                        x1 = cpx;
+                        final double x1 = cpx;
 
-                        y1 = cpy;
+                        final double y1 = cpy;
 
                         cpx += source.shift();
 
                         cpy += source.shift();
 
-                        points = convertEndpointToCenterParameterization(x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
+                        convertEndpointToCenterParameterization(points, x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
-                        points.add(cpx);
+                        points.push(cpx);
 
-                        points.add(cpy);
+                        points.push(cpy);
 
                         cmd = PathPartEntryJSO.ARCTO_ABSOLUTE;
                         break;
+                    }
                 }
                 if (cmd != PathPartEntryJSO.UNDEFINED_PATH_PART)
                 {
@@ -476,21 +482,27 @@ public class SVGPath extends Shape<SVGPath>
         }
     }
 
-    private final NFastDoubleArrayJSO convertEndpointToCenterParameterization(double x1, double y1, double x2, double y2, double fa, double fs, double rx, double ry, double ps)
+    private final static void convertEndpointToCenterParameterization(final NFastDoubleArrayJSO points, final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
     {
-        ps = ps * (Math.PI / 180.0);
+        final double ps = pv * PI_180;
 
-        double xp = Math.cos(ps) * (x1 - x2) / 2.0 + Math.sin(ps) * (y1 - y2) / 2.0;
+        final double cp = Math.cos(ps);
 
-        double yp = -1 * Math.sin(ps) * (x1 - x2) / 2.0 + Math.cos(ps) * (y1 - y2) / 2.0;
+        final double sp = Math.sin(ps);
 
-        double lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
+        final double xp = cp * (x1 - x2) / 2.0 + sp * (y1 - y2) / 2.0;
+
+        final double yp = -1 * sp * (x1 - x2) / 2.0 + cp * (y1 - y2) / 2.0;
+
+        final double lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
 
         if (lambda > 1)
         {
-            rx *= Math.sqrt(lambda);
+            double sq = Math.sqrt(lambda);
 
-            ry *= Math.sqrt(lambda);
+            rx *= sq;
+
+            ry *= sq;
         }
         double f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
 
@@ -502,19 +514,19 @@ public class SVGPath extends Shape<SVGPath>
         {
             f = 0;
         }
-        double cxp = f * rx * yp / ry;
+        final double cxp = f * rx * yp / ry;
 
-        double cyp = f * -ry * xp / rx;
+        final double cyp = f * -ry * xp / rx;
 
-        double cx = (x1 + x2) / 2.0 + Math.cos(ps) * cxp - Math.sin(ps) * cyp;
+        final double cx = (x1 + x2) / 2.0 + cp * cxp - sp * cyp;
 
-        double cy = (y1 + y2) / 2.0 + Math.sin(ps) * cxp + Math.cos(ps) * cyp;
+        final double cy = (y1 + y2) / 2.0 + sp * cxp + cp * cyp;
 
-        double th = Geometry.getVectorAngle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
+        final double th = Geometry.getVectorAngle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
 
-        double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
+        final double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
 
-        double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
+        final double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
 
         double dt = Geometry.getVectorAngle(u, v);
 
@@ -528,13 +540,15 @@ public class SVGPath extends Shape<SVGPath>
         }
         if (fs == 0 && dt > 0)
         {
-            dt = dt - 2 * Math.PI;
+            dt -= TWO_PI;
         }
         if (fs == 1 && dt < 0)
         {
-            dt = dt + 2 * Math.PI;
+            dt += TWO_PI;
         }
-        return NFastDoubleArrayJSO.make(cx, cy, rx, ry, th, dt, ps, fs);
+        points.clear();
+
+        points.push(cx, cy, rx, ry, th, dt, ps, fs);
     }
 
     @Override

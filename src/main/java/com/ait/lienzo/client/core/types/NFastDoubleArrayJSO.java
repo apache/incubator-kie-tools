@@ -33,12 +33,8 @@ public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO
     {
         NFastDoubleArrayJSO jso = make();
 
-        jso.push(d);
+        jso.push(d, list);
 
-        for (int i = 0, s = list.length; i < s; i++)
-        {
-            jso.push(list[i]);
-        }
         return jso;
     }
 
@@ -60,14 +56,19 @@ public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO
         return new JSONArray(this).toString();
     }
 
+    public final void push(double d, double... list)
+    {
+        push(d);
+
+        for (int i = 0, s = list.length; i < s; i++)
+        {
+            push(list[i]);
+        }
+    }
+
     public final native double get(int indx)
     /*-{
         return this[indx];
-    }-*/;
-
-    public final native void add(double value)
-    /*-{
-        this[this.length] = value;
     }-*/;
 
     public final native void push(double value)

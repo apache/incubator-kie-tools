@@ -57,7 +57,7 @@ public class Spline extends Shape<Spline>
     {
         if (m_list.size() < 1)
         {
-            parse();
+            parse(getAttributes());
         }
         return m_list.getBoundingBox();
     }
@@ -72,7 +72,7 @@ public class Spline extends Shape<Spline>
     {
         if (m_list.size() < 1)
         {
-            parse();
+            parse(attr);
         }
         if (m_list.size() < 1)
         {
@@ -92,15 +92,15 @@ public class Spline extends Shape<Spline>
         }
     }
 
-    private final void parse()
+    private final void parse(Attributes attr)
     {
-        final PathPoint[] points = getPathPoints();
+        final PathPoint[] points = getUniquePathPoints(attr.getControlPoints());
 
-        final int leng = points.length;
+        final int size = points.length;
 
-        if (leng < 3)
+        if (size < 3)
         {
-            if (leng > 1)
+            if (size > 1)
             {
                 m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[0].x, points[0].y)));
 
@@ -108,21 +108,21 @@ public class Spline extends Shape<Spline>
             }
             return;
         }
-        final double curveFactor = getCurveFactor();
+        final double curveFactor = attr.getCurveFactor();
 
-        final double angleFactor = getAngleFactor();
+        final double angleFactor = attr.getAngleFactor();
 
         boolean closed = false;
 
         int begindex = 1;
 
-        int endindex = leng - 1;
+        int endindex = size - 1;
 
-        if ((points[0].x == points[leng - 1].x) && (points[0].y == points[leng - 1].y))
+        if ((points[0].x == points[size - 1].x) && (points[0].y == points[size - 1].y))
         {
             begindex = 0;
 
-            endindex = leng;
+            endindex = size;
 
             closed = true;
         }
@@ -134,28 +134,16 @@ public class Spline extends Shape<Spline>
 
         for (int i = begindex; i < endindex; i++)
         {
-            final PathPoint p0 = ((i - 1) < 0) ? points[leng - 2] : points[i - 1];
+            final PathPoint p0 = ((i - 1) < 0) ? points[size - 2] : points[i - 1];
 
             final PathPoint p1 = points[i];
 
-            final PathPoint p2 = ((i + 1) == leng) ? points[1] : points[i + 1];
+            final PathPoint p2 = ((i + 1) == size) ? points[1] : points[i + 1];
 
             final double a = Math.max(PathPoint.distance(p0, p1), 0.001);
 
             final double b = Math.max(PathPoint.distance(p1, p2), 0.001);
 
-            final double c = Math.max(PathPoint.distance(p0, p2), 0.001);
-
-            double cos = ((b * b + a * a - c * c) / (2 * b * a));
-
-            if (cos < -1)
-            {
-                cos = -1;
-            }
-            else if (cos > 1)
-            {
-                cos = 1;
-            }
             final PathPoint apt = new PathPoint(p0.x - p1.x, p0.y - p1.y);
 
             final PathPoint bpt = new PathPoint(p1.x, p1.y);
@@ -206,8 +194,12 @@ public class Spline extends Shape<Spline>
             }
             double cdist = Math.min(a, b) * curveFactor;
 
-            cdist *= ((1 - angleFactor) + angleFactor * (Math.acos(cos) / Math.PI));
+            if (angleFactor != 0)
+            {
+                final double c = Math.max(PathPoint.distance(p0, p2), 0.001);
 
+                cdist *= ((1 - angleFactor) + angleFactor * (Math.acos(Math.min(Math.max((b * b + a * a - c * c) / (2 * b * a), -1), 1)) / Math.PI));
+            }
             final double cangl = Math.atan2(ry, rx) + Math.PI / 2;
 
             final PathPoint cp2 = PathPoint.polar(cdist, cangl);
@@ -227,7 +219,7 @@ public class Spline extends Shape<Spline>
                 carray.add(i, PathPoint.toArray(cp1, cp2));
             }
         }
-        final boolean lineFlatten = getLineFlatten();
+        final boolean lineFlatten = attr.getLineFlatten();
 
         m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[0].x, points[0].y)));
 
@@ -241,7 +233,7 @@ public class Spline extends Shape<Spline>
 
         for (i = begindex; i < (endindex - 1); i++)
         {
-            boolean line = lineFlatten && ((i > 0 && Math.atan2(points[i].y - points[i - 1].y, points[i].x - points[i - 1].x) == Math.atan2(points[i + 1].y - points[i].y, points[i + 1].x - points[i].x)) || (i < leng - 2 && Math.atan2(points[i + 2].y - points[i + 1].y, points[i + 2].x - points[i + 1].x) == Math.atan2(points[i + 1].y - points[i].y, points[i + 1].x - points[i].x)));
+            boolean line = lineFlatten && ((i > 0 && Math.atan2(points[i].y - points[i - 1].y, points[i].x - points[i - 1].x) == Math.atan2(points[i + 1].y - points[i].y, points[i + 1].x - points[i].x)) || (i < size - 2 && Math.atan2(points[i + 2].y - points[i + 1].y, points[i + 2].x - points[i + 1].x) == Math.atan2(points[i + 1].y - points[i].y, points[i + 1].x - points[i].x)));
 
             if (line)
             {
@@ -256,7 +248,7 @@ public class Spline extends Shape<Spline>
                 m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(p1.x, p1.y, p2.x, p2.y, points[i + 1].x, points[i + 1].y)));
             }
         }
-        if (endindex == (leng - 1))
+        if (endindex == (size - 1))
         {
             final PathPoint point = carray.get(i)[1];
 
@@ -266,6 +258,50 @@ public class Spline extends Shape<Spline>
         {
             m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
         }
+    }
+
+    private final static PathPoint[] getUniquePathPoints(final Point2DArray array)
+    {
+        if ((null == array) || (array.size() < 2))
+        {
+            return new PathPoint[0];
+        }
+        int size = 0;
+
+        final int leng = array.size();
+
+        final PathPoint[] points = new PathPoint[leng];
+
+        for (int i = 0; i < leng; i++)
+        {
+            final Point2D point = array.get(i);
+
+            final double x = point.getX();
+
+            final double y = point.getY();
+
+            if (size > 0)
+            {
+                if (((points[size - 1].x == x) && (points[size - 1].y == y)))
+                {
+                    continue;
+                }
+            }
+            points[size] = new PathPoint(x, y);
+
+            size++;
+        }
+        if (size == leng)
+        {
+            return points;
+        }
+        final PathPoint[] nodups = new PathPoint[size];
+
+        for (int i = 0; i < size; i++)
+        {
+            nodups[i] = points[i];
+        }
+        return nodups;
     }
 
     /**
@@ -365,52 +401,6 @@ public class Spline extends Shape<Spline>
         }
     }
 
-    private final PathPoint[] getPathPoints()
-    {
-        final Point2DArray array = getControlPoints();
-
-        if ((null == array) || (array.size() == 0))
-        {
-            return new PathPoint[0];
-        }
-        int size = 0;
-
-        final int leng = array.size();
-
-        final PathPoint[] points = new PathPoint[leng];
-
-        for (int i = 0; i < leng; i++)
-        {
-            Point2D point = array.get(i);
-
-            double x = point.getX();
-
-            double y = point.getY();
-
-            if (size > 0)
-            {
-                if (((points[size - 1].x == x) && (points[size - 1].y == y)))
-                {
-                    continue;
-                }
-            }
-            points[size] = new PathPoint(x, y);
-
-            size++;
-        }
-        if (size == leng)
-        {
-            return points;
-        }
-        PathPoint[] nodups = new PathPoint[size];
-
-        for (int i = 0; i < size; i++)
-        {
-            nodups[i] = points[i];
-        }
-        return nodups;
-    }
-
     private static final class PathPoint
     {
         public double x;
@@ -424,17 +414,17 @@ public class Spline extends Shape<Spline>
             this.y = y;
         }
 
-        final void normalize(double length)
+        final void normalize(final double length)
         {
             if (((x == 0) && (y == 0)) || (length == 0))
             {
                 return;
             }
-            double scale = length / Math.sqrt((x * x) + (y * y));
+            final double scale = length / Math.sqrt((x * x) + (y * y));
 
-            x = x * scale;
+            x *= scale;
 
-            y = y * scale;
+            y *= scale;
         }
 
         final void offset(double dx, double dy)
@@ -446,14 +436,14 @@ public class Spline extends Shape<Spline>
 
         static final double distance(PathPoint a, PathPoint b)
         {
-            double dx = b.x - a.x;
+            final double dx = b.x - a.x;
 
-            double dy = b.y - a.y;
+            final double dy = b.y - a.y;
 
             return Math.sqrt((dx * dx) + (dy * dy));
         }
 
-        static final PathPoint polar(double length, double angle)
+        static final PathPoint polar(final double length, final double angle)
         {
             return new PathPoint(length * Math.cos(angle), length * Math.sin(angle));
         }

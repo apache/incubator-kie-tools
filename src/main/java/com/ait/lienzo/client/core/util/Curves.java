@@ -75,11 +75,11 @@ public final class Curves
 
         for (int i = 0; i < size; i++)
         {
-            Point2D p = points.get(i);
+            final Point2D p = points.get(i);
 
-            xval.add(p.getX());
+            xval.push(p.getX());
 
-            yval.add(p.getY());
+            yval.push(p.getY());
         }
         final NFastDoubleArrayJSO inflections = getInflections(points, xval, yval);
 
@@ -87,11 +87,11 @@ public final class Curves
 
         for (int i = 0; i < size; i++)
         {
-            double t = inflections.get(i);
+            final double t = inflections.get(i);
 
-            double x = getValue(t, xval);
+            final double x = getValue(t, xval);
 
-            double y = getValue(t, yval);
+            final double y = getValue(t, yval);
 
             minx = Math.min(x, minx);
 
@@ -114,9 +114,9 @@ public final class Curves
 
         NFastDoubleArrayJSO tval = NFastDoubleArrayJSO.make();
 
-        tval.add(0.0);
+        tval.push(0.0);
 
-        tval.add(1.0);
+        tval.push(1.0);
 
         root = findAllRoots(1, xval);
 
@@ -124,11 +124,11 @@ public final class Curves
 
         for (int i = 0; i < size; i++)
         {
-            double t = root.get(i);
+            final double t = root.get(i);
 
             if (0 < t && t < 1)
             {
-                tval.add(t);
+                tval.push(t);
             }
         }
         root = findAllRoots(1, yval);
@@ -137,11 +137,11 @@ public final class Curves
 
         for (int i = 0; i < size; i++)
         {
-            double t = root.get(i);
+            final double t = root.get(i);
 
             if (0 < t && t < 1)
             {
-                tval.add(t);
+                tval.push(t);
             }
         }
         if (ordr > 2)
@@ -152,11 +152,11 @@ public final class Curves
 
             for (int i = 0; i < size; i++)
             {
-                double t = root.get(i);
+                final double t = root.get(i);
 
                 if (0 < t && t < 1)
                 {
-                    tval.add(t);
+                    tval.push(t);
                 }
             }
             root = findAllRoots(2, yval);
@@ -165,11 +165,11 @@ public final class Curves
 
             for (int i = 0; i < size; i++)
             {
-                double t = root.get(i);
+                final double t = root.get(i);
 
                 if (0 < t && t < 1)
                 {
-                    tval.add(t);
+                    tval.push(t);
                 }
             }
         }
@@ -186,9 +186,9 @@ public final class Curves
             {
                 return root;
             }
-            double beg = getDerivative(1, 0, values);
+            final double beg = getDerivative(1, 0, values);
 
-            double end = getDerivative(1, 1, values);
+            final double end = getDerivative(1, 1, values);
 
             if ((beg > 0) && (end > 0))
             {
@@ -198,19 +198,19 @@ public final class Curves
             {
                 return root;
             }
-            root.add(map(0, beg, end, 0, 1));
+            root.push(map(0, beg, end, 0, 1));
 
             return root;
         }
         for (double t = 0; t <= 1.0; t += 0.01)
         {
-            double r = Math.round(findRoots(derivative, t, values) / NRRF_PRECISION) * NRRF_PRECISION;
+            final double r = Math.round(findRoots(derivative, t, values) / NRRF_PRECISION) * NRRF_PRECISION;
 
             if (root.contains(r))
             {
                 continue;
             }
-            root.add(r);
+            root.push(r);
         }
         return root;
     }
@@ -287,7 +287,7 @@ public final class Curves
 
             for (int k = 0; k < n; k++)
             {
-                lowers.add(n * (values.get(k + 1) - values.get(k)));
+                lowers.push(n * (values.get(k + 1) - values.get(k)));
             }
             return getDerivative(derivative - 1, t, lowers);
         }
@@ -301,7 +301,7 @@ public final class Curves
 
         for (int i = 2; i < sz; i++)
         {
-            double rx = values.get(i) - values.get(i - 1);
+            final double rx = values.get(i) - values.get(i - 1);
 
             if (Math.abs(dx - rx) > 2)
             {

@@ -26,12 +26,14 @@ public final class BoundingBox
 
     public BoundingBox()
     {
-        this(BoundingBoxJSO.make(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE));
+        this(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
     }
 
     public BoundingBox(BoundingBox bbox)
     {
-        this(BoundingBoxJSO.make(bbox.m_jso.getMinX(), bbox.m_jso.getMinY(), bbox.m_jso.getMaxX(), bbox.m_jso.getMaxY()));
+        this();
+
+        add(bbox);
     }
 
     public BoundingBox(double minx, double miny, double maxx, double maxy)
@@ -81,37 +83,54 @@ public final class BoundingBox
         return this;
     }
 
-    public final BoundingBox add(BoundingBox bbox)
+    public final BoundingBox add(final BoundingBox bbox)
     {
-        m_jso.addX(bbox.m_jso.getMinX());
+        if (null != bbox)
+        {
+            m_jso.addX(bbox.m_jso.getMinX());
 
-        m_jso.addY(bbox.m_jso.getMinY());
+            m_jso.addY(bbox.m_jso.getMinY());
 
-        m_jso.addX(bbox.m_jso.getMaxX());
+            m_jso.addX(bbox.m_jso.getMaxX());
 
-        m_jso.addY(bbox.m_jso.getMaxY());
-
+            m_jso.addY(bbox.m_jso.getMaxY());
+        }
         return this;
     }
 
     public final BoundingBox add(Point2D point, Point2D... points)
     {
-        add(point);
+        m_jso.addX(point.getX());
 
-        for (Point2D p : points)
+        m_jso.addY(point.getY());
+
+        final int size = points.length;
+
+        for (int i = 0; i < size; i++)
         {
-            add(p);
+            final Point2D p = points[i];
+
+            m_jso.addX(p.getX());
+
+            m_jso.addY(p.getY());
         }
         return this;
     }
 
-    public final BoundingBox add(Point2DArray points)
+    public final BoundingBox add(final Point2DArray points)
     {
-        final int size = points.size();
-
-        for (int i = 0; i < size; i++)
+        if (null != points)
         {
-            add(points.get(i));
+            final int size = points.size();
+
+            for (int i = 0; i < size; i++)
+            {
+                final Point2D p = points.get(i);
+
+                m_jso.addX(p.getX());
+
+                m_jso.addY(p.getY());
+            }
         }
         return this;
     }
