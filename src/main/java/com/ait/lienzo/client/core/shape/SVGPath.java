@@ -25,16 +25,11 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
 public class SVGPath extends Shape<SVGPath>
 {
-    private static final double   TWO_PI   = (2.0 * Math.PI);
-
-    private static final double   PI_180   = (Math.PI / 180.0);
-
     private static final String[] COMMANDS = { "m", "M", "l", "L", "v", "V", "h", "H", "z", "Z", "c", "C", "q", "Q", "t", "T", "s", "S", "a", "A" };
 
     private String                m_path;
@@ -431,7 +426,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy = source.shift();
 
-                        convertEndpointToCenterParameterization(points, x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
+                        PathPartList.convertEndpointToCenterParameterization(points, x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
                         points.push(cpx);
 
@@ -460,7 +455,7 @@ public class SVGPath extends Shape<SVGPath>
 
                         cpy += source.shift();
 
-                        convertEndpointToCenterParameterization(points, x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
+                        PathPartList.convertEndpointToCenterParameterization(points, x1, y1, cpx, cpy, fa, fs, rx, ry, ps);
 
                         points.push(cpx);
 
@@ -480,75 +475,6 @@ public class SVGPath extends Shape<SVGPath>
                 m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
             }
         }
-    }
-
-    private final static void convertEndpointToCenterParameterization(final NFastDoubleArrayJSO points, final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
-    {
-        final double ps = pv * PI_180;
-
-        final double cp = Math.cos(ps);
-
-        final double sp = Math.sin(ps);
-
-        final double xp = cp * (x1 - x2) / 2.0 + sp * (y1 - y2) / 2.0;
-
-        final double yp = -1 * sp * (x1 - x2) / 2.0 + cp * (y1 - y2) / 2.0;
-
-        final double lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
-
-        if (lambda > 1)
-        {
-            double sq = Math.sqrt(lambda);
-
-            rx *= sq;
-
-            ry *= sq;
-        }
-        double f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
-
-        if (fa == fs)
-        {
-            f *= -1;
-        }
-        if (Double.isNaN(f))
-        {
-            f = 0;
-        }
-        final double cxp = f * rx * yp / ry;
-
-        final double cyp = f * -ry * xp / rx;
-
-        final double cx = (x1 + x2) / 2.0 + cp * cxp - sp * cyp;
-
-        final double cy = (y1 + y2) / 2.0 + sp * cxp + cp * cyp;
-
-        final double th = Geometry.getVectorAngle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
-
-        final double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
-
-        final double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
-
-        double dt = Geometry.getVectorAngle(u, v);
-
-        if (Geometry.getVectorRatio(u, v) <= -1)
-        {
-            dt = Math.PI;
-        }
-        if (Geometry.getVectorRatio(u, v) >= 1)
-        {
-            dt = 0;
-        }
-        if (fs == 0 && dt > 0)
-        {
-            dt -= TWO_PI;
-        }
-        if (fs == 1 && dt < 0)
-        {
-            dt += TWO_PI;
-        }
-        points.clear();
-
-        points.push(cx, cy, rx, ry, th, dt, ps, fs);
     }
 
     @Override

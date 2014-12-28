@@ -17,13 +17,22 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.util.Curves;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.google.gwt.core.client.JsArray;
 
 public final class PathPartList
 {
-    private BoundingBox           m_box = null;
+    private static final double   TWO_PI = (2.000 * Math.PI);
 
-    private final PathPartListJSO m_jso = PathPartListJSO.make();
+    private static final double   PI_180 = (Math.PI / 180.0);
+
+    private double                m_cpx;
+
+    private double                m_cpy;
+
+    private BoundingBox           m_box  = null;
+
+    private final PathPartListJSO m_jso  = PathPartListJSO.make();
 
     public PathPartList()
     {
@@ -50,12 +59,172 @@ public final class PathPartList
     {
         m_box = null;
 
-        m_jso.clear();
+        m_jso.setLength(0);
     }
 
     public final PathPartListJSO getJSO()
     {
         return m_jso;
+    }
+
+    public final PathPartList M(double x, double y)
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx = x, m_cpy = y)));
+
+        return this;
+    }
+
+    public final PathPartList M(Point2D p)
+    {
+        return M(p.getX(), p.getY());
+    }
+
+    public final PathPartList L(double x, double y)
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx = x, m_cpy = y)));
+
+        return this;
+    }
+
+    public final PathPartList L(Point2D p)
+    {
+        return L(p.getX(), p.getY());
+    }
+
+    public final PathPartList H(double x)
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx = x, m_cpy)));
+
+        return this;
+    }
+
+    public final PathPartList V(double y)
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx, m_cpy = y)));
+
+        return this;
+    }
+
+    public final PathPartList Q(double cx, double cy, double x, double y)
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(cx, cy, m_cpx = x, m_cpy = y)));
+
+        return this;
+    }
+
+    public final PathPartList Q(Point2D cp, Point2D ep)
+    {
+        return Q(cp.getX(), cp.getY(), ep.getX(), ep.getY());
+    }
+
+    public final PathPartList C(double x1, double y1, double x2, double y2, double x, double y)
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(x1, y1, x2, y2, m_cpx = x, m_cpy = y)));
+
+        return this;
+    }
+
+    public final PathPartList C(Point2D c1, Point2D c2, Point2D ep)
+    {
+        return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
+    }
+
+    public final PathPartList A(double rx, double ry, double ps, double fa, double fs, double x, double y)
+    {
+        final NFastDoubleArrayJSO points = PathPartList.convertEndpointToCenterParameterization(m_cpx, m_cpy, x, y, fa, fs, rx, ry, ps);
+
+        points.push(m_cpx = x);
+
+        points.push(m_cpy = y);
+
+        push(PathPartEntryJSO.make(PathPartEntryJSO.ARCTO_ABSOLUTE, points));
+
+        return this;
+    }
+
+    public final PathPartList Z()
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
+
+        return this;
+    }
+
+    public final static NFastDoubleArrayJSO convertEndpointToCenterParameterization(final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
+    {
+        final NFastDoubleArrayJSO points = NFastDoubleArrayJSO.make();
+
+        convertEndpointToCenterParameterization(points, x1, y1, x2, y2, fa, fs, rx, ry, pv);
+
+        return points;
+    }
+
+    public final static void convertEndpointToCenterParameterization(final NFastDoubleArrayJSO points, final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
+    {
+        final double ps = pv * PI_180;
+
+        final double cp = Math.cos(ps);
+
+        final double sp = Math.sin(ps);
+
+        final double xp = cp * (x1 - x2) / 2.0 + sp * (y1 - y2) / 2.0;
+
+        final double yp = -1 * sp * (x1 - x2) / 2.0 + cp * (y1 - y2) / 2.0;
+
+        final double lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
+
+        if (lambda > 1)
+        {
+            double sq = Math.sqrt(lambda);
+
+            rx *= sq;
+
+            ry *= sq;
+        }
+        double f = Math.sqrt((((rx * rx) * (ry * ry)) - ((rx * rx) * (yp * yp)) - ((ry * ry) * (xp * xp))) / ((rx * rx) * (yp * yp) + (ry * ry) * (xp * xp)));
+
+        if (fa == fs)
+        {
+            f *= -1;
+        }
+        if (Double.isNaN(f))
+        {
+            f = 0;
+        }
+        final double cxp = f * rx * yp / ry;
+
+        final double cyp = f * -ry * xp / rx;
+
+        final double cx = (x1 + x2) / 2.0 + cp * cxp - sp * cyp;
+
+        final double cy = (y1 + y2) / 2.0 + sp * cxp + cp * cyp;
+
+        final double th = Geometry.getVectorAngle(new double[] { 1, 0 }, new double[] { (xp - cxp) / rx, (yp - cyp) / ry });
+
+        final double[] u = new double[] { (xp - cxp) / rx, (yp - cyp) / ry };
+
+        final double[] v = new double[] { (-1 * xp - cxp) / rx, (-1 * yp - cyp) / ry };
+
+        double dt = Geometry.getVectorAngle(u, v);
+
+        if (Geometry.getVectorRatio(u, v) <= -1)
+        {
+            dt = Math.PI;
+        }
+        if (Geometry.getVectorRatio(u, v) >= 1)
+        {
+            dt = 0;
+        }
+        if (fs == 0 && dt > 0)
+        {
+            dt -= TWO_PI;
+        }
+        if (fs == 1 && dt < 0)
+        {
+            dt += TWO_PI;
+        }
+        points.clear();
+
+        points.push(cx, cy, rx, ry, th, dt, ps, fs);
     }
 
     public BoundingBox getBoundingBox()
@@ -123,10 +292,5 @@ public final class PathPartList
         protected PathPartListJSO()
         {
         }
-
-        public final native void clear()
-        /*-{
-            this.length = length;
-        }-*/;
     }
 }

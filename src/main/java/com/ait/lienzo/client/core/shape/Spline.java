@@ -23,8 +23,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
-import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -102,9 +100,7 @@ public class Spline extends Shape<Spline>
         {
             if (size > 1)
             {
-                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[0].x, points[0].y)));
-
-                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[1].x, points[1].y)));
+                m_list.M(points[0].x, points[0].y).L(points[1].x, points[1].y);
             }
             return;
         }
@@ -221,13 +217,13 @@ public class Spline extends Shape<Spline>
         }
         final boolean lineFlatten = attr.getLineFlatten();
 
-        m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[0].x, points[0].y)));
+        m_list.M(points[0].x, points[0].y);
 
         if (begindex == 1)
         {
             final PathPoint point = carray.get(1)[0];
 
-            m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(point.x, point.y, points[1].x, points[1].y)));
+            m_list.Q(point.x, point.y, points[1].x, points[1].y);
         }
         int i;
 
@@ -237,7 +233,7 @@ public class Spline extends Shape<Spline>
 
             if (line)
             {
-                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(points[i + 1].x, points[i + 1].y)));
+                m_list.L(points[i + 1].x, points[i + 1].y);
             }
             else
             {
@@ -245,18 +241,18 @@ public class Spline extends Shape<Spline>
 
                 final PathPoint p2 = carray.get(i + 1)[0];
 
-                m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(p1.x, p1.y, p2.x, p2.y, points[i + 1].x, points[i + 1].y)));
+                m_list.C(p1.x, p1.y, p2.x, p2.y, points[i + 1].x, points[i + 1].y);
             }
         }
         if (endindex == (size - 1))
         {
             final PathPoint point = carray.get(i)[1];
 
-            m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(point.x, point.y, points[i + 1].x, points[i + 1].y)));
+            m_list.Q(point.x, point.y, points[i + 1].x, points[i + 1].y);
         }
         if (closed)
         {
-            m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
+            m_list.Z();
         }
     }
 

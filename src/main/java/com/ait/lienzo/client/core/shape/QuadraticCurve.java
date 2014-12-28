@@ -63,7 +63,13 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return Curves.getBoundingBox(this);
+        BoundingBox bbox = Curves.getBoundingBox(this);
+
+        if (null != bbox)
+        {
+            return bbox;
+        }
+        return new BoundingBox(0, 0, 0, 0);
     }
 
     /**
