@@ -182,11 +182,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
     private int daemonPort;
     private String daemonHostAddr;
     private String daemonHostName;
+    private int daemonHostPort;
 
     private boolean sshEnabled;
     private int sshPort;
     private String sshHostAddr;
     private String sshHostName;
+    private int sshHostPort;
     private File sshFileCertDir;
 
     private final Map<String, JGitFileSystem> fileSystems = new ConcurrentHashMap<String, JGitFileSystem>();
@@ -215,11 +217,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         final ConfigProperty hostProp = config.get( "org.uberfire.nio.git.daemon.host", DEFAULT_HOST_ADDR );
         final ConfigProperty hostNameProp = config.get( "org.uberfire.nio.git.daemon.hostname", hostProp.isDefault() ? DEFAULT_HOST_NAME : hostProp.getValue() );
         final ConfigProperty portProp = config.get( "org.uberfire.nio.git.daemon.port", DAEMON_DEFAULT_PORT );
+        final ConfigProperty hostPortProp = config.get( "org.uberfire.nio.git.daemon.hostport", DAEMON_DEFAULT_PORT );
         final ConfigProperty sshEnabledProp = config.get( "org.uberfire.nio.git.ssh.enabled", SSH_DEFAULT_ENABLED );
         final ConfigProperty sshHostProp = config.get( "org.uberfire.nio.git.ssh.host", DEFAULT_HOST_ADDR );
         final ConfigProperty sshHostNameProp = config.get( "org.uberfire.nio.git.ssh.hostname", sshHostProp.isDefault() ? DEFAULT_HOST_NAME : sshHostProp.getValue() );
         final ConfigProperty sshPortProp = config.get( "org.uberfire.nio.git.ssh.port", SSH_DEFAULT_PORT );
         final ConfigProperty sshCertDirProp = config.get( "org.uberfire.nio.git.ssh.cert.dir", currentDirectory );
+        final ConfigProperty sshHostPortProp = config.get( "org.uberfire.nio.git.ssh.hostport", SSH_DEFAULT_PORT );
 
         if ( LOG.isDebugEnabled() ) {
             LOG.debug( config.getConfigurationSummary( "Summary of JGit configuration:" ) );
@@ -232,6 +236,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
             daemonPort = portProp.getIntValue();
             daemonHostAddr = hostProp.getValue();
             daemonHostName = hostNameProp.getValue();
+            daemonHostPort = hostPortProp.getIntValue();
         }
 
         sshEnabled = sshEnabledProp.getBooleanValue();
@@ -239,6 +244,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
             sshPort = sshPortProp.getIntValue();
             sshHostAddr = sshHostProp.getValue();
             sshHostName = sshHostNameProp.getValue();
+            sshHostPort = sshHostPortProp.getIntValue();
             sshFileCertDir = new File( sshCertDirProp.getValue(), SSH_FILE_CERT_CONTAINER_DIR );
         }
     }
@@ -332,10 +338,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
 
         if ( daemonEnabled ) {
-            fullHostNames.put( "git", daemonHostName + ":" + daemonPort );
+            fullHostNames.put( "git", daemonHostName + ":" + daemonHostPort );
         }
         if ( sshEnabled ) {
-            fullHostNames.put( "ssh", sshHostName + ":" + sshPort );
+            fullHostNames.put( "ssh", sshHostName + ":" + sshHostPort );
         }
 
         rescanForExistingRepositories();
