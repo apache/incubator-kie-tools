@@ -405,11 +405,6 @@ public final class JGitUtil {
         }
     }
 
-    private static String calculateOurName( final Ref headRef ) {
-        final String targetRefName = headRef.getTarget().getName();
-        return Repository.shortenRefName( targetRefName );
-    }
-
     public static ObjectId getTreeRefObjectId( final Repository repo,
                                                final String treeRef ) {
         try {
@@ -1160,6 +1155,14 @@ public final class JGitUtil {
                                      final String target ) {
         try {
             git.branchCreate().setName( target ).setStartPoint( source ).call();
+        } catch ( GitAPIException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public static void gc( final Git git ) {
+        try {
+            git.gc().call();
         } catch ( GitAPIException e ) {
             throw new RuntimeException( e );
         }

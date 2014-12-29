@@ -5,10 +5,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.Deflater;
 
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.pack.PackConfig;
 import org.eclipse.jgit.transport.UploadPack;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
@@ -30,7 +33,8 @@ public class GitUploadCommand extends BaseGitCommand {
                             final Repository repository,
                             final InputStream in,
                             final OutputStream out,
-                            final OutputStream err ) {
+                            final OutputStream err,
+                            final JGitFileSystem fileSystem ) {
         final UploadPack up = new UploadPack( repository );
 
         final PackConfig config = new PackConfig( repository );

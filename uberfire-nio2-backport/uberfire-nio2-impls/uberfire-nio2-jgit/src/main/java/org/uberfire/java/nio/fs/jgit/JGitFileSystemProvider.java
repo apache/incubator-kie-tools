@@ -175,9 +175,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
     public static final String DAEMON_DEFAULT_PORT = "9418";
     public static final String SSH_DEFAULT_ENABLED = "true";
     public static final String SSH_DEFAULT_PORT = "8001";
+    public static final String DEFAULT_COMMIT_LIMIT_TO_GC = "20";
 
     private File gitReposParentDir;
 
+    private int commitLimit;
     private boolean daemonEnabled;
     private int daemonPort;
     private String daemonHostAddr;
@@ -224,12 +226,14 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         final ConfigProperty sshPortProp = config.get( "org.uberfire.nio.git.ssh.port", SSH_DEFAULT_PORT );
         final ConfigProperty sshCertDirProp = config.get( "org.uberfire.nio.git.ssh.cert.dir", currentDirectory );
         final ConfigProperty sshHostPortProp = config.get( "org.uberfire.nio.git.ssh.hostport", SSH_DEFAULT_PORT );
+        final ConfigProperty commitLimitProp = config.get( "org.uberfire.nio.git.gc.limit", DEFAULT_COMMIT_LIMIT_TO_GC );
 
         if ( LOG.isDebugEnabled() ) {
             LOG.debug( config.getConfigurationSummary( "Summary of JGit configuration:" ) );
         }
 
         gitReposParentDir = new File( bareReposDirProp.getValue(), REPOSITORIES_CONTAINER_DIR );
+        commitLimit = commitLimitProp.getIntValue();
 
         daemonEnabled = enabledProp.getBooleanValue();
         if ( daemonEnabled ) {
@@ -383,6 +387,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                     LOG.debug( "Registering existing GIT filesystem '" + name + "' at " + repoDir );
                     fileSystems.put( name, fs );
                     repoIndex.put( fs.gitRepo().getRepository(), fs );
+                    LOG.debug( "Running GIT GC on '" + name + "'" );
+                    JGitUtil.gc( fs.gitRepo() );
                 } else {
                     LOG.debug( "Not registering " + repoDir + " as a GIT filesystem because it is not a directory" );
                 }
@@ -1842,6 +1848,14 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
             hasCommit = JGitUtil.commit( git, branchName, fileSystem.getBatchCommitInfo(), amend, commitContent );
         } else {
             hasCommit = JGitUtil.commit( git, branchName, commitInfo, amend, commitContent );
+        }
+
+        if ( hasCommit ) {
+            int value = fileSystem.incrementAndGetCommitCount();
+            if ( value >= commitLimit ) {
+                JGitUtil.gc( git );
+                fileSystem.resetCommitCount();
+            }
         }
 
         if ( !batchState ) {

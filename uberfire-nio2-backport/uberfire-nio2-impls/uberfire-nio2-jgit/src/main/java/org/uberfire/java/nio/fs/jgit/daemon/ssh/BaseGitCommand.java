@@ -36,14 +36,14 @@ import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
-import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
 public abstract class BaseGitCommand implements Command,
-SessionAware,
-Runnable {
+                                                SessionAware,
+                                                Runnable {
 
     public final static Session.AttributeKey<FileSystemUser> SUBJECT_KEY = new Session.AttributeKey<FileSystemUser>();
 
@@ -121,10 +121,10 @@ Runnable {
         try {
             final Repository repository = openRepository( repositoryName );
             if ( repository != null ) {
-                final FileSystem fileSystem = repositoryResolver.resolveFileSystem( repository );
+                final JGitFileSystem fileSystem = repositoryResolver.resolveFileSystem( repository );
 
                 if ( fileSystemAuthorizer.authorize( fileSystem, user ) ) {
-                    execute( user, repository, in, out, err );
+                    execute( user, repository, in, out, err, fileSystem );
                 } else {
                     err.write( "Invalid credentials.".getBytes() );
                 }
@@ -173,7 +173,8 @@ Runnable {
                                      final Repository repository,
                                      final InputStream in,
                                      final OutputStream out,
-                                     final OutputStream err );
+                                     final OutputStream err,
+                                     final JGitFileSystem fileSystem );
 
     @Override
     public void destroy() {

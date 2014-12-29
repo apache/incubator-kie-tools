@@ -16,15 +16,8 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import static java.util.Arrays.*;
-import static java.util.Collections.*;
-import static org.eclipse.jgit.lib.Repository.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,6 +30,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
@@ -63,12 +57,14 @@ import org.uberfire.java.nio.file.Watchable;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 import static org.eclipse.jgit.lib.Repository.*;
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public class JGitFileSystem implements FileSystem,
-FileSystemId {
+                                       FileSystemId {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( JGitFileSystem.class );
 
@@ -84,6 +80,8 @@ FileSystemId {
     private final CredentialsProvider credential;
     private final Map<WatchService, Queue<WatchKey>> events = new ConcurrentHashMap<WatchService, Queue<WatchKey>>();
     private final Collection<WatchService> watchServices = new ArrayList<WatchService>();
+    private final AtomicInteger numberOfCommitsSinceLastGC = new AtomicInteger( 0 );
+
     private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
     private boolean hadCommitOnBatchState = false;
@@ -243,7 +241,7 @@ FileSystemId {
     @Override
     public Path getPath( final String first,
                          final String... more )
-                                 throws InvalidPathException {
+            throws InvalidPathException {
         checkClosed();
         if ( first == null || first.trim().isEmpty() ) {
             return new JGitFSPath( this );
@@ -515,5 +513,17 @@ FileSystemId {
 
     public CommitInfo getBatchCommitInfo() {
         return batchCommitInfo;
+    }
+
+    public int incrementAndGetCommitCount() {
+        return numberOfCommitsSinceLastGC.incrementAndGet();
+    }
+
+    public void resetCommitCount() {
+        numberOfCommitsSinceLastGC.set( 0 );
+    }
+
+    int getNumberOfCommitsSinceLastGC() {
+        return numberOfCommitsSinceLastGC.get();
     }
 }
