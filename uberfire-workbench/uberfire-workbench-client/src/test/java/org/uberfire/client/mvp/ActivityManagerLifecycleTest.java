@@ -1,9 +1,5 @@
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -28,14 +24,23 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ActivityManagerLifecycleTest {
 
     // things to inject into the activity manager
-    @Mock SyncBeanManagerImpl iocManager;
-    @Mock ActivityBeansCache activityBeansCache;
-    @Mock AuthorizationManager authzManager;
-    @Spy User dorothy = new UserImpl( "dorothy" );
+    @Mock
+    SyncBeanManagerImpl iocManager;
+    @Mock
+    ActivityBeansCache activityBeansCache;
+    @Mock
+    AuthorizationManager authzManager;
+    @Spy
+    User dorothy = new UserImpl( "dorothy" );
 
     // the activity manager we're unit testing
     @InjectMocks
@@ -65,7 +70,7 @@ public class ActivityManagerLifecycleTest {
         assertEquals( 1, activities.size() );
         assertEquals( kansasActivity, activities.iterator().next() );
 
-        verify( kansasActivity, times(1) ).onStartup( kansas );
+        verify( kansasActivity, times( 1 ) ).onStartup( kansas );
     }
 
     @Test
@@ -84,8 +89,8 @@ public class ActivityManagerLifecycleTest {
 
         try {
             activityManager.destroyActivity( kansasActivity );
-            fail("second destroy should have thrown an exception");
-        } catch (IllegalStateException e) {
+            fail( "second destroy should have thrown an exception" );
+        } catch ( IllegalStateException e ) {
             // expected
         }
 
@@ -127,18 +132,19 @@ public class ActivityManagerLifecycleTest {
         assertNull( splashScreenActivity );
     }
 
-    /** At the time this test was made, splash screens were handled as special cases because they're ApplicationScoped rather than Dependent. */
+    /**
+     * At the time this test was made, splash screens were handled as special cases because they're ApplicationScoped rather than Dependent.
+     */
     @Test
     public void shouldStartSplashScreens() throws Exception {
         PlaceRequest oz = new DefaultPlaceRequest( "oz" );
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts( kansas );
-        SplashScreenActivity nonExpectedSplashScreenActivity = makeSplashScreenThatIntercepts( oz );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
+        SplashScreenActivity nonExpectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( oz );
         splashScreenList.add( expectedSplashScreenActivity );
 
         when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
-
 
         SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
         assertSame( expectedSplashScreenActivity, splashScreenActivity );
@@ -147,12 +153,29 @@ public class ActivityManagerLifecycleTest {
         verify( nonExpectedSplashScreenActivity, never() ).onStartup( any( PlaceRequest.class ) );
     }
 
-    /** At the time this test was made, splash screens were handled as special cases because they're ApplicationScoped rather than Dependent. */
+    /**
+     * At the time this test was made, splash screens were handled as special cases because they're ApplicationScoped rather than Dependent.
+     */
+    @Test
+    public void shouldNotStartDisabledSplashScreens() throws Exception {
+        List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
+        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts( kansas, false );
+        splashScreenList.add( expectedSplashScreenActivity );
+
+        when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
+
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
+        assertNull( splashScreenActivity );
+    }
+
+    /**
+     * At the time this test was made, splash screens were handled as special cases because they're ApplicationScoped rather than Dependent.
+     */
     @Test
     public void shouldStopSplashScreensWhenDestroyed() throws Exception {
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts( kansas );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
         splashScreenList.add( expectedSplashScreenActivity );
 
         when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
@@ -170,7 +193,7 @@ public class ActivityManagerLifecycleTest {
     public void shouldNotGetConfusedAboutSplashScreensWithSamePlaceAsTheirScreen() throws Exception {
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts( kansas );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
         when( expectedSplashScreenActivity.getPlace() ).thenReturn( kansas );
         splashScreenList.add( expectedSplashScreenActivity );
 
@@ -191,23 +214,24 @@ public class ActivityManagerLifecycleTest {
         verify( iocManager, never() ).destroyBean( expectedSplashScreenActivity );
     }
 
-    /** At the time this test was made, splash screens were handled as special cases because they're ApplicationScoped rather than Dependent. */
+    /**
+     * At the time this test was made, splash screens were handled as special cases because they're ApplicationScoped rather than Dependent.
+     */
     @Test
     public void shouldThrowExceptionWhenDoubleDestroyingSplashScreen() throws Exception {
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts( kansas );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
         splashScreenList.add( expectedSplashScreenActivity );
 
         when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
-
 
         SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
         activityManager.destroyActivity( splashScreenActivity );
         try {
             activityManager.destroyActivity( splashScreenActivity );
             fail( "should have thrown exception on double destroy" );
-        } catch (IllegalStateException e) {
+        } catch ( IllegalStateException e ) {
             // expected
         }
 
@@ -218,7 +242,10 @@ public class ActivityManagerLifecycleTest {
 
     @Test
     public void shouldNotAttemptToDestroyRuntimeRegisteredSingletonActivities() throws Exception {
-        abstract class MyPerspectiveActivity implements PerspectiveActivity {};
+        abstract class MyPerspectiveActivity implements PerspectiveActivity {
+
+        }
+        ;
         final String myPerspectiveId = "myPerspectiveId";
         final MyPerspectiveActivity activity = mock( MyPerspectiveActivity.class );
         when( activity.getIdentifier() ).thenReturn( myPerspectiveId );
@@ -237,9 +264,15 @@ public class ActivityManagerLifecycleTest {
         verify( iocManager, never() ).destroyBean( activity );
     }
 
-    private SplashScreenActivity makeSplashScreenThatIntercepts( PlaceRequest place ) {
+    private SplashScreenActivity makeEnabledSplashScreenThatIntercepts( final PlaceRequest place ) {
+        return makeSplashScreenThatIntercepts( place, true );
+    }
+
+    private SplashScreenActivity makeSplashScreenThatIntercepts( final PlaceRequest place,
+                                                                 final boolean enabled ) {
         String splashActivityName = place.getIdentifier() + "!Splash";
         SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
+        when( splashScreenActivity.isEnabled() ).thenReturn( enabled );
         when( splashScreenActivity.intercept( place ) ).thenReturn( true );
         when( splashScreenActivity.getPlace() ).thenReturn( new DefaultPlaceRequest( splashActivityName ) );
         makeSingletonBean( SplashScreenActivity.class, splashScreenActivity );
@@ -247,7 +280,8 @@ public class ActivityManagerLifecycleTest {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> IOCBeanDef<T> makeDependentBean(final Class<T> type, final T beanInstance) {
+    private <T> IOCBeanDef<T> makeDependentBean( final Class<T> type,
+                                                 final T beanInstance ) {
         IOCBeanDef<T> beanDef = IOCDependentBean.newBean( iocManager,
                                                           type,
                                                           beanInstance.getClass(),
@@ -255,24 +289,31 @@ public class ActivityManagerLifecycleTest {
                                                           type.getSimpleName(),
                                                           true,
                                                           new BeanProvider<T>() {
-            @Override
-            public T getInstance( CreationalContext context ) {
-                return beanInstance;
-            }
-        },
-        null );
+                                                              @Override
+                                                              public T getInstance( CreationalContext context ) {
+                                                                  return beanInstance;
+                                                              }
+                                                          },
+                                                          null );
         when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );
         return beanDef;
     }
 
-    /** Makes a singleton bean whose name is type.getSimpleName(). */
-    private <T> IOCBeanDef<T> makeSingletonBean(final Class<T> type, final T beanInstance) {
+    /**
+     * Makes a singleton bean whose name is type.getSimpleName().
+     */
+    private <T> IOCBeanDef<T> makeSingletonBean( final Class<T> type,
+                                                 final T beanInstance ) {
         return makeSingletonBean( type, beanInstance, type.getSimpleName() );
     }
 
-    /** Makes a singleton bean with the given name. */
+    /**
+     * Makes a singleton bean with the given name.
+     */
     @SuppressWarnings("unchecked")
-    private <T> IOCBeanDef<T> makeSingletonBean(final Class<T> type, final T beanInstance, String name) {
+    private <T> IOCBeanDef<T> makeSingletonBean( final Class<T> type,
+                                                 final T beanInstance,
+                                                 String name ) {
         IOCBeanDef<T> beanDef = IOCSingletonBean.newBean( iocManager,
                                                           type,
                                                           beanInstance.getClass(),
@@ -280,13 +321,13 @@ public class ActivityManagerLifecycleTest {
                                                           name,
                                                           true,
                                                           new BeanProvider<T>() {
-            @Override
-            public T getInstance( CreationalContext context ) {
-                return beanInstance;
-            }
-        },
-        beanInstance,
-        null );
+                                                              @Override
+                                                              public T getInstance( CreationalContext context ) {
+                                                                  return beanInstance;
+                                                              }
+                                                          },
+                                                          beanInstance,
+                                                          null );
         when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );
         return beanDef;
     }
