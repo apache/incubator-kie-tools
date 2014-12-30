@@ -45,6 +45,11 @@ public class Polygon extends Shape<Polygon>
         setPoints(points);
     }
 
+    public Polygon(Point2D point, Point2D... points)
+    {
+        this(new Point2DArray(point, points));
+    }
+
     protected Polygon(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYGON, node, ctx);

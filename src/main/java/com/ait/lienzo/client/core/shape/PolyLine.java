@@ -45,6 +45,11 @@ public class PolyLine extends Shape<PolyLine>
         setPoints(points);
     }
 
+    public PolyLine(Point2D point, Point2D... points)
+    {
+        this(new Point2DArray(point, points));
+    }
+
     protected PolyLine(JSONObject node, ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYLINE, node, ctx);
