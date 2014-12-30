@@ -34,15 +34,14 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.plugin.client.widget.navigator.PluginNavList;
-import org.uberfire.ext.plugin.model.Plugin;
-import org.uberfire.ext.plugin.model.PluginType;
-import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.ext.plugin.client.widget.navigator.PluginNavList;
+import org.uberfire.ext.plugin.client.widget.popup.NewPluginPopUp;
+import org.uberfire.ext.plugin.model.Plugin;
+import org.uberfire.ext.plugin.model.PluginType;
+import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -67,13 +66,13 @@ public class PluginExplorerScreen
     FlowPanel htmlPanel;
 
     @Inject
+    private NewPluginPopUp newPluginPopUp;
+
+    @Inject
     private PluginNavList pluginNavList;
 
     @Inject
     private Caller<PluginServices> pluginServices;
-
-    @Inject
-    private PlaceManager placeManager;
 
     @PostConstruct
     public void init() {
@@ -121,7 +120,7 @@ public class PluginExplorerScreen
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.PERSPECTIVE.toString() ) );
+                        newPluginPopUp.show( PluginType.PERSPECTIVE );
                     }
                 } );
             }} );
@@ -129,7 +128,7 @@ public class PluginExplorerScreen
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.PERSPECTIVE_LAYOUT.toString() ) );
+                        newPluginPopUp.show( PluginType.PERSPECTIVE_LAYOUT );
                     }
                 } );
             }} );
@@ -138,7 +137,7 @@ public class PluginExplorerScreen
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.SCREEN.toString() ) );
+                        newPluginPopUp.show( PluginType.SCREEN );
                     }
                 } );
             }} );
@@ -147,7 +146,7 @@ public class PluginExplorerScreen
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.EDITOR.toString() ) );
+                        newPluginPopUp.show( PluginType.EDITOR );
                     }
                 } );
             }} );
@@ -156,7 +155,7 @@ public class PluginExplorerScreen
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.SPLASH.toString() ) );
+                        newPluginPopUp.show( PluginType.SPLASH );
                     }
                 } );
             }} );
@@ -165,7 +164,7 @@ public class PluginExplorerScreen
                 addClickHandler( new ClickHandler() {
                     @Override
                     public void onClick( ClickEvent event ) {
-                        placeManager.goTo( new DefaultPlaceRequest( "NewPluginPopUp" ).addParameter( "type", PluginType.DYNAMIC_MENU.toString() ) );
+                        newPluginPopUp.show( PluginType.DYNAMIC_MENU );
                     }
                 } );
             }} );

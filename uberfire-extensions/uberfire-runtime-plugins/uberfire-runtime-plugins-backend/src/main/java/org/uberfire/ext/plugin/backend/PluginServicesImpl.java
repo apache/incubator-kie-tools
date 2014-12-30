@@ -22,6 +22,7 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.ext.editor.commons.backend.validation.DefaultFileNameValidator;
 import org.uberfire.ext.plugin.editor.NewPerspectiveEditorEvent;
 import org.uberfire.ext.plugin.editor.PerspectiveEditor;
 import org.uberfire.ext.plugin.event.MediaDeleted;
@@ -117,6 +118,9 @@ public class PluginServicesImpl implements PluginServices {
     private Event<NewPerspectiveEditorEvent> newPerspectiveEventEvent;
 
     @Inject
+    private DefaultFileNameValidator defaultFileNameValidator;
+
+    @Inject
     private User identity;
 
     private Gson gson;
@@ -208,6 +212,7 @@ public class PluginServicesImpl implements PluginServices {
     public Plugin createNewPlugin( final String pluginName,
                                    final PluginType type ) {
         checkNotEmpty( "pluginName", pluginName );
+        checkCondition( "valid plugin name", defaultFileNameValidator.isValid( pluginName ) );
 
         final Path pluginRoot = getPluginPath( pluginName );
         if ( ioService.exists( pluginRoot ) ) {
@@ -544,7 +549,7 @@ public class PluginServicesImpl implements PluginServices {
             PerspectiveEditor perspectiveEditor = gson.fromJson( fileContent, PerspectiveEditor.class );
             return new PerspectiveEditorModel( pluginName, TypeConverterUtil.fromPath( path ), path, perspectiveEditor );
         }
-        return  new PerspectiveEditorModel( pluginName, TypeConverterUtil.fromPath( path ), path );
+        return new PerspectiveEditorModel( pluginName, TypeConverterUtil.fromPath( path ), path );
     }
 
     @Override
@@ -637,7 +642,7 @@ public class PluginServicesImpl implements PluginServices {
 
                                       if ( file.getFileName().toString().equalsIgnoreCase( "perspective_layout.plugin" ) && attrs.isRegularFile() ) {
                                           final PerspectiveEditorModel perspectiveEditor = getPerspectiveEditor( convert( file ) );
-                                           result.add( perspectiveEditor );
+                                          result.add( perspectiveEditor );
                                       }
                                   } catch ( final Exception ex ) {
                                       return FileVisitResult.TERMINATE;

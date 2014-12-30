@@ -17,45 +17,36 @@
 package org.uberfire.ext.plugin.client.widget.popup;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.plugin.exception.PluginAlreadyExists;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPopup;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
+import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import static org.uberfire.ext.plugin.model.PluginType.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-
-@Dependent
-@WorkbenchPopup(identifier = "NewPluginPopUp")
-public class NewPluginPopUp extends Composite {
+@ApplicationScoped
+public class NewPluginPopUp extends BaseModal {
 
     private PluginType type;
-    private String title;
-    private PlaceRequest place;
 
     interface ViewBinder
             extends
@@ -64,6 +55,23 @@ public class NewPluginPopUp extends Composite {
     }
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+
+    private final Command okCommand = new Command() {
+        @Override
+        public void execute() {
+            onOKButtonClick();
+        }
+    };
+
+    private final Command cancelCommand = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
+
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
+                                                                                      cancelCommand );
 
     @UiField
     TextBox name;
@@ -74,9 +82,6 @@ public class NewPluginPopUp extends Composite {
     @UiField
     ControlGroup nameGroup;
 
-    @UiField
-    Button okButton;
-
     @Inject
     private Caller<PluginServices> pluginServices;
 
@@ -85,77 +90,67 @@ public class NewPluginPopUp extends Composite {
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        okButton.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( final ClickEvent event ) {
-                if ( name.getText().trim().isEmpty() ) {
-                    nameHelpInline.setText( "Name is mandatory." );
-                    nameGroup.setType( ControlGroupType.ERROR );
-                    return;
-                }
+        footer.enableOkButton( true );
 
-                pluginServices.call( new RemoteCallback<Plugin>() {
-                    @Override
-                    public void callback( final Plugin response ) {
-                        placeManager.goTo( new PathPlaceRequest( response.getPath() ).addParameter( "name", response.getName() ) );
-                        placeManager.forceClosePlace( place );
-                    }
-                }, new ErrorCallback<Object>() {
-                    @Override
-                    public boolean error( final Object message,
-                                          final Throwable throwable ) {
-                        nameGroup.setType( ControlGroupType.ERROR );
-                        if ( throwable instanceof PluginAlreadyExists ) {
-                            nameHelpInline.setText( "Plugin name already exists." );
-                        } else {
-                            nameHelpInline.setText( "Invalid plugin name." );
-                        }
-                        return false;
-                    }
-                } ).createNewPlugin( name.getText(), type );
-            }
-        } );
+        add( uiBinder.createAndBindUi( this ) );
+        add( footer );
     }
 
-    @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        String pluginType = placeRequest.getParameter( "type", SCREEN.toString() );
-        try {
-            this.type = PluginType.valueOf( pluginType.toUpperCase() );
-            if ( type == null ) {
-                type = SCREEN;
-            }
-        } catch ( Exception ex ) {
-            type = SCREEN;
-        }
+    public void show( final PluginType type ) {
+        this.type = checkNotNull( "type", type );
 
-        switch ( type ) {
+        name.setText( "" );
+        nameHelpInline.setText( "" );
+        nameGroup.setType( ControlGroupType.NONE );
+
+        switch ( this.type ) {
             case PERSPECTIVE:
-                title = "New Perspective Plugin...";
+                setTitle( "New Perspective Plugin..." );
                 break;
             case PERSPECTIVE_LAYOUT:
-                title = "New Perspective Layout Plugin...";
+                setTitle( "New Perspective Layout Plugin..." );
                 break;
             case SCREEN:
-                title = "New Screen Plugin...";
+                setTitle( "New Screen Plugin..." );
                 break;
             case EDITOR:
-                title = "New Editor Plugin...";
+                setTitle( "New Editor Plugin..." );
                 break;
             case SPLASH:
-                title = "New Splash Plugin...";
+                setTitle( "New Splash Plugin..." );
                 break;
             case DYNAMIC_MENU:
-                title = "New Dynamic Menu...";
+                setTitle( "New Dynamic Menu..." );
                 break;
         }
-        this.place = placeRequest;
+        super.show();
     }
 
-    @WorkbenchPartTitle
-    public String getTitle() {
-        return title;
-    }
+    private void onOKButtonClick() {
+        if ( name.getText().trim().isEmpty() ) {
+            nameHelpInline.setText( "Name is mandatory." );
+            nameGroup.setType( ControlGroupType.ERROR );
+            return;
+        }
 
+        pluginServices.call( new RemoteCallback<Plugin>() {
+            @Override
+            public void callback( final Plugin response ) {
+                placeManager.goTo( new PathPlaceRequest( response.getPath() ).addParameter( "name", response.getName() ) );
+                hide();
+            }
+        }, new ErrorCallback<Object>() {
+            @Override
+            public boolean error( final Object message,
+                                  final Throwable throwable ) {
+                nameGroup.setType( ControlGroupType.ERROR );
+                if ( throwable instanceof PluginAlreadyExists ) {
+                    nameHelpInline.setText( "Plugin name already exists." );
+                } else {
+                    nameHelpInline.setText( "Invalid plugin name." );
+                }
+                return false;
+            }
+        } ).createNewPlugin( name.getText(), type );
+    }
 }
