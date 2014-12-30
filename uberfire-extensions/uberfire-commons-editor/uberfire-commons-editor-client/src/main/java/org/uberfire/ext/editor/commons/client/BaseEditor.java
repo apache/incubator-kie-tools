@@ -185,6 +185,9 @@ public abstract class BaseEditor {
         if ( menuItems.contains( DELETE ) ) {
             menuBuilder.addDelete( versionRecordManager.getCurrentPath(), getDeleteServiceCaller() );
         }
+        if ( menuItems.contains( VALIDATE ) ) {
+            menuBuilder.addValidate( onValidate() );
+        }
         if ( menuItems.contains( HISTORY ) ) {
             menuBuilder.addNewTopLevelMenu( versionRecordManager.buildMenu() );
         }

@@ -17,6 +17,8 @@
 package org.uberfire.ext.plugin.client.editor;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -33,6 +35,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
@@ -48,6 +51,7 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -68,6 +72,9 @@ public class DynamicMenuEditorPresenter
     @Inject
     private Event<NotificationEvent> notification;
 
+    @Inject
+    private ActivityBeansCache activityBeansCache;
+
     private ListDataProvider<DynamicMenuItem> dataProvider = new ListDataProvider<DynamicMenuItem>();
 
     private DynamicMenu menuItem;
@@ -82,7 +89,7 @@ public class DynamicMenuEditorPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
+        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE, VALIDATE );
         this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.DYNAMIC_MENU, path );
     }
 
@@ -150,6 +157,33 @@ public class DynamicMenuEditorPresenter
                 baseView.hideBusyIndicator();
             }
         } ).getDynamicMenuContent( versionRecordManager.getCurrentPath() );
+    }
+
+    protected Command onValidate() {
+        return new Command() {
+            @Override
+            public void execute() {
+                final Collection<String> invalidActivities = new HashSet<String>();
+                for ( final DynamicMenuItem dynamicMenuItem : dataProvider.getList() ) {
+                    if ( activityBeansCache.getActivity( dynamicMenuItem.getActivityId() ) == null ) {
+                        invalidActivities.add( dynamicMenuItem.getActivityId() );
+                    }
+                }
+                if ( invalidActivities.isEmpty() ) {
+                    notification.fire( new NotificationEvent( "Item Validated Successfully", NotificationEvent.NotificationType.SUCCESS ) );
+                } else {
+                    notification.fire( new NotificationEvent( "Activity(ies) not found: '" + DynamicMenuEditorPresenter.this.toString( invalidActivities ) + "'", NotificationEvent.NotificationType.ERROR ) );
+                }
+            }
+        };
+    }
+
+    private String toString( final Collection<String> invalidActivities ) {
+        StringBuilder result = new StringBuilder();
+        for ( final String string : invalidActivities ) {
+            result.append( string ).append( "," );
+        }
+        return result.length() > 0 ? result.substring( 0, result.length() - 1 ) : "";
     }
 
     protected void save() {

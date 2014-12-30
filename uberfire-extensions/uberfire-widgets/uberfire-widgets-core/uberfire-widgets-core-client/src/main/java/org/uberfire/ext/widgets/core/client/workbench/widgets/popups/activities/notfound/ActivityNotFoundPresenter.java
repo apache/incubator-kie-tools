@@ -16,16 +16,14 @@
 package org.uberfire.ext.widgets.core.client.workbench.widgets.popups.activities.notfound;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.client.workbench.events.BeforeClosePlaceEvent;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -51,9 +49,6 @@ public class ActivityNotFoundPresenter {
     @Inject
     private PlaceManager placeManager;
 
-    @Inject
-    private Event<BeforeClosePlaceEvent> closePlaceEvent;
-
     private PlaceRequest place;
 
     @OnStartup
@@ -78,7 +73,7 @@ public class ActivityNotFoundPresenter {
     }
 
     public void close() {
-        closePlaceEvent.fire( new BeforeClosePlaceEvent( this.place ) );
+        placeManager.forceClosePlace( this.place );
     }
 
 }

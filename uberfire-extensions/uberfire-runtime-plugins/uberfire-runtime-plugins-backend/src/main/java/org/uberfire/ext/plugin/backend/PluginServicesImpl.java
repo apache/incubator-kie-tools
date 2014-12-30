@@ -299,8 +299,7 @@ public class PluginServicesImpl implements PluginServices {
             sb.append( "$registerSplashScreen({" );
         } else if ( plugin.getType().equals( PluginType.EDITOR ) ) {
             sb.append( "$registerEditor({" );
-        }
-        if ( plugin.getType().equals( PluginType.PERSPECTIVE ) ) {
+        } else if ( plugin.getType().equals( PluginType.PERSPECTIVE ) ) {
             sb.append( "$registerPerspective({" );
         }
 
@@ -561,7 +560,7 @@ public class PluginServicesImpl implements PluginServices {
             ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
         }
 
-        final Path menuItemsPath = getPerspectiveEditorPath( getPluginPath( plugin.getName() ) );
+        final Path menuItemsPath = getMenuItemsPath( getPluginPath( plugin.getName() ) );
         final StringBuilder sb = new StringBuilder();
         for ( DynamicMenuItem item : plugin.getMenuItems() ) {
             sb.append( item.getActivityId() ).append( " / " ).append( item.getMenuLabel() ).append( "\n" );
