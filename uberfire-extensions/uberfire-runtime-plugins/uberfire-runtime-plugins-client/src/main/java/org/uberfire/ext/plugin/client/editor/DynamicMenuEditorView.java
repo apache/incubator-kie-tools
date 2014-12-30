@@ -49,6 +49,7 @@ import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
+import org.uberfire.ext.plugin.client.widget.cell.IconCell;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
 
 @Dependent
@@ -118,52 +119,104 @@ public class DynamicMenuEditorView
         initTable( menuItems );
     }
 
-    private void initTable( final AbstractCellTable<DynamicMenuItem> exampleTable ) {
-        exampleTable.setEmptyTableWidget( new Label( "No menu items." ) );
+    private void initTable( final AbstractCellTable<DynamicMenuItem> dynamicMenuTable ) {
+        dynamicMenuTable.setEmptyTableWidget( new Label( "No menu items." ) );
 
-        final TextColumn<DynamicMenuItem> activityCol = new TextColumn<DynamicMenuItem>() {
+        {
+            final IconCell iCell = new IconCell( IconType.ARROW_UP );
+            iCell.setTooltip( "up row, if click" );
 
-            @Override
-            public String getValue( DynamicMenuItem object ) {
-                return String.valueOf( object.getActivityId() );
-            }
-        };
+            final Column<DynamicMenuItem, String> iconColumn = new Column<DynamicMenuItem, String>( iCell ) {
+                public String getValue( DynamicMenuItem object ) {
+                    return "";
+                }
+            };
 
-        exampleTable.addColumn( activityCol, "Activity" );
+            iconColumn.setFieldUpdater( new FieldUpdater<DynamicMenuItem, String>() {
+                @Override
+                public void update( final int index,
+                                    final DynamicMenuItem object,
+                                    final String value ) {
+                    presenter.updateIndex( object, index, DynamicMenuEditorPresenter.UpdateIndexOperation.UP );
+                }
+            } );
 
-        final TextColumn<DynamicMenuItem> labelCol = new TextColumn<DynamicMenuItem>() {
+            dynamicMenuTable.addColumn( iconColumn );
+            dynamicMenuTable.setColumnWidth( iconColumn, "25px" );
+        }
 
-            @Override
-            public String getValue( DynamicMenuItem object ) {
-                return object.getMenuLabel();
-            }
-        };
+        {
+            final IconCell iCell = new IconCell( IconType.ARROW_DOWN );
+            iCell.setTooltip( "down row, if click" );
 
-        exampleTable.addColumn( labelCol, "Label" );
+            final Column<DynamicMenuItem, String> iconColumn = new Column<DynamicMenuItem, String>( iCell ) {
+                public String getValue( DynamicMenuItem object ) {
+                    return "";
+                }
+            };
 
-        final ButtonCell buttonCell = new ButtonCell( IconType.REMOVE, ButtonType.DANGER, ButtonSize.MINI );
+            iconColumn.setFieldUpdater( new FieldUpdater<DynamicMenuItem, String>() {
+                @Override
+                public void update( final int index,
+                                    final DynamicMenuItem object,
+                                    final String value ) {
+                    presenter.updateIndex( object, index, DynamicMenuEditorPresenter.UpdateIndexOperation.DOWN );
+                }
+            } );
 
-        final TooltipCellDecorator<String> decorator = new TooltipCellDecorator<String>( buttonCell );
-        decorator.setText( "delete row, if click" );
+            dynamicMenuTable.addColumn( iconColumn );
+            dynamicMenuTable.setColumnWidth( iconColumn, "25px" );
+        }
 
-        Column<DynamicMenuItem, String> buttonCol = new Column<DynamicMenuItem, String>( decorator ) {
+        {
+            final TextColumn<DynamicMenuItem> activityCol = new TextColumn<DynamicMenuItem>() {
 
-            @Override
-            public String getValue( DynamicMenuItem object ) {
-                return "delete";
-            }
-        };
+                @Override
+                public String getValue( DynamicMenuItem object ) {
+                    return String.valueOf( object.getActivityId() );
+                }
+            };
 
-        buttonCol.setFieldUpdater( new FieldUpdater<DynamicMenuItem, String>() {
-            @Override
-            public void update( final int index,
-                                final DynamicMenuItem object,
-                                final String value ) {
-                presenter.removeObject( object );
-            }
-        } );
+            dynamicMenuTable.addColumn( activityCol, "Activity" );
+        }
 
-        exampleTable.addColumn( buttonCol );
+        {
+            final TextColumn<DynamicMenuItem> labelCol = new TextColumn<DynamicMenuItem>() {
+
+                @Override
+                public String getValue( DynamicMenuItem object ) {
+                    return object.getMenuLabel();
+                }
+            };
+
+            dynamicMenuTable.addColumn( labelCol, "Label" );
+        }
+
+        {
+            final ButtonCell buttonCell = new ButtonCell( IconType.REMOVE, ButtonType.DANGER, ButtonSize.MINI );
+
+            final TooltipCellDecorator<String> decorator = new TooltipCellDecorator<String>( buttonCell );
+            decorator.setText( "delete row, if click" );
+
+            final Column<DynamicMenuItem, String> buttonCol = new Column<DynamicMenuItem, String>( decorator ) {
+                @Override
+                public String getValue( DynamicMenuItem object ) {
+                    return "delete";
+                }
+            };
+
+            buttonCol.setFieldUpdater( new FieldUpdater<DynamicMenuItem, String>() {
+                @Override
+                public void update( final int index,
+                                    final DynamicMenuItem object,
+                                    final String value ) {
+                    presenter.removeObject( object );
+                }
+            } );
+
+            dynamicMenuTable.addColumn( buttonCol );
+            dynamicMenuTable.setColumnWidth( buttonCol, "80px" );
+        }
 
         final SingleSelectionModel<DynamicMenuItem> selectionModel = new SingleSelectionModel<DynamicMenuItem>();
 
@@ -175,11 +228,11 @@ public class DynamicMenuEditorView
             }
         } );
 
-        exampleTable.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION );
+        dynamicMenuTable.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION );
 
-        exampleTable.setSelectionModel( selectionModel );
+        dynamicMenuTable.setSelectionModel( selectionModel );
 
-        presenter.setDataDisplay( exampleTable );
+        presenter.setDataDisplay( dynamicMenuTable );
     }
 
     @UiHandler("okButton")

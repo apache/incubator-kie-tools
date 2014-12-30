@@ -140,6 +140,29 @@ public class DynamicMenuEditorPresenter
         dataProvider.refresh();
     }
 
+    public void updateIndex( final DynamicMenuItem object,
+                             final int index,
+                             final UpdateIndexOperation operation ) {
+        if ( index < 0 ) {
+            return;
+        }
+
+        final int newIndex = operation.equals( UpdateIndexOperation.UP ) ? index - 1 : index + 1;
+
+        if ( newIndex < 0 || newIndex > dataProvider.getList().size() ) {
+            return;
+        }
+
+        final DynamicMenuItem oldItem = dataProvider.getList().set( newIndex, object );
+        if ( oldItem != null ) {
+            dataProvider.getList().set( index, oldItem );
+        }
+    }
+
+    enum UpdateIndexOperation {
+        UP, DOWN;
+    }
+
     public void setDataDisplay( final HasData<DynamicMenuItem> display ) {
         dataProvider.addDataDisplay( display );
     }
