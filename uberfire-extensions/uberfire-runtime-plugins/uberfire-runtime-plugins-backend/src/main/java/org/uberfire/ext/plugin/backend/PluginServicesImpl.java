@@ -552,7 +552,7 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path save( final DynamicMenu plugin ) {
+    public org.uberfire.backend.vfs.Path saveMenu( final DynamicMenu plugin ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
@@ -573,8 +573,8 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path save( final
-                                               PerspectiveEditorModel plugin ) {
+    public org.uberfire.backend.vfs.Path savePerspective( final
+                                                              PerspectiveEditorModel plugin ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 

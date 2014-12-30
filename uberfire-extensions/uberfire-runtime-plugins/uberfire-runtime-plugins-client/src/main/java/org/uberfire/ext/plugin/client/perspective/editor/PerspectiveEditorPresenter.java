@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor;
 
-import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
@@ -24,7 +23,6 @@ import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -189,7 +187,7 @@ public class PerspectiveEditorPresenter
     }
 
     protected void save() {
-        pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save( getContent() );
+        pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).savePerspective( getContent() );
     }
 
     public PerspectiveEditorModel getContent() {

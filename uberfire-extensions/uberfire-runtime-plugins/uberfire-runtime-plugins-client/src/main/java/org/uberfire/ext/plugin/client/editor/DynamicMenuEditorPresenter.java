@@ -210,7 +210,7 @@ public class DynamicMenuEditorPresenter
     }
 
     protected void save() {
-        pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save( getContent() );
+        pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).saveMenu( getContent() );
     }
 
     @WorkbenchPartView

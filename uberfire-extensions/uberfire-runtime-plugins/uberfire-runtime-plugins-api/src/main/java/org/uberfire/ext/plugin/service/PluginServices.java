@@ -31,8 +31,6 @@ public interface PluginServices
     Plugin createNewPlugin( final String name,
                             final PluginType type );
 
-    Path save( final PluginSimpleContent plugin );
-
     PluginContent getPluginContent( final Path path );
 
     PerspectiveEditorModel getPerspectiveEditor( org.uberfire.backend.vfs.Path path );
@@ -41,9 +39,11 @@ public interface PluginServices
 
     DynamicMenu getDynamicMenuContent( final Path path );
 
-    Path save( final DynamicMenu menu );
+    Path save( final PluginSimpleContent plugin );
 
-    Path save( final PerspectiveEditorModel plugin );
+    Path saveMenu( final DynamicMenu menu );
+
+    Path savePerspective( final PerspectiveEditorModel plugin );
 
     Collection<DynamicMenu> listDynamicMenus();
 
