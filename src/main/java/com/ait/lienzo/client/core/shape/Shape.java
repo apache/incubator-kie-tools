@@ -133,9 +133,9 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         {
             return;
         }
-        m_apsh = false;
+        setAppliedShadow(false);
 
-        m_fill = false;
+        setWasFilledFlag(false);
 
         if (prepare(context, attr, alpha))
         {
@@ -156,6 +156,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             return new BoundingPoints(bbox);
         }
         return null;
+    }
+
+    protected final void setAppliedShadow(boolean apsh)
+    {
+        m_apsh = apsh;
     }
 
     protected final void setWasFilledFlag(boolean fill)
