@@ -49,6 +49,7 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.shared.core.types.TextUnit;
 import com.google.gwt.json.client.JSONValue;
 
 /**
@@ -105,6 +106,8 @@ public class AttributeType
     public static AttributeType     TEXT_ALIGN_TYPE           = new AttributeType(new EnumValidator<TextAlign>("TextAlign", TextAlign.values()));
 
     public static AttributeType     TEXT_BASELINE_TYPE        = new AttributeType(new EnumValidator<TextBaseLine>("TextBaseLine", TextBaseLine.values()));
+
+    public static AttributeType     TEXT_UNIT_TYPE            = new AttributeType(new EnumValidator<TextUnit>("TextUnit", TextUnit.values()));
 
     public static AttributeType     COMPOSITE_OPERATION_TYPE  = new AttributeType(new EnumValidator<CompositeOperation>("CompositeOperation", CompositeOperation.values()));
 

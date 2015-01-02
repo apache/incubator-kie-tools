@@ -1003,9 +1003,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         @Override
         public boolean addNodeForContainer(IContainer<?, ?> container, Node<?> node, ValidationContext ctx)
         {
-            if (node.getNodeType().isPrimitive())
+            IPrimitive<?> prim = node.asPrimitive();
+
+            if (null != prim)
             {
-                container.asLayer().add(node.asPrimitive());
+                container.asLayer().add(prim);
 
                 return true;
             }

@@ -21,8 +21,18 @@ import com.google.gwt.core.client.JavaScriptObject;
 /**
  * JSO to be used when retrieving the Canvas {@link Text} measurements.
  */
-public class TextMetrics extends JavaScriptObject
+public final class TextMetrics extends JavaScriptObject
 {
+    public static final TextMetrics make()
+    {
+        return make(0, 0);
+    }
+
+    public static final native TextMetrics make(int w, int h)
+    /*-{
+        return {width: w, height: h};       
+    }-*/;
+
     protected TextMetrics()
     {
     }
@@ -34,7 +44,7 @@ public class TextMetrics extends JavaScriptObject
      */
     public final native void setWidth(double width)
     /*-{
-		this.width = width;
+    	this.width = width;
     }-*/;
 
     /**
@@ -44,7 +54,10 @@ public class TextMetrics extends JavaScriptObject
      */
     public final native double getWidth()
     /*-{
-		return this.width;
+    	if (this.width !== undefined) {
+    	    return this.width;
+    	}
+    	return 0;
     }-*/;
 
     /**
@@ -54,7 +67,7 @@ public class TextMetrics extends JavaScriptObject
      */
     public final native void setHeight(double height)
     /*-{
-		this.height = height;
+    	this.height = height;
     }-*/;
 
     /**
@@ -63,6 +76,9 @@ public class TextMetrics extends JavaScriptObject
      */
     public final native double getHeight()
     /*-{
-		return this.height;
+    	if (this.height !== undefined) {
+    	    return this.height;
+    	}
+    	return 0;
     }-*/;
 }

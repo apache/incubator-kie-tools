@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Enum to type safe the usage of Canvas fill patterns. See {@link PatternGradient}.
  */
@@ -25,7 +27,9 @@ public enum FillRepeat implements EnumWithValue
 {
     REPEAT("repeat"), REPEAT_X("repeat-x"), REPEAT_Y("repeat-y"), NO_REPEAT("no-repeat");
 
-    private final String m_value;
+    private final String                            m_value;
+
+    private static final NFastStringMap<FillRepeat> LOOKUP_MAP = Statics.build(FillRepeat.values());
 
     private FillRepeat(String value)
     {
@@ -58,7 +62,7 @@ public enum FillRepeat implements EnumWithValue
      */
     public static final FillRepeat lookup(String key)
     {
-        return Statics.lookup(key, FillRepeat.values(), NO_REPEAT);
+        return Statics.lookup(key, LOOKUP_MAP, NO_REPEAT);
     }
 
     /**

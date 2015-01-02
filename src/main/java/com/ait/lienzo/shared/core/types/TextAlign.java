@@ -18,14 +18,18 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Enum to create a type safe set of values for {@link Text} Alignment. 
  */
 public enum TextAlign implements EnumWithValue
 {
-    CENTER("center"), END("end"), LEFT("left"), RIGHT("right"), START("start");
+    START("start"), END("end"), LEFT("left"), CENTER("center"), RIGHT("right");
 
-    private final String m_value;
+    private final String                           m_value;
+
+    private static final NFastStringMap<TextAlign> LOOKUP_MAP = Statics.build(TextAlign.values());
 
     private TextAlign(String value)
     {
@@ -46,7 +50,7 @@ public enum TextAlign implements EnumWithValue
 
     public static final TextAlign lookup(String key)
     {
-        return Statics.lookup(key, TextAlign.values(), START);
+        return Statics.lookup(key, LOOKUP_MAP, START);
     }
 
     public static final List<String> getKeys()

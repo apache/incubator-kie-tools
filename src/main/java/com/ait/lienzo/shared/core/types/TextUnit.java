@@ -20,15 +20,18 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.types.NFastStringMap;
 
-public enum LayerClearMode implements EnumWithValue
+/**
+ * Enum to create a type safe set of values for {@link Text} Size Units. 
+ */
+public enum TextUnit implements EnumWithValue
 {
-    CLEAR("clear-layer"), RESIZE("resize-layer");
+    PT("pt"), PX("px"), PC("pc"), CM("cm"), MM("mm");
 
-    private final String                                m_value;
+    private final String                          m_value;
 
-    private static final NFastStringMap<LayerClearMode> LOOKUP_MAP = Statics.build(LayerClearMode.values());
+    private static final NFastStringMap<TextUnit> LOOKUP_MAP = Statics.build(TextUnit.values());
 
-    private LayerClearMode(String value)
+    private TextUnit(String value)
     {
         m_value = value;
     }
@@ -45,18 +48,18 @@ public enum LayerClearMode implements EnumWithValue
         return m_value;
     }
 
-    public static final LayerClearMode lookup(String key)
+    public static final TextUnit lookup(String key)
     {
-        return Statics.lookup(key, LOOKUP_MAP, CLEAR);
+        return Statics.lookup(key, LOOKUP_MAP, PT);
     }
 
     public static final List<String> getKeys()
     {
-        return Statics.getKeys(LayerClearMode.values());
+        return Statics.getKeys(TextUnit.values());
     }
 
-    public static final List<LayerClearMode> getValues()
+    public static final List<TextUnit> getValues()
     {
-        return Statics.getValues(LayerClearMode.values());
+        return Statics.getValues(TextUnit.values());
     }
 }

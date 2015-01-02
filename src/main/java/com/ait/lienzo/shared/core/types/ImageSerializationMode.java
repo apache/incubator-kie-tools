@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Serialization mode of a Picture or Sprite.
  */
@@ -25,7 +27,9 @@ public enum ImageSerializationMode implements EnumWithValue
 {
     URL("url"), DATA_URL("data-url");
 
-    private final String m_value;
+    private final String                                        m_value;
+
+    private static final NFastStringMap<ImageSerializationMode> LOOKUP_MAP = Statics.build(ImageSerializationMode.values());
 
     private ImageSerializationMode(String value)
     {
@@ -46,7 +50,7 @@ public enum ImageSerializationMode implements EnumWithValue
 
     public static final ImageSerializationMode lookup(String key)
     {
-        return Statics.lookup(key, ImageSerializationMode.values(), URL);
+        return Statics.lookup(key, LOOKUP_MAP, URL);
     }
 
     public static final List<String> getKeys()

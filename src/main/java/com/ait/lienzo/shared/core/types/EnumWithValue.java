@@ -20,34 +20,50 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 public interface EnumWithValue
 {
     public String getValue();
 
     public static final class Statics
     {
-        public static final <T extends EnumWithValue> T lookup(String key, T[] values, T otherwise)
+        public static final <T extends EnumWithValue> NFastStringMap<T> build(final T[] values)
         {
-            if ((null != key) && (false == (key = key.trim()).isEmpty()))
-            {
-                for (int i = 0; i < values.length; i++)
-                {
-                    T value = values[i];
+            final NFastStringMap<T> make = new NFastStringMap<T>();
 
-                    if (value.getValue().equals(key))
-                    {
-                        return value;
-                    }
+            final int size = values.length;
+
+            for (int i = 0; i < size; i++)
+            {
+                T value = values[i];
+
+                make.put(value.getValue(), value);
+            }
+            return make;
+        }
+
+        public static final <T extends EnumWithValue> T lookup(final String key, final NFastStringMap<T> map, final T otherwise)
+        {
+            if ((null != key) && (key.length() > 0))
+            {
+                T value = map.get(key);
+
+                if (null != value)
+                {
+                    return value;
                 }
             }
             return otherwise;
         }
 
-        public static final <T extends EnumWithValue> List<String> getKeys(T[] values)
+        public static final <T extends EnumWithValue> List<String> getKeys(final T[] values)
         {
-            ArrayList<String> keys = new ArrayList<String>(values.length);
+            final int size = values.length;
 
-            for (int i = 0; i < values.length; i++)
+            final ArrayList<String> keys = new ArrayList<String>(size);
+
+            for (int i = 0; i < size; i++)
             {
                 keys.add(values[i].getValue());
             }

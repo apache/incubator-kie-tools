@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * CSS color names. They can be used whenever an {@link IColor} is needed.
  * 
@@ -177,6 +179,8 @@ public enum ColorName implements EnumWithValue, IColor
     TRANSPARENT("transparent", 255, 255, 255, 0);
 
     private final String m_value;
+    
+    private static final NFastStringMap<ColorName> LOOKUP_MAP = Statics.build(ColorName.values());
 
     private final int    m_r;
 
@@ -260,7 +264,7 @@ public enum ColorName implements EnumWithValue, IColor
 
     public static final ColorName lookup(String key)
     {
-        return Statics.lookup(key, ColorName.values(), null);
+        return Statics.lookup(key, LOOKUP_MAP, null);
     }
 
     public static final List<String> getKeys()

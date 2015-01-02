@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Selection mode of a Picture or Sprite.
  */
@@ -25,7 +27,9 @@ public enum ImageSelectionMode implements EnumWithValue
 {
     SELECT_BOUNDS("select-bounds"), SELECT_NON_TRANSPARENT("select-non-transparent");
 
-    private final String m_value;
+    private final String                                    m_value;
+
+    private static final NFastStringMap<ImageSelectionMode> LOOKUP_MAP = Statics.build(ImageSelectionMode.values());
 
     private ImageSelectionMode(String value)
     {
@@ -46,7 +50,7 @@ public enum ImageSelectionMode implements EnumWithValue
 
     public static final ImageSelectionMode lookup(String key)
     {
-        return Statics.lookup(key, ImageSelectionMode.values(), SELECT_NON_TRANSPARENT);
+        return Statics.lookup(key, LOOKUP_MAP, SELECT_NON_TRANSPARENT);
     }
 
     public static final List<String> getKeys()

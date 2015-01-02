@@ -28,9 +28,11 @@ public enum NativeInternalType implements EnumWithValue
 {
     STRING("string"), NUMBER("number"), BOOLEAN("boolean"), FUNCTION("function"), ARRAY("array"), OBJECT("object"), UNDEFINED("undefined"), NULL("null");
 
-    private final String                       m_value;
+    private final String                                    m_value;
 
-    private final static NativeInternalTypeOps NOPS = NativeInternalTypeOps.make();
+    private final static NativeInternalTypeOps              NOPS       = NativeInternalTypeOps.make();
+
+    private static final NFastStringMap<NativeInternalType> LOOKUP_MAP = Statics.build(NativeInternalType.values());
 
     private NativeInternalType(String value)
     {
@@ -51,7 +53,7 @@ public enum NativeInternalType implements EnumWithValue
 
     public static final NativeInternalType lookup(String key)
     {
-        return Statics.lookup(key, NativeInternalType.values(), null);
+        return Statics.lookup(key, LOOKUP_MAP, null);
     }
 
     public static final List<String> getKeys()

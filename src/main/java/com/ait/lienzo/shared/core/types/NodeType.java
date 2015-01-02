@@ -21,33 +21,23 @@ package com.ait.lienzo.shared.core.types;
  */
 public class NodeType
 {
-    public static final NodeType SCENE      = new NodeType("Scene", false);
+    public static final NodeType SCENE      = new NodeType("Scene");
 
-    public static final NodeType LAYER      = new NodeType("Layer", false);
+    public static final NodeType LAYER      = new NodeType("Layer");
 
-    public static final NodeType GROUP      = new NodeType("Group", true);
+    public static final NodeType GROUP      = new NodeType("Group");
 
-    public static final NodeType SHAPE      = new NodeType("Shape", true);
+    public static final NodeType SHAPE      = new NodeType("Shape");
 
-    public static final NodeType VIEWPORT   = new NodeType("Viewport", false);
+    public static final NodeType VIEWPORT   = new NodeType("Viewport");
 
-    public static final NodeType GRID_LAYER = new NodeType("GridLayer", false);
+    public static final NodeType GRID_LAYER = new NodeType("GridLayer");
 
     private final String         m_valu;
 
-    private final boolean        m_prim;
-
-    protected NodeType(String valu, boolean prim)
+    protected NodeType(String valu)
     {
         m_valu = valu;
-
-        m_prim = prim;
-    }
-
-    @Override
-    public final String toString()
-    {
-        return m_valu;
     }
 
     public final String getValue()
@@ -55,9 +45,10 @@ public class NodeType
         return m_valu;
     }
 
-    public final boolean isPrimitive()
+    @Override
+    public final String toString()
     {
-        return m_prim;
+        return m_valu;
     }
 
     @Override
@@ -73,7 +64,7 @@ public class NodeType
         }
         NodeType that = ((NodeType) other);
 
-        return ((that.getValue().equals(getValue())) && (that.isPrimitive() == isPrimitive()));
+        return (that.getValue().equals(getValue()));
     }
 
     @Override

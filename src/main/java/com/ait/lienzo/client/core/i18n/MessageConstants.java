@@ -590,4 +590,10 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("Bias of a filter.")
     public String biasDescription();
+
+    @DefaultStringValue("Unit")
+    public String textUnitLabel();
+
+    @DefaultStringValue("Unit size of Text (px,pt).")
+    public String textUnitDescription();
 }

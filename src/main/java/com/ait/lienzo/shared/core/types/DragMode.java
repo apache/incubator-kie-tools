@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Enum to be used to constrain the Dragging Layer of a {@link Shape} or {@link Group}
  */
@@ -25,7 +27,9 @@ public enum DragMode implements EnumWithValue
 {
     DRAG_LAYER("drag-layer"), SAME_LAYER("same-layer");
 
-    private final String m_value;
+    private final String                          m_value;
+
+    private static final NFastStringMap<DragMode> LOOKUP_MAP = Statics.build(DragMode.values());
 
     private DragMode(String value)
     {
@@ -57,7 +61,7 @@ public enum DragMode implements EnumWithValue
      */
     public static final DragMode lookup(String key)
     {
-        return Statics.lookup(key, DragMode.values(), DRAG_LAYER);
+        return Statics.lookup(key, LOOKUP_MAP, DRAG_LAYER);
     }
 
     /**

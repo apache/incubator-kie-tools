@@ -25,13 +25,18 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
+import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.types.NFastStringMap;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.TextMetrics;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
+import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.shared.core.types.TextUnit;
+import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -39,9 +44,11 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Text extends Shape<Text>
 {
-    private static final boolean       IS_SAFARI = LienzoCore.get().isSafari();
+    private static final boolean                             IS_SAFARI = LienzoCore.get().isSafari();
 
-    private static final ScratchCanvas FORBOUNDS = new ScratchCanvas(1, 1);
+    private static final ScratchCanvas                       FORBOUNDS = new ScratchCanvas(1, 1);
+
+    private static final NFastStringMap<NFastDoubleArrayJSO> OFFSCACHE = new NFastStringMap<NFastDoubleArrayJSO>();
 
     /**
      * Constructor. Creates an instance of text.
@@ -52,7 +59,7 @@ public class Text extends Shape<Text>
     {
         super(ShapeType.TEXT);
 
-        LienzoCore globals = LienzoCore.get();
+        final LienzoCore globals = LienzoCore.get();
 
         if (null == text)
         {
@@ -68,11 +75,11 @@ public class Text extends Shape<Text>
      * @param family font family
      * @param points font size
      */
-    public Text(String text, String family, double points)
+    public Text(String text, String family, double size)
     {
         super(ShapeType.TEXT);
 
-        LienzoCore globals = LienzoCore.get();
+        final LienzoCore globals = LienzoCore.get();
 
         if (null == text)
         {
@@ -82,11 +89,11 @@ public class Text extends Shape<Text>
         {
             family = globals.getDefaultFontFamily();
         }
-        if (points <= 0)
+        if (size <= 0)
         {
-            points = globals.getDefaultFontSize();
+            size = globals.getDefaultFontSize();
         }
-        setText(text).setFontFamily(family).setFontStyle(globals.getDefaultFontStyle()).setFontSize(points);
+        setText(text).setFontFamily(family).setFontStyle(globals.getDefaultFontStyle()).setFontSize(size);
     }
 
     /**
@@ -97,11 +104,11 @@ public class Text extends Shape<Text>
      * @param style font style (bold, italic, etc)
      * @param points font size
      */
-    public Text(String text, String family, String style, double points)
+    public Text(String text, String family, String style, double size)
     {
         super(ShapeType.TEXT);
 
-        LienzoCore globals = LienzoCore.get();
+        final LienzoCore globals = LienzoCore.get();
 
         if (null == text)
         {
@@ -115,11 +122,11 @@ public class Text extends Shape<Text>
         {
             style = globals.getDefaultFontStyle();
         }
-        if (points <= 0)
+        if (size <= 0)
         {
-            points = globals.getDefaultFontSize();
+            size = globals.getDefaultFontSize();
         }
-        setText(text).setFontFamily(family).setFontStyle(style).setFontSize(points);
+        setText(text).setFontFamily(family).setFontStyle(style).setFontSize(size);
     }
 
     protected Text(JSONObject node, ValidationContext ctx) throws ValidationException
@@ -130,16 +137,94 @@ public class Text extends Shape<Text>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getBoundingBox(getText(), getFontSize(), getFontStyle(), getFontFamily());
+        return getBoundingBox(getText(), getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
     }
 
-    public final static BoundingBox getBoundingBox(String text, double size, String style, String family)
+    private static final native NFastDoubleArrayJSO getTextOffsets(CanvasPixelArray data, int wide, int high, int base)
+    /*-{
+    }-*/;
+
+    private static final NFastDoubleArrayJSO getTextOffsets(final String font, final TextBaseLine baseline)
     {
-        FORBOUNDS.getContext().setTextFont(style + " " + size + "pt " + family);
+        FORBOUNDS.getContext().setTextFont(font);
 
-        TextMetrics metrics = FORBOUNDS.getContext().measureText(text);
+        FORBOUNDS.getContext().setTextAlign(TextAlign.LEFT);
 
-        return new BoundingBox(0, 0, metrics.getWidth(), metrics.getHeight());
+        FORBOUNDS.getContext().setTextBaseline(TextBaseLine.ALPHABETIC);
+
+        final int m = (int) FORBOUNDS.getContext().measureText("M").getWidth();
+
+        final int w = (int) FORBOUNDS.getContext().measureText("Mg").getWidth();
+
+        final int h = (m * 2);
+
+        final ScratchCanvas temp = new ScratchCanvas(w, h);
+
+        final Context2D ctxt = temp.getContext();
+
+        ctxt.setFillColor(ColorName.BLACK);
+
+        ctxt.fillRect(0, 0, w, h);
+
+        ctxt.setTextFont(font);
+
+        ctxt.setTextAlign(TextAlign.LEFT);
+
+        ctxt.setTextBaseline(baseline);
+
+        ctxt.setFillColor(ColorName.WHITE);
+
+        ctxt.fillText("Mg", 0, m);
+
+        return getTextOffsets(ctxt.getImageData(0, 0, w, h).getData(), w, h, m);
+    }
+
+    private final static BoundingBox getBoundingBox(final String text, final double size, final String style, final String family, final TextUnit unit, final TextBaseLine baseline, final TextAlign align)
+    {
+        if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
+        {
+            return new BoundingBox(0, 0, 0, 0);
+        }
+        final String font = getFontString(size, style, family, unit.getValue());
+
+        final String base = font + " " + baseline.getValue();
+
+        NFastDoubleArrayJSO offs = OFFSCACHE.get(base);
+
+        if (null == offs)
+        {
+            OFFSCACHE.put(base, offs = getTextOffsets(font, baseline));
+        }
+        FORBOUNDS.getContext().setTextFont(font);
+
+        FORBOUNDS.getContext().setTextAlign(TextAlign.LEFT);
+
+        FORBOUNDS.getContext().setTextBaseline(TextBaseLine.ALPHABETIC);
+
+        final double wide = FORBOUNDS.getContext().measureText(text).getWidth();
+
+        final BoundingBox bbox = new BoundingBox().addY(offs.get(0)).addY(offs.get(1));
+
+        switch (align)
+        {
+            case LEFT:
+            case START:
+                bbox.addX(0).addX(wide);
+                break;
+            case END:
+            case RIGHT:
+                bbox.addX(0).addX(0 - wide);
+                break;
+            case CENTER:
+                bbox.addX(wide / 2).addX(0 - (wide / 2));
+                break;
+        }
+        return bbox;
+    }
+
+    private final static String getFontString(double size, String style, String family, String unit)
+    {
+        return style + " " + size + unit + " " + family;
     }
 
     /**
@@ -148,11 +233,11 @@ public class Text extends Shape<Text>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        String text = attr.getText();
+        final String text = attr.getText();
 
-        double size = attr.getFontSize();
+        final double size = attr.getFontSize();
 
         if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
         {
@@ -166,12 +251,12 @@ public class Text extends Shape<Text>
         {
             context.setTextAlign(attr.getTextAlign());
         }
-        context.setTextFont(attr.getFontStyle() + " " + size + "pt " + attr.getFontFamily());
+        context.setTextFont(getFontString(size, attr.getFontStyle(), attr.getFontFamily(), attr.getTextUnit().getValue()));
 
         return true;
     }
 
-    protected void fill(Context2D context, Attributes attr, double alpha)
+    protected void fill(final Context2D context, final Attributes attr, double alpha)
     {
         alpha = alpha * attr.getFillAlpha();
 
@@ -179,7 +264,7 @@ public class Text extends Shape<Text>
         {
             return;
         }
-        boolean filled = attr.isDefined(Attribute.FILL);
+        final boolean filled = attr.isDefined(Attribute.FILL);
 
         if ((filled) || (attr.isFillShapeForSelection()))
         {
@@ -230,7 +315,7 @@ public class Text extends Shape<Text>
 
             context.setGlobalAlpha(alpha);
 
-            String fill = attr.getFillColor();
+            final String fill = attr.getFillColor();
 
             if (null != fill)
             {
@@ -242,7 +327,7 @@ public class Text extends Shape<Text>
             }
             else
             {
-                FillGradient grad = attr.getFillGradient();
+                final FillGradient grad = attr.getFillGradient();
 
                 if (null != grad)
                 {
@@ -277,7 +362,7 @@ public class Text extends Shape<Text>
     }
 
     @Override
-    protected void stroke(Context2D context, Attributes attr, double alpha)
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha)
     {
         context.save();
 
@@ -312,23 +397,23 @@ public class Text extends Shape<Text>
      * @param context
      * @return TextMetric or null if the text is empty or null
      */
-    public TextMetrics measure(Context2D context)
+    public TextMetrics measure(final Context2D context)
     {
-        TextMetrics size = null;
+        final String text = getText();
+        
+        final double size = getFontSize();
 
-        String text = getText();
-
-        if ((null == text) || (text.isEmpty()))
+        if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
         {
-            return size;
+            return TextMetrics.make(0, 0);
         }
         context.save();
 
         context.setTextAlign(TextAlign.LEFT);
 
         context.setTextBaseline(TextBaseLine.ALPHABETIC);
-
-        context.setTextFont(getFontStyle() + " " + getFontSize() + "pt " + getFontFamily());
+        
+        context.setTextFont(getFontString(size, getFontStyle(), getFontFamily(), getTextUnit().getValue()));
 
         double width = getStrokeWidth();
 
@@ -340,15 +425,15 @@ public class Text extends Shape<Text>
 
         context.transform(getAbsoluteTransform());
 
-        size = context.measureText(text);
+        TextMetrics meas = context.measureText(text);
 
         double height = context.measureText("M").getWidth();
 
-        size.setHeight(height - height / 6);
+        meas.setHeight(height - height / 6);
 
         context.restore();
 
-        return size;
+        return meas;
     }
 
     /**
@@ -411,7 +496,7 @@ public class Text extends Shape<Text>
     public Text setFontFamily(String family)
     {
         getAttributes().setFontFamily(family);
-
+        
         return this;
     }
 
@@ -434,7 +519,7 @@ public class Text extends Shape<Text>
     public Text setFontStyle(String style)
     {
         getAttributes().setFontStyle(style);
-
+        
         return this;
     }
 
@@ -457,8 +542,20 @@ public class Text extends Shape<Text>
     public Text setFontSize(double size)
     {
         getAttributes().setFontSize(size);
-
+        
         return this;
+    }
+
+    public Text setTextUnit(TextUnit unit)
+    {
+        getAttributes().setTextUnit(unit);
+        
+        return this;
+    }
+
+    public TextUnit getTextUnit()
+    {
+        return getAttributes().getTextUnit();
     }
 
     /**
@@ -480,7 +577,7 @@ public class Text extends Shape<Text>
     public Text setTextAlign(TextAlign align)
     {
         getAttributes().setTextAlign(align);
-
+        
         return this;
     }
 
@@ -503,7 +600,7 @@ public class Text extends Shape<Text>
     public Text setTextBaseLine(TextBaseLine baseline)
     {
         getAttributes().setTextBaseLine(baseline);
-
+        
         return this;
     }
 
@@ -526,6 +623,8 @@ public class Text extends Shape<Text>
             addAttribute(Attribute.FONT_STYLE);
 
             addAttribute(Attribute.FONT_FAMILY);
+
+            addAttribute(Attribute.TEXT_UNIT);
 
             addAttribute(Attribute.TEXT_ALIGN);
 

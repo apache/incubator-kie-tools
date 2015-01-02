@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Enum to type safe the usage of Canvas Line Joins.
  */
@@ -25,7 +27,9 @@ public enum LineJoin implements EnumWithValue
 {
     ROUND("round"), BEVEL("bevel"), MITER("miter");
 
-    private final String m_value;
+    private final String                          m_value;
+
+    private static final NFastStringMap<LineJoin> LOOKUP_MAP = Statics.build(LineJoin.values());
 
     private LineJoin(String value)
     {
@@ -46,7 +50,7 @@ public enum LineJoin implements EnumWithValue
 
     public static final LineJoin lookup(String key)
     {
-        return Statics.lookup(key, LineJoin.values(), MITER);
+        return Statics.lookup(key, LOOKUP_MAP, MITER);
     }
 
     public static final List<String> getKeys()

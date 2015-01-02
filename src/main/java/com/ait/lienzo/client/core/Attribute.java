@@ -123,6 +123,8 @@ public class Attribute implements IAttribute
 
     public static final Attribute           TEXT_ALIGN                       = new Attribute("textAlign", MESSAGES.textAlignLabel(), MESSAGES.textAlignDescription(), AttributeType.TEXT_ALIGN_TYPE);
 
+    public static final Attribute           TEXT_UNIT                        = new Attribute("textUnit", MESSAGES.textUnitLabel(), MESSAGES.textUnitDescription(), AttributeType.TEXT_UNIT_TYPE);
+
     public static final Attribute           CLIPPED_IMAGE_WIDTH              = new Attribute("clippedImageWidth", MESSAGES.clippedImageWidthLabel(), MESSAGES.clippedImageWidthDescription(), AttributeType.NUMBER_TYPE);
 
     public static final Attribute           CLIPPED_IMAGE_HEIGHT             = new Attribute("clippedImageHeight", MESSAGES.clippedImageHeightLabel(), MESSAGES.clippedImageHeightDescription(), AttributeType.NUMBER_TYPE);

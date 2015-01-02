@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * ArrowType defines the style of the arrow heads for an 
  * {@link Arrow}.
@@ -28,7 +30,9 @@ public enum ArrowType implements EnumWithValue
 {
     AT_END("at-end"), AT_START("at-start"), AT_BOTH_ENDS("at-both-ends"), AT_END_TAPERED("at-end-tapered"), AT_START_TAPERED("at-start-tapered");
 
-    private final String m_value;
+    private final String                           m_value;
+
+    private static final NFastStringMap<ArrowType> LOOKUP_MAP = Statics.build(ArrowType.values());
 
     private ArrowType(String value)
     {
@@ -49,7 +53,7 @@ public enum ArrowType implements EnumWithValue
 
     public static final ArrowType lookup(String key)
     {
-        return Statics.lookup(key, ArrowType.values(), AT_END);
+        return Statics.lookup(key, LOOKUP_MAP, AT_END);
     }
 
     public static final List<String> getKeys()

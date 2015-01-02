@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Enum to be used to constrain the Dragging Area of a {@link ShapeType}
  */
@@ -25,7 +27,9 @@ public enum DragConstraint implements EnumWithValue
 {
     HORIZONTAL("horizontal"), VERTICAL("vertical"), NONE("none");
 
-    private final String m_value;
+    private final String                                m_value;
+
+    private static final NFastStringMap<DragConstraint> LOOKUP_MAP = Statics.build(DragConstraint.values());
 
     private DragConstraint(String value)
     {
@@ -57,7 +61,7 @@ public enum DragConstraint implements EnumWithValue
      */
     public static final DragConstraint lookup(String key)
     {
-        return Statics.lookup(key,  DragConstraint.values(), NONE);
+        return Statics.lookup(key, LOOKUP_MAP, NONE);
     }
 
     /**

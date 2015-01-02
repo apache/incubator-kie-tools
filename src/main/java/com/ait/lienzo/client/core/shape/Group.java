@@ -941,9 +941,11 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
         @Override
         public boolean addNodeForContainer(IContainer<?, ?> container, Node<?> node, ValidationContext ctx)
         {
-            if (node.getNodeType().isPrimitive())
+            IPrimitive<?> prim = node.asPrimitive();
+
+            if (null != prim)
             {
-                container.asGroup().add(node.asPrimitive());
+                container.asGroup().add(prim);
 
                 return true;
             }

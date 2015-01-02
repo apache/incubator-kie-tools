@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * Enum to type safe the usage of Canvas Line Caps.
  */
@@ -25,7 +27,9 @@ public enum LineCap implements EnumWithValue
 {
     BUTT("butt"), ROUND("round"), SQUARE("square");
 
-    private final String m_value;
+    private final String                         m_value;
+
+    private static final NFastStringMap<LineCap> LOOKUP_MAP = Statics.build(LineCap.values());
 
     private LineCap(String value)
     {
@@ -46,7 +50,7 @@ public enum LineCap implements EnumWithValue
 
     public static final LineCap lookup(String key)
     {
-        return Statics.lookup(key, LineCap.values(), BUTT);
+        return Statics.lookup(key, LOOKUP_MAP, BUTT);
     }
 
     public static final List<String> getKeys()

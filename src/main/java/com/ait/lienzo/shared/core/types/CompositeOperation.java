@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 public enum CompositeOperation implements EnumWithValue
 {
     /**
@@ -87,6 +89,8 @@ public enum CompositeOperation implements EnumWithValue
     XOR("xor");
 
     private final String m_value;
+    
+    private static final NFastStringMap<CompositeOperation> LOOKUP_MAP = Statics.build(CompositeOperation.values());
 
     private CompositeOperation(String value)
     {
@@ -107,7 +111,7 @@ public enum CompositeOperation implements EnumWithValue
 
     public static final CompositeOperation lookup(String key)
     {
-        return Statics.lookup(key, CompositeOperation.values(), SOURCE_OVER);
+        return Statics.lookup(key, LOOKUP_MAP, SOURCE_OVER);
     }
 
     public static final List<String> getKeys()

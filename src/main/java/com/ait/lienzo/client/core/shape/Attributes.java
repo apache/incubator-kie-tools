@@ -50,6 +50,7 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.shared.core.types.TextUnit;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -775,6 +776,23 @@ public class Attributes
         {
             delete(Attribute.TEXT_BASELINE.getProperty());
         }
+    }
+
+    public final void setTextUnit(TextUnit unit)
+    {
+        if (null != unit)
+        {
+            put(Attribute.TEXT_UNIT.getProperty(), unit.getValue());
+        }
+        else
+        {
+            delete(Attribute.TEXT_UNIT.getProperty());
+        }
+    }
+
+    public final TextUnit getTextUnit()
+    {
+        return TextUnit.lookup(getString(Attribute.TEXT_UNIT.getProperty()));
     }
 
     public final void setTextAlign(TextAlign textAlign)

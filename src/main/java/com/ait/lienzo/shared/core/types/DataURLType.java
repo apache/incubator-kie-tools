@@ -18,6 +18,8 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
+import com.ait.lienzo.client.core.types.NFastStringMap;
+
 /**
  * DataURLType defines export format for toDataURL
  */
@@ -25,7 +27,9 @@ public enum DataURLType implements EnumWithValue
 {
     PNG("image/png;"), JPG("image/jpg;");
 
-    private final String m_value;
+    private final String                             m_value;
+
+    private static final NFastStringMap<DataURLType> LOOKUP_MAP = Statics.build(DataURLType.values());
 
     private DataURLType(String value)
     {
@@ -46,7 +50,7 @@ public enum DataURLType implements EnumWithValue
 
     public static final DataURLType lookup(String key)
     {
-        return Statics.lookup(key, DataURLType.values(), PNG);
+        return Statics.lookup(key, LOOKUP_MAP, PNG);
     }
 
     public static final List<String> getKeys()
