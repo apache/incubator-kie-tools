@@ -171,7 +171,17 @@ public final class BoundingBox
 
     public final String toJSONString()
     {
-        return new JSONObject().put("x", new JSONNumber(getX())).isObject().put("y", new JSONNumber(getY())).isObject().put("width", new JSONNumber(getWidth())).isObject().put("height", new JSONNumber(getHeight())).toString();
+        JSONObject object = new JSONObject();
+
+        object.put("x", new JSONNumber(getX()));
+
+        object.put("y", new JSONNumber(getY()));
+
+        object.put("width", new JSONNumber(getWidth()));
+
+        object.put("height", new JSONNumber(getHeight()));
+
+        return object.toString();
     }
 
     @Override
