@@ -43,6 +43,8 @@ public class ShapeType
 
     public static final ShapeType POLYLINE            = new ShapeType("Polyline");
 
+    public static final ShapeType ORTHOGONAL_POLYLINE = new ShapeType("OrthogonalPolyline");
+
     public static final ShapeType QUADRATIC_CURVE     = new ShapeType("QuadraticCurve");
 
     public static final ShapeType RECTANGLE           = new ShapeType("Rectangle");

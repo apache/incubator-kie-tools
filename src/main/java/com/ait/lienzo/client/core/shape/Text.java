@@ -137,7 +137,7 @@ public class Text extends Shape<Text>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getBoundingBox(getText(), getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
+        return getBoundingBox(getText(), /*getFontSize()*/0, getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
     }
 
     private static final native NFastDoubleArrayJSO getTextOffsets(CanvasPixelArray data, int wide, int high, int base)
@@ -400,7 +400,7 @@ public class Text extends Shape<Text>
     public TextMetrics measure(final Context2D context)
     {
         final String text = getText();
-        
+
         final double size = getFontSize();
 
         if ((null == text) || (text.isEmpty()) || (false == (size > 0)))
@@ -412,7 +412,7 @@ public class Text extends Shape<Text>
         context.setTextAlign(TextAlign.LEFT);
 
         context.setTextBaseline(TextBaseLine.ALPHABETIC);
-        
+
         context.setTextFont(getFontString(size, getFontStyle(), getFontFamily(), getTextUnit().getValue()));
 
         double width = getStrokeWidth();
@@ -496,7 +496,7 @@ public class Text extends Shape<Text>
     public Text setFontFamily(String family)
     {
         getAttributes().setFontFamily(family);
-        
+
         return this;
     }
 
@@ -519,7 +519,7 @@ public class Text extends Shape<Text>
     public Text setFontStyle(String style)
     {
         getAttributes().setFontStyle(style);
-        
+
         return this;
     }
 
@@ -542,14 +542,14 @@ public class Text extends Shape<Text>
     public Text setFontSize(double size)
     {
         getAttributes().setFontSize(size);
-        
+
         return this;
     }
 
     public Text setTextUnit(TextUnit unit)
     {
         getAttributes().setTextUnit(unit);
-        
+
         return this;
     }
 
@@ -577,7 +577,7 @@ public class Text extends Shape<Text>
     public Text setTextAlign(TextAlign align)
     {
         getAttributes().setTextAlign(align);
-        
+
         return this;
     }
 
@@ -600,7 +600,7 @@ public class Text extends Shape<Text>
     public Text setTextBaseLine(TextBaseLine baseline)
     {
         getAttributes().setTextBaseLine(baseline);
-        
+
         return this;
     }
 
