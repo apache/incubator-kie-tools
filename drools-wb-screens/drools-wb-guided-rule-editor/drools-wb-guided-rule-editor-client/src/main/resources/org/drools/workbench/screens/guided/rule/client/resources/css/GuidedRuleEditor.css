@@ -10,3 +10,11 @@
     margin-right: 1px;
     font-size: smaller;
 }
+
+.oddRow {
+    background-color: #f2ffff;
+}
+
+.evenRow {
+    background-color: #d2efff;
+}

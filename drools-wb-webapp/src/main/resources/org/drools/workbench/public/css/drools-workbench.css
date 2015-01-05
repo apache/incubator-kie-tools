@@ -89,7 +89,7 @@ td, th {
     # border-radius: .7em;
     padding-left: .5em;
     # border: 1px solid #ddd;
-    background: #FFF;
+    #background: #FFF;
 }
 
 .gwt-Image {
@@ -100,26 +100,6 @@ td, th {
     padding-left: .5em;
     background: #FFF;
     font-size: smaller;
-}
-
-.model-builderInner-Background {
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    # -moz-border-radius: .7em;
-    # -khtml-border-radius: .7em;
-    # -webkit-border-radius: .7em;
-    # border-radius: .7em;
-    background: #FFF;
-}
-
-.model-builderInnerInner-Background {
-    border-top: 0 solid #ccc;
-    border-bottom: 0 solid #ccc;
-    # -moz-border-radius: .7em;
-    # -webkit-border-radius: .7em;
-    # -khtml-border-radius: .7em;
-    # border-radius: .7em;
-    background: #FFF;
 }
 
 .modeller-fact-pattern-Widget {

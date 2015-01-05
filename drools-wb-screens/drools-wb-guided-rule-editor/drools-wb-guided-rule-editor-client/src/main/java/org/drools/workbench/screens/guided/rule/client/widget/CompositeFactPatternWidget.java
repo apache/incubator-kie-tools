@@ -71,7 +71,6 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         this.pattern = pattern;
 
         this.layout = new FlexTable();
-        this.layout.setStyleName( "model-builderInner-Background" );
 
         if ( readOnly != null ) {
             this.readOnly = readOnly;
