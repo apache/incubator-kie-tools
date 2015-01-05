@@ -23,7 +23,7 @@
              xmlns:uf='urn:import:org.uberfire.ext.properties.editor.client'>
 
 
-  <ui:with field="i18n" type="org.uberfire.ext.perspective.editor.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18n" type="org.uberfire.ext.plugin.client.resources.i18n.CommonConstants"/>
 
   <ui:style>
     .mandatory-field {
