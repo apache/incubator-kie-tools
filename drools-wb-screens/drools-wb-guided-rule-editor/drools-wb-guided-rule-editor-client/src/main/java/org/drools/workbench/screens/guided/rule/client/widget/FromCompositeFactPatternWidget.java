@@ -76,7 +76,6 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         if ( this.readOnly ) {
             this.layout.addStyleName( "editor-disabled-widget" );
         }
-        this.layout.addStyleName( "model-builderInner-Background" );
 
         doLayout();
         initWidget( layout );

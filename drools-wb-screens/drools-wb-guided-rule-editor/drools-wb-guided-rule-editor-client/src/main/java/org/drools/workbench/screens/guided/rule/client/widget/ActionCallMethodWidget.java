@@ -75,8 +75,6 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         model = actionCallMethod;
         oracle = this.getModeller().getDataModelOracle();
 
-        layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
-
         getMethodInfos();
         checkIfReadOnly( readOnly );
 

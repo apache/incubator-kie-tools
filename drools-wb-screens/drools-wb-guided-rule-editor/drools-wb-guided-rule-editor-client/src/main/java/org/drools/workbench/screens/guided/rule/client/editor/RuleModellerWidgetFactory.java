@@ -86,7 +86,6 @@ public class RuleModellerWidgetFactory
                                                           eventBus,
                                                           (DSLSentence) action,
                                                           readOnly );
-            w.addStyleName( "model-builderInner-Background" ); //NON-NLS
             return w;
         }
         if ( action instanceof FreeFormLine ) {

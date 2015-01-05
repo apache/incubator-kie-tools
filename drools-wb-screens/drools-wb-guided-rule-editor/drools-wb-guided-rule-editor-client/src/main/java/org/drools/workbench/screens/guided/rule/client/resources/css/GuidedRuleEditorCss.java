@@ -28,4 +28,8 @@ public interface GuidedRuleEditorCss
 
     String parameter();
 
+    String oddRow();
+
+    String evenRow();
+
 }

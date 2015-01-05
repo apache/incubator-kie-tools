@@ -182,10 +182,6 @@ public class FactPatternWidget extends RuleModellerWidget {
             layout.addStyleName( "editor-disabled-widget" );
         }
 
-        if ( bindable ) {
-            layout.addStyleName( "modeller-fact-pattern-Widget" );
-        }
-
         initWidget( layout );
 
     }

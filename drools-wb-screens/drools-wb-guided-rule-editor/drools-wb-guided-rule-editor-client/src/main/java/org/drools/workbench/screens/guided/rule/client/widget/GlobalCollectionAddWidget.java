@@ -68,7 +68,6 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
 
         ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
         SimplePanel sp = new SimplePanel();
-        sp.setStyleName( "model-builderInner-Background" ); //NON-NLS
         sp.add( new SmallLabel( "&nbsp;" + GuidedRuleEditorResources.CONSTANTS.AddXToListY( gca.getFactName(),
                                                                            gca.getGlobalName() ) ) );
 

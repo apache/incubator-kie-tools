@@ -76,8 +76,6 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         this.model = set;
         this.layout = new FlexTable();
 
-        layout.setStyleName( "model-builderInner-Background" );
-
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
 
         if ( oracle.isGlobalVariable( set.getVariable() ) ) {

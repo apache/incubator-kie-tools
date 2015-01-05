@@ -41,7 +41,6 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
                eventBus );
         HorizontalPanel layout = new HorizontalPanel();
         layout.setWidth( "100%" );
-        layout.setStyleName( "model-builderInner-Background" );
 
         this.isFactTypeKnown = modeller.getDataModelOracle().isFactTypeRecognized( modeller.getModel().getLHSBindingType( model.getVariableName() ) );
         if ( readOnly == null ) {

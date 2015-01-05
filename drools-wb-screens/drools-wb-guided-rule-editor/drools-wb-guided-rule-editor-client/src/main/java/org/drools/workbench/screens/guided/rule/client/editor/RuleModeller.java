@@ -380,6 +380,7 @@ public class RuleModeller extends Composite
         for ( int i = 0; i < model.rhs.length; i++ ) {
             DirtyableVerticalPane widget = new DirtyableVerticalPane();
             widget.setWidth( "100%" );
+
             IAction action = model.rhs[ i ];
 
             //if lockRHS() set the widget RO, otherwise let them decide.
@@ -426,6 +427,9 @@ public class RuleModeller extends Composite
             layout.getFlexCellFormatter().setWidth( currentLayoutRow,
                                                     3,
                                                     "100%" );
+
+            layout.getRowFormatter().addStyleName( currentLayoutRow,
+                                                   ( i % 2 == 0 ? GuidedRuleEditorResources.INSTANCE.css().evenRow() : GuidedRuleEditorResources.INSTANCE.css().oddRow() ) );
 
             if ( !w.isFactTypeKnown() ) {
                 addInvalidPatternIcon();
@@ -541,6 +545,9 @@ public class RuleModeller extends Composite
             layout.getFlexCellFormatter().setWidth( currentLayoutRow,
                                                     3,
                                                     "100%" );
+
+            layout.getRowFormatter().addStyleName( currentLayoutRow,
+                                                   ( i % 2 == 0 ? GuidedRuleEditorResources.INSTANCE.css().evenRow() : GuidedRuleEditorResources.INSTANCE.css().oddRow() ) );
 
             if ( !widget.isFactTypeKnown() ) {
                 addInvalidPatternIcon();

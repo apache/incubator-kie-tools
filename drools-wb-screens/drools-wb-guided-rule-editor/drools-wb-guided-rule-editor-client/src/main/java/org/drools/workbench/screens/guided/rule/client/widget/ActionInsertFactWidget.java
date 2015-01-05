@@ -88,8 +88,6 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
                                         }
                                     } );
 
-        layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
-
         this.isFactTypeKnown = oracle.isFactTypeRecognized( set.getFactType() );
         if ( readOnly == null ) {
             this.readOnly = !this.isFactTypeKnown;
