@@ -16,6 +16,6 @@ public class PerspectiveLayoutPluginResourceType
 
     @Override
     public IsWidget getIcon() {
-        return new Icon( IconType.TH_LARGE );
+        return new Icon( IconType.PENCIL );
     }
 }
