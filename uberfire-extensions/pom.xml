@@ -43,7 +43,6 @@
     <module>uberfire-widgets</module>
     <module>uberfire-commons-editor</module>
     <module>uberfire-runtime-plugins</module>
-    <module>uberfire-perspective-editor</module>
     <module>uberfire-wires</module>
     <module>uberfire-apps</module>
   </modules>
