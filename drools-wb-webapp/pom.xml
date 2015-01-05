@@ -448,16 +448,6 @@
       <artifactId>kie-remote-common</artifactId>
     </dependency>
 
-    <!-- Perspective Editor -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-perspective-editor-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-perspective-editor-backend</artifactId>
-    </dependency>
-
     <!-- Uberfire Apps -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -843,7 +833,6 @@
 
             <!-- UberFire Extensions -->
             <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-perspective-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-apps-client</compileSourcesArtifact>
 
             <!-- Dashbuilder -->

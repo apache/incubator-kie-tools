@@ -68,9 +68,6 @@
   <inherits name="org.kie.uberfire.social.activities.SocialActivitiesAPI"/>
   <inherits name="org.kie.uberfire.social.activities.SocialActivitiesClient"/>
 
-  <!-- Perspective Editor-->
-  <inherits name="org.uberfire.ext.perspective.editor.PerspectiveEditorClient"/>
-
   <!-- Uberfire Apps-->
   <inherits name="org.uberfire.ext.apps.UberfireAppsClient"/>
 
