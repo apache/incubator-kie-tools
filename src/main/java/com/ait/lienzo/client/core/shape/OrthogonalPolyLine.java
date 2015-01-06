@@ -31,23 +31,21 @@ import com.google.gwt.json.client.JSONObject;
 
 public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 {
-    private static final int   NE     = 1;
+    private static final boolean ALTERNATE = true;
 
-    private static final int   SE     = 2;
+    private static final boolean NORMALIZE = false;
 
-    private static final int   SW     = 3;
+    private static final int     ERROR     = 0;
 
-    private static final int   NW     = 4;
+    private static final int     DIR_N     = 1;
 
-    private static final int   N      = 1;
+    private static final int     DIR_S     = 2;
 
-    private static final int   E      = 2;
+    private static final int     DIR_E     = 3;
 
-    private static final int   S      = 3;
+    private static final int     DIR_W     = 4;
 
-    private static final int   W      = 4;
-
-    private final PathPartList m_list = new PathPartList();
+    private final PathPartList   m_list    = new PathPartList();
 
     public OrthogonalPolyLine(Point2D start, Point2D... points)
     {
@@ -71,7 +69,10 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
     {
         if (m_list.size() < 1)
         {
-            parse(getAttributes());
+            if (false == parse(getAttributes()))
+            {
+                return new BoundingBox(0, 0, 0, 0);
+            }
         }
         return m_list.getBoundingBox();
     }
@@ -81,7 +82,10 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
     {
         if (m_list.size() < 1)
         {
-            parse(attr);
+            if (false == parse(attr))
+            {
+                return false;
+            }
         }
         if (m_list.size() < 1)
         {
@@ -92,46 +96,58 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         return true;
     }
 
-    protected void parse(Attributes attr)
+    private final boolean parse(final Attributes attr)
     {
-        Point2DArray points = attr.getControlPoints();
+        final Point2DArray points = attr.getControlPoints();
 
-        Point2D p1 = points.get(0);
-
-        Point2D p2 = points.get(1);
-
-        m_list.M(p1.getX(), p1.getY());
-
-        if (points.size() == 2)
+        if ((null != points) && (points.size() >= 2))
         {
-            m_list.L(p2.getX(), p2.getY());
-        }
-        else
-        {
-            NFastDoubleArrayJSO newPoints1 = getOrthonalLinePoints(points, false);
+            final Point2D p1 = points.get(0);
 
-            NFastDoubleArrayJSO newPoints2 = getOrthonalLinePoints(points, true);
+            final Point2D p2 = points.get(1);
 
-            if (newPoints2 == null || (newPoints1 != null && newPoints1.size() < newPoints2.size()))
+            if (points.size() == 2)
             {
-                addLinePoints(newPoints1);
-            }
-            else if (newPoints1 == null || (newPoints2 != null && newPoints2.size() < newPoints1.size()))
-            {
-                addLinePoints(newPoints2);
-            }
-            else if (newPoints1 != null && newPoints2 != null && newPoints1.size() == newPoints2.size())
-            {
-                addLinePoints(newPoints1);
+                m_list.M(p1.getX(), p1.getY()).L(p2.getX(), p2.getY());
+
+                return true;
             }
             else
             {
-                throw new RuntimeException("Defensive Programming. The else should not drop through, we should not have two invalid paths");
+                final NFastDoubleArrayJSO normalize = getOrthonalLinePoints(points, NORMALIZE);
+
+                final NFastDoubleArrayJSO alternate = getOrthonalLinePoints(points, ALTERNATE);
+
+                if ((null == alternate) || ((null != normalize) && (normalize.size() < alternate.size())))
+                {
+                    m_list.M(p1.getX(), p1.getY());
+
+                    addLinePoints(normalize);
+
+                    return true;
+                }
+                if ((null == normalize) || ((null != alternate) && (alternate.size() < normalize.size())))
+                {
+                    m_list.M(p1.getX(), p1.getY());
+
+                    addLinePoints(alternate);
+
+                    return true;
+                }
+                if ((null != normalize) && (null != alternate) && (normalize.size() == alternate.size()))
+                {
+                    m_list.M(p1.getX(), p1.getY());
+
+                    addLinePoints(normalize);
+
+                    return true;
+                }
             }
         }
+        return false;
     }
 
-    protected void addLinePoints(final NFastDoubleArrayJSO points)
+    private final void addLinePoints(final NFastDoubleArrayJSO points)
     {
         final int size = points.size();
 
@@ -141,86 +157,92 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         }
     }
 
-    private NFastDoubleArrayJSO getOrthonalLinePoints(Point2DArray points, boolean alternative)
+    private final NFastDoubleArrayJSO getOrthonalLinePoints(final Point2DArray points, final boolean alternative)
     {
-        NFastDoubleArrayJSO newPoints = NFastDoubleArrayJSO.make();
+        final NFastDoubleArrayJSO buffer = NFastDoubleArrayJSO.make();
 
         Point2D p1 = points.get(0);
 
         Point2D p2 = points.get(1);
 
-        int direction = getOrthonalLinePoints(newPoints, p1, p2, points.get(2), alternative);
+        int direction = getOrthonalLinePoints(buffer, p1, p2, points.get(2), alternative);
 
         p1 = p2;
 
         final int size = points.size();
-        
+
         for (int i = 2; i < size; i++)
         {
             p2 = points.get(i);
 
-            direction = getOrthonalLinePoints(newPoints, direction, p1, p2);
+            direction = getOrthonalLinePoints(buffer, direction, p1, p2);
 
-            if (direction == -1)
+            if (direction == ERROR)
             {
-                System.out.println(newPoints);
-                
                 return null;
             }
             p1 = p2;
         }
-        return newPoints;
+        return buffer;
     }
 
-    public int getOrthonalLinePoints(NFastDoubleArrayJSO newPoints, Point2D p1, Point2D p2, Point2D p3, boolean alternative)
+    private final int getOrthonalLinePoints(final NFastDoubleArrayJSO buffer, final Point2D p1, final Point2D p2, final Point2D p3, final boolean alternative)
     {
-        int direction = direction(p1, p2, p3, alternative);
+        final int direction = direction(p1, p2, p3, alternative);
 
-        int secondDirection;
+        int next_direction;
 
-        if (direction == N || direction == S)
+        final double p1x = p1.getX();
+
+        final double p2x = p2.getX();
+
+        final double p1y = p1.getY();
+
+        final double p2y = p2.getY();
+
+        if (direction <= DIR_S)
         {
-            newPoints.push(p1.getX());
+            buffer.push(p1x);
 
-            newPoints.push(p2.getY());
+            buffer.push(p2y);
 
-            if (p1.getX() == p2.getX())
+            if (p1x == p2x)
             {
-                secondDirection = direction;
+                next_direction = direction;
             }
-            else if (p1.getX() < p2.getX())
+            else if (p1x < p2x)
             {
-                secondDirection = E;
+                next_direction = DIR_E;
             }
             else
             {
-                secondDirection = W;
+                next_direction = DIR_W;
             }
         }
         else
         {
-            newPoints.push(p2.getX());
+            buffer.push(p2x);
 
-            newPoints.push(p1.getY());
+            buffer.push(p1y);
 
-            if (p1.getY() == p2.getY())
+            if (p1y == p2y)
             {
-                secondDirection = direction;
+                next_direction = direction;
             }
-            else if (p1.getY() > p2.getY())
+            else if (p1y > p2y)
             {
-                secondDirection = N;
+                next_direction = DIR_N;
             }
             else
             {
-                secondDirection = S;
+                next_direction = DIR_S;
             }
         }
-        newPoints.push(p2.getX());
+        buffer.push(p2x);
 
-        newPoints.push(p2.getY());
+        buffer.push(p2y);
 
-        return secondDirection;
+        return next_direction;
     }
 
     /**
@@ -235,78 +257,58 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
      * @param alternative
      * @return
      */
-    private int direction(Point2D p1, Point2D p2, Point2D p3, boolean alternative)
+    private final int direction(final Point2D p1, final Point2D p2, final Point2D p3, final boolean alternative)
     {
-        double dx = p2.getX() - p1.getX();
+        final double px = p2.getX();
+        
+        final double dx = (px - p1.getX());
 
-        double dy = p2.getY() - p1.getX();
+        final double dy = (p2.getY() - p1.getY());
 
-        int quadrant;
-
-        if (dx > 0 && dy < 0)
+        if ((dx > 0) && (dy < 0))
         {
-            quadrant = NE;
+            if ((NORMALIZE == alternative) && (p3.getX() > px))
+            {
+                return DIR_N;
+            }
+            else
+            {
+                return DIR_E;
+            }
         }
-        else if (dx > 0 && dy > 0)
+        else if ((dx > 0) && (dy > 0))
         {
-            quadrant = SE;
+            if ((NORMALIZE == alternative) && (p3.getX() > px))
+            {
+                return DIR_S;
+            }
+            else
+            {
+                return DIR_E;
+            }
         }
-        else if (dx < 0 && dy > 0)
+        else if ((dx < 0) && (dy > 0))
         {
-            quadrant = SW;
+            if ((NORMALIZE == alternative) && (p3.getX() < px))
+            {
+                return DIR_S;
+            }
+            else
+            {
+                return DIR_W;
+            }
         }
         else
-        { //if ( dx < 0 && dy > 0 )
-            quadrant = NW;
-        }
-        int direction;
-
-        switch (quadrant)
         {
-            case NE:
-                if (p3.getX() > p2.getX() && !alternative)
-                {
-                    direction = N;
-                }
-                else
-                {
-                    direction = E;
-                }
-                break;
-            case SE:
-                if (p3.getX() > p2.getX() && !alternative)
-                {
-                    direction = S;
-                }
-                else
-                {
-                    direction = E;
-                }
-                break;
-            case SW:
-                if (p3.getX() < p2.getX() && !alternative)
-                {
-                    direction = S;
-                }
-                else
-                {
-                    direction = W;
-                }
-                break;
-            case NW:
-                if (p3.getX() < p2.getX() && !alternative)
-                {
-                    direction = N;
-                }
-                else
-                {
-                    direction = W;
-                }
-                break;
-            default:
-                throw new IllegalStateException("Invalid Direction :" + quadrant);
+            if ((NORMALIZE == alternative) && (p3.getX() < px))
+            {
+                return DIR_N;
+            }
+            else
+            {
+                return DIR_W;
+            }
         }
-        return direction;
     }
 
     /**
@@ -314,141 +316,145 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
      * It will always attempt to continue the line in the same direction if it can do so, without requiring a corner.
      * This helps ensure
      * @param points
-     * @param priorDestination
+     * @param prev_direction
      * @param p1
      * @param p2
      * @return
      */
-    public int getOrthonalLinePoints(NFastDoubleArrayJSO points, int priorDestination, Point2D p1, Point2D p2)
+    private final int getOrthonalLinePoints(final NFastDoubleArrayJSO points, final int prev_direction, final Point2D p1, final Point2D p2)
     {
-        int firstDirection;
+        int temp_direction;
 
-        switch (priorDestination)
+        final double p1x = p1.getX();
+
+        final double p2x = p2.getX();
+
+        final double p1y = p1.getY();
+
+        final double p2y = p2.getY();
+
+        switch (prev_direction)
         {
-            case N:
-                if (p2.getY() > p1.getY() && p2.getX() == p1.getX())
+            case DIR_N:
+                if ((p2y > p1y) && (p2x == p1x))
                 {
-                    // a line cannot go back on itself
-                    return -1;
+                    return ERROR; // a line cannot go back on itself
                 }
-                if (p2.getY() < p1.getY())
+                else if (p2y < p1y)
                 {
-                    firstDirection = N;
+                    temp_direction = DIR_N;
                 }
-                else if (p2.getX() > p1.getX())
+                else if (p2x > p1x)
                 {
-                    firstDirection = E;
+                    temp_direction = DIR_E;
                 }
                 else
                 {
-                    firstDirection = W;
+                    temp_direction = DIR_W;
                 }
                 break;
-            case E:
-                if (p2.getX() < p1.getX() && p2.getY() == p1.getY())
+            case DIR_E:
+                if ((p2x < p1x) && (p2y == p1y))
                 {
-                    // a line cannot go back on itself
-                    return -1;
+                    return ERROR; // a line cannot go back on itself
                 }
-                if (p2.getX() > p1.getX())
+                else if (p2x > p1x)
                 {
-                    firstDirection = E;
+                    temp_direction = DIR_E;
                 }
-                else if (p2.getY() < p1.getY())
+                else if (p2y < p1y)
                 {
-                    firstDirection = N;
+                    temp_direction = DIR_N;
                 }
                 else
                 {
-                    firstDirection = S;
+                    temp_direction = DIR_S;
                 }
                 break;
-            case S:
-                if (p2.getY() < p1.getY() && p2.getX() == p1.getX())
+            case DIR_S:
+                if ((p2y < p1y) && (p2x == p1x))
                 {
-                    // a line cannot go back on itself
-                    return -1;
+                    return ERROR; // a line cannot go back on itself
                 }
-                if (p2.getY() > p1.getY())
+                else if (p2y > p1y)
                 {
-                    firstDirection = S;
+                    temp_direction = DIR_S;
                 }
-                else if (p2.getX() > p1.getX())
+                else if (p2x > p1x)
                 {
-                    firstDirection = E;
+                    temp_direction = DIR_E;
                 }
                 else
                 {
-                    firstDirection = W;
+                    temp_direction = DIR_W;
                 }
                 break;
-            case W:
-                if (p2.getX() > p1.getX() && p2.getY() == p1.getY())
+            case DIR_W:
+                if ((p2x > p1x) && (p2y == p1y))
                 {
-                    // a line cannot go back on itself
-                    return -1;
+                    return ERROR; // a line cannot go back on itself
                 }
-                if (p2.getX() < p1.getX())
+                else if (p2x < p1x)
                 {
-                    firstDirection = W;
+                    temp_direction = DIR_W;
                 }
-                else if (p2.getY() < p1.getY())
+                else if (p2y < p1y)
                 {
-                    firstDirection = N;
+                    temp_direction = DIR_N;
                 }
                 else
                 {
-                    firstDirection = S;
+                    temp_direction = DIR_S;
                 }
                 break;
             default:
-                throw new IllegalStateException("Invalid Direction :" + priorDestination);
+                return ERROR;
         }
-        int secondDirection;
+        int next_direction;
 
-        if (firstDirection == N || firstDirection == S)
+        if (temp_direction <= DIR_S)
         {
-            points.push(p1.getX());
+            points.push(p1x);
 
-            points.push(p2.getY());
+            points.push(p2y);
 
-            if (p1.getX() == p2.getX())
+            if (p1x == p2x)
             {
-                secondDirection = firstDirection;
+                next_direction = temp_direction;
             }
-            else if (p1.getX() < p2.getX())
+            else if (p1x < p2x)
             {
-                secondDirection = E;
+                next_direction = DIR_E;
             }
             else
             {
-                secondDirection = W;
+                next_direction = DIR_W;
             }
         }
         else
         {
-            points.push(p2.getX());
+            points.push(p2x);
 
-            points.push(p1.getY());
+            points.push(p1y);
 
-            if (p1.getY() == p2.getY())
+            if (p1y == p2y)
             {
-                secondDirection = firstDirection;
+                next_direction = temp_direction;
             }
-            else if (p1.getY() > p2.getY())
+            else if (p1y > p2y)
             {
-                secondDirection = N;
+                next_direction = DIR_N;
             }
             else
             {
-                secondDirection = S;
+                next_direction = DIR_S;
             }
         }
-        points.push(p2.getX());
+        points.push(p2x);
 
-        points.push(p2.getY());
+        points.push(p2y);
 
-        return secondDirection;
+        return next_direction;
     }
 
     @Override
