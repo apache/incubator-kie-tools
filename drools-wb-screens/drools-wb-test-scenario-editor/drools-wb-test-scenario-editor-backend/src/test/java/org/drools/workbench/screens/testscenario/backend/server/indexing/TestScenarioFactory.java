@@ -26,6 +26,7 @@ import org.drools.workbench.models.testscenarios.shared.FieldData;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
+import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 
 public class TestScenarioFactory {
 
@@ -70,6 +71,22 @@ public class TestScenarioFactory {
                                                                        "33" ) );
                                                }},
                                                false ) );
+
+        return model;
+    }
+
+    //See https://bugzilla.redhat.com/show_bug.cgi?id=1179158
+    public static Scenario makeTestScenarioWithVerifyRuleFired( final String packageName,
+                                                                final Collection<Import> imports,
+                                                                final String name ) {
+        final Scenario model = new Scenario();
+        model.getImports().getImports().addAll( imports );
+        model.setPackageName( packageName );
+        model.setName( name );
+
+        model.getFixtures().add( new VerifyRuleFired( "test",
+                                                      1,
+                                                      true ) );
 
         return model;
     }

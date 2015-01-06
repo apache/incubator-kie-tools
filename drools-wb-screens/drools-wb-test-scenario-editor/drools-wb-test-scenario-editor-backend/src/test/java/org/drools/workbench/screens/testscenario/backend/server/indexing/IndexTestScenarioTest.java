@@ -38,6 +38,7 @@ import org.kie.workbench.common.services.refactoring.backend.server.indexing.Rul
 import org.kie.workbench.common.services.refactoring.backend.server.query.QueryBuilder;
 import org.kie.workbench.common.services.refactoring.model.index.terms.RuleAttributeIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
+import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueRuleIndexTerm;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueTypeIndexTerm;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil;
@@ -63,6 +64,7 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
         final String xml1 = ScenarioXMLPersistence.getInstance().marshal( model1 );
         ioService().write( path1,
                            xml1 );
+
         final Path path2 = basePath.resolve( "scenario2.scenario" );
         final Scenario model2 = TestScenarioFactory.makeTestScenarioWithoutVerifyFact( "org.drools.workbench.screens.testscenario.backend.server.indexing",
                                                                                        new ArrayList<Import>() {{
@@ -73,6 +75,17 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
         final String xml2 = ScenarioXMLPersistence.getInstance().marshal( model2 );
         ioService().write( path2,
                            xml2 );
+
+        final Path path3 = basePath.resolve( "scenario3.scenario" );
+        final Scenario model3 = TestScenarioFactory.makeTestScenarioWithVerifyRuleFired( "org.drools.workbench.screens.testscenario.backend.server.indexing",
+                                                                                         new ArrayList<Import>() {{
+                                                                                             add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant" ) );
+                                                                                             add( new Import( "org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Mortgage" ) );
+                                                                                         }},
+                                                                                         "scenario3" );
+        final String xml3 = ScenarioXMLPersistence.getInstance().marshal( model3 );
+        ioService().write( path3,
+                           xml3 );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
@@ -170,6 +183,29 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
                             path1 );
             assertContains( results,
                             path2 );
+
+            ( (LuceneIndex) index ).nrtRelease( searcher );
+        }
+
+        //Test Scenarios expecting rule "test" to fire
+        {
+            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
+                                                                                true );
+            final Query query = new QueryBuilder().addTerm( new ValueRuleIndexTerm( "test" ) ).build();
+
+            searcher.search( query,
+                             collector );
+            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            assertEquals( 1,
+                          hits.length );
+
+            final List<KObject> results = new ArrayList<KObject>();
+            for ( int i = 0; i < hits.length; i++ ) {
+                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
+            }
+            assertContains( results,
+                            path3 );
 
             ( (LuceneIndex) index ).nrtRelease( searcher );
         }
