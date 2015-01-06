@@ -118,4 +118,40 @@ public class ScreenEditor {
     public void setExternalComponentFQCN( String externalComponentFQCN ) {
         this.externalComponentFQCN = externalComponentFQCN;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ScreenEditor ) ) {
+            return false;
+        }
+
+        ScreenEditor that = (ScreenEditor) o;
+
+        if ( externalComponentFQCN != null ? !externalComponentFQCN.equals( that.externalComponentFQCN ) : that.externalComponentFQCN != null ) {
+            return false;
+        }
+        if ( parameters != null ? !parameters.equals( that.parameters ) : that.parameters != null ) {
+            return false;
+        }
+        if ( placeName != null ? !placeName.equals( that.placeName ) : that.placeName != null ) {
+            return false;
+        }
+        if ( type != that.type ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type != null ? type.hashCode() : 0;
+        result = 31 * result + ( externalComponentFQCN != null ? externalComponentFQCN.hashCode() : 0 );
+        result = 31 * result + ( placeName != null ? placeName.hashCode() : 0 );
+        result = 31 * result + ( parameters != null ? parameters.hashCode() : 0 );
+        return result;
+    }
 }

@@ -50,6 +50,7 @@ import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
@@ -121,6 +122,13 @@ public class PerspectiveEditorPresenter
         } ));
     }
 
+    @OnMayClose
+    public boolean onMayClose() {
+        return super.mayClose( getContent().hashCode() );
+    }
+
+
+
     private void setupPerspectiveBuilder( String name ) {
         this.perspectiveEditorView.createDefaultPerspective(name);
     }
@@ -180,8 +188,9 @@ public class PerspectiveEditorPresenter
             @Override
             public void callback( final PerspectiveEditorModel response ) {
                 if ( response.getPerspectiveModel() != null ) {
-                    perspectiveEditorView.loadPerspective( response.getPerspectiveModel() );
+                   perspectiveEditorView.loadPerspective( response.getPerspectiveModel() );
                 }
+                setOriginalHash( getContent().hashCode() );
             }
         } ).getPerspectiveEditor( versionRecordManager.getCurrentPath() );
     }

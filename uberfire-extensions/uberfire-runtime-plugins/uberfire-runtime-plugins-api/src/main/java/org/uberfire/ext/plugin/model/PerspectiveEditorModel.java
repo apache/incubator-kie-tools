@@ -54,7 +54,10 @@ public class PerspectiveEditorModel extends Plugin {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + ( perspectiveModel != null ? perspectiveModel.hashCode() : 0 );
+        if(perspectiveModel!=null){
+            result = 31 * result + perspectiveModel.hashCode();
+        }
         return result;
     }
+
 }

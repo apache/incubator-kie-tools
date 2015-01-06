@@ -54,4 +54,40 @@ public class ColumnEditor {
     public boolean hasElements() {
         return !rows.isEmpty() || !screens.isEmpty() || !htmls.isEmpty();
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ColumnEditor ) ) {
+            return false;
+        }
+
+        ColumnEditor that = (ColumnEditor) o;
+
+        if ( htmls != null ? !htmls.equals( that.htmls ) : that.htmls != null ) {
+            return false;
+        }
+        if ( rows != null ? !rows.equals( that.rows ) : that.rows != null ) {
+            return false;
+        }
+        if ( screens != null ? !screens.equals( that.screens ) : that.screens != null ) {
+            return false;
+        }
+        if ( span != null ? !span.equals( that.span ) : that.span != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = span != null ? span.hashCode() : 0;
+        result = 31 * result + ( rows != null ? rows.hashCode() : 0 );
+        result = 31 * result + ( screens != null ? screens.hashCode() : 0 );
+        result = 31 * result + ( htmls != null ? htmls.hashCode() : 0 );
+        return result;
+    }
 }

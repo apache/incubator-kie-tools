@@ -21,4 +21,27 @@ public class HTMLEditor {
     public String getHtmlCode() {
         return htmlCode;
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof HTMLEditor ) ) {
+            return false;
+        }
+
+        HTMLEditor that = (HTMLEditor) o;
+
+        if ( htmlCode != null ? !htmlCode.equals( that.htmlCode ) : that.htmlCode != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return htmlCode != null ? htmlCode.hashCode() : 0;
+    }
 }

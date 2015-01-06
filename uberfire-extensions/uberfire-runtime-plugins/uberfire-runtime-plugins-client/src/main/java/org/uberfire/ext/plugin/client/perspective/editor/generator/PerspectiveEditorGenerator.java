@@ -17,8 +17,8 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.ext.plugin.editor.PerspectiveEditor;
 import org.uberfire.ext.plugin.editor.NewPerspectiveEditorEvent;
+import org.uberfire.ext.plugin.editor.PerspectiveEditor;
 import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
 import org.uberfire.ext.plugin.service.PluginServices;
 
@@ -31,10 +31,8 @@ public class PerspectiveEditorGenerator {
     private ActivityBeansCache activityBeansCache;
     private PlaceManager placeManager;
 
-
     @Inject
     private Caller<PluginServices> pluginServices;
-
 
     @PostConstruct
     public void setup() {
@@ -45,7 +43,7 @@ public class PerspectiveEditorGenerator {
     }
 
     @AfterInitialization
-    public void loadPerspectives(){
+    public void loadPerspectives() {
         pluginServices.call( new RemoteCallback<Collection<PerspectiveEditorModel>>() {
             @Override
             public void callback( final Collection<PerspectiveEditorModel> response ) {
@@ -53,7 +51,7 @@ public class PerspectiveEditorGenerator {
                     generate( perspectiveEditorModel.getPerspectiveModel() );
                 }
             }
-        } ).listPerspectiveEditor(  );
+        } ).listPerspectiveEditor();
     }
 
     private void observeNewPerspectives( @Observes NewPerspectiveEditorEvent event ) {
@@ -62,15 +60,20 @@ public class PerspectiveEditorGenerator {
 
     private void generate( PerspectiveEditor editor ) {
 
-        if ( isANewPerspective( editor ) ) {
-            DefaultPerspectiveEditorScreenActivity screen = createNewScreen( editor );
-            createNewPerspective( editor, screen );
-        }
-        else{
-            DefaultPerspectiveEditorScreenActivity screen = updateScreen( editor );
-            updatePerspective(editor, screen);
+        if ( shouldGenerate( editor ) ) {
+            if ( isANewPerspective( editor ) ) {
+                DefaultPerspectiveEditorScreenActivity screen = createNewScreen( editor );
+                createNewPerspective( editor, screen );
+            } else {
+                DefaultPerspectiveEditorScreenActivity screen = updateScreen( editor );
+                updatePerspective( editor, screen );
+            }
         }
 
+    }
+
+    private boolean shouldGenerate( PerspectiveEditor editor ) {
+        return editor != null && editor.isAValidPerspective();
     }
 
     private void updatePerspective( PerspectiveEditor editor,
@@ -81,7 +84,7 @@ public class PerspectiveEditorGenerator {
     }
 
     private DefaultPerspectiveEditorScreenActivity updateScreen( PerspectiveEditor editor ) {
-        final IOCBeanDef<Activity> activity = activityBeansCache.getActivity( editor.getName()+DefaultPerspectiveEditorScreenActivity.screenSufix() );
+        final IOCBeanDef<Activity> activity = activityBeansCache.getActivity( editor.getName() + DefaultPerspectiveEditorScreenActivity.screenSufix() );
         final DefaultPerspectiveEditorScreenActivity screenActivity = (DefaultPerspectiveEditorScreenActivity) activity.getInstance();
         screenActivity.build( editor );
         return screenActivity;
@@ -94,7 +97,7 @@ public class PerspectiveEditorGenerator {
 
     private DefaultPerspectiveEditorScreenActivity createNewScreen( PerspectiveEditor editor
                                                                   ) {
-        DefaultPerspectiveEditorScreenActivity activity = new DefaultPerspectiveEditorScreenActivity(editor, placeManager );
+        DefaultPerspectiveEditorScreenActivity activity = new DefaultPerspectiveEditorScreenActivity( editor, placeManager );
 
         beanManager.addBean( (Class) Activity.class, DefaultPerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getName(), true, null );
         beanManager.addBean( (Class) WorkbenchScreenActivity.class, DefaultPerspectiveEditorScreenActivity.class, null, activity, DEFAULT_QUALIFIERS, activity.getName(), true, null );
