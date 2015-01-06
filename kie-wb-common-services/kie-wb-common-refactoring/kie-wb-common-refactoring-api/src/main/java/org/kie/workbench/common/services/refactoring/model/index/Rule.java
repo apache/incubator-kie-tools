@@ -29,7 +29,7 @@ public class Rule implements IndexElementsGenerator {
 
     public Rule( final ValueRuleIndexTerm rule ) {
         this( rule,
-              new ValueRuleIndexTerm( null ) );
+              null );
     }
 
     public Rule( final ValueRuleIndexTerm ruleTerm,
