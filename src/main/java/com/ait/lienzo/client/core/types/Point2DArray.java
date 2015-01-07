@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,12 +33,62 @@ public class Point2DArray implements Iterable<Point2D>
 {
     private final Point2DArrayJSO m_jso;
 
-    Point2DArray(Point2DArrayJSO jso)
+    public static final Point2DArray fromArrayOfDouble(final double[] array)
+    {
+        final Point2DArray points = new Point2DArray();
+
+        if (null == array)
+        {
+            return points;
+        }
+        final int size = array.length;
+
+        if (0 == size)
+        {
+            return points;
+        }
+        if ((size % 2) == 1)
+        {
+            throw new IllegalArgumentException("size of array is not a multiple of 2");
+        }
+        for (int i = 0; i < size; i += 2)
+        {
+            points.push(array[i], array[i + 1]);
+        }
+        return points;
+    }
+
+    public static final Point2DArray fromNFastDoubleArrayJSO(final NFastDoubleArrayJSO array)
+    {
+        final Point2DArray points = new Point2DArray();
+
+        if (null == array)
+        {
+            return points;
+        }
+        final int size = array.size();
+
+        if (0 == size)
+        {
+            return points;
+        }
+        if ((size % 2) == 1)
+        {
+            throw new IllegalArgumentException("size of array is not a multiple of 2");
+        }
+        for (int i = 0; i < size; i += 2)
+        {
+            points.push(array.get(i), array.get(i + 1));
+        }
+        return points;
+    }
+
+    Point2DArray(final Point2DArrayJSO jso)
     {
         m_jso = jso;
     }
 
-    public Point2DArray(JsArray<JavaScriptObject> jso)
+    public Point2DArray(final JsArray<JavaScriptObject> jso)
     {
         m_jso = jso.cast();
     }
@@ -48,25 +98,42 @@ public class Point2DArray implements Iterable<Point2D>
         this(Point2DArrayJSO.make());
     }
 
-    public Point2DArray(double x, double y)
+    public Point2DArray(final double x, final double y)
     {
-        this(Point2DArrayJSO.make());
+        this();
 
         push(x, y);
     }
 
-    public Point2DArray(Point2D point)
+    public Point2DArray(final Point2D point)
     {
-        this(Point2DArrayJSO.make());
+        this();
 
         push(point);
     }
 
-    public Point2DArray(Point2D point, Point2D... points)
+    public Point2DArray(final Point2D point, final Point2D... points)
     {
-        this(Point2DArrayJSO.make());
+        this();
 
         push(point, points);
+    }
+
+    public Point2DArray(final Point2DArray points)
+    {
+        this();
+
+        if (null != points)
+        {
+            final int size = points.size();
+
+            for (int i = 0; i < size; i++)
+            {
+                final Point2D p = points.get(i);
+
+                push(p.getX(), p.getY());
+            }
+        }
     }
 
     public final BoundingBox getBoundingBox()
@@ -86,17 +153,22 @@ public class Point2DArray implements Iterable<Point2D>
      * @param x double[]
      * @param y double[]
      */
-    public Point2DArray(double[] x, double[] y)
+    public Point2DArray(final double[] x, final double[] y)
     {
-        this(Point2DArrayJSO.make());
+        this();
 
-        if (x.length != y.length)
+        if ((null != x) && (null != y))
         {
-            throw new IllegalArgumentException("x and y array should have the same length");
-        }
-        for (int i = 0; i < x.length; i++)
-        {
-            push(x[i], y[i]);
+            final int size = x.length;
+
+            if (size != y.length)
+            {
+                throw new IllegalArgumentException("x and y array should have the same length");
+            }
+            for (int i = 0; i < size; i++)
+            {
+                push(x[i], y[i]);
+            }
         }
     }
 
@@ -109,43 +181,50 @@ public class Point2DArray implements Iterable<Point2D>
      * 
      * @param points Array with double[] arrays of length 2
      */
-    public Point2DArray(double[][] points)
+    public Point2DArray(final double[][] points)
     {
-        this(Point2DArrayJSO.make());
+        this();
 
-        for (int i = 0; i < points.length; i++)
+        if (null != points)
         {
-            double[] xy = points[i];
+            final int size = points.length;
 
-            if (xy.length != 2)
+            for (int i = 0; i < size; i++)
             {
-                throw new IllegalArgumentException("points[" + i + "] does not have length of 2");
+                final double[] xy = points[i];
+
+                if ((null == xy) || (xy.length != 2))
+                {
+                    throw new IllegalArgumentException("points[" + i + "] does not have length of 2");
+                }
+                push(xy[0], xy[1]);
             }
-            push(xy[0], xy[1]);
         }
     }
 
-    public final Point2DArray push(Point2D point)
+    public final Point2DArray push(final Point2D point)
     {
         m_jso.push(point.getJSO());
 
         return this;
     }
 
-    public final Point2DArray push(double x, double y)
+    public final Point2DArray push(final double x, final double y)
     {
         m_jso.push(Point2DJSO.make(x, y));
 
         return this;
     }
 
-    public final Point2DArray push(Point2D point, Point2D... points)
+    public final Point2DArray push(final Point2D point, final Point2D... points)
     {
         m_jso.push(point.getJSO());
 
         if (points != null)
         {
-            for (int i = 0; i < points.length; i++)
+            final int size = points.length;
+
+            for (int i = 0; i < size; i++)
             {
                 m_jso.push(points[i].getJSO());
             }
@@ -158,12 +237,12 @@ public class Point2DArray implements Iterable<Point2D>
         return m_jso.length();
     }
 
-    public final Point2D get(int i)
+    public final Point2D get(final int i)
     {
         return new Point2D(m_jso.get(i));
     }
 
-    public final Point2DArray set(int i, Point2D p)
+    public final Point2DArray set(final int i, final Point2D p)
     {
         m_jso.set(i, p.getJSO());
 
@@ -184,13 +263,38 @@ public class Point2DArray implements Iterable<Point2D>
         return this;
     }
 
+    public final Point2DArray noAdjacentPoints()
+    {
+        final int size = size();
+
+        if (size < 2)
+        {
+            return new Point2DArray(this);
+        }
+        Point2D p1 = get(0);
+
+        final Point2DArray points = new Point2DArray(p1);
+
+        for (int i = 1; i < size; i++)
+        {
+            final Point2D p2 = get(i);
+
+            if (false == ((p1.getX() == p2.getX()) && (p1.getY() == p2.getY())))
+            {
+                points.push(p2);
+            }
+            p1 = p2;
+        }
+        return points;
+    }
+
     public final Collection<Point2D> getPoints()
     {
-        int leng = size();
+        final int size = size();
 
-        ArrayList<Point2D> list = new ArrayList<Point2D>(leng);
+        final ArrayList<Point2D> list = new ArrayList<Point2D>(size);
 
-        for (int i = 0; i < leng; i++)
+        for (int i = 0; i < size; i++)
         {
             list.add(get(i));
         }
@@ -226,13 +330,13 @@ public class Point2DArray implements Iterable<Point2D>
         }
         Point2DArray that = ((Point2DArray) other);
 
-        final int leng = size();
+        final int size = size();
 
-        if (that.size() != leng)
+        if (that.size() != size)
         {
             return false;
         }
-        for (int i = 0; i < leng; i++)
+        for (int i = 0; i < size; i++)
         {
             if (false == get(i).equals(that.get(i)))
             {

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -156,7 +156,7 @@ public class Text extends Shape<Text>
 
         final int w = (int) FORBOUNDS.getContext().measureText("Mg").getWidth();
 
-        final int h = (m * 2);
+        final int h = (m * 3);
 
         final ScratchCanvas temp = new ScratchCanvas(w, h);
 

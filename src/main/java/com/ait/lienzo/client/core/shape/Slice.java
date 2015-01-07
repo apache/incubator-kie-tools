@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class Slice extends Shape<Slice>
      * @param endAngle in radians
      * @param counterClockwise
      */
-    public Slice(double radius, double startAngle, double endAngle, boolean counterClockwise)
+    public Slice(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise)
     {
         super(ShapeType.SLICE);
 
@@ -54,14 +54,12 @@ public class Slice extends Shape<Slice>
      * @param startAngle in radians
      * @param endAngle in radians
      */
-    public Slice(double radius, double startAngle, double endAngle)
+    public Slice(final double radius, final double startAngle, final double endAngle)
     {
-        super(ShapeType.SLICE);
-
-        setRadius(radius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(false);
+        this(radius, startAngle, endAngle, false);
     }
 
-    protected Slice(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Slice(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SLICE, node, ctx);
     }
@@ -80,7 +78,7 @@ public class Slice extends Shape<Slice>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double beg = attr.getStartAngle();
 
@@ -131,7 +129,7 @@ public class Slice extends Shape<Slice>
      * @param radius
      * @return this Slice.
      */
-    public Slice setRadius(double radius)
+    public Slice setRadius(final double radius)
     {
         getAttributes().setRadius(radius);
 
@@ -154,7 +152,7 @@ public class Slice extends Shape<Slice>
      * @param angle in radians
      * @return this Slice.
      */
-    public Slice setStartAngle(double angle)
+    public Slice setStartAngle(final double angle)
     {
         getAttributes().setStartAngle(angle);
 
@@ -177,7 +175,7 @@ public class Slice extends Shape<Slice>
      * @param angle in radians
      * @return this Slice.
      */
-    public Slice setEndAngle(double angle)
+    public Slice setEndAngle(final double angle)
     {
         getAttributes().setEndAngle(angle);
 
@@ -202,7 +200,7 @@ public class Slice extends Shape<Slice>
      * @param counterclockwise
      * @return this Slice
      */
-    public Slice setCounterClockwise(boolean counterclockwise)
+    public Slice setCounterClockwise(final boolean counterclockwise)
     {
         getAttributes().setCounterClockwise(counterclockwise);
 
@@ -231,7 +229,7 @@ public class Slice extends Shape<Slice>
         }
 
         @Override
-        public Slice create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Slice create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Slice(node, ctx);
         }

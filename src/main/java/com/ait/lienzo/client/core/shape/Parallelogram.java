@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,14 +38,14 @@ public class Parallelogram extends Shape<Parallelogram>
      * @param height
      * @param skew a skew of 0 draws sides that form a 90 degree angle
      */
-    public Parallelogram(double width, double height, double skew)
+    public Parallelogram(final double width, final double height, final double skew)
     {
         super(ShapeType.PARALLELOGRAM);
 
         setWidth(width).setHeight(height).setSkew(skew);
     }
 
-    protected Parallelogram(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Parallelogram(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.PARALLELOGRAM, node, ctx);
     }
@@ -56,7 +56,7 @@ public class Parallelogram extends Shape<Parallelogram>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double wide = attr.getWidth();
 
@@ -121,7 +121,7 @@ public class Parallelogram extends Shape<Parallelogram>
      * @param width
      * @return this Parallelogram
      */
-    public Parallelogram setWidth(double width)
+    public Parallelogram setWidth(final double width)
     {
         getAttributes().setWidth(width);
 
@@ -144,7 +144,7 @@ public class Parallelogram extends Shape<Parallelogram>
      * @param height
      * @return this Parallelogram
      */
-    public Parallelogram setHeight(double height)
+    public Parallelogram setHeight(final double height)
     {
         getAttributes().setHeight(height);
 
@@ -167,7 +167,7 @@ public class Parallelogram extends Shape<Parallelogram>
      * @param skew
      * @return this Parallelogram
      */
-    public Parallelogram setSkew(double skew)
+    public Parallelogram setSkew(final double skew)
     {
         getAttributes().setSkew(skew);
 
@@ -194,7 +194,7 @@ public class Parallelogram extends Shape<Parallelogram>
         }
 
         @Override
-        public Parallelogram create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Parallelogram create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Parallelogram(node, ctx);
         }

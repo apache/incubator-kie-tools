@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
 {
     private final NFastArrayList<PathPartList> m_list = new NFastArrayList<PathPartList>();
 
-    protected MultiPathPartShape(ShapeType type)
+    protected MultiPathPartShape(final ShapeType type)
     {
         super(type);
     }
 
-    protected MultiPathPartShape(ShapeType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected MultiPathPartShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
@@ -48,7 +48,7 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
         {
             return new BoundingBox(0, 0, 0, 0);
         }
-        BoundingBox bbox = new BoundingBox();
+        final BoundingBox bbox = new BoundingBox();
 
         for (int i = 0; i < size; i++)
         {
@@ -57,7 +57,7 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
         return bbox;
     }
 
-    protected T addPathPartList(PathPartList list)
+    protected T addPathPartList(final PathPartList list)
     {
         m_list.add(list);
 
@@ -70,9 +70,9 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
     }
 
     @Override
-    protected void drawWithoutTransforms(Context2D context, double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha)
     {
-        Attributes attr = getAttributes();
+        final Attributes attr = getAttributes();
 
         alpha = alpha * attr.getAlpha();
 
@@ -94,7 +94,7 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
 
                 setWasFilledFlag(false);
 
-                PathPartList list = m_list.get(i);
+                final PathPartList list = m_list.get(i);
 
                 if (list.size() > 1)
                 {

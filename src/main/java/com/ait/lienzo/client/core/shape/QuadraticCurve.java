@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -36,26 +36,36 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
     /**
      * Constructor. Creates an instance a quadratic curve.
      * 
-     * @param x context point X coordinate
-     * @param y context point Y coordinate
-     * @param controlX control point X coordinate
-     * @param controlY control point Y coordinate
-     * @param endX end point X coordinate
-     * @param endY end point Y coordinate
+     * @param sx context point X coordinate
+     * @param sy context point Y coordinate
+     * @param cx control point X coordinate
+     * @param cy control point Y coordinate
+     * @param ex end point X coordinate
+     * @param ey end point Y coordinate
      */
-    public QuadraticCurve(double x, double y, double controlX, double controlY, double endX, double endY)
+    public QuadraticCurve(final double sx, final double sy, final double cx, final double cy, final double ex, final double ey)
+    {
+        this(new Point2D(sx, sy), new Point2D(cx, cy), new Point2D(ex, ey));
+    }
+
+    public QuadraticCurve(final double cx, final double cy, final double ex, final double ey)
+    {
+        this(0, 0, cx, cy, ex, ey);
+    }
+
+    public QuadraticCurve(final Point2D sp, final Point2D cp, final Point2D ep)
     {
         super(ShapeType.QUADRATIC_CURVE);
 
-        setControlPoints(new Point2DArray(new Point2D(x, y), new Point2D(controlX, controlY), new Point2D(endX, endY)));
+        setControlPoints(new Point2DArray(sp, cp, ep));
     }
 
-    public QuadraticCurve(double controlX, double controlY, double endX, double endY)
+    public QuadraticCurve(final Point2D cp, final Point2D ep)
     {
-        this(0, 0, controlX, controlY, endX, endY);
+        this(new Point2D(0, 0), cp, ep);
     }
 
-    protected QuadraticCurve(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected QuadraticCurve(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.QUADRATIC_CURVE, node, ctx);
     }
@@ -63,7 +73,7 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
     @Override
     public BoundingBox getBoundingBox()
     {
-        BoundingBox bbox = Curves.getBoundingBox(this);
+        final BoundingBox bbox = Curves.getBoundingBox(this);
 
         if (null != bbox)
         {
@@ -78,19 +88,19 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        Point2DArray points = attr.getControlPoints();
+        final Point2DArray points = attr.getControlPoints();
 
         if ((points != null) && (points.size() == 3))
         {
             context.beginPath();
 
-            Point2D p0 = points.get(0);
+            final Point2D p0 = points.get(0);
 
-            Point2D p1 = points.get(1);
+            final Point2D p1 = points.get(1);
 
-            Point2D p2 = points.get(2);
+            final Point2D p2 = points.get(2);
 
             context.moveTo(p0.getX(), p0.getY());
 
@@ -118,7 +128,7 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
      * @param points
      * @return this QuadraticCurve
      */
-    public QuadraticCurve setControlPoints(Point2DArray points)
+    public QuadraticCurve setControlPoints(final Point2DArray points)
     {
         getAttributes().setControlPoints(points);
 
@@ -141,7 +151,7 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
         }
 
         @Override
-        public QuadraticCurve create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public QuadraticCurve create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new QuadraticCurve(node, ctx);
         }

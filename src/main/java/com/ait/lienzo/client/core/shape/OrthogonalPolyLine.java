@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -98,22 +98,31 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
     private final boolean parse(final Attributes attr)
     {
-        final Point2DArray points = attr.getControlPoints();
+        Point2DArray points = attr.getControlPoints();
 
-        if ((null != points) && (points.size() >= 2))
+        if (null != points)
         {
-            final Point2D p1 = points.get(0);
+            points = points.noAdjacentPoints();
 
-            final Point2D p2 = points.get(1);
-
-            if (points.size() == 2)
+            if (points.size() >= 2)
             {
-                m_list.M(p1.getX(), p1.getY()).L(p2.getX(), p2.getY());
+                final Point2D p1 = points.get(0);
 
-                return true;
-            }
-            else
-            {
+                final Point2D p2 = points.get(1);
+
+                if (points.size() == 2)
+                {
+                    if ((p1.getX() == p2.getX()) || (p1.getY() == p2.getY()))
+                    {
+                        m_list.M(p1.getX(), p1.getY()).L(p2.getX(), p2.getY());
+
+                        return true;
+                    }
+                    else
+                    {
+                        points = new Point2DArray(p1, new Point2D(((p2.getX() + p1.getX()) / 2), ((p2.getY() + p1.getY()) / 2)), p2);
+                    }
+                }
                 final NFastDoubleArrayJSO normalize = getOrthonalLinePoints(points, NORMALIZE);
 
                 final NFastDoubleArrayJSO alternate = getOrthonalLinePoints(points, ALTERNATE);
@@ -249,8 +258,6 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
      * Based on the initial three points it determines the direction, and alternative direction,
      * to ensure the orthgonal line can be drawn between the three points.
      *
-     * It first determines the quadrant NE, SE, SW and NE. For each quadrant there are two possible
-     * directions it can chose. The returned direction is determined by the alternative argument.
      * @param p1
      * @param p2
      * @param p3
@@ -260,7 +267,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
     private final int direction(final Point2D p1, final Point2D p2, final Point2D p3, final boolean alternative)
     {
         final double px = p2.getX();
-        
+
         final double dx = (px - p1.getX());
 
         final double dy = (p2.getY() - p1.getY());
@@ -314,7 +321,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
     /**
      * Draws an orthogonal line between two points, it uses the previous direction to determine the new direction.
      * It will always attempt to continue the line in the same direction if it can do so, without requiring a corner.
-     * This helps ensure
+     * This helps ensure to ensure the orthgonal line can be drawn between the three points.
      * @param points
      * @param prev_direction
      * @param p1
@@ -463,7 +470,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
     }
 
     /**
-     * Returns this PolyLine's points.
+     * Returns this OrthogonalPolyLine's points.
      * @return {@link Point2DArray}
      */
     public Point2DArray getControlPoints()
@@ -472,9 +479,9 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
     }
 
     /**
-     * Sets this PolyLine's points.
+     * Sets this OrthogonalPolyLine's points.
      * @param points {@link Point2DArray}
-     * @return this PolyLine
+     * @return this OrthogonalPolyLine
      */
     public OrthogonalPolyLine setControlPoints(Point2DArray points)
     {

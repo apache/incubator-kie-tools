@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -35,14 +35,14 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
 {
     private final ImageProxy<T> m_proxy;
 
-    protected AbstractImageShape(ShapeType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractImageShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
 
         m_proxy = new ImageProxy<T>(upcast());
     }
 
-    protected AbstractImageShape(ShapeType type, String url, boolean listening, ImageSelectionMode mode)
+    protected AbstractImageShape(final ShapeType type, final String url, final boolean listening, final ImageSelectionMode mode)
     {
         super(type);
 
@@ -55,7 +55,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         m_proxy = new ImageProxy<T>(upcast());
     }
 
-    protected AbstractImageShape(ShapeType type, ImageResource resource, boolean listening, ImageSelectionMode mode)
+    protected AbstractImageShape(final ShapeType type, final ImageResource resource, final boolean listening, final ImageSelectionMode mode)
     {
         this(type, resource.getSafeUri().asString(), listening, mode);
     }
@@ -89,7 +89,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
      * @param url
      * @return Picture
      */
-    protected void setURL(String url)
+    protected void setURL(final String url)
     {
         getAttributes().setURL(toValidURL(url));
     }
@@ -118,7 +118,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         return getAttributes().getImageSelectionMode();
     }
 
-    public T setImageSelectionMode(ImageSelectionMode selectionMode)
+    public T setImageSelectionMode(final ImageSelectionMode selectionMode)
     {
         getAttributes().setImageSelectionMode(selectionMode);
 
@@ -130,7 +130,7 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         return getAttributes().getSerializationMode();
     }
 
-    public T setImageSerializationMode(ImageSerializationMode serializationMode)
+    public T setImageSerializationMode(final ImageSerializationMode serializationMode)
     {
         getAttributes().setSerializationMode(serializationMode);
 
@@ -152,12 +152,12 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         return m_proxy.getImageData();
     }
 
-    public String toDataURL(DataURLType mimeType, boolean filtered)
+    public String toDataURL(final DataURLType mimeType, final boolean filtered)
     {
         return m_proxy.toDataURL(mimeType, filtered);
     }
 
-    protected void setImageShapeLoadedHandler(ImageShapeLoadedHandler<T> handler)
+    protected void setImageShapeLoadedHandler(final ImageShapeLoadedHandler<T> handler)
     {
         m_proxy.setImageShapeLoadedHandler(handler);
     }

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class Rectangle extends Shape<Rectangle>
      * @param width
      * @param height
      */
-    public Rectangle(double width, double height)
+    public Rectangle(final double width, final double height)
     {
         super(ShapeType.RECTANGLE);
 
@@ -51,14 +51,14 @@ public class Rectangle extends Shape<Rectangle>
      * @param height
      * @param cornerRadius
      */
-    public Rectangle(double width, double height, double cornerRadius)
+    public Rectangle(final double width, final double height, final double cornerRadius)
     {
         super(ShapeType.RECTANGLE);
 
         setWidth(width).setHeight(height).setCornerRadius(cornerRadius);
     }
 
-    protected Rectangle(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Rectangle(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.RECTANGLE, node, ctx);
     }
@@ -75,7 +75,7 @@ public class Rectangle extends Shape<Rectangle>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double w = attr.getWidth();
 
@@ -134,7 +134,7 @@ public class Rectangle extends Shape<Rectangle>
      * @param width
      * @return this Rectangle
      */
-    public Rectangle setWidth(double width)
+    public Rectangle setWidth(final double width)
     {
         getAttributes().setWidth(width);
 
@@ -157,7 +157,7 @@ public class Rectangle extends Shape<Rectangle>
      * @param height
      * @return this Rectangle
      */
-    public Rectangle setHeight(double height)
+    public Rectangle setHeight(final double height)
     {
         getAttributes().setHeight(height);
 
@@ -180,7 +180,7 @@ public class Rectangle extends Shape<Rectangle>
      * @param radius
      * @return this Rectangle
      */
-    public Rectangle setCornerRadius(double radius)
+    public Rectangle setCornerRadius(final double radius)
     {
         getAttributes().setCornerRadius(radius);
 
@@ -207,7 +207,7 @@ public class Rectangle extends Shape<Rectangle>
         }
 
         @Override
-        public Rectangle create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Rectangle create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Rectangle(node, ctx);
         }

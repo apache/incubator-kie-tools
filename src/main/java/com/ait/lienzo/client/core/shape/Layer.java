@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * 
      * @param node 
      */
-    protected Layer(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Layer(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.LAYER, node, ctx);
     }
@@ -131,15 +131,15 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param y
      * @return {@link Shape}
      */
-    public Shape<?> findShapeAtPoint(int x, int y)
+    public Shape<?> findShapeAtPoint(final int x, final int y)
     {
         if (isVisible())
         {
-            SelectionLayer selection = getSelectionLayer();
+            final SelectionLayer selection = getSelectionLayer();
 
             if (selection != null)
             {
-                ImageDataPixelColor rgba = selection.getContext().getImageDataPixelColor(x, y); // x,y is adjusted to canvas coordinates in event dispatch
+                final ImageDataPixelColor rgba = selection.getContext().getImageDataPixelColor(x, y); // x,y is adjusted to canvas coordinates in event dispatch
 
                 if (rgba != null)
                 {
@@ -147,9 +147,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     {
                         return null;
                     }
-                    String ckey = rgba.toBrowserRGB();
+                    final String ckey = rgba.toBrowserRGB();
 
-                    Shape<?> shape = m_shape_color_map.get(ckey);
+                    final Shape<?> shape = m_shape_color_map.get(ckey);
 
                     if ((shape != null) && (ckey.equals(shape.getColorKey())) && (shape.isVisible()))
                     {
@@ -169,7 +169,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
      */
     @Override
-    public Layer add(IPrimitive<?> child)
+    public Layer add(final IPrimitive<?> child)
     {
         super.add(child);
 
@@ -179,7 +179,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     }
 
     @Override
-    public Layer add(IPrimitive<?> child, IPrimitive<?>... children)
+    public Layer add(final IPrimitive<?> child, final IPrimitive<?>... children)
     {
         add(child);
 
@@ -198,7 +198,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
     */
     @Override
-    public Layer remove(IPrimitive<?> child)
+    public Layer remove(final IPrimitive<?> child)
     {
         child.detachFromLayerColorMap();
 
@@ -210,11 +210,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public boolean removeFromParent()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            Scene scene = parent.asScene();
+            final Scene scene = parent.asScene();
 
             if (null != scene)
             {
@@ -236,11 +236,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public Layer removeAll()
     {
-        NFastArrayList<IPrimitive<?>> list = getChildNodes();
+        final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
         if (null != list)
         {
-            int size = list.size();
+            final int size = list.size();
 
             for (int i = 0; i < size; i++)
             {
@@ -255,11 +255,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     /**
      * Internal method. Attach a Shape to the Layers Color Map
      */
-    final void attachShapeToColorMap(Shape<?> shape)
+    final void attachShapeToColorMap(final Shape<?> shape)
     {
         if (null != shape)
         {
-            Shape<?> look = m_shape_color_map.get(shape.getColorKey());
+            final Shape<?> look = m_shape_color_map.get(shape.getColorKey());
 
             if (null == look)
             {
@@ -273,11 +273,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * 
      * @param shape
      */
-    final void detachShapeFromColorMap(Shape<?> shape)
+    final void detachShapeFromColorMap(final Shape<?> shape)
     {
         if (null != shape)
         {
-            Shape<?> look = m_shape_color_map.get(shape.getColorKey());
+            final Shape<?> look = m_shape_color_map.get(shape.getColorKey());
 
             if (shape == look)
             {
@@ -294,7 +294,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public JSONObject toJSONObject()
     {
-        JSONObject object = new JSONObject();
+        final JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
 
@@ -304,21 +304,21 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
-        NFastArrayList<IPrimitive<?>> list = getChildNodes();
+        final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
-        JSONArray children = new JSONArray();
+        final JSONArray children = new JSONArray();
 
         if (list != null)
         {
-            int size = list.size();
+            final int size = list.size();
 
             for (int i = 0; i < size; i++)
             {
-                IPrimitive<?> prim = list.get(i);
+                final IPrimitive<?> prim = list.get(i);
 
                 if (null != prim)
                 {
-                    Node<?> node = prim.asNode();
+                    final Node<?> node = prim.asNode();
 
                     if (null != node)
                     {
@@ -343,7 +343,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param wide
      * @param high
      */
-    void setPixelSize(int wide, int high)
+    void setPixelSize(final int wide, final int high)
     {
         m_wide = wide;
 
@@ -369,7 +369,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param Layer
      */
     @Override
-    public Layer setListening(boolean listening)
+    public Layer setListening(final boolean listening)
     {
         super.setListening(listening);
 
@@ -416,7 +416,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param high
      * @return Layer
      */
-    void setHeight(int high)
+    void setHeight(final int high)
     {
         m_high = high;
     }
@@ -441,7 +441,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param zoomable boolean
      * @return
      */
-    public Layer setTransformable(boolean transformable)
+    public Layer setTransformable(final boolean transformable)
     {
         getAttributes().setTransformable(transformable);
 
@@ -464,7 +464,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param clear
      * @return Layer
      */
-    public Layer setClearLayerBeforeDraw(boolean clear)
+    public Layer setClearLayerBeforeDraw(final boolean clear)
     {
         getAttributes().setClearLayerBeforeDraw(clear);
 
@@ -510,7 +510,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param onLayerBeforeDrawHandler
      * @return Layer
      */
-    public Layer setOnLayerBeforeDraw(OnLayerBeforeDraw onLayerBeforeDrawHandler)
+    public Layer setOnLayerBeforeDraw(final OnLayerBeforeDraw onLayerBeforeDrawHandler)
     {
         m_olbd = onLayerBeforeDrawHandler;
 
@@ -524,7 +524,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @param onLayerAfterDrawHandler
      * @return Layer
      */
-    public Layer setOnLayerAfterDraw(OnLayerAfterDraw onLayerAfterDrawHandler)
+    public Layer setOnLayerAfterDraw(final OnLayerAfterDraw onLayerAfterDrawHandler)
     {
         m_olad = onLayerAfterDrawHandler;
 
@@ -633,7 +633,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @return Layer
      */
     @Override
-    public Layer setVisible(boolean visible)
+    public Layer setVisible(final boolean visible)
     {
         super.setVisible(visible);
 
@@ -677,7 +677,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         {
             if (LienzoCore.get().getLayerClearMode() == LayerClearMode.CLEAR)
             {
-                Context2D context = getContext();
+                final Context2D context = getContext();
 
                 if (null != context)
                 {
@@ -719,11 +719,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public Layer moveUp()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -742,11 +742,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public Layer moveDown()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -765,11 +765,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public Layer moveToTop()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -788,11 +788,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     @Override
     public Layer moveToBottom()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -811,21 +811,23 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @return ArrayList<Node>
      */
     @Override
-    public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff)
+    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
     {
         if (predicate.test(this))
         {
             buff.add(this);
         }
-        int size = length();
+        final NFastArrayList<IPrimitive<?>> list = getChildNodes();
+
+        final int size = list.size();
 
         for (int i = 0; i < size; i++)
         {
-            IPrimitive<?> prim = getChildNodes().get(i);
+            final IPrimitive<?> prim = list.get(i);
 
             if (null != prim)
             {
-                Node<?> node = prim.asNode();
+                final Node<?> node = prim.asNode();
 
                 if (null != node)
                 {
@@ -833,7 +835,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     {
                         buff.add(node);
                     }
-                    IContainer<?, ?> cont = node.asContainer();
+                    final IContainer<?, ?> cont = node.asContainer();
 
                     if (null != cont)
                     {
@@ -938,7 +940,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
 
         @Override
-        public void setPixelSize(int wide, int high)
+        public void setPixelSize(final int wide, final int high)
         {
             if (LienzoCore.get().isCanvasSupported())
             {
@@ -991,9 +993,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
 
         @Override
-        public Layer create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Layer create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
-            Layer container = new Layer(node, ctx);
+            final Layer container = new Layer(node, ctx);
 
             JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
 
@@ -1001,9 +1003,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
 
         @Override
-        public boolean addNodeForContainer(IContainer<?, ?> container, Node<?> node, ValidationContext ctx)
+        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
-            IPrimitive<?> prim = node.asPrimitive();
+            final IPrimitive<?> prim = node.asPrimitive();
 
             if (null != prim)
             {

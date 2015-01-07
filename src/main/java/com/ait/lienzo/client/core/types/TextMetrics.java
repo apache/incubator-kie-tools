@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 /**
  * JSO to be used when retrieving the Canvas {@link Text} measurements.
@@ -35,6 +36,11 @@ public final class TextMetrics extends JavaScriptObject
 
     protected TextMetrics()
     {
+    }
+    
+    public final String toJSONString()
+    {
+        return new JSONObject(this).toString();
     }
 
     /**

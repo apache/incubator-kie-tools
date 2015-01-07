@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,19 +38,19 @@ public class PolyLine extends Shape<PolyLine>
      * 
      * @param points a {@link Point2DArray} containing 2 or more points.
      */
-    public PolyLine(Point2DArray points)
+    public PolyLine(final Point2DArray points)
     {
         super(ShapeType.POLYLINE);
 
         setPoints(points);
     }
 
-    public PolyLine(Point2D point, Point2D... points)
+    public PolyLine(final Point2D point, final Point2D... points)
     {
         this(new Point2DArray(point, points));
     }
 
-    protected PolyLine(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected PolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYLINE, node, ctx);
     }
@@ -67,13 +67,13 @@ public class PolyLine extends Shape<PolyLine>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        Point2DArray list = attr.getPoints();
+        final Point2DArray list = attr.getPoints();
 
         if ((null != list) && (list.size() >= 2))
         {
-            final int leng = list.size();
+            final int size = list.size();
 
             Point2D point = list.get(0);
 
@@ -81,7 +81,7 @@ public class PolyLine extends Shape<PolyLine>
 
             context.moveTo(point.getX(), point.getY());
 
-            for (int i = 1; i < leng; i++)
+            for (int i = 1; i < size; i++)
             {
                 point = list.get(i);
 
@@ -111,7 +111,7 @@ public class PolyLine extends Shape<PolyLine>
      * @param points {@link Point2DArray}
      * @return this PolyLine
      */
-    public PolyLine setPoints(Point2DArray points)
+    public PolyLine setPoints(final Point2DArray points)
     {
         getAttributes().setPoints(points);
 
@@ -134,7 +134,7 @@ public class PolyLine extends Shape<PolyLine>
         }
 
         @Override
-        public PolyLine create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public PolyLine create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new PolyLine(node, ctx);
         }

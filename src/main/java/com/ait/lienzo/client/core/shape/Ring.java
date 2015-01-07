@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,14 +40,14 @@ public class Ring extends Shape<Ring>
      * @param endAngle in radians
      * @param counterClockwise
      */
-    public Ring(double innerRadius, double outerRadius)
+    public Ring(final double innerRadius, final double outerRadius)
     {
         super(ShapeType.RING);
 
         setInnerRadius(innerRadius).setOuterRadius(outerRadius);
     }
 
-    protected Ring(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Ring(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.RING, node, ctx);
     }
@@ -72,7 +72,7 @@ public class Ring extends Shape<Ring>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double ord = attr.getOuterRadius();
 
@@ -94,7 +94,7 @@ public class Ring extends Shape<Ring>
     }
 
     @Override
-    protected void stroke(Context2D context, Attributes attr, double alpha)
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha)
     {
         context.save();
 
@@ -159,7 +159,7 @@ public class Ring extends Shape<Ring>
      * @param radius
      * @return this Star
      */
-    public Ring setInnerRadius(double radius)
+    public Ring setInnerRadius(final double radius)
     {
         getAttributes().setInnerRadius(radius);
 
@@ -182,7 +182,7 @@ public class Ring extends Shape<Ring>
      * @param radius
      * @return this Star
      */
-    public Ring setOuterRadius(double radius)
+    public Ring setOuterRadius(final double radius)
     {
         getAttributes().setOuterRadius(radius);
 
@@ -207,7 +207,7 @@ public class Ring extends Shape<Ring>
         }
 
         @Override
-        public Ring create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Ring create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Ring(node, ctx);
         }

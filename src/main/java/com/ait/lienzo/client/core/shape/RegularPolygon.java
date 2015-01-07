@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -37,14 +37,14 @@ public class RegularPolygon extends Shape<RegularPolygon>
      * @param sides number of sides
      * @param radius size of the encompassing circle
      */
-    public RegularPolygon(int sides, double radius)
+    public RegularPolygon(final int sides, final double radius)
     {
         super(ShapeType.REGULAR_POLYGON);
 
         setRadius(radius).setSides(sides);
     }
 
-    protected RegularPolygon(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected RegularPolygon(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.REGULAR_POLYGON, node, ctx);
     }
@@ -94,7 +94,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
      * @context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final int s = attr.getSides();
 
@@ -133,7 +133,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
      * @param radius
      * @return this RegularPolygon
      */
-    public RegularPolygon setRadius(double radius)
+    public RegularPolygon setRadius(final double radius)
     {
         getAttributes().setRadius(radius);
 
@@ -156,7 +156,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
      * @param sides
      * @return this RegularPolygon
      */
-    public RegularPolygon setSides(int sides)
+    public RegularPolygon setSides(final int sides)
     {
         getAttributes().setSides(sides);
 
@@ -181,7 +181,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
         }
 
         @Override
-        public RegularPolygon create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public RegularPolygon create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new RegularPolygon(node, ctx);
         }

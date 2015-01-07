@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class Arc extends Shape<Arc>
      *            false draws the arc clockwise.
      *          
      */
-    public Arc(double radius, double startAngle, double endAngle, boolean counterClockwise)
+    public Arc(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise)
     {
         super(ShapeType.ARC);
 
@@ -55,14 +55,14 @@ public class Arc extends Shape<Arc>
      * @param startAngle starting angle (in radians) of this arc
      * @param endAngle end angle (in radians) of this arc
      */
-    public Arc(double radius, double startAngle, double endAngle)
+    public Arc(final double radius, final double startAngle, final double endAngle)
     {
         super(ShapeType.ARC);
 
         setRadius(radius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(false);
     }
 
-    protected Arc(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Arc(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.ARC, node, ctx);
     }
@@ -81,7 +81,7 @@ public class Arc extends Shape<Arc>
      * @param context the {@link Context2D} used to draw this arc.
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double r = attr.getRadius();
 
@@ -112,7 +112,7 @@ public class Arc extends Shape<Arc>
      * @param radius
      * @return this Arc
      */
-    public Arc setRadius(double radius)
+    public Arc setRadius(final double radius)
     {
         getAttributes().setRadius(radius);
 
@@ -135,7 +135,7 @@ public class Arc extends Shape<Arc>
      * @param angle (in radians)
      * @return this Arc
      */
-    public Arc setStartAngle(double angle)
+    public Arc setStartAngle(final double angle)
     {
         getAttributes().setStartAngle(angle);
 
@@ -158,7 +158,7 @@ public class Arc extends Shape<Arc>
      * @param angle (in radians)
      * @return this Arc
      */
-    public Arc setEndAngle(double angle)
+    public Arc setEndAngle(final double angle)
     {
         getAttributes().setEndAngle(angle);
 
@@ -181,7 +181,7 @@ public class Arc extends Shape<Arc>
      * @param counterClockwise If true, it's drawn counter clockwise.
      * @return this Arc
      */
-    public Arc setCounterClockwise(boolean counterClockwise)
+    public Arc setCounterClockwise(final boolean counterClockwise)
     {
         getAttributes().setCounterClockwise(counterClockwise);
 
@@ -210,7 +210,7 @@ public class Arc extends Shape<Arc>
         }
 
         @Override
-        public Arc create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Arc create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Arc(node, ctx);
         }

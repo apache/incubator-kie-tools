@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -61,23 +60,19 @@ import com.ait.lienzo.client.core.event.NodeTouchMoveEvent;
 import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
 import com.ait.lienzo.client.core.event.NodeTouchStartEvent;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
-import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.IContainerFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
-import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.UUID;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
@@ -112,7 +107,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     private HandlerManager   m_events = new HandlerManager(this);
 
-    protected Node(NodeType type)
+    protected Node(final NodeType type)
     {
         m_type = type;
 
@@ -126,7 +121,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @param type
      */
-    protected void setNodeType(NodeType type)
+    protected void setNodeType(final NodeType type)
     {
         m_type = type;
     }
@@ -137,7 +132,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param type
      * @param node
      */
-    protected Node(NodeType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Node(final NodeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         m_type = type;
 
@@ -174,34 +169,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
                 else
                 {
                     m_attr = new Attributes(ajso);
-
-                    if (m_attr.isDefined(Attribute.FILL))
-                    {
-                        FillGradient grad = m_attr.getFillGradient();
-
-                        if (null != grad)
-                        {
-                            final PatternGradient patg = grad.asPatternGradient();
-
-                            if (null != patg)
-                            {
-                                new ImageLoader(patg.getSrc())
-                                {
-                                    @Override
-                                    public void onLoad(ImageElement image)
-                                    {
-                                        m_attr.setFillGradient(new PatternGradient(image, patg.getRepeat()));
-                                    }
-
-                                    @Override
-                                    public void onError(String message)
-                                    {
-                                        LienzoCore.get().log(message);
-                                    }
-                                };
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -313,7 +280,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return getFactory().getRequiredAttributes();
     }
 
-    protected void setParent(Node<?> parent)
+    protected void setParent(final Node<?> parent)
     {
         m_parent = parent;
     }
@@ -330,7 +297,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      */
     public Layer getLayer()
     {
-        Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Layer, and Layer returns itself, CYCLES!!!
+        final Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Layer, and Layer returns itself, CYCLES!!!
 
         if (null != parent)
         {
@@ -347,7 +314,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     @Override
     public Scene getScene()
     {
-        Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Scene, and Scene returns itself, CYCLES!!!
+        final Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Scene, and Scene returns itself, CYCLES!!!
 
         if (null != parent)
         {
@@ -361,7 +328,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      */
     public Viewport getViewport()
     {
-        Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Viewport, and Viewport returns itself, CYCLES!!!
+        final Node<?> parent = getParent(); // change, no iteration, no testing, no casting, recurses upwards to a Viewport, and Viewport returns itself, CYCLES!!!
 
         if (null != parent)
         {
@@ -394,13 +361,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * to the current context, draws the node (and it's children, if any)
      * and restores the context.
      */
-    public void drawWithTransforms(Context2D context, double alpha)
+    public void drawWithTransforms(final Context2D context, final double alpha)
     {
         if (context.isDrag() || isVisible())
         {
             context.save();
 
-            Transform xfrm = getPossibleNodeTransform();
+            final Transform xfrm = getPossibleNodeTransform();
 
             if (null != xfrm)
             {
@@ -429,7 +396,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     public Point2D getAbsoluteLocation()
     {
-        Point2D p = new Point2D(0, 0);
+        final Point2D p = new Point2D(0, 0);
 
         getAbsoluteTransform().transform(p, p);
 
@@ -444,14 +411,14 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      */
     public Transform getAbsoluteTransform()
     {
-        Transform xfrm = new Transform();
+        final Transform xfrm = new Transform();
 
         getAbsoluteTransformFromParents(this, xfrm);
 
         return xfrm;
     }
 
-    private final void getAbsoluteTransformFromParents(Node<?> root, Transform xfrm)
+    private final void getAbsoluteTransformFromParents(final Node<?> root, final Transform xfrm)
     {
         if (null == root)
         {
@@ -459,7 +426,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
         getAbsoluteTransformFromParents(root.getParent(), xfrm);
 
-        Transform temp = root.getPossibleNodeTransform();
+        final Transform temp = root.getPossibleNodeTransform();
 
         if (temp != null)
         {
@@ -469,25 +436,23 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     protected final Transform getPossibleNodeTransform()
     {
-        final Attributes attr = getAttributes();
-
-        if (false == attr.hasTransformAttributes())
+        if (false == m_attr.hasTransformAttributes())
         {
             return null;
         }
-        Transform xfrm = new Transform();
+        final Transform xfrm = new Transform();
 
-        double x = attr.getX();
+        final double x = m_attr.getX();
 
-        double y = attr.getY();
+        final double y = m_attr.getY();
 
         if ((x != 0) || (y != 0))
         {
             xfrm.translate(x, y);
         }
-        if (attr.isDefined(Attribute.TRANSFORM))
+        if (m_attr.isDefined(Attribute.TRANSFORM))
         {
-            Transform tran = attr.getTransform();
+            final Transform tran = m_attr.getTransform();
 
             if (null != tran)
             {
@@ -498,27 +463,27 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
         // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
 
-        double r = attr.getRotation();
+        final double r = m_attr.getRotation();
 
         if (r != 0)
         {
-            Point2D offset = attr.getOffset();
+            final Point2D offset = m_attr.getOffset();
 
             if (null != offset)
             {
-                x = offset.getX();
+                final double ox = offset.getX();
 
-                y = offset.getY();
+                final double oy = offset.getY();
 
-                if ((x != 0) || (y != 0))
+                if ((ox != 0) || (oy != 0))
                 {
-                    xfrm.translate(x, y);
+                    xfrm.translate(ox, oy);
                 }
                 xfrm.rotate(r);
 
-                if ((x != 0) || (y != 0))
+                if ((ox != 0) || (oy != 0))
                 {
-                    xfrm.translate(-1 * x, -1 * y);
+                    xfrm.translate(-1 * ox, -1 * oy);
                 }
             }
             else
@@ -526,35 +491,35 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
                 xfrm.rotate(r);
             }
         }
-        if (attr.isDefined(Attribute.SCALE))
+        if (m_attr.isDefined(Attribute.SCALE))
         {
-            Point2D scale = attr.getScale();
+            Point2D scale = m_attr.getScale();
 
             if (null != scale)
             {
-                x = scale.getX();
+                final double sx = scale.getX();
 
-                y = scale.getY();
+                final double sy = scale.getY();
 
-                if ((x != 1) || (y != 1))
+                if ((sx != 1) || (sy != 1))
                 {
-                    xfrm.scale(x, y);
+                    xfrm.scale(sx, sy);
                 }
             }
         }
-        if (attr.isDefined(Attribute.SHEAR))
+        if (m_attr.isDefined(Attribute.SHEAR))
         {
-            Point2D shear = attr.getShear();
+            Point2D shear = m_attr.getShear();
 
             if (null != shear)
             {
-                x = shear.getX();
+                final double sx = shear.getX();
 
-                y = shear.getY();
+                final double sy = shear.getY();
 
-                if ((x != 0) || (y != 0))
+                if ((sx != 0) || (sy != 0))
                 {
-                    xfrm.shear(x, y);
+                    xfrm.shear(sx, sy);
                 }
             }
         }
@@ -563,7 +528,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     public Transform getNodeTransform()
     {
-        Transform xfrm = getPossibleNodeTransform();
+        final Transform xfrm = getPossibleNodeTransform();
 
         if (null != xfrm)
         {
@@ -572,16 +537,16 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return new Transform();
     }
 
-    public T setTransform(Transform transform)
+    public T setTransform(final Transform transform)
     {
-        getAttributes().setTransform(transform);
+        m_attr.setTransform(transform);
 
         return cast();
     }
 
     public Transform getTransform()
     {
-        return getAttributes().getTransform();
+        return m_attr.getTransform();
     }
 
     /**
@@ -590,7 +555,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param visible
      * @return this Node
      */
-    public T setVisible(boolean visible)
+    public T setVisible(final boolean visible)
     {
         m_attr.setVisible(visible);
 
@@ -609,7 +574,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param listening
      * @return this Node
      */
-    public T setListening(boolean listening)
+    public T setListening(final boolean listening)
     {
         m_attr.setListening(listening);
 
@@ -628,7 +593,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * @param name
      * @return this Node
      */
-    public T setName(String name)
+    public T setName(final String name)
     {
         m_attr.setName(name);
 
@@ -719,7 +684,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
-    public boolean isEventHandled(Type<?> type)
+    public boolean isEventHandled(final Type<?> type)
     {
         if ((null != m_events) && (isListening()) && (((isVisible()) || (type == NodeDragStartEvent.getType()) || (type == NodeDragMoveEvent.getType()))))
         {
@@ -729,7 +694,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
-    public void fireEvent(GwtEvent<?> event)
+    public void fireEvent(final GwtEvent<?> event)
     {
         if ((null != m_events) && (isListening()) && (((isVisible()) || (event.getAssociatedType() == NodeDragStartEvent.getType()) || (event.getAssociatedType() == NodeDragMoveEvent.getType()))))
         {
@@ -737,107 +702,107 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
     }
 
-    protected final <H extends EventHandler> HandlerRegistration addEnsureHandler(Type<H> type, H handler)
+    protected final <H extends EventHandler> HandlerRegistration addEnsureHandler(final Type<H> type, final H handler)
     {
         return m_events.addHandler(type, handler);
     }
 
-    public HandlerRegistration addNodeMouseClickHandler(NodeMouseClickHandler handler)
+    public HandlerRegistration addNodeMouseClickHandler(final NodeMouseClickHandler handler)
     {
         return addEnsureHandler(NodeMouseClickEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseDoubleClickHandler(NodeMouseDoubleClickHandler handler)
+    public HandlerRegistration addNodeMouseDoubleClickHandler(final NodeMouseDoubleClickHandler handler)
     {
         return addEnsureHandler(NodeMouseDoubleClickEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseDownHandler(NodeMouseDownHandler handler)
+    public HandlerRegistration addNodeMouseDownHandler(final NodeMouseDownHandler handler)
     {
         return addEnsureHandler(NodeMouseDownEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseMoveHandler(NodeMouseMoveHandler handler)
+    public HandlerRegistration addNodeMouseMoveHandler(final NodeMouseMoveHandler handler)
     {
         return addEnsureHandler(NodeMouseMoveEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseOutHandler(NodeMouseOutHandler handler)
+    public HandlerRegistration addNodeMouseOutHandler(final NodeMouseOutHandler handler)
     {
         return addEnsureHandler(NodeMouseOutEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseOverHandler(NodeMouseOverHandler handler)
+    public HandlerRegistration addNodeMouseOverHandler(final NodeMouseOverHandler handler)
     {
         return addEnsureHandler(NodeMouseOverEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseExitHandler(NodeMouseExitHandler handler)
+    public HandlerRegistration addNodeMouseExitHandler(final NodeMouseExitHandler handler)
     {
         return addEnsureHandler(NodeMouseExitEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseEnterHandler(NodeMouseEnterHandler handler)
+    public HandlerRegistration addNodeMouseEnterHandler(final NodeMouseEnterHandler handler)
     {
         return addEnsureHandler(NodeMouseEnterEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseUpHandler(NodeMouseUpHandler handler)
+    public HandlerRegistration addNodeMouseUpHandler(final NodeMouseUpHandler handler)
     {
         return addEnsureHandler(NodeMouseUpEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeMouseWheelHandler(NodeMouseWheelHandler handler)
+    public HandlerRegistration addNodeMouseWheelHandler(final NodeMouseWheelHandler handler)
     {
         return addEnsureHandler(NodeMouseWheelEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeTouchCancelHandler(NodeTouchCancelHandler handler)
+    public HandlerRegistration addNodeTouchCancelHandler(final NodeTouchCancelHandler handler)
     {
         return addEnsureHandler(NodeTouchCancelEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeTouchEndHandler(NodeTouchEndHandler handler)
+    public HandlerRegistration addNodeTouchEndHandler(final NodeTouchEndHandler handler)
     {
         return addEnsureHandler(NodeTouchEndEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeTouchMoveHandler(NodeTouchMoveHandler handler)
+    public HandlerRegistration addNodeTouchMoveHandler(final NodeTouchMoveHandler handler)
     {
         return addEnsureHandler(NodeTouchMoveEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeTouchStartHandler(NodeTouchStartHandler handler)
+    public HandlerRegistration addNodeTouchStartHandler(final NodeTouchStartHandler handler)
     {
         return addEnsureHandler(NodeTouchStartEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeGestureStartHandler(NodeGestureStartHandler handler)
+    public HandlerRegistration addNodeGestureStartHandler(final NodeGestureStartHandler handler)
     {
         return addEnsureHandler(NodeGestureStartEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeGestureEndHandler(NodeGestureEndHandler handler)
+    public HandlerRegistration addNodeGestureEndHandler(final NodeGestureEndHandler handler)
     {
         return addEnsureHandler(NodeGestureEndEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeGestureChangeHandler(NodeGestureChangeHandler handler)
+    public HandlerRegistration addNodeGestureChangeHandler(final NodeGestureChangeHandler handler)
     {
         return addEnsureHandler(NodeGestureChangeEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeDragEndHandler(NodeDragEndHandler handler)
+    public HandlerRegistration addNodeDragEndHandler(final NodeDragEndHandler handler)
     {
         return addEnsureHandler(NodeDragEndEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeDragMoveHandler(NodeDragMoveHandler handler)
+    public HandlerRegistration addNodeDragMoveHandler(final NodeDragMoveHandler handler)
     {
         return addEnsureHandler(NodeDragMoveEvent.getType(), handler);
     }
 
-    public HandlerRegistration addNodeDragStartHandler(NodeDragStartHandler handler)
+    public HandlerRegistration addNodeDragStartHandler(final NodeDragStartHandler handler)
     {
         return addEnsureHandler(NodeDragStartEvent.getType(), handler);
     }
@@ -870,12 +835,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     public static abstract class NodeFactory<N extends IJSONSerializable<N>> extends AbstractFactory<N>
     {
-        protected NodeFactory(NodeType type)
+        protected NodeFactory(final NodeType type)
         {
             this(type.getValue());
         }
 
-        protected NodeFactory(String typeName)
+        protected NodeFactory(final String typeName)
         {
             super(typeName);
 
@@ -895,7 +860,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
          * 
          * @param type {@link NodeType}
          */
-        protected void setNodeType(NodeType type)
+        protected void setNodeType(final NodeType type)
         {
             setTypeName(type.getValue());
         }
@@ -903,12 +868,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>> extends NodeFactory<C> implements IContainerFactory
     {
-        protected ContainerNodeFactory(NodeType type)
+        protected ContainerNodeFactory(final NodeType type)
         {
             this(type.getValue());
         }
 
-        protected ContainerNodeFactory(String typeName)
+        protected ContainerNodeFactory(final String typeName)
         {
             super(typeName);
         }

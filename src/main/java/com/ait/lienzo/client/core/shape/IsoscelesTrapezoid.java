@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -27,20 +27,20 @@ import com.google.gwt.json.client.JSONObject;
 
 public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 {
-    public IsoscelesTrapezoid(double topwidth, double bottomwidth, double height)
+    public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height)
     {
         super(ShapeType.ISOSCELES_TRAPEZOID);
 
         setTopWidth(topwidth).setBottomWidth(bottomwidth).setHeight(height);
     }
 
-    protected IsoscelesTrapezoid(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected IsoscelesTrapezoid(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.ISOSCELES_TRAPEZOID, node, ctx);
     }
 
     @Override
-    protected boolean prepare(Context2D context, Attributes attr, double alpha)
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double hig = attr.getHeight();
 
@@ -94,7 +94,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return new BoundingBox(0, 0, Math.max(getTopWidth(), getBottomWidth()), getHeight());
     }
 
-    public IsoscelesTrapezoid setTopWidth(double topwidth)
+    public IsoscelesTrapezoid setTopWidth(final double topwidth)
     {
         getAttributes().setTopWidth(topwidth);
 
@@ -106,7 +106,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return getAttributes().getTopWidth();
     }
 
-    public IsoscelesTrapezoid setBottomWidth(double bottomwidth)
+    public IsoscelesTrapezoid setBottomWidth(final double bottomwidth)
     {
         getAttributes().setBottomWidth(bottomwidth);
 
@@ -118,7 +118,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return getAttributes().getBottomWidth();
     }
 
-    public IsoscelesTrapezoid setHeight(double height)
+    public IsoscelesTrapezoid setHeight(final double height)
     {
         getAttributes().setHeight(height);
 
@@ -150,7 +150,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         }
 
         @Override
-        public IsoscelesTrapezoid create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public IsoscelesTrapezoid create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new IsoscelesTrapezoid(node, ctx);
         }

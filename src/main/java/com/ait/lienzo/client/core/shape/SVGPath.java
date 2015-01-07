@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,14 +38,14 @@ public class SVGPath extends Shape<SVGPath>
 
     private final PathPartList    m_list   = new PathPartList();
 
-    public SVGPath(String path)
+    public SVGPath(final String path)
     {
         super(ShapeType.SVG_PATH);
 
         setPath(path);
     }
 
-    protected SVGPath(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected SVGPath(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SVG_PATH, node, ctx);
 
@@ -61,6 +61,10 @@ public class SVGPath extends Shape<SVGPath>
     @Override
     protected boolean prepare(final Context2D context, Attributes attr, double alpha)
     {
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
         m_fill = context.path(m_list);
 
         return true;
@@ -478,7 +482,7 @@ public class SVGPath extends Shape<SVGPath>
     }
 
     @Override
-    protected void fill(Context2D context, Attributes attr, double alpha)
+    protected void fill(final Context2D context, final Attributes attr, final double alpha)
     {
         if (m_fill)
         {
@@ -491,7 +495,7 @@ public class SVGPath extends Shape<SVGPath>
         return getAttributes().getPath();
     }
 
-    public SVGPath setPath(String path)
+    public SVGPath setPath(final String path)
     {
         getAttributes().setPath(path);
 
@@ -518,7 +522,7 @@ public class SVGPath extends Shape<SVGPath>
         }
 
         @Override
-        public SVGPath create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public SVGPath create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new SVGPath(node, ctx);
         }

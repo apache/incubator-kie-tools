@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -53,14 +53,19 @@ public class Line extends Shape<Line>
      * @param x2 second point X coordinate
      * @param y2 second point Y coordinate
      */
-    public Line(double x1, double y1, double x2, double y2)
+    public Line(final double x1, final double y1, final double x2, final double y2)
+    {
+        this(new Point2D(x1, y1), new Point2D(x2, y2));
+    }
+
+    public Line(final Point2D p1, final Point2D p2)
     {
         super(ShapeType.LINE);
 
-        setPoints(new Point2DArray(new Point2D(x1, y1), new Point2D(x2, y2)));
+        setPoints(new Point2DArray(p1, p2));
     }
 
-    protected Line(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Line(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.LINE, node, ctx);
     }
@@ -77,9 +82,9 @@ public class Line extends Shape<Line>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        Point2DArray list = attr.getPoints();
+        final Point2DArray list = attr.getPoints();
 
         if ((null != list) && (list.size() == 2))
         {
@@ -110,15 +115,15 @@ public class Line extends Shape<Line>
                     }
                 }
             }
-            Point2D point = list.get(0);
-
             context.beginPath();
 
-            context.moveTo(point.getX(), point.getY());
+            final Point2D p0 = list.get(0);
 
-            point = list.get(1);
+            context.moveTo(p0.getX(), p0.getY());
 
-            context.lineTo(point.getX(), point.getY());
+            final Point2D p1 = list.get(1);
+
+            context.lineTo(p1.getX(), p1.getY());
 
             return true;
         }
@@ -142,7 +147,7 @@ public class Line extends Shape<Line>
      * @param points
      * @return this Line
      */
-    public Line setPoints(Point2DArray points)
+    public Line setPoints(final Point2DArray points)
     {
         getAttributes().setPoints(points);
 
@@ -155,7 +160,6 @@ public class Line extends Shape<Line>
     @Override
     public void fill(Context2D context, Attributes attr, double alpha)
     {
-
     }
 
     /**
@@ -244,7 +248,7 @@ public class Line extends Shape<Line>
         }
 
         @Override
-        public Line create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Line create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Line(node, ctx);
         }

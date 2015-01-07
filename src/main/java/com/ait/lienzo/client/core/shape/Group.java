@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     /**
      * Constructor. Creates an instance of a group.
      */
-    protected Group(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Group(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.GROUP, node, ctx);
     }
@@ -94,7 +94,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setX(double x)
+    public Group setX(final double x)
     {
         getAttributes().setX(x);
 
@@ -118,7 +118,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setY(double y)
+    public Group setY(final double y)
     {
         getAttributes().setY(y);
 
@@ -132,7 +132,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setLocation(Point2D p)
+    public Group setLocation(final Point2D p)
     {
         setX(p.getX());
 
@@ -169,7 +169,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setAlpha(double alpha)
+    public Group setAlpha(final double alpha)
     {
         getAttributes().setAlpha(alpha);
 
@@ -194,7 +194,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setFillAlpha(double alpha)
+    public Group setFillAlpha(final double alpha)
     {
         getAttributes().setFillAlpha(alpha);
 
@@ -208,7 +208,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return T
      */
     @Override
-    public Group setStrokeAlpha(double alpha)
+    public Group setStrokeAlpha(final double alpha)
     {
         getAttributes().setStrokeAlpha(alpha);
 
@@ -244,7 +244,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setDraggable(boolean draggable)
+    public Group setDraggable(final boolean draggable)
     {
         getAttributes().setDraggable(draggable);
 
@@ -269,7 +269,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setScale(Point2D scale)
+    public Group setScale(final Point2D scale)
     {
         getAttributes().setScale(scale);
 
@@ -283,7 +283,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setScale(double xy)
+    public Group setScale(final double xy)
     {
         getAttributes().setScale(xy);
 
@@ -298,7 +298,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setScale(double x, double y)
+    public Group setScale(final double x, final double y)
     {
         getAttributes().setScale(x, y);
 
@@ -323,7 +323,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setRotation(double radians)
+    public Group setRotation(final double radians)
     {
         getAttributes().setRotation(radians);
 
@@ -348,7 +348,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setRotationDegrees(double degrees)
+    public Group setRotationDegrees(final double degrees)
     {
         getAttributes().setRotationDegrees(degrees);
 
@@ -384,7 +384,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return T
      */
     @Override
-    public Group setShear(Point2D shear)
+    public Group setShear(final Point2D shear)
     {
         getAttributes().setShear(shear);
 
@@ -398,9 +398,9 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return T
      */
     @Override
-    public Group setShear(double shearX, double shearY)
+    public Group setShear(final double x, final double y)
     {
-        getAttributes().setShear(shearX, shearY);
+        getAttributes().setShear(x, y);
 
         return this;
     }
@@ -412,7 +412,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setOffset(Point2D offset)
+    public Group setOffset(final Point2D offset)
     {
         getAttributes().setOffset(offset);
 
@@ -426,7 +426,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setOffset(double xy)
+    public Group setOffset(final double xy)
     {
         getAttributes().setOffset(xy);
 
@@ -441,7 +441,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setOffset(double x, double y)
+    public Group setOffset(final double x, final double y)
     {
         getAttributes().setOffset(x, y);
 
@@ -467,7 +467,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setDragConstraint(DragConstraint constraint)
+    public Group setDragConstraint(final DragConstraint constraint)
     {
         getAttributes().setDragConstraint(constraint);
 
@@ -492,7 +492,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setDragBounds(DragBounds bounds)
+    public Group setDragBounds(final DragBounds bounds)
     {
         getAttributes().setDragBounds(bounds);
 
@@ -517,7 +517,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * @return Group this Group
      */
     @Override
-    public Group setDragMode(DragMode mode)
+    public Group setDragMode(final DragMode mode)
     {
         getAttributes().setDragMode(mode);
 
@@ -549,7 +549,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
      */
     @Override
-    public Group add(IPrimitive<?> child)
+    public Group add(final IPrimitive<?> child)
     {
         child.removeFromParent();
 
@@ -561,7 +561,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     @Override
-    public Group add(IPrimitive<?> child, IPrimitive<?>... children)
+    public Group add(final IPrimitive<?> child, final IPrimitive<?>... children)
     {
         add(child);
 
@@ -607,7 +607,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
      * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
      */
     @Override
-    public Group remove(IPrimitive<?> child)
+    public Group remove(final IPrimitive<?> child)
     {
         child.detachFromLayerColorMap();
 
@@ -639,15 +639,15 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public void attachToLayerColorMap()
     {
-        Layer layer = getLayer();
+        final Layer layer = getLayer();
 
         if (null != layer)
         {
-            NFastArrayList<IPrimitive<?>> list = getChildNodes();
+            final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
             if (null != list)
             {
-                int size = list.size();
+                final int size = list.size();
 
                 for (int i = 0; i < size; i++)
                 {
@@ -663,15 +663,15 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public void detachFromLayerColorMap()
     {
-        Layer layer = getLayer();
+        final Layer layer = getLayer();
 
         if (null != layer)
         {
-            NFastArrayList<IPrimitive<?>> list = getChildNodes();
+            final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
             if (null != list)
             {
-                int size = list.size();
+                final int size = list.size();
 
                 for (int i = 0; i < size; i++)
                 {
@@ -689,7 +689,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public JSONObject toJSONObject()
     {
-        JSONObject object = new JSONObject();
+        final JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
 
@@ -699,21 +699,21 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
         }
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
-        NFastArrayList<IPrimitive<?>> list = getChildNodes();
+        final NFastArrayList<IPrimitive<?>> list = getChildNodes();
 
-        JSONArray children = new JSONArray();
+        final JSONArray children = new JSONArray();
 
         if (list != null)
         {
-            int size = list.size();
+            final int size = list.size();
 
             for (int i = 0; i < size; i++)
             {
-                IPrimitive<?> prim = list.get(i);
+                final IPrimitive<?> prim = list.get(i);
 
                 if (null != prim)
                 {
-                    Node<?> node = prim.asNode();
+                    final Node<?> node = prim.asNode();
 
                     if (null != node)
                     {
@@ -741,11 +741,11 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public Group moveUp()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -764,11 +764,11 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public Group moveDown()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -787,11 +787,11 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public Group moveToTop()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -810,11 +810,11 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     @Override
     public Group moveToBottom()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -825,21 +825,23 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     @Override
-    public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff)
+    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
     {
         if (predicate.test(this))
         {
             buff.add(this);
         }
-        int size = length();
+        final NFastArrayList<IPrimitive<?>> list = getChildNodes();
+
+        final int size = list.size();
 
         for (int i = 0; i < size; i++)
         {
-            IPrimitive<?> prim = getChildNodes().get(i);
+            final IPrimitive<?> prim = list.get(i);
 
             if (null != prim)
             {
-                Node<?> node = prim.asNode();
+                final Node<?> node = prim.asNode();
 
                 if (null != node)
                 {
@@ -847,7 +849,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
                     {
                         buff.add(node);
                     }
-                    IContainer<?, ?> cont = node.asContainer();
+                    final IContainer<?, ?> cont = node.asContainer();
 
                     if (null != cont)
                     {
@@ -859,13 +861,13 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     @Override
-    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */)
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
     {
         return new TweeningAnimation(this, tweener, properties, duration, null).run();
     }
 
     @Override
-    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */, IAnimationCallback callback)
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
     {
         return new TweeningAnimation(this, tweener, properties, duration, callback).run();
     }
@@ -884,7 +886,7 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
     }
 
     @Override
-    public void setDragConstraints(DragConstraintEnforcer enforcer)
+    public void setDragConstraints(final DragConstraintEnforcer enforcer)
     {
         m_dragConstraintEnforcer = enforcer;
     }
@@ -929,9 +931,9 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
         }
 
         @Override
-        public Group create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Group create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
-            Group container = new Group(node, ctx);
+            final Group container = new Group(node, ctx);
 
             JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
 
@@ -939,9 +941,9 @@ public class Group extends ContainerNode<IPrimitive<?>, Group> implements IPrimi
         }
 
         @Override
-        public boolean addNodeForContainer(IContainer<?, ?> container, Node<?> node, ValidationContext ctx)
+        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
-            IPrimitive<?> prim = node.asPrimitive();
+            final IPrimitive<?> prim = node.asPrimitive();
 
             if (null != prim)
             {

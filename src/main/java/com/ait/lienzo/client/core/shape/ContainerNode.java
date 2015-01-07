@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -43,12 +43,12 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 {
     private final NFastArrayList<M> m_list = new NFastArrayList<M>();
 
-    protected ContainerNode(NodeType type)
+    protected ContainerNode(final NodeType type)
     {
         super(type);
     }
 
-    protected ContainerNode(NodeType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    protected ContainerNode(final NodeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
@@ -56,7 +56,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public T copy()
     {
-        Node<?> node = copyUnchecked();
+        final Node<?> node = copyUnchecked();
 
         if (null == node)
         {
@@ -98,9 +98,9 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
      */
     @Override
-    public T add(M child)
+    public T add(final M child)
     {
-        Node<?> node = child.asNode();
+        final Node<?> node = child.asNode();
 
         node.setParent(this);
 
@@ -117,9 +117,9 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
      */
     @Override
-    public T remove(M child)
+    public T remove(final M child)
     {
-        Node<?> node = child.asNode();
+        final Node<?> node = child.asNode();
 
         node.setParent(null);
 
@@ -151,7 +151,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Groups should draw their children in the current context.
      */
     @Override
-    protected void drawWithoutTransforms(Context2D context, double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha)
     {
         alpha = alpha * getAttributes().getAlpha();
 
@@ -171,7 +171,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} up
      */
     @Override
-    public T moveUp(M node)
+    public T moveUp(final M node)
     {
         getChildNodes().moveUp(node);
 
@@ -182,7 +182,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} down
      */
     @Override
-    public T moveDown(M node)
+    public T moveDown(final M node)
     {
         getChildNodes().moveDown(node);
 
@@ -193,7 +193,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} to the top
      */
     @Override
-    public T moveToTop(M node)
+    public T moveToTop(final M node)
     {
         getChildNodes().moveToTop(node);
 
@@ -204,7 +204,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Moves the {@link Layer} to the bottom
      */
     @Override
-    public T moveToBottom(M node)
+    public T moveToBottom(final M node)
     {
         getChildNodes().moveToBottom(node);
 
@@ -241,9 +241,9 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     }
 
     @Override
-    public final Iterable<Node<?>> find(Predicate<Node<?>> predicate)
+    public final Iterable<Node<?>> find(final Predicate<Node<?>> predicate)
     {
-        LinkedHashSet<Node<?>> buff = new LinkedHashSet<Node<?>>();
+        final LinkedHashSet<Node<?>> buff = new LinkedHashSet<Node<?>>();
 
         find(predicate, buff);
 

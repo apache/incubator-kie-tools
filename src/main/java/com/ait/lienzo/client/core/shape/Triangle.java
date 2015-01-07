@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,14 +40,14 @@ public class Triangle extends Shape<Triangle>
      * 
      * @param 3 points {@link Point2D}
      */
-    public Triangle(Point2D a, Point2D b, Point2D c)
+    public Triangle(final Point2D a, final Point2D b, final Point2D c)
     {
         super(ShapeType.TRIANGLE);
 
         setPoints(a, b, c);
     }
 
-    protected Triangle(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Triangle(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.TRIANGLE, node, ctx);
     }
@@ -64,17 +64,17 @@ public class Triangle extends Shape<Triangle>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        Point2DArray list = attr.getPoints();
+        final Point2DArray list = attr.getPoints();
 
         if ((null != list) && (list.size() > 2))
         {
-            Point2D point0 = list.get(0);
+            final Point2D point0 = list.get(0);
 
-            Point2D point1 = list.get(1);
+            final Point2D point1 = list.get(1);
 
-            Point2D point2 = list.get(2);
+            final Point2D point2 = list.get(2);
 
             context.beginPath();
 
@@ -107,7 +107,7 @@ public class Triangle extends Shape<Triangle>
      * @param 3 points {@link Point2D}
      * @return this Triangle
      */
-    public Triangle setPoints(Point2D a, Point2D b, Point2D c)
+    public Triangle setPoints(final Point2D a, final Point2D b, final Point2D c)
     {
         getAttributes().setPoints(new Point2DArray(a, b, c));
 
@@ -130,7 +130,7 @@ public class Triangle extends Shape<Triangle>
         }
 
         @Override
-        public Triangle create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Triangle create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Triangle(node, ctx);
         }

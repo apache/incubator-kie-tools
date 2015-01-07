@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.TweeningAnimation;
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -47,6 +48,7 @@ import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 
@@ -68,18 +70,48 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
     private DragConstraintEnforcer m_dragConstraintEnforcer;
 
-    protected Shape(ShapeType type)
+    protected Shape(final ShapeType type)
     {
         super(NodeType.SHAPE);
 
         m_type = type;
     }
 
-    public Shape(ShapeType type, JSONObject node, ValidationContext ctx) throws ValidationException
+    public Shape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.SHAPE, node, ctx);
 
         m_type = type;
+
+        final Attributes attr = getAttributes();
+
+        if (attr.isDefined(Attribute.FILL))
+        {
+            FillGradient grad = attr.getFillGradient();
+
+            if (null != grad)
+            {
+                final PatternGradient patg = grad.asPatternGradient();
+
+                if (null != patg)
+                {
+                    new ImageLoader(patg.getSrc())
+                    {
+                        @Override
+                        public void onLoad(ImageElement image)
+                        {
+                            attr.setFillGradient(new PatternGradient(image, patg.getRepeat()));
+                        }
+
+                        @Override
+                        public void onError(String message)
+                        {
+                            LienzoCore.get().log(message);
+                        }
+                    };
+                }
+            }
+        }
     }
 
     /**
@@ -87,7 +119,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * 
      * @param type
      */
-    protected void setShapeType(ShapeType type)
+    protected void setShapeType(final ShapeType type)
     {
         m_type = type;
     }
@@ -95,7 +127,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public T copy()
     {
-        Node<?> node = copyUnchecked();
+        final Node<?> node = copyUnchecked();
 
         if (null == node)
         {
@@ -105,7 +137,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         {
             return null;
         }
-        Shape<?> shape = ((Shape<?>) node);
+        final Shape<?> shape = ((Shape<?>) node);
 
         if (getShapeType() != shape.getShapeType())
         {
@@ -123,9 +155,9 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * and draw the Shape's details (such as the the actual lines and fills.)
      */
     @Override
-    protected void drawWithoutTransforms(Context2D context, double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha)
     {
-        Attributes attr = getAttributes();
+        final Attributes attr = getAttributes();
 
         alpha = alpha * attr.getAlpha();
 
@@ -149,7 +181,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
     public BoundingPoints getBoundingPoints()
     {
-        BoundingBox bbox = getBoundingBox();
+        final BoundingBox bbox = getBoundingBox();
 
         if (null != bbox)
         {
@@ -158,12 +190,12 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return null;
     }
 
-    protected final void setAppliedShadow(boolean apsh)
+    protected final void setAppliedShadow(final boolean apsh)
     {
         m_apsh = apsh;
     }
 
-    protected final void setWasFilledFlag(boolean fill)
+    protected final void setWasFilledFlag(final boolean fill)
     {
         m_fill = fill;
     }
@@ -182,7 +214,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param context
      * @param attr
      */
-    protected void fill(Context2D context, Attributes attr, double alpha)
+    protected void fill(final Context2D context, final Attributes attr, double alpha)
     {
         alpha = alpha * attr.getFillAlpha();
 
@@ -220,7 +252,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
             context.setGlobalAlpha(alpha);
 
-            String fill = attr.getFillColor();
+            final String fill = attr.getFillColor();
 
             if (null != fill)
             {
@@ -232,7 +264,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             }
             else
             {
-                FillGradient grad = attr.getFillGradient();
+                final FillGradient grad = attr.getFillGradient();
 
                 if (null != grad)
                 {
@@ -373,7 +405,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param context
      * @param attr
      */
-    protected void stroke(Context2D context, Attributes attr, double alpha)
+    protected void stroke(final Context2D context, final Attributes attr, final double alpha)
     {
         context.save();
 
@@ -400,7 +432,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param attr
      * @return boolean
      */
-    protected final void doApplyShadow(Context2D context, Attributes attr)
+    protected final void doApplyShadow(final Context2D context, final Attributes attr)
     {
         if ((m_apsh == false) && (attr.isDefined(Attribute.SHADOW)))
         {
@@ -431,7 +463,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param array contains dash lengths
      * @return this Line
      */
-    public T setDashArray(DashArray array)
+    public T setDashArray(final DashArray array)
     {
         getAttributes().setDashArray(array);
 
@@ -443,7 +475,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return getAttributes().getDashOffset();
     }
 
-    public T setDashOffset(double offset)
+    public T setDashOffset(final double offset)
     {
         getAttributes().setDashOffset(offset);
 
@@ -457,7 +489,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param dashes if specified, length of remaining dashes
      * @return this Line
      */
-    public T setDashArray(double dash, double... dashes)
+    public T setDashArray(final double dash, final double... dashes)
     {
         getAttributes().setDashArray(new DashArray(dash, dashes));
 
@@ -521,11 +553,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public boolean removeFromParent()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            Layer layer = parent.asLayer();
+            final Layer layer = parent.asLayer();
 
             if (null != layer)
             {
@@ -533,7 +565,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
                 return true;
             }
-            Group group = parent.asGroup();
+            final Group group = parent.asGroup();
 
             if (null != group)
             {
@@ -554,11 +586,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public T moveUp()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -577,11 +609,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public T moveDown()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -600,11 +632,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public T moveToTop()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -623,11 +655,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public T moveToBottom()
     {
-        Node<?> parent = getParent();
+        final Node<?> parent = getParent();
 
         if (null != parent)
         {
-            IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -655,7 +687,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setX(double x)
+    public T setX(final double x)
     {
         getAttributes().setX(x);
 
@@ -680,7 +712,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setY(double y)
+    public T setY(final double y)
     {
         getAttributes().setY(y);
 
@@ -694,7 +726,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return this Shape
      */
     @Override
-    public T setLocation(Point2D p)
+    public T setLocation(final Point2D p)
     {
         setX(p.getX());
 
@@ -730,7 +762,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setDraggable(boolean draggable)
+    public T setDraggable(final boolean draggable)
     {
         getAttributes().setDraggable(draggable);
 
@@ -742,7 +774,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return getAttributes().isEditable();
     }
 
-    public T setEditable(boolean editable)
+    public T setEditable(final boolean editable)
     {
         getAttributes().setEditable(editable);
 
@@ -754,7 +786,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return getAttributes().isFillShapeForSelection();
     }
 
-    public T setFillShapeForSelection(boolean selection)
+    public T setFillShapeForSelection(final boolean selection)
     {
         getAttributes().setFillShapeForSelection(selection);
 
@@ -779,7 +811,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setScale(Point2D scale)
+    public T setScale(final Point2D scale)
     {
         getAttributes().setScale(scale);
 
@@ -793,7 +825,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setScale(double xy)
+    public T setScale(final double xy)
     {
         getAttributes().setScale(xy);
 
@@ -808,7 +840,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setScale(double x, double y)
+    public T setScale(final double x, final double y)
     {
         getAttributes().setScale(x, y);
 
@@ -833,7 +865,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setRotation(double radians)
+    public T setRotation(final double radians)
     {
         getAttributes().setRotation(radians);
 
@@ -858,7 +890,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setRotationDegrees(double degrees)
+    public T setRotationDegrees(final double degrees)
     {
         getAttributes().setRotationDegrees(degrees);
 
@@ -883,7 +915,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setShear(Point2D shear)
+    public T setShear(final Point2D shear)
     {
         getAttributes().setShear(shear);
 
@@ -897,9 +929,9 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setShear(double shearX, double shearY)
+    public T setShear(final double x, final double y)
     {
-        getAttributes().setShear(shearX, shearY);
+        getAttributes().setShear(x, y);
 
         return cast();
     }
@@ -922,7 +954,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setOffset(Point2D offset)
+    public T setOffset(final Point2D offset)
     {
         getAttributes().setOffset(offset);
 
@@ -936,7 +968,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setOffset(double xy)
+    public T setOffset(final double xy)
     {
         getAttributes().setOffset(xy);
 
@@ -951,7 +983,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setOffset(double x, double y)
+    public T setOffset(final double x, final double y)
     {
         getAttributes().setOffset(x, y);
 
@@ -976,7 +1008,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setDragConstraint(DragConstraint constraint)
+    public T setDragConstraint(final DragConstraint constraint)
     {
         getAttributes().setDragConstraint(constraint);
 
@@ -1001,7 +1033,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setDragBounds(DragBounds bounds)
+    public T setDragBounds(final DragBounds bounds)
     {
         getAttributes().setDragBounds(bounds);
 
@@ -1026,7 +1058,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setDragMode(DragMode mode)
+    public T setDragMode(final DragMode mode)
     {
         getAttributes().setDragMode(mode);
 
@@ -1051,7 +1083,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setAlpha(double alpha)
+    public T setAlpha(final double alpha)
     {
         getAttributes().setAlpha(alpha);
 
@@ -1065,7 +1097,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setFillAlpha(double alpha)
+    public T setFillAlpha(final double alpha)
     {
         getAttributes().setFillAlpha(alpha);
 
@@ -1079,7 +1111,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
     @Override
-    public T setStrokeAlpha(double alpha)
+    public T setStrokeAlpha(final double alpha)
     {
         getAttributes().setStrokeAlpha(alpha);
 
@@ -1113,7 +1145,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param color in hex
      * @return T
      */
-    public T setFillColor(String color)
+    public T setFillColor(final String color)
     {
         getAttributes().setFillColor(color);
 
@@ -1126,7 +1158,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param color ColorName
      * @return T
      */
-    public T setFillColor(IColor color)
+    public T setFillColor(final IColor color)
     {
         return setFillColor(null == color ? null : color.getColorString());
     }
@@ -1148,7 +1180,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param gradient a {@link LinearGradient}
      * @return T
      */
-    public T setFillGradient(LinearGradient gradient)
+    public T setFillGradient(final LinearGradient gradient)
     {
         getAttributes().setFillGradient(gradient);
 
@@ -1161,7 +1193,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param gradient a {@link RadialGradient}
      * @return T
      */
-    public T setFillGradient(RadialGradient gradient)
+    public T setFillGradient(final RadialGradient gradient)
     {
         getAttributes().setFillGradient(gradient);
 
@@ -1175,7 +1207,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
 
-    public T setFillGradient(PatternGradient gradient)
+    public T setFillGradient(final PatternGradient gradient)
     {
         getAttributes().setFillGradient(gradient);
 
@@ -1198,7 +1230,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param color in hex
      * @return T
      */
-    public T setStrokeColor(String color)
+    public T setStrokeColor(final String color)
     {
         getAttributes().setStrokeColor(color);
 
@@ -1211,7 +1243,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param color Color or ColorName
      * @return T
      */
-    public T setStrokeColor(IColor color)
+    public T setStrokeColor(final IColor color)
     {
         return setStrokeColor(null == color ? null : color.getColorString());
     }
@@ -1232,7 +1264,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param width
      * @return T
      */
-    public T setStrokeWidth(double width)
+    public T setStrokeWidth(final double width)
     {
         getAttributes().setStrokeWidth(width);
 
@@ -1255,7 +1287,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param linejoin
      * @return T
      */
-    public T setLineJoin(LineJoin linejoin)
+    public T setLineJoin(final LineJoin linejoin)
     {
         getAttributes().setLineJoin(linejoin);
 
@@ -1269,7 +1301,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @return T
      */
 
-    public T setMiterLimit(double limit)
+    public T setMiterLimit(final double limit)
     {
         getAttributes().setMiterLimit(limit);
 
@@ -1303,7 +1335,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param linecap
      * @return T
      */
-    public T setLineCap(LineCap linecap)
+    public T setLineCap(final LineCap linecap)
     {
         getAttributes().setLineCap(linecap);
 
@@ -1326,7 +1358,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * @param shadow
      * @return T
      */
-    public T setShadow(Shadow shadow)
+    public T setShadow(final Shadow shadow)
     {
         getAttributes().setShadow(shadow);
 
@@ -1339,7 +1371,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public void attachToLayerColorMap()
     {
-        Layer layer = getLayer();
+        final Layer layer = getLayer();
 
         if (null != layer)
         {
@@ -1353,7 +1385,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public void detachFromLayerColorMap()
     {
-        Layer layer = getLayer();
+        final Layer layer = getLayer();
 
         if (null != layer)
         {
@@ -1369,7 +1401,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     @Override
     public JSONObject toJSONObject()
     {
-        JSONObject object = new JSONObject();
+        final JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getShapeType().getValue()));
 
@@ -1383,13 +1415,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     }
 
     @Override
-    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */)
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
     {
         return new TweeningAnimation(this, tweener, properties, duration, null).run();
     }
 
     @Override
-    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */, IAnimationCallback callback)
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
     {
         return new TweeningAnimation(this, tweener, properties, duration, callback).run();
     }
@@ -1408,14 +1440,14 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     }
 
     @Override
-    public void setDragConstraints(DragConstraintEnforcer enforcer)
+    public void setDragConstraints(final DragConstraintEnforcer enforcer)
     {
         m_dragConstraintEnforcer = enforcer;
     }
 
     public static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>
     {
-        protected ShapeFactory(ShapeType type)
+        protected ShapeFactory(final ShapeType type)
         {
             super(type.getValue());
 
@@ -1473,7 +1505,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
          * 
          * @param type {@link ShapeType}
          */
-        protected void setShapeType(ShapeType type)
+        protected void setShapeType(final ShapeType type)
         {
             setTypeName(type.getValue());
         }

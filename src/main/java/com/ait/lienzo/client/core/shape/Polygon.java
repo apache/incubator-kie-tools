@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,19 +38,19 @@ public class Polygon extends Shape<Polygon>
      * 
      * @param points a {@link Point2DArray} containing 3 or more points
      */
-    public Polygon(Point2DArray points)
+    public Polygon(final Point2DArray points)
     {
         super(ShapeType.POLYGON);
 
         setPoints(points);
     }
 
-    public Polygon(Point2D point, Point2D... points)
+    public Polygon(final Point2D point, final Point2D... points)
     {
         this(new Point2DArray(point, points));
     }
 
-    protected Polygon(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Polygon(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYGON, node, ctx);
     }
@@ -67,9 +67,9 @@ public class Polygon extends Shape<Polygon>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        Point2DArray list = attr.getPoints();
+        final Point2DArray list = attr.getPoints();
 
         if ((null != list) && (list.size() > 2))
         {
@@ -79,9 +79,9 @@ public class Polygon extends Shape<Polygon>
 
             context.moveTo(point.getX(), point.getY());
 
-            final int leng = list.size();
+            final int size = list.size();
 
-            for (int i = 1; i < leng; i++)
+            for (int i = 1; i < size; i++)
             {
                 point = list.get(i);
 
@@ -110,7 +110,7 @@ public class Polygon extends Shape<Polygon>
      * @param points a {@link Point2DArray} of 3 or more points
      * @return this Polygon
      */
-    public Polygon setPoints(Point2DArray points)
+    public Polygon setPoints(final Point2DArray points)
     {
         getAttributes().setPoints(points);
 
@@ -133,7 +133,7 @@ public class Polygon extends Shape<Polygon>
         }
 
         @Override
-        public Polygon create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Polygon create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Polygon(node, ctx);
         }

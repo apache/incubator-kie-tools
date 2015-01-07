@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -35,14 +35,14 @@ public class Circle extends Shape<Circle>
      * 
      * @param radius
      */
-    public Circle(double radius)
+    public Circle(final double radius)
     {
         super(ShapeType.CIRCLE);
 
         setRadius(radius);
     }
 
-    protected Circle(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Circle(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.CIRCLE, node, ctx);
     }
@@ -61,7 +61,7 @@ public class Circle extends Shape<Circle>
      * @param context the {@link Context2D} used to draw this circle. 
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double r = attr.getRadius();
 
@@ -90,7 +90,7 @@ public class Circle extends Shape<Circle>
      * @param radius
      * @return this Circle
      */
-    public Circle setRadius(double radius)
+    public Circle setRadius(final double radius)
     {
         getAttributes().setRadius(radius);
 
@@ -123,7 +123,7 @@ public class Circle extends Shape<Circle>
         }
 
         @Override
-        public Circle create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Circle create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Circle(node, ctx);
         }

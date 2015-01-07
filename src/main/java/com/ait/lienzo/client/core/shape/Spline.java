@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,14 +38,14 @@ public class Spline extends Shape<Spline>
     /**
      * Constructor. Creates an instance of a spline.
      */
-    public Spline(Point2DArray points)
+    public Spline(final Point2DArray points)
     {
         super(ShapeType.SPLINE);
 
         setControlPoints(points);
     }
 
-    protected Spline(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Spline(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SPLINE, node, ctx);
     }
@@ -66,7 +66,7 @@ public class Spline extends Shape<Spline>
     * @param context the {@link Context2D} used to draw this spline.
     */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         if (m_list.size() < 1)
         {
@@ -318,7 +318,7 @@ public class Spline extends Shape<Spline>
      *       
      * @return this Spline
      */
-    public Spline setControlPoints(Point2DArray points)
+    public Spline setControlPoints(final Point2DArray points)
     {
         getAttributes().setControlPoints(points);
 
@@ -332,7 +332,7 @@ public class Spline extends Shape<Spline>
         return getAttributes().getCurveFactor();
     }
 
-    public Spline setCurveFactor(double factor)
+    public Spline setCurveFactor(final double factor)
     {
         getAttributes().setCurveFactor(factor);
 
@@ -346,7 +346,7 @@ public class Spline extends Shape<Spline>
         return getAttributes().getAngleFactor();
     }
 
-    public Spline setAngleFactor(double factor)
+    public Spline setAngleFactor(final double factor)
     {
         getAttributes().setAngleFactor(factor);
 
@@ -360,7 +360,7 @@ public class Spline extends Shape<Spline>
         return getAttributes().getLineFlatten();
     }
 
-    public Spline setLineFlatten(boolean flat)
+    public Spline setLineFlatten(final boolean flat)
     {
         getAttributes().setLineFlatten(flat);
 
@@ -391,7 +391,7 @@ public class Spline extends Shape<Spline>
         }
 
         @Override
-        public Spline create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Spline create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Spline(node, ctx);
         }

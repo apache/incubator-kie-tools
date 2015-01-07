@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class Chord extends Shape<Chord>
      * @param endAngle in radians
      * @param counterClockwise
      */
-    public Chord(double radius, double startAngle, double endAngle, boolean counterClockwise)
+    public Chord(final double radius, final double startAngle, final double endAngle, final boolean counterClockwise)
     {
         super(ShapeType.CHORD);
 
@@ -54,14 +54,12 @@ public class Chord extends Shape<Chord>
      * @param startAngle in radians
      * @param endAngle in radians
      */
-    public Chord(double radius, double startAngle, double endAngle)
+    public Chord(final double radius, final double startAngle, final double endAngle)
     {
-        super(ShapeType.CHORD);
-
-        setRadius(radius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(false);
+        this(radius, startAngle, endAngle, false);
     }
 
-    protected Chord(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Chord(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.CHORD, node, ctx);
     }
@@ -80,7 +78,7 @@ public class Chord extends Shape<Chord>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double r = attr.getRadius();
 
@@ -123,7 +121,7 @@ public class Chord extends Shape<Chord>
      * @param radius
      * @return this chord.
      */
-    public Chord setRadius(double radius)
+    public Chord setRadius(final double radius)
     {
         getAttributes().setRadius(radius);
 
@@ -146,7 +144,7 @@ public class Chord extends Shape<Chord>
      * @param angle in radians
      * @return this chord.
      */
-    public Chord setStartAngle(double angle)
+    public Chord setStartAngle(final double angle)
     {
         getAttributes().setStartAngle(angle);
 
@@ -169,7 +167,7 @@ public class Chord extends Shape<Chord>
      * @param angle in radians
      * @return this chord.
      */
-    public Chord setEndAngle(double angle)
+    public Chord setEndAngle(final double angle)
     {
         getAttributes().setEndAngle(angle);
 
@@ -194,7 +192,7 @@ public class Chord extends Shape<Chord>
      * @param counterclockwise
      * @return this chord
      */
-    public Chord setCounterClockwise(boolean counterclockwise)
+    public Chord setCounterClockwise(final boolean counterclockwise)
     {
         getAttributes().setCounterClockwise(counterclockwise);
 
@@ -223,7 +221,7 @@ public class Chord extends Shape<Chord>
         }
 
         @Override
-        public Chord create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Chord create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Chord(node, ctx);
         }

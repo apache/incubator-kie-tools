@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class Bow extends Shape<Bow>
      * @param endAngle in radians
      * @param counterClockwise
      */
-    public Bow(double innerRadius, double outerRadius, double startAngle, double endAngle, boolean counterClockwise)
+    public Bow(final double innerRadius, final double outerRadius, final double startAngle, final double endAngle, final boolean counterClockwise)
     {
         super(ShapeType.BOW);
 
@@ -54,14 +54,12 @@ public class Bow extends Shape<Bow>
      * @param startAngle in radians
      * @param endAngle in radians
      */
-    public Bow(double innerRadius, double outerRadius, double startAngle, double endAngle)
+    public Bow(final double innerRadius, final double outerRadius, final double startAngle, final double endAngle)
     {
-        super(ShapeType.BOW);
-
-        setInnerRadius(innerRadius).setOuterRadius(outerRadius).setStartAngle(startAngle).setEndAngle(endAngle).setCounterClockwise(false);
+        this(innerRadius, outerRadius, startAngle, endAngle, false);
     }
 
-    protected Bow(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Bow(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.BOW, node, ctx);
     }
@@ -80,7 +78,7 @@ public class Bow extends Shape<Bow>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double end = attr.getEndAngle();
 
@@ -127,7 +125,7 @@ public class Bow extends Shape<Bow>
      * @param radius
      * @return this Star
      */
-    public Bow setInnerRadius(double radius)
+    public Bow setInnerRadius(final double radius)
     {
         getAttributes().setInnerRadius(radius);
 
@@ -150,7 +148,7 @@ public class Bow extends Shape<Bow>
      * @param radius
      * @return this Star
      */
-    public Bow setOuterRadius(double radius)
+    public Bow setOuterRadius(final double radius)
     {
         getAttributes().setOuterRadius(radius);
 
@@ -173,7 +171,7 @@ public class Bow extends Shape<Bow>
      * @param angle in radians
      * @return this Slice.
      */
-    public Bow setStartAngle(double angle)
+    public Bow setStartAngle(final double angle)
     {
         getAttributes().setStartAngle(angle);
 
@@ -196,7 +194,7 @@ public class Bow extends Shape<Bow>
      * @param angle in radians
      * @return this Slice.
      */
-    public Bow setEndAngle(double angle)
+    public Bow setEndAngle(final double angle)
     {
         getAttributes().setEndAngle(angle);
 
@@ -221,7 +219,7 @@ public class Bow extends Shape<Bow>
      * @param counterclockwise
      * @return this Slice
      */
-    public Bow setCounterClockwise(boolean counterclockwise)
+    public Bow setCounterClockwise(final boolean counterclockwise)
     {
         getAttributes().setCounterClockwise(counterclockwise);
 
@@ -252,7 +250,7 @@ public class Bow extends Shape<Bow>
         }
 
         @Override
-        public Bow create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Bow create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Bow(node, ctx);
         }

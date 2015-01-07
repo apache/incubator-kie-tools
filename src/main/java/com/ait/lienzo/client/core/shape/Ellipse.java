@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -42,14 +42,14 @@ public class Ellipse extends Shape<Ellipse>
      * @param width
      * @param height
      */
-    public Ellipse(double width, double height)
+    public Ellipse(final double width, final double height)
     {
         super(ShapeType.ELLIPSE);
 
         setWidth(width).setHeight(height);
     }
 
-    protected Ellipse(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Ellipse(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.ELLIPSE, node, ctx);
     }
@@ -76,7 +76,7 @@ public class Ellipse extends Shape<Ellipse>
      * @param context the {@link Context2D} used to draw this ellipse.
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double w = attr.getWidth();
 
@@ -84,21 +84,21 @@ public class Ellipse extends Shape<Ellipse>
 
         if ((w > 0) && (h > 0))
         {
-            double x = -(w / 2);
+            final double x = -(w / 2);
 
-            double y = -(h / 2);
+            final double y = -(h / 2);
 
-            double ox = (w / 2) * KAPPA; // control point offset horizontal
+            final double ox = (w / 2) * KAPPA; // control point offset horizontal
 
-            double oy = (h / 2) * KAPPA; // control point offset vertical
+            final double oy = (h / 2) * KAPPA; // control point offset vertical
 
-            double xe = x + w; // x-end
+            final double xe = x + w; // x-end
 
-            double ye = y + h; // y-end
+            final double ye = y + h; // y-end
 
-            double xm = x + w / 2; // x-middle
+            final double xm = x + w / 2; // x-middle
 
-            double ym = y + h / 2; // y-middle
+            final double ym = y + h / 2; // y-middle
 
             context.beginPath();
 
@@ -135,7 +135,7 @@ public class Ellipse extends Shape<Ellipse>
      * @param width
      * @return Ellipse this ellipse
      */
-    public Ellipse setWidth(double width)
+    public Ellipse setWidth(final double width)
     {
         getAttributes().setWidth(width);
 
@@ -158,7 +158,7 @@ public class Ellipse extends Shape<Ellipse>
      * @param height
      * @return Ellipse this ellipse
      */
-    public Ellipse setHeight(double height)
+    public Ellipse setHeight(final double height)
     {
         getAttributes().setHeight(height);
 
@@ -183,7 +183,7 @@ public class Ellipse extends Shape<Ellipse>
         }
 
         @Override
-        public Ellipse create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Ellipse create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Ellipse(node, ctx);
         }

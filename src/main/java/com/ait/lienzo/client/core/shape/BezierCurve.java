@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -37,28 +37,38 @@ public class BezierCurve extends Shape<BezierCurve>
     /**
      * Constructor. Creates an instance of a cubic bezier curve.
      * 
-     * @param x x value for the first anchor point
-     * @param y y value for the first anchor point
-     * @param controlX1 x value for the first control point
-     * @param controlY1 y value for the first control point
-     * @param controlX2 x value for the second control point
-     * @param controlY2 y value for the second control point
-     * @param endX x value for the second anchor point
-     * @param endY y value for the second anchor point
+     * @param sx x value for the first anchor point
+     * @param sy y value for the first anchor point
+     * @param c1x x value for the first control point
+     * @param c1y y value for the first control point
+     * @param c2x x value for the second control point
+     * @param c2y y value for the second control point
+     * @param ex x value for the second anchor point
+     * @param ey y value for the second anchor point
      */
-    public BezierCurve(double x, double y, double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY)
+    public BezierCurve(final double sx, final double sy, final double c1x, final double c1y, final double c2x, final double c2y, final double ex, final double ey)
+    {
+        this(new Point2D(sx, sy), new Point2D(c1x, c1y), new Point2D(c2x, c2y), new Point2D(ex, ey));
+    }
+
+    public BezierCurve(final double c1x, final double c1y, final double c2x, final double c2y, final double ex, final double ey)
+    {
+        this(0, 0, c1x, c1y, c2x, c2y, ex, ey);
+    }
+
+    public BezierCurve(final Point2D sp, final Point2D c1, final Point2D c2, final Point2D ep)
     {
         super(ShapeType.BEZIER_CURVE);
 
-        setControlPoints(new Point2DArray(new Point2D(x, y), new Point2D(controlX1, controlY1), new Point2D(controlX2, controlY2), new Point2D(endX, endY)));
+        setControlPoints(new Point2DArray(sp, c1, c2, ep));
     }
 
-    public BezierCurve(double controlX1, double controlY1, double controlX2, double controlY2, double endX, double endY)
+    public BezierCurve(final Point2D c1, final Point2D c2, final Point2D ep)
     {
-        this(0, 0, controlX1, controlY1, controlX2, controlY2, endX, endY);
+        this(new Point2D(0, 0), c1, c2, ep);
     }
 
-    protected BezierCurve(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected BezierCurve(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.BEZIER_CURVE, node, ctx);
     }
@@ -66,7 +76,7 @@ public class BezierCurve extends Shape<BezierCurve>
     @Override
     public BoundingBox getBoundingBox()
     {
-        BoundingBox bbox = Curves.getBoundingBox(this);
+        final BoundingBox bbox = Curves.getBoundingBox(this);
 
         if (null != bbox)
         {
@@ -81,21 +91,21 @@ public class BezierCurve extends Shape<BezierCurve>
      * @param context the {@link Context2D} used to draw this bezier curve.
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        Point2DArray points = attr.getControlPoints();
+        final Point2DArray points = attr.getControlPoints();
 
         if ((points != null) && (points.size() == 4))
         {
             context.beginPath();
 
-            Point2D p0 = points.get(0);
+            final Point2D p0 = points.get(0);
 
-            Point2D p1 = points.get(1);
+            final Point2D p1 = points.get(1);
 
-            Point2D p2 = points.get(2);
+            final Point2D p2 = points.get(2);
 
-            Point2D p3 = points.get(3);
+            final Point2D p3 = points.get(3);
 
             context.moveTo(p0.getX(), p0.getY());
 
@@ -125,7 +135,7 @@ public class BezierCurve extends Shape<BezierCurve>
      *       
      * @return this BezierCurve
      */
-    public BezierCurve setControlPoints(Point2DArray points)
+    public BezierCurve setControlPoints(final Point2DArray points)
     {
         getAttributes().setControlPoints(points);
 
@@ -148,7 +158,7 @@ public class BezierCurve extends Shape<BezierCurve>
         }
 
         @Override
-        public BezierCurve create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public BezierCurve create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new BezierCurve(node, ctx);
         }

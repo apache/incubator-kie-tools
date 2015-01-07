@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,14 +41,14 @@ public class Star extends Shape<Star>
      * @param innerRadius radius of the inner circle.
      * @param outerRadius radius of the enclosing circle.
      */
-    public Star(int points, double innerRadius, double outerRadius)
+    public Star(final int points, final double innerRadius, final double outerRadius)
     {
         super(ShapeType.STAR);
 
         setStarPoints(points).setInnerRadius(innerRadius).setOuterRadius(outerRadius);
     }
 
-    protected Star(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Star(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.STAR, node, ctx);
     }
@@ -102,7 +102,7 @@ public class Star extends Shape<Star>
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final int s = attr.getStarPoints();
 
@@ -147,7 +147,7 @@ public class Star extends Shape<Star>
      * @param points
      * @return this Star
      */
-    public Star setStarPoints(int points)
+    public Star setStarPoints(final int points)
     {
         getAttributes().setStarPoints(points);
 
@@ -170,7 +170,7 @@ public class Star extends Shape<Star>
      * @param radius
      * @return this Star
      */
-    public Star setInnerRadius(double radius)
+    public Star setInnerRadius(final double radius)
     {
         getAttributes().setInnerRadius(radius);
 
@@ -193,7 +193,7 @@ public class Star extends Shape<Star>
      * @param radius
      * @return this Star
      */
-    public Star setOuterRadius(double radius)
+    public Star setOuterRadius(final double radius)
     {
         getAttributes().setOuterRadius(radius);
 
@@ -220,7 +220,7 @@ public class Star extends Shape<Star>
         }
 
         @Override
-        public Star create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public Star create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Star(node, ctx);
         }

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         this(0, 0);
     }
 
-    public Viewport(Scene main, int wide, int high)
+    public Viewport(final Scene main, final int wide, final int high)
     {
         super(NodeType.VIEWPORT);
 
@@ -108,7 +108,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @param wide
      * @param high
      */
-    public Viewport(int wide, int high)
+    public Viewport(final int wide, final int high)
     {
         super(NodeType.VIEWPORT);
 
@@ -119,12 +119,12 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         setSceneAndState(new Scene());
     }
 
-    protected Viewport(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected Viewport(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.VIEWPORT, node, ctx);
     }
 
-    private final void setSceneAndState(Scene main)
+    private final void setSceneAndState(final Scene main)
     {
         add(m_back, m_main = main, m_drag);
 
@@ -132,7 +132,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
         m_mediators = new Mediators(this);
 
-        Transform transform = getTransform();
+        final Transform transform = getTransform();
 
         if (null == transform)
         {
@@ -142,7 +142,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
     }
 
-    public final boolean adopt(Widget owns)
+    public final boolean adopt(final Widget owns)
     {
         if (null == m_owns)
         {
@@ -196,7 +196,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @param high
      * @return Viewpor this viewport
      */
-    public final Viewport setPixelSize(int wide, int high)
+    public final Viewport setPixelSize(final int wide, final int high)
     {
         m_wide = wide;
 
@@ -214,7 +214,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
             for (int i = 0; i < size; i++)
             {
-                Scene scene = scenes.get(i);
+                final Scene scene = scenes.get(i);
 
                 if (null != scene)
                 {
@@ -231,7 +231,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @param scene
      */
     @Override
-    public final Viewport add(Scene scene)
+    public final Viewport add(final Scene scene)
     {
         if ((null != scene) && (LienzoCore.get().isCanvasSupported()))
         {
@@ -259,7 +259,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     }
 
     @Override
-    public final Viewport add(Scene scene, Scene... children)
+    public final Viewport add(final Scene scene, final Scene... children)
     {
         add(scene);
 
@@ -276,22 +276,22 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         return false;
     }
 
-    public HandlerRegistration addOrientationChangeHandler(OrientationChangeHandler handler)
+    public HandlerRegistration addOrientationChangeHandler(final OrientationChangeHandler handler)
     {
         return addEnsureHandler(OrientationChangeEvent.TYPE, handler);
     }
 
-    public HandlerRegistration addResizeStartHandler(ResizeStartHandler handler)
+    public HandlerRegistration addResizeStartHandler(final ResizeStartHandler handler)
     {
         return addEnsureHandler(ResizeStartEvent.TYPE, handler);
     }
 
-    public HandlerRegistration addResizeChangeHandler(ResizeChangeHandler handler)
+    public HandlerRegistration addResizeChangeHandler(final ResizeChangeHandler handler)
     {
         return addEnsureHandler(ResizeChangeEvent.TYPE, handler);
     }
 
-    public HandlerRegistration addResizeEndHandler(ResizeEndHandler handler)
+    public HandlerRegistration addResizeEndHandler(final ResizeEndHandler handler)
     {
         return addEnsureHandler(ResizeEndEvent.TYPE, handler);
     }
@@ -306,7 +306,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
             for (int i = 0; i < size; i++)
             {
-                Scene scene = scenes.get(i);
+                final Scene scene = scenes.get(i);
 
                 if (null != scene)
                 {
@@ -333,7 +333,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @param layer
      * @return this Viewport
      */
-    public final Viewport setBackgroundLayer(Layer layer)
+    public final Viewport setBackgroundLayer(final Layer layer)
     {
         m_back.removeAll();
 
@@ -362,7 +362,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * No-op; this method has no effect. Simply overriden but in reality Scenes will not be removed from this {@link Viewport}
      */
     @Override
-    public final Viewport remove(Scene scene)
+    public final Viewport remove(final Scene scene)
     {
         return this;
     }
@@ -490,7 +490,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @return this Viewport
      */
     @Override
-    public final Viewport setTransform(Transform transform)
+    public final Viewport setTransform(final Transform transform)
     {
         super.setTransform(transform);
 
@@ -507,7 +507,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     @Override
     public final JSONObject toJSONObject()
     {
-        JSONObject object = new JSONObject();
+        final JSONObject object = new JSONObject();
 
         object.put("type", new JSONString(getNodeType().getValue()));
 
@@ -517,7 +517,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
-        JSONArray children = new JSONArray();
+        final JSONArray children = new JSONArray();
 
         children.set(0, getScene().toJSONObject());
 
@@ -528,7 +528,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
     private final Layer getBackgroundLayer()
     {
-        NFastArrayList<Layer> list = m_back.getChildNodes();
+        final NFastArrayList<Layer> list = m_back.getChildNodes();
 
         if (list.size() > 0)
         {
@@ -537,7 +537,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         return null;
     }
 
-    public final Shape<?> findShapeAtPoint(int x, int y)
+    public final Shape<?> findShapeAtPoint(final int x, final int y)
     {
         if (isVisible())
         {
@@ -549,7 +549,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     /**
      * Fires the given GWT event.
      */
-    public final void fireEvent(GwtEvent<?> event)
+    public final void fireEvent(final GwtEvent<?> event)
     {
         getScene().fireEvent(event);
     }
@@ -559,7 +559,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         return getScene().toDataURL();
     }
 
-    public final String toDataURL(boolean includeBackgroundLayer)
+    public final String toDataURL(final boolean includeBackgroundLayer)
     {
         if (includeBackgroundLayer)
         {
@@ -571,12 +571,12 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
     }
 
-    public final String toDataURL(DataURLType mimetype)
+    public final String toDataURL(final DataURLType mimetype)
     {
         return getScene().toDataURL(mimetype);
     }
 
-    public final String toDataURL(DataURLType mimetype, boolean includeBackgroundLayer)
+    public final String toDataURL(final DataURLType mimetype, final boolean includeBackgroundLayer)
     {
         if (includeBackgroundLayer)
         {
@@ -589,7 +589,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     }
 
     @Override
-    public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff)
+    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
     {
         if (predicate.test(this))
         {
@@ -623,7 +623,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * 
      * @param mediator IMediator
      */
-    public final void pushMediator(IMediator mediator)
+    public final void pushMediator(final IMediator mediator)
     {
         m_mediators.push(mediator);
     }
@@ -635,7 +635,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @param handler ViewportTransformChangedHandler
      * @return HandlerRegistration
      */
-    public HandlerRegistration addViewportTransformChangedHandler(ViewportTransformChangedHandler handler)
+    public HandlerRegistration addViewportTransformChangedHandler(final ViewportTransformChangedHandler handler)
     {
         return addEnsureHandler(ViewportTransformChangedEvent.getType(), handler);
     }
@@ -659,9 +659,9 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
 
         @Override
-        public final Viewport create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public final Viewport create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
-            Viewport container = new Viewport(node, ctx);
+            final Viewport container = new Viewport(node, ctx);
 
             JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
 
@@ -669,7 +669,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
 
         @Override
-        public final boolean addNodeForContainer(IContainer<?, ?> container, Node<?> node, ValidationContext ctx)
+        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             if (node.getNodeType() == NodeType.SCENE)
             {
@@ -766,7 +766,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
 
         @Override
-        public final void setPixelSize(int wide, int high)
+        public final void setPixelSize(final int wide, final int high)
         {
             if (LienzoCore.get().isCanvasSupported())
             {
