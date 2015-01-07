@@ -57,18 +57,16 @@ public class BaseModal extends Modal {
         setAnimation( true );
         setDynamicSafe( true );
         setHideOthers( false );
+        setShowHandler();
+        setKeyPressHandler();
+    }
 
-        //Setting Focus in show() doesn't work so set after Modal is shown
-        addShownHandler( new ShownHandler() {
-            @Override
-            public void onShown( ShownEvent shownEvent ) {
-                setFocus( BaseModal.this,
-                          Boolean.FALSE );
-            }
-        } );
+    private void setKeyPressHandler() {
+        this.addDomHandler( getEnterDomHandler(), KeyDownEvent.getType() );
+    }
 
-        //Listen for <enter> key press
-        this.addDomHandler( new KeyDownHandler() {
+    protected KeyDownHandler getEnterDomHandler() {
+        return new KeyDownHandler() {
             @Override
             public void onKeyDown( KeyDownEvent event ) {
                 if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
@@ -78,7 +76,18 @@ public class BaseModal extends Modal {
                     }
                 }
             }
-        }, KeyDownEvent.getType() );
+        };
+    }
+
+    private void setShowHandler() {
+        //Setting Focus in show() doesn't work so set after Modal is shown
+        addShownHandler( new ShownHandler() {
+            @Override
+            public void onShown( ShownEvent shownEvent ) {
+                setFocus( BaseModal.this,
+                          Boolean.FALSE );
+            }
+        } );
     }
 
     //Set focus on first widget. Ideally we'd only scan the body of the Modal but this is

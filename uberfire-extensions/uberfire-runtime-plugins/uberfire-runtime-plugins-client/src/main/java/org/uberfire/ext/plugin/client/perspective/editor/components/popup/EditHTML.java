@@ -17,6 +17,9 @@ package org.uberfire.ext.plugin.client.perspective.editor.components.popup;
 
 import com.github.gwtbootstrap.client.ui.TextArea;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -79,6 +82,24 @@ public class EditHTML
            );
     }
 
+    protected KeyDownHandler getEnterDomHandler() {
+        return new KeyDownHandler() {
+            @Override
+            public void onKeyDown( KeyDownEvent event ) {
+                if ( !isInsideEditHTMLWidget( event ) && event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+                    if ( handleDefaultAction() ) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                }
+            }
+
+            private boolean isInsideEditHTMLWidget( KeyDownEvent event ) {
+                return event.getSource() == EditHTML.this;
+            }
+        };
+    }
+
     private void setupHTMLEditor( HTMLEditorWidgetUI htmlParent ) {
         if ( htmlParent.getHtmlCode() == null || htmlParent.getHtmlCode().isEmpty() ) {
             this.textArea.setText( DEFAULT_HTML );
@@ -105,4 +126,5 @@ public class EditHTML
             listener.onSave();
         }
     }
+
 }
