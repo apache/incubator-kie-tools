@@ -18,15 +18,15 @@ package org.uberfire.ext.metadata.io;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.metadata.engine.Indexer;
 import org.uberfire.ext.metadata.engine.MetaIndexEngine;
 import org.uberfire.ext.metadata.engine.Observer;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.commons.async.DescriptiveRunnable;
-import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
@@ -96,7 +96,8 @@ public final class BatchIndex {
                         indexFinished.set( true );
                     } catch ( Exception ex ) {
                         if ( !indexDisposed.get() ) {
-                            LOG.error( "FileSystem Index fails. [@" + fs.toString() + "]", ex );
+                            logError( "FileSystem Index fails. [@" + fs.toString() + "]",
+                                      ex );
                         }
                     }
                 }
@@ -128,10 +129,14 @@ public final class BatchIndex {
             if ( root == null ) {
                 return;
             }
+
+            logInformation( "Starting indexing of " + root.toUri() + " ..." );
+
             final KCluster cluster = KObjectUtil.toKCluster( root.getFileSystem() );
             indexEngine.startBatch( cluster );
-            observer.information( "Starting indexing of " + root.toUri() + " ..." );
-            walkFileTree( checkNotNull( "root", root ),
+
+            walkFileTree( checkNotNull( "root",
+                                        root ),
                           new SimpleFileVisitor<Path>() {
                               @Override
                               public FileVisitResult visitFile( final Path file,
@@ -177,14 +182,11 @@ public final class BatchIndex {
                                       }
                                   } catch ( final Exception ex ) {
                                       if ( indexDisposed.get() ) {
-                                          final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
-                                          observer.warning( msg );
-                                          LOG.warn( msg );
+                                          logWarning( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
                                           return FileVisitResult.TERMINATE;
                                       } else {
-                                          final String msg = "Index fails. [@" + file.toString() + "]";
-                                          observer.error( msg );
-                                          LOG.error( msg, ex );
+                                          logError( "Index fails. [@" + file.toString() + "]",
+                                                    ex );
                                       }
                                   }
                                   if ( indexDisposed.get() ) {
@@ -193,38 +195,49 @@ public final class BatchIndex {
                                   return FileVisitResult.CONTINUE;
                               }
                           } );
+
             if ( !indexDisposed.get() ) {
+                logInformation( "Completed indexing of " + root.toUri() );
                 indexEngine.commit( cluster );
-                observer.information( "Completed indexing of " + root.toUri() );
                 if ( callback != null ) {
                     callback.run();
                 }
             } else {
-                final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
-                observer.warning( msg );
-                LOG.warn( msg );
+                logWarning( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
             }
+
         } catch ( final IllegalStateException ex ) {
             if ( indexDisposed.get() ) {
-                final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
-                observer.warning( msg );
-                LOG.warn( msg );
+                logWarning( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
             } else {
-                final String msg = "Index fails - Index has an invalid state. [@" + root.toUri().toString() + "]";
-                observer.error( msg );
-                LOG.error( msg, ex );
+                logError( "Index fails - Index has an invalid state. [@" + root.toUri().toString() + "]",
+                          ex );
             }
         } catch ( final Exception ex ) {
             if ( indexDisposed.get() ) {
-                final String msg = "Batch index couldn't finish. [@" + root.toUri().toString() + "]";
-                observer.warning( msg );
-                LOG.warn( msg );
+                logWarning( "Batch index couldn't finish. [@" + root.toUri().toString() + "]" );
             } else {
-                final String msg = "Index fails. [@" + root.toUri().toString() + "]";
-                observer.error( msg );
-                LOG.error( msg, ex );
+                logError( "Index fails. [@" + root.toUri().toString() + "]",
+                          ex );
             }
         }
+    }
+
+    private void logInformation( final String message ) {
+        observer.information( message );
+        LOG.info( message );
+    }
+
+    private void logWarning( final String message ) {
+        observer.warning( message );
+        LOG.warn( message );
+    }
+
+    private void logError( final String message,
+                           final Throwable throwable ) {
+        observer.error( message );
+        LOG.error( message,
+                   throwable );
     }
 
     public void dispose() {
