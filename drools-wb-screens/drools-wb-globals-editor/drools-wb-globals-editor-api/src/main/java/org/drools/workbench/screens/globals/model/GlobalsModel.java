@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * The model for Globals
@@ -12,7 +13,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class GlobalsModel implements HasPackageName {
 
-    private String packageName;
+    private String packageName = "";
 
     private List<Global> globals = new ArrayList<Global>();
 
@@ -20,8 +21,9 @@ public class GlobalsModel implements HasPackageName {
         return globals;
     }
 
-    public void setGlobals( List<Global> globals ) {
-        this.globals = globals;
+    public void setGlobals( final List<Global> globals ) {
+        this.globals = PortablePreconditions.checkNotNull( "globals",
+                                                           globals );
     }
 
     @Override
@@ -31,6 +33,36 @@ public class GlobalsModel implements HasPackageName {
 
     @Override
     public void setPackageName( final String packageName ) {
-        this.packageName = packageName;
+        this.packageName = PortablePreconditions.checkNotNull( "packageName",
+                                                               packageName );
     }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof GlobalsModel ) ) {
+            return false;
+        }
+
+        GlobalsModel that = (GlobalsModel) o;
+
+        if ( !globals.equals( that.globals ) ) {
+            return false;
+        }
+        if ( !packageName.equals( that.packageName ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = packageName.hashCode();
+        result = 31 * result + globals.hashCode();
+        return result;
+    }
+
 }

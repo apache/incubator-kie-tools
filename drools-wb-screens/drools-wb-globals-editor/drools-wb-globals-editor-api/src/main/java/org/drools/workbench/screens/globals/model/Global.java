@@ -9,18 +9,16 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public class Global {
 
-    private String alias;
-    private String className;
+    private String alias = "";
+    private String className = "";
 
     public Global() {
     }
 
     public Global( final String alias,
                    final String className ) {
-        this.alias = PortablePreconditions.checkNotNull( "alias",
-                                                         alias );
-        this.className = PortablePreconditions.checkNotNull( "className",
-                                                             className );
+        setAlias( alias );
+        setClassName( className );
     }
 
     public String getAlias() {
@@ -28,7 +26,8 @@ public class Global {
     }
 
     public void setAlias( String alias ) {
-        this.alias = alias;
+        this.alias = PortablePreconditions.checkNotNull( "alias",
+                                                         alias );
     }
 
     public String getClassName() {
@@ -36,6 +35,35 @@ public class Global {
     }
 
     public void setClassName( String className ) {
-        this.className = className;
+        this.className = PortablePreconditions.checkNotNull( "className",
+                                                             className );
+    }
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof Global ) ) {
+            return false;
+        }
+
+        Global global = (Global) o;
+
+        if ( !alias.equals( global.alias ) ) {
+            return false;
+        }
+        if ( !className.equals( global.className ) ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = alias.hashCode();
+        result = 31 * result + className.hashCode();
+        return result;
     }
 }
