@@ -13,7 +13,7 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public class GlobalsModel implements HasPackageName {
 
-    private String packageName = "";
+    private String packageName;
 
     private List<Global> globals = new ArrayList<Global>();
 
@@ -51,7 +51,7 @@ public class GlobalsModel implements HasPackageName {
         if ( !globals.equals( that.globals ) ) {
             return false;
         }
-        if ( !packageName.equals( that.packageName ) ) {
+        if ( packageName != null ? !packageName.equals( that.packageName ) : that.packageName != null ) {
             return false;
         }
 
@@ -60,7 +60,7 @@ public class GlobalsModel implements HasPackageName {
 
     @Override
     public int hashCode() {
-        int result = packageName.hashCode();
+        int result = packageName != null ? packageName.hashCode() : 0;
         result = 31 * result + globals.hashCode();
         return result;
     }

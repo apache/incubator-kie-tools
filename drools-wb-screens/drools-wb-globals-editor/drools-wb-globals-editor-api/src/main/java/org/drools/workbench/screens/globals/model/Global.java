@@ -9,8 +9,8 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public class Global {
 
-    private String alias = "";
-    private String className = "";
+    private String alias;
+    private String className;
 
     public Global() {
     }
@@ -50,10 +50,10 @@ public class Global {
 
         Global global = (Global) o;
 
-        if ( !alias.equals( global.alias ) ) {
+        if ( alias != null ? !alias.equals( global.alias ) : global.alias != null ) {
             return false;
         }
-        if ( !className.equals( global.className ) ) {
+        if ( className != null ? !className.equals( global.className ) : global.className != null ) {
             return false;
         }
 
@@ -62,8 +62,9 @@ public class Global {
 
     @Override
     public int hashCode() {
-        int result = alias.hashCode();
-        result = 31 * result + className.hashCode();
+        int result = alias != null ? alias.hashCode() : 0;
+        result = 31 * result + ( className != null ? className.hashCode() : 0 );
         return result;
     }
+
 }
