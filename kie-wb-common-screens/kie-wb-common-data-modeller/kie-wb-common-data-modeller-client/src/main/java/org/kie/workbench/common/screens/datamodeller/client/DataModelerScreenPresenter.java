@@ -657,7 +657,7 @@ public class DataModelerScreenPresenter
                     setSource( result.getSource() );
 
                     context.setEditionStatus( DataModelerContext.EditionStatus.NO_CHANGES );
-                    setOriginalHash( context.getDataObject() != null ? context.getDataObject().hashCode() : null );
+                    createOriginalHash( context.getDataObject() );
                     originalSourceHash = getSource().hashCode();
 
                     notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
@@ -738,7 +738,7 @@ public class DataModelerScreenPresenter
                                            } );
                 }
 
-                setOriginalHash( context.getDataObject() != null ? context.getDataObject().hashCode() : null );
+                createOriginalHash( context.getDataObject() );
                 originalSourceHash = getSource().hashCode();
             }
         };

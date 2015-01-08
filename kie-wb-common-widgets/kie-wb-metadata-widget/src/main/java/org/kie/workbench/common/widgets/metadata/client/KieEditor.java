@@ -89,6 +89,20 @@ public abstract class KieEditor extends BaseEditor {
         overviewWidget.showVersionsTab();
     }
 
+    protected void createOriginalHash(Object object){
+        if(object !=null){
+            setOriginalHash(object.hashCode());
+        }
+    }
+
+    public boolean mayClose(Object object) {
+        if (object != null) {
+            return super.mayClose(object.hashCode());
+        } else {
+            return true;
+        }
+    }
+
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
         return new CommandDrivenErrorCallback( baseView,
                                                new CommandBuilder().addNoSuchFileException(

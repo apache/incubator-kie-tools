@@ -117,7 +117,7 @@ public class KieTextEditorPresenter
 
                 metadata = overview.getMetadata();
 
-                setOriginalHash(view.getContent().hashCode());
+                createOriginalHash(view.getContent());
             }
         } ).loadOverview( versionRecordManager.getCurrentPath() );
     }

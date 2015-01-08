@@ -92,7 +92,7 @@ public class ProjectImportsScreenPresenter
 
                 view.setContent(model, isReadOnly);
 
-                setOriginalHash(content.getModel().hashCode());
+                createOriginalHash(content.getModel());
 
             }
         };
@@ -146,7 +146,7 @@ public class ProjectImportsScreenPresenter
             public void callback(final Path path) {
                 view.hideBusyIndicator();
                 notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
-                setOriginalHash(model.hashCode());
+                createOriginalHash(model);
             }
         };
     }
@@ -173,7 +173,7 @@ public class ProjectImportsScreenPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(model.hashCode());
+        return super.mayClose(model);
     }
 
 }
