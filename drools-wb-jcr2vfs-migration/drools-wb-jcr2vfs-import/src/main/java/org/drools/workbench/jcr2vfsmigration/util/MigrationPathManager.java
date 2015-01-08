@@ -111,6 +111,7 @@ public class MigrationPathManager {
 
     public Path generatePathForAsset( org.drools.workbench.jcr2vfsmigration.xml.model.Module xmlModule,
             XmlAsset xmlAsset,
+            String extension,
             boolean hasDSL ) {
 
         // In the previous version of the tool, when getting to this point the jcrModule's name had been replaced with the normalized package name
@@ -126,9 +127,9 @@ public class MigrationPathManager {
         } else if ( AssetType.FUNCTION.equals( xmlAsset.getAssetType() ) ) {
             assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + ".drl" );
         } else if ( AssetType.TEST_SCENARIO.equals( xmlAsset.getAssetType() ) ) {
-            assetPath = modulePath.resolve( "src/test/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + "." + xmlAsset.getAssetType() );
+            assetPath = modulePath.resolve( "src/test/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + "." + extension );
         } else {
-            assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + "." + xmlAsset.getAssetType() );
+            assetPath = modulePath.resolve( "src/main/resources/" + dotToSlash( normalizedName ) + "/" + xmlAsset.getName() + "." + extension );
         }
 
         return Paths.convert( assetPath );
@@ -140,8 +141,8 @@ public class MigrationPathManager {
 //    }
 
     public Path generatePathForAsset( org.drools.workbench.jcr2vfsmigration.xml.model.Module xmlModule,
-            XmlAsset xmlAsset ) {
-        return generatePathForAsset( xmlModule, xmlAsset, false );
+            XmlAsset xmlAsset, String extension ) {
+        return generatePathForAsset( xmlModule, xmlAsset, extension, false );
     }
 
 //    private org.uberfire.java.nio.file.Path getPomDirectoryPath( final Path pathToPomXML ) {

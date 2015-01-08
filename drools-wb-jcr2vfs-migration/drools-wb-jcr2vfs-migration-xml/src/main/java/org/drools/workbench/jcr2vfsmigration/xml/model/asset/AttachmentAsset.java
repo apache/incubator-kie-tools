@@ -19,6 +19,7 @@ import java.util.Date;
 
 public class AttachmentAsset extends BaseXmlAsset {
 
+    private String originalFormat;
     private String attachmentFileName;
 
     public AttachmentAsset( String name,
@@ -27,9 +28,26 @@ public class AttachmentAsset extends BaseXmlAsset {
                             String checkinComment,
                             Date lastModified,
                             String attachmentFileName ) {
+        // double format param is a patch in order to save the original format (i.e. the one that came from the
+        // JCR asset), so that the original extension can be preserved.
+        this( name, format, lastContributor, checkinComment, lastModified, format, attachmentFileName );
+    }
+
+    public AttachmentAsset( String name,
+            String format,
+            String lastContributor,
+            String checkinComment,
+            Date lastModified,
+            String originalFormat,
+            String attachmentFileName ) {
 
         super( name, format, lastContributor, checkinComment, lastModified );
+        this.originalFormat = originalFormat;
         this.attachmentFileName = attachmentFileName;
+    }
+
+    public String getOriginalFormat() {
+        return originalFormat;
     }
 
     public String getAttachmentFileName() {

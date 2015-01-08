@@ -43,7 +43,7 @@ public class GuidedScoreCardImporter implements AssetImporter<PlainTextAsset> {
 
     @Override
     public Path importAsset( Module xmlModule, PlainTextAsset xmlAsset, Path previousVersionPath ) {
-        Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
+        Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, xmlAsset.getAssetType().toString() );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
 
         //The asset was renamed in this version. We move this asset first.

@@ -17,18 +17,26 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AttachmentAsset;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class AttachmentAssetFormat extends XmlAssetFormat {
 
+    private static final String ORIGINAL_FORMAT = "originalFormat";
     private static final String ATTACHMENT_FILENAME = "attachmentFileName";
 
     protected String doFormat( AttachmentAsset attachmentAsset ) {
-        StringBuilder sb = new StringBuilder( LT )
-                .append( ATTACHMENT_FILENAME ).append( GT ).append( attachmentAsset.getAttachmentFileName() )
-                .append( LT_SLASH ).append( ATTACHMENT_FILENAME ).append( GT );
+        StringBuilder sb = new StringBuilder();
+        if ( StringUtils.isNotBlank( attachmentAsset.getOriginalFormat() ) ) {
+            sb.append( LT ).append( ORIGINAL_FORMAT ).append( GT )
+              .append( attachmentAsset.getOriginalFormat() )
+              .append( LT_SLASH ).append( ORIGINAL_FORMAT ).append( GT );
+        }
+        sb.append( LT ).append( ATTACHMENT_FILENAME ).append( GT )
+          .append( attachmentAsset.getAttachmentFileName() )
+          .append( LT_SLASH ).append( ATTACHMENT_FILENAME ).append( GT );
 
         return sb.toString();
     }
@@ -40,15 +48,18 @@ public class AttachmentAssetFormat extends XmlAssetFormat {
                                        Date lastModified,
                                        Node assetNode ) {
 
+        String originalFormat = null;
         String attachmentFile = null;
         NodeList assetNodeList = assetNode.getChildNodes();
         for ( int i = 0; i < assetNodeList.getLength(); i++ ) {
             Node node = assetNodeList.item( i );
             String nodeContent = node.getTextContent();
-            if ( ATTACHMENT_FILENAME.equalsIgnoreCase( node.getNodeName() ) ) {
+            if ( ORIGINAL_FORMAT.equalsIgnoreCase( node.getNodeName() ) ) {
+                originalFormat = nodeContent;
+            } else if ( ATTACHMENT_FILENAME.equalsIgnoreCase( node.getNodeName() ) ) {
                 attachmentFile = nodeContent;
             }
         }
-        return new AttachmentAsset( name, format, lastContributor, checkinComment, lastModified, attachmentFile );
+        return new AttachmentAsset( name, format, lastContributor, checkinComment, lastModified, originalFormat, attachmentFile );
     }
 }

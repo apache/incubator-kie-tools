@@ -45,9 +45,9 @@ public class GuidedEditorImporter implements AssetImporter<BusinessRuleAsset> {
     public Path importAsset( Module xmlModule, BusinessRuleAsset xmlAsset, Path previousVersionPath ) {
         Path path;
         if ( xmlAsset.hasDSLSentences() ) {
-            path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, true );
+            path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, xmlAsset.getAssetType().toString(), true );
         } else {
-            path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, false );
+            path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, xmlAsset.getAssetType().toString(), false );
         }
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
 

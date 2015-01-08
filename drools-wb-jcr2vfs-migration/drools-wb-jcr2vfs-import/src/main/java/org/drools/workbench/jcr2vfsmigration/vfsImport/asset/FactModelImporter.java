@@ -64,7 +64,7 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
     public Path importAsset( Module xmlModule, DataModelAsset xmlAsset, Path previousVersionPath ) {
 
         String normalizedPackageName = xmlModule.getNormalizedPackageName();
-        Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
+        Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, xmlAsset.getAssetType().toString() );
 
         //The asset was renamed in this version. We move this asset first.
         if ( previousVersionPath != null && !previousVersionPath.equals( path ) ) {

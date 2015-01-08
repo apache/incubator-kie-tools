@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
@@ -43,7 +44,9 @@ public class AttachmentAssetImporter implements AssetImporter<AttachmentAsset> {
 
     @Override
     public Path importAsset( Module xmlModule, AttachmentAsset xmlAsset, Path previousVersionPath ) {
-        Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset );
+        String extension = StringUtils.isNotBlank( xmlAsset.getOriginalFormat() ) ?
+                xmlAsset.getOriginalFormat() : xmlAsset.getAssetType().toString();
+        Path path = migrationPathManager.generatePathForAsset( xmlModule, xmlAsset, extension );
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( path );
 
         //The asset was renamed in this version. We move this asset first.
