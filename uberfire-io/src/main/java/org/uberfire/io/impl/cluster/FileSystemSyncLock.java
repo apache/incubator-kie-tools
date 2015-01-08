@@ -12,13 +12,17 @@ import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
 
 public class FileSystemSyncLock<V> extends LockExecuteNotifyAsyncReleaseTemplate<V> {
 
-    private final FileSystem fileSystem;
     private final String serviceId;
+    private final String scheme;
+    private final String id;
+    private final String uri;
 
     public FileSystemSyncLock( final String serviceId,
                                final FileSystem fileSystem ) {
         this.serviceId = serviceId;
-        this.fileSystem = fileSystem;
+        this.scheme = fileSystem.getRootDirectories().iterator().next().toUri().getScheme();
+        this.id = ( (FileSystemId) fileSystem ).id();
+        this.uri = fileSystem.toString();
     }
 
     @Override
@@ -34,9 +38,9 @@ public class FileSystemSyncLock<V> extends LockExecuteNotifyAsyncReleaseTemplate
     @Override
     public Map<String, String> buildContent() {
         return new HashMap<String, String>() {{
-            put( "fs_scheme", fileSystem.getRootDirectories().iterator().next().toUri().getScheme() );
-            put( "fs_id", ( (FileSystemId) fileSystem ).id() );
-            put( "fs_uri", fileSystem.toString() );
+            put( "fs_scheme", scheme );
+            put( "fs_id", id );
+            put( "fs_uri", uri );
         }};
     }
 }
