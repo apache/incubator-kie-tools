@@ -1392,7 +1392,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
      * @param context
      */
     @Override
-    public boolean prepare(Context2D context, Attributes attr, double alpha)
+    protected boolean prepare(Context2D context, Attributes attr, double alpha)
     {
         context.save();
 

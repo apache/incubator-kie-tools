@@ -67,33 +67,38 @@ public class PolyLine extends Shape<PolyLine>
      * @param context
      */
     @Override
-    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        final Point2DArray list = attr.getPoints();
+        Point2DArray list = attr.getPoints();
 
-        if ((null != list) && (list.size() >= 2))
+        if (null != list)
         {
+            list = list.noAdjacentPoints();
+
             final int size = list.size();
 
-            Point2D point = list.get(0);
-
-            context.beginPath();
-
-            context.moveTo(point.getX(), point.getY());
-
-            for (int i = 1; i < size; i++)
+            if (size > 1)
             {
-                point = list.get(i);
+                Point2D point = list.get(0);
 
-                context.lineTo(point.getX(), point.getY());
+                context.beginPath();
+
+                context.moveTo(point.getX(), point.getY());
+
+                for (int i = 1; i < size; i++)
+                {
+                    point = list.get(i);
+
+                    context.lineTo(point.getX(), point.getY());
+                }
+                return true;
             }
-            return true;
         }
         return false;
     }
 
     @Override
-    public void fill(Context2D context, Attributes attr, double alpha)
+    public final void fill(Context2D context, Attributes attr, double alpha)
     {
     }
 

@@ -47,19 +47,19 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
     private final PathPartList   m_list    = new PathPartList();
 
-    public OrthogonalPolyLine(Point2D start, Point2D... points)
+    public OrthogonalPolyLine(final Point2D start, final Point2D... points)
     {
         this(new Point2DArray(start, points));
     }
 
-    public OrthogonalPolyLine(Point2DArray points)
+    public OrthogonalPolyLine(final Point2DArray points)
     {
         super(ShapeType.ORTHOGONAL_POLYLINE);
 
         setControlPoints(points);
     }
 
-    public OrthogonalPolyLine(JSONObject node, ValidationContext ctx) throws ValidationException
+    public OrthogonalPolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.ORTHOGONAL_POLYLINE, node, ctx);
     }
@@ -166,7 +166,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         }
     }
 
-    private final NFastDoubleArrayJSO getOrthonalLinePoints(final Point2DArray points, final boolean alternative)
+    private final static NFastDoubleArrayJSO getOrthonalLinePoints(final Point2DArray points, final boolean alternative)
     {
         final NFastDoubleArrayJSO buffer = NFastDoubleArrayJSO.make();
 
@@ -174,7 +174,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
         Point2D p2 = points.get(1);
 
-        int direction = getOrthonalLinePoints(buffer, p1, p2, points.get(2), alternative);
+        int direction = getOrthonalLinePointsAndDirection(buffer, p1.getX(), p1.getY(), p2.getX(), p2.getY(), points.get(2).getX(), alternative);
 
         p1 = p2;
 
@@ -184,9 +184,9 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         {
             p2 = points.get(i);
 
-            direction = getOrthonalLinePoints(buffer, direction, p1, p2);
+            direction = getOrthonalLinePointsAndDirection(buffer, direction, p1.getX(), p1.getY(), p2.getX(), p2.getY());
 
-            if (direction == ERROR)
+            if (ERROR == direction)
             {
                 return null;
             }
@@ -195,63 +195,44 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         return buffer;
     }
 
-    private final int getOrthonalLinePoints(final NFastDoubleArrayJSO buffer, final Point2D p1, final Point2D p2, final Point2D p3, final boolean alternative)
+    private final static int getOrthonalLinePointsAndDirection(final NFastDoubleArrayJSO buffer, final double p1x, final double p1y, final double p2x, final double p2y, final double p3x, final boolean alternative)
     {
-        final int direction = direction(p1, p2, p3, alternative);
-
-        int next_direction;
-
-        final double p1x = p1.getX();
-
-        final double p2x = p2.getX();
-
-        final double p1y = p1.getY();
-
-        final double p2y = p2.getY();
+        final int direction = getPointsDirection(p1x, p1y, p2x, p2y, p3x, alternative);
 
         if (direction <= DIR_S)
         {
-            buffer.push(p1x);
+            buffer.push(p1x, p2y, p2x, p2y);
 
-            buffer.push(p2y);
-
-            if (p1x == p2x)
+            if (p1x < p2x)
             {
-                next_direction = direction;
+                return DIR_E;
             }
-            else if (p1x < p2x)
+            else if (p1x > p2x)
             {
-                next_direction = DIR_E;
+                return DIR_W;
             }
             else
             {
-                next_direction = DIR_W;
+                return direction;
             }
         }
         else
         {
-            buffer.push(p2x);
+            buffer.push(p2x, p1y, p2x, p2y);
 
-            buffer.push(p1y);
-
-            if (p1y == p2y)
+            if (p1y > p2y)
             {
-                next_direction = direction;
+                return DIR_N;
             }
-            else if (p1y > p2y)
+            else if (p1y < p2y)
             {
-                next_direction = DIR_N;
+                return DIR_S;
             }
             else
             {
-                next_direction = DIR_S;
+                return direction;
             }
         }
-        buffer.push(p2x);
-
-        buffer.push(p2y);
-
-        return next_direction;
     }
 
     /**
@@ -264,57 +245,27 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
      * @param alternative
      * @return
      */
-    private final int direction(final Point2D p1, final Point2D p2, final Point2D p3, final boolean alternative)
+    private final static int getPointsDirection(final double p1x, final double p1y, final double p2x, final double p2y, final double p3x, final boolean alternative)
     {
-        final double px = p2.getX();
+        final double dx = (p2x - p1x);
 
-        final double dx = (px - p1.getX());
-
-        final double dy = (p2.getY() - p1.getY());
+        final double dy = (p2y - p1y);
 
         if ((dx > 0) && (dy < 0))
         {
-            if ((NORMALIZE == alternative) && (p3.getX() > px))
-            {
-                return DIR_N;
-            }
-            else
-            {
-                return DIR_E;
-            }
+            return (((NORMALIZE == alternative) && (p3x > p2x)) ? DIR_N : DIR_E);
         }
         else if ((dx > 0) && (dy > 0))
         {
-            if ((NORMALIZE == alternative) && (p3.getX() > px))
-            {
-                return DIR_S;
-            }
-            else
-            {
-                return DIR_E;
-            }
+            return (((NORMALIZE == alternative) && (p3x > p2x)) ? DIR_S : DIR_E);
         }
         else if ((dx < 0) && (dy > 0))
         {
-            if ((NORMALIZE == alternative) && (p3.getX() < px))
-            {
-                return DIR_S;
-            }
-            else
-            {
-                return DIR_W;
-            }
+            return (((NORMALIZE == alternative) && (p3x < p2x)) ? DIR_S : DIR_W);
         }
         else
         {
-            if ((NORMALIZE == alternative) && (p3.getX() < px))
-            {
-                return DIR_N;
-            }
-            else
-            {
-                return DIR_W;
-            }
+            return (((NORMALIZE == alternative) && (p3x < p2x)) ? DIR_N : DIR_W);
         }
     }
 
@@ -323,24 +274,16 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
      * It will always attempt to continue the line in the same direction if it can do so, without requiring a corner.
      * This helps ensure to ensure the orthgonal line can be drawn between the three points.
      * @param points
-     * @param prev_direction
+     * @param direction
      * @param p1
      * @param p2
      * @return
      */
-    private final int getOrthonalLinePoints(final NFastDoubleArrayJSO points, final int prev_direction, final Point2D p1, final Point2D p2)
+    private final static int getOrthonalLinePointsAndDirection(final NFastDoubleArrayJSO points, final int direction, final double p1x, final double p1y, final double p2x, final double p2y)
     {
-        int temp_direction;
+        int next_direction;
 
-        final double p1x = p1.getX();
-
-        final double p2x = p2.getX();
-
-        final double p1y = p1.getY();
-
-        final double p2y = p2.getY();
-
-        switch (prev_direction)
+        switch (direction)
         {
             case DIR_N:
                 if ((p2y > p1y) && (p2x == p1x))
@@ -349,33 +292,15 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 }
                 else if (p2y < p1y)
                 {
-                    temp_direction = DIR_N;
+                    next_direction = DIR_N;
                 }
                 else if (p2x > p1x)
                 {
-                    temp_direction = DIR_E;
+                    next_direction = DIR_E;
                 }
                 else
                 {
-                    temp_direction = DIR_W;
-                }
-                break;
-            case DIR_E:
-                if ((p2x < p1x) && (p2y == p1y))
-                {
-                    return ERROR; // a line cannot go back on itself
-                }
-                else if (p2x > p1x)
-                {
-                    temp_direction = DIR_E;
-                }
-                else if (p2y < p1y)
-                {
-                    temp_direction = DIR_N;
-                }
-                else
-                {
-                    temp_direction = DIR_S;
+                    next_direction = DIR_W;
                 }
                 break;
             case DIR_S:
@@ -385,15 +310,33 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 }
                 else if (p2y > p1y)
                 {
-                    temp_direction = DIR_S;
+                    next_direction = DIR_S;
                 }
                 else if (p2x > p1x)
                 {
-                    temp_direction = DIR_E;
+                    next_direction = DIR_E;
                 }
                 else
                 {
-                    temp_direction = DIR_W;
+                    next_direction = DIR_W;
+                }
+                break;
+            case DIR_E:
+                if ((p2x < p1x) && (p2y == p1y))
+                {
+                    return ERROR; // a line cannot go back on itself
+                }
+                else if (p2x > p1x)
+                {
+                    next_direction = DIR_E;
+                }
+                else if (p2y < p1y)
+                {
+                    next_direction = DIR_N;
+                }
+                else
+                {
+                    next_direction = DIR_S;
                 }
                 break;
             case DIR_W:
@@ -403,69 +346,58 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 }
                 else if (p2x < p1x)
                 {
-                    temp_direction = DIR_W;
+                    next_direction = DIR_W;
                 }
                 else if (p2y < p1y)
                 {
-                    temp_direction = DIR_N;
+                    next_direction = DIR_N;
                 }
                 else
                 {
-                    temp_direction = DIR_S;
+                    next_direction = DIR_S;
                 }
                 break;
             default:
                 return ERROR;
         }
-        int next_direction;
-
-        if (temp_direction <= DIR_S)
+        if (next_direction <= DIR_S)
         {
-            points.push(p1x);
+            points.push(p1x, p2y, p2x, p2y);
 
-            points.push(p2y);
-
-            if (p1x == p2x)
+            if (p1x < p2x)
             {
-                next_direction = temp_direction;
+                return DIR_E;
             }
-            else if (p1x < p2x)
+            else if (p1x > p2x)
             {
-                next_direction = DIR_E;
+                return DIR_W;
             }
             else
             {
-                next_direction = DIR_W;
+                return next_direction;
             }
         }
         else
         {
-            points.push(p2x);
+            points.push(p2x, p1y, p2x, p2y);
 
-            points.push(p1y);
-
-            if (p1y == p2y)
+            if (p1y > p2y)
             {
-                next_direction = temp_direction;
+                return DIR_N;
             }
-            else if (p1y > p2y)
+            else if (p1y < p2y)
             {
-                next_direction = DIR_N;
+                return DIR_S;
             }
             else
             {
-                next_direction = DIR_S;
+                return next_direction;
             }
         }
-        points.push(p2x);
-
-        points.push(p2y);
-
-        return next_direction;
     }
 
     @Override
-    public void fill(Context2D context, Attributes attr, double alpha)
+    public final void fill(Context2D context, Attributes attr, double alpha)
     {
     }
 
@@ -483,7 +415,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
      * @param points {@link Point2DArray}
      * @return this OrthogonalPolyLine
      */
-    public OrthogonalPolyLine setControlPoints(Point2DArray points)
+    public OrthogonalPolyLine setControlPoints(final Point2DArray points)
     {
         getAttributes().setControlPoints(points);
 
@@ -508,7 +440,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         }
 
         @Override
-        public OrthogonalPolyLine create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public OrthogonalPolyLine create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new OrthogonalPolyLine(node, ctx);
         }

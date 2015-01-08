@@ -75,7 +75,7 @@ public class Rectangle extends Shape<Rectangle>
      * @param context
      */
     @Override
-    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double w = attr.getWidth();
 

@@ -230,7 +230,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
      * @param context
      */
     @Override
-    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         if (m_inits)
         {

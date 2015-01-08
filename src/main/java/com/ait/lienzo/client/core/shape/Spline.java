@@ -66,7 +66,7 @@ public class Spline extends Shape<Spline>
     * @param context the {@link Context2D} used to draw this spline.
     */
     @Override
-    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         if (m_list.size() < 1)
         {
@@ -92,7 +92,7 @@ public class Spline extends Shape<Spline>
 
     private final void parse(Attributes attr)
     {
-        final PathPoint[] points = getUniquePathPoints(attr.getControlPoints());
+        final PathPoint[] points = getPathPoints(attr.getControlPoints());
 
         final int size = points.length;
 
@@ -256,48 +256,29 @@ public class Spline extends Shape<Spline>
         }
     }
 
-    private final static PathPoint[] getUniquePathPoints(final Point2DArray array)
+    private final static PathPoint[] getPathPoints(final Point2DArray array)
     {
         if ((null == array) || (array.size() < 2))
         {
             return new PathPoint[0];
         }
-        int size = 0;
+        final Point2DArray unique = array.noAdjacentPoints();
 
-        final int leng = array.size();
+        final int size = unique.size();
 
-        final PathPoint[] points = new PathPoint[leng];
-
-        for (int i = 0; i < leng; i++)
+        if (size < 2)
         {
-            final Point2D point = array.get(i);
-
-            final double x = point.getX();
-
-            final double y = point.getY();
-
-            if (size > 0)
-            {
-                if (((points[size - 1].x == x) && (points[size - 1].y == y)))
-                {
-                    continue;
-                }
-            }
-            points[size] = new PathPoint(x, y);
-
-            size++;
+            return new PathPoint[0];
         }
-        if (size == leng)
-        {
-            return points;
-        }
-        final PathPoint[] nodups = new PathPoint[size];
+        final PathPoint[] points = new PathPoint[size];
 
         for (int i = 0; i < size; i++)
         {
-            nodups[i] = points[i];
+            final Point2D point = unique.get(i);
+
+            points[i] = new PathPoint(point.getX(), point.getY());
         }
-        return nodups;
+        return points;
     }
 
     /**
@@ -423,14 +404,14 @@ public class Spline extends Shape<Spline>
             y *= scale;
         }
 
-        final void offset(double dx, double dy)
+        final void offset(final double dx, final double dy)
         {
             x += dx;
 
             y += dy;
         }
 
-        static final double distance(PathPoint a, PathPoint b)
+        static final double distance(final PathPoint a, final PathPoint b)
         {
             final double dx = b.x - a.x;
 
@@ -444,7 +425,7 @@ public class Spline extends Shape<Spline>
             return new PathPoint(length * Math.cos(angle), length * Math.sin(angle));
         }
 
-        static final PathPoint[] toArray(PathPoint... points)
+        static final PathPoint[] toArray(final PathPoint... points)
         {
             return points;
         }

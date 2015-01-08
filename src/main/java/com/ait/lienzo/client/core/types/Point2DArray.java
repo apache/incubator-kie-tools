@@ -121,19 +121,7 @@ public class Point2DArray implements Iterable<Point2D>
 
     public Point2DArray(final Point2DArray points)
     {
-        this();
-
-        if (null != points)
-        {
-            final int size = points.size();
-
-            for (int i = 0; i < size; i++)
-            {
-                final Point2D p = points.get(i);
-
-                push(p.getX(), p.getY());
-            }
-        }
+        this(points.getJSO().copy());
     }
 
     public final BoundingBox getBoundingBox()
@@ -265,27 +253,7 @@ public class Point2DArray implements Iterable<Point2D>
 
     public final Point2DArray noAdjacentPoints()
     {
-        final int size = size();
-
-        if (size < 2)
-        {
-            return new Point2DArray(this);
-        }
-        Point2D p1 = get(0);
-
-        final Point2DArray points = new Point2DArray(p1);
-
-        for (int i = 1; i < size; i++)
-        {
-            final Point2D p2 = get(i);
-
-            if (false == ((p1.getX() == p2.getX()) && (p1.getY() == p2.getY())))
-            {
-                points.push(p2);
-            }
-            p1 = p2;
-        }
-        return points;
+        return new Point2DArray(m_jso.noAdjacentPoints());
     }
 
     public final Collection<Point2D> getPoints()
@@ -373,5 +341,41 @@ public class Point2DArray implements Iterable<Point2D>
         {
             return JsArray.createArray().cast();
         }
+
+        public final native Point2DArrayJSO noAdjacentPoints()
+        /*-{         
+            var no = [];
+            var sz = this.length;
+            if (sz < 1) {
+                return no;
+            }
+            var p1 = this[0];
+            no.push({x:p1.x,y:p1.y});
+            if (sz < 2) {
+                return no;
+            }
+            for(var i = 1; i < sz; i++) {
+                var p2 = this[i];
+                if (!((p1.x == p2.x) && (p1.y == p2.y))) {
+                    no.push({x:p2.x,y:p2.y});
+                }
+                p1 = p2;
+            }
+            return no;
+        }-*/;
+
+        public final native Point2DArrayJSO copy()
+        /*-{         
+            var no = [];
+            var sz = this.length;
+            if (sz < 1) {
+                return no;
+            }
+            for(var i = 0; i < sz; i++) {
+                var p = this[i];
+                no.push({x: p.x,y: p.y});
+            }
+            return no;
+        }-*/;
     }
 }

@@ -233,7 +233,7 @@ public class Text extends Shape<Text>
      * @param context
      */
     @Override
-    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final String text = attr.getText();
 
@@ -256,6 +256,7 @@ public class Text extends Shape<Text>
         return true;
     }
 
+    @Override
     protected void fill(final Context2D context, final Attributes attr, double alpha)
     {
         alpha = alpha * attr.getFillAlpha();

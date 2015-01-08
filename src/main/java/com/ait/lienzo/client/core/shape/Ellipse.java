@@ -76,7 +76,7 @@ public class Ellipse extends Shape<Ellipse>
      * @param context the {@link Context2D} used to draw this ellipse.
      */
     @Override
-    public boolean prepare(final Context2D context, final Attributes attr, final double alpha)
+    protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
         final double w = attr.getWidth();
 
