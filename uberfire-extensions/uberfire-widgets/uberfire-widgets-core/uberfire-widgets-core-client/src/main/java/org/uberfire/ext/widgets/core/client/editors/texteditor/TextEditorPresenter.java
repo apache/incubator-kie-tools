@@ -21,10 +21,10 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnStartup;
 
@@ -62,12 +62,21 @@ public abstract class TextEditorPresenter {
             @Override
             public void callback( String response ) {
                 if ( response == null ) {
-                    view.setContent(CoreConstants.INSTANCE.EmptyEntry() );
+                    view.setContent( CoreConstants.INSTANCE.EmptyEntry() );
                 } else {
                     view.setContent( response );
                 }
+                onAfterViewLoaded();
             }
         } ).readAllString( path );
+    }
+
+    /**
+     * This is called after the view's content has been loaded. Sub-classes can override
+     * this method to perform applicable actions after the view's content has been set.
+     * The default implementation does nothing.
+     */
+    protected void onAfterViewLoaded() {
     }
 
     @IsDirty
