@@ -17,9 +17,11 @@ package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.mvp.UberView;
 
 public interface KieTextEditorView
-        extends KieEditorView {
+        extends KieEditorView,
+                UberView<KieTextEditorPresenter> {
 
     void onStartup( final ObservablePath path );
 

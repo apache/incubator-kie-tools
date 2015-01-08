@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.defaulteditor.client.editor;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -36,6 +37,8 @@ import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidato
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextResourceType;
+import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -64,6 +67,11 @@ public class KieTextEditorPresenter
 
     private Metadata metadata;
 
+    @PostConstruct
+    public void init() {
+        view.init( this );
+    }
+
     @Inject
     public KieTextEditorPresenter( final KieTextEditorView baseView ) {
         super( baseView );
@@ -72,10 +80,12 @@ public class KieTextEditorPresenter
 
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
+        //This causes loadContent() to be called (which for this sub-class loads the Overview not the Text/XML etc)
         super.init( path,
                     place,
                     new TextResourceType() );
 
+        //This causes the view's content (Text/XML etc) to be loaded, after which we need to get the original HashCode to support "dirty" content
         view.onStartup( path );
 
         if ( isReadOnly ) {
@@ -117,9 +127,13 @@ public class KieTextEditorPresenter
 
                 metadata = overview.getMetadata();
 
-                createOriginalHash(view.getContent());
             }
         } ).loadOverview( versionRecordManager.getCurrentPath() );
+    }
+
+    //This is called after the View's content has been loaded
+    public void onAfterViewLoaded() {
+        setOriginalHash( view.getContent().hashCode() );
     }
 
     @Override
@@ -129,7 +143,7 @@ public class KieTextEditorPresenter
                                          new ParameterizedCommand<String>() {
                                              @Override
                                              public void execute( final String commitMessage ) {
-                                                 defaultEditorService.call( getSaveSuccessCallback(view.getContent().hashCode()),
+                                                 defaultEditorService.call( getSaveSuccessCallback( view.getContent().hashCode() ),
                                                                             new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                                                   view.getContent(),
                                                                                                                                                   metadata,
@@ -156,8 +170,14 @@ public class KieTextEditorPresenter
         return super.getTitle();
     }
 
-    public IsWidget getWidget() {
-        return super.getWidget();
+    @OnClose
+    public void onClose() {
+        this.versionRecordManager.clear();
+    }
+
+    @OnMayClose
+    public boolean mayClose() {
+        return super.mayClose( view.getContent().hashCode() );
     }
 
 }

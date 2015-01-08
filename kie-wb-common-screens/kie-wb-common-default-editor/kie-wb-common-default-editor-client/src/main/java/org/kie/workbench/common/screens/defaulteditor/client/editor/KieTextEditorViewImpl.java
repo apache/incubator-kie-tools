@@ -26,7 +26,14 @@ public class KieTextEditorViewImpl
         extends TextEditorPresenter
         implements KieTextEditorView {
 
+    private KieTextEditorPresenter presenter;
+
     private KieEditorTitle kieEditorTitle = new KieEditorTitle();
+
+    @Override
+    public void init( final KieTextEditorPresenter presenter ) {
+        this.presenter = presenter;
+    }
 
     @Override
     public void showLoading() {
@@ -78,6 +85,11 @@ public class KieTextEditorViewImpl
     @Override
     public void makeReadOnly() {
         super.view.makeReadOnly();
+    }
+
+    @Override
+    protected void onAfterViewLoaded() {
+        presenter.onAfterViewLoaded();
     }
 
     @Override

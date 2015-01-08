@@ -68,4 +68,5 @@ public class KieTextEditorScreenPresenter
     public Menus getMenus() {
         return menus;
     }
+
 }
