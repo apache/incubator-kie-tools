@@ -82,7 +82,7 @@ public class Spline extends Shape<Spline>
     }
 
     @Override
-    public void fill(Context2D context, Attributes attr, double alpha)
+    protected void fill(Context2D context, Attributes attr, double alpha)
     {
         if (m_fill)
         {

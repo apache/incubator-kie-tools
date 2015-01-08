@@ -70,6 +70,15 @@ public class SVGPath extends Shape<SVGPath>
         return true;
     }
 
+    @Override
+    protected void fill(final Context2D context, final Attributes attr, final double alpha)
+    {
+        if (m_fill)
+        {
+            super.fill(context, attr, alpha);
+        }
+    }
+
     private final void parse(String path)
     {
         m_list.clear();
@@ -478,15 +487,6 @@ public class SVGPath extends Shape<SVGPath>
             {
                 m_list.push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
             }
-        }
-    }
-
-    @Override
-    protected void fill(final Context2D context, final Attributes attr, final double alpha)
-    {
-        if (m_fill)
-        {
-            super.fill(context, attr, alpha);
         }
     }
 

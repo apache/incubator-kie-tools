@@ -98,7 +98,7 @@ public class PolyLine extends Shape<PolyLine>
     }
 
     @Override
-    public final void fill(Context2D context, Attributes attr, double alpha)
+    protected void fill(Context2D context, Attributes attr, double alpha)
     {
     }
 

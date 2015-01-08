@@ -96,6 +96,11 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         return true;
     }
 
+    @Override
+    protected void fill(Context2D context, Attributes attr, double alpha)
+    {
+    }
+
     private final boolean parse(final Attributes attr)
     {
         Point2DArray points = attr.getControlPoints();
@@ -394,11 +399,6 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 return next_direction;
             }
         }
-    }
-
-    @Override
-    public final void fill(Context2D context, Attributes attr, double alpha)
-    {
     }
 
     /**
