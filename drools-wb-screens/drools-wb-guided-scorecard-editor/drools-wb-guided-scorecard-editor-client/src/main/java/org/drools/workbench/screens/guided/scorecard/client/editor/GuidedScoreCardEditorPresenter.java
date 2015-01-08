@@ -49,6 +49,7 @@ import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -174,7 +175,7 @@ public class GuidedScoreCardEditorPresenter
                                              @Override
                                              public void execute( final String comment ) {
                                                  view.showSaving();
-                                                 scoreCardEditorService.call( getSaveSuccessCallback( model.hashCode() ),
+                                                 scoreCardEditorService.call( getSaveSuccessCallback( view.getModel().hashCode() ),
                                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                                        view.getModel(),
                                                                                                                                        metadata,
@@ -205,6 +206,11 @@ public class GuidedScoreCardEditorPresenter
     public void onClose() {
         this.versionRecordManager.clear();
         this.oracleFactory.destroy( oracle );
+    }
+
+    @OnMayClose
+    public boolean mayClose() {
+        return super.mayClose( view.getModel().hashCode() );
     }
 
     @WorkbenchPartTitleDecoration

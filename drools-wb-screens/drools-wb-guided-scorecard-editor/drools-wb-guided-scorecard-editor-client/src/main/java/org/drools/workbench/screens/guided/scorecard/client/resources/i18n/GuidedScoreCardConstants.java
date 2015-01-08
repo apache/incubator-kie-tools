@@ -95,4 +95,7 @@ public interface GuidedScoreCardConstants
     public String agendaGroup();
 
     public String ruleFlowGroup();
+
+    public String pleaseChoose();
+
 }

@@ -37,6 +37,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratorPanel;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -57,13 +58,12 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.widget.TextBoxFactory;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.ext.widgets.common.client.common.DecoratedDisclosurePanel;
-import com.google.gwt.user.client.ui.FlexTable;
 
 public class GuidedScoreCardEditor extends Composite {
 
     private static final String[] reasonCodeAlgorithms = new String[]{ "none", "pointsAbove", "pointsBelow" };
     private static final String[] typesForAttributes = new String[]{ "String", "int", "double", "boolean", "Integer" };
-    private static final String[] typesForScore = new String[]{ "double" };
+    private static final String[] typesForScore = new String[]{ "double", "Double" };
     private static final String[] typesForRC = new String[]{ "List" };
 
     private static final String[] stringOperators = new String[]{ "=", "in" };
@@ -146,12 +146,16 @@ public class GuidedScoreCardEditor extends Composite {
     public ScoreCardModel getModel() {
         model.setBaselineScore( Double.parseDouble( tbBaselineScore.getValue() ) );
         model.setInitialScore( Double.parseDouble( tbInitialScore.getValue() ) );
-        model.setReasonCodesAlgorithm( ddReasonCodeAlgorithm.getValue( ddReasonCodeAlgorithm.getSelectedIndex() ) );
         model.setUseReasonCodes( ddUseReasonCode.getSelectedIndex() == 1 );
+        if ( ddReasonCodeAlgorithm.getSelectedIndex() > 0 ) {
+            model.setReasonCodesAlgorithm( ddReasonCodeAlgorithm.getValue( ddReasonCodeAlgorithm.getSelectedIndex() ) );
+        } else {
+            model.setReasonCodesAlgorithm( "" );
+        }
 
         ListBox enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
                                                                             0 );
-        if ( enumDropDown.getSelectedIndex() > -1 ) {
+        if ( enumDropDown.getSelectedIndex() > 0 ) {
             final String simpleFactName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
             model.setFactName( simpleFactName );
             oracle.getFieldCompletions( simpleFactName,
@@ -168,11 +172,13 @@ public class GuidedScoreCardEditor extends Composite {
                                                 }
                                             }
                                         } );
+        } else {
+            model.setFactName( "" );
         }
 
         enumDropDown = (ListBox) scorecardPropertiesGrid.getWidget( 1,
                                                                     1 );
-        if ( enumDropDown.getSelectedIndex() > -1 ) {
+        if ( enumDropDown.getSelectedIndex() > 0 ) {
             String fieldName = enumDropDown.getValue( enumDropDown.getSelectedIndex() );
             fieldName = fieldName.substring( 0, fieldName.indexOf( ":" ) ).trim();
             model.setFieldName( fieldName );
@@ -180,10 +186,12 @@ public class GuidedScoreCardEditor extends Composite {
             model.setFieldName( "" );
         }
 
-        if ( ddReasonCodeField.getSelectedIndex() > -1 ) {
+        if ( ddReasonCodeField.getSelectedIndex() > 0 ) {
             String rcField = ddReasonCodeField.getValue( ddReasonCodeField.getSelectedIndex() );
             rcField = rcField.substring( 0, rcField.indexOf( ":" ) ).trim();
             model.setReasonCodeField( rcField );
+        } else {
+            model.setReasonCodeField( "" );
         }
 
         model.getCharacteristics().clear();
@@ -196,8 +204,8 @@ public class GuidedScoreCardEditor extends Composite {
             model.getCharacteristics().add( characteristic );
         }
 
-        model.setAgendaGroup(tbAgendaGroup.getValue());
-        model.setRuleFlowGroup(tbRuleFlowGroup.getValue());
+        model.setAgendaGroup( tbAgendaGroup.getValue() );
+        model.setRuleFlowGroup( tbRuleFlowGroup.getValue() );
 
         return model;
     }
@@ -267,6 +275,8 @@ public class GuidedScoreCardEditor extends Composite {
 
     public void refreshFactTypes() {
         dropDownFacts.clear();
+        dropDownFacts.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+
         final String[] eligibleFacts = oracle.getFactTypes();
         for ( final String factType : eligibleFacts ) {
             dropDownFacts.addItem( factType );
@@ -289,8 +299,8 @@ public class GuidedScoreCardEditor extends Composite {
         ruleAttributesGrid = new Grid( 2, 4 );
         ruleAttributesGrid.setCellSpacing( 5 );
         ruleAttributesGrid.setCellPadding( 5 );
-        ruleAttributesGrid.setText(0, 0, GuidedScoreCardConstants.INSTANCE.ruleFlowGroup());
-        ruleAttributesGrid.setText(0, 1, GuidedScoreCardConstants.INSTANCE.agendaGroup());
+        ruleAttributesGrid.setText( 0, 0, GuidedScoreCardConstants.INSTANCE.ruleFlowGroup() );
+        ruleAttributesGrid.setText( 0, 1, GuidedScoreCardConstants.INSTANCE.agendaGroup() );
 
         final String ruleFlowGroup = model.getRuleFlowGroup();
         final String agendaGroup = model.getAgendaGroup();
@@ -326,6 +336,9 @@ public class GuidedScoreCardEditor extends Composite {
             factName = factName.substring( factName.lastIndexOf( "." ) + 1 );
         }
 
+        dropDownFacts.clear();
+        dropDownFacts.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+
         final String[] eligibleFacts = oracle.getFactTypes();
         for ( final String factType : eligibleFacts ) {
             dropDownFacts.addItem( factType );
@@ -340,7 +353,7 @@ public class GuidedScoreCardEditor extends Composite {
 
         } );
         final int selectedFactIndex = Arrays.asList( eligibleFacts ).indexOf( factName );
-        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex : 0 );
+        dropDownFacts.setSelectedIndex( selectedFactIndex >= 0 ? selectedFactIndex + 1 : 0 );
         scoreCardPropertyFactChanged( dropDownFacts,
                                       dropDownFields );
 
@@ -351,6 +364,8 @@ public class GuidedScoreCardEditor extends Composite {
                            new Callback<String[]>() {
                                @Override
                                public void callback( final String[] eligibleReasonCodeFields ) {
+                                   ddReasonCodeField.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+                                   ddReasonCodeField.setEnabled( eligibleReasonCodeFields.length > 0 );
                                    for ( final String field : eligibleReasonCodeFields ) {
                                        ddReasonCodeField.addItem( field );
                                    }
@@ -361,14 +376,12 @@ public class GuidedScoreCardEditor extends Composite {
                            } );
 
         final boolean useReasonCodes = model.isUseReasonCodes();
-        String reasonCodesAlgo = model.getReasonCodesAlgorithm();
-        if ( reasonCodesAlgo == null || reasonCodesAlgo.trim().length() == 0 ) {
-            reasonCodesAlgo = "none";
-        }
+        final String reasonCodesAlgo = model.getReasonCodesAlgorithm();
 
         ddUseReasonCode = booleanEditor( Boolean.toString( useReasonCodes ) );
         ddReasonCodeAlgorithm = listBoxEditor( reasonCodeAlgorithms,
-                                               reasonCodesAlgo );
+                                               reasonCodesAlgo,
+                                               true );
         tbBaselineScore = TextBoxFactory.getTextBox( DataType.TYPE_NUMERIC_DOUBLE );
 
         scorecardPropertiesGrid.setText( 0,
@@ -443,21 +456,23 @@ public class GuidedScoreCardEditor extends Composite {
                                                final ListBox dropDownFields ) {
         final int selectedIndex = dropDownFacts.getSelectedIndex();
         dropDownFields.clear();
-        if ( selectedIndex < 0 ) {
-            return;
-        }
+
         final String selectedFactType = dropDownFacts.getItemText( selectedIndex );
         getEligibleFields( selectedFactType,
                            typesForScore,
                            new Callback<String[]>() {
                                @Override
                                public void callback( final String[] eligibleFieldsForSelectedFactType ) {
+                                   dropDownFields.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+                                   dropDownFields.setEnabled( eligibleFieldsForSelectedFactType.length > 0 );
                                    for ( final String field : eligibleFieldsForSelectedFactType ) {
                                        dropDownFields.addItem( field );
                                    }
-                                   final String qualifiedFieldName = model.getFieldName() + " : double";
-                                   final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName );
-                                   dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex : 0 );
+                                   for ( String type : typesForScore ) {
+                                       final String qualifiedFieldName = model.getFieldName() + " : " + type;
+                                       final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName );
+                                       dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex + 1 : 0 );
+                                   }
                                }
                            } );
     }
@@ -708,10 +723,10 @@ public class GuidedScoreCardEditor extends Composite {
                                        dropDownFields.addItem( field );
                                    }
                                    int selectedFieldIndex = -1;
-                                   for (String availableFactType : eligibleFieldsForSelectedFactType ){
+                                   for ( String availableFactType : eligibleFieldsForSelectedFactType ) {
                                        selectedFieldIndex++;
                                        //availableFactType is in format "fieldname : dataType"
-                                       if (availableFactType.toLowerCase().startsWith(selectedField.toLowerCase())) {
+                                       if ( availableFactType.toLowerCase().startsWith( selectedField.toLowerCase() ) ) {
                                            break;
                                        }
                                    }
@@ -935,7 +950,8 @@ public class GuidedScoreCardEditor extends Composite {
 
     private ListBox booleanEditor( final String currentValue ) {
         final ListBox listBox = listBoxEditor( booleanOperators,
-                                               currentValue );
+                                               currentValue,
+                                               false );
         listBox.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( final ChangeEvent event ) {
@@ -957,13 +973,17 @@ public class GuidedScoreCardEditor extends Composite {
     }
 
     private ListBox listBoxEditor( final String[] values,
-                                   final String currentValue ) {
+                                   final String currentValue,
+                                   final boolean allowEmptyValue ) {
         final ListBox listBox = new ListBox();
+        if ( allowEmptyValue ) {
+            listBox.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
+        }
         for ( final String value : values ) {
             listBox.addItem( value );
         }
         final int selectedIndex = Arrays.asList( values ).indexOf( currentValue );
-        listBox.setSelectedIndex( selectedIndex >= 0 ? selectedIndex : 0 );
+        listBox.setSelectedIndex( selectedIndex >= 0 ? selectedIndex + ( allowEmptyValue ? 1 : 0 ) : 0 );
         return listBox;
     }
 
