@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,26 @@
 
 package org.kie.workbench.common.screens.defaulteditor.service;
 
-import org.guvnor.common.services.shared.file.SupportsUpdate;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-@Remote
-public interface DefaultEditorService extends SupportsUpdate<String> {
+@Portable
+public class DefaultEditorContent {
 
-    DefaultEditorContent loadContent(Path path);
+    private Overview overview;
+
+    public DefaultEditorContent() {
+    }
+
+    public DefaultEditorContent(Overview overview) {
+        this.overview = overview;
+    }
+
+    public Overview getOverview() {
+        return overview;
+    }
+
+    public void setOverview(Overview overview) {
+        this.overview = overview;
+    }
 }

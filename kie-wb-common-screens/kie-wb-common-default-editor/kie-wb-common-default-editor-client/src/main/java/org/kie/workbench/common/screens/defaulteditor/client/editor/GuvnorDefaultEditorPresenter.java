@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -111,12 +112,12 @@ public class GuvnorDefaultEditorPresenter
 
     @Override
     protected void loadContent() {
-        defaultEditorService.call( new RemoteCallback<Overview>() {
+        defaultEditorService.call( new RemoteCallback<DefaultEditorContent>() {
             @Override
-            public void callback( Overview overview ) {
-                resetEditorPages( overview );
+            public void callback( DefaultEditorContent content) {
+                resetEditorPages( content.getOverview() );
             }
-        } ).loadOverview( versionRecordManager.getCurrentPath() );
+        } ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     @WorkbenchPartView

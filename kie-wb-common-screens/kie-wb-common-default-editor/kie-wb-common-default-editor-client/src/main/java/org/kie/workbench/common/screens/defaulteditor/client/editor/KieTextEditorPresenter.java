@@ -24,6 +24,7 @@ import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -119,16 +120,16 @@ public class KieTextEditorPresenter
 
     @Override
     protected void loadContent() {
-        defaultEditorService.call( new RemoteCallback<Overview>() {
+        defaultEditorService.call( new RemoteCallback<DefaultEditorContent>() {
             @Override
-            public void callback( Overview overview ) {
+            public void callback( DefaultEditorContent content ) {
 
-                resetEditorPages( overview );
+                resetEditorPages( content.getOverview() );
 
-                metadata = overview.getMetadata();
+                metadata = content.getOverview().getMetadata();
 
             }
-        } ).loadOverview( versionRecordManager.getCurrentPath() );
+        } ).loadContent(versionRecordManager.getCurrentPath());
     }
 
     //This is called after the View's content has been loaded

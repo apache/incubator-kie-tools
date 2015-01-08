@@ -25,6 +25,7 @@ import org.guvnor.common.services.project.backend.server.ProjectConfigurationCon
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsContent;
@@ -36,7 +37,7 @@ import org.uberfire.io.IOService;
 @Service
 @ApplicationScoped
 public class ProjectImportsServiceImpl
-        extends KieService
+        extends KieService<ProjectImportsContent>
         implements ProjectImportsService {
 
     protected IOService                          ioService;
@@ -48,17 +49,16 @@ public class ProjectImportsServiceImpl
 
     @Inject
     public ProjectImportsServiceImpl(@Named("ioStrategy") IOService ioService,
-                                     ProjectConfigurationContentHandler projectConfigurationContentHandler,
-                                     MetadataService metadataService) {
+                                     ProjectConfigurationContentHandler projectConfigurationContentHandler) {
+
         this.ioService = ioService;
         this.projectConfigurationContentHandler = projectConfigurationContentHandler;
-        this.metadataService = metadataService;
     }
 
     @Override
-    public ProjectImportsContent loadContent(final Path path) {
+    protected ProjectImportsContent constructContent(Path path, Overview overview) {
         return new ProjectImportsContent(load(path),
-                                         loadOverview(path));
+                                         overview);
     }
 
     @Override
