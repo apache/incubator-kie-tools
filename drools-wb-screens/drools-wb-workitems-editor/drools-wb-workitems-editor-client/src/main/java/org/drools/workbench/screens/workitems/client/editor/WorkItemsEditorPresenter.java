@@ -121,7 +121,7 @@ public class WorkItemsEditorPresenter
                 view.setContent(definition,
                                 workItemImages);
 
-                setOriginalHash(view.getContent().hashCode());
+                createOriginalHash(view.getContent());
                 view.hideBusyIndicator();
             }
         };
@@ -171,7 +171,7 @@ public class WorkItemsEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent().hashCode());
+        return super.mayClose(view.getContent());
     }
 
     @WorkbenchPartTitle

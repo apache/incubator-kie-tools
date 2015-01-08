@@ -163,7 +163,7 @@ public class GuidedRuleTemplateEditorPresenter
                                           model.getImports(),
                                           isReadOnly );
 
-                setOriginalHash(model.hashCode());
+                createOriginalHash(model);
                 view.hideBusyIndicator();
             }
         };
@@ -238,7 +238,7 @@ public class GuidedRuleTemplateEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent().hashCode());
+        return super.mayClose(view.getContent());
     }
 
     @WorkbenchPartTitle

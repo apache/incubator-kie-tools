@@ -166,7 +166,7 @@ public class GuidedDecisionTreeEditorPresenter
                     popup.show();
                 }
 
-                setOriginalHash(model.hashCode());
+                createOriginalHash(model);
             }
         };
     }
@@ -231,7 +231,7 @@ public class GuidedDecisionTreeEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(model.hashCode());
+        return super.mayClose(model);
     }
 
     @WorkbenchPartTitleDecoration

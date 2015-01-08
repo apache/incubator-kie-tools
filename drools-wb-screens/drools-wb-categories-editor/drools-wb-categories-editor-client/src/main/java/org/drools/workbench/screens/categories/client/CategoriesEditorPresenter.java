@@ -108,7 +108,7 @@ public class CategoriesEditorPresenter
 
             @Override
             public void callback( final CategoriesModelContent content ) {
-                setOriginalHash(content.getCategories().hashCode());
+                createOriginalHash(content.getCategories());
                 resetEditorPages( content.getOverview() );
                 view.setContent( content.getCategories() );
                 view.hideBusyIndicator();
@@ -123,7 +123,7 @@ public class CategoriesEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent().hashCode());
+        return super.mayClose(view.getContent());
     }
 
     @WorkbenchPartTitleDecoration

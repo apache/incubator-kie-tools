@@ -106,7 +106,7 @@ public class EnumEditorPresenter
 
                 // We need to get the hash from the widget.
                 // Widget changes the String somehow -> hash changes, even though the string is the same.
-                setOriginalHash(view.getContent().hashCode());
+                createOriginalHash(view.getContent());
             }
         };
     }
@@ -160,7 +160,7 @@ public class EnumEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent().hashCode());
+        return super.mayClose(view.getContent());
     }
 
     @WorkbenchPartTitle

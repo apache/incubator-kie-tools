@@ -197,7 +197,7 @@ public class ScenarioEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(scenario.hashCode());
+        return super.mayClose(scenario);
     }
 
     @OnClose

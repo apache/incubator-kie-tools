@@ -97,7 +97,7 @@ public class GlobalsEditorPresenter
                                  fullyQualifiedClassNames,
                                  isReadOnly );
 
-                setOriginalHash(model.hashCode());
+                createOriginalHash(model);
                 view.hideBusyIndicator();
             }
         };
@@ -163,7 +163,7 @@ public class GlobalsEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(model.hashCode());
+        return super.mayClose(model);
     }
 
     @WorkbenchPartTitleDecoration

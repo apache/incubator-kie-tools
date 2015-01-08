@@ -134,7 +134,7 @@ public class DRLEditorPresenter
                                      fullyQualifiedClassNames );
                 }
                 view.hideBusyIndicator();
-                setOriginalHash(view.getContent().hashCode());
+                createOriginalHash(view.getContent());
             }
 
             private String assertContent( final String drl ) {
@@ -209,7 +209,7 @@ public class DRLEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent().hashCode());
+        return super.mayClose(view.getContent());
     }
 
     @WorkbenchPartTitleDecoration

@@ -216,7 +216,7 @@ public class GuidedDecisionTableEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return mayClose(model.hashCode());
+        return mayClose(model);
     }
 
     @WorkbenchPartTitle

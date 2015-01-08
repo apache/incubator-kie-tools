@@ -129,7 +129,7 @@ public class GuidedScoreCardEditorPresenter
                                           model.getImports(),
                                           isReadOnly );
 
-                setOriginalHash( model.hashCode() );
+                createOriginalHash( model );
                 view.hideBusyIndicator();
             }
         };

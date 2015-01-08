@@ -164,7 +164,7 @@ public class GuidedRuleEditorPresenter
 
                 view.hideBusyIndicator();
 
-                setOriginalHash(model.hashCode());
+                createOriginalHash(model);
             }
         };
     }
@@ -236,7 +236,7 @@ public class GuidedRuleEditorPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(view.getContent().hashCode());
+        return super.mayClose(view.getContent());
     }
 
     @WorkbenchPartTitle
