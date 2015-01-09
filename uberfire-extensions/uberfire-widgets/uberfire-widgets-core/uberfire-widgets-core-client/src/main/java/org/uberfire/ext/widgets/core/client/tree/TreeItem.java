@@ -70,6 +70,10 @@ public class TreeItem extends Composite {
                     header.addDomHandler( new ClickHandler() {
                         @Override
                         public void onClick( ClickEvent event ) {
+                            if ( !isSelected ) {
+                                updateSelected();
+                                return;
+                            }
                             if ( state.equals( State.CLOSE ) ) {
                                 setState( State.OPEN, true );
                             } else {
@@ -121,6 +125,10 @@ public class TreeItem extends Composite {
             }
             initWidget( loader );
         }
+    }
+
+    private void updateSelected() {
+        tree.onSelection( this, true );
     }
 
     public State getState() {
