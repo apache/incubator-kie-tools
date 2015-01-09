@@ -16,11 +16,17 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.client.annotations.*;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.plugin.client.type.PerspectivePluginResourceType;
 import org.uberfire.ext.plugin.model.PluginContent;
@@ -28,13 +34,7 @@ import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 
 @Dependent
 @WorkbenchEditor(identifier = "Perspective PlugIn Editor", supportedTypes = { PerspectivePluginResourceType.class }, priority = Integer.MAX_VALUE)
@@ -46,9 +46,6 @@ public class PerspectiveEditorPresenter
 
     @Inject
     private Caller<PluginServices> pluginServices;
-
-    @Inject
-    private Event<NotificationEvent> notification;
 
     @Inject
     public PerspectiveEditorPresenter( final PerspectiveEditorView baseView ) {
@@ -83,8 +80,8 @@ public class PerspectiveEditorPresenter
         pluginServices.call( new RemoteCallback<PluginContent>() {
             @Override
             public void callback( final PluginContent response ) {
-                ( ( PerspectiveEditorView ) baseView ).setupContent( response );
-                baseView.hideBusyIndicator();
+                view().setupContent( response );
+                view().hideBusyIndicator();
             }
 
         } ).getPluginContent( versionRecordManager.getCurrentPath() );
@@ -95,8 +92,8 @@ public class PerspectiveEditorPresenter
     }
 
     @WorkbenchPartView
-    public UberView<PerspectiveEditorPresenter> getWidget() {
-        return ( UberView<PerspectiveEditorPresenter> ) super.baseView;
+    public IsWidget getWidget() {
+        return super.baseView;
     }
 
     @OnMayClose
@@ -105,7 +102,11 @@ public class PerspectiveEditorPresenter
     }
 
     public PluginSimpleContent getContent() {
-        return ( ( PerspectiveEditorView ) baseView ).getContent();
+        return view().getContent();
+    }
+
+    PerspectiveEditorView view() {
+        return (PerspectiveEditorView) baseView;
     }
 
 }

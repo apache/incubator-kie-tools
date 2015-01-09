@@ -16,33 +16,30 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
-import org.uberfire.ext.plugin.model.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
+import org.uberfire.ext.plugin.model.Framework;
 
 import static org.uberfire.ext.plugin.client.code.CodeList.*;
 
 @Dependent
 public class EditorPlugInEditorView
-        extends BaseEditorViewImpl
-        implements UberView<EditorPlugInEditorPresenter>,
-        RequiresResize {
+        extends RuntimePluginBaseView
+        implements RequiresResize {
 
     interface ViewBinder
             extends
@@ -61,21 +58,17 @@ public class EditorPlugInEditorView
     @UiField
     ListBox framework;
 
-    private EditorPlugInEditorPresenter presenter;
-
+    @Inject
+    private GeneralPluginEditor editor;
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
-    }
 
-    @Override
-    public void init( final EditorPlugInEditorPresenter presenter ) {
-        this.presenter = presenter;
-        presenter.editor.setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_FOCUS, ON_LOST_FOCUS, ON_MAY_CLOSE, ON_STARTUP, ON_SHUTDOWN,
-                ON_CONCURRENT_UPDATE, ON_CONCURRENT_DELETE, ON_CONCURRENT_RENAME, ON_CONCURRENT_COPY, ON_UPDATE, ON_DELETE, ON_RENAME, ON_COPY
+        editor.setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_FOCUS, ON_LOST_FOCUS, ON_MAY_CLOSE, ON_STARTUP, ON_SHUTDOWN,
+                      ON_CONCURRENT_UPDATE, ON_CONCURRENT_DELETE, ON_CONCURRENT_RENAME, ON_CONCURRENT_COPY, ON_UPDATE, ON_DELETE, ON_RENAME, ON_COPY
                 , DIVIDER, TITLE, RESOURCE_TYPE );
-        htmlPanel.add( presenter.editor );
+        htmlPanel.add( editor );
     }
 
     protected void setFramework( final Collection<Framework> frameworks ) {
@@ -103,7 +96,7 @@ public class EditorPlugInEditorView
     @Override
     public void onResize() {
         htmlPanel.setHeight( getParent().getParent().getOffsetHeight() + "px" );
-        presenter.editor.onResize();
+        editor.onResize();
     }
 
 }

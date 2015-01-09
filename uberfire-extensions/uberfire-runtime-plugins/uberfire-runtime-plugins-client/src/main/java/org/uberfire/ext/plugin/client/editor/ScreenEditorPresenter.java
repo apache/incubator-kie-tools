@@ -16,15 +16,19 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.client.annotations.*;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.plugin.client.type.ScreenPluginResourceType;
-import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
@@ -32,12 +36,7 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "Screen PlugIn Editor", supportedTypes = { ScreenPluginResourceType.class }, priority = Integer.MAX_VALUE)
@@ -45,28 +44,21 @@ public class ScreenEditorPresenter
         extends RuntimePluginBaseEditor {
 
     @Inject
-    protected GeneralPluginEditor editor;
-    @Inject
     private ScreenPluginResourceType resourceType;
+
     @Inject
     private Caller<PluginServices> pluginServices;
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private Event<NotificationEvent> notification;
-
 
     @Inject
     public ScreenEditorPresenter( final ScreenEditorView baseView ) {
         super( baseView );
     }
 
-    protected ClientResourceType getResourceType(){
+    protected ClientResourceType getResourceType() {
         return resourceType;
     }
 
-    protected PluginType getPluginType(){
+    protected PluginType getPluginType() {
         return PluginType.SCREEN;
     }
 
@@ -85,20 +77,19 @@ public class ScreenEditorPresenter
         return menus;
     }
 
-
     @Override
     protected void loadContent() {
         pluginServices.call( new RemoteCallback<PluginContent>() {
             @Override
             public void callback( final PluginContent response ) {
-                ( ( ScreenEditorView ) baseView ).setFramework( response.getFrameworks() );
-                editor.setupContent( response, new ParameterizedCommand<Media>() {
+                view().setFramework( response.getFrameworks() );
+                view().setupContent( response, new ParameterizedCommand<Media>() {
                     @Override
                     public void execute( final Media media ) {
                         pluginServices.call().deleteMedia( media );
                     }
                 } );
-                baseView.hideBusyIndicator();
+                view().hideBusyIndicator();
             }
         } ).getPluginContent( versionRecordManager.getCurrentPath() );
     }
@@ -108,8 +99,8 @@ public class ScreenEditorPresenter
     }
 
     @WorkbenchPartView
-    public UberView<ScreenEditorPresenter> getWidget() {
-        return ( UberView<ScreenEditorPresenter> ) super.baseView;
+    public IsWidget getWidget() {
+        return super.baseView;
     }
 
     @OnMayClose
@@ -118,8 +109,12 @@ public class ScreenEditorPresenter
     }
 
     public PluginSimpleContent getContent() {
-        return new PluginSimpleContent( editor.getContent(), editor.getTemplate(), editor.getCss(), editor.getCodeMap(),
-                ( ( ScreenEditorView ) baseView ).getFrameworks(), editor.getContent().getLanguage() );
+        return new PluginSimpleContent( view().getContent(), view().getTemplate(), view().getCss(), view().getCodeMap(),
+                                        view().getFrameworks(), view().getContent().getLanguage() );
+    }
+
+    ScreenEditorView view() {
+        return (ScreenEditorView) baseView;
     }
 
 }

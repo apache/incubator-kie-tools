@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
@@ -28,27 +30,24 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 import org.uberfire.ext.plugin.client.code.CodeElement;
 import org.uberfire.ext.plugin.client.widget.split.HorizontalSplit;
-import org.uberfire.ext.plugin.model.*;
+import org.uberfire.ext.plugin.model.CodeType;
+import org.uberfire.ext.plugin.model.PluginContent;
+import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.widgets.common.client.ace.AceEditor;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.uberfire.ext.plugin.client.code.CodeList.*;
 
 @Dependent
 public class PerspectiveEditorView
         extends BaseEditorViewImpl
-        implements UberView<PerspectiveEditorPresenter>,
-        RequiresResize {
+        implements RequiresResize {
 
     interface ViewBinder
             extends
@@ -96,10 +95,7 @@ public class PerspectiveEditorView
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
-    }
 
-    @Override
-    public void init( final PerspectiveEditorPresenter presenter ) {
         htmlPanel.getElement().getStyle().setBackgroundColor( "#F6F6F6" );
 
         setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_SHUTDOWN, DIVIDER, PANEL_TYPE );
@@ -118,13 +114,12 @@ public class PerspectiveEditorView
         jsEditor.setTheme( AceEditorTheme.CHROME );
     }
 
-
     final Command editorResizing = new Command() {
         @Override
         public void execute() {
             templateEditor.redisplay();
 
-            Double editorHeight = 100 - ( ( ( double ) lifecycleHolder.getOffsetHeight() / bottomArea.getOffsetHeight() ) * 100 );
+            Double editorHeight = 100 - ( ( (double) lifecycleHolder.getOffsetHeight() / bottomArea.getOffsetHeight() ) * 100 );
             if ( editorHeight.equals( Double.NaN ) || editorHeight.doubleValue() <= 0d ) {
                 return;
             }

@@ -21,8 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
@@ -31,22 +29,14 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
-import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
-import org.uberfire.ext.plugin.model.*;
-import org.uberfire.ext.plugin.service.PluginServices;
-import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.ext.plugin.model.Framework;
 
 import static org.uberfire.ext.plugin.client.code.CodeList.*;
 
 @Dependent
 public class ScreenEditorView
-        extends BaseEditorViewImpl
-        implements UberView<ScreenEditorPresenter>,
-        RequiresResize {
+        extends RuntimePluginBaseView
+        implements RequiresResize {
 
     interface ViewBinder
             extends
@@ -65,30 +55,13 @@ public class ScreenEditorView
     @UiField
     ListBox framework;
 
-    @Inject
-    private Caller<PluginServices> pluginServices;
-
-    @Inject
-    private GeneralPluginEditor editor;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private Event<NotificationEvent> notification;
-
-    private ScreenEditorPresenter presenter;
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
-    }
 
-    @Override
-    public void init( final ScreenEditorPresenter presenter ) {
-        this.presenter = presenter;
-        presenter.editor.setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_FOCUS, ON_LOST_FOCUS, ON_MAY_CLOSE, ON_STARTUP, ON_SHUTDOWN, DIVIDER, TITLE );
-        htmlPanel.add( presenter.editor );
+        editor.setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_FOCUS, ON_LOST_FOCUS, ON_MAY_CLOSE, ON_STARTUP, ON_SHUTDOWN, DIVIDER, TITLE );
+        htmlPanel.add( editor );
     }
 
     protected void setFramework( final Collection<Framework> frameworks ) {
@@ -104,7 +77,6 @@ public class ScreenEditorView
         this.framework.setSelectedIndex( 0 );
     }
 
-
     protected Collection<Framework> getFrameworks() {
         if ( framework.getValue().equalsIgnoreCase( "(Framework)" ) ) {
             return Collections.emptyList();
@@ -113,7 +85,6 @@ public class ScreenEditorView
             add( Framework.valueOf( framework.getValue().toUpperCase() ) );
         }};
     }
-
 
     @Override
     public void onResize() {

@@ -16,14 +16,19 @@
 
 package org.uberfire.ext.plugin.client.editor;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.client.annotations.*;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
+import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
-import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.plugin.model.PluginContent;
 import org.uberfire.ext.plugin.model.PluginSimpleContent;
@@ -31,12 +36,7 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @Dependent
 @WorkbenchEditor(identifier = "Editor PlugIn Editor", supportedTypes = { EditorPluginResourceType.class }, priority = Integer.MAX_VALUE)
@@ -44,13 +44,10 @@ public class EditorPlugInEditorPresenter
         extends RuntimePluginBaseEditor {
 
     @Inject
-    protected GeneralPluginEditor editor;
-    @Inject
     private EditorPluginResourceType resourceType;
+
     @Inject
     private Caller<PluginServices> pluginServices;
-    @Inject
-    private Event<NotificationEvent> notification;
 
     @Inject
     public EditorPlugInEditorPresenter( final EditorPlugInEditorView baseView ) {
@@ -80,20 +77,19 @@ public class EditorPlugInEditorPresenter
         return menus;
     }
 
-
     @Override
     protected void loadContent() {
         pluginServices.call( new RemoteCallback<PluginContent>() {
             @Override
             public void callback( final PluginContent response ) {
-                ( ( EditorPlugInEditorView ) baseView ).setFramework( response.getFrameworks() );
-                editor.setupContent( response, new ParameterizedCommand<Media>() {
+                view().setFramework( response.getFrameworks() );
+                view().setupContent( response, new ParameterizedCommand<Media>() {
                     @Override
                     public void execute( final Media media ) {
                         pluginServices.call().deleteMedia( media );
                     }
                 } );
-                baseView.hideBusyIndicator();
+                view().hideBusyIndicator();
             }
         } ).getPluginContent( versionRecordManager.getCurrentPath() );
     }
@@ -103,8 +99,8 @@ public class EditorPlugInEditorPresenter
     }
 
     @WorkbenchPartView
-    public UberView<EditorPlugInEditorPresenter> getWidget() {
-        return ( UberView<EditorPlugInEditorPresenter> ) super.baseView;
+    public IsWidget getWidget() {
+        return super.baseView;
     }
 
     @OnMayClose
@@ -113,12 +109,12 @@ public class EditorPlugInEditorPresenter
     }
 
     public PluginSimpleContent getContent() {
-        return new PluginSimpleContent( editor.getContent(),
-                editor.getTemplate(),
-                editor.getCss(),
-                editor.getCodeMap(),
-                ( ( EditorPlugInEditorView ) baseView ).getFrameworks(),
-                editor.getContent().getLanguage() );
+        return new PluginSimpleContent( view().getContent(), view().getTemplate(), view().getCss(), view().getCodeMap(),
+                                        view().getFrameworks(), view().getContent().getLanguage() );
+    }
+
+    EditorPlugInEditorView view() {
+        return (EditorPlugInEditorView) baseView;
     }
 
 }

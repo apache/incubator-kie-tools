@@ -25,6 +25,7 @@ import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
 public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
     protected Plugin plugin;
+
     @Inject
     private Caller<PluginServices> pluginServices;
 

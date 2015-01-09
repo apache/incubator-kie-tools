@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
@@ -29,17 +30,16 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
-import org.uberfire.ext.plugin.model.*;
+import org.uberfire.ext.plugin.client.widget.plugin.GeneralPluginEditor;
+import org.uberfire.ext.plugin.model.Framework;
 
 import static org.uberfire.ext.plugin.client.code.CodeList.*;
 
 @Dependent
 public class SplashEditorView
-        extends BaseEditorViewImpl
-        implements UberView<SplashEditorPresenter>,
-        RequiresResize {
+        extends RuntimePluginBaseView
+        implements RequiresResize {
 
     interface ViewBinder
             extends
@@ -58,18 +58,12 @@ public class SplashEditorView
     @UiField
     ListBox framework;
 
-    private SplashEditorPresenter presenter;
-
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
-    }
 
-    @Override
-    public void init( final SplashEditorPresenter presenter ) {
-        this.presenter = presenter;
-        presenter.editor.setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_STARTUP, ON_SHUTDOWN, DIVIDER, TITLE, BODY_HEIGHT, INTERCEPTION_POINTS );
-        htmlPanel.add( presenter.editor );
+        editor.setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_STARTUP, ON_SHUTDOWN, DIVIDER, TITLE, BODY_HEIGHT, INTERCEPTION_POINTS );
+        htmlPanel.add( editor );
     }
 
     protected void setFramework( final Collection<Framework> frameworks ) {
@@ -97,6 +91,6 @@ public class SplashEditorView
     @Override
     public void onResize() {
         htmlPanel.setHeight( getParent().getParent().getOffsetHeight() + "px" );
-        presenter.editor.onResize();
+        editor.onResize();
     }
 }
