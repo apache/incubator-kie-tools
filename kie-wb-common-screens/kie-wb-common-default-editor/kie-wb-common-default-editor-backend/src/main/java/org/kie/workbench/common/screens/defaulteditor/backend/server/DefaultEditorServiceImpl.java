@@ -42,6 +42,11 @@ public class DefaultEditorServiceImpl
     private IOService ioService;
 
     @Override
+    public DefaultEditorContent loadContent(Path path) {
+        return super.loadContent(path);
+    }
+
+    @Override
     public Path save(final Path resource,
                      final String content,
                      final Metadata metadata,

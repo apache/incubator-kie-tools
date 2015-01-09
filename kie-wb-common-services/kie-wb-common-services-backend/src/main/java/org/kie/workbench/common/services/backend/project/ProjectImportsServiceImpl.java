@@ -56,6 +56,11 @@ public class ProjectImportsServiceImpl
     }
 
     @Override
+    public ProjectImportsContent loadContent(Path path) {
+        return super.loadContent(path);
+    }
+
+    @Override
     protected ProjectImportsContent constructContent(Path path, Overview overview) {
         return new ProjectImportsContent(load(path),
                                          overview);

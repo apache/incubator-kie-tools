@@ -185,6 +185,11 @@ public class DataModelerServiceImpl
     }
 
     @Override
+    public EditorModelContent loadContent(Path path) {
+        return super.loadContent(path);
+    }
+
+    @Override
     public Path createJavaFile(final Path context,
                                final String fileName,
                                final String comment) {

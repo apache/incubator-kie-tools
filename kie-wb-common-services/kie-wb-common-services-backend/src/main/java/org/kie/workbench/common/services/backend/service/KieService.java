@@ -60,11 +60,6 @@ public abstract class KieService<T> {
     @Inject
     private PathResolver pathResolver;
 
-    @PostConstruct
-    private void nothing() {
-        String test="";
-    }
-
     public T loadContent(Path path) {
         try {
             if (pathResolver.isDotFile(Paths.convert(path))) {
