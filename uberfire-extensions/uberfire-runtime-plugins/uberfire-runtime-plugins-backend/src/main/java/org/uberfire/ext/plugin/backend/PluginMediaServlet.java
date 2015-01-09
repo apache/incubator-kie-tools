@@ -72,16 +72,30 @@ public class PluginMediaServlet
         String mime = null;
         InputStream in;
 
-        final String filename = EncodingUtil.decode( req.getRequestURI().substring( req.getContextPath().length() ) );
+        boolean isPreview = req.getParameterMap().containsKey( "preview" );
+
+        final String _filename = EncodingUtil.decode( req.getRequestURI().substring( req.getContextPath().length() ) );
+        final String filename;
+        if ( _filename.toLowerCase().endsWith( "?preview" ) ) {
+            filename = _filename.substring( 0, _filename.toLowerCase().indexOf( "?preview" ) );
+            isPreview = true;
+        } else {
+            filename = _filename;
+        }
+
         final Path mediaPath = fileSystem.getPath( "plugins", filename.replace( pattern, "/" ) );
         if ( !ioService.exists( mediaPath ) ) {
             mime = "image/png";
             in = getClass().getResourceAsStream( "/nofound.png" );
         } else {
             mime = MimeType.fromExtension( "." + FilenameUtils.getExtension( mediaPath.getFileName().toString() ) ).getType();
-            if ( mime != null && !mime.startsWith( "image/" ) ) {
-                mime = "image/png";
-                in = getClass().getResourceAsStream( "/placeholder.png" );
+            if ( isPreview ) {
+                if ( mime != null && !mime.startsWith( "image/" ) ) {
+                    mime = "image/png";
+                    in = getClass().getResourceAsStream( "/placeholder.png" );
+                } else {
+                    in = ioService.newInputStream( mediaPath );
+                }
             } else {
                 in = ioService.newInputStream( mediaPath );
             }

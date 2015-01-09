@@ -18,6 +18,10 @@ public class Media {
         this.path = path;
     }
 
+    public String getPreviewURI() {
+        return externalURI + "?preview";
+    }
+
     public String getExternalURI() {
         return externalURI;
     }

@@ -574,7 +574,7 @@ public class PluginServicesImpl implements PluginServices {
 
     @Override
     public org.uberfire.backend.vfs.Path savePerspective( final
-                                                              PerspectiveEditorModel plugin ) {
+                                                          PerspectiveEditorModel plugin ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 

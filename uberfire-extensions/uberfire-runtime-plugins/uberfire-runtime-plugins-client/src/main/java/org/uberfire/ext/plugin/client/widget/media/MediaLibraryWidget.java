@@ -170,7 +170,7 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
         trash.setIcon( IconType.TRASH );
 
         final Thumbnail thumbnail = new Thumbnail() {{
-            add( new Image( media.getExternalURI() ) {{
+            add( new Image( media.getPreviewURI() ) {{
                 setType( ImageType.CIRCLE );
                 setHeight( "140px" );
                 setWidth( "140px" );
