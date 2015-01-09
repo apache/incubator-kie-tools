@@ -163,15 +163,25 @@ public class ProjectScreenModel {
     public int hashCode() {
         int result = pom != null ? pom.hashCode() : 0;
         result = 31 * result + ( KModule != null ? KModule.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( POMMetaData != null ? POMMetaData.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( KModuleMetaData != null ? KModuleMetaData.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( projectImports != null ? projectImports.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( projectImportsMetaData != null ? projectImportsMetaData.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( projectCategories != null ? projectCategories.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( projectCategoriesMetaData != null ? projectCategoriesMetaData.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( pathToPOM != null ? pathToPOM.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( pathToKModule != null ? pathToKModule.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( pathToImports != null ? pathToImports.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

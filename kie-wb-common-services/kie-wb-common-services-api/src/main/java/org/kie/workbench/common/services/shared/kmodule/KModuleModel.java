@@ -107,9 +107,13 @@ public class KModuleModel
     @Override
     public int hashCode() {
         int result = kBases != null ? kBases.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( kBasesPath != null ? kBasesPath.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( kModulePath != null ? kModulePath.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( groupArtifactVersion != null ? groupArtifactVersion.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }
