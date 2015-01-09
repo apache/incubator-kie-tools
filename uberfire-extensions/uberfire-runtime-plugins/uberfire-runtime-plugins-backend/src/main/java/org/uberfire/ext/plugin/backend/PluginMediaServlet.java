@@ -1,6 +1,5 @@
 package org.uberfire.ext.plugin.backend;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,15 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.ext.plugin.event.MediaAdded;
 import org.uberfire.ext.plugin.model.Media;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.server.BaseUploadServlet;
 import org.uberfire.server.MimeType;
-import org.uberfire.java.nio.EncodingUtil;
 
 public class PluginMediaServlet
         extends BaseUploadServlet {
@@ -39,17 +38,9 @@ public class PluginMediaServlet
     @Inject
     private Event<MediaAdded> newMediaEvent;
 
-    private final int PLACEHOLDER_SIZE;
-    private final int NOTFOUND_SIZE;
-
     private String pattern = "/plugins/";
 
     private static MediaServletURI mediaServletURI = new MediaServletURI( "plugins/" );
-
-    public PluginMediaServlet() {
-        NOTFOUND_SIZE = (int) new File( getClass().getResource( "/nofound.png" ).getFile() ).length();
-        PLACEHOLDER_SIZE = (int) new File( getClass().getResource( "/placeholder.png" ).getFile() ).length();
-    }
 
     @Override
     public void init( final ServletConfig config ) throws ServletException {
@@ -85,16 +76,13 @@ public class PluginMediaServlet
         final Path mediaPath = fileSystem.getPath( "plugins", filename.replace( pattern, "/" ) );
         if ( !ioService.exists( mediaPath ) ) {
             mime = "image/png";
-            resp.setContentLength( NOTFOUND_SIZE );
             in = getClass().getResourceAsStream( "/nofound.png" );
         } else {
             mime = MimeType.fromExtension( "." + FilenameUtils.getExtension( mediaPath.getFileName().toString() ) ).getType();
             if ( mime != null && !mime.startsWith( "image/" ) ) {
                 mime = "image/png";
-                resp.setContentLength( PLACEHOLDER_SIZE );
                 in = getClass().getResourceAsStream( "/placeholder.png" );
             } else {
-                resp.setContentLength( (int) ioService.size( mediaPath ) );
                 in = ioService.newInputStream( mediaPath );
             }
         }
