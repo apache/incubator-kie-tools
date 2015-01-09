@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
@@ -25,6 +27,7 @@ import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.TweeningAnimation;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageLoader;
+import com.ait.lienzo.client.core.shape.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -69,6 +72,8 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     private final String           m_hkey = Color.getHEXColorKey();
 
     private DragConstraintEnforcer m_dragConstraintEnforcer;
+
+    private IControlHandleFactory  m_controlHandleFactory;
 
     protected Shape(final ShapeType type)
     {
@@ -122,6 +127,38 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     protected void setShapeType(final ShapeType type)
     {
         m_type = type;
+    }
+    
+    @Override
+    public T refresh()
+    {
+        return cast();
+    }
+
+    @Override
+    public IControlHandleList getControlHandles(List<ControlHandleType> types)
+    {
+        IControlHandleFactory factory = getControlHandleFactory();
+
+        if (null == factory)
+        {
+            return null;
+        }
+        return factory.getControlHandles(types);
+    }
+
+    @Override
+    public IControlHandleFactory getControlHandleFactory()
+    {
+        return m_controlHandleFactory;
+    }
+
+    @Override
+    public T setControlHandleFactory(IControlHandleFactory factory)
+    {
+        m_controlHandleFactory = factory;
+
+        return cast();
     }
 
     @Override
@@ -565,7 +602,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
                 return true;
             }
-            final Group group = parent.asGroup();
+            final GroupOf<IPrimitive<?>, ?> group = parent.asGroup();
 
             if (null != group)
             {
@@ -1440,9 +1477,11 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     }
 
     @Override
-    public void setDragConstraints(final DragConstraintEnforcer enforcer)
+    public T setDragConstraints(final DragConstraintEnforcer enforcer)
     {
         m_dragConstraintEnforcer = enforcer;
+
+        return cast();
     }
 
     public static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>

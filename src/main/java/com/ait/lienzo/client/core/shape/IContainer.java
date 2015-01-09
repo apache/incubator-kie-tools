@@ -141,12 +141,12 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @return Scene
      */
     public Layer asLayer();
-
+    
     /**
      * Returns this object as a {@link Scene}
      * or null if it not a Scene.
      * 
      * @return Scene
      */
-    public Group asGroup();
+    public GroupOf<IPrimitive<?>, ?> asGroup();
 }

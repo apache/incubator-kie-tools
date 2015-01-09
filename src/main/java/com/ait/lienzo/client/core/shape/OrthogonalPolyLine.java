@@ -95,6 +95,14 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
         return true;
     }
+    
+    @Override
+    public OrthogonalPolyLine refresh()
+    {
+        m_list.clear();
+        
+        return this;
+    }
 
     @Override
     protected void fill(Context2D context, Attributes attr, double alpha)

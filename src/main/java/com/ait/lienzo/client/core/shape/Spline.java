@@ -89,6 +89,14 @@ public class Spline extends Shape<Spline>
             super.fill(context, attr, alpha);
         }
     }
+    
+    @Override
+    public Spline refresh()
+    {
+        m_list.clear();
+        
+        return this;
+    }
 
     private final void parse(Attributes attr)
     {

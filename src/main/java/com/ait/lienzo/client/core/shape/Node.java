@@ -672,7 +672,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
-    public Group asGroup()
+    public GroupOf<IPrimitive<?>, ?> asGroup()
     {
         return null;
     }
@@ -876,6 +876,18 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         protected ContainerNodeFactory(final String typeName)
         {
             super(typeName);
+        }
+
+        protected abstract C container(JSONObject node, ValidationContext ctx) throws ValidationException;
+
+        @Override
+        public C create(final JSONObject node, final ValidationContext ctx) throws ValidationException
+        {
+            final C container = container(node, ctx);
+
+            JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
+
+            return container;
         }
     }
 }

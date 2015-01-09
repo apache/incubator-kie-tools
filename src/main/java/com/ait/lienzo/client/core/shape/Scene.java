@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
@@ -822,13 +821,9 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
         }
 
         @Override
-        public final Scene create(final JSONObject node, final ValidationContext ctx) throws ValidationException
+        public final Scene container(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
-            final Scene container = new Scene(node, ctx);
-
-            JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
-
-            return container;
+            return new Scene(node, ctx);
         }
 
         @Override

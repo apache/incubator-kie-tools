@@ -57,6 +57,20 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
         return bbox;
     }
 
+    @Override
+    public T refresh()
+    {
+        final int size = m_list.size();
+
+        for (int i = 0; i < size; i++)
+        {
+            m_list.get(i).clear();
+        }
+        m_list.clear();
+
+        return cast();
+    }
+
     protected T addPathPartList(final PathPartList list)
     {
         m_list.add(list);

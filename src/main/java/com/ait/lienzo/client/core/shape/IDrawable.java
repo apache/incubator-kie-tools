@@ -83,7 +83,7 @@ public interface IDrawable<T>
      * 
      * @return Scene
      */
-    public Group asGroup();
+    public GroupOf<IPrimitive<?>, ?> asGroup();
 
     /**
      * Returns this object as a {@link Scene}

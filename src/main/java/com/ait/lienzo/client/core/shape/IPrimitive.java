@@ -30,7 +30,7 @@ import com.ait.lienzo.shared.core.types.DragMode;
 /**
  * A common interface for all primitives, i.e. {@link Shape} and {@link Group}. 
  */
-public interface IPrimitive<T extends Node<T>> extends IDrawable<T>
+public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHandleFactory
 {
     /**
      * Gets the X coordinate.
@@ -298,21 +298,21 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>
      * @return this IPrimitive
      */
     public T setAlpha(double alpha);
-    
+
     /**
      * Gets the alpha for this node.
      * 
      * @return double
      */
-     public double getStrokeAlpha();
+    public double getStrokeAlpha();
 
-     /**
-      * Sets alpha
-      * 
-      * @param alpha
-      * @return this IPrimitive
-      */
-     public T setStrokeAlpha(double alpha);
+    /**
+     * Sets alpha
+     * 
+     * @param alpha
+     * @return this IPrimitive
+     */
+    public T setStrokeAlpha(double alpha);
 
     /**
     * Gets the alpha for this node.
@@ -400,7 +400,7 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>
      * 
      * @param enforcer DragConstraintEnforcer
      */
-    public void setDragConstraints(DragConstraintEnforcer enforcer);
+    public T setDragConstraints(DragConstraintEnforcer enforcer);
 
     /**
      * Attaches all primitives to the Layers Color Map
@@ -411,4 +411,10 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>
      * Detaches all primitives from the Layers Color Map
      */
     public void detachFromLayerColorMap();
+
+    public IControlHandleFactory getControlHandleFactory();
+
+    public T setControlHandleFactory(IControlHandleFactory factory);
+    
+    public T refresh();
 }

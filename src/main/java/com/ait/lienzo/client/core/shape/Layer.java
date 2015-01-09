@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
@@ -993,13 +992,9 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
 
         @Override
-        public Layer create(final JSONObject node, final ValidationContext ctx) throws ValidationException
+        public Layer container(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
-            final Layer container = new Layer(node, ctx);
-
-            JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
-
-            return container;
+            return new Layer(node, ctx);
         }
 
         @Override

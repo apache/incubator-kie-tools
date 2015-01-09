@@ -84,12 +84,6 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         return m_list.size();
     }
 
-    @SuppressWarnings("unchecked")
-    protected final T coerce()
-    {
-        return (T) this;
-    }
-
     /**
      * Adds a primitive to the collection.
      * <p>
@@ -106,7 +100,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         m_list.add(child);
 
-        return coerce();
+        return cast();
     }
 
     /**
@@ -125,7 +119,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         m_list.remove(child);
 
-        return coerce();
+        return cast();
     }
 
     /**
@@ -140,7 +134,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     {
         m_list.clear();
 
-        return coerce();
+        return cast();
     }
 
     /**
@@ -175,7 +169,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     {
         getChildNodes().moveUp(node);
 
-        return coerce();
+        return cast();
     }
 
     /**
@@ -186,7 +180,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     {
         getChildNodes().moveDown(node);
 
-        return coerce();
+        return cast();
     }
 
     /**
@@ -197,7 +191,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     {
         getChildNodes().moveToTop(node);
 
-        return coerce();
+        return cast();
     }
 
     /**
@@ -208,7 +202,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     {
         getChildNodes().moveToBottom(node);
 
-        return coerce();
+        return cast();
     }
 
     @Override

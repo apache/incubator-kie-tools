@@ -38,7 +38,6 @@ import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
@@ -659,13 +658,9 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
 
         @Override
-        public final Viewport create(final JSONObject node, final ValidationContext ctx) throws ValidationException
+        public final Viewport container(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
-            final Viewport container = new Viewport(node, ctx);
-
-            JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
-
-            return container;
+            return new Viewport(node, ctx);
         }
 
         @Override
