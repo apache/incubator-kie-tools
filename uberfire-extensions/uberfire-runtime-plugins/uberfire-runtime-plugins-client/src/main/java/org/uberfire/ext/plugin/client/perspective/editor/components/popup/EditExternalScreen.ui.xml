@@ -22,16 +22,14 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
     >
 
+  <ui:with field="i18nCommon" type="org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants"/>
+
   <g:HTMLPanel>
     <b:Modal ui:field="popup" title="Edit Component" backdrop="STATIC" keyboard="true" animation="true">
       <g:FlowPanel ui:field="externalWidget"/>
       <b:ModalFooter>
-        <b:Button icon="SAVE" type="PRIMARY" ui:field="save">
-          Save
-        </b:Button>
-        <b:Button icon="EYE_CLOSE" type="PRIMARY" ui:field="close">
-          Close
-        </b:Button>
+        <b:Button ui:field="okButton" icon="PLUS_SIGN" type="PRIMARY" text="{i18nCommon.OK}"></b:Button>
+        <b:Button ui:field="cancelButton" type="DEFAULT" text="{i18nCommon.Cancel}"></b:Button>
       </b:ModalFooter>
     </b:Modal>
 

@@ -67,16 +67,16 @@ public class EditExternalScreen extends Composite {
         externalComponent.modalSettings( popup );
     }
 
-    @UiHandler("close")
-    void close( final ClickEvent event ) {
+    @UiHandler("cancelButton")
+    void cancel( final ClickEvent event ) {
         popup.hide();
         if (listener != null) {
             listener.onClose();
         }
     }
 
-    @UiHandler("save")
-    void save( final ClickEvent event ) {
+    @UiHandler("okButton")
+    void ok( final ClickEvent event ) {
         loadSavedParametersOnPerspectiveEditorUI();
         popup.hide();
         if (listener != null) {
