@@ -52,6 +52,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileExtensionsFilter;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -74,7 +75,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class WorkItemsEditorServiceImpl
-        extends KieService
+        extends KieService<WorkItemsModelContent>
         implements WorkItemsEditorService {
 
     private static final Logger log = LoggerFactory.getLogger( WorkItemsEditorServiceImpl.class );
@@ -181,21 +182,22 @@ public class WorkItemsEditorServiceImpl
 
     @Override
     public WorkItemsModelContent loadContent( final Path path ) {
-        try {
-            final String definition = load( path );
-            final List<String> workItemImages = loadWorkItemImages( path );
+        return super.loadContent(path);
+    }
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+    @Override
+    protected WorkItemsModelContent constructContent(Path path, Overview overview) {
+        final String definition = load(path);
+        final List<String> workItemImages = loadWorkItemImages(path);
 
-            return new WorkItemsModelContent( definition,
-                                              loadOverview( path ),
-                                              workItemImages );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new WorkItemsModelContent(definition,
+                                         overview,
+                                         workItemImages);
+
     }
 
     private List<String> loadWorkItemImages( final Path resourcePath ) {

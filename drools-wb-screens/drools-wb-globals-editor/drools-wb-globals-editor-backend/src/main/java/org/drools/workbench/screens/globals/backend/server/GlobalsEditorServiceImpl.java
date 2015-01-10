@@ -37,6 +37,7 @@ import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCac
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
@@ -54,7 +55,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class GlobalsEditorServiceImpl extends KieService implements GlobalsEditorService {
+public class GlobalsEditorServiceImpl
+        extends KieService<GlobalsEditorContent>
+        implements GlobalsEditorService {
 
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
 
@@ -134,24 +137,25 @@ public class GlobalsEditorServiceImpl extends KieService implements GlobalsEdito
 
     @Override
     public GlobalsEditorContent loadContent( final Path path ) {
-        try {
-            //De-serialize model
-            final GlobalsModel model = load( path );
-            final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel( path );
-            final String[] fullyQualifiedClassNames = new String[ oracle.getProjectModelFields().size() ];
-            oracle.getProjectModelFields().keySet().toArray( fullyQualifiedClassNames );
+        return super.loadContent(path);
+    }
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+    @Override
+    protected GlobalsEditorContent constructContent(Path path, Overview overview) {
+        //De-serialize model
+        final GlobalsModel model = load(path);
+        final ProjectDataModelOracle oracle = dataModelService.getProjectDataModel(path);
+        final String[] fullyQualifiedClassNames = new String[oracle.getProjectModelFields().size()];
+        oracle.getProjectModelFields().keySet().toArray(fullyQualifiedClassNames);
 
-            return new GlobalsEditorContent( model,
-                                             loadOverview( path ),
-                                             Arrays.asList( fullyQualifiedClassNames ) );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new GlobalsEditorContent(model,
+                                        overview,
+                                        Arrays.asList(fullyQualifiedClassNames));
+
     }
 
     @Override

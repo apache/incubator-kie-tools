@@ -32,6 +32,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
@@ -55,7 +56,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
  */
 @Service
 @ApplicationScoped
-public class EnumServiceImpl extends KieService implements EnumService {
+public class EnumServiceImpl
+        extends KieService<EnumModelContent>
+        implements EnumService {
 
     @Inject
     @Named("ioStrategy")
@@ -126,18 +129,17 @@ public class EnumServiceImpl extends KieService implements EnumService {
 
     @Override
     public EnumModelContent loadContent( final Path path ) {
-        try {
+        return super.loadContent(path);
+    }
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+    @Override
+    protected EnumModelContent constructContent(Path path, Overview overview) {
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-            return new EnumModelContent( new EnumModel( load( path ) ),
-                                         loadOverview( path ) );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new EnumModelContent(new EnumModel(load(path)),
+                                    overview);
     }
 
     @Override

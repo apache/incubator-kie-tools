@@ -40,6 +40,7 @@ import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
@@ -63,7 +64,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class DRLTextEditorServiceImpl extends KieService implements DRLTextEditorService {
+public class DRLTextEditorServiceImpl
+        extends KieService<DrlModelContent>
+        implements DRLTextEditorService {
 
     //Filters to include *all* applicable resources
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
@@ -149,25 +152,26 @@ public class DRLTextEditorServiceImpl extends KieService implements DRLTextEdito
 
     @Override
     public DrlModelContent loadContent( final Path path ) {
-        try {
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes( oracle );
-            final List<DSLSentence> dslConditions = oracle.getPackageDslConditionSentences();
-            final List<DSLSentence> dslActions = oracle.getPackageDslActionSentences();
+        return super.loadContent(path);
+    }
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+    @Override
+    protected DrlModelContent constructContent(Path path, Overview overview) {
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+        final String[] fullyQualifiedClassNames = DataModelOracleUtilities.getFactTypes(oracle);
+        final List<DSLSentence> dslConditions = oracle.getPackageDslConditionSentences();
+        final List<DSLSentence> dslActions = oracle.getPackageDslActionSentences();
 
-            return new DrlModelContent( load( path ),
-                                        loadOverview( path ),
-                                        Arrays.asList( fullyQualifiedClassNames ),
-                                        dslConditions,
-                                        dslActions );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new DrlModelContent(load(path),
+                                   overview,
+                                   Arrays.asList(fullyQualifiedClassNames),
+                                   dslConditions,
+                                   dslActions);
+
     }
 
     @Override

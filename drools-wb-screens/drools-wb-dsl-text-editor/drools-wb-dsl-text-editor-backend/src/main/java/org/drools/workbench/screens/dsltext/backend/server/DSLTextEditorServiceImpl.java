@@ -34,6 +34,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
@@ -49,7 +50,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class DSLTextEditorServiceImpl extends KieService implements DSLTextEditorService {
+public class DSLTextEditorServiceImpl
+        extends KieService<DSLTextEditorContent>
+        implements DSLTextEditorService {
 
     @Inject
     @Named("ioStrategy")
@@ -121,8 +124,13 @@ public class DSLTextEditorServiceImpl extends KieService implements DSLTextEdito
 
     @Override
     public DSLTextEditorContent loadContent( final Path path ) {
+        return super.loadContent(path);
+    }
+
+    @Override
+    protected DSLTextEditorContent constructContent(Path path, Overview overview) {
         return new DSLTextEditorContent( load( path ),
-                                         loadOverview( path ) );
+                                         overview );
     }
 
     @Override

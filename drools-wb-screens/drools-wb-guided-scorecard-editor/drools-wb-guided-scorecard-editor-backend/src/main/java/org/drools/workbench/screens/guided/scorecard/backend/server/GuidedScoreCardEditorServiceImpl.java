@@ -33,6 +33,7 @@ import org.drools.workbench.screens.guided.scorecard.service.GuidedScoreCardEdit
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.service.KieService;
@@ -52,7 +53,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class GuidedScoreCardEditorServiceImpl
-        extends KieService
+        extends KieService<ScoreCardModelContent>
         implements GuidedScoreCardEditorService {
 
     @Inject
@@ -116,26 +117,26 @@ public class GuidedScoreCardEditorServiceImpl
 
     @Override
     public ScoreCardModelContent loadContent( final Path path ) {
-        try {
-            final ScoreCardModel model = load( path );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
-            final GuidedScoreCardModelVisitor visitor = new GuidedScoreCardModelVisitor( model );
-            DataModelOracleUtilities.populateDataModel( oracle,
-                                                        dataModel,
-                                                        visitor.getConsumedModelClasses() );
+        return super.loadContent(path);
+    }
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+    @Override
+    protected ScoreCardModelContent constructContent(Path path, Overview overview) {
+        final ScoreCardModel model = load(path);
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        final GuidedScoreCardModelVisitor visitor = new GuidedScoreCardModelVisitor(model);
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   visitor.getConsumedModelClasses());
 
-            return new ScoreCardModelContent( model,
-                                              loadOverview( path ),
-                                              dataModel );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new ScoreCardModelContent(model,
+                                         overview,
+                                         dataModel);
     }
 
     @Override

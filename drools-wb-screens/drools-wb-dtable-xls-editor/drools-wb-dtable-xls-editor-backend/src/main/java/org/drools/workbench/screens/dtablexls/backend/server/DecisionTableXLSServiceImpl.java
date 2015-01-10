@@ -44,6 +44,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.shared.metadata.MetadataService;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -70,7 +71,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 // Implementation needs to implement both interfaces even though one extends the other
 // otherwise the implementation discovery mechanism for the @Service annotation fails.
 public class DecisionTableXLSServiceImpl
-        extends KieService
+        extends KieService<DecisionTableXLSContent>
         implements DecisionTableXLSService,
                    ExtendedDecisionTableXLSService {
 
@@ -113,8 +114,13 @@ public class DecisionTableXLSServiceImpl
 
     @Override
     public DecisionTableXLSContent loadContent( final Path path ) {
+        return super.loadContent(path);
+    }
+
+    @Override
+    protected DecisionTableXLSContent constructContent(Path path, Overview overview) {
         final DecisionTableXLSContent content = new DecisionTableXLSContent();
-        content.setOverview( loadOverview( path ) );
+        content.setOverview( overview );
         return content;
     }
 

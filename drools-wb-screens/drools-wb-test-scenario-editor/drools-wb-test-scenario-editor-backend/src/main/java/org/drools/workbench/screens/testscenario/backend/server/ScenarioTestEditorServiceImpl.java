@@ -37,6 +37,7 @@ import org.guvnor.common.services.backend.file.LinkedFilter;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.structure.server.config.ConfigGroup;
 import org.guvnor.structure.server.config.ConfigItem;
@@ -67,7 +68,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class ScenarioTestEditorServiceImpl extends KieService implements ScenarioTestEditorService {
+public class ScenarioTestEditorServiceImpl
+        extends KieService<TestScenarioModelContent>
+        implements ScenarioTestEditorService {
 
     private static final Logger logger = LoggerFactory.getLogger( ScenarioTestEditorServiceImpl.class );
 
@@ -208,35 +211,35 @@ public class ScenarioTestEditorServiceImpl extends KieService implements Scenari
 
     @Override
     public TestScenarioModelContent loadContent( Path path ) {
-        try {
-            final Scenario scenario = load( path );
-            final String packageName = projectService.resolvePackage( path ).getPackageName();
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        return super.loadContent(path);
+    }
 
-            //Get FQCN's used by model
-            final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor( dataModel, scenario );
-            final Set<String> consumedFQCNs = visitor.visit();
+    @Override
+    protected TestScenarioModelContent constructContent(Path path, Overview overview) {
+        final Scenario scenario = load(path);
+        final String packageName = projectService.resolvePackage(path).getPackageName();
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
-            //Get FQCN's used by Globals
-            consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+        //Get FQCN's used by model
+        final TestScenarioModelVisitor visitor = new TestScenarioModelVisitor(dataModel, scenario);
+        final Set<String> consumedFQCNs = visitor.visit();
 
-            DataModelOracleUtilities.populateDataModel( oracle,
-                                                        dataModel,
-                                                        consumedFQCNs );
+        //Get FQCN's used by Globals
+        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   consumedFQCNs);
 
-            return new TestScenarioModelContent( scenario,
-                                                 loadOverview( path ),
-                                                 packageName,
-                                                 dataModel );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new TestScenarioModelContent(scenario,
+                                            overview,
+                                            packageName,
+                                            dataModel);
     }
 
     @Override

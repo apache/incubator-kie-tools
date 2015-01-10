@@ -32,6 +32,7 @@ import org.drools.workbench.screens.scorecardxls.service.ScoreCardXLSService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -54,7 +55,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 // Implementation needs to implement both interfaces even though one extends the other
 // otherwise the implementation discovery mechanism for the @Service annotation fails.
 public class ScoreCardXLSServiceImpl
-        extends KieService
+        extends KieService<ScoreCardXLSContent>
         implements ScoreCardXLSService,
                    ExtendedScoreCardXLSService {
 
@@ -86,8 +87,13 @@ public class ScoreCardXLSServiceImpl
 
     @Override
     public ScoreCardXLSContent loadContent( final Path path ) {
+        return super.loadContent(path);
+    }
+
+    @Override
+    protected ScoreCardXLSContent constructContent(Path path, Overview overview) {
         final ScoreCardXLSContent content = new ScoreCardXLSContent();
-        content.setOverview( loadOverview( path ) );
+        content.setOverview( overview );
         return content;
     }
 

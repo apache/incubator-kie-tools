@@ -39,6 +39,7 @@ import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
@@ -64,7 +65,9 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
 @ApplicationScoped
-public class GuidedDecisionTableEditorServiceImpl extends KieService implements GuidedDecisionTableEditorService {
+public class GuidedDecisionTableEditorServiceImpl
+        extends KieService<GuidedDecisionTableEditorContent>
+        implements GuidedDecisionTableEditorService {
 
     //Filters to include *all* applicable resources
     private static final JavaFileFilter FILTER_JAVA = new JavaFileFilter();
@@ -151,36 +154,36 @@ public class GuidedDecisionTableEditorServiceImpl extends KieService implements 
 
     @Override
     public GuidedDecisionTableEditorContent loadContent( final Path path ) {
-        try {
-            final GuidedDecisionTable52 model = load( path );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        return super.loadContent(path);
+    }
 
-            //Get FQCN's used by model
-            final GuidedDecisionTableModelVisitor visitor = new GuidedDecisionTableModelVisitor( model );
-            final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
+    @Override
+    protected GuidedDecisionTableEditorContent constructContent(Path path, Overview overview) {
+        final GuidedDecisionTable52 model = load(path);
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
-            //Get FQCN's used by Globals
-            consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+        //Get FQCN's used by model
+        final GuidedDecisionTableModelVisitor visitor = new GuidedDecisionTableModelVisitor(model);
+        final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
 
-            DataModelOracleUtilities.populateDataModel( oracle,
-                                                        dataModel,
-                                                        consumedFQCNs );
+        //Get FQCN's used by Globals
+        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
 
-            final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions( path );
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   consumedFQCNs);
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+        final Set<PortableWorkDefinition> workItemDefinitions = workItemsService.loadWorkItemDefinitions(path);
 
-            return new GuidedDecisionTableEditorContent( model,
-                                                         workItemDefinitions,
-                                                         loadOverview( path ),
-                                                         dataModel );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new GuidedDecisionTableEditorContent(model,
+                                                    workItemDefinitions,
+                                                    overview,
+                                                    dataModel);
     }
 
     @Override

@@ -38,6 +38,7 @@ import org.guvnor.common.services.backend.file.JavaFileFilter;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.workbench.common.services.backend.file.DRLFileFilter;
@@ -62,7 +63,7 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class GuidedRuleEditorServiceImpl
-        extends KieService
+        extends KieService<GuidedEditorContent>
         implements GuidedRuleEditorService {
 
     //Filters to include *all* applicable resources
@@ -166,33 +167,33 @@ public class GuidedRuleEditorServiceImpl
 
     @Override
     public GuidedEditorContent loadContent( final Path path ) {
-        try {
-            final RuleModel model = load( path );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
-            final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
+        return super.loadContent(path);
+    }
 
-            //Get FQCN's used by model
-            final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
-            final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
+    @Override
+    protected GuidedEditorContent constructContent(Path path, Overview overview) {
+        final RuleModel model = load(path);
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
+        final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
-            //Get FQCN's used by Globals
-            consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+        //Get FQCN's used by model
+        final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor(model);
+        final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
 
-            DataModelOracleUtilities.populateDataModel( oracle,
-                                                        dataModel,
-                                                        consumedFQCNs );
+        //Get FQCN's used by Globals
+        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
 
-            //Signal opening to interested parties
-            resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                               sessionInfo ) );
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   consumedFQCNs);
 
-            return new GuidedEditorContent( model,
-                                            loadOverview( path ),
-                                            dataModel );
+        //Signal opening to interested parties
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         sessionInfo));
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
-        }
+        return new GuidedEditorContent(model,
+                                       overview,
+                                       dataModel);
     }
 
     @Override
