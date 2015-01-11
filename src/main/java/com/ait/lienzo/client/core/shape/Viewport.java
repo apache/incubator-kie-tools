@@ -314,6 +314,26 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
             }
         }
     }
+    
+    public final void batch()
+    {
+        final NFastArrayList<Scene> scenes = getChildNodes();
+
+        if (null != scenes)
+        {
+            final int size = scenes.size();
+
+            for (int i = 0; i < size; i++)
+            {
+                final Scene scene = scenes.get(i);
+
+                if (null != scene)
+                {
+                    scene.batch();
+                }
+            }
+        }
+    }
 
     /**
      * Returns the main Scene for the {@link Viewport}

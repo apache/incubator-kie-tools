@@ -41,72 +41,68 @@ import com.ait.lienzo.shared.core.types.NodeType;
  */
 public class DragContext
 {
-    // (x0,y0) in global coordinates - i.e. event(x,y) at start of drag operation
-    private int                    m_dragStartX;
+    private int                          m_evtx;
 
-    private int                    m_dragStartY;
+    private int                          m_evty;
 
-    // (x1,y1) in global coordinates - i.e. event(x,y) of last drag move
-    private int                    m_eventX;
+    private int                          m_dstx;
 
-    private int                    m_eventY;
+    private int                          m_dsty;
 
-    // (dx,dy) in global coordinates
-    private int                    m_dx            = 0;
+    private final Transform              m_gtol;
 
-    private int                    m_dy            = 0;
+    private final Transform              m_ltog;
 
-    // (dx,dy) in local coordinates (adjusted by DragConstraintsEnforcer)
-    private Point2D                m_localAdjusted = new Point2D(0, 0);
+    private final IPrimitive<?>          m_prim;
 
-    private Transform              m_globalToLocal;
+    private final double                 m_prmx;
 
-    private Transform              m_localToGlobal;
+    private final double                 m_prmy;
 
-    private IPrimitive<?>          m_node;
+    private final int                    m_begx;
 
-    private Point2D                m_p1            = new Point2D(0, 0); // (0,0) converted from global to local coordinates
+    private final int                    m_begy;
 
-    private DragConstraintEnforcer m_dragConstraints;
+    private final DragConstraintEnforcer m_drag;
 
-    private double                 m_nodeX;
+    private final Point2D                m_lclp = new Point2D(0, 0);
 
-    private double                 m_nodeY;
+    private final Point2D                m_pref = new Point2D(0, 0);
 
     /**
      * Starts a drag operation for the specified node.
      * 
      * @param event the first drag event
-     * @param node the node that is being dragged
+     * @param prim the node that is being dragged
      */
-    public DragContext(INodeXYEvent event, IPrimitive<?> node)
+    public DragContext(final INodeXYEvent event, final IPrimitive<?> prim)
     {
-        m_node = node;
+        m_prim = prim;
 
-        m_nodeX = node.getX();
+        m_prmx = m_prim.getX();
 
-        m_nodeY = node.getY();
+        m_prmy = m_prim.getY();
 
-        m_eventX = m_dragStartX = event.getX();
+        m_evtx = m_begx = event.getX();
 
-        m_eventY = m_dragStartY = event.getY();
+        m_evty = m_begy = event.getY();
 
-        m_localToGlobal = m_node.getParent().getAbsoluteTransform();
+        m_ltog = m_prim.getParent().getAbsoluteTransform();
 
-        m_globalToLocal = m_localToGlobal.getInverse();
+        m_gtol = m_ltog.getInverse();
 
         // Convert one point from global to local coordinates
         // We need it when calculating (dx,dy) in local coordinates
 
-        m_globalToLocal.transform(new Point2D(0, 0), m_p1);
+        m_gtol.transform(new Point2D(0, 0), m_pref);
 
         // Initialize the DragConstraintsEnforcer
 
-        m_dragConstraints = node.getDragConstraints();
+        m_drag = m_prim.getDragConstraints();
 
-        if (m_dragConstraints != null)
+        if (m_drag != null)
         {
-            m_dragConstraints.startDrag(this);
+            m_drag.startDrag(this);
         }
     }
 
@@ -120,9 +116,9 @@ public class DragContext
     {
         context.save();
 
-        context.transform(m_localToGlobal);
+        context.transform(m_ltog);
 
-        m_node.drawWithTransforms(context, getNodeParentsAlpha(m_node.asNode()));
+        m_prim.drawWithTransforms(context, getNodeParentsAlpha(m_prim.asNode()));
 
         context.restore();
     }
@@ -160,31 +156,31 @@ public class DragContext
      */
     public void dragUpdate(INodeXYEvent event)
     {
-        m_eventX = event.getX();
+        m_evtx = event.getX();
 
-        m_eventY = event.getY();
+        m_evty = event.getY();
 
-        m_dx = m_eventX - m_dragStartX;
+        m_dstx = m_evtx - m_begx;
 
-        m_dy = m_eventY - m_dragStartY;
+        m_dsty = m_evty - m_begy;
 
         Point2D p2 = new Point2D(0, 0);
 
-        m_globalToLocal.transform(new Point2D(m_dx, m_dy), p2);
+        m_gtol.transform(new Point2D(m_dstx, m_dsty), p2);
 
-        m_localAdjusted.setX(p2.getX() - m_p1.getX());
+        m_lclp.setX(p2.getX() - m_pref.getX());
 
-        m_localAdjusted.setY(p2.getY() - m_p1.getY());
+        m_lclp.setY(p2.getY() - m_pref.getY());
 
         // Let the constraints adjust the location if necessary
 
-        if (m_dragConstraints != null)
+        if (m_drag != null)
         {
-            m_dragConstraints.adjust(m_localAdjusted);
+            m_drag.adjust(m_lclp);
         }
-        m_node.setX(m_nodeX + m_localAdjusted.getX());
+        m_prim.setX(m_prmx + m_lclp.getX());
 
-        m_node.setY(m_nodeY + m_localAdjusted.getY());
+        m_prim.setY(m_prmy + m_lclp.getY());
     }
 
     /**
@@ -197,9 +193,9 @@ public class DragContext
     {
         // update X,Y attributes
 
-        m_node.setX(m_nodeX + m_localAdjusted.getX());
+        m_prim.setX(m_prmx + m_lclp.getX());
 
-        m_node.setY(m_nodeY + m_localAdjusted.getY());
+        m_prim.setY(m_prmy + m_lclp.getY());
     }
 
     /**
@@ -208,9 +204,9 @@ public class DragContext
      */
     public void reset()
     {
-        m_node.setX(m_nodeX);
+        m_prim.setX(m_prmx);
 
-        m_node.setY(m_nodeY);
+        m_prim.setY(m_prmy);
     }
 
     /**
@@ -220,7 +216,7 @@ public class DragContext
      */
     public int getDragStartX()
     {
-        return m_dragStartX;
+        return m_begx;
     }
 
     /**
@@ -230,7 +226,7 @@ public class DragContext
      */
     public int getDragStartY()
     {
-        return m_dragStartY;
+        return m_begy;
     }
 
     /**
@@ -239,7 +235,7 @@ public class DragContext
      */
     public int getEventX()
     {
-        return m_eventX;
+        return m_evtx;
     }
 
     /**
@@ -248,7 +244,7 @@ public class DragContext
      */
     public int getEventY()
     {
-        return m_eventY;
+        return m_evty;
     }
 
     /**
@@ -258,7 +254,7 @@ public class DragContext
      */
     public int getDx()
     {
-        return m_dx;
+        return m_dstx;
     }
 
     /**
@@ -268,7 +264,7 @@ public class DragContext
      */
     public int getDy()
     {
-        return m_dy;
+        return m_dsty;
     }
 
     /**
@@ -281,7 +277,7 @@ public class DragContext
      */
     public Transform getGlobalToLocal()
     {
-        return m_globalToLocal;
+        return m_gtol;
     }
 
     /**
@@ -294,7 +290,7 @@ public class DragContext
      */
     public Transform getLocalToGlobal()
     {
-        return m_localToGlobal;
+        return m_ltog;
     }
 
     /**
@@ -305,7 +301,7 @@ public class DragContext
      */
     public Point2D getLocalAdjusted()
     {
-        return m_localAdjusted;
+        return m_lclp;
     }
 
     /**
@@ -315,7 +311,7 @@ public class DragContext
      */
     public IPrimitive<?> getNode()
     {
-        return m_node;
+        return m_prim;
     }
 
     /**
@@ -326,6 +322,6 @@ public class DragContext
      */
     public DragConstraintEnforcer getDragConstraints()
     {
-        return m_dragConstraints;
+        return m_drag;
     }
 }

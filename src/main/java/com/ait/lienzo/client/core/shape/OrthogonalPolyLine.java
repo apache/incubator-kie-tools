@@ -95,12 +95,12 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
         return true;
     }
-    
+
     @Override
     public OrthogonalPolyLine refresh()
     {
         m_list.clear();
-        
+
         return this;
     }
 
@@ -140,6 +140,10 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
                 final NFastDoubleArrayJSO alternate = getOrthonalLinePoints(points, ALTERNATE);
 
+                if ((null == normalize) && (null == alternate))
+                {
+                    return false;
+                }
                 if ((null == alternate) || ((null != normalize) && (normalize.size() < alternate.size())))
                 {
                     m_list.M(p1.getX(), p1.getY());

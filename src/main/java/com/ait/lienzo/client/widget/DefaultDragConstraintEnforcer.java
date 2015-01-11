@@ -32,7 +32,7 @@ import com.ait.lienzo.shared.core.types.DragConstraint;
  * @see DragBounds
  * @see DragConstraintEnforcer
  */
-public class DefaultDragConstraintEnforcer implements DragConstraintEnforcer
+public final class DefaultDragConstraintEnforcer implements DragConstraintEnforcer
 {
     private DragBounds     m_bounds;
 
@@ -41,65 +41,79 @@ public class DefaultDragConstraintEnforcer implements DragConstraintEnforcer
     private double         m_dx1, m_dx2, m_dy1, m_dy2;
 
     @Override
-    public void startDrag(DragContext dragContext)
+    public final void startDrag(final DragContext dragContext)
     {
-        Attributes attr = dragContext.getNode().asNode().getAttributes();
+        final Attributes attr = dragContext.getNode().asNode().getAttributes();
 
         m_constraint = attr.getDragConstraint();
 
         m_bounds = attr.getDragBounds();
 
-        if (m_bounds != null)
+        if (null != m_bounds)
         {
-            double x = attr.getX();
+            final double x = attr.getX();
 
-            double y = attr.getY();
+            final double y = attr.getY();
 
-            if (m_bounds.isX1()) m_dx1 = m_bounds.getX1() - x;
-
-            if (m_bounds.isX2()) m_dx2 = m_bounds.getX2() - x;
-
-            if (m_bounds.isY1()) m_dy1 = m_bounds.getY1() - y;
-
-            if (m_bounds.isY2()) m_dy2 = m_bounds.getY2() - y;
+            if (m_bounds.isX1())
+            {
+                m_dx1 = m_bounds.getX1() - x;
+            }
+            if (m_bounds.isX2())
+            {
+                m_dx2 = m_bounds.getX2() - x;
+            }
+            if (m_bounds.isY1())
+            {
+                m_dy1 = m_bounds.getY1() - y;
+            }
+            if (m_bounds.isY2())
+            {
+                m_dy2 = m_bounds.getY2() - y;
+            }
         }
     }
 
     @Override
-    public void adjust(Point2D dxy)
+    public final void adjust(final Point2D d)
     {
-        double dx = dxy.getX();
-
-        double dy = dxy.getY();
-
-        switch (m_constraint)
+        if ((DragConstraint.NONE == m_constraint) && (null == m_bounds))
         {
-            default:
-            case NONE:
+            return;
+        }
+        double x = d.getX();
+
+        double y = d.getY();
+
+        if (DragConstraint.HORIZONTAL == m_constraint)
+        {
+            y = 0;
+        }
+        else if (DragConstraint.VERTICAL == m_constraint)
+        {
+            x = 0;
+        }
+        if (null != m_bounds)
+        {
+            if (m_bounds.isX1() && (x < m_dx1))
             {
-                break;
+                x = m_dx1;
             }
-            case HORIZONTAL:
+            else if (m_bounds.isX2() && (x > m_dx2))
             {
-                dy = 0;
-                break;
+                x = m_dx2;
             }
-            case VERTICAL:
+            if (m_bounds.isY1() && (y < m_dy1))
             {
-                dx = 0;
-                break;
+                y = m_dy1;
+            }
+            else if (m_bounds.isY2() && (y > m_dy2))
+            {
+                y = m_dy2;
             }
         }
-        if (m_bounds != null)
-        {
-            if (m_bounds.isX1() && dx < m_dx1) dx = m_dx1;
-            else if (m_bounds.isX2() && dx > m_dx2) dx = m_dx2;
+        d.setX(x);
 
-            if (m_bounds.isY1() && dy < m_dy1) dy = m_dy1;
-            else if (m_bounds.isY2() && dy > m_dy2) dy = m_dy2;
-        }
-        dxy.setX(dx);
-
-        dxy.setY(dy);
+        d.setY(y);
     }
 }

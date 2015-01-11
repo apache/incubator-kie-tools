@@ -44,6 +44,5 @@ abstract class AbstractNodeGestureEvent<H extends EventHandler> extends GwtEvent
 
     public static class Type<H> extends GwtEvent.Type<H>
     {
-
     }
 }

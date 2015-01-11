@@ -27,9 +27,9 @@ public class NodeMouseExitEvent extends AbstractNodeMouseEvent<MouseEvent<?>, No
         return TYPE;
     }
 
-    public NodeMouseExitEvent(int x, int y)
+    public NodeMouseExitEvent(MouseEvent<?> e, int x, int y)
     {
-        super(x, y);
+        super(e, x, y);
     }
 
     @Override

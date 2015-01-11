@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.event;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class NodeTouchStartEvent extends AbstractNodeTouchEvent<NodeTouchStartHandler>
 {
@@ -27,7 +27,7 @@ public class NodeTouchStartEvent extends AbstractNodeTouchEvent<NodeTouchStartHa
         return TYPE;
     }
 
-    public NodeTouchStartEvent(ArrayList<TouchPoint> touches)
+    public NodeTouchStartEvent(List<TouchPoint> touches)
     {
         super(touches);
     }

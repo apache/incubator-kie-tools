@@ -17,6 +17,8 @@
 package com.ait.lienzo.client.widget;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.INodeXYEvent;
@@ -45,6 +47,7 @@ import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.google.gwt.core.client.JsArray;
@@ -94,6 +97,10 @@ final class LienzoHandlerManager
 {
     private final LienzoPanel m_lienzo;
 
+    private final Viewport    m_viewport;
+
+    private final Mediators   m_mediators;
+
     private boolean           m_dragging               = false;
 
     private boolean           m_dragging_using_touches = false;
@@ -112,40 +119,38 @@ final class LienzoHandlerManager
 
     private DragContext       m_dragContext;
 
-    ArrayList<TouchPoint>     m_touches                = null;
+    private List<TouchPoint>  m_touches                = null;
 
-    private Mediators         m_mediators;
-
-    public LienzoHandlerManager(LienzoPanel lienzo)
+    public LienzoHandlerManager(final LienzoPanel lienzo)
     {
         m_lienzo = lienzo;
 
-        m_mediators = lienzo.getViewport().getMediators();
+        m_viewport = m_lienzo.getViewport();
 
-        if (null != m_lienzo)
-        {
-            addHandlers();
-        }
+        m_mediators = m_viewport.getMediators();
+
+        addHandlers();
     }
 
-    private final ArrayList<TouchPoint> getTouches(TouchEvent<?> event)
+    private final List<TouchPoint> getTouches(final TouchEvent<?> event)
     {
-        ArrayList<TouchPoint> touches = new ArrayList<TouchPoint>();
+        final JsArray<Touch> jsarray = event.getTouches();
 
-        JsArray<Touch> jsarray = event.getTouches();
-
-        Element element = event.getRelativeElement();
+        final Element element = event.getRelativeElement();
 
         if ((null != jsarray) && (jsarray.length() > 0))
         {
-            int size = jsarray.length();
+            final int size = jsarray.length();
+
+            final ArrayList<TouchPoint> touches = new ArrayList<TouchPoint>(size);
 
             for (int i = 0; i < size; i++)
             {
-                Touch touch = jsarray.get(i);
+                final Touch touch = jsarray.get(i);
 
                 touches.add(new TouchPoint(touch.getRelativeX(element), touch.getRelativeY(element)));
             }
+            return touches;
         }
         else
         {
@@ -153,9 +158,8 @@ final class LienzoHandlerManager
 
             int y = event.getNativeEvent().getClientY() - element.getAbsoluteTop() + element.getScrollTop() + element.getOwnerDocument().getScrollTop();
 
-            touches.add(new TouchPoint(x, y));
+            return Arrays.asList(new TouchPoint(x, y));
         }
-        return touches;
     }
 
     private final void addHandlers()
@@ -163,7 +167,7 @@ final class LienzoHandlerManager
         m_lienzo.addClickHandler(new ClickHandler()
         {
             @Override
-            public void onClick(ClickEvent event)
+            public void onClick(final ClickEvent event)
             {
                 event.preventDefault();
 
@@ -173,232 +177,234 @@ final class LienzoHandlerManager
         m_lienzo.addDoubleClickHandler(new DoubleClickHandler()
         {
             @Override
-            public void onDoubleClick(DoubleClickEvent event)
+            public void onDoubleClick(final DoubleClickEvent event)
             {
+                event.preventDefault();
+
                 onNodeMouseDoubleClick(new NodeMouseDoubleClickEvent(event));
             }
         });
         m_lienzo.addMouseMoveHandler(new MouseMoveHandler()
         {
             @Override
-            public void onMouseMove(MouseMoveEvent event)
+            public void onMouseMove(final MouseMoveEvent event)
             {
                 event.preventDefault();
-
-                NodeMouseMoveEvent nodeEvent = new NodeMouseMoveEvent(event);
 
                 if ((m_dragging) && (m_dragging_using_touches))
                 {
                     return; // Ignore weird Mouse Move (0,0) in the middle of a Touch Drag on iOS/Safari
                 }
-                if (m_mediators.handleEvent(nodeEvent))
+                final NodeMouseMoveEvent nevent = new NodeMouseMoveEvent(event);
+
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseMove(nodeEvent);
+                onNodeMouseMove(nevent);
             }
         });
         m_lienzo.addMouseUpHandler(new MouseUpHandler()
         {
             @Override
-            public void onMouseUp(MouseUpEvent event)
+            public void onMouseUp(final MouseUpEvent event)
             {
-                NodeMouseUpEvent nodeEvent = new NodeMouseUpEvent(event);
+                final NodeMouseUpEvent nevent = new NodeMouseUpEvent(event);
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseUp(nodeEvent);
+                onNodeMouseUp(nevent);
             }
         });
         m_lienzo.addMouseDownHandler(new MouseDownHandler()
         {
             @Override
-            public void onMouseDown(MouseDownEvent event)
+            public void onMouseDown(final MouseDownEvent event)
             {
                 event.preventDefault();
 
-                NodeMouseDownEvent nodeEvent = new NodeMouseDownEvent(event);
+                final NodeMouseDownEvent nevent = new NodeMouseDownEvent(event);
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseDown(nodeEvent);
+                onNodeMouseDown(nevent);
             }
         });
         m_lienzo.addMouseOutHandler(new MouseOutHandler()
         {
             @Override
-            public void onMouseOut(MouseOutEvent event)
+            public void onMouseOut(final MouseOutEvent event)
             {
-                NodeMouseOutEvent nodeEvent = new NodeMouseOutEvent(event);
+                final NodeMouseOutEvent nevent = new NodeMouseOutEvent(event);
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseOut(nodeEvent);
+                onNodeMouseOut(nevent);
             }
         });
         m_lienzo.addMouseOverHandler(new MouseOverHandler()
         {
             @Override
-            public void onMouseOver(MouseOverEvent event)
+            public void onMouseOver(final MouseOverEvent event)
             {
-                NodeMouseOverEvent nodeEvent = new NodeMouseOverEvent(event);
+                final NodeMouseOverEvent nevent = new NodeMouseOverEvent(event);
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseOver(nodeEvent);
+                onNodeMouseOver(nevent);
             }
         });
         m_lienzo.addMouseWheelHandler(new MouseWheelHandler()
         {
             @Override
-            public void onMouseWheel(MouseWheelEvent event)
+            public void onMouseWheel(final MouseWheelEvent event)
             {
-                NodeMouseWheelEvent nodeEvent = new NodeMouseWheelEvent(event);
+                final NodeMouseWheelEvent nevent = new NodeMouseWheelEvent(event);
 
-                if (false == m_mediators.handleEvent(nodeEvent))
-                {
-                    fireEvent(nodeEvent);
-                }
-                else
+                if (m_mediators.handleEvent(nevent))
                 {
                     event.preventDefault();
 
                     event.stopPropagation();
+                }
+                else
+                {
+                    fireEvent(nevent);
                 }
             }
         });
         m_lienzo.addTouchCancelHandler(new TouchCancelHandler()
         {
             @Override
-            public void onTouchCancel(TouchCancelEvent event)
+            public void onTouchCancel(final TouchCancelEvent event)
             {
                 event.preventDefault();
 
-                NodeTouchCancelEvent nodeEvent = new NodeTouchCancelEvent(getTouches(event));
+                final NodeTouchCancelEvent nevent = new NodeTouchCancelEvent(getTouches(event));
 
                 if (m_mediators.handleEvent(event))
                 {
                     return;
                 }
-                onNodeMouseOut(nodeEvent);
+                onNodeMouseOut(nevent);
             }
         });
         m_lienzo.addTouchEndHandler(new TouchEndHandler()
         {
             @Override
-            public void onTouchEnd(TouchEndEvent event)
+            public void onTouchEnd(final TouchEndEvent event)
             {
                 event.preventDefault();
 
-                NodeTouchEndEvent nodeEvent = new NodeTouchEndEvent(m_touches);
+                final NodeTouchEndEvent nevent = new NodeTouchEndEvent(m_touches);
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseUp(nodeEvent);
+                onNodeMouseUp(nevent);
             }
         });
         m_lienzo.addTouchMoveHandler(new TouchMoveHandler()
         {
             @Override
-            public void onTouchMove(TouchMoveEvent event)
+            public void onTouchMove(final TouchMoveEvent event)
             {
                 event.preventDefault();
 
                 m_touches = getTouches(event);
 
-                NodeTouchMoveEvent nodeEvent = new NodeTouchMoveEvent(m_touches);
+                final NodeTouchMoveEvent nevent = new NodeTouchMoveEvent(m_touches);
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseMove(nodeEvent);
+                onNodeMouseMove(nevent);
             }
         });
         m_lienzo.addTouchStartHandler(new TouchStartHandler()
         {
             @Override
-            public void onTouchStart(TouchStartEvent event)
+            public void onTouchStart(final TouchStartEvent event)
             {
                 event.preventDefault();
 
                 m_touches = getTouches(event);
 
-                NodeTouchStartEvent nodeEvent = new NodeTouchStartEvent(m_touches);
+                final NodeTouchStartEvent nevent = new NodeTouchStartEvent(m_touches);
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                onNodeMouseDown(nodeEvent);
+                onNodeMouseDown(nevent);
             }
         });
         m_lienzo.addGestureStartHandler(new GestureStartHandler()
         {
             @Override
-            public void onGestureStart(GestureStartEvent event)
+            public void onGestureStart(final GestureStartEvent event)
             {
                 event.preventDefault();
 
-                NodeGestureStartEvent nodeEvent = new NodeGestureStartEvent(event.getScale(), event.getRotation());
+                final NodeGestureStartEvent nevent = new NodeGestureStartEvent(event.getScale(), event.getRotation());
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                fireEvent(nodeEvent);
+                fireEvent(nevent);
             }
         });
         m_lienzo.addGestureEndHandler(new GestureEndHandler()
         {
             @Override
-            public void onGestureEnd(GestureEndEvent event)
+            public void onGestureEnd(final GestureEndEvent event)
             {
                 event.preventDefault();
 
-                NodeGestureEndEvent nodeEvent = new NodeGestureEndEvent(event.getScale(), event.getRotation());
+                final NodeGestureEndEvent nevent = new NodeGestureEndEvent(event.getScale(), event.getRotation());
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                fireEvent(nodeEvent);
+                fireEvent(nevent);
             }
         });
         m_lienzo.addGestureChangeHandler(new GestureChangeHandler()
         {
             @Override
-            public void onGestureChange(GestureChangeEvent event)
+            public void onGestureChange(final GestureChangeEvent event)
             {
                 event.preventDefault();
 
-                NodeGestureChangeEvent nodeEvent = new NodeGestureChangeEvent(event.getScale(), event.getRotation());
+                final NodeGestureChangeEvent nevent = new NodeGestureChangeEvent(event.getScale(), event.getRotation());
 
-                if (m_mediators.handleEvent(nodeEvent))
+                if (m_mediators.handleEvent(nevent))
                 {
                     return;
                 }
-                fireEvent(nodeEvent);
+                fireEvent(nevent);
             }
         });
     }
 
-    private final Shape<?> findShapeAtPoint(int x, int y)
+    private final Shape<?> findShapeAtPoint(final int x, final int y)
     {
-        return m_lienzo.getViewport().findShapeAtPoint(x, y);
+        return m_viewport.findShapeAtPoint(x, y);
     }
 
-    private final void doDragCancel(INodeXYEvent event)
+    private final void doDragCancel(final INodeXYEvent event)
     {
         if (m_dragging)
         {
@@ -450,7 +456,7 @@ final class LienzoHandlerManager
         }
     }
 
-    private final void doDragStart(IPrimitive<?> node, INodeXYEvent event)
+    private final void doDragStart(final IPrimitive<?> node, final INodeXYEvent event)
     {
         if (m_dragging)
         {
@@ -484,7 +490,7 @@ final class LienzoHandlerManager
             m_drag_node.setVisible(false);
 
             m_drag_node.getLayer().draw();
-            
+
             m_dragContext.drawNodeWithTransforms(m_lienzo.getDragLayer().getContext());
         }
         m_dragging_dispatch_move = m_drag_node.isEventHandled(NodeDragMoveEvent.getType());
@@ -492,7 +498,7 @@ final class LienzoHandlerManager
         m_dragging_using_touches = ((event.getNodeEvent().getAssociatedType() == NodeTouchMoveEvent.getType()) || (event.getNodeEvent().getAssociatedType() == NodeTouchStartEvent.getType()));
     }
 
-    private final void doDragMove(INodeXYEvent event)
+    private final void doDragMove(final INodeXYEvent event)
     {
         m_dragContext.dragUpdate(event);
 
@@ -512,7 +518,7 @@ final class LienzoHandlerManager
         }
     }
 
-    private final void onNodeMouseClick(INodeXYEvent event)
+    private final void onNodeMouseClick(final INodeXYEvent event)
     {
         if (m_dragging_ignore_clicks)
         {
@@ -520,7 +526,7 @@ final class LienzoHandlerManager
 
             return;
         }
-        IPrimitive<?> prim = findPrimitiveForEvent(event, NodeMouseClickEvent.getType());
+        final IPrimitive<?> prim = findPrimitiveForEvent(event, NodeMouseClickEvent.getType());
 
         if (null != prim)
         {
@@ -532,9 +538,9 @@ final class LienzoHandlerManager
         }
     }
 
-    private final void onNodeMouseDoubleClick(INodeXYEvent event)
+    private final void onNodeMouseDoubleClick(final INodeXYEvent event)
     {
-        IPrimitive<?> prim = findPrimitiveForEvent(event, NodeMouseDoubleClickEvent.getType());
+        final IPrimitive<?> prim = findPrimitiveForEvent(event, NodeMouseDoubleClickEvent.getType());
 
         if (null != prim)
         {
@@ -546,7 +552,7 @@ final class LienzoHandlerManager
         }
     }
 
-    private final IPrimitive<?> findPrimitiveForEvent(INodeXYEvent event, Type<?> type)
+    private final IPrimitive<?> findPrimitiveForEvent(final INodeXYEvent event, final Type<?> type)
     {
         IPrimitive<?> find = null;
 
@@ -554,7 +560,7 @@ final class LienzoHandlerManager
 
         while ((null != node) && (node.getNodeType() != NodeType.LAYER))
         {
-            IPrimitive<?> prim = node.asPrimitive();
+            final IPrimitive<?> prim = node.asPrimitive();
 
             if ((null != prim) && (prim.isListening()) && (prim.isVisible()) && (prim.isEventHandled(type)))
             {
@@ -565,7 +571,7 @@ final class LienzoHandlerManager
         return find;
     }
 
-    private final void doPrepareDragging(INodeXYEvent event)
+    private final void doPrepareDragging(final INodeXYEvent event)
     {
         IPrimitive<?> find = null;
 
@@ -573,7 +579,7 @@ final class LienzoHandlerManager
 
         while ((null != node) && (node.getNodeType() != NodeType.LAYER))
         {
-            IPrimitive<?> prim = node.asPrimitive();
+            final IPrimitive<?> prim = node.asPrimitive();
 
             if ((null != prim) && (prim.isDraggable()) && (prim.isListening()) && (prim.isVisible()))
             {
@@ -587,7 +593,7 @@ final class LienzoHandlerManager
         }
     }
 
-    private final void onNodeMouseDown(INodeXYEvent event)
+    private final void onNodeMouseDown(final INodeXYEvent event)
     {
         if (m_dragging_mouse_pressed)
         {
@@ -599,7 +605,7 @@ final class LienzoHandlerManager
         }
         m_dragging_mouse_pressed = true;
 
-        IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
+        final IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
 
         if (null != prim)
         {
@@ -611,24 +617,28 @@ final class LienzoHandlerManager
         }
     }
 
-    private final void doCancelEnterExitShape(INodeXYEvent event)
+    private final void doCancelEnterExitShape(final INodeXYEvent event)
     {
         if ((null != m_over_prim) && (m_over_prim.isEventHandled(NodeMouseExitEvent.getType())))
         {
-            m_over_prim.fireEvent(new NodeMouseExitEvent(event.getX(), event.getY()));
+            m_over_prim.fireEvent(new NodeMouseExitEvent(null, event.getX(), event.getY()));
         }
         m_over_prim = null;
     }
 
     // This will also return the shape under the cursor, for some optimization on Mouse Move
 
-    private final Shape<?> doCheckEnterExitShape(INodeXYEvent event)
+    private final Shape<?> doCheckEnterExitShape(final INodeXYEvent event)
     {
-        Shape<?> shape = findShapeAtPoint(event.getX(), event.getY());
+        final int x = event.getX();
+
+        final int y = event.getY();
+
+        final Shape<?> shape = findShapeAtPoint(x, y);
 
         if (shape != null)
         {
-            IPrimitive<?> prim = shape.asPrimitive();
+            final IPrimitive<?> prim = shape.asPrimitive();
 
             if (null != m_over_prim)
             {
@@ -636,7 +646,7 @@ final class LienzoHandlerManager
                 {
                     if (m_over_prim.isEventHandled(NodeMouseExitEvent.getType()))
                     {
-                        m_over_prim.fireEvent(new NodeMouseExitEvent(event.getX(), event.getY()));
+                        m_over_prim.fireEvent(new NodeMouseExitEvent(null, x, y));
                     }
                 }
             }
@@ -644,7 +654,7 @@ final class LienzoHandlerManager
             {
                 if ((null != prim) && (prim.isEventHandled(NodeMouseEnterEvent.getType())))
                 {
-                    prim.fireEvent(new NodeMouseEnterEvent(event.getX(), event.getY()));
+                    prim.fireEvent(new NodeMouseEnterEvent(null, x, y));
                 }
                 m_over_prim = prim;
             }
@@ -656,7 +666,7 @@ final class LienzoHandlerManager
         return shape;
     }
 
-    private final void onNodeMouseMove(INodeXYEvent event)
+    private final void onNodeMouseMove(final INodeXYEvent event)
     {
         if (m_dragging_mouse_pressed)
         {
@@ -682,7 +692,7 @@ final class LienzoHandlerManager
         }
         doCheckEnterExitShape(event);
 
-        IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
+        final IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
 
         if (null != prim)
         {
@@ -694,7 +704,7 @@ final class LienzoHandlerManager
         }
     }
 
-    private final void onNodeMouseUp(INodeXYEvent event)
+    private final void onNodeMouseUp(final INodeXYEvent event)
     {
         m_dragging_mouse_pressed = false;
 
@@ -706,7 +716,7 @@ final class LienzoHandlerManager
 
             return;
         }
-        IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
+        final IPrimitive<?> prim = findPrimitiveForEvent(event, event.getNodeEvent().getAssociatedType());
 
         if (null != prim)
         {
@@ -718,7 +728,7 @@ final class LienzoHandlerManager
         }
     }
 
-    private final void onNodeMouseOut(INodeXYEvent event)
+    private final void onNodeMouseOut(final INodeXYEvent event)
     {
         m_dragging_mouse_pressed = false; // in case someone does a pop up ( Window.alert() ), this causes technically a MouseDown cancel
 
@@ -731,9 +741,9 @@ final class LienzoHandlerManager
         fireEvent(event.getNodeEvent());
     }
 
-    private final void onNodeMouseOver(INodeXYEvent event)
+    private final void onNodeMouseOver(final INodeXYEvent event)
     {
-        Node<?> node = doCheckEnterExitShape(event);
+        final Node<?> node = doCheckEnterExitShape(event);
 
         if ((null != node) && (node.isListening()) && (node.isVisible()) && (node.isEventHandled(NodeMouseOverEvent.getType())))
         {
@@ -742,8 +752,8 @@ final class LienzoHandlerManager
         fireEvent(event.getNodeEvent());
     }
 
-    private final void fireEvent(GwtEvent<?> event)
+    private final void fireEvent(final GwtEvent<?> event)
     {
-        m_lienzo.getViewport().fireEvent(event);
+        m_viewport.fireEvent(event);
     }
 }

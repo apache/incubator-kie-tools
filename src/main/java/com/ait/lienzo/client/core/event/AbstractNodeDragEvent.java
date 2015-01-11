@@ -22,33 +22,32 @@ import com.google.gwt.event.shared.GwtEvent;
 
 abstract class AbstractNodeDragEvent<H extends EventHandler> extends GwtEvent<H> implements INodeXYEvent
 {
-    private final DragContext m_dragContext;
+    private final DragContext m_drag;
 
     public static class Type<H> extends GwtEvent.Type<H>
     {
-
     }
 
-    public AbstractNodeDragEvent(DragContext dragContext)
+    public AbstractNodeDragEvent(DragContext drag)
     {
-        m_dragContext = dragContext;
+        m_drag = drag;
     }
 
     @Override
     public int getX()
     {
-        return m_dragContext.getEventX();
+        return m_drag.getEventX();
     }
 
-    public DragContext getDragContext()
+    public final DragContext getDragContext()
     {
-        return m_dragContext;
+        return m_drag;
     }
 
     @Override
     public int getY()
     {
-        return m_dragContext.getEventY();
+        return m_drag.getEventY();
     }
 
     @Override

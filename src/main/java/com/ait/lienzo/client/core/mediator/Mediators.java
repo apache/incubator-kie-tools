@@ -56,56 +56,71 @@ import com.google.gwt.event.shared.GwtEvent;
  * 
  * @since 1.1
  */
-public class Mediators implements Iterable<IMediator>
+public final class Mediators implements Iterable<IMediator>
 {
     private final Viewport             m_viewport;
+
+    private int                        m_size      = 0;
 
     private boolean                    m_enabled   = true;
 
     private final ArrayList<IMediator> m_mediators = new ArrayList<IMediator>();
 
-    public Mediators(Viewport viewport)
+    public Mediators(final Viewport viewport)
     {
         m_viewport = viewport;
     }
 
-    public void push(IMediator mediator)
+    public void push(final IMediator mediator)
     {
         add(0, mediator);
     }
 
     public IMediator pop()
     {
-        if (m_mediators.size() == 0)
+        if (m_size == 0)
         {
             return null;
         }
-        return m_mediators.remove(0);
+        final IMediator last = m_mediators.remove(0);
+
+        m_size = m_mediators.size();
+
+        return last;
     }
 
-    public void add(int index, IMediator mediator)
+    public void add(final int index, final IMediator mediator)
     {
-        if (mediator instanceof AbstractMediator)
+        if (null != mediator)
         {
-            ((AbstractMediator) mediator).setViewport(m_viewport);
-        }
-        m_mediators.add(index, mediator);
-    }
-
-    public boolean remove(IMediator mediator)
-    {
-        return m_mediators.remove(mediator);
-    }
-
-    public boolean handleEvent(GwtEvent<?> event)
-    {
-        if (m_enabled)
-        {
-            for (int i = 0, n = m_mediators.size(); i < n; i++)
+            if (mediator instanceof AbstractMediator)
             {
-                IMediator m = m_mediators.get(i);
+                ((AbstractMediator) mediator).setViewport(m_viewport);
+            }
+            m_mediators.add(index, mediator);
 
-                if ((null != m) && (m.isEnabled()) && (m.handleEvent(event)))
+            m_size = m_mediators.size();
+        }
+    }
+
+    public boolean remove(final IMediator mediator)
+    {
+        final boolean removed = m_mediators.remove(mediator);
+
+        m_size = m_mediators.size();
+
+        return removed;
+    }
+
+    public boolean handleEvent(final GwtEvent<?> event)
+    {
+        if ((m_size > 0) && (m_enabled))
+        {
+            for (int i = 0; i < m_size; i++)
+            {
+                final IMediator mediator = m_mediators.get(i);
+
+                if ((null != mediator) && (mediator.isEnabled()) && (mediator.handleEvent(event)))
                 {
                     return true;
                 }
@@ -119,7 +134,7 @@ public class Mediators implements Iterable<IMediator>
         return m_enabled;
     }
 
-    public void setEnabled(boolean enabled)
+    public void setEnabled(final boolean enabled)
     {
         m_enabled = enabled;
     }

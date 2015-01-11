@@ -27,9 +27,9 @@ public class NodeDragMoveEvent extends AbstractNodeDragEvent<NodeDragMoveHandler
         return TYPE;
     }
 
-    public NodeDragMoveEvent(DragContext dragContext)
+    public NodeDragMoveEvent(DragContext drag)
     {
-        super(dragContext);
+        super(drag);
     }
 
     @Override

@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.widget;
 
-import java.util.ArrayList;
-
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.i18n.MessageConstants;
 import com.ait.lienzo.client.core.mediator.IMediator;
@@ -60,7 +58,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     private boolean              m_flex;
 
-    private Viewport             m_view;
+    private final Viewport       m_view;
 
     private Cursor               m_widget_cursor;
 
@@ -75,7 +73,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         this(new Viewport());
     }
 
-    public LienzoPanel(Viewport view)
+    public LienzoPanel(final Viewport view)
     {
         if (false == view.adopt(this))
         {
@@ -90,17 +88,17 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         doPostCTOR(Window.getClientWidth(), Window.getClientHeight(), true);
     }
 
-    public LienzoPanel(int wide, int high)
+    public LienzoPanel(final int wide, final int high)
     {
         this(new Viewport(), wide, high);
     }
 
-    public LienzoPanel(Scene scene, int wide, int high)
+    public LienzoPanel(final Scene scene, final int wide, final int high)
     {
         this(new Viewport(scene, wide, high), wide, high);
     }
 
-    public LienzoPanel(Viewport view, int wide, int high)
+    public LienzoPanel(final Viewport view, final int wide, final int high)
     {
         if (false == view.adopt(this))
         {
@@ -111,7 +109,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         doPostCTOR(wide, high, false);
     }
 
-    void doPostCTOR(int wide, int high, boolean flex)
+    private final void doPostCTOR(final int wide, final int high, final boolean flex)
     {
         m_wide = wide;
 
@@ -161,16 +159,23 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         onResize();
     }
 
-    public LienzoPanel setTransform(Transform transform)
+    public LienzoPanel setTransform(final Transform transform)
     {
-        m_view.setTransform(transform);
+        getViewport().setTransform(transform);
 
         return this;
     }
 
     public LienzoPanel draw()
     {
-        m_view.draw();
+        getViewport().draw();
+
+        return this;
+    }
+
+    public LienzoPanel batch()
+    {
+        getViewport().batch();
 
         return this;
     }
@@ -182,9 +187,11 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * @param layer
      * @return
      */
-    public void add(Layer layer)
+    public LienzoPanel add(final Layer layer)
     {
         getScene().add(layer);
+
+        return this;
     }
 
     /**
@@ -194,7 +201,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * @param layer
      * @return
      */
-    public void add(Layer layer, Layer... layers)
+    public LienzoPanel add(final Layer layer, final Layer... layers)
     {
         add(layer);
 
@@ -202,6 +209,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         {
             add(node);
         }
+        return this;
     }
 
     /**
@@ -211,9 +219,11 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * @param layer
      * @return
      */
-    public void remove(Layer layer)
+    public LienzoPanel remove(final Layer layer)
     {
         getScene().remove(layer);
+
+        return this;
     }
 
     /**
@@ -223,9 +233,11 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * @param layer
      * @return
      */
-    public void removeAll()
+    public LienzoPanel removeAll()
     {
         getScene().removeAll();
+
+        return this;
     }
 
     /**
@@ -233,20 +245,20 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * Sets the size in pixels of the {@link Viewport} contained and automatically added to the instance of the {@link LienzoPanel}
      */
     @Override
-    public void setPixelSize(int wide, int high)
+    public void setPixelSize(final int wide, final int high)
     {
         super.setPixelSize(wide, high);
 
-        m_view.setPixelSize(wide, high);
+        getViewport().setPixelSize(wide, high);
 
-        m_view.draw();
+        getViewport().draw();
     }
 
     /**
      * Sets the type of cursor to be used when hovering above the element.
      * @param cursor
      */
-    public void setCursor(Cursor cursor)
+    public LienzoPanel setCursor(final Cursor cursor)
     {
         if ((cursor != null) && (cursor != m_active_cursor))
         {
@@ -263,11 +275,14 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
                 }
             });
         }
+        return this;
     }
 
-    public void setNormalCursor(Cursor cursor)
+    public LienzoPanel setNormalCursor(final Cursor cursor)
     {
         m_normal_cursor = cursor;
+
+        return this;
     }
 
     public Cursor getNormalCursor()
@@ -275,9 +290,11 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         return m_normal_cursor;
     }
 
-    public void setSelectCursor(Cursor cursor)
+    public LienzoPanel setSelectCursor(Cursor cursor)
     {
         m_select_cursor = cursor;
+
+        return this;
     }
 
     public Cursor getSelectCursor()
@@ -301,34 +318,26 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      */
     public Scene getScene()
     {
-        return m_view.getScene();
+        return getViewport().getScene();
     }
 
     /**
      * Returns the automatically create {@link Viewport} instance.
      * @return
      */
-    public Viewport getViewport()
+    public final Viewport getViewport()
     {
         return m_view;
     }
 
-    public Iterable<Node<?>> findByID(String id)
+    public Iterable<Node<?>> findByID(final String id)
     {
-        if (null != getViewport())
-        {
-            return getViewport().findByID(id);
-        }
-        return new ArrayList<Node<?>>(0);
+        return getViewport().findByID(id);
     }
 
-    public Iterable<Node<?>> find(Predicate<Node<?>> predicate)
+    public Iterable<Node<?>> find(final Predicate<Node<?>> predicate)
     {
-        if (null != getViewport())
-        {
-            return getViewport().find(predicate);
-        }
-        return new ArrayList<Node<?>>(0);
+        return getViewport().find(predicate);
     }
 
     /**
@@ -336,9 +345,11 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * 
      * @param layer
      */
-    public void setBackgroundLayer(Layer layer)
+    public LienzoPanel setBackgroundLayer(final Layer layer)
     {
-        m_view.setBackgroundLayer(layer);
+        getViewport().setBackgroundLayer(layer);
+
+        return this;
     }
 
     /**
@@ -348,7 +359,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      */
     public Layer getDragLayer()
     {
-        return m_view.getDraglayer();
+        return getViewport().getDraglayer();
     }
 
     /**
@@ -377,27 +388,27 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      */
     public String toJSONString()
     {
-        return m_view.toJSONString();
+        return getViewport().toJSONString();
     }
 
-    public final String toDataURL()
+    public String toDataURL()
     {
-        return m_view.toDataURL();
+        return getViewport().toDataURL();
     }
 
-    public final String toDataURL(boolean includeBackgroundLayer)
+    public String toDataURL(final boolean includeBackgroundLayer)
     {
-        return m_view.toDataURL(includeBackgroundLayer);
+        return getViewport().toDataURL(includeBackgroundLayer);
     }
 
-    public final String toDataURL(DataURLType mimetype)
+    public String toDataURL(final DataURLType mimetype)
     {
-        return m_view.toDataURL(mimetype);
+        return getViewport().toDataURL(mimetype);
     }
 
-    public final String toDataURL(DataURLType mimetype, boolean includeBackgroundLayer)
+    public String toDataURL(final DataURLType mimetype, final boolean includeBackgroundLayer)
     {
-        return m_view.toDataURL(mimetype, includeBackgroundLayer);
+        return getViewport().toDataURL(mimetype, includeBackgroundLayer);
     }
 
     /**
@@ -406,9 +417,13 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * @param color String
      * @return this LienzoPanel
      */
-    public void setBackgroundColor(String color)
+    public LienzoPanel setBackgroundColor(final String color)
     {
-        getElement().getStyle().setBackgroundColor(color);
+        if (null != color)
+        {
+            getElement().getStyle().setBackgroundColor(color);
+        }
+        return this;
     }
 
     /**
@@ -417,9 +432,13 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * @param color IColor, i.e. ColorName or Color
      * @return this LienzoPanel
      */
-    public void setBackgroundColor(IColor color)
+    public LienzoPanel setBackgroundColor(final IColor color)
     {
-        setBackgroundColor(color.getColorString());
+        if (null != color)
+        {
+            setBackgroundColor(color.getColorString());
+        }
+        return this;
     }
 
     /**
@@ -442,7 +461,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      */
     public Mediators getMediators()
     {
-        return m_view.getMediators();
+        return getViewport().getMediators();
     }
 
     /**
@@ -453,9 +472,11 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      * 
      * @param mediator IMediator
      */
-    public void pushMediator(IMediator mediator)
+    public LienzoPanel pushMediator(final IMediator mediator)
     {
-        m_view.pushMediator(mediator);
+        getViewport().pushMediator(mediator);
+
+        return this;
     }
 
     public static native void enableWindowMouseWheelScroll(boolean enabled)

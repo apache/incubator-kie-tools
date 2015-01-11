@@ -25,14 +25,13 @@ import com.google.gwt.event.shared.GwtEvent;
 
 abstract class AbstractNodeTouchEvent<H extends EventHandler> extends GwtEvent<H> implements INodeXYEvent
 {
-    private final ArrayList<TouchPoint> m_touches;
+    private final List<TouchPoint> m_touches;
 
     public static class Type<H> extends GwtEvent.Type<H>
     {
-
     }
 
-    protected AbstractNodeTouchEvent(ArrayList<TouchPoint> touches)
+    protected AbstractNodeTouchEvent(List<TouchPoint> touches)
     {
         if (null == touches)
         {

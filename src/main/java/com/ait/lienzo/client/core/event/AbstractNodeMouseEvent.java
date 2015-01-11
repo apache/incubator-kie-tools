@@ -31,7 +31,6 @@ public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends 
 
     public static class Type<H> extends GwtEvent.Type<H>
     {
-
     }
 
     protected AbstractNodeMouseEvent(T event)
@@ -43,13 +42,13 @@ public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends 
         m_event = event;
     }
 
-    protected AbstractNodeMouseEvent(int x, int y)
+    protected AbstractNodeMouseEvent(T event, int x, int y)
     {
         m_x = x;
 
         m_y = y;
 
-        m_event = null;
+        m_event = event;
     }
 
     @Override

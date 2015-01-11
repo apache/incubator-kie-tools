@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.event;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class NodeTouchCancelEvent extends AbstractNodeTouchEvent<NodeTouchCancelHandler>
 {
@@ -27,7 +27,7 @@ public class NodeTouchCancelEvent extends AbstractNodeTouchEvent<NodeTouchCancel
         return TYPE;
     }
 
-    public NodeTouchCancelEvent(ArrayList<TouchPoint> touches)
+    public NodeTouchCancelEvent(List<TouchPoint> touches)
     {
         super(touches);
     }

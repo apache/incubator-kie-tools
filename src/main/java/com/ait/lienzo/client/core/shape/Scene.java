@@ -244,6 +244,29 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     }
 
     /**
+     * Iterates over the list of {@link Layer} and batch draws them all.
+     */
+    public final void batch()
+    {
+        final NFastArrayList<Layer> layers = getChildNodes();
+
+        if (null != layers)
+        {
+            final int size = layers.size();
+
+            for (int i = 0; i < size; i++)
+            {
+                final Layer layer = layers.get(i);
+
+                if (null != layer)
+                {
+                    layer.batch();
+                }
+            }
+        }
+    }
+
+    /**
      * Given a set of (x,y) coordinates, returns the {@link Shape} that is matched.
      * The {@link Shape} returned will be the one found in the upper {@link Layer}
      * Return null if no {@link Shape} is detected or found.
