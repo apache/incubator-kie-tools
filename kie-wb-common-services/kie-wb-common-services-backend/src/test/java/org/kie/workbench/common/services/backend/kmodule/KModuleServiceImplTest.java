@@ -57,9 +57,7 @@ public class KModuleServiceImplTest {
 //                                              paths,
                                               mock( KieProjectService.class ),
                                               mock( MetadataService.class ),
-                                              kProjectContentHandler,
-                                              mock( User.class ),
-                                              mock( SessionInfo.class ) );
+                                              kProjectContentHandler );
     }
 
     private void setUpWrite() {

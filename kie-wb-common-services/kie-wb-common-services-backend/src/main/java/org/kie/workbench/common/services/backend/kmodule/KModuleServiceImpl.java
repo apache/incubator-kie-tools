@@ -45,8 +45,6 @@ public class KModuleServiceImpl
     private KieProjectService projectService;
     private MetadataService metadataService;
     private KModuleContentHandler moduleContentHandler;
-    private User identity;
-    private SessionInfo sessionInfo;
 
     public KModuleServiceImpl() {
         // Weld needs this for proxying.
@@ -56,15 +54,11 @@ public class KModuleServiceImpl
     public KModuleServiceImpl( final @Named("ioStrategy") IOService ioService,
                                final KieProjectService projectService,
                                final MetadataService metadataService,
-                               final KModuleContentHandler moduleContentHandler,
-                               final User identity,
-                               final SessionInfo sessionInfo ) {
+                               final KModuleContentHandler moduleContentHandler ) {
         this.ioService = ioService;
         this.projectService = projectService;
         this.metadataService = metadataService;
         this.moduleContentHandler = moduleContentHandler;
-        this.identity = identity;
-        this.sessionInfo = new SafeSessionInfo( sessionInfo );
     }
 
     @Override

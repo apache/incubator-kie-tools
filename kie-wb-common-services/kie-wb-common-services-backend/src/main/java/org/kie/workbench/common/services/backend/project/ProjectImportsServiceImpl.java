@@ -42,7 +42,6 @@ public class ProjectImportsServiceImpl
 
     protected IOService                          ioService;
     protected ProjectConfigurationContentHandler projectConfigurationContentHandler;
-    private   MetadataService                    metadataService;
 
     public ProjectImportsServiceImpl() {
     }
