@@ -39,7 +39,7 @@ public class ProjectDataModelConcurrencyTest {
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create( JavaArchive.class,
                                   "builder.jar" )
-                .addPackage( "org.kie.commons.java.nio.fs.jgit" )
+                .addPackage("org.kie.commons.java.nio.fs.jgit")
                 .addPackage( "org.kie.workbench.common.services.datamodel.backend.server" )
                 .addPackage( "org.kie.workbench.common.services.datamodel.backend.server.cache" )
                 .addPackage( "org.guvnor.m2repo.backend.server" )
@@ -56,6 +56,7 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.guvnor.common.services.shared.config" )
                 .addPackage( "org.guvnor.common.services.shared.rulenames" )
                 .addPackage( "org.guvnor.common.services.backend.util" )
+                .addPackage( "org.guvnor.common.services.backend.version" )
                 .addPackage( "javax.servlet" )
                 .addPackage( "javax.servlet.http" )
                 .addPackage( "org.guvnor.structure.repositories" )
