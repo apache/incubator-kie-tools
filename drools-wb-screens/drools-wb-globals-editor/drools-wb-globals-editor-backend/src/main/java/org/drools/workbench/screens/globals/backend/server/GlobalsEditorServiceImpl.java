@@ -66,9 +66,6 @@ public class GlobalsEditorServiceImpl
     private IOService ioService;
 
     @Inject
-    private MetadataService metadataService;
-
-    @Inject
     private CopyService copyService;
 
     @Inject
@@ -85,12 +82,6 @@ public class GlobalsEditorServiceImpl
 
     @Inject
     private DataModelService dataModelService;
-
-    @Inject
-    private SourceServices sourceServices;
-
-    @Inject
-    private KieProjectService projectService;
 
     @Inject
     private GenericValidator genericValidator;

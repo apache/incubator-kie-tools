@@ -83,9 +83,6 @@ public class GuidedDecisionTableEditorServiceImpl
     private IOService ioService;
 
     @Inject
-    private MetadataService metadataService;
-
-    @Inject
     private CopyService copyService;
 
     @Inject
@@ -101,13 +98,7 @@ public class GuidedDecisionTableEditorServiceImpl
     private DataModelService dataModelService;
 
     @Inject
-    private SourceServices sourceServices;
-
-    @Inject
     private WorkItemsEditorService workItemsService;
-
-    @Inject
-    private KieProjectService projectService;
 
     @Inject
     private GenericValidator genericValidator;

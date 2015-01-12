@@ -65,9 +65,6 @@ public class EnumServiceImpl
     private IOService ioService;
 
     @Inject
-    private MetadataService metadataService;
-
-    @Inject
     private CopyService copyService;
 
     @Inject
@@ -84,9 +81,6 @@ public class EnumServiceImpl
 
     @Inject
     private EnumResourceTypeDefinition resourceTypeDefinition;
-
-    @Inject
-    private KieProjectService projectService;
 
     @Inject
     private LRUBuilderCache builderCache;

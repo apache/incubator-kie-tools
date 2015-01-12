@@ -59,12 +59,6 @@ public class DSLTextEditorServiceImpl
     private IOService ioService;
 
     @Inject
-    private MetadataService metadataService;
-
-    @Inject
-    private KieProjectService projectService;
-
-    @Inject
     private CopyService copyService;
 
     @Inject

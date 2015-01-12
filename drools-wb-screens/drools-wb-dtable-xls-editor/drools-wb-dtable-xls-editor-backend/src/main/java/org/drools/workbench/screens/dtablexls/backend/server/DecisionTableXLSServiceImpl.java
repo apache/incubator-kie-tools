@@ -86,9 +86,6 @@ public class DecisionTableXLSServiceImpl
     private IOService ioService;
 
     @Inject
-    private MetadataService metadataService;
-
-    @Inject
     private CopyService copyService;
 
     @Inject
@@ -105,12 +102,6 @@ public class DecisionTableXLSServiceImpl
 
     @Inject
     private GenericValidator genericValidator;
-
-    @Inject
-    private KieProjectService projectService;
-
-    @Inject
-    private SourceServices sourceServices;
 
     @Override
     public DecisionTableXLSContent loadContent( final Path path ) {

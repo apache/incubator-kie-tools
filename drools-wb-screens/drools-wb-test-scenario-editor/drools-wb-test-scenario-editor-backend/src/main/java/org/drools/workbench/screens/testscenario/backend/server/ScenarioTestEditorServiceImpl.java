@@ -79,16 +79,7 @@ public class ScenarioTestEditorServiceImpl
     private IOService ioService;
 
     @Inject
-    protected User identity;
-
-    @Inject
-    private MetadataService metadataService;
-
-    @Inject
     private SessionService sessionService;
-
-    @Inject
-    private KieProjectService projectService;
 
     @Inject
     private CopyService copyService;
