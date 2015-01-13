@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A workaround for the servlet form authentication process (j_security_check), which, at least on WildFly 8.1, uses the
  * HTTP POST method when forwarding the request after successful login. This blows up after login, giving an
@@ -40,13 +43,21 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class LoginRedirectServlet extends HttpServlet {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginRedirectServlet.class);
+
     public static final String DISPLAY_AFTER_LOGIN_INIT_PARAM = "display-after-login";
+    public static final String DISPLAY_WHEN_NOT_AUTH_INIT_PARAM = "display-when-not-authenticated";
 
     /**
      * URI of the GWT host page, relative to the servlet container root (so it starts with '/' and includes the context
      * path).
      */
     private String displayAfterLoginUri;
+    /**
+     * Optional URI of a page to redirect in case coming request is not authenticated (no user principal exists),
+     * relative to the servlet container root (so it starts with '/' and does not include context path)
+     */
+    private String displayWhenNotAuthenticatedUri;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -56,6 +67,12 @@ public class LoginRedirectServlet extends HttpServlet {
                                                     + DISPLAY_AFTER_LOGIN_INIT_PARAM + "\" to the context-relative URI of the host page.");
         }
         displayAfterLoginUri = config.getServletContext().getContextPath() + contextRelativeHostPageUri;
+
+        // optional display-when-not-authenticated
+        String contextRelativeNotAuthPageUri = config.getInitParameter(DISPLAY_WHEN_NOT_AUTH_INIT_PARAM);
+        if (contextRelativeNotAuthPageUri != null) {
+            displayWhenNotAuthenticatedUri = config.getServletContext().getContextPath() + contextRelativeNotAuthPageUri;
+        }
     }
 
     @Override
@@ -65,8 +82,19 @@ public class LoginRedirectServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println(getClass().getSimpleName() + " is redirecting " + req.getUserPrincipal() + " to " + displayAfterLoginUri);
+        // perform optional check and redirect in case no authenticated request is available
+        if (displayWhenNotAuthenticatedUri != null && req.getUserPrincipal() == null) {
+            logger.debug("No authorized user thus cleaning up session and redirecting to " + displayWhenNotAuthenticatedUri);
+            // clean up session
+            req.logout();
+            req.getSession().invalidate();
 
+            resp.sendRedirect(displayWhenNotAuthenticatedUri);
+
+            return;
+        }
+
+        logger.debug("Redirecting " + req.getUserPrincipal() + " to " + displayAfterLoginUri);
         StringBuilder redirectTarget = new StringBuilder(displayAfterLoginUri);
         String extraParams = extractParameters(req);
         if (extraParams.length() > 0) {
