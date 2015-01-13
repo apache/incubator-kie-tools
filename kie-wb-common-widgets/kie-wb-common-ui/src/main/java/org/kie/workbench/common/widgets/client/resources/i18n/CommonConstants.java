@@ -247,5 +247,23 @@ public interface CommonConstants
     String FailedToGenerateSource();
 
     String About();
+    
+    String Language();
+    
+    String Language_Selector();
+    
+    String German();
+    
+    String French();
+    
+    String Japanese();
+    
+    String Chinese();
+    
+    String Spanish();
+    
+    String Portuguese();
+    
+    String English();
 
 }
