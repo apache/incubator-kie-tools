@@ -239,14 +239,23 @@ public class ObjectPropertyTO {
     @Override
     public int hashCode() {
         int result = className != null ? className.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (originalName != null ? originalName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (multiple ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (baseType ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (bag != null ? bag.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + modifiers;
+        result = ~~result;
         result = 31 * result + (annotations != null ? annotations.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

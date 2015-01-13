@@ -189,13 +189,21 @@ public class AnnotationDefinitionTO {
     @Override
     public int hashCode() {
         int result = className != null ? className.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (marker ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (objectAnnotation ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (propertyAnnotation ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (annotationMembers != null ? annotationMembers.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

@@ -82,8 +82,11 @@ public class FolderListing {
     @Override
     public int hashCode() {
         int result = item != null ? item.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( content != null ? content.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( segments != null ? segments.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

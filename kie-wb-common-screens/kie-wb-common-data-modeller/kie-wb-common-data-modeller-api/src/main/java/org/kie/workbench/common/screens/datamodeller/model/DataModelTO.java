@@ -215,11 +215,17 @@ public class DataModelTO {
     @Override
     public int hashCode() {
         int result = parentProjectName != null ? parentProjectName.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (dataObjects != null ? dataObjects.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (sources != null ? sources.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (externalClasses != null ? externalClasses.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (deletedDataObjects != null ? deletedDataObjects.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + id;
+        result = ~~result;
         return result;
     }
 }

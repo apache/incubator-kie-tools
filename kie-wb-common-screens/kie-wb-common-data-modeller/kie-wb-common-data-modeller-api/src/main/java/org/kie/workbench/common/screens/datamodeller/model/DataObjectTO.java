@@ -330,17 +330,29 @@ public class DataObjectTO {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (packageName != null ? packageName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (superClassName != null ? superClassName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (originalClassName != null ? originalClassName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (properties != null ? properties.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (annotations != null ? annotations.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (fingerPrint != null ? fingerPrint.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (abstractModifier ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (interfaceModifier ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (finalModifier ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (path != null ? path.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

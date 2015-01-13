@@ -141,13 +141,21 @@ public class AnnotationMemberDefinitionTO {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (array ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (className != null ? className.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (enumMember ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (primitiveType ? 1 : 0);
+        result = ~~result;
         return result;
     }
 }

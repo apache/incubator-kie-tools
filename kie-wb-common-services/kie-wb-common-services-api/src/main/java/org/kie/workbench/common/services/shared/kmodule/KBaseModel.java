@@ -134,14 +134,23 @@ public class KBaseModel
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( equalsBehavior != null ? equalsBehavior.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( eventProcessingMode != null ? eventProcessingMode.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( kSessions != null ? kSessions.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( includes != null ? includes.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( theDefault ? 1 : 0 );
+        result = ~~result;
         result = 31 * result + ( scope != null ? scope.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( packages != null ? packages.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( declarativeAgenda != null ? declarativeAgenda.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

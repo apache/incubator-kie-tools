@@ -240,11 +240,17 @@ public class CellValue<T extends Comparable<T>>
     public int hashCode() {
         int hash = 1;
         hash = hash * 31 + ( value == null ? 0 : value.hashCode() );
+        hash = ~~hash;
         hash = hash * 31 + rowSpan;
+        hash = ~~hash;
         hash = hash * 31 + ( coordinate == null ? 0 : coordinate.hashCode() );
+        hash = ~~hash;
         hash = hash * 31 + ( mapHtmlToData == null ? 0 : mapHtmlToData.hashCode() );
+        hash = ~~hash;
         hash = hash * 31 + ( mapDataToHtml == null ? 0 : mapDataToHtml.hashCode() );
+        hash = ~~hash;
         hash = hash * 31 + state.hashCode();
+        hash = ~~hash;
         return hash;
     }
 

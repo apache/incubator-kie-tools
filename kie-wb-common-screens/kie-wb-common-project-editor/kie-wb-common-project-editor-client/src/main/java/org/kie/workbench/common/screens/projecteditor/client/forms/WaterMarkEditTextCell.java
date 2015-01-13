@@ -105,9 +105,11 @@ public class WaterMarkEditTextCell extends
 
         @Override
         public int hashCode() {
-            return original.hashCode() + text.hashCode()
+            int result = original.hashCode() + text.hashCode()
                     + Boolean.valueOf( isEditing ).hashCode() * 29
                     + Boolean.valueOf( isEditingAgain ).hashCode();
+            result = ~~result;
+            return result;
         }
 
         public boolean isEditing() {

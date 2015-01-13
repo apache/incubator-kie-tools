@@ -149,30 +149,38 @@ public class DynamicColumn<T> extends DynamicBaseColumn
     @Override
     public int hashCode() {
         int hash = 7;
+        hash = ~~hash;
         hash = 31
                 * hash
                 + columnIndex;
+        hash = ~~hash;
         hash = 31
                 * hash
                 + modelColumn.hashCode();
+        hash = ~~hash;
         hash = 31
                 * hash
                 + isVisible.hashCode();
+        hash = ~~hash;
         hash = 31
                 * hash
                 + isSystemControlled.hashCode();
         hash = 31
                 * hash
                 + sortConfig.getSortDirection().hashCode();
+        hash = ~~hash;
         hash = 31
                 * hash
                 + sortConfig.isSortable().hashCode();
+        hash = ~~hash;
         hash = 31
                 * hash
                 + sortConfig.getSortIndex();
+        hash = ~~hash;
         hash = 31
                 * hash
                 + width;
+        hash = ~~hash;
         return hash;
     }
 

@@ -73,9 +73,13 @@ public class FileLogger
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( file != null ? file.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( threaded ? 1 : 0 );
+        result = ~~result;
         result = 31 * result + interval;
+        result = ~~result;
         return result;
     }
 }

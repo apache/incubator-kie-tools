@@ -79,8 +79,11 @@ public class FolderItem {
     @Override
     public int hashCode() {
         int result = item.hashCode();
+        result = ~~result;
         result = 31 * result + itemName.hashCode();
+        result = ~~result;
         result = 31 * result + type.hashCode();
+        result = ~~result;
         return result;
     }
 

@@ -98,11 +98,17 @@ public class KieProject
     @Override
     public int hashCode() {
         int result = rootPath.hashCode();
+        result = ~~result;
         result = 31 * result + pomXMLPath.hashCode();
+        result = ~~result;
         result = 31 * result + kmoduleXMLPath.hashCode();
+        result = ~~result;
         result = 31 * result + importsPath.hashCode();
+        result = ~~result;
         result = 31 * result + packageNamesWhiteList.hashCode();
+        result = ~~result;
         result = 31 * result + projectName.hashCode();
+        result = ~~result;
         return result;
     }
 }

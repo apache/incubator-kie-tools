@@ -95,7 +95,9 @@ public class ListenerModel {
     @Override
     public int hashCode() {
         int result = kind != null ? kind.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

@@ -88,7 +88,9 @@ public class ContainerRefImpl implements ContainerRef {
     @Override
     public int hashCode() {
         int result = serverId.hashCode();
+        result = ~~result;
         result = 31 * result + id.hashCode();
+        result = ~~result;
         return result;
     }
 }

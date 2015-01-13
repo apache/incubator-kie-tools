@@ -120,9 +120,13 @@ public class AnnotationTO {
     @Override
     public int hashCode() {
         int result = className != null ? className.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (annotationDefinition != null ? annotationDefinition.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (values != null ? values.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

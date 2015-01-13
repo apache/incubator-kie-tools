@@ -139,13 +139,21 @@ public class KSessionModel
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( clockType != null ? clockType.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( theDefault ? 1 : 0 );
+        result = ~~result;
         result = 31 * result + ( scope != null ? scope.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( workItemHandelerModels != null ? workItemHandelerModels.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( listeners != null ? listeners.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + ( logger != null ? logger.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }
