@@ -270,7 +270,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
                                    final Element target,
                                    final NativeEvent event ) {
             final int clientX = event.getClientX();
-            final Element tr = target.getParentElement();
+            final Element tr = getRowElement( target );
             final int columns = tr.getChildCount();
 
             this.dragCallback = dragCallback;
@@ -300,6 +300,15 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
             moveColumn( clientX );
             tableElement.appendChild( ghostColumn );
             tableElement.appendChild( ghostLine );
+        }
+
+        protected Element getRowElement( Element target ) {
+            Element parent = target.getParentElement();
+            while( parent != null ) {
+                if ( parent.getTagName().equalsIgnoreCase( "tr" ) ) return parent;
+                parent = parent.getParentElement();
+            }
+            return target.getParentElement();
         }
 
         @Override
