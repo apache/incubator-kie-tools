@@ -23,11 +23,10 @@ public class KieFileSystemAuthorizationManager extends org.uberfire.backend.serv
     }
 
     private boolean checkRole( final User subject ) {
-        if ( subject.getRoles().contains( new RoleImpl( USER.toString() ) ) || subject.getRoles().contains( new RoleImpl( MANAGER.toString() ) ) ) {
-            if ( subject.getRoles().contains( new RoleImpl( ADMIN.toString() ) ) || subject.getRoles().contains( new RoleImpl( DEVELOPER.toString() ) ) ||
-                    subject.getRoles().contains( new RoleImpl( ANALYST.toString() ) ) ) {
-                return true;
-            }
+        if ( subject.getRoles().contains( new RoleImpl( ADMIN.toString() ) ) ||
+                subject.getRoles().contains( new RoleImpl( DEVELOPER.toString() ) ) ||
+                subject.getRoles().contains( new RoleImpl( ANALYST.toString() ) ) ) {
+            return true;
         }
         return false;
     }
