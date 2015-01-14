@@ -22,7 +22,7 @@
 </div>
 
 <!-- The GWT js file generated at run time -->
-<script type="text/javascript" src='${package}.${capitalizedRootArtifactId}Showcase.nocache.js'></script>
+<script type="text/javascript" src='${package}.${capitalizedRootArtifactId}Showcase/${package}.${capitalizedRootArtifactId}Showcase.nocache.js'></script>
 
 </body>
 </html>
