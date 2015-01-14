@@ -71,7 +71,7 @@ public class ProjectExplorerContentResolverTest {
 
         repository = getGitRepository("master");
 
-        organizationalUnit = spy(new OrganizationalUnitImpl("demo", "demo"));
+        organizationalUnit = spy(new OrganizationalUnitImpl("demo", "demo", "demo"));
         organizationalUnit.getRepositories().add(repository);
         ArrayList<OrganizationalUnit> organizationalUnits = new ArrayList<OrganizationalUnit>();
         organizationalUnits.add(organizationalUnit);
