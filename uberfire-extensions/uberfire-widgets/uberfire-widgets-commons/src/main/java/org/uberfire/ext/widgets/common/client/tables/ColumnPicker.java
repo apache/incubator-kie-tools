@@ -279,13 +279,14 @@ public class ColumnPicker<T> {
         }
 
         if ( columnsToCalculate.size() > 0 ) {
-            int availabelColumnSpace = dataGrid.getOffsetWidth() - fixedColumnsWidth;
-
-            double availablePCT = availabelColumnSpace * 100 / dataGrid.getOffsetWidth();
 
             double columnPCT = 100 / columnsToCalculate.size();
 
-            columnPCT = columnPCT * availablePCT / 100;
+            if (dataGrid.getOffsetWidth() != 0) {
+                int availabelColumnSpace = dataGrid.getOffsetWidth() - fixedColumnsWidth;
+                double availablePCT = availabelColumnSpace * 100 / dataGrid.getOffsetWidth();
+                columnPCT = columnPCT * availablePCT / 100;
+            }
 
             for ( ColumnMeta<T> cm : columnMetaList ) {
                 if (cm.isVisible()) {
