@@ -44,99 +44,127 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class EventFilter
 {
-    public static final IEventFilter ANY = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            return true;
-        }        
-    };
-    
-    public static final IEventFilter BUTTON_LEFT = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            if (event instanceof AbstractNodeMouseEvent<?,?>)
-                return ((AbstractNodeMouseEvent<?,?>) event).isButtonLeft();
-            else
-                return false;
-        }        
-    };
-    
-    public static final IEventFilter BUTTON_MIDDLE = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            if (event instanceof AbstractNodeMouseEvent<?,?>)
-                return ((AbstractNodeMouseEvent<?,?>) event).isButtonMiddle();
-            else
-                return false;
-        }        
-    };
-    
-    public static final IEventFilter BUTTON_RIGHT = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            if (event instanceof AbstractNodeMouseEvent<?,?>)
-                return ((AbstractNodeMouseEvent<?,?>) event).isButtonRight();
-            else
-                return false;
-        }        
-    };
-    
-    public static final IEventFilter CONTROL = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            if (event instanceof AbstractNodeMouseEvent<?,?>)
-                return ((AbstractNodeMouseEvent<?,?>) event).isControlKeyDown();
-            else
-                return false;
-        }        
-    };
-    
-    public static final IEventFilter META = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            if (event instanceof AbstractNodeMouseEvent<?,?>)
-                return ((AbstractNodeMouseEvent<?,?>) event).isMetaKeyDown();
-            else
-                return false;
-        }        
-    };
-    
-    public static final IEventFilter SHIFT = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            if (event instanceof AbstractNodeMouseEvent<?,?>)
-                return ((AbstractNodeMouseEvent<?,?>) event).isShiftKeyDown();
-            else
-                return false;
-        }        
-    };
-    
-    public static final IEventFilter ALT = new IEventFilter() 
-    {
-        @Override
-        public final boolean matches(GwtEvent<?> event)
-        {
-            if (event instanceof AbstractNodeMouseEvent<?,?>)
-                return ((AbstractNodeMouseEvent<?,?>) event).isAltKeyDown();
-            else
-                return false;
-        }        
-    };
-    
+    public static final IEventFilter ANY           = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           return true;
+                                                       }
+                                                   };
+
+    public static final IEventFilter BUTTON_LEFT   = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           if (event instanceof AbstractNodeMouseEvent<?, ?>)
+                                                           {
+                                                               return ((AbstractNodeMouseEvent<?, ?>) event).isButtonLeft();
+                                                           }
+                                                           else
+                                                           {
+                                                               return false;
+                                                           }
+                                                       }
+                                                   };
+
+    public static final IEventFilter BUTTON_MIDDLE = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           if (event instanceof AbstractNodeMouseEvent<?, ?>)
+                                                           {
+                                                               return ((AbstractNodeMouseEvent<?, ?>) event).isButtonMiddle();
+                                                           }
+                                                           else
+                                                           {
+                                                               return false;
+                                                           }
+                                                       }
+                                                   };
+
+    public static final IEventFilter BUTTON_RIGHT  = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           if (event instanceof AbstractNodeMouseEvent<?, ?>)
+                                                           {
+                                                               return ((AbstractNodeMouseEvent<?, ?>) event).isButtonRight();
+                                                           }
+                                                           else
+                                                           {
+                                                               return false;
+                                                           }
+                                                       }
+                                                   };
+
+    public static final IEventFilter CONTROL       = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           if (event instanceof AbstractNodeMouseEvent<?, ?>)
+                                                           {
+                                                               return ((AbstractNodeMouseEvent<?, ?>) event).isControlKeyDown();
+                                                           }
+                                                           else
+                                                           {
+                                                               return false;
+                                                           }
+                                                       }
+                                                   };
+
+    public static final IEventFilter META          = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           if (event instanceof AbstractNodeMouseEvent<?, ?>)
+                                                           {
+                                                               return ((AbstractNodeMouseEvent<?, ?>) event).isMetaKeyDown();
+                                                           }
+                                                           else
+                                                           {
+                                                               return false;
+                                                           }
+                                                       }
+                                                   };
+
+    public static final IEventFilter SHIFT         = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           if (event instanceof AbstractNodeMouseEvent<?, ?>)
+                                                           {
+                                                               return ((AbstractNodeMouseEvent<?, ?>) event).isShiftKeyDown();
+                                                           }
+                                                           else
+                                                           {
+                                                               return false;
+                                                           }
+                                                       }
+                                                   };
+
+    public static final IEventFilter ALT           = new IEventFilter()
+                                                   {
+                                                       @Override
+                                                       public final boolean matches(GwtEvent<?> event)
+                                                       {
+                                                           if (event instanceof AbstractNodeMouseEvent<?, ?>)
+                                                           {
+                                                               return ((AbstractNodeMouseEvent<?, ?>) event).isAltKeyDown();
+                                                           }
+                                                           else
+                                                           {
+                                                               return false;
+                                                           }
+                                                       }
+                                                   };
+
     /**
      * Chains several filters together. 
      * The resulting filter will return true, if at least one filter returns true.
@@ -147,9 +175,10 @@ public class EventFilter
     public static final IEventFilter or(final IEventFilter... filters)
     {
         if (filters.length == 1)
+        {
             return filters[0];
-        
-        return new IEventFilter() 
+        }
+        return new IEventFilter()
         {
             @Override
             public final boolean matches(GwtEvent<?> event)
@@ -157,13 +186,15 @@ public class EventFilter
                 for (int i = 0; i < filters.length; i++)
                 {
                     if (filters[i].matches(event))
+                    {
                         return true;
+                    }
                 }
                 return false;
-            }        
+            }
         };
     }
-    
+
     /**
      * Chains several filters together. 
      * The resulting filter will return false, if at least one filter returns false.
@@ -174,23 +205,26 @@ public class EventFilter
     public static final IEventFilter and(final IEventFilter... filters)
     {
         if (filters.length == 1)
+        {
             return filters[0];
-        
-        return new IEventFilter() 
+        }
+        return new IEventFilter()
         {
             @Override
             public final boolean matches(GwtEvent<?> event)
             {
                 for (int i = 0; i < filters.length; i++)
                 {
-                    if (!filters[i].matches(event))
+                    if (false == filters[i].matches(event))
+                    {
                         return false;
+                    }
                 }
                 return true;
-            }        
+            }
         };
     }
-    
+
     /**
      * The resulting filter will return false, if the specified filter returns true.
      * 
@@ -199,13 +233,13 @@ public class EventFilter
      */
     public static final IEventFilter not(final IEventFilter filter)
     {
-        return new IEventFilter() 
+        return new IEventFilter()
         {
             @Override
             public final boolean matches(GwtEvent<?> event)
             {
-                return !filter.matches(event);
-            }        
+                return (false == filter.matches(event));
+            }
         };
     }
 }
