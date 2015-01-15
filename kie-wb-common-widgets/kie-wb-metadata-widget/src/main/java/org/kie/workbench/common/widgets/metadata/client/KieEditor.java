@@ -89,15 +89,15 @@ public abstract class KieEditor extends BaseEditor {
         overviewWidget.showVersionsTab();
     }
 
-    protected void createOriginalHash(Object object){
-        if(object !=null){
-            setOriginalHash(object.hashCode());
+    protected void createOriginalHash( Object object ) {
+        if ( object != null ) {
+            setOriginalHash( object.hashCode() );
         }
     }
 
-    public boolean mayClose(Object object) {
-        if (object != null) {
-            return super.mayClose(object.hashCode());
+    public boolean mayClose( Object object ) {
+        if ( object != null ) {
+            return super.mayClose( object.hashCode() );
         } else {
             return true;
         }
@@ -105,18 +105,23 @@ public abstract class KieEditor extends BaseEditor {
 
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
         return new CommandDrivenErrorCallback( baseView,
-                                               new CommandBuilder().addNoSuchFileException(
-                                                       baseView,
-                                                       multiPage,
-                                                       menus ).build()
+                                               new CommandBuilder()
+                                                       .addNoSuchFileException( baseView,
+                                                                                multiPage,
+                                                                                menus )
+                                                       .addFileSystemNotFoundException( baseView,
+                                                                                        multiPage,
+                                                                                        menus )
+                                                       .build()
         );
     }
 
     protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
         return new CommandDrivenErrorCallback( baseView,
-                                               new CommandBuilder().addSourceCodeGenerationFailedException(
-                                                       baseView,
-                                                       sourceWidget ).build()
+                                               new CommandBuilder()
+                                                       .addSourceCodeGenerationFailedException( baseView,
+                                                                                                sourceWidget )
+                                                       .build()
         );
     }
 
@@ -143,7 +148,7 @@ public abstract class KieEditor extends BaseEditor {
 
     protected void resetEditorPages( final Overview overview ) {
 
-        this.overviewWidget.setContent(overview, versionRecordManager.getPathToLatest());
+        this.overviewWidget.setContent( overview, versionRecordManager.getPathToLatest() );
         this.metadata = overview.getMetadata();
 
         multiPage.clear();

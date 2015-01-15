@@ -27,6 +27,7 @@ import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
+import org.uberfire.java.nio.file.FileSystemNotFoundException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -107,6 +108,32 @@ public class CommandBuilder {
            );
         return this;
     }
+
+    public CommandBuilder addFileSystemNotFoundException( final HasBusyIndicator view,
+                                                  final MultiPageEditor editor,
+                                                  final Menus menus ) {
+        add( FileSystemNotFoundException.class,
+             new Command() {
+
+                 @Override
+                 public void execute() {
+                     editor.clear();
+                     editor.addWidget( new NoSuchFileWidget(),
+                                       CommonConstants.INSTANCE.NoSuchFileTabTitle() );
+                     disableMenuItems( menus );
+                     view.hideBusyIndicator();
+                 }
+
+                 private void disableMenuItems( final Menus menus ) {
+                     for ( MenuItem mi : menus.getItemsMap().values() ) {
+                         mi.setEnabled( false );
+                     }
+                 }
+             }
+           );
+        return this;
+    }
+
 
     public CommandBuilder addSourceCodeGenerationFailedException(final HasBusyIndicator view, final ViewDRLSourceWidget sourceWidget) {
         add( SourceGenerationFailedException.class,
