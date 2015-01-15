@@ -34,6 +34,7 @@ import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.structure.repositories.Repository;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -44,6 +45,8 @@ import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectN
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
+import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.PathFactory;
@@ -191,6 +194,20 @@ public class ProjectScreenPresenter
         adjustBuildOptions();
     }
 
+    public void onRepositoryRemoved( final @Observes RepositoryRemovedEvent event ) {
+        if ( event.getRepository() == null ) {
+            return;
+        }
+        if ( this.repository == null ) {
+            return;
+        }
+        if ( event.getRepository().equals( this.repository ) ) {
+            for ( MenuItem mi : menus.getItemsMap().values() ) {
+                mi.setEnabled( false );
+            }
+        }
+    }
+
     private void adjustBuildOptions() {
         boolean supportsRuntimeDeploy = ApplicationPreferences.getBooleanPref( "support.runtime.deploy" );
         if ( isRepositoryManaged( repository ) ) {
@@ -239,10 +256,20 @@ public class ProjectScreenPresenter
                         view.hideBusyIndicator();
                         originalHash = model.hashCode();
 
+                        for ( MenuItem mi : menus.getItemsMap().values() ) {
+                            mi.setEnabled( true );
+                        }
+
                         updateEditorTitle();
                     }
                 },
-                new HasBusyIndicatorDefaultErrorCallback( view ) ).load( pathToPomXML );
+                new CommandDrivenErrorCallback( view,
+                                                new CommandBuilder()
+                                                        .addNoSuchFileException( view,
+                                                                                 menus )
+                                                        .addFileSystemNotFoundException( view,
+                                                                                         menus )
+                                                        .build() ) ).load( pathToPomXML );
 
         view.showGAVPanel();
     }
@@ -356,6 +383,16 @@ public class ProjectScreenPresenter
                             @Override
                             public IsWidget build() {
                                 return buildOptions;
+                            }
+
+                            @Override
+                            public boolean isEnabled() {
+                                return buildOptions.getTriggerWidget().isEnabled();
+                            }
+
+                            @Override
+                            public void setEnabled( boolean enabled ) {
+                                buildOptions.getTriggerWidget().setEnabled( enabled );
                             }
 
                             @Override

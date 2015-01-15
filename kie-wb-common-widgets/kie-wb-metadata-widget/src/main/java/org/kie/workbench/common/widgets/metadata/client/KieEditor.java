@@ -17,12 +17,16 @@
 package org.kie.workbench.common.widgets.metadata.client;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.structure.repositories.RepositoryRemovedEvent;
+import org.jboss.errai.bus.client.api.messaging.Message;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.menu.FileMenuBuilder;
@@ -37,6 +41,7 @@ import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 public abstract class KieEditor extends BaseEditor {
@@ -60,9 +65,35 @@ public abstract class KieEditor extends BaseEditor {
     @Inject
     protected Event<NotificationEvent> notification;
 
+    @Inject
+    protected ProjectContext workbenchContext;
+
     protected Metadata metadata;
 
     private ViewDRLSourceWidget sourceWidget;
+
+    //The default implementation delegates to the HashCode comparison in BaseEditor
+    private final MayCloseHandler DEFAULT_MAY_CLOSE_HANDLER = new MayCloseHandler() {
+
+        @Override
+        public boolean mayClose( final Object object ) {
+            if ( object != null ) {
+                return KieEditor.super.mayClose( object.hashCode() );
+            } else {
+                return true;
+            }
+        }
+
+    };
+    //This implementation always permits closure as something went wrong loading the Editor's content
+    private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = new MayCloseHandler() {
+        @Override
+        public boolean mayClose( final Object object ) {
+            return true;
+        }
+    };
+
+    private MayCloseHandler mayCloseHandler = DEFAULT_MAY_CLOSE_HANDLER;
 
     protected KieEditor() {
     }
@@ -74,14 +105,22 @@ public abstract class KieEditor extends BaseEditor {
     protected void init( final ObservablePath path,
                          final PlaceRequest place,
                          final ClientResourceType type ) {
-        super.init( path, place, type, true, true );
+        super.init( path,
+                    place,
+                    type,
+                    true,
+                    true );
     }
 
     protected void init( final ObservablePath path,
                          final PlaceRequest place,
                          final ClientResourceType type,
                          final boolean addFileChangeListeners ) {
-        super.init( path, place, type, addFileChangeListeners, true );
+        super.init( path,
+                    place,
+                    type,
+                    addFileChangeListeners,
+                    true );
     }
 
     protected void showVersions() {
@@ -96,11 +135,7 @@ public abstract class KieEditor extends BaseEditor {
     }
 
     public boolean mayClose( Object object ) {
-        if ( object != null ) {
-            return super.mayClose( object.hashCode() );
-        } else {
-            return true;
-        }
+        return mayCloseHandler.mayClose( object );
     }
 
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
@@ -113,7 +148,15 @@ public abstract class KieEditor extends BaseEditor {
                                                                                         multiPage,
                                                                                         menus )
                                                        .build()
-        );
+        ) {
+            @Override
+            public boolean error( final Message message,
+                                  final Throwable throwable ) {
+                mayCloseHandler = EXCEPTION_MAY_CLOSE_HANDLER;
+                return super.error( message,
+                                    throwable );
+            }
+        };
     }
 
     protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
@@ -127,19 +170,18 @@ public abstract class KieEditor extends BaseEditor {
 
     protected void addSourcePage() {
         sourceWidget = new ViewDRLSourceWidget();
-        addPage(
-                new Page( sourceWidget,
-                          CommonConstants.INSTANCE.SourceTabTitle() ) {
-                    @Override
-                    public void onFocus() {
-                        onSourceTabSelected();
-                    }
+        addPage( new Page( sourceWidget,
+                           CommonConstants.INSTANCE.SourceTabTitle() ) {
+            @Override
+            public void onFocus() {
+                onSourceTabSelected();
+            }
 
-                    @Override
-                    public void onLostFocus() {
+            @Override
+            public void onLostFocus() {
 
-                    }
-                } );
+            }
+        } );
     }
 
     protected void addPage( Page page ) {
@@ -153,34 +195,32 @@ public abstract class KieEditor extends BaseEditor {
 
         multiPage.clear();
 
-        addPage(
-                new Page( baseView,
-                          CommonConstants.INSTANCE.EditTabTitle() ) {
-                    @Override
-                    public void onFocus() {
-                        onEditTabSelected();
-                    }
+        addPage( new Page( baseView,
+                           CommonConstants.INSTANCE.EditTabTitle() ) {
+            @Override
+            public void onFocus() {
+                onEditTabSelected();
+            }
 
-                    @Override
-                    public void onLostFocus() {
-                        onEditTabUnselected();
-                    }
-                } );
+            @Override
+            public void onLostFocus() {
+                onEditTabUnselected();
+            }
+        } );
 
-        addPage(
-                new Page( this.overviewWidget,
-                          CommonConstants.INSTANCE.Overview() ) {
-                    @Override
-                    public void onFocus() {
-                        overviewWidget.refresh( versionRecordManager.getVersion() );
-                        onOverviewSelected();
-                    }
+        addPage( new Page( this.overviewWidget,
+                           CommonConstants.INSTANCE.Overview() ) {
+            @Override
+            public void onFocus() {
+                overviewWidget.refresh( versionRecordManager.getVersion() );
+                onOverviewSelected();
+            }
 
-                    @Override
-                    public void onLostFocus() {
+            @Override
+            public void onLostFocus() {
 
-                    }
-                }
+            }
+        }
                );
     }
 
@@ -247,26 +287,43 @@ public abstract class KieEditor extends BaseEditor {
         return multiPage;
     }
 
+    public void onRepositoryRemoved( final @Observes RepositoryRemovedEvent event ) {
+        if ( event.getRepository() == null ) {
+            return;
+        }
+        if ( workbenchContext == null ) {
+            return;
+        }
+        if ( workbenchContext.getActiveRepository() == null ) {
+            return;
+        }
+        if ( workbenchContext.getActiveRepository().equals( event.getRepository() ) ) {
+            for ( MenuItem mi : menus.getItemsMap().values() ) {
+                mi.setEnabled( false );
+            }
+        }
+    }
+
     protected void onSourceTabSelected() {
     }
 
-    ;
-
     protected void onOverviewSelected() {
     }
-
-    ;
 
     /**
      * Overwrite this if you want to do something special when the editor tab is selected.
      */
     protected void onEditTabSelected() {
-
     }
 
     protected void onEditTabUnselected() {
+    }
+
+    //Handler for MayClose requests
+    private interface MayCloseHandler {
+
+        boolean mayClose( final Object object );
 
     }
 
 }
-
