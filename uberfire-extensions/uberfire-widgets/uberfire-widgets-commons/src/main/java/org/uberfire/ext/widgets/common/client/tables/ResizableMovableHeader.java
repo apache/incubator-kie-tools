@@ -368,6 +368,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
     protected void columnResized( final int newWidth ) {
         table.setColumnWidth( column,
                               newWidth + "px" );
+        columnPicker.adjustColumnWidths();
         for(ColumnChangedHandler handler : columnChangedHandlers){
           handler.afterColumnChanged();
         }
