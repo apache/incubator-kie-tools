@@ -152,7 +152,7 @@ public interface CoreConstants
 
     String Empty();
 
-    String Revert();
+    String RevertToThis();
 
     String textResourceTypeDescription();
 

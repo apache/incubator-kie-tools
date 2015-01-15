@@ -28,51 +28,62 @@ public class VersionMenuItem
 
     private VersionMenuDropDownButton button;
 
-    public VersionMenuItem(VersionMenuDropDownButton button) {
+    public VersionMenuItem( VersionMenuDropDownButton button ) {
         this.button = button;
     }
 
-    @Override public Widget build() {
+    @Override
+    public Widget build() {
         return button.asWidget();
     }
 
-    @Override public boolean isEnabled() {
-        return false;
+    @Override
+    public boolean isEnabled() {
+        return button.isEnabled();
     }
 
-    @Override public void setEnabled(boolean enabled) {
-
+    @Override
+    public void setEnabled( boolean enabled ) {
+        button.setEnabled( enabled );
     }
 
-    @Override public String getContributionPoint() {
+    @Override
+    public String getContributionPoint() {
         return null;
     }
 
-    @Override public String getCaption() {
+    @Override
+    public String getCaption() {
         return null;
     }
 
-    @Override public MenuPosition getPosition() {
+    @Override
+    public MenuPosition getPosition() {
         return null;
     }
 
-    @Override public int getOrder() {
+    @Override
+    public int getOrder() {
         return 0;
     }
 
-    @Override public void addEnabledStateChangeListener(EnabledStateChangeListener listener) {
+    @Override
+    public void addEnabledStateChangeListener( EnabledStateChangeListener listener ) {
 
     }
 
-    @Override public String getSignatureId() {
+    @Override
+    public String getSignatureId() {
         return null;
     }
 
-    @Override public Collection<String> getRoles() {
+    @Override
+    public Collection<String> getRoles() {
         return null;
     }
 
-    @Override public Collection<String> getTraits() {
+    @Override
+    public Collection<String> getTraits() {
         return null;
     }
 }

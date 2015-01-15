@@ -33,7 +33,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.uberfire.ext.services.shared.preferences.GridColumnPreference;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
@@ -63,13 +65,10 @@ public class ColumnPicker<T> {
     }
 
     public void addColumns(List<ColumnMeta<T>> columnMetas) {
-        for (ColumnMeta columnMeta : columnMetas) {
-            checkColumnMeta(columnMeta);
-        }
-
         columnMetaList.addAll(columnMetas);
 
         sortAndAddColumns(columnMetas);
+        adjustColumnWidths();
     }
 
     protected void sortAndAddColumns(List<ColumnMeta<T>> columnMetas) {
@@ -251,44 +250,53 @@ public class ColumnPicker<T> {
         return index;
     }
 
-    private void adjustColumnWidths() {
+    public void adjustColumnWidths() {
         for (ColumnChangedHandler handler : columnChangedHandler) {
             handler.afterColumnChanged();
         }
 
-        int totalVisibleColumnsCount = 0;
-        for (ColumnMeta<T> cm : columnMetaList) {
-            if (cm.isVisible()) {
-                totalVisibleColumnsCount++;
-            }
-        }
-        if (totalVisibleColumnsCount == 0) {
+        List<GridColumnPreference> preferences = getColumnsState();
+
+        if ( preferences.size() == 0 ) return;
+        if ( preferences.size() == 1 ) {
+            dataGrid.setColumnWidth(dataGrid.getColumn( 0 ),
+                    100,
+                    Style.Unit.PCT);
             return;
         }
-        int counter = 0;
-        for (ColumnMeta<T> cm : columnMetaList) {
-            if (cm.isVisible()) {
-                if (totalVisibleColumnsCount == 1) {
-                    dataGrid.setColumnWidth(cm.getColumn(),
-                            100 / totalVisibleColumnsCount,
-                            Style.Unit.PCT);
-                }
-                boolean preferenceFound = false;
-                for (GridColumnPreference gcp : getColumnsState()) {
-                    if (gcp.getName().equals(cm.getHeader().getValue())) {
-                        preferenceFound = true;
-                    }
-                }
 
-                if (!preferenceFound || dataGrid.getColumnWidth(cm.getColumn()) == null) {
-                    dataGrid.setColumnWidth(cm.getColumn(),
-                            100 / totalVisibleColumnsCount,
-                            Style.Unit.PCT);
-                }
-                counter++;
-                if (counter == totalVisibleColumnsCount) {
-                    dataGrid.setColumnWidth(cm.getColumn(), 100,
-                            Style.Unit.PCT);
+        int fixedColumnsWidth = 0;
+        Map<String, String> fixedWidths = new HashMap<String, String>(  );
+        List<String> columnsToCalculate = new ArrayList<String>(  );
+
+        for ( GridColumnPreference preference : preferences ) {
+            if ( preference.getWidth() != null && preference.getWidth().endsWith( Style.Unit.PX.getType() ) ) {
+                fixedWidths.put( preference.getName(), preference.getWidth() );
+                fixedColumnsWidth += Integer.decode( preference.getWidth().substring( 0, preference.getWidth().indexOf( Style.Unit.PX.getType() ) ) );
+            } else {
+                columnsToCalculate.add( preference.getName() );
+            }
+        }
+
+        if ( columnsToCalculate.size() > 0 ) {
+
+            double columnPCT = 100 / columnsToCalculate.size();
+
+            if (dataGrid.getOffsetWidth() != 0) {
+                int availabelColumnSpace = dataGrid.getOffsetWidth() - fixedColumnsWidth;
+                double availablePCT = availabelColumnSpace * 100 / dataGrid.getOffsetWidth();
+                columnPCT = columnPCT * availablePCT / 100;
+            }
+
+            for ( ColumnMeta<T> cm : columnMetaList ) {
+                if (cm.isVisible()) {
+                    if ( columnsToCalculate.contains( cm.getHeader().getValue() ) ) {
+                        dataGrid.setColumnWidth(cm.getColumn(),
+                                columnPCT,
+                                Style.Unit.PCT);
+                    } else {
+                        dataGrid.setColumnWidth( cm.getColumn(), fixedWidths.get( cm.getHeader().getValue() ) );
+                    }
                 }
             }
         }

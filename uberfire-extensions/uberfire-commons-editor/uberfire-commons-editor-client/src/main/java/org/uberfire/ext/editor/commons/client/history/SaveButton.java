@@ -50,12 +50,12 @@ public class SaveButton
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return button.isEnabled();
     }
 
     @Override
     public void setEnabled( boolean enabled ) {
-
+        button.setEnabled( enabled );
     }
 
     @Override

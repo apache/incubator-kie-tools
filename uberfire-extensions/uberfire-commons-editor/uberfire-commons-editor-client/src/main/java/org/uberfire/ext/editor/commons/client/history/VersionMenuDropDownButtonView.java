@@ -16,12 +16,14 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
 
 public interface VersionMenuDropDownButtonView
-        extends IsWidget {
+        extends IsWidget,
+                HasEnabled {
 
     interface Presenter {
 

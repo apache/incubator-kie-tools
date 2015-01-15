@@ -51,10 +51,9 @@ public class VersionMenuDropDownButtonViewImpl
     @Override
     public void addViewAllLabel( int index,
                                  Command command ) {
-        add(
-                new ViewAllLabel(
-                        index,
-                        command ) );
+        add( new ViewAllLabel(
+                index,
+                command ) );
     }
 
     @Override
@@ -84,4 +83,15 @@ public class VersionMenuDropDownButtonViewImpl
         widget.setWidth( "400px" );
         add( widget );
     }
+
+    @Override
+    public boolean isEnabled() {
+        return getTriggerWidget().isEnabled();
+    }
+
+    @Override
+    public void setEnabled( boolean enabled ) {
+        getTriggerWidget().setEnabled( enabled );
+    }
+
 }
