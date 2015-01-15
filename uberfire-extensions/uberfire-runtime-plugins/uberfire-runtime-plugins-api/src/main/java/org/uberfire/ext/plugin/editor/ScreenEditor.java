@@ -1,9 +1,7 @@
 package org.uberfire.ext.plugin.editor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -16,87 +14,37 @@ public class ScreenEditor {
 
     private String externalComponentFQCN;
 
-    private List<ScreenParameter> parameters = new ArrayList<ScreenParameter>();
+    private Map<String, String> parameters = new HashMap<String, String>();
 
-    private String placeName;
+    private Map<String, String> lastParametersSaved = new HashMap<String, String>();
 
     public ScreenEditor() {
-
     }
 
-    public ScreenEditor( String screenName,
-                         List<ScreenParameter> parameters ) {
-        this.placeName = screenName;
-        this.parameters = parameters;
-    }
-
-    public List<ScreenParameter> getParameters() {
+    public Map<String, String> getParameters() {
         return parameters;
     }
 
-    public HashMap<String, String> toParametersMap() {
-
-        HashMap<String, String> parametersMap = new HashMap<String, String>();
-        for ( ScreenParameter parameter : parameters ) {
-            parametersMap.put( parameter.getKey(), parameter.getValue() );
-        }
-        return parametersMap;
+    public void addParameters( String key,
+                               String value ) {
+        parameters.put( key, value );
     }
 
-    public void addParameters( ScreenParameter param ) {
-        if ( param.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
-            this.placeName = param.getValue();
-        }
-        parameters.add( param );
+    public void removeParameter( final String key ) {
+        parameters.remove( key );
     }
 
-    public void removeParameter( final String parameterName ) {
-        final Iterator<ScreenParameter> itr = parameters.iterator();
-        while ( itr.hasNext() ) {
-            final ScreenParameter sp = itr.next();
-            if ( sp.getKey().equals( parameterName ) ) {
-                itr.remove();
-                if ( sp.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
-                    this.placeName = null;
-                }
-            }
-        }
-    }
-
-    public void setParameterValue( final String parameterName,
-                                   final String parameterValue ) {
-        for ( ScreenParameter sp : parameters ) {
-            if ( sp.getKey().equals( parameterName ) ) {
-                sp.setValue( parameterValue );
-            }
-            if ( parameterName.equalsIgnoreCase( PLACE_NAME_KEY ) ) {
-                this.placeName = parameterValue;
-            }
-        }
-    }
-
-    public void setParameters( List<ScreenParameter> parameters ) {
-        for ( ScreenParameter param : parameters ) {
-            if ( param.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
-                this.placeName = param.getValue();
-            }
-        }
-        this.parameters = parameters;
+    public void setParameterValue( final String key,
+                                   final String value ) {
+        parameters.put( key, value );
     }
 
     public void setPlaceName( String placeName ) {
-        this.placeName = placeName;
+        parameters.put( PLACE_NAME_KEY, placeName );
     }
 
     public String getPlaceName() {
-        if ( this.placeName == null || this.placeName.isEmpty() ) {
-            for ( ScreenParameter parameter : parameters ) {
-                if ( parameter.getKey().equalsIgnoreCase( PLACE_NAME_KEY ) ) {
-                    this.placeName = parameter.getValue();
-                }
-            }
-        }
-        return placeName;
+        return parameters.get( PLACE_NAME_KEY );
     }
 
     public void setType( SCREEN_TYPE type ) {
@@ -105,6 +53,22 @@ public class ScreenEditor {
 
     public boolean isAExternalComponent() {
         return type == SCREEN_TYPE.EXTERNAL;
+    }
+
+    public void saveOriginalState() {
+        lastParametersSaved = new HashMap<String, String>();
+        for ( String key : parameters.keySet() ) {
+            lastParametersSaved.put( key, parameters.get( key ) );
+        }
+    }
+
+    public void loadOriginalState(){
+        if(!lastParametersSaved.isEmpty()){
+            parameters = new HashMap<String, String>(  );
+            for ( String key : lastParametersSaved.keySet() ) {
+                parameters.put( key, lastParametersSaved.get( key ) );
+            }
+        }
     }
 
     public enum SCREEN_TYPE {
@@ -136,9 +100,7 @@ public class ScreenEditor {
         if ( parameters != null ? !parameters.equals( that.parameters ) : that.parameters != null ) {
             return false;
         }
-        if ( placeName != null ? !placeName.equals( that.placeName ) : that.placeName != null ) {
-            return false;
-        }
+
         if ( type != that.type ) {
             return false;
         }
@@ -150,7 +112,6 @@ public class ScreenEditor {
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
         result = 31 * result + ( externalComponentFQCN != null ? externalComponentFQCN.hashCode() : 0 );
-        result = 31 * result + ( placeName != null ? placeName.hashCode() : 0 );
         result = 31 * result + ( parameters != null ? parameters.hashCode() : 0 );
         return result;
     }

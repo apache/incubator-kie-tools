@@ -22,7 +22,6 @@ import org.uberfire.ext.plugin.editor.HTMLEditor;
 import org.uberfire.ext.plugin.editor.PerspectiveEditor;
 import org.uberfire.ext.plugin.editor.RowEditor;
 import org.uberfire.ext.plugin.editor.ScreenEditor;
-import org.uberfire.ext.plugin.editor.ScreenParameter;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.NamedPosition;
@@ -99,11 +98,7 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
             FlowPanel panel = new FlowPanel();
             panel.getElement().setId( screenEditor.getPlaceName() + r.nextInt() );
             column.add( panel );
-            Map<String, String> parameters = new HashMap<String, String>();
-            for ( ScreenParameter screenParameter : screenEditor.getParameters() ) {
-                parameters.put( screenParameter.getKey(), screenParameter.getValue() );
-            }
-            screensToLoad.add( new Target( screenEditor.getPlaceName(), column, panel, parameters ) );
+            screensToLoad.add( new Target( screenEditor.getPlaceName(), column, panel, screenEditor.getParameters() ) );
         }
     }
 

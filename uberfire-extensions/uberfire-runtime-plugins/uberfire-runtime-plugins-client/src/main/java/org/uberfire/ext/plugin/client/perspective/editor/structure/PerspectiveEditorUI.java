@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 
@@ -12,7 +11,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import org.uberfire.ext.plugin.client.perspective.editor.util.PerspectiveEditorAdapter;
 import org.uberfire.ext.plugin.editor.PerspectiveEditor;
 import org.uberfire.ext.plugin.editor.ScreenEditor;
-import org.uberfire.ext.plugin.editor.ScreenParameter;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 
@@ -35,7 +33,8 @@ public class PerspectiveEditorUI implements EditorWidget {
 
     }
 
-    public void setup( FlowPanel container, String name ) {
+    public void setup( FlowPanel container,
+                       String name ) {
         this.name = name;
         this.container = container;
         this.rowEditors = new ArrayList<EditorWidget>();
@@ -88,7 +87,7 @@ public class PerspectiveEditorUI implements EditorWidget {
         screenEditor.setType( ScreenEditor.SCREEN_TYPE.EXTERNAL );
         screenEditor.setExternalComponentFQCN( componentFQCN );
         for ( String key : properties.keySet() ) {
-            screenEditor.addParameters( new ScreenParameter( key, properties.get( key ) ) );
+            screenEditor.addParameters( key, properties.get( key ) );
         }
         screenProperties.put( hashcode, screenEditor );
     }
@@ -108,12 +107,13 @@ public class PerspectiveEditorUI implements EditorWidget {
     }
 
     public void addParameter( String hashcode,
-                              ScreenParameter parameter ) {
+                              String key,
+                              String value ) {
         ScreenEditor screenEditor = this.screenProperties.get( hashcode );
         if ( screenEditor == null ) {
             screenEditor = new ScreenEditor();
         }
-        screenEditor.addParameters( parameter );
+        screenEditor.addParameters( key, value );
 
         this.screenProperties.put( hashcode, screenEditor );
     }
@@ -135,4 +135,5 @@ public class PerspectiveEditorUI implements EditorWidget {
         }
         return tags;
     }
+
 }

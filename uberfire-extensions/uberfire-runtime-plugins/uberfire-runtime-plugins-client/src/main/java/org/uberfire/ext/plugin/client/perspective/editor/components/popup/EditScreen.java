@@ -17,11 +17,14 @@ package org.uberfire.ext.plugin.client.perspective.editor.components.popup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
+import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
+import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -36,7 +39,6 @@ import org.uberfire.ext.plugin.client.perspective.editor.structure.EditorWidget;
 import org.uberfire.ext.plugin.client.perspective.editor.structure.PerspectiveEditorUI;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.editor.ScreenEditor;
-import org.uberfire.ext.plugin.editor.ScreenParameter;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
@@ -66,6 +68,8 @@ public class EditScreen
     @UiField
     PropertyEditorWidget propertyEditor;
 
+    private Boolean revertChanges = Boolean.TRUE;
+
     interface Binder
             extends
             UiBinder<Widget, EditScreen> {
@@ -80,22 +84,44 @@ public class EditScreen
         this.parent = parent;
         propertyEditor.setLastOpenAccordionGroupTitle( "Screen Editors" );
         propertyEditor.handle( generateEvent( defaultScreenProperties() ) );
-
+        ScreenEditor screenEditor = getPerspectiveEditor().getScreenProperties( parent.hashCode() + "" );
+        screenEditor.saveOriginalState();
         add( new ModalFooterOKCancelButtons(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        okButton();
-                    }
-                },
-                new Command() {
-                    @Override
-                    public void execute() {
-                        cancelButton();
-                    }
-                }
-        )
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     }
+             )
            );
+        addHiddlenHandler();
+    }
+
+    private void addHiddlenHandler() {
+        addHiddenHandler( new HiddenHandler() {
+            @Override
+            public void onHidden( HiddenEvent hiddenEvent ) {
+                if ( userPressCloseOrCancel() ) {
+                    revertChanges();
+                }
+            }
+        } );
+    }
+
+    private void revertChanges() {
+        ScreenEditor screenEditor = getPerspectiveEditor().getScreenProperties( parent.hashCode() + "" );
+        screenEditor.loadOriginalState();
+    }
+
+    private boolean userPressCloseOrCancel() {
+        return revertChanges;
     }
 
     public void show() {
@@ -104,9 +130,15 @@ public class EditScreen
 
     void okButton() {
         super.hide();
+        revertChanges = Boolean.FALSE;
     }
 
     void cancelButton() {
+        super.hide();
+    }
+
+    @Override
+    public void hide() {
         super.hide();
     }
 
@@ -137,15 +169,15 @@ public class EditScreen
         //Check the Key is unique
         final PerspectiveEditorUI perspectiveEditor = getPerspectiveEditor();
         final ScreenEditor screenEditor = perspectiveEditor.getScreenProperties( parent.hashCode() + "" );
-        for ( ScreenParameter sp : screenEditor.getParameters() ) {
-            if ( key.getText().equals( sp.getKey() ) ) {
+        for ( String parameterKey : screenEditor.getParameters().keySet() ) {
+            if ( key.getText().equals( parameterKey ) ) {
                 paramKeyControlGroup.setType( ControlGroupType.ERROR );
                 paramKeyInline.setText( CommonConstants.INSTANCE.DuplicateParameterName() );
                 return null;
             }
         }
 
-        perspectiveEditor.addParameter( parent.hashCode() + "", new ScreenParameter( key.getText(), value.getText() ) );
+        perspectiveEditor.addParameter( parent.hashCode() + "", key.getText(), value.getText() );
         return defaultScreenProperties();
     }
 
@@ -173,15 +205,16 @@ public class EditScreen
         };
 
         boolean alreadyHasScreenNameParameter = false;
-        for ( final ScreenParameter key : screenEditor.getParameters() ) {
-            if ( key.getKey().equals( ScreenEditor.PLACE_NAME_KEY ) ) {
+        final Map<String, String> parameters = screenEditor.getParameters();
+        for ( final String key : parameters.keySet() ) {
+            if ( key.equals( ScreenEditor.PLACE_NAME_KEY ) ) {
                 alreadyHasScreenNameParameter = true;
             }
-            category.withField( new PropertyEditorFieldInfo( key.getKey(),
-                                                             key.getValue(),
+            category.withField( new PropertyEditorFieldInfo( key,
+                                                             parameters.get( key ),
                                                              PropertyEditorType.TEXT )
                                         .withKey( parent.hashCode() + "" )
-                                        .withRemovalSupported( !key.getKey().equals( ScreenEditor.PLACE_NAME_KEY ) )
+                                        .withRemovalSupported( !key.equals( ScreenEditor.PLACE_NAME_KEY ) )
                                         .withValidators( new PropertyFieldValidator() {
                                             @Override
                                             public boolean validate( Object value ) {
@@ -211,8 +244,8 @@ public class EditScreen
                                                 return "";
                                             }
                                         } ) );
-            screenEditor.addParameters( new ScreenParameter( ScreenEditor.PLACE_NAME_KEY,
-                                                             "" ) );
+            screenEditor.addParameters( ScreenEditor.PLACE_NAME_KEY,
+                                        "" );
         }
 
         return category;

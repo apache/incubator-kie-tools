@@ -89,8 +89,8 @@ public class ScreenView extends Composite {
     private void loadExternalComponent( ScreenEditor editor ) {
         this.type = DragType.EXTERNAL;
         this.externalComponent = lookupForExternalComponent( editor.getExternalComponentFQCN() );
-        this.externalComponent.setup( editor.getPlaceName(), editor.toParametersMap() );
-        this.externalComponentPreview = externalComponent.getPreview(editor.toParametersMap());
+        this.externalComponent.setup( editor.getPlaceName(), editor.getParameters() );
+        this.externalComponentPreview = externalComponent.getPreview(editor.getParameters());
     }
 
     private void build() {
