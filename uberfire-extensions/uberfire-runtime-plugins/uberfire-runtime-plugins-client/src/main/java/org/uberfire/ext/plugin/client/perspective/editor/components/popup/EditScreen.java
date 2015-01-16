@@ -80,6 +80,7 @@ public class EditScreen
 
     public EditScreen( EditorWidget parent ) {
         setTitle( CommonConstants.INSTANCE.EditComponent() );
+        setMaxHeigth( "350px" );
         add( uiBinder.createAndBindUi( this ) );
         this.parent = parent;
         propertyEditor.setLastOpenAccordionGroupTitle( "Screen Editors" );
