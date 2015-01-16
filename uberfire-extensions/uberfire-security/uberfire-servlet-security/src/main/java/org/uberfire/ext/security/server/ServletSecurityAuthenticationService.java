@@ -99,7 +99,7 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
             return null;
         }
         User user = null;
-        final HttpSession session = request.getSession( false );
+        final HttpSession session = request.getSession();
         if ( session != null ) {
             user = (User) session.getAttribute( USER_SESSION_ATTR_NAME );
             if ( user == null ) {
