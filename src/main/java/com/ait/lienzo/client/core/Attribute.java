@@ -199,6 +199,10 @@ public class Attribute implements IAttribute
 
     public static final Attribute           BIAS                             = new Attribute("bias", MESSAGES.biasLabel(), MESSAGES.biasDescription(), AttributeType.NUMBER_TYPE);
 
+    public static final Attribute           HEAD_DIRECTION                   = new Attribute("headDirection", MESSAGES.headDirectionLabel(), MESSAGES.headDirectionDescription(), AttributeType.DIRECTION_TYPE);
+
+    public static final Attribute           TAIL_DIRECTION                   = new Attribute("tailDirection", MESSAGES.tailDirectionLabel(), MESSAGES.tailDirectionDescription(), AttributeType.DIRECTION_TYPE);
+
     private final String                    m_property;
 
     private final String                    m_label;

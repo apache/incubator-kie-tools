@@ -596,4 +596,16 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("Unit size of Text (px,pt).")
     public String textUnitDescription();
+
+    @DefaultStringValue("Head Direction")
+    public String headDirectionLabel();
+
+    @DefaultStringValue("Head Direction of a PolyLine connector.")
+    public String headDirectionDescription();
+
+    @DefaultStringValue("Tail Direction")
+    public String tailDirectionLabel();
+
+    @DefaultStringValue("Tail Direction of a PolyLine connector.")
+    public String tailDirectionDescription();
 }

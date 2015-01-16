@@ -50,6 +50,7 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
+import com.ait.lienzo.shared.core.types.Direction;
 import com.google.gwt.json.client.JSONValue;
 
 /**
@@ -118,6 +119,8 @@ public class AttributeType
     public static AttributeType     BEHAVIOR_MAP_TYPE         = new AttributeType(BehaviorMapValidator.INSTANCE);
 
     public static AttributeType     STROKE_TYPE               = COLOR_TYPE;
+
+    public static AttributeType     DIRECTION_TYPE            = new AttributeType(new EnumValidator<Direction>("Direction", Direction.values()));
 
     private IAttributeTypeValidator m_validator;
 

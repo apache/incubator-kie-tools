@@ -42,6 +42,7 @@ import com.ait.lienzo.client.core.types.SpriteBehaviorMap.SpriteBehaviorMapJSO;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
 import com.ait.lienzo.shared.core.types.ArrowType;
+import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
@@ -1393,6 +1394,40 @@ public class Attributes
     public final double getDashOffset()
     {
         return getDouble(Attribute.DASH_OFFSET.getProperty());
+    }
+
+    public final void setHeadDirection(Direction direction)
+    {
+        if (null != direction)
+        {
+            put(Attribute.HEAD_DIRECTION.getProperty(), direction.getValue());
+        }
+        else
+        {
+            delete(Attribute.HEAD_DIRECTION.getProperty());
+        }
+    }
+
+    public final Direction getHeadDirection()
+    {
+        return Direction.lookup(getString(Attribute.HEAD_DIRECTION.getProperty()));
+    }
+
+    public final void setTailDirection(Direction direction)
+    {
+        if (null != direction)
+        {
+            put(Attribute.TAIL_DIRECTION.getProperty(), direction.getValue());
+        }
+        else
+        {
+            delete(Attribute.TAIL_DIRECTION.getProperty());
+        }
+    }
+
+    public final Direction getTailDirection()
+    {
+        return Direction.lookup(getString(Attribute.TAIL_DIRECTION.getProperty()));
     }
 
     public final boolean hasTransformAttributes()
