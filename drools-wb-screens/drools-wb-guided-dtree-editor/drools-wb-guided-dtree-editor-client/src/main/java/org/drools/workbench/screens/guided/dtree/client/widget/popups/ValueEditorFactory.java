@@ -45,9 +45,6 @@ public abstract class ValueEditorFactory {
             dd = oracle.getEnums( className,
                                   fieldName,
                                   currentValueMap );
-            if ( dd != null ) {
-                dataType = DataType.TYPE_COMPARABLE;
-            }
         }
 
         //Ensure Node has a value if needed
