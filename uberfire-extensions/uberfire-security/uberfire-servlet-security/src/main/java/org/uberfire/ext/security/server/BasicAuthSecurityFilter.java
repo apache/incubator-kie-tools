@@ -46,18 +46,21 @@ public class BasicAuthSecurityFilter implements Filter {
         final HttpServletResponse response = (HttpServletResponse) _response;
 
         final User user = authenticationService.getUser();
-
-        if ( user == null ) {
-            if ( authenticate( request ) ) {
-                chain.doFilter( request, response );
-                if ( response.isCommitted() ) {
-                    authenticationService.logout();
+        try {
+            if (user == null) {
+                if (authenticate(request)) {
+                    chain.doFilter(request, response);
+                    if (response.isCommitted()) {
+                        authenticationService.logout();
+                    }
+                } else {
+                    challengeClient(request, response);
                 }
             } else {
-                challengeClient( request, response );
+                chain.doFilter(request, response);
             }
-        } else {
-            chain.doFilter( request, response );
+        } finally {
+            request.getSession().invalidate();
         }
     }
 
