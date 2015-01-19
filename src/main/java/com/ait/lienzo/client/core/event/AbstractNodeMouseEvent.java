@@ -21,34 +21,32 @@ import com.google.gwt.event.dom.client.MouseEvent;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends EventHandler> extends GwtEvent<H> implements INodeXYEvent
+public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends EventHandler> extends AbstractNodeHumanInputEvent<T, H> implements INodeXYEvent
 {
     private final int m_x;
 
     private final int m_y;
 
-    private final T   m_event;
-
     public static class Type<H> extends GwtEvent.Type<H>
     {
     }
 
-    protected AbstractNodeMouseEvent(T event)
+    protected AbstractNodeMouseEvent(final T event)
     {
+        super(event);
+
         m_x = event.getRelativeX(event.getRelativeElement());
 
         m_y = event.getRelativeY(event.getRelativeElement());
-
-        m_event = event;
     }
 
-    protected AbstractNodeMouseEvent(T event, int x, int y)
+    protected AbstractNodeMouseEvent(final T event, final int x, final int y)
     {
+        super(event);
+
         m_x = x;
 
         m_y = y;
-
-        m_event = event;
     }
 
     @Override
@@ -74,16 +72,21 @@ public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends 
      * 
      * @return
      */
-    public T getMouseEvent()
+    public final T getMouseEvent()
     {
-        return m_event;
+        return getHumanInputEvent();
     }
 
-    public boolean isButtonLeft()
+    public final boolean isButtonLeft()
     {
-        if (null != m_event)
+        return isButtonLeft(getMouseEvent());
+    }
+
+    public static final boolean isButtonLeft(final MouseEvent<?> event)
+    {
+        if (null != event)
         {
-            if (m_event.getNativeButton() == NativeEvent.BUTTON_LEFT)
+            if (event.getNativeButton() == NativeEvent.BUTTON_LEFT)
             {
                 return true;
             }
@@ -91,11 +94,16 @@ public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends 
         return false;
     }
 
-    public boolean isButtonMiddle()
+    public final boolean isButtonMiddle()
     {
-        if (null != m_event)
+        return isButtonMiddle(getMouseEvent());
+    }
+
+    public static final boolean isButtonMiddle(final MouseEvent<?> event)
+    {
+        if (null != event)
         {
-            if (m_event.getNativeButton() == NativeEvent.BUTTON_MIDDLE)
+            if (event.getNativeButton() == NativeEvent.BUTTON_MIDDLE)
             {
                 return true;
             }
@@ -103,35 +111,20 @@ public abstract class AbstractNodeMouseEvent<T extends MouseEvent<?>, H extends 
         return false;
     }
 
-    public boolean isButtonRight()
+    public final boolean isButtonRight()
     {
-        if (null != m_event)
+        return isButtonRight(getMouseEvent());
+    }
+
+    public static final boolean isButtonRight(final MouseEvent<?> event)
+    {
+        if (null != event)
         {
-            if (m_event.getNativeButton() == NativeEvent.BUTTON_RIGHT)
+            if (event.getNativeButton() == NativeEvent.BUTTON_RIGHT)
             {
                 return true;
             }
         }
         return false;
-    }
-
-    public boolean isControlKeyDown()
-    {
-        return (null != m_event) && m_event.isControlKeyDown();
-    }
-
-    public boolean isShiftKeyDown()
-    {
-        return (null != m_event) && m_event.isShiftKeyDown();
-    }
-
-    public boolean isAltKeyDown()
-    {
-        return (null != m_event) && m_event.isAltKeyDown();
-    }
-
-    public boolean isMetaKeyDown()
-    {
-        return (null != m_event) && m_event.isMetaKeyDown();
     }
 }

@@ -14,35 +14,30 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.event;
+package com.ait.lienzo.client.core.mediator;
 
-import java.util.List;
-
-import com.google.gwt.event.dom.client.TouchEvent;
-
-public class NodeTouchStartEvent extends AbstractNodeTouchEvent<TouchEvent<?>, NodeTouchStartHandler>
+public abstract class AbstractEventFilter implements IEventFilter
 {
-    private static final Type<NodeTouchStartHandler> TYPE = new Type<NodeTouchStartHandler>();
+    private boolean m_enabled = true;
 
-    public static Type<NodeTouchStartHandler> getType()
+    protected AbstractEventFilter()
     {
-        return TYPE;
     }
 
-    public NodeTouchStartEvent(TouchEvent<?> event, List<TouchPoint> touches)
+    protected AbstractEventFilter(boolean enabled)
     {
-        super(event, touches);
-    }
-
-    @Override
-    public final Type<NodeTouchStartHandler> getAssociatedType()
-    {
-        return TYPE;
+        m_enabled = enabled;
     }
 
     @Override
-    protected void dispatch(NodeTouchStartHandler handler)
+    public boolean isEnabled()
     {
-        handler.onNodeTouchStart(this);
+        return m_enabled;
+    }
+
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        m_enabled = enabled;
     }
 }

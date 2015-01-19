@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.mediator;
 
+import com.ait.lienzo.shared.java.util.function.Predicate;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -23,13 +24,9 @@ import com.google.gwt.event.shared.GwtEvent;
  * 
  * @since 1.1
  */
-public interface IEventFilter
+public interface IEventFilter extends Predicate<GwtEvent<?>>
 {
-    /**
-     * Returns whether the event is accepted by this filter.
-     * 
-     * @param event GwtEvent
-     * @return boolean
-     */
-    public boolean matches(GwtEvent<?> event);
+    public boolean isEnabled();
+
+    public void setEnabled(boolean enabled);
 }

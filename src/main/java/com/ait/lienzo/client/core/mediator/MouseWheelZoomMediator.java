@@ -54,7 +54,9 @@ public class MouseWheelZoomMediator extends AbstractMediator
     {
         if (event.getAssociatedType() == NodeMouseWheelEvent.getType())
         {
-            if (m_eventFilter.matches(event))
+            IEventFilter filter = getEventFilter();
+
+            if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
             {
                 onMouseWheel((NodeMouseWheelEvent) event);
 
@@ -221,21 +223,6 @@ public class MouseWheelZoomMediator extends AbstractMediator
 
         setTransform(transform);
 
-        redraw();
-    }
-
-    protected void redraw()
-    {
-        m_viewport.getScene().draw();
-    }
-
-    protected Transform getTransform()
-    {
-        return m_viewport.getTransform();
-    }
-
-    protected void setTransform(Transform transform)
-    {
-        m_viewport.setTransform(transform);
+        getViewport().getScene().draw();
     }
 }

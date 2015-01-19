@@ -288,7 +288,7 @@ final class LienzoHandlerManager
             {
                 event.preventDefault();
 
-                final NodeTouchCancelEvent nevent = new NodeTouchCancelEvent(getTouches(event));
+                final NodeTouchCancelEvent nevent = new NodeTouchCancelEvent(event, getTouches(event));
 
                 if (m_mediators.handleEvent(event))
                 {
@@ -304,7 +304,7 @@ final class LienzoHandlerManager
             {
                 event.preventDefault();
 
-                final NodeTouchEndEvent nevent = new NodeTouchEndEvent(m_touches);
+                final NodeTouchEndEvent nevent = new NodeTouchEndEvent(event, m_touches);
 
                 if (m_mediators.handleEvent(nevent))
                 {
@@ -322,7 +322,7 @@ final class LienzoHandlerManager
 
                 m_touches = getTouches(event);
 
-                final NodeTouchMoveEvent nevent = new NodeTouchMoveEvent(m_touches);
+                final NodeTouchMoveEvent nevent = new NodeTouchMoveEvent(event, m_touches);
 
                 if (m_mediators.handleEvent(nevent))
                 {
@@ -340,7 +340,7 @@ final class LienzoHandlerManager
 
                 m_touches = getTouches(event);
 
-                final NodeTouchStartEvent nevent = new NodeTouchStartEvent(m_touches);
+                final NodeTouchStartEvent nevent = new NodeTouchStartEvent(event, m_touches);
 
                 if (m_mediators.handleEvent(nevent))
                 {

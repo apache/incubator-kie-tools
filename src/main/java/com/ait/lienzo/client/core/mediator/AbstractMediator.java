@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.mediator;
 
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Transform;
 
 /**
  * AbstractMediator provides common functionality for {@link IMediator}s.
@@ -30,15 +31,15 @@ import com.ait.lienzo.client.core.shape.Viewport;
  */
 public abstract class AbstractMediator implements IMediator
 {
-    private static long    s_name_counter = 0;
+    private static long  s_name_counter = 0;
 
-    protected IEventFilter m_eventFilter  = EventFilter.ANY;
+    private IEventFilter m_filter       = null;
 
-    protected Viewport     m_viewport;
+    private Viewport     m_viewport;
 
-    private boolean        m_enabled      = true;
+    private boolean      m_enabled      = true;
 
-    private String         m_name         = getClass().getName() + "_" + (s_name_counter++); // Create a default unique name, we don't create alot of Mediators, so... good'nuf
+    private String       m_name         = getClass().getName() + "_" + (s_name_counter++); // Create a default unique name, we don't create alot of Mediators, so... good'nuf
 
     /**
      * Returns the event filter for this mediator.
@@ -52,7 +53,7 @@ public abstract class AbstractMediator implements IMediator
      */
     public IEventFilter getEventFilter()
     {
-        return m_eventFilter;
+        return m_filter;
     }
 
     /**
@@ -65,9 +66,9 @@ public abstract class AbstractMediator implements IMediator
      * 
      * @see EventFilter
      */
-    public void setEventFilter(IEventFilter eventFilter)
+    public void setEventFilter(IEventFilter filter)
     {
-        m_eventFilter = eventFilter;
+        m_filter = filter;
     }
 
     /**
@@ -92,6 +93,16 @@ public abstract class AbstractMediator implements IMediator
     public Viewport getViewport()
     {
         return m_viewport;
+    }
+
+    protected Transform getTransform()
+    {
+        return getViewport().getTransform();
+    }
+
+    protected void setTransform(Transform transform)
+    {
+        getViewport().setTransform(transform);
     }
 
     @Override

@@ -150,7 +150,9 @@ public class MouseBoxZoomMediator extends AbstractMediator
         }
         else if (event.getAssociatedType() == NodeMouseDownEvent.getType())
         {
-            if (m_eventFilter.matches(event))
+            IEventFilter filter = getEventFilter();
+
+            if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
             {
                 onMouseDown((NodeMouseDownEvent) event);
 
@@ -176,9 +178,9 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         m_dragging = true;
 
-        m_dragLayer = m_viewport.getDraglayer();
+        m_dragLayer = getViewport().getDraglayer();
 
-        Transform transform = m_dragLayer.isTransformable() ? m_viewport.getTransform() : m_dragLayer.getTransform();
+        Transform transform = m_dragLayer.isTransformable() ? getViewport().getTransform() : m_dragLayer.getTransform();
 
         if (transform == null)
         {
@@ -259,9 +261,9 @@ public class MouseBoxZoomMediator extends AbstractMediator
             dy = -dy;
         }
         // prevent zooming in too far
-        double scaleX = m_viewport.getWidth() / dx;
+        double scaleX = getViewport().getWidth() / dx;
 
-        double scaleY = m_viewport.getHeight() / dy;
+        double scaleY = getViewport().getHeight() / dy;
 
         double scale = (scaleX > scaleY) ? scaleY : scaleX;
 
@@ -273,7 +275,7 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         setTransform(transform);
 
-        redraw();
+        getViewport().getScene().draw();
     }
 
     protected void setDefaultRectangle()
@@ -283,16 +285,6 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
     protected Transform createTransform(double x, double y, double dx, double dy)
     {
-        return Transform.createViewportTransform(x, y, dx, dy, m_viewport.getWidth(), m_viewport.getHeight());
-    }
-
-    protected void setTransform(Transform transform)
-    {
-        m_viewport.setTransform(transform);
-    }
-
-    protected void redraw()
-    {
-        m_viewport.getScene().draw();
+        return Transform.createViewportTransform(x, y, dx, dy, getViewport().getWidth(), getViewport().getHeight());
     }
 }

@@ -69,7 +69,9 @@ public class MousePanMediator extends AbstractMediator
         }
         else if (event.getAssociatedType() == NodeMouseDownEvent.getType())
         {
-            if (m_eventFilter.matches(event))
+            IEventFilter filter = getEventFilter();
+
+            if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event)))
             {
                 onMouseDown((NodeMouseDownEvent) event);
 
@@ -120,26 +122,11 @@ public class MousePanMediator extends AbstractMediator
 
         m_last = curr;
 
-        redraw();
+        getViewport().getScene().draw();
     }
 
     protected void onMouseUp(NodeMouseUpEvent event)
     {
         cancel();
-    }
-
-    protected Transform getTransform()
-    {
-        return m_viewport.getTransform();
-    }
-
-    protected void setTransform(Transform transform)
-    {
-        m_viewport.setTransform(transform);
-    }
-
-    protected void redraw()
-    {
-        m_viewport.getScene().draw();
     }
 }
