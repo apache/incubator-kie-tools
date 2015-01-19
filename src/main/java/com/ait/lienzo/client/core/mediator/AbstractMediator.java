@@ -39,7 +39,19 @@ public abstract class AbstractMediator implements IMediator
 
     private boolean      m_enabled      = true;
 
+    private boolean      m_batch        = false;
+
     private String       m_name         = getClass().getName() + "_" + (s_name_counter++); // Create a default unique name, we don't create alot of Mediators, so... good'nuf
+
+    public void setBatchDraw(boolean batch)
+    {
+        m_batch = batch;
+    }
+
+    public boolean isBatchDraw()
+    {
+        return m_batch;
+    }
 
     /**
      * Returns the event filter for this mediator.

@@ -122,7 +122,14 @@ public class MousePanMediator extends AbstractMediator
 
         m_last = curr;
 
-        getViewport().getScene().draw();
+        if (isBatchDraw())
+        {
+            getViewport().getScene().batch();
+        }
+        else
+        {
+            getViewport().getScene().draw();
+        }
     }
 
     protected void onMouseUp(NodeMouseUpEvent event)

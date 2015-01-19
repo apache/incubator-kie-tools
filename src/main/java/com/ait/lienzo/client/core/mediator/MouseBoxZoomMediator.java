@@ -275,7 +275,14 @@ public class MouseBoxZoomMediator extends AbstractMediator
 
         setTransform(transform);
 
-        getViewport().getScene().draw();
+        if (isBatchDraw())
+        {
+            getViewport().getScene().batch();
+        }
+        else
+        {
+            getViewport().getScene().draw();
+        }
     }
 
     protected void setDefaultRectangle()

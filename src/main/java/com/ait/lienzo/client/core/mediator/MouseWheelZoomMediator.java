@@ -223,6 +223,13 @@ public class MouseWheelZoomMediator extends AbstractMediator
 
         setTransform(transform);
 
-        getViewport().getScene().draw();
+        if (isBatchDraw())
+        {
+            getViewport().getScene().batch();
+        }
+        else
+        {
+            getViewport().getScene().draw();
+        }
     }
 }
