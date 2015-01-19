@@ -137,11 +137,34 @@ public class Text extends Shape<Text>
     @Override
     public BoundingBox getBoundingBox()
     {
-        return getBoundingBox(getText(), /*getFontSize()*/0, getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
+        return getBoundingBox(getText(), getFontSize(), getFontStyle(), getFontFamily(), getTextUnit(), getTextBaseLine(), getTextAlign());
     }
 
     private static final native NFastDoubleArrayJSO getTextOffsets(CanvasPixelArray data, int wide, int high, int base)
     /*-{
+        var top = -1;
+        var bot = -1;
+        for(var y = 0; ((y < high) && (top < 0)); y++) {
+            for(var x = 0; ((x < wide) && (top < 0)); x++) {
+                if (data[(y * wide + x) * 4] != 0) {
+                    top = y;
+                }
+            }
+        }
+        if (top < 0) {
+            top = 0;
+        }
+        for(var y = high - 1; ((y > top) && (bot < 0)); y--) {
+            for(var x = 0; ((x < wide) && (bot < 0)); x++) {
+                if (data[(y * wide + x) * 4] != 0) {
+                    bot = y;
+                }
+            }
+        }
+        if ((top < 0) || (bot < 0)) {
+            return null;
+        }
+        return [top-base, bot-base];
     }-*/;
 
     private static final NFastDoubleArrayJSO getTextOffsets(final String font, final TextBaseLine baseline)
@@ -156,7 +179,7 @@ public class Text extends Shape<Text>
 
         final int w = (int) FORBOUNDS.getContext().measureText("Mg").getWidth();
 
-        final int h = (m * 3);
+        final int h = (m * 4);
 
         final ScratchCanvas temp = new ScratchCanvas(w, h);
 
@@ -174,9 +197,9 @@ public class Text extends Shape<Text>
 
         ctxt.setFillColor(ColorName.WHITE);
 
-        ctxt.fillText("Mg", 0, m);
+        ctxt.fillText("Mg", 0, m * 2);
 
-        return getTextOffsets(ctxt.getImageData(0, 0, w, h).getData(), w, h, m);
+        return getTextOffsets(ctxt.getImageData(0, 0, w, h).getData(), w, h, m * 2);
     }
 
     private final static BoundingBox getBoundingBox(final String text, final double size, final String style, final String family, final TextUnit unit, final TextBaseLine baseline, final TextAlign align)
@@ -194,6 +217,10 @@ public class Text extends Shape<Text>
         if (null == offs)
         {
             OFFSCACHE.put(base, offs = getTextOffsets(font, baseline));
+        }
+        if (null == offs)
+        {
+            return new BoundingBox(0, 0, 0, 0);
         }
         FORBOUNDS.getContext().setTextFont(font);
 
