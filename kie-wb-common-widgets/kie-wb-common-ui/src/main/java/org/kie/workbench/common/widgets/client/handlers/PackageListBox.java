@@ -101,8 +101,9 @@ public class PackageListBox extends ListBox {
     }
 
     public Package getSelectedPackage() {
+        if (packages.size() == 0) return null;
         final int selectedIndex = getSelectedIndex();
-        return selectedIndex < 0 ? null : packages.get( selectedIndex );
+        return selectedIndex < 0 && selectedIndex >= packages.size() ? null : packages.get( selectedIndex );
     }
 
 }
