@@ -106,6 +106,7 @@ public class NewProjectWizard
         // hence package names, it is sanitized in the ProjectService.newProject() method.
         pom = new POM();
         pom.setName( projectName );
+        pom.getGav().setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );
         pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
         pom.getGav().setVersion( "1.0" );
         gavWizardPage.setPom( pom );
