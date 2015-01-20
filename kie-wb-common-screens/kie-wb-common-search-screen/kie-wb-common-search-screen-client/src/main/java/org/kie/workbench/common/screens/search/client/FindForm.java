@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.github.gwtbootstrap.client.ui.Alert;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
-import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.Typeahead;
 import com.github.gwtbootstrap.client.ui.constants.AlertType;
@@ -86,13 +85,6 @@ public class FindForm
     TextBox formatTextBox;
 
     @UiField
-    RadioButton statusAny;
-    @UiField
-    RadioButton statusEnabled;
-    @UiField
-    RadioButton statusDisabled;
-
-    @UiField
     TextBox subjectTextBox;
 
     @UiField
@@ -151,9 +143,6 @@ public class FindForm
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        statusEnabled.setFormValue( "enabled" );
-        statusDisabled.setFormValue( "disabled" );
-
         final MultiWordSuggestOracle oracle = (MultiWordSuggestOracle) formatTypeahead.getSuggestOracle();
 
         for ( final ClientResourceType resourceType : clientTypeRegistry.getRegisteredTypes() ) {
@@ -201,14 +190,6 @@ public class FindForm
 
         if ( !checkinCommentTextBox.getText().trim().isEmpty() ) {
             metadata.put( "checkinComment", checkinCommentTextBox.getText().trim() );
-        }
-
-        if ( statusDisabled.getValue() ) {
-            metadata.put( "othermeta.mode", statusDisabled.getFormValue() );
-        }
-
-        if ( statusEnabled.getValue() ) {
-            metadata.put( "othermeta.mode", statusEnabled.getFormValue() );
         }
 
         boolean hasSomeDateValue = false;

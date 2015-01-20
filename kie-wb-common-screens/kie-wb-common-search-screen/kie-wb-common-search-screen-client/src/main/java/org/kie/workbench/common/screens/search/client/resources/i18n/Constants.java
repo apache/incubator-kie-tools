@@ -54,14 +54,6 @@ public interface Constants
 
     String FormatTip();
 
-    String Status();
-
-    String StatusAny();
-
-    String StatusEnabled();
-
-    String StatusDisabled();
-
     String Subject();
 
     String SubjectTip();

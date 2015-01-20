@@ -75,17 +75,6 @@
             </b:ControlGroup>
 
             <b:ControlGroup>
-              <b:ControlLabel for="status">
-                <g:InlineHTML text="{i18n.Status}"/>
-              </b:ControlLabel>
-              <b:Controls>
-                <b:RadioButton ui:field="statusAny" name="status" checked="true" text="{i18n.StatusAny}"/>
-                <b:RadioButton ui:field="statusEnabled" name="status" text="{i18n.StatusEnabled}"/>
-                <b:RadioButton ui:field="statusDisabled" name="status" text="{i18n.StatusDisabled}"/>
-              </b:Controls>
-            </b:ControlGroup>
-
-            <b:ControlGroup>
               <b:ControlLabel for="subject">
                 <g:InlineHTML text="{i18n.Subject}"/>
               </b:ControlLabel>
