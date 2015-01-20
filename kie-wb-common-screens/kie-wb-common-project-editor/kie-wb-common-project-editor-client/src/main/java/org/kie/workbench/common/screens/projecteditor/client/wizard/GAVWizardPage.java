@@ -89,11 +89,11 @@ public class GAVWizardPage
         } );
     }
 
-    public void setPom( final POM pom ) {
+    public void setPom( final POM pom, boolean hasParent ) {
         this.pomEditor.setPOM( pom,
                                false );
 
-        if ( hasParent( pom ) ) {
+        if ( hasParent ) {
             pomEditor.disableGroupID( view.InheritedFromAParentPOM() );
             pomEditor.disableVersion( view.InheritedFromAParentPOM() );
             validateArtifactId( pom.getGav().getArtifactId() );
@@ -129,10 +129,6 @@ public class GAVWizardPage
                 pomEditor.setValidVersion( Boolean.TRUE.equals( result ) );
             }
         } ).validateVersion( version );
-    }
-
-    private boolean hasParent( POM pom ) {
-        return pom.getGav() != null && pom.getGav().getGroupId() != null && !pom.getGav().getGroupId().trim().isEmpty();
     }
 
     @Override

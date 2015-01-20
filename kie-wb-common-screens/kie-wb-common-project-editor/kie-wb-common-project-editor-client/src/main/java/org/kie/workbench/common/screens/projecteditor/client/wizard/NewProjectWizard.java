@@ -109,9 +109,10 @@ public class NewProjectWizard
         pom.getGav().setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );
         pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
         pom.getGav().setVersion( "1.0" );
-        gavWizardPage.setPom( pom );
+        gavWizardPage.setPom( pom, false );
     }
 
+    // TODO refactor this ( e.g. pass in parent GAV instead of Strings ) ?
     public void setContent( final String projectName,
                             final String groupId,
                             final String version ) {
@@ -124,7 +125,7 @@ public class NewProjectWizard
         pom.getGav().setGroupId( groupId );
         pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
         pom.getGav().setVersion( version );
-        gavWizardPage.setPom( pom );
+        gavWizardPage.setPom( pom, true );
     }
 
     //The projectName has been validated as a FileSystem folder name, which may not be consistent with Maven ArtifactID

@@ -50,7 +50,7 @@ public class GAVWizardPageTest {
 
     @Test
     public void testPomsWithParentDataDisableFieldsParentNotSet() throws Exception {
-        page.setPom( new POM() );
+        page.setPom( new POM(), false );
 
         verify( pomEditor, never() ).disableGroupID( anyString() );
         verify( pomEditor, never() ).disableVersion( anyString() );
@@ -61,7 +61,7 @@ public class GAVWizardPageTest {
         when( view.InheritedFromAParentPOM() ).thenReturn( "InheritedFromAParentPOM" );
         POM pom = new POM();
         pom.getGav().setGroupId( "supergroup" );
-        page.setPom( pom );
+        page.setPom( pom, true );
 
         verify( pomEditor ).disableGroupID( "InheritedFromAParentPOM" );
         verify( pomEditor ).disableVersion( "InheritedFromAParentPOM" );
