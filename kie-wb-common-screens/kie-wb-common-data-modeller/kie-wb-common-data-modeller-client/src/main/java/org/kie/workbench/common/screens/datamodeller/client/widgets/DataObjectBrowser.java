@@ -56,7 +56,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.guvnor.common.services.project.model.Project;
-import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -81,6 +80,7 @@ import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -176,24 +176,6 @@ public class DataObjectBrowser extends Composite {
 
         dataObjectPropertiesTable.setEmptyTableWidget( new com.github.gwtbootstrap.client.ui.Label( Constants.INSTANCE.objectBrowser_emptyTable() ) );
 
-        //Init position column
-
-        final TextColumn<ObjectPropertyTO> propertyPositionColumn = new TextColumn<ObjectPropertyTO>() {
-
-            @Override
-            public String getValue( final ObjectPropertyTO objectProperty ) {
-                return AnnotationValueHandler.getInstance().getStringValue( objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "" );
-            }
-        };
-
-        propertyPositionColumn.setSortable( true );
-        dataObjectPropertiesTable.addColumn( propertyPositionColumn, Constants.INSTANCE.objectBrowser_columnPosition() );
-        //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
-
-        ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyPositionColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
-        propertyPositionColHandler.setComparator( propertyPositionColumn, new ObjectPropertyComparator( "position" ) );
-        dataObjectPropertiesTable.addColumnSortHandler( propertyPositionColHandler );
-
         //Init property name column
 
         final TextColumn<ObjectPropertyTO> propertyNameColumn = new TextColumn<ObjectPropertyTO>() {
@@ -229,6 +211,7 @@ public class DataObjectBrowser extends Composite {
         propertyNameColumn.setSortable( true );
         dataObjectPropertiesTable.addColumn( propertyNameColumn, Constants.INSTANCE.objectBrowser_columnName() );
         //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
+        dataObjectPropertiesTable.setColumnWidth( propertyNameColumn, 30, Style.Unit.PCT);
 
         ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyNameColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
         propertyNameColHandler.setComparator( propertyNameColumn, new ObjectPropertyComparator( "name" ) );
@@ -268,7 +251,7 @@ public class DataObjectBrowser extends Composite {
 
         propertyLabelColumn.setSortable( true );
         dataObjectPropertiesTable.addColumn( propertyLabelColumn, Constants.INSTANCE.objectBrowser_columnLabel() );
-        //dataObjectPropertiesTable.setColumnWidth(propertyNameColumn, 100, Style.Unit.PX);
+        dataObjectPropertiesTable.setColumnWidth( propertyLabelColumn, 30, Style.Unit.PCT);
 
         ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyLabelColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
         propertyNameColHandler.setComparator( propertyLabelColumn, new ObjectPropertyComparator( "label" ) );
@@ -338,7 +321,7 @@ public class DataObjectBrowser extends Composite {
         };
         propertyTypeColumn.setSortable( true );
         dataObjectPropertiesTable.addColumn( propertyTypeColumn, Constants.INSTANCE.objectBrowser_columnType() );
-        //dataObjectPropertiesTable.setColumnWidth(propertyTypeColumn, 100, Style.Unit.PX);
+        dataObjectPropertiesTable.setColumnWidth( propertyTypeColumn, 40, Style.Unit.PCT );
 
         //Init delete column
         ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell( true );
@@ -457,9 +440,6 @@ public class DataObjectBrowser extends Composite {
                                     property.addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
                                 }
 
-                                Integer position = DataModelerUtils.getMaxPosition( getDataObject() ) + 1;
-                                property.addAnnotation( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.POSITION_ANNOTATION ), AnnotationDefinitionTO.VALUE_PARAM, position.toString() );
-
                                 addDataObjectProperty( property );
                                 resetInput();
                             } else {
@@ -570,12 +550,6 @@ public class DataObjectBrowser extends Composite {
             dataObjectPropertiesProvider.getList().remove( index );
             dataObjectPropertiesProvider.flush();
             dataObjectPropertiesProvider.refresh();
-
-            String sPosRemoved = AnnotationValueHandler.getInstance().getStringValue( objectProperty, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1" );
-            if ( sPosRemoved != null && sPosRemoved.length() > 0 ) {
-                Integer posRemoved = Integer.parseInt( sPosRemoved );
-                DataModelerUtils.recalculatePositions( dataObject, posRemoved );
-            }
 
 //            List<ObjectPropertyTO> props = dataObjectPropertiesProvider.getList();
 //            for (int i = posRemoved; i < props.size(); i++) {
@@ -783,9 +757,6 @@ public class DataObjectBrowser extends Composite {
                         break;
                     }
                 }
-            } else if ( AnnotationDefinitionTO.POSITION_ANNOTATION.equals( event.getPropertyName() ) ) {
-                // TODO redraw only affected rows
-                dataObjectPropertiesTable.redraw();
             }
         }
     }

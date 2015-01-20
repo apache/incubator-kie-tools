@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +38,7 @@ import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.Import;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.jboss.forge.roaster.model.source.MethodSource;
+import org.jboss.forge.roaster.model.source.ParameterSource;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationTools;
@@ -48,6 +52,7 @@ import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.DriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
@@ -337,28 +342,15 @@ public class JavaRoasterModelDriver implements ModelDriver {
             }
 
             List<FieldSource<JavaClassSource>> fields = javaClassSource.getFields();
-            Integer naturalOrder = 0;
-            List<PropertyPosition> naturalOrderPositions = new ArrayList<PropertyPosition>();
-            ObjectProperty property;
 
             if ( fields != null ) {
                 for ( FieldSource<JavaClassSource> field : fields ) {
                     if ( driverUtils.isManagedType( field.getType(), classTypeResolver ) ) {
-
-                        property = addProperty( dataObject, field, classTypeResolver );
-
-                        if ( isManagedProperty( property ) ) {
-                            AnnotationImpl position = new AnnotationImpl( PositionAnnotationDefinition.getInstance() );
-                            position.setValue( "value", naturalOrder.toString() );
-                            naturalOrderPositions.add( new PropertyPosition( property, position ) );
-                            naturalOrder++;
-                        }
-
+                        addProperty( dataObject, field, classTypeResolver );
                     } else {
                         logger.debug( "field: " + field + "with fieldName: " + field.getName() + " won't be loaded by the diver because type: " + field.getType().getName() + " isn't a managed type." );
                     }
                 }
-                verifyPositions( dataObject, naturalOrderPositions );
             }
             return dataObject;
         } catch ( ClassNotFoundException e) {
@@ -387,7 +379,12 @@ public class JavaRoasterModelDriver implements ModelDriver {
     }
 
     private ObjectProperty addProperty( DataObject dataObject, FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
+        ObjectProperty property = parseProperty( field, classTypeResolver );
+        dataObject.addProperty( property );
+        return property;
+    }
 
+    public ObjectProperty parseProperty( FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
         Type type;
         boolean multiple = false;
         String className;
@@ -414,11 +411,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 }
             }
 
-            if ( multiple ) {
-                property = dataObject.addProperty( field.getName(), className, true, bag, modifiers );
-            } else {
-                property = dataObject.addProperty( field.getName(), className, modifiers );
-            }
+            property = new ObjectPropertyImpl(field.getName(), className, multiple, bag, modifiers);
 
             List<AnnotationSource<JavaClassSource>> annotations = field.getAnnotations();
             if ( annotations != null ) {
@@ -427,11 +420,29 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 }
             }
         } catch (ClassNotFoundException e) {
-            logger.error( errorMessage( DATA_OBJECT_FIELD_LOAD_ERROR, field.getName(), dataObject.getClassName() ), e );
-            throw new ModelDriverException( errorMessage( DATA_OBJECT_FIELD_LOAD_ERROR, field.getName(), dataObject.getClassName() ), e );
+            logger.error( errorMessage( DATA_OBJECT_FIELD_LOAD_ERROR, field.getName(), field.getOrigin().getName() ), e );
+            throw new ModelDriverException( errorMessage( DATA_OBJECT_FIELD_LOAD_ERROR, field.getName(), field.getOrigin().getName() ), e );
         }
 
         return property;
+    }
+
+    public List<ObjectProperty> parseManagedTypesProperties(JavaClassSource javaClassSource, ClassTypeResolver classTypeResolver) throws ModelDriverException {
+
+        List<FieldSource<JavaClassSource>> fields = javaClassSource.getFields();
+        DriverUtils driverUtils = DriverUtils.getInstance();
+        List<ObjectProperty> properties = new ArrayList<ObjectProperty>(  );
+        ObjectProperty property;
+
+        for ( FieldSource<JavaClassSource> field : fields ) {
+            if ( driverUtils.isManagedType( field.getType(), classTypeResolver ) ) {
+                property = parseProperty( field, classTypeResolver );
+                properties.add( property );
+            } else {
+                logger.debug( "field: " + field + "with fieldName: " + field.getName() + " won't be loaded by the diver because type: " + field.getType().getName() + " isn't a managed type." );
+            }
+        }
+        return properties;
     }
 
     private void addDataObjectAnnotation( DataObject dataObject, AnnotationSource annotationSource, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
@@ -684,7 +695,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         if (hasChangedToCollectionType( field, property, classTypeResolver ) ) {
             //fields that changed to a collection like java.util.List<SomeEntity>
-            //needs to be removed and created again due to Roaster
+            //needs to be removed and created again due to Roaster. Ideally it shouldn't be so.
             updateCollectionField( javaClassSource, fieldName, property, classTypeResolver );
         } else {
             //for the rest of changes is better to manage the field update without removing the field.
@@ -806,40 +817,117 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 property.isMultiple();
     }
 
-    public void updateConstructors(JavaClassSource javaClassSource, DataObject dataObject) throws Exception {
-
-        //TODO First implementation deletes all constructors and creates them again.
-        //Next iteration should take into account only the needed ones, etc.
+    public void updateConstructors(JavaClassSource javaClassSource,
+            DataObject dataObject,
+            List<MethodSource<JavaClassSource>> allFieldsConstructorCandidates,
+            List<MethodSource<JavaClassSource>> keyFieldsConstructorCandidates,
+            List<MethodSource<JavaClassSource>> positionFieldsConstructorCandidates,
+            ClassTypeResolver classTypeResolver) throws Exception {
 
         GenerationContext generationContext = new GenerationContext( null );
         GenerationEngine engine = GenerationEngine.getInstance();
-        DriverUtils driverUtils = DriverUtils.getInstance();
         GenerationTools genTools = new GenerationTools();
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
 
+        boolean needsAllFieldsConstructor;
         boolean needsKeyFieldsConstructor;
-        int keyFieldsCount = 0;
-        int assignableFieldsCount = 0;
+        boolean needsPositionFieldsConstructor;
+        boolean needsEmptyConstructor;
 
-        String defaultConstructorSource = null;
-        String allFieldsConstructorSource = null;
-        String keyFieldsConstructorSource = null;
-        String equalsMethodSource = null;
-        String hashCodeMethodSource = null;
+        String defaultConstructorSource;
+        String allFieldsConstructorSource;
+        String keyFieldsConstructorSource;
+        String positionFieldsConstructorSource;
+        String equalsMethodSource;
+        String hashCodeMethodSource;
+
+        //check if the candidate methods has exactly the same body of the generated by the data modeller.
+        List<MethodSource<JavaClassSource>> currentAllFieldsConstructors = modelDriver.filterGeneratedConstructors( allFieldsConstructorCandidates );
+        List<MethodSource<JavaClassSource>> currentKeyFieldsConstructors = modelDriver.filterGeneratedConstructors( keyFieldsConstructorCandidates );
+        List<MethodSource<JavaClassSource>> currentPositionFieldsConstructors = modelDriver.filterGeneratedConstructors( positionFieldsConstructorCandidates );
+
+        if ( logger.isDebugEnabled() ) {
+            logger.debug( "allFieldsConstructorCandidates candidates: " + allFieldsConstructorCandidates.size() );
+            logger.debug( allFieldsConstructorCandidates.size() > 0 ? allFieldsConstructorCandidates.get( 0 ).toString() : "" );
+            logger.debug( "\n\n" );
+
+            logger.debug("currentAllFieldsConstructors: " + currentAllFieldsConstructors.size());
+            logger.debug( currentAllFieldsConstructors.size() > 0 ? currentAllFieldsConstructors.get( 0 ).toString() : "" );
+            logger.debug( "\n\n" );
+
+            logger.debug("KeyFieldsConstructorCandidates: " + keyFieldsConstructorCandidates.size());
+            logger.debug( keyFieldsConstructorCandidates.size() > 0 ? keyFieldsConstructorCandidates.get( 0 ).toString() : "" );
+            logger.debug( "\n\n" );
+
+            logger.debug("currentKeyFieldsConstructors: " + currentKeyFieldsConstructors.size());
+            logger.debug( currentKeyFieldsConstructors.size() > 0 ? currentKeyFieldsConstructors.get( 0 ).toString() : "" );
+            logger.debug( "\n\n" );
+
+            logger.debug( "positionFieldsConstructorCandidates: " + positionFieldsConstructorCandidates.size());
+            logger.debug( positionFieldsConstructorCandidates.size() > 0 ? positionFieldsConstructorCandidates.get( 0 ).toString() : "" );
+            logger.debug( "\n\n" );
+
+            logger.debug( "currentPositionFieldsConstructors: " + currentPositionFieldsConstructors.size());
+            logger.debug( currentPositionFieldsConstructors.size() > 0 ? currentPositionFieldsConstructors.get( 0 ).toString() : "" );
+            logger.debug( "\n\n" );
+        }
+
+        //delete current data modeller generated all fields, key fields, and position fields constructors if there are any.
+        for ( MethodSource<JavaClassSource> constructor : currentAllFieldsConstructors ) {
+            javaClassSource.removeMethod( constructor );
+        }
+        for ( MethodSource<JavaClassSource> constructor : currentKeyFieldsConstructors ) {
+            javaClassSource.removeMethod( constructor );
+        }
+        for ( MethodSource<JavaClassSource> constructor : currentPositionFieldsConstructors ) {
+            javaClassSource.removeMethod( constructor );
+        }
+
+        //calculate the file order for the fields.
+        List<FieldSource<JavaClassSource>> fields = javaClassSource.getFields();
+        if ( fields != null && fields.size() > 0 ) {
+            int fileOrder = 0;
+            for ( FieldSource<JavaClassSource> field : fields ) {
+                ObjectPropertyImpl objectProperty = (ObjectPropertyImpl)dataObject.getProperties().get( field.getName() );
+                if ( objectProperty != null ) {
+                    objectProperty.setFileOrder( fileOrder );
+                }
+                fileOrder++;
+            }
+        }
+
+        //get the sorted list of all fields, position annotated and key annotated fields. These lists will be used
+        //to identify collisions with client provided constructors.
+        List<ObjectProperty> allFields = DataModelUtils.sortByFileOrder( DataModelUtils.filterAssignableFields( dataObject ) );
+        List<ObjectProperty> positionFields = DataModelUtils.sortByPosition( DataModelUtils.filterPositionFields( dataObject ) );
+        List<ObjectProperty> keyFields = DataModelUtils.sortByFileOrder( DataModelUtils.filterKeyFields( dataObject ) );
+
+        needsEmptyConstructor = true; //we always wants to generate the default constructor.
+        needsAllFieldsConstructor = allFields.size() > 0;
+        needsPositionFieldsConstructor = positionFields.size() > 0 &&
+                !DataModelUtils.equalsByFieldName( allFields, positionFields ) &&
+                !DataModelUtils.equalsByFieldType( allFields, positionFields );
+
+        needsKeyFieldsConstructor = keyFields.size() > 0 &&
+                !DataModelUtils.equalsByFieldName( allFields, keyFields ) &&
+                !DataModelUtils.equalsByFieldType( allFields, keyFields ) &&
+                !DataModelUtils.equalsByFieldName( positionFields, keyFields ) &&
+                !DataModelUtils.equalsByFieldType( positionFields, keyFields );
 
         List<MethodSource<JavaClassSource>> currentConstructors = new ArrayList<MethodSource<JavaClassSource>>( );
         MethodSource<JavaClassSource> currentEquals = null;
         MethodSource<JavaClassSource> currentHashCode = null;
         MethodSource<JavaClassSource> newConstructor;
 
-        assignableFieldsCount = DataModelUtils.assignableFieldsCount( dataObject );
-        keyFieldsCount = DataModelUtils.keyFieldsCount( dataObject );
-        needsKeyFieldsConstructor =  keyFieldsCount > 0 &&  ( keyFieldsCount < assignableFieldsCount );
-
+        //Iterate remaining methods looking for client provided constructors, hashCode and equals methods.
         List<MethodSource<JavaClassSource>> methods = javaClassSource.getMethods();
-        if (methods != null) {
-            for (MethodSource<JavaClassSource> method : methods) {
+        if ( methods != null ) {
+            for ( MethodSource<JavaClassSource> method : methods ) {
                 if (method.isConstructor()) {
                     currentConstructors.add( method );
+                    if ( method.getParameters() == null || method.getParameters().size() == 0 ) {
+                        needsEmptyConstructor = false;
+                    }
                 } else if (isEquals( method )) {
                     currentEquals = method;
                 } else if (isHashCode( method )) {
@@ -848,32 +936,46 @@ public class JavaRoasterModelDriver implements ModelDriver {
             }
         }
 
-        //remove current constructors
-        for (MethodSource<JavaClassSource> constructor : currentConstructors) {
-            javaClassSource.removeMethod( constructor );
-        }
+        //check collisions with remaining constructors first.
+        needsAllFieldsConstructor = needsAllFieldsConstructor && ( findMatchingConstructorsByTypes( javaClassSource, allFields, classTypeResolver ).size() == 0 );
+        needsPositionFieldsConstructor = needsPositionFieldsConstructor && ( findMatchingConstructorsByTypes( javaClassSource, positionFields, classTypeResolver ).size() == 0 );
+        needsKeyFieldsConstructor = needsKeyFieldsConstructor && ( findMatchingConstructorsByTypes( javaClassSource, keyFields, classTypeResolver ).size() == 0 );
+
+        //remove current equals and hashCode methods
         if (currentEquals != null) javaClassSource.removeMethod( currentEquals );
         if (currentHashCode != null) javaClassSource.removeMethod( currentHashCode );
 
-        defaultConstructorSource = genTools.indent( engine.generateDefaultConstructorString( generationContext, dataObject ) );
-        newConstructor = javaClassSource.addMethod( defaultConstructorSource );
-        newConstructor.setConstructor( true );
+        //finally create the needed constructors
 
-        if ( assignableFieldsCount > 0 ) {
+        if ( needsEmptyConstructor ) {
+            defaultConstructorSource = genTools.indent( engine.generateDefaultConstructorString( generationContext, dataObject ) );
+            newConstructor = javaClassSource.addMethod( defaultConstructorSource );
+            newConstructor.setConstructor( true );
+        }
+
+        if ( needsAllFieldsConstructor ) {
             allFieldsConstructorSource = genTools.indent( engine.generateAllFieldsConstructorString( generationContext, dataObject ) );
             if ( allFieldsConstructorSource != null && !allFieldsConstructorSource.trim().isEmpty() ) {
                 newConstructor = javaClassSource.addMethod( allFieldsConstructorSource );
                 newConstructor.setConstructor( true );
             }
         }
-        if (needsKeyFieldsConstructor) {
+
+        if ( needsPositionFieldsConstructor ) {
+            positionFieldsConstructorSource = genTools.indent( engine.generatePositionFieldsConstructorString( generationContext, dataObject ) );
+            if ( positionFieldsConstructorSource != null && !positionFieldsConstructorSource.trim().isEmpty() ) {
+                newConstructor = javaClassSource.addMethod( positionFieldsConstructorSource );
+                newConstructor.setConstructor( true );
+            }
+        }
+        if ( needsKeyFieldsConstructor ) {
             keyFieldsConstructorSource = genTools.indent( engine.generateKeyFieldsConstructorString( generationContext, dataObject ) );
             if ( keyFieldsConstructorSource != null && !keyFieldsConstructorSource.trim().isEmpty() ) {
                 newConstructor = javaClassSource.addMethod( keyFieldsConstructorSource );
                 newConstructor.setConstructor( true );
             }
         }
-        if (keyFieldsCount > 0) {
+        if ( keyFields.size() > 0 ) {
             equalsMethodSource = genTools.indent( engine.generateEqualsString( generationContext, dataObject ) );
             javaClassSource.addMethod( equalsMethodSource );
 
@@ -934,6 +1036,156 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
     }
 
+    public List<MethodSource<JavaClassSource>> findAllFieldsConstructorCandidates(JavaClassSource javaClassSource, List<ObjectProperty> properties, ClassTypeResolver classTypeResolver) {
+        return findMatchingConstructorsByParameters( javaClassSource, properties, classTypeResolver );
+    }
+
+    public List<MethodSource<JavaClassSource>> findKeyFieldsConstructorCandidates(JavaClassSource javaClassSource, List<ObjectProperty> properties, ClassTypeResolver classTypeResolver) {
+        List<ObjectProperty> keyFields = DataModelUtils.filterKeyFields( properties );
+        return findMatchingConstructorsByParameters( javaClassSource, keyFields, classTypeResolver );
+    }
+
+    public List<MethodSource<JavaClassSource>> findPositionFieldsConstructorCandidates(JavaClassSource javaClassSource, List<ObjectProperty> properties, ClassTypeResolver classTypeResolver) {
+        List<ObjectProperty> positionalFields = DataModelUtils.filterPositionFields( properties );
+        return findMatchingConstructorsByParameters( javaClassSource, DataModelUtils.sortByPosition( positionalFields ), classTypeResolver );
+    }
+
+    public List<MethodSource<JavaClassSource>> findMatchingConstructorsByParameters(JavaClassSource javaClassSource, List<ObjectProperty> properties, ClassTypeResolver classTypeResolver) {
+        List<MethodSource<JavaClassSource>> result = new ArrayList<MethodSource<JavaClassSource>>(  );
+        List<MethodSource<JavaClassSource>> constructors  = getConstructors( javaClassSource );
+        for ( MethodSource<JavaClassSource> constructor : constructors ) {
+            List<ParameterSource<JavaClassSource>> parameters = constructor.getParameters();
+            if ( parameters == null || parameters.size() == 0 || parameters.size() != properties.size() ) continue;
+            int unmatchedParams = parameters.size();
+            int paramIndex = 0;
+            for ( ParameterSource<JavaClassSource> param : parameters ) {
+                if ( paramMatchesWithProperty(param, properties.get( paramIndex ), classTypeResolver) ) {
+                    unmatchedParams--;
+                    //TODO optimize to not visit all parameters, now I want to visit them all by intention
+                }
+                paramIndex++;
+            }
+            if ( unmatchedParams == 0 ) {
+                result.add( constructor );
+            }
+        }
+        return result;
+    }
+
+    public List<MethodSource<JavaClassSource>> findMatchingConstructorsByTypes(JavaClassSource javaClassSource, List<ObjectProperty> properties, ClassTypeResolver classTypeResolver) {
+        List<MethodSource<JavaClassSource>> result = new ArrayList<MethodSource<JavaClassSource>>(  );
+        List<MethodSource<JavaClassSource>> constructors  = getConstructors( javaClassSource );
+        for ( MethodSource<JavaClassSource> constructor : constructors ) {
+            List<ParameterSource<JavaClassSource>> parameters = constructor.getParameters();
+            if ( parameters == null || parameters.size() == 0 || parameters.size() != properties.size() ) continue;
+            int unmatchedParams = parameters.size();
+            int paramIndex = 0;
+            for ( ParameterSource<JavaClassSource> param : parameters ) {
+                if ( paramMatchesWithPropertyType(param, properties.get( paramIndex ), classTypeResolver) ) {
+                    unmatchedParams--;
+                } else {
+                    break;
+                }
+                paramIndex++;
+            }
+            if ( unmatchedParams == 0 ) {
+                result.add( constructor );
+            }
+        }
+        return result;
+    }
+
+    public boolean paramMatchesWithProperty(ParameterSource<JavaClassSource> param, ObjectProperty property, ClassTypeResolver classTypeResolver) {
+        if ( !param.getName().equals( property.getName() )) return false;
+        DriverUtils driverUtils = DriverUtils.getInstance();
+        try {
+            return driverUtils.equalsType( param.getType(), property.getClassName(), property.isMultiple(), property.getBag(), classTypeResolver );
+        } catch (Exception e) {
+            //TODO check if we need to propagate this exception.
+            logger.error( "An error was produced on parameter matching test with param: " + param.getName() + " and field: " + property.getName(), e );
+            return false;
+        }
+    }
+
+    public boolean paramMatchesWithPropertyType(ParameterSource<JavaClassSource> param, ObjectProperty property, ClassTypeResolver classTypeResolver) {
+        DriverUtils driverUtils = DriverUtils.getInstance();
+        try {
+            return driverUtils.equalsType( param.getType(), property.getClassName(), property.isMultiple(), property.getBag(), classTypeResolver );
+        } catch (Exception e) {
+            //TODO check if we need to propagate this exception.
+            logger.error( "An error was produced on parameter matching test with param: " + param.getName() + " and field: " + property.getName(), e );
+            return false;
+        }
+    }
+
+    public List<MethodSource<JavaClassSource>> filterGeneratedConstructors(List<MethodSource<JavaClassSource>> constructors) {
+        List<MethodSource<JavaClassSource>> result = new ArrayList<MethodSource<JavaClassSource>>();
+        if ( constructors != null ) {
+            for ( MethodSource<JavaClassSource> constructor : constructors ) {
+                if ( isGeneratedConstructor( constructor ) ) result.add( constructor );
+            }
+        }
+        return result;
+    }
+
+    /**
+     *
+     * @param constructor a Constructor method to check.
+     *
+     * @return true, if the given constructor was generated by the data modeler.
+     */
+    public boolean isGeneratedConstructor(MethodSource<JavaClassSource> constructor) {
+        if ( constructor.isAbstract() || constructor.isStatic() || constructor.isFinal() ) return false;
+        if ( !constructor.isPublic() ) return false; //we only generate public constructors.
+
+        if ( constructor.getAnnotations() != null && constructor.getAnnotations().size() > 0) return false; //we never add annotations to constructors
+
+        List<ParameterSource<JavaClassSource>> parameters = constructor.getParameters();
+        List<String> expectedBody = new ArrayList<String>();
+        List<String> expectedLines = new ArrayList<String>();
+        String expectedLine;
+        if ( parameters != null ) {
+            for ( ParameterSource<JavaClassSource> param : parameters ) {
+                if ( param.getAnnotations() != null && param.getAnnotations().size() > 0 ) return false; //we never add annotations to parameters
+                //ideally we should know if the parameter is final, but Roaster don't provide that info.
+                expectedLine = "this." + param.getName() + "=" + param.getName() + ";";
+                expectedLines.add( expectedLine );
+            }
+        }
+
+        String body = constructor.getBody();
+        if ( body == null || ( body = body.trim() ).isEmpty() ) return false;
+
+        try {
+            BufferedReader reader = new BufferedReader( new StringReader( body ));
+            String line = null;
+            int lineNumber = 0;
+            while ((line = reader.readLine()) != null) {
+                lineNumber++;
+                if ( lineNumber > expectedLines.size() ) return false;
+                if (!line.trim().equals( expectedLines.get( lineNumber-1 ) )) return false;
+            }
+
+            return lineNumber == expectedLines.size();
+
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public List<MethodSource<JavaClassSource>> getConstructors(JavaClassSource javaClassSource) {
+        List<MethodSource<JavaClassSource>> constructors = new ArrayList<MethodSource<JavaClassSource>>(  );
+        List<MethodSource<JavaClassSource>> methods = javaClassSource.getMethods();
+        if ( methods != null ) {
+            for ( MethodSource<JavaClassSource> method : methods ) {
+                if ( method.isConstructor() ) {
+                    constructors.add( method );
+                }
+            }
+        }
+        return constructors;
+    }
+
     public boolean isManagedField( FieldSource<JavaClassSource> field, ClassTypeResolver classTypeResolver ) throws Exception {
 
         if (!field.isFinal() && !field.isStatic()) {
@@ -945,12 +1197,19 @@ public class JavaRoasterModelDriver implements ModelDriver {
     }
 
     public boolean isEquals(MethodSource<?> method) {
-        //TODO add return type check and non parameters check
-        return method.getName().equals( "equals" );
+        return method.getName().equals( "equals" ) &&
+                ( method.getParameters() == null || method.getParameters().size() == 1 ) &&
+                method.getReturnType() != null &&
+                method.getReturnType().isPrimitive() &&
+                "boolean".equals( method.getReturnType().getName() );
     }
 
     public boolean isHashCode(MethodSource<?> method) {
-        return method.getName().equals( "hashCode" );
+        return method.getName().equals( "hashCode" ) &&
+                ( method.getParameters() == null || method.getParameters().size() == 0 ) &&
+                method.getReturnType() != null &&
+                method.getReturnType().isPrimitive() &&
+                "int".equals( method.getReturnType().getName() );
     }
 
     public void setPrimitiveTypeDefaultInitializer(FieldSource<?> field, String primitiveType) {

@@ -32,6 +32,8 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     private boolean multiple;
 
     private int modifiers = 0x0;
+
+    private int fileOrder = -1;
     
     private static final String DEFAULT_PROPERTY_BAG = "java.util.List";
 
@@ -130,5 +132,13 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     @Override
     public int getModifiers() {
         return modifiers;
+    }
+
+    public int getFileOrder() {
+        return fileOrder;
+    }
+
+    public void setFileOrder( int fileOrder ) {
+        this.fileOrder = fileOrder;
     }
 }

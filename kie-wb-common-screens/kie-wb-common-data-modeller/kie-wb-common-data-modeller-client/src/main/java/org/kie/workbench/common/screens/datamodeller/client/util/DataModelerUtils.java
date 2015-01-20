@@ -159,6 +159,24 @@ public class DataModelerUtils {
         }
     }
 
+    public static List<ObjectPropertyTO> getFieldsUsingPosition(DataObjectTO dataObjectTO, int position, String skipField) {
+        List<ObjectPropertyTO> fields = new ArrayList<ObjectPropertyTO>(  );
+        if ( dataObjectTO != null && dataObjectTO.getProperties() != null ) {
+            for ( ObjectPropertyTO propertyTO : dataObjectTO.getProperties() ) {
+
+                if ( skipField != null && skipField.equals( propertyTO.getName() )) continue;
+
+                String currentPosition = AnnotationValueHandler.getInstance().getStringValue(
+                        propertyTO.getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION ),
+                        AnnotationDefinitionTO.VALUE_PARAM );
+                if ( currentPosition != null && currentPosition.trim().equals( position+"" ) ) {
+                    fields.add( propertyTO );
+                }
+            }
+        }
+        return fields;
+    }
+
     public static Integer getMaxPosition(DataObjectTO dataObjectTO) {
         List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
         Integer maxPosition = -1;

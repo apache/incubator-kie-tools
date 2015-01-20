@@ -273,6 +273,14 @@ public interface Constants extends Messages {
 
     public String validation_error_invalid_timer_expression(String expression);
 
+    public String validation_error_position_greater_or_equal_than(String position, String minValue);
+
+    public String validation_error_position_lower_than(String position, String maxValue);
+
+    public String validation_error_position_already_used_by_fields(String position, String fieldNames);
+
+    public String validation_error_position_greater_or_equal_than_and_lower_than(String position, String minValue, String maxValue);
+
     public String objectEditor_dataObjectTitle();
 
     public String objectFieldEditor_fieldTitle();

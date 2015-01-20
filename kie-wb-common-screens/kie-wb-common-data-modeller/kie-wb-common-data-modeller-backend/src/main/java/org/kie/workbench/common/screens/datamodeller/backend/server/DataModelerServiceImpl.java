@@ -48,6 +48,7 @@ import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
+import org.jboss.forge.roaster.model.source.MethodSource;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
@@ -90,6 +91,7 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.VariableDeclarationDescr;
+import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
@@ -1086,6 +1088,7 @@ public class DataModelerServiceImpl
         return updateJavaSource(originalSource, dataObjectTO, renames, deletions, classLoader);
     }
 
+    //TODO, refactor this method to JavaRoasterModelDriver class
     private void updateJavaClassSource(DataObjectTO dataObjectTO,
                                        JavaClassSource javaClassSource,
                                        Map<String, String> renames,
@@ -1116,6 +1119,14 @@ public class DataModelerServiceImpl
                 currentClassFields.put(field.getName(), field);
             }
         }
+
+        List<ObjectProperty> currentManagedProperties = modelDriver.parseManagedTypesProperties( javaClassSource, classTypeResolver );
+        currentManagedProperties = DataModelUtils.filterAssignableFields( currentManagedProperties );
+
+        //prior to touch the class fields get the constructors candidates to be the current all fields, position annotated fields, and key annotated fields constructors.
+        List<MethodSource<JavaClassSource>> allFieldsConstructorCandidates = modelDriver.findAllFieldsConstructorCandidates( javaClassSource, currentManagedProperties, classTypeResolver );
+        List<MethodSource<JavaClassSource>> keyFieldsConstructorCandidates = modelDriver.findKeyFieldsConstructorCandidates( javaClassSource, currentManagedProperties, classTypeResolver );
+        List<MethodSource<JavaClassSource>> positionFieldsConstructorCandidates = modelDriver.findPositionFieldsConstructorCandidates( javaClassSource, currentManagedProperties, classTypeResolver );
 
         //create new fields and update existing.
         for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
@@ -1158,7 +1169,12 @@ public class DataModelerServiceImpl
         }
 
         //update constructors, equals and hashCode methods.
-        modelDriver.updateConstructors(javaClassSource, dataObject);
+        modelDriver.updateConstructors(javaClassSource,
+                dataObject,
+                allFieldsConstructorCandidates,
+                keyFieldsConstructorCandidates,
+                positionFieldsConstructorCandidates,
+                classTypeResolver);
 
         //delete fields from .java file that not exists in the DataObject.
         List<String> removableFields = new ArrayList<String>();

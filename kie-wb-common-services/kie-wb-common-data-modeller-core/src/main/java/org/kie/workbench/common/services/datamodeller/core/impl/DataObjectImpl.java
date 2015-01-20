@@ -134,6 +134,12 @@ public class DataObjectImpl extends AbstractHasAnnotations implements DataObject
     }
 
     @Override
+    public ObjectProperty addProperty( ObjectProperty property ) {
+        properties.put( property.getName(), property );
+        return property;
+    }
+
+    @Override
     public ObjectProperty removeProperty(String name) {
         return properties.remove(name);
     }

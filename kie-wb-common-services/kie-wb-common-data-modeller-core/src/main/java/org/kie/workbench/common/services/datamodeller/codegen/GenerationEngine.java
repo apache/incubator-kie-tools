@@ -221,6 +221,12 @@ public class GenerationEngine {
         return generateSubTemplateString(generationContext, "java_keyfields_constructor");
     }
 
+    public String generatePositionFieldsConstructorString(GenerationContext generationContext, DataObject dataObject) throws Exception {
+        VelocityContext vc = buildContext(generationContext);
+        vc.put("currentDataObject", dataObject);
+        return generateSubTemplateString(generationContext, "java_positionfields_constructor");
+    }
+
     public String generateAnnotationString(GenerationContext generationContext, Annotation annotation) throws Exception {
         VelocityContext vc = buildContext(generationContext);
         vc.put("annotation", annotation);

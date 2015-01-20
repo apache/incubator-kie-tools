@@ -18,6 +18,7 @@ package org.kie.workbench.common.services.datamodeller.codegen;
 
 import org.apache.commons.lang.StringUtils;
 import org.kie.workbench.common.services.datamodeller.core.*;
+import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
@@ -295,7 +296,8 @@ public class GenerationTools {
 
         StringBuilder sb = new StringBuilder();
 
-        List<ObjectProperty> props = sortedProperties(dataObject);
+        List<ObjectProperty> props = DataModelUtils.filterKeyFields( dataObject );
+        props = DataModelUtils.sortByFileOrder( props );
 
         boolean hasTerms = false;
         if (props != null && props.size() > 0) {
@@ -359,7 +361,9 @@ public class GenerationTools {
         end.append(indent + "}");
 
         StringBuilder sb = new StringBuilder();
-        List<ObjectProperty> props = sortedProperties(dataObject);
+
+        List<ObjectProperty> props = DataModelUtils.filterKeyFields( dataObject );
+        props = DataModelUtils.sortByFileOrder( props );
 
         boolean hasTerms = false;
         if (props != null && props.size() > 0) {
@@ -431,7 +435,7 @@ public class GenerationTools {
             if ( sortedProperties.size() > 0 && sortedProperties.size() < MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR ) {
                 //condition used by drools. All fields constructor is generated only if a class has less than
                 // MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR
-                return resolveConstructor( dataObject, sortByPosition( sortByName( sortedProperties ) ), indent );
+                return resolveConstructor( dataObject, DataModelUtils.sortByPosition( sortByName( sortedProperties ) ), indent );
             }
         }
         return "";
@@ -449,7 +453,7 @@ public class GenerationTools {
             if ( sortedProperties.size() > 0 && sortedProperties.size() < MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR ) {
                 //condition used by drools. All fields constructor is generated only if a class has less than
                 // MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR
-                return resolveConstructor2(dataObject, sortByPosition(sortByName(sortedProperties)), "    ");
+                return resolveConstructor2(dataObject, DataModelUtils.sortByFileOrder(sortedProperties), "    ");
             }
         }
         return "";
@@ -466,7 +470,7 @@ public class GenerationTools {
                 }
             }
             if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
-                return resolveConstructor(dataObject, sortByPosition(sortByName(sortedProperties)), indent);
+                return resolveConstructor(dataObject, DataModelUtils.sortByPosition(sortByName(sortedProperties)), indent);
             }
         }
         return "";
@@ -483,7 +487,24 @@ public class GenerationTools {
                 }
             }
             if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
-                return resolveConstructor2(dataObject, sortByPosition(sortByName(sortedProperties)), "    ");
+                return resolveConstructor2(dataObject, DataModelUtils.sortByFileOrder(sortedProperties), "    ");
+            }
+        }
+        return "";
+    }
+
+    // for new template
+    public String resolvePositionFieldsConstructor(DataObject dataObject) {
+        if (!dataObject.getProperties().isEmpty()) {
+            List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
+            for (ObjectProperty property : dataObject.getProperties().values()) {
+                if ( DataModelUtils.isAssignable( property ) && DataModelUtils.isPositionField( property )) {
+                    //the property is marked as key.
+                    sortedProperties.add(property);
+                }
+            }
+            if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
+                return resolveConstructor2(dataObject, DataModelUtils.sortByPosition(sortedProperties), "    ");
             }
         }
         return "";
@@ -539,47 +560,6 @@ public class GenerationTools {
 
                 Comparable key1 = o1.getName();
                 Comparable key2 = o2.getName();
-
-                if (key1 == null && key2 == null) return 0;
-                if (key1 != null && key2 != null) return key1.compareTo(key2);
-
-                if (key1 == null && key2 != null) return -1;
-
-                //if (key1 != null && key2 == null) return 1;
-                return 1;
-            }
-        } );
-        return properties;
-    }
-
-    public List<ObjectProperty> sortByPosition(List<ObjectProperty> properties) {
-        Collections.sort(properties, new Comparator<ObjectProperty>() {
-            public int compare(ObjectProperty o1, ObjectProperty o2) {
-
-                if (o1 == null && o2 == null) return 0;
-                if (o1 == null && o2 != null) return -1;
-                if (o1 != null && o2 == null) return 1;
-
-                Comparable key1 = null;
-                Comparable key2 = null;
-
-                Annotation position1 = o1.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
-                if (position1 != null) {
-                    try {
-                        key1 = new Integer((String)position1.getValue("value"));
-                    } catch (NumberFormatException e) {
-                        key1 = null;
-                    }
-                }
-
-                Annotation position2 = o2.getAnnotation(PositionAnnotationDefinition.getInstance().getClassName());
-                if (position2 != null) {
-                    try {
-                        key2 = new Integer((String)position2.getValue("value"));
-                    } catch (NumberFormatException e) {
-                        key2 = null;
-                    }
-                }
 
                 if (key1 == null && key2 == null) return 0;
                 if (key1 != null && key2 != null) return key1.compareTo(key2);
