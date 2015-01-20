@@ -25,6 +25,7 @@ public abstract class BaseFilteredServlet extends HttpServlet {
 
     @Override
     public void init( final ServletConfig config ) throws ServletException {
+        super.init( config );
         final String _includes = config.getInitParameter( "includes-path" );
         if ( _includes != null && !_includes.trim().isEmpty() ) {
             includes.addAll( Arrays.asList( _includes.split( "," ) ) );
