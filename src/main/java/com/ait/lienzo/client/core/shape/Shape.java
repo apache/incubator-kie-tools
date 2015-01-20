@@ -128,7 +128,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     {
         m_type = type;
     }
-    
+
     @Override
     public T refresh()
     {
@@ -196,6 +196,10 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     {
         final Attributes attr = getAttributes();
 
+        if ((context.isSelection()) && (false == attr.isListening()))
+        {
+            return;
+        }
         alpha = alpha * attr.getAlpha();
 
         if (alpha <= 0)

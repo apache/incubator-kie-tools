@@ -25,16 +25,16 @@ import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extends Shape<T>
+public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPartShape<T>> extends Shape<T>
 {
     private final NFastArrayList<PathPartList> m_list = new NFastArrayList<PathPartList>();
 
-    protected MultiPathPartShape(final ShapeType type)
+    protected AbstractMultiPathPartShape(final ShapeType type)
     {
         super(type);
     }
 
-    protected MultiPathPartShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractMultiPathPartShape(final ShapeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(type, node, ctx);
     }
@@ -60,6 +60,11 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
     @Override
     public T refresh()
     {
+        return clear();
+    }
+
+    public T clear()
+    {
         final int size = m_list.size();
 
         for (int i = 0; i < size; i++)
@@ -70,15 +75,13 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
 
         return cast();
     }
-
-    protected T addPathPartList(final PathPartList list)
+    
+    protected final void add(PathPartList list)
     {
         m_list.add(list);
-
-        return cast();
     }
 
-    protected NFastArrayList<PathPartList> getPathPartListArray()
+    protected final NFastArrayList<PathPartList> getPathPartListArray()
     {
         return m_list;
     }
@@ -87,7 +90,11 @@ public abstract class MultiPathPartShape<T extends MultiPathPartShape<T>> extend
     protected void drawWithoutTransforms(final Context2D context, double alpha)
     {
         final Attributes attr = getAttributes();
-
+        
+        if ((context.isSelection()) && (false == attr.isListening()))
+        {
+            return;
+        }
         alpha = alpha * attr.getAlpha();
 
         if (alpha <= 0)

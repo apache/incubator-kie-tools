@@ -56,6 +56,7 @@ import com.ait.lienzo.client.core.shape.IsoscelesTrapezoid;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Line;
 import com.ait.lienzo.client.core.shape.Movie;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.OrthogonalPolyLine;
 import com.ait.lienzo.client.core.shape.Parallelogram;
 import com.ait.lienzo.client.core.shape.Picture;
@@ -146,6 +147,8 @@ public final class LienzoCorePlugin implements ILienzoPlugin
             m_factories.add(new Sprite.SpriteFactory());
 
             m_factories.add(new OrthogonalPolyLine.OrthogonaPolylLineFactory());
+            
+            m_factories.add(new MultiPath.MultiPathFactory());
 
             m_factories.add(new Group.GroupFactory());
 

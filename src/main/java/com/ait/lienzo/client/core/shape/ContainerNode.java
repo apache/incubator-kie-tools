@@ -147,6 +147,10 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     protected void drawWithoutTransforms(final Context2D context, double alpha)
     {
+        if ((context.isSelection()) && (false == isListening()))
+        {
+            return;
+        }
         alpha = alpha * getAttributes().getAlpha();
 
         if (alpha <= 0)

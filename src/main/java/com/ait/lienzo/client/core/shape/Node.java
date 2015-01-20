@@ -363,6 +363,10 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      */
     public void drawWithTransforms(final Context2D context, final double alpha)
     {
+        if ((context.isSelection()) && (false == isListening()))
+        {
+            return;
+        }
         if (context.isDrag() || isVisible())
         {
             context.save();

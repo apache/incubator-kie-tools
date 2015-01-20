@@ -71,6 +71,8 @@ public class ShapeType
 
     public static final ShapeType SVG_PATH            = new ShapeType("SVGPath");
 
+    public static final ShapeType MULTI_PATH          = new ShapeType("MultiPath");
+
     public static final ShapeType SPRITE              = new ShapeType("Sprite");
 
     private final String          m_value;

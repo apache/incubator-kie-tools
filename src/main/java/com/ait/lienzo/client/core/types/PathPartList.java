@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.types;
 import com.ait.lienzo.client.core.util.Curves;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.json.client.JSONArray;
 
 public final class PathPartList
 {
@@ -30,18 +31,39 @@ public final class PathPartList
 
     private double                m_cpy;
 
-    private BoundingBox           m_box  = null;
+    private boolean               m_fin;
 
-    private final PathPartListJSO m_jso  = PathPartListJSO.make();
+    private boolean               m_mov;
+
+    private BoundingBox           m_box;
+
+    private final PathPartListJSO m_jso;
 
     public PathPartList()
     {
+        this(PathPartListJSO.make(), false);
+    }
+
+    public PathPartList(PathPartListJSO jso, boolean serialized)
+    {
+        m_jso = jso;
+
+        if (serialized)
+        {
+            m_mov = true;
+
+            m_fin = true;
+        }
     }
 
     public final void push(PathPartEntryJSO part)
     {
         m_box = null;
 
+        if (false == m_mov)
+        {
+            M(0, 0);
+        }
         m_jso.push(part);
     }
 
@@ -69,6 +91,8 @@ public final class PathPartList
 
     public final PathPartList M(double x, double y)
     {
+        m_mov = true;
+
         push(PathPartEntryJSO.make(PathPartEntryJSO.MOVETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx = x, m_cpy = y)));
 
         return this;
@@ -146,7 +170,37 @@ public final class PathPartList
     {
         push(PathPartEntryJSO.make(PathPartEntryJSO.CLOSE_PATH_PART, NFastDoubleArrayJSO.make()));
 
+        return close();
+    }
+
+    public final PathPartList close()
+    {
+        m_fin = true;
+
+        m_mov = false;
+
         return this;
+    }
+
+    public final boolean isClosed()
+    {
+        return m_fin;
+    }
+
+    public final JSONArray toJSONArray()
+    {
+        return new JSONArray(getJSO());
+    }
+
+    public final String toJSONString()
+    {
+        return toJSONArray().toString();
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
     }
 
     public final static NFastDoubleArrayJSO convertEndpointToCenterParameterization(final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
