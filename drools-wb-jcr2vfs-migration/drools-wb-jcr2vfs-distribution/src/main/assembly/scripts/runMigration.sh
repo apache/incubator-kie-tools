@@ -22,7 +22,7 @@
 
 function print_help() {
     echo "Usage: ./runMigration.sh [options]"
-    echo "Description: Migrates Guvnor 5.x JCR content into UberFire VFS repositoriy."
+    echo "Description: Migrates Guvnor 5.x JCR content into UberFire VFS repository."
     echo
     echo "Where [options]:"
     echo "    -h         Prints this help"
