@@ -486,7 +486,7 @@ public class GenerationTools {
                     sortedProperties.add(property);
                 }
             }
-            if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
+            if (sortedProperties.size() > 0) {
                 return resolveConstructor2(dataObject, DataModelUtils.sortByFileOrder(sortedProperties), "    ");
             }
         }
@@ -503,7 +503,7 @@ public class GenerationTools {
                     sortedProperties.add(property);
                 }
             }
-            if (sortedProperties.size() > 0 && sortedProperties.size() < dataObject.getProperties().size()) {
+            if (sortedProperties.size() > 0) {
                 return resolveConstructor2(dataObject, DataModelUtils.sortByPosition(sortedProperties), "    ");
             }
         }

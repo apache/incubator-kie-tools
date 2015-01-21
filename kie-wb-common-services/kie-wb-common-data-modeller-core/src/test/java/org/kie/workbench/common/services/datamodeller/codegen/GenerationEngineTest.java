@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
 
 import java.io.InputStream;
@@ -114,30 +115,21 @@ public class GenerationEngineTest {
         DataObject object2 = dataModel.addDataObject("com.test.sub.Object2");
 
         ObjectProperty prop1 = object1.addProperty("attribute1", "java.lang.String");
+        (( ObjectPropertyImpl ) prop1 ).setFileOrder( 1 );
         ObjectProperty prop2 = object1.addProperty("attribute2", "java.lang.Boolean");
+        (( ObjectPropertyImpl ) prop2 ).setFileOrder( 2 );
         ObjectProperty prop3 = object1.addProperty("attribute3", object2.getClassName());
+        (( ObjectPropertyImpl ) prop3 ).setFileOrder( 0);
         ObjectProperty prop4 = object1.addProperty("attribute4", "long");
+        (( ObjectPropertyImpl ) prop4 ).setFileOrder( 3 );
 
         Annotation key = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Key.class.getName() ) );
         Annotation position = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Position.class.getName() ) );
 
-        position.setValue( "value", "0" );
         prop3.addAnnotation( key );
-        prop3.addAnnotation( position );
-
-        position = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Position.class.getName() ) );
-        position.setValue( "value", "1" );
         prop1.addAnnotation( key );
-        prop1.addAnnotation( position );
 
-        position = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Position.class.getName() ) );
-        position.setValue( "value", "2" );
         prop2.addAnnotation( key );
-        prop2.addAnnotation( position );
-
-        position = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Position.class.getName() ) );
-        position.setValue("value", "3");
-        prop4.addAnnotation( position );
 
         GenerationContext generationContext = new GenerationContext( dataModel );
 
@@ -157,9 +149,13 @@ public class GenerationEngineTest {
         DataObject object2 = dataModel.addDataObject("com.test.sub.Object2");
 
         ObjectProperty prop1 = object1.addProperty("attribute1", "java.lang.String");
+        (( ObjectPropertyImpl ) prop1 ).setFileOrder( 0 );
         ObjectProperty prop2 = object1.addProperty("attribute2", "java.lang.Boolean");
+        (( ObjectPropertyImpl ) prop2 ).setFileOrder( 1 );
         ObjectProperty prop3 = object1.addProperty("attribute3", object2.getClassName());
+        (( ObjectPropertyImpl ) prop3 ).setFileOrder( 2 );
         ObjectProperty prop4 = object1.addProperty("attribute4", "long");
+        (( ObjectPropertyImpl ) prop4 ).setFileOrder( 3 );
 
         Annotation key = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Key.class.getName() ) );
         Annotation position = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Position.class.getName() ) );
@@ -202,6 +198,7 @@ public class GenerationEngineTest {
         //The constructor for this data object should be generated, since we don't reach the limit.
         for (int i = 0; i < GenerationTools.MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR-1; i++) {
             prop1 = object1.addProperty("attribute"+normalize(i), "java.lang.String");
+            ((ObjectPropertyImpl)prop1).setFileOrder( i );
         }
 
         GenerationContext generationContext = new GenerationContext( dataModel );
@@ -404,10 +401,14 @@ public class GenerationEngineTest {
         DataObject object1 = dataModel.addDataObject("com.test.Object1");
         DataObject object2 = dataModel.addDataObject("com.test.sub.Object2");
 
-        ObjectProperty prop1 = object1.addProperty("attribute1", "java.lang.String");
-        ObjectProperty prop2 = object1.addProperty("attribute2", "java.lang.Boolean");
-        ObjectProperty prop3 = object1.addProperty("attribute3", object2.getClassName());
-        ObjectProperty prop4 = object1.addProperty("attribute4", "long");
+        ObjectPropertyImpl prop1 = (ObjectPropertyImpl) object1.addProperty("attribute1", "java.lang.String");
+        prop1.setFileOrder( 0 );
+        ObjectPropertyImpl prop2 = (ObjectPropertyImpl) object1.addProperty("attribute2", "java.lang.Boolean");
+        prop2.setFileOrder( 1 );
+        ObjectPropertyImpl prop3 = (ObjectPropertyImpl) object1.addProperty("attribute3", object2.getClassName());
+        prop3.setFileOrder( 2 );
+        ObjectPropertyImpl prop4 = (ObjectPropertyImpl) object1.addProperty("attribute4", "long");
+        prop4.setFileOrder( 3 );
 
         Annotation key = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Key.class.getName() ) );
         Annotation position = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Position.class.getName() ) );
@@ -448,9 +449,13 @@ public class GenerationEngineTest {
         DataObject object2 = dataModel.addDataObject("com.test.sub.Object2");
 
         ObjectProperty prop1 = object1.addProperty("attribute1", "java.lang.String");
+        (( ObjectPropertyImpl ) prop1 ).setFileOrder( 0 );
         ObjectProperty prop2 = object1.addProperty("attribute2", "java.lang.Boolean");
+        (( ObjectPropertyImpl ) prop2 ).setFileOrder( 1 );
         ObjectProperty prop3 = object1.addProperty("attribute3", object2.getClassName());
+        (( ObjectPropertyImpl ) prop3 ).setFileOrder( 2 );
         ObjectProperty prop4 = object1.addProperty("attribute4", "long");
+        (( ObjectPropertyImpl ) prop4 ).setFileOrder( 3 );
 
         Annotation key = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Key.class.getName() ) );
         Annotation position = new AnnotationImpl( annotationDefinitions.get( org.kie.api.definition.type.Position.class.getName() ) );

@@ -25,6 +25,7 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.HasAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -280,19 +281,38 @@ public class GenerationEngine {
      * Generate all constructors
      */
     public String generateAllConstructorsString(GenerationContext generationContext, DataObject dataObject, String indent) throws Exception {
-        GenerationTools generationTools = new GenerationTools();
         StringBuilder sb = new StringBuilder();
-        int keyFieldsCount = generationTools.keyFieldsCount( dataObject );
-        int propertiesCount = generationTools.enabledForConstructorPropertiesCount( dataObject );
+
+        //get the sorted list of all fields, position annotated and key annotated fields. These lists will be used
+        //to identify collisions with client provided constructors.
+        List<ObjectProperty> allFields = DataModelUtils.sortByFileOrder( DataModelUtils.filterAssignableFields( dataObject ) );
+        List<ObjectProperty> positionFields = DataModelUtils.sortByPosition( DataModelUtils.filterPositionFields( dataObject ) );
+        List<ObjectProperty> keyFields = DataModelUtils.sortByFileOrder( DataModelUtils.filterKeyFields( dataObject ) );
+
+        boolean needsAllFieldsConstructor = allFields.size() > 0;
+        boolean needsPositionFieldsConstructor = positionFields.size() > 0 &&
+                !DataModelUtils.equalsByFieldName( allFields, positionFields ) &&
+                !DataModelUtils.equalsByFieldType( allFields, positionFields );
+
+        boolean needsKeyFieldsConstructor = keyFields.size() > 0 &&
+                !DataModelUtils.equalsByFieldName( allFields, keyFields ) &&
+                !DataModelUtils.equalsByFieldType( allFields, keyFields ) &&
+                !DataModelUtils.equalsByFieldName( positionFields, keyFields ) &&
+                !DataModelUtils.equalsByFieldType( positionFields, keyFields );
 
         sb.append( generateDefaultConstructorString( generationContext, dataObject ) );
 
-        if (propertiesCount > 0) {
+        if ( needsAllFieldsConstructor ) {
             sb.append( GenerationTools.EOL ).append( GenerationTools.EOL );
             sb.append( generateAllFieldsConstructorString( generationContext, dataObject ) );
         }
 
-        if (keyFieldsCount > 0 && keyFieldsCount != propertiesCount) {
+        if ( needsPositionFieldsConstructor ) {
+            sb.append( GenerationTools.EOL ).append( GenerationTools.EOL );
+            sb.append( generatePositionFieldsConstructorString( generationContext, dataObject ) );
+        }
+
+        if ( needsKeyFieldsConstructor ) {
             sb.append( GenerationTools.EOL ).append( GenerationTools.EOL );
             sb.append( generateKeyFieldsConstructorString( generationContext, dataObject ) );
         }
