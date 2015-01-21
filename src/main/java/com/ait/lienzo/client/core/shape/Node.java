@@ -105,7 +105,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     private Node<?>          m_parent;
 
-    private HandlerManager   m_events = new HandlerManager(this);
+    private HandlerManager   m_events;
 
     protected Node(final NodeType type)
     {
@@ -335,11 +335,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             return parent.getViewport();
         }
         return null;
-    }
-
-    public HandlerManager getHandlerManager()
-    {
-        return m_events;
     }
 
     /**
@@ -708,6 +703,10 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     protected final <H extends EventHandler> HandlerRegistration addEnsureHandler(final Type<H> type, final H handler)
     {
+        if (null == m_events)
+        {
+            m_events = new HandlerManager(this);
+        }
         return m_events.addHandler(type, handler);
     }
 

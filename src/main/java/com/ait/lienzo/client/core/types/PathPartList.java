@@ -44,7 +44,7 @@ public final class PathPartList
         this(PathPartListJSO.make(), false);
     }
 
-    public PathPartList(PathPartListJSO jso, boolean serialized)
+    public PathPartList(final PathPartListJSO jso, final boolean serialized)
     {
         m_jso = jso;
 
@@ -56,7 +56,7 @@ public final class PathPartList
         }
     }
 
-    public final void push(PathPartEntryJSO part)
+    public final void push(final PathPartEntryJSO part)
     {
         m_box = null;
 
@@ -67,7 +67,7 @@ public final class PathPartList
         m_jso.push(part);
     }
 
-    public final PathPartEntryJSO get(int i)
+    public final PathPartEntryJSO get(final int i)
     {
         return m_jso.get(i);
     }
@@ -80,6 +80,10 @@ public final class PathPartList
     public final void clear()
     {
         m_box = null;
+        
+        m_mov = false;
+        
+        m_fin = false;
 
         m_jso.setLength(0);
     }
@@ -89,7 +93,7 @@ public final class PathPartList
         return m_jso;
     }
 
-    public final PathPartList M(double x, double y)
+    public final PathPartList M(final double x, final double y)
     {
         m_mov = true;
 
@@ -98,62 +102,62 @@ public final class PathPartList
         return this;
     }
 
-    public final PathPartList M(Point2D p)
+    public final PathPartList M(final Point2D p)
     {
         return M(p.getX(), p.getY());
     }
 
-    public final PathPartList L(double x, double y)
+    public final PathPartList L(final double x, final double y)
     {
         push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx = x, m_cpy = y)));
 
         return this;
     }
 
-    public final PathPartList L(Point2D p)
+    public final PathPartList L(final Point2D p)
     {
         return L(p.getX(), p.getY());
     }
 
-    public final PathPartList H(double x)
+    public final PathPartList H(final double x)
     {
         push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx = x, m_cpy)));
 
         return this;
     }
 
-    public final PathPartList V(double y)
+    public final PathPartList V(final double y)
     {
         push(PathPartEntryJSO.make(PathPartEntryJSO.LINETO_ABSOLUTE, NFastDoubleArrayJSO.make(m_cpx, m_cpy = y)));
 
         return this;
     }
 
-    public final PathPartList Q(double cx, double cy, double x, double y)
+    public final PathPartList Q(final double cx, final double cy, final double x, final double y)
     {
         push(PathPartEntryJSO.make(PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(cx, cy, m_cpx = x, m_cpy = y)));
 
         return this;
     }
 
-    public final PathPartList Q(Point2D cp, Point2D ep)
+    public final PathPartList Q(final Point2D cp, final Point2D ep)
     {
         return Q(cp.getX(), cp.getY(), ep.getX(), ep.getY());
     }
 
-    public final PathPartList C(double x1, double y1, double x2, double y2, double x, double y)
+    public final PathPartList C(final double x1, final double y1, final double x2, final double y2, final double x, final double y)
     {
         push(PathPartEntryJSO.make(PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE, NFastDoubleArrayJSO.make(x1, y1, x2, y2, m_cpx = x, m_cpy = y)));
 
         return this;
     }
 
-    public final PathPartList C(Point2D c1, Point2D c2, Point2D ep)
+    public final PathPartList C(final Point2D c1, final Point2D c2, final Point2D ep)
     {
         return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
     }
 
-    public final PathPartList A(double rx, double ry, double ps, double fa, double fs, double x, double y)
+    public final PathPartList A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y)
     {
         final NFastDoubleArrayJSO points = PathPartList.convertEndpointToCenterParameterization(m_cpx, m_cpy, x, y, fa, fs, rx, ry, ps);
 
