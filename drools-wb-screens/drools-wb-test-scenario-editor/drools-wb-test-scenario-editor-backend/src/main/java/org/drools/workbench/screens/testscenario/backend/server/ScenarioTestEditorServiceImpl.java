@@ -35,7 +35,6 @@ import org.guvnor.common.services.backend.file.FileExtensionFilter;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedFilter;
 import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
-import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.guvnor.common.services.shared.test.TestResultMessage;
@@ -44,7 +43,6 @@ import org.guvnor.structure.server.config.ConfigItem;
 import org.guvnor.structure.server.config.ConfigType;
 import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.backend.session.SessionService;
@@ -52,7 +50,6 @@ import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracl
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -239,7 +236,7 @@ public class ScenarioTestEditorServiceImpl
         try {
 
             final KieProject project = projectService.resolveProject( path );
-            final KieSession ksession = sessionService.newKieSession( project );
+            final KieSession ksession = sessionService.newKieSessionWithPseudoClock(project);
             final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper( testResultMessageEvent,
                                                                             getMaxRuleFirings() );
 
@@ -287,7 +284,7 @@ public class ScenarioTestEditorServiceImpl
             new ScenarioRunnerWrapper( testResultMessageEvent, getMaxRuleFirings() ).run(
                     identity.getIdentifier(),
                     scenarios,
-                    sessionService.newKieSession( project )
+                    sessionService.newKieSessionWithPseudoClock(project)
                                                                                         );
 
         } catch ( Exception e ) {
