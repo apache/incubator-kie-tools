@@ -16,23 +16,17 @@
 
 package org.kie.workbench.common.services.backend.builder;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
-import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.scanner.KieModuleMetaData;
@@ -43,15 +37,13 @@ import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
-public class BuildServiceImplTest {
+public class BuildServiceImplTest
+        extends BuilderTestBase {
 
-    private BeanManager beanManager;
 
     @Before
     public void setUp() throws Exception {
-        StartMain startMain = new StartMain( new String[ 0 ] );
-        beanManager = startMain.go().getBeanManager();
-
+        startMain();
         setUpGuvnorM2Repo();
     }
 
@@ -221,39 +213,4 @@ public class BuildServiceImplTest {
         assertTrue( results.getMessages().isEmpty() );
     }
 
-    private <T> T getReference( Class<T> clazz ) {
-        Bean bean = (Bean) beanManager.getBeans( clazz ).iterator().next();
-        CreationalContext cc = beanManager.createCreationalContext( bean );
-        return (T) beanManager.getReference( bean,
-                                             clazz,
-                                             cc );
-    }
-
-    private void setUpGuvnorM2Repo() {
-        Bean m2RepoServiceBean = (Bean) beanManager.getBeans( ExtendedM2RepoService.class ).iterator().next();
-        CreationalContext cc = beanManager.createCreationalContext( m2RepoServiceBean );
-        ExtendedM2RepoService m2RepoService = (ExtendedM2RepoService) beanManager.getReference( m2RepoServiceBean,
-                                                                                                ExtendedM2RepoService.class,
-                                                                                                cc );
-
-        String m2RepoURL = m2RepoService.getRepositoryURL( null );
-
-        //Deploy a 1.0 version of guvnor-m2repo-dependency-example1-snapshot kjar
-        GAV gav = new GAV( "org.kie.workbench.common.services.builder.tests",
-                           "dependency-test1",
-                           "1.0" );
-
-        InputStream is = this.getClass().getResourceAsStream( "/dependency-test1-1.0.jar" );
-        m2RepoService.deployJarInternal( is,
-                                         gav );
-
-        //Deploy a SNAPSHOT version of guvnor-m2repo-dependency-example1-snapshot kjar
-        GAV gav2 = new GAV( "org.kie.workbench.common.services.builder.tests",
-                            "dependency-test1-snapshot",
-                            "1.0-SNAPSHOT" );
-
-        InputStream is2 = this.getClass().getResourceAsStream( "/dependency-test1-snapshot-1.0-SNAPSHOT.jar" );
-        m2RepoService.deployJarInternal( is2,
-                                         gav2 );
-    }
 }

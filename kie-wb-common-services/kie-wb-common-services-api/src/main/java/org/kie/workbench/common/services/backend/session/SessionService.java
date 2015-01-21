@@ -9,8 +9,8 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 public interface SessionService {
 
     /**
-     * Returns the default KSession for a Project
+     * Returns the default KSession for a Project with the clock hard set to pseudo clock.
      */
-    KieSession newKieSession( final KieProject project );
+    KieSession newKieSessionWithPseudoClock(final KieProject project);
 
 }

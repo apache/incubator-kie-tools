@@ -19,11 +19,11 @@ import javax.inject.Inject;
 
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
-import org.kie.workbench.common.services.backend.builder.Builder;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.workbench.common.services.backend.builder.Builder;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.shared.project.KieProject;
 
 public class SessionServiceImpl
@@ -36,32 +36,30 @@ public class SessionServiceImpl
     }
 
     @Inject
-    public SessionServiceImpl( final LRUBuilderCache cache ) {
+    public SessionServiceImpl(final LRUBuilderCache cache) {
         this.cache = cache;
     }
 
     @Override
-    public KieSession newKieSession( final KieProject project ) {
+    public KieSession newKieSessionWithPseudoClock(final KieProject project) {
 
-        final Builder builder = cache.assertBuilder( project );
-
-        KieContainer kieContainer = null;
+        final Builder builder = cache.assertBuilder(project);
 
         try {
-            kieContainer = builder.getKieContainer();
+            KieContainer kieContainer = builder.getKieContainer();
 
             //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
-            if ( kieContainer == null ) {
+            if (kieContainer == null) {
                 return null;
             }
 
             //We always need a pseudo clock
             final SessionConfiguration conf = new SessionConfiguration();
-            conf.setClockType( ClockType.PSEUDO_CLOCK );
-            return kieContainer.newKieSession( conf );
+            conf.setClockType(ClockType.PSEUDO_CLOCK);
+            return kieContainer.newKieSession(conf);
 
-        } catch ( RuntimeException e ) {
-            throw new GenericPortableException( e.getMessage() );
+        } catch (RuntimeException e) {
+            throw new GenericPortableException(e.getMessage());
         }
 
     }
