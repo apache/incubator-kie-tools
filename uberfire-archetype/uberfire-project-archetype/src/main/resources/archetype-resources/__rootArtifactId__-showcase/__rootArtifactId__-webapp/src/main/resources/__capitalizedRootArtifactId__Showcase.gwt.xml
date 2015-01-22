@@ -4,5 +4,8 @@
 <module>
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="${package}.component.${capitalizedRootArtifactId}ComponentClient"/>
+  <!-- Specify the paths for translatable code -->
+  <source path='client'/>
+  <source path='shared'/>
 
 </module>
