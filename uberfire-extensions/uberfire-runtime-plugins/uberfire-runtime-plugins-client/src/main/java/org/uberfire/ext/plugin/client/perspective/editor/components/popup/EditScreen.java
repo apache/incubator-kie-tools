@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
 import com.github.gwtbootstrap.client.ui.TextBox;
@@ -57,6 +58,9 @@ public class EditScreen
     TextBox key;
 
     @UiField
+    AccordionGroup paramAccordion;
+
+    @UiField
     ControlGroup paramKeyControlGroup;
 
     @UiField
@@ -88,20 +92,26 @@ public class EditScreen
         ScreenEditor screenEditor = getPerspectiveEditor().getScreenProperties( parent.hashCode() + "" );
         screenEditor.saveOriginalState();
         add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     }
-             )
-           );
+                new Command() {
+                    @Override
+                    public void execute() {
+                        okButton();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        cancelButton();
+                    }
+                }
+        )
+        );
+        paramAccordion.addHiddenHandler( new HiddenHandler() {
+            @Override
+            public void onHidden( HiddenEvent hiddenEvent ) {
+                hiddenEvent.stopPropagation();
+            }
+        } );
         addHiddlenHandler();
     }
 
