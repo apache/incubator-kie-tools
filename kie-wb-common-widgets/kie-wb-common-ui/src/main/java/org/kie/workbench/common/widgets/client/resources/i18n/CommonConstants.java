@@ -266,4 +266,6 @@ public interface CommonConstants
     
     String English();
 
+    String PromptResetPerspectives();
+
 }
