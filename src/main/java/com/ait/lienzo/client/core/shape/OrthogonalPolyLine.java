@@ -209,6 +209,8 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                     return false;
                 }
                 break;
+            default:
+                return false;
         }
         double offset = CORRECTION_OFFSET;
 
@@ -241,8 +243,9 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 buffer.push(p1x, p1y);
                 return true;
             }
+            default:
+                return false;
         }
-        throw new IllegalStateException("This point should not be reachable");
     }
 
     private static void addHead(NFastDoubleArrayJSO buffer, Direction lastDirection, Direction headDirection, double p0x, double p0y, double p1x, double p1y)
@@ -261,7 +264,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
             case SOUTH:
                 correctionOffset = -CORRECTION_OFFSET;
             case NORTH:
-                if ((headDirection == SOUTH && dy < CORRECTION_OFFSET) || (headDirection == NORTH && dy > -CORRECTION_OFFSET))
+                if (((headDirection == SOUTH) && (dy < CORRECTION_OFFSET)) || ((headDirection == NORTH) && (dy > -CORRECTION_OFFSET)))
                 {
                     // p1 located same side of the HEAD direction
                     if (lastDirection == headDirection)
@@ -276,19 +279,17 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                     }
                     y = p1y + correctionOffset;
                     buffer.push(x, y);
-
                     x = p1x;
                     buffer.push(x, y);
                 }
                 else
                 {
                     // p1 is opposite  of p3, for the head direction
-                    if ((dx > 0 && lastDirection == WEST) || (dx < 0 && lastDirection == EAST))
+                    if (((dx > 0) && (lastDirection == WEST)) || ((dx < 0) && (lastDirection == EAST)))
                     {
                         x = p0x;
                         y = p0y + (dy / 2);
                         buffer.push(x, y);
-
                         x = p1x;
                         buffer.push(x, y);
                     }
@@ -303,7 +304,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
             case EAST:
                 correctionOffset = -CORRECTION_OFFSET;
             case WEST:
-                if ((headDirection == EAST && dx < CORRECTION_OFFSET) || (headDirection == WEST && dx > -CORRECTION_OFFSET))
+                if (((headDirection == EAST) && (dx < CORRECTION_OFFSET)) || ((headDirection == WEST) && (dx > -CORRECTION_OFFSET)))
                 {
                     // p1 located same side of the HEAD direction
                     if (lastDirection == headDirection)
@@ -316,22 +317,19 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                     {
                         y = p0y;
                     }
-
                     x = p1x + correctionOffset;
                     buffer.push(x, y);
-
                     y = p1y;
                     buffer.push(x, y);
                 }
                 else
                 {
                     // p1 is opposite  of p3, for the head direction
-                    if ((dy > 0 && lastDirection == NORTH) || (dy < 0 && lastDirection == SOUTH))
+                    if (((dy > 0) && (lastDirection == NORTH)) || ((dy < 0) && (lastDirection == SOUTH)))
                     {
                         x = p0x + (dx / 2);
                         y = p0y;
                         buffer.push(x, y);
-
                         y = p1y;
                         buffer.push(x, y);
                     }
@@ -647,7 +645,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         return getAttributes().getHeadDirection();
     }
 
-    public void setHeadDirection(Direction headDirection)
+    public void setHeadDirection(final Direction headDirection)
     {
         getAttributes().setHeadDirection(headDirection);
     }
@@ -657,7 +655,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         return getAttributes().getTailDirection();
     }
 
-    public void setTailDirection(Direction tailDirection)
+    public void setTailDirection(final Direction tailDirection)
     {
         getAttributes().setTailDirection(tailDirection);
     }
