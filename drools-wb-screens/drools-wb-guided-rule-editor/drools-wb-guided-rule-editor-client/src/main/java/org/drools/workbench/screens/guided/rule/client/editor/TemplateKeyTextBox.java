@@ -58,7 +58,12 @@ public class TemplateKeyTextBox
     @Override
     public boolean isValidValue( String value,
                                  boolean isOnFocusLost ) {
-        return VALID.test( value );
+        try {
+            Double.valueOf( value );
+        } catch ( NumberFormatException nfe ) {
+            return VALID.test( value );
+        }
+        return false;
     }
 
     @Override
