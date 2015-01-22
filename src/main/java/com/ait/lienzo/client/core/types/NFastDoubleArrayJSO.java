@@ -71,6 +71,11 @@ public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO
         return this[indx];
     }-*/;
 
+    public final native double pop()
+    /*-{
+        return this.pop();
+    }-*/;
+
     public final native void push(double value)
     /*-{
         this[this.length] = value;
