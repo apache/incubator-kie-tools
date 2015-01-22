@@ -24,6 +24,8 @@ import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
+import ${package}.client.resources.AppResource;
+
 import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
 @EntryPoint
@@ -46,6 +48,7 @@ public class ShowcaseEntryPoint {
 
     @PostConstruct
     public void startApp() {
+        AppResource.INSTANCE.CSS().ensureInjected();
         hideLoadingPopup();
     }
 
@@ -107,8 +110,7 @@ public class ShowcaseEntryPoint {
     }
 
     public static native void redirect( String url )/*-{
-        ${symbol_dollar}
-        wnd.location = url;
+        ${symbol_dollar}wnd.location = url;
     }-*/;
 
 }

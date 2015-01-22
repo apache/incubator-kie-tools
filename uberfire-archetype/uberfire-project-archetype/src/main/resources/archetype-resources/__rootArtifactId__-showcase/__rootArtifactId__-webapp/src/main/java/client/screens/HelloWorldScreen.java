@@ -3,29 +3,35 @@
 #set( $symbol_escape = '\' )
 package ${package}.client.screens;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.github.gwtbootstrap.client.ui.Label;
-import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
 @WorkbenchScreen(identifier = "HelloWorldScreen")
-public class HelloWorldScreen {
+public class HelloWorldScreen extends Composite {
 
-    private static final String ORIGINAL_TEXT = "Hello UberFire!";
+    interface Binder
+            extends
+            UiBinder<Widget, HelloWorldScreen> {
 
-    private Label label = new Label( ORIGINAL_TEXT );
+    }
+
+    private static Binder uiBinder = GWT.create( Binder.class );
+
+    @PostConstruct
+    public void init() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
 
     @WorkbenchPartTitle
     public String getTitle() {
         return "Greetings";
-    }
-
-    @WorkbenchPartView
-    public IsWidget getView() {
-        return label;
     }
 }

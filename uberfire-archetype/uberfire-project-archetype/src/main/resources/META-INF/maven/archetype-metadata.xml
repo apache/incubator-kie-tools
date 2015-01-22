@@ -148,11 +148,13 @@
               <directory>src/main/java</directory>
               <includes>
                 <include>**/*.png</include>
+                <include>**/*.css</include>
               </includes>
             </fileSet>
             <fileSet filtered="true" encoding="UTF-8">
               <directory>src/main/webapp</directory>
               <includes>
+                <include>**/*.html</include>
                 <include>**/*.jsp</include>
                 <include>**/*.xml</include>
               </includes>

@@ -5,6 +5,7 @@ package ${package}.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.DataResource;
 
 public interface AppResource
         extends
@@ -13,5 +14,17 @@ public interface AppResource
     AppResource INSTANCE = GWT.create( AppResource.class );
 
     AppImages images();
+
+    @Source("css/welcome.css")
+    WelcomeCss CSS();
+
+    @Source("images/downloads-bgr.png")
+    DataResource downloadsBgr();
+
+    @Source("images/get-started-bgr.png")
+    DataResource getStartedBgr();
+
+    @Source("images/git-bgr.png")
+    DataResource gitBgr();
 
 }

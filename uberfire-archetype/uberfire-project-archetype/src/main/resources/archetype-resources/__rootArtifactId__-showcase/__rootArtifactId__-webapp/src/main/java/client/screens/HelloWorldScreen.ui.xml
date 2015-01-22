@@ -1,0 +1,51 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:with field='res' type='${package}.client.resources.AppResource'/>
+
+  <gwt:HTMLPanel>
+    <div class="{res.CSS.welcomeBox} container">
+      <div class="{res.CSS.welcomeTop}">
+        Learn and Discover
+        <strong>uberfire</strong>
+      </div>
+      <div class="row {res.CSS.welcomeBody}">
+        <div class="span4 {res.CSS.getStarted}">
+          <div style="padding: 90px 60px 0 ;">
+            <h3>Get Started</h3>
+            <div class="{res.CSS.linkList}">
+              <a href="#">Documentation</a>
+              <a href="#">Get Started with tutorials</a>
+              <a href="#">Help us to write documentation</a>
+            </div>
+          </div>
+        </div>
+        <div class="span8">
+          <div class="{res.CSS.git}">
+            <div style="padding: 66px 60px;">
+              <div class="{res.CSS.linkList}">
+                <a href="#">Fork from github</a>
+                <a href="#">Send Pull Requests</a>
+              </div>
+            </div>
+          </div>
+          <div class="{res.CSS.downloads}">
+            <div style="padding: 45px 45px;">
+              <h3>Download uberfire</h3>
+              <div class="{res.CSS.linkList}">
+                <a href="#">download uberfire</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </gwt:HTMLPanel>
+
+</ui:UiBinder>

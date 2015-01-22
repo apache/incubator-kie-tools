@@ -154,7 +154,7 @@
           <module>${package}.FastCompiled${capitalizedRootArtifactId}Showcase</module>
           <logLevel>INFO</logLevel>
           <strict>true</strict>
-          <runTarget>index.jsp</runTarget>
+          <runTarget>index.html</runTarget>
           <extraJvmArgs>-Xmx1024m -XX:MaxPermSize=256m</extraJvmArgs>
           <gwtSdkFirstInClasspath>true</gwtSdkFirstInClasspath>
         </configuration>
