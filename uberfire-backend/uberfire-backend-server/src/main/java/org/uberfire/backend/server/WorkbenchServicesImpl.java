@@ -17,26 +17,25 @@ package org.uberfire.backend.server;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.services.WorkbenchServices;
 
-import com.thoughtworks.xstream.XStream;
-
 @Service
 @ApplicationScoped
 public class WorkbenchServicesImpl
-implements
-WorkbenchServices {
+        implements
+        WorkbenchServices {
 
     @Inject
     @Named("configIO")
@@ -48,7 +47,8 @@ WorkbenchServices {
     private final XStream xs = new XStream();
 
     @Override
-    public void save( final String perspectiveId, final PerspectiveDefinition perspective ) {
+    public void save( final String perspectiveId,
+                      final PerspectiveDefinition perspective ) {
         final String xml = xs.toXML( perspective );
         final Path perspectivePath = userServices.buildPath( "perspectives",
                                                              perspectiveId + ".perspective" );
@@ -74,6 +74,15 @@ WorkbenchServices {
         }
 
         return null;
+    }
+
+    @Override
+    public void removePerspectiveStates() {
+        final Path perspectivesPath = userServices.buildPath( "perspectives" );
+        if ( ioService.exists( perspectivesPath ) ) {
+            ioService.delete( perspectivesPath,
+                              StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+        }
     }
 
     @Override

@@ -30,6 +30,8 @@ public interface WorkbenchServicesProxy {
     void loadPerspective( final String name,
                           final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand );
 
+    void removePerspectiveStates( final Command doWhenFinished );
+
     void save( final SplashScreenFilter splashFilter );
 
     void loadSplashScreenFilter( final String name,

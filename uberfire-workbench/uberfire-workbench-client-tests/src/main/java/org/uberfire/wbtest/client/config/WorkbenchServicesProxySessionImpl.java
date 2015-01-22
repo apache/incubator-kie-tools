@@ -26,13 +26,13 @@ public class WorkbenchServicesProxySessionImpl implements WorkbenchServicesProxy
 
     private final Map<String, PerspectiveDefinition> storedPerspectives = new HashMap<String, PerspectiveDefinition>();
     private final Map<String, SplashScreenFilter> storedSplashFilters = new HashMap<String, SplashScreenFilter>();
-    
+
     @Override
     public void save( final String perspectiveId,
                       final PerspectiveDefinition activePerspective,
                       final Command callback ) {
         storedPerspectives.put( perspectiveId, copy( activePerspective ) );
-        
+
         // scheduling as a deferred action to better simulate a real async request to the server
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
             @Override
@@ -55,6 +55,19 @@ public class WorkbenchServicesProxySessionImpl implements WorkbenchServicesProxy
     }
 
     @Override
+    public void removePerspectiveStates( final Command doWhenFinished ) {
+        storedPerspectives.clear();
+
+        // scheduling as a deferred action to better simulate a real async request to the server
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            @Override
+            public void execute() {
+                doWhenFinished.execute();
+            }
+        } );
+    }
+
+    @Override
     public void save( final SplashScreenFilter splashFilter ) {
         storedSplashFilters.put( splashFilter.getName(), copy( splashFilter ) );
     }
@@ -70,7 +83,7 @@ public class WorkbenchServicesProxySessionImpl implements WorkbenchServicesProxy
             }
         } );
     }
-    
+
     /**
      * Uses Errai Marshalling to make an independent copy of the given object and everything it references.
      */

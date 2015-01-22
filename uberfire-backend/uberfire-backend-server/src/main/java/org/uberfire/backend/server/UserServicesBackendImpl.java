@@ -38,6 +38,14 @@ public class UserServicesBackendImpl {
     private FileSystem fileSystem;
 
     public Path buildPath( final String _userName,
+                           final String serviceType ) {
+
+        final String resultUserName = TextUtil.normalizeUserName( _userName );
+
+        return fileSystem.getPath( resultUserName + "-uf-user", serviceType );
+    }
+
+    public Path buildPath( final String _userName,
                            final String serviceType,
                            final String relativePath ) {
 

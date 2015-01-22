@@ -26,6 +26,11 @@ public class WorkbenchServicesProxyClientImpl implements WorkbenchServicesProxy 
     }
 
     @Override
+    public void removePerspectiveStates( final Command doWhenFinished ) {
+        doWhenFinished.execute();
+    }
+
+    @Override
     public void save( final SplashScreenFilter splashFilter ) {
 
     }

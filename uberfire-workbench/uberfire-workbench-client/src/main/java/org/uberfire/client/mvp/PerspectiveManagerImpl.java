@@ -1,7 +1,5 @@
 package org.uberfire.client.mvp;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -13,6 +11,8 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @ApplicationScoped
 public class PerspectiveManagerImpl implements PerspectiveManager {
@@ -65,6 +65,11 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         }
     }
 
+    @Override
+    public void removePerspectiveStates( final Command doWhenFinished ) {
+        wbServices.removePerspectiveStates( doWhenFinished );
+    }
+
     /**
      * Fetches the given perspective's definition either from the server (if non-transient) or from the activity itself
      * (if transient or if the fetch call fails).
@@ -111,7 +116,8 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         private final ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
         private final PerspectiveActivity activity;
 
-        public BuildPerspectiveFromDefinitionCommand( PerspectiveActivity activity, ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
+        public BuildPerspectiveFromDefinitionCommand( PerspectiveActivity activity,
+                                                      ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
             this.activity = checkNotNull( "activity", activity );
             this.doWhenFinished = checkNotNull( "doWhenFinished", doWhenFinished );
         }

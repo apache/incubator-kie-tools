@@ -49,6 +49,7 @@ import org.uberfire.mvp.Commands;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.mvp.impl.ForcedPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -636,68 +637,91 @@ public class PlaceManagerImpl
 
         checkNotNull( "doWhenFinished", doWhenFinished );
 
-        final PerspectiveActivity oldPerspectiveActivity = perspectiveManager.getCurrentPerspective();
-        if ( oldPerspectiveActivity != null && place.equals( oldPerspectiveActivity.getPlace() ) ) {
-            return;
-        }
-
-        perspectiveManager.savePerspectiveState( new Command() {
-            @Override
-            public void execute() {
-
-                // first try to open the new perspective, so we can avoid leaving the user on a blank screen
-                // if the onOpen() method fails
-                try {
-                    activity.onOpen();
-                } catch ( Exception ex ) {
-                    lifecycleErrorHandler.handle( activity, LifecyclePhase.OPEN, ex );
-                    try {
-                        activity.onClose();
-                    } catch ( Exception ex2 ) {
-                        // not unexpected; probably happened because onOpen failed to complete
-                    }
-                    existingWorkbenchActivities.remove( place );
-                    activityManager.destroyActivity( activity );
-                    return;
-                }
-
-                if ( closeAllCurrentPanels() ) {
-
-                    closeAllSplashScreens();
-                    addSplashScreenFor( place );
-
-                    ParameterizedCommand<PerspectiveDefinition> closeOldPerspectiveOpenPartsAndExecuteChainedCallback = new ParameterizedCommand<PerspectiveDefinition>() {
-                        @Override
-                        public void execute( PerspectiveDefinition perspectiveDef ) {
-                            if ( oldPerspectiveActivity != null ) {
-                                try {
-                                    oldPerspectiveActivity.onClose();
-                                } catch ( Exception ex ) {
-                                    lifecycleErrorHandler.handle( oldPerspectiveActivity, LifecyclePhase.CLOSE, ex );
-                                }
-                                existingWorkbenchActivities.remove( oldPerspectiveActivity.getPlace() );
-                                activityManager.destroyActivity( oldPerspectiveActivity );
-                            }
-                            openPartsRecursively( perspectiveDef.getRoot() );
-                            doWhenFinished.execute();
-                            workbenchLayout.onResize();
-                        }
-                    };
-
-                    perspectiveManager.switchToPerspective( activity, closeOldPerspectiveOpenPartsAndExecuteChainedCallback );
-
-                } else {
-
-                    // some panels didn't want to close, so not going to launch new perspective. clean up its activity.
-                    try {
-                        activity.onClose();
-                    } catch ( Exception ex ) {
-                        lifecycleErrorHandler.handle( activity, LifecyclePhase.OPEN, ex );
-                    }
-                    activityManager.destroyActivity( activity );
-                }
+        if ( place instanceof ForcedPlaceRequest ) {
+            switchToPerspective( place,
+                                 activity,
+                                 new ParameterizedCommand<PerspectiveDefinition>() {
+                                     @Override
+                                     public void execute( PerspectiveDefinition perspectiveDef ) {
+                                         openPartsRecursively( perspectiveDef.getRoot() );
+                                         doWhenFinished.execute();
+                                         workbenchLayout.onResize();
+                                     }
+                                 } );
+        } else {
+            final PerspectiveActivity oldPerspectiveActivity = perspectiveManager.getCurrentPerspective();
+            if ( oldPerspectiveActivity != null && place.equals( oldPerspectiveActivity.getPlace() ) ) {
+                return;
             }
-        } );
+
+            perspectiveManager.savePerspectiveState( new Command() {
+                @Override
+                public void execute() {
+                    // first try to open the new perspective, so we can avoid leaving the user on a blank screen if the onOpen() method fails
+                    try {
+                        activity.onOpen();
+                    } catch ( Exception ex ) {
+                        lifecycleErrorHandler.handle( activity,
+                                                      LifecyclePhase.OPEN,
+                                                      ex );
+                        try {
+                            activity.onClose();
+                        } catch ( Exception ex2 ) {
+                            // not unexpected; probably happened because onOpen failed to complete
+                        }
+                        existingWorkbenchActivities.remove( place );
+                        activityManager.destroyActivity( activity );
+                        return;
+                    }
+
+                    switchToPerspective( place,
+                                         activity,
+                                         new ParameterizedCommand<PerspectiveDefinition>() {
+                                             @Override
+                                             public void execute( PerspectiveDefinition perspectiveDef ) {
+                                                 if ( oldPerspectiveActivity != null ) {
+                                                     try {
+                                                         oldPerspectiveActivity.onClose();
+                                                     } catch ( Exception ex ) {
+                                                         lifecycleErrorHandler.handle( oldPerspectiveActivity,
+                                                                                       LifecyclePhase.CLOSE,
+                                                                                       ex );
+                                                     }
+                                                     existingWorkbenchActivities.remove( oldPerspectiveActivity.getPlace() );
+                                                     activityManager.destroyActivity( oldPerspectiveActivity );
+                                                 }
+                                                 openPartsRecursively( perspectiveDef.getRoot() );
+                                                 doWhenFinished.execute();
+                                                 workbenchLayout.onResize();
+                                             }
+                                         } );
+                }
+
+            } );
+        }
+    }
+
+    private void switchToPerspective( final PlaceRequest place,
+                                      final PerspectiveActivity newPerspectiveActivity,
+                                      final ParameterizedCommand<PerspectiveDefinition> closeOldPerspectiveOpenPartsAndExecuteChainedCallback ) {
+        if ( closeAllCurrentPanels() ) {
+            closeAllSplashScreens();
+            addSplashScreenFor( place );
+            perspectiveManager.switchToPerspective( newPerspectiveActivity,
+                                                    closeOldPerspectiveOpenPartsAndExecuteChainedCallback );
+
+        } else {
+
+            // some panels didn't want to close, so not going to launch new perspective. clean up its activity.
+            try {
+                newPerspectiveActivity.onClose();
+            } catch ( Exception ex ) {
+                lifecycleErrorHandler.handle( newPerspectiveActivity,
+                                              LifecyclePhase.OPEN,
+                                              ex );
+            }
+            activityManager.destroyActivity( newPerspectiveActivity );
+        }
     }
 
     /**

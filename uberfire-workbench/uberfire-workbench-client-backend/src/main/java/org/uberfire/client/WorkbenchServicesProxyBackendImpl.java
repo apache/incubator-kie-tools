@@ -44,6 +44,16 @@ public class WorkbenchServicesProxyBackendImpl implements WorkbenchServicesProxy
     }
 
     @Override
+    public void removePerspectiveStates( final Command doWhenFinished ) {
+        workbenchServices.call( new RemoteCallback<Void>() {
+            @Override
+            public void callback( Void o ) {
+                doWhenFinished.execute();
+            }
+        } ).removePerspectiveStates();
+    }
+
+    @Override
     public void save( final SplashScreenFilter splashFilter ) {
         workbenchServices.call().save( splashFilter );
     }
