@@ -44,6 +44,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.IncrementalResults;
@@ -469,7 +470,10 @@ public class Builder {
         }
         //It's impossible to retrieve a KieContainer if the KieModule contains errors
         if (results.getErrorMessages().isEmpty()) {
-            return kieServices.newKieContainer(kieBuilder.getKieModule().getReleaseId());
+            KieModule kieModule = kieBuilder.getKieModule();
+            ReleaseId releaseId = kieModule.getReleaseId();
+            KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+            return kieContainer;
         } else {
             return null;
         }

@@ -15,11 +15,13 @@
  */
 package org.kie.workbench.common.services.backend.session;
 
+import java.util.Collection;
 import javax.inject.Inject;
 
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.builder.Builder;
@@ -56,7 +58,8 @@ public class SessionServiceImpl
             //We always need a pseudo clock
             final SessionConfiguration conf = new SessionConfiguration();
             conf.setClockType(ClockType.PSEUDO_CLOCK);
-            return kieContainer.newKieSession(conf);
+
+            return kieContainer.getKieBase("defaultKieBase").newKieSession(conf, null );
 
         } catch (RuntimeException e) {
             throw new GenericPortableException(e.getMessage());
