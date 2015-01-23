@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 public class IndexDeletedResourcesTest extends BaseIndexingTest {
 
     @Test
-    public void testIndexingUpdatedResources() throws IOException, InterruptedException {
+    public void testIndexingDeletedResources() throws IOException, InterruptedException {
         //Add test files
         loadProperties( "file1.properties",
                         basePath );

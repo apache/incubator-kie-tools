@@ -19,52 +19,61 @@ package org.kie.workbench.common.services.refactoring.backend.server;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.junit.Before;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-public abstract class BaseIndexingTest<T extends ResourceTypeDefinition> extends IndexingTest<T> {
+public abstract class MultipleRepositoryBaseIndexingTest<T extends ResourceTypeDefinition> extends IndexingTest<T> {
 
     private int seed = new Random( 10L ).nextInt();
 
     protected boolean created = false;
-    protected Path basePath;
+    private Map<String, Path> basePaths = new HashMap<String, Path>();
 
     @Before
     public void setup() throws IOException {
         if ( !created ) {
-            final String repositoryName = getRepositoryName();
             final String path = createTempDirectory().getAbsolutePath();
             System.setProperty( "org.uberfire.nio.git.dir",
                                 path );
             System.out.println( ".niogit: " + path );
 
-            final URI newRepo = URI.create( "git://" + repositoryName );
+            for ( String repositoryName : getRepositoryNames() ) {
 
-            try {
-                ioService().newFileSystem( newRepo,
-                                           new HashMap<String, Object>() );
+                final URI newRepo = URI.create( "git://" + repositoryName );
 
-                //Don't ask, but we need to write a single file first in order for indexing to work
-                basePath = getDirectoryPath().resolveSibling( "someNewOtherPath" );
-                ioService().write( basePath.resolve( "dummy" ),
-                                   "<none>" );
+                try {
+                    ioService().newFileSystem( newRepo,
+                                               new HashMap<String, Object>() );
 
-            } catch ( final Exception ex ) {
-                ex.fillInStackTrace();
-                System.out.println( ex.getMessage() );
-            } finally {
-                created = true;
+                    //Don't ask, but we need to write a single file first in order for indexing to work
+                    final Path basePath = getDirectoryPath( repositoryName ).resolveSibling( "someNewOtherPath" );
+                    ioService().write( basePath.resolve( "dummy" ),
+                                       "<none>" );
+                    basePaths.put( repositoryName,
+                                   basePath );
+
+                } catch ( final Exception ex ) {
+                    ex.fillInStackTrace();
+                    System.out.println( ex.getMessage() );
+                } finally {
+                    created = true;
+                }
             }
+
         }
     }
 
-    protected abstract String getRepositoryName();
+    protected abstract String[] getRepositoryNames();
 
-    protected Path getDirectoryPath() {
-        final String repositoryName = getRepositoryName();
+    protected Path getBasePath( final String repositoryName ) {
+        return basePaths.get( repositoryName );
+    }
+
+    protected Path getDirectoryPath( final String repositoryName ) {
         final Path dir = ioService().get( URI.create( "git://" + repositoryName + "/_someDir" + seed ) );
         ioService().deleteIfExists( dir );
         return dir;
