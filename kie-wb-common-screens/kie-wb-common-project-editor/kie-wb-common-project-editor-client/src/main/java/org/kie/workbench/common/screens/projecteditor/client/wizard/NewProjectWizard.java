@@ -121,6 +121,12 @@ public class NewProjectWizard
         // and preserved as is in the pom.xml file. However, as it is used to construct the default workspace and
         // hence package names, it is sanitized in the ProjectService.newProject() method.
         pom = new POM();
+        if ( projectName == null && groupId == null && version == null ) {
+            pom.getGav().setGroupId( context.getActiveOrganizationalUnit().getDefaultGroupId() );
+            pom.getGav().setVersion( "1.0" );
+            gavWizardPage.setPom( pom, false );
+            return;
+        }
         pom.setName( projectName );
         pom.getGav().setGroupId( groupId );
         pom.getGav().setArtifactId( sanitizeProjectName( projectName ) );
