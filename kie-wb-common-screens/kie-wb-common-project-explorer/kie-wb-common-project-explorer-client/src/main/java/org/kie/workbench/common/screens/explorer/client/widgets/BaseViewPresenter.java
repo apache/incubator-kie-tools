@@ -694,7 +694,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( project == null ) {
             return;
         }
-        if ( !sessionInfo.equals( event.getSessionInfo() ) ) {
+        if ( ! sessionInfo.getId().equals( event.getSessionId() ) ) {
             refresh( false );
             return;
         }

@@ -141,7 +141,7 @@ public class ProjectServiceImpl
 
             //Raise an event for the new project
             final KieProject project = resolveProject( projectRootPath );
-            newProjectEvent.fire( new NewProjectEvent( project, sessionInfo ) );
+            newProjectEvent.fire( new NewProjectEvent( project, getSessionId(), getIdentityName() ) );
 
             //Create a default workspace based on the GAV
             final String legalJavaGroupId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( pom.getGav().getGroupId().split( "\\.",
