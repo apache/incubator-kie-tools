@@ -1224,6 +1224,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
 
         if ( !source.getRefTree().equals( target.getRefTree() ) ) {
             copyAssetContent( source, target, options );
+        } else if(!source.getFileSystem().equals(target.getFileSystem())) {
+            copyAssetContent( source, target, options );
         } else {
             final Map<JGitPathImpl, JGitPathImpl> sourceDest = new HashMap<JGitPathImpl, JGitPathImpl>();
             if ( sourceResult.getK1() == DIRECTORY ) {
