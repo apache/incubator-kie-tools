@@ -37,7 +37,7 @@ import static org.mockito.Mockito.*;
 public class MultipleRepositoryCopiedResourcesTest extends MultipleRepositoryBaseIndexingTest<TestPropertiesFileTypeDefinition> {
 
     @Test
-    @Ignore("Copying between repositories is broken.")
+//    @Ignore("Copying between repositories is broken.")
     public void testIndexingCopiedResources() throws IOException, InterruptedException {
         //Add test files
         loadProperties( "file1.properties",
@@ -63,7 +63,7 @@ public class MultipleRepositoryCopiedResourcesTest extends MultipleRepositoryBas
         ioService().copy( getBasePath( this.getClass().getSimpleName() + "_1" ).resolve( "file1.properties" ),
                           getBasePath( this.getClass().getSimpleName() + "_2" ).resolve( "file1.properties" ) );
 
-        Thread.sleep( 50000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
+        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
         {
             final IndexSearcher searcher = ( (LuceneIndexManager) getConfig().getIndexManager() ).getIndexSearcher();
