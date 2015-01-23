@@ -260,7 +260,7 @@ public class DataModelerScreenPresenter
                         onDelete( versionRecordManager.getPathToLatest() );
                     }
                 }
-            } ).findClassUsages( className );
+            } ).findClassUsages( versionRecordManager.getPathToLatest(), className );
         } else {
             //we couldn't parse the class, so no check can be done. Just proceed with the standard
             //file deletion procedure.
@@ -340,7 +340,7 @@ public class DataModelerScreenPresenter
                         rename();
                     }
                 }
-            } ).findClassUsages( className );
+            } ).findClassUsages( versionRecordManager.getPathToLatest(), className );
         } else {
             //we couldn't parse the class, so no check can be done. Just proceed with the standard
             //file renaming procedure.

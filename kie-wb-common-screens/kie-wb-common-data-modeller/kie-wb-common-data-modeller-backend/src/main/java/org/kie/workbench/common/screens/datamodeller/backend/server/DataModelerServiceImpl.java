@@ -253,6 +253,7 @@ public class DataModelerServiceImpl
             String className = calculateClassName(project, path);
 
             editorModelContent.setCurrentProject(project);
+            editorModelContent.setPath( path );
             editorModelContent.setCurrentProjectPackages(projectService.resolvePackages(project));
             editorModelContent.setDataModel(dataModelTO);
             editorModelContent.setDataObject(dataModelTO.getDataObjectByClassName(className));
@@ -561,6 +562,8 @@ public class DataModelerServiceImpl
                 result.setPath(path);
 
             }
+
+            //fireMetadataSocialEvents( path );
 
             return result;
         } catch (Exception e) {
@@ -1235,24 +1238,26 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public List<Path> findClassUsages(String className) {
+    public List<Path> findClassUsages(Path currentPath, String className) {
 
         HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>();
         queryTerms.add(new ValueTypeIndexTerm(className));
-        return executeReferencesQuery("FindTypesQuery", queryTerms);
+        return executeReferencesQuery(currentPath, "FindTypesQuery", queryTerms);
     }
 
     @Override
-    public List<Path> findFieldUsages(String className,
+    public List<Path> findFieldUsages(Path currentPath,
+                                      String className,
                                       String fieldName) {
 
         HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>();
         queryTerms.add(new ValueTypeIndexTerm(className));
         queryTerms.add(new ValueFieldIndexTerm(fieldName));
-        return executeReferencesQuery("FindTypeFieldsQuery", queryTerms);
+        return executeReferencesQuery(currentPath, "FindTypeFieldsQuery", queryTerms);
     }
 
-    private List<Path> executeReferencesQuery(String queryName,
+    private List<Path> executeReferencesQuery(Path currentPath,
+                                              String queryName,
                                               HashSet<ValueIndexTerm> queryTerms) {
 
         List<Path> results = new ArrayList<Path>();
@@ -1269,12 +1274,34 @@ public class DataModelerServiceImpl
                     results.add((org.uberfire.backend.vfs.Path) row.getValue());
                 }
             }
-            return results;
+            return filterResults( currentPath, results );
 
         } catch (Exception e) {
             logger.error("References query: " + queryName + ", couldn't be executed: " + e.getMessage(), e);
             throw new ServiceException("References query: " + queryName + ", couldn't be executed: " + e.getMessage(), e);
         }
+    }
+
+    private List<Path> filterResults(Path currentPath, List<Path> results) {
+
+        if ( currentPath == null) return results;
+
+        KieProject project = projectService.resolveProject( currentPath );
+        if ( project == null ) return results;//uncommon case
+
+        Path rootPath = project.getRootPath();
+        if ( rootPath == null ) return results;//uncommon case
+
+        List<Path> filteredResults = new ArrayList<Path>(  );
+        String projectURI = rootPath.toURI();
+        if ( results != null ) {
+            for ( Path result : results) {
+                if ( result.toURI().startsWith( projectURI ) ) {
+                    filteredResults.add( result );
+                }
+            }
+        }
+        return filteredResults;
     }
 
     @Override

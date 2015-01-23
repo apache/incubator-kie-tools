@@ -80,9 +80,9 @@ public interface DataModelerService {
 
     Boolean verifiesHash( Path javaFile );
 
-    List<Path> findClassUsages( String className );
+    List<Path> findClassUsages( Path currentPath, String className );
 
-    List<Path> findFieldUsages( String className, String fieldName );
+    List<Path> findFieldUsages( Path currentPath, String className, String fieldName );
 
     Boolean exists( Path path );
 

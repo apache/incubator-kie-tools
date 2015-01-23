@@ -567,41 +567,46 @@ public class DataObjectBrowser extends Composite {
         final String className = dataObject.getClassName();
         final String fieldName = objectProperty.getName();
 
-        modelerService.call( new RemoteCallback<List<Path>>() {
+        if ( getContext() != null ) {
 
-            @Override
-            public void callback( List<Path> paths ) {
+            final Path currentPath = getContext().getEditorModelContent() != null ? getContext().getEditorModelContent().getPath() : null;
 
-                if ( paths != null && paths.size() > 0 ) {
-                    //If usages for this field were detected in project assets
-                    //show the confirmation message to the user.
+            modelerService.call( new RemoteCallback<List<Path>>() {
 
-                    ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForDeletion(
-                            Constants.INSTANCE.modelEditor_confirm_deletion_of_used_field( objectProperty.getName() ),
-                            paths,
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    deleteDataObjectProperty( objectProperty, index );
+                @Override
+                public void callback( List<Path> paths ) {
+
+                    if ( paths != null && paths.size() > 0 ) {
+                        //If usages for this field were detected in project assets
+                        //show the confirmation message to the user.
+
+                        ShowUsagesPopup showUsagesPopup = ShowUsagesPopup.newUsagesPopupForDeletion(
+                                Constants.INSTANCE.modelEditor_confirm_deletion_of_used_field( objectProperty.getName() ),
+                                paths,
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        deleteDataObjectProperty( objectProperty, index );
+                                    }
+                                },
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        //do nothing.
+                                    }
                                 }
-                            },
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    //do nothing.
-                                }
-                            }
-                                                                                               );
+                                                                                                   );
 
-                    showUsagesPopup.setCloseVisible( false );
-                    showUsagesPopup.show();
+                        showUsagesPopup.setCloseVisible( false );
+                        showUsagesPopup.show();
 
-                } else {
-                    //no usages, just proceed with the deletion.
-                    deleteDataObjectProperty( objectProperty, index );
+                    } else {
+                        //no usages, just proceed with the deletion.
+                        deleteDataObjectProperty( objectProperty, index );
+                    }
                 }
-            }
-        } ).findFieldUsages( className, fieldName );
+            } ).findFieldUsages( currentPath, className, fieldName );
+        }
     }
 
     private String propertyTypeDisplay( ObjectPropertyTO property ) {
