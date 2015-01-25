@@ -11,8 +11,8 @@
 
   <artifactId>drools-wb-jcr2vfs-migration-xml</artifactId>
 
-  <name>Drools Workbench - XML for migration</name>
-  <description>XML utilities for jcr to vfs migration</description>
+  <name>Drools Workbench - jcr2vfs - XML Model and Utils</name>
+  <description>XML model and utilities for jcr2vfs migration</description>
 
   <dependencies>
     <dependency>

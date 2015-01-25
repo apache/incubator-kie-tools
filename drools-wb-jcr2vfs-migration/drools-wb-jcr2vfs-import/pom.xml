@@ -11,7 +11,7 @@
 
   <artifactId>drools-wb-jcr2vfs-import</artifactId>
 
-  <name>Drools Workbench - XML to VFS import utility</name>
+  <name>Drools Workbench - jcr2vfs - XML to VFS Importer</name>
   <description>Imports the data from XML into VFS</description>
 
   <dependencies>

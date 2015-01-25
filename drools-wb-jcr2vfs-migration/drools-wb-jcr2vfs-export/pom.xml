@@ -26,7 +26,7 @@
 
   <artifactId>drools-wb-jcr2vfs-export</artifactId>
 
-  <name>Drools Workbench - JCR to XML export utility</name>
+  <name>Drools Workbench - jcr2vfs - JCR to XML Exporter</name>
   <description>Exports the data of Guvnor 5 to XML</description>
 
   <dependencyManagement>

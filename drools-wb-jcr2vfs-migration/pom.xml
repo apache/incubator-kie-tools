@@ -11,7 +11,7 @@
   <artifactId>drools-wb-jcr2vfs-migration</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools Workbench - JCR to UberFire VFS migration parent</name>
+  <name>Drools Workbench - jcr2vfs - Parent</name>
   <description>Migrates the data of Guvnor 5 to Drools Workbench 6</description>
 
   <properties>

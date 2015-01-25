@@ -11,7 +11,8 @@
 
   <artifactId>drools-wb-jcr2vfs-distribution</artifactId>
   <packaging>pom</packaging>
-  <name>Drools Workbench - jcr2vfs migration tool distribution</name>
+  <name>Drools Workbench - jcr2vfs - Distribution</name>
+  <description>Distribution that bundles all of the needed modules for the migration</description>
 
   <dependencies>
     <dependency>

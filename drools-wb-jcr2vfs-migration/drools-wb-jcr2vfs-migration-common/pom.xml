@@ -11,6 +11,8 @@
   </parent>
 
   <artifactId>drools-wb-jcr2vfs-migration-common</artifactId>
+  <name>Drools Workbench - jcr2vfs - Common</name>
+  <description>Common utilities shared between jcr2vfs migration modules</description>
 
   <dependencies>
 
