@@ -20,7 +20,7 @@
 #   1) Exporting the content of JCR repository into XML
 #   2) Importing the XML (generated in the previous step) into newly created VFS Git repository
 
-function print_help() {
+function print_help {
     echo "Usage: ./runMigration.sh [options]"
     echo "Description: Migrates Guvnor 5.x JCR content into UberFire VFS repository."
     echo
@@ -38,6 +38,19 @@ function print_help() {
     echo "       For example (linux): export JAVA_HOME=/usr/lib/jvm/java-6-sun"
     echo "       For example (mac): export JAVA_HOME=/Library/Java/Home"
 }
+
+# check if there is a Java installation available
+if [ ! -z "${JAVA_HOME}" -a -f "${JAVA_HOME}/bin/java" ]; then
+   JAVA_BIN=${JAVA_HOME}/bin/java
+else
+    java -version 2> /dev/null
+    if [ $? -ne 0 ]; then
+        echo "Error! Java installation not found on your system! Please install Java from http://www.java.com first."
+        echo ""
+        exit -1
+    fi
+    JAVA_BIN=java
+fi
 
 # Change directory to the directory of the script
 cd `dirname $0`
@@ -75,9 +88,10 @@ done
 
 if [ ${JCR_REPO_DIR_SET} == "false" ]
 then
-    echo "JCR respository location needs to be specified using the -i <dir>!"
+    echo "Error! JCR repository location needs to be specified using the -i <dir> option!"
+    echo ""
     print_help
-    exit 0
+    exit -1
 fi
 
 # add default VFS output dir if none specified
@@ -90,22 +104,9 @@ EXPORT_ARGS="$EXPORT_ARGS -o $TMP_DIR"
 
 IMPORT_ARGS="$IMPORT_ARGS -i $TMP_DIR"
 
-if [ ! -z "${JAVA_HOME}" -a -f "${JAVA_HOME}/bin/java" ]; then
-   JAVA_BIN=${JAVA_HOME}/bin/java
-else
-   JAVA_BIN=java
-fi
-
 EXPORTER_MAIN_CLASS=org.drools.workbench.jcr2vfsmigration.JcrExporterLauncher
 IMPORTER_MAIN_CLASS=org.drools.workbench.jcr2vfsmigration.VfsImporterLauncher
 
 ${JAVA_BIN} -Xms256m -Xmx1024m -cp "../jcr-exporter-libs/*" -Dlogback.configurationFile="../conf/logback.xml" ${EXPORTER_MAIN_CLASS} ${EXPORT_ARGS}
 
 ${JAVA_BIN} -Xms256m -Xmx1024m -cp "../vfs-importer-libs/*" -Dlogback.configurationFile="../conf/logback.xml" ${IMPORTER_MAIN_CLASS} ${IMPORT_ARGS}
-
-if [ $? != 0 ] ; then
-    echo
-    echo "ERROR: Check if Java is installed and environment variable JAVA_HOME ($JAVA_HOME) is correct."
-    # Prevent the terminal window to disappear before the user has seen the error message
-    read -p "Press [Enter] key to close this window." dummyVar
-fi

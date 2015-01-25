@@ -64,7 +64,7 @@ if not "%1"=="" (
 )
 
 if "%JCR_INPUT_DIR%"=="" (
-    echo Error: JCR repository location needs to be specified using the "-i dir" option^^!
+    echo Error^^! JCR repository location needs to be specified using the "-i dir" option^^!
     echo.
     goto :print_help
 )
