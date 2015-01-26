@@ -31,7 +31,7 @@ import com.google.gwt.json.client.JSONObject;
  * A polygon is traditionally a plane figure that is bounded by a closed path, 
  * composed of a finite sequence of straight line segments.
  */
-public class Polygon extends Shape<Polygon>
+public class Polygon extends AbstractMultiPointShape<Polygon>
 {
     /**
      * Constructor. Creates an instance of a polygon.
@@ -115,6 +115,18 @@ public class Polygon extends Shape<Polygon>
         getAttributes().setPoints(points);
 
         return this;
+    }
+
+    @Override
+    public Polygon setPoint2DArray(Point2DArray points)
+    {
+        return setPoints(points);
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getPoints();
     }
 
     @Override

@@ -274,6 +274,20 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
         return cast();
     }
+    
+    @Override
+    public boolean isEditable()
+    {
+        return getAttributes().isEditable();
+    }
+
+    @Override
+    public C setEditable(final boolean editable)
+    {
+        getAttributes().setEditable(editable);
+
+        return cast();
+    }
 
     /**
      * Gets the group's scale.
@@ -976,6 +990,8 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
             addAttribute(Attribute.STROKE_ALPHA);
 
             addAttribute(Attribute.DRAGGABLE);
+            
+            addAttribute(Attribute.EDITABLE);
 
             addAttribute(Attribute.SCALE);
 

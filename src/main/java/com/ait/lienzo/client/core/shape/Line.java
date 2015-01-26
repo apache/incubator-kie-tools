@@ -34,7 +34,7 @@ import com.google.gwt.json.client.JSONObject;
  * The class can be used to draw regular lines as well as dashed lines.
  * To create a dashed line, use one of the setDashArray() methods.
  */
-public class Line extends Shape<Line>
+public class Line extends AbstractMultiPointShape<Line>
 {
     /**
      * Constructor.  Creates an instance of a line of 0-pixel length, at the 0,0
@@ -152,6 +152,18 @@ public class Line extends Shape<Line>
         getAttributes().setPoints(points);
 
         return this;
+    }
+
+    @Override
+    public Line setPoint2DArray(Point2DArray points)
+    {
+        return setPoints(points);
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getPoints();
     }
 
     /**

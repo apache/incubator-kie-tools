@@ -92,6 +92,8 @@ public interface IDrawable<T>
      * @return Scene
      */
     public Shape<?> asShape();
+    
+    public IMultiPointShape<?> asMultiPathPointShape();
 
     /**
      * Returns this object as an {@link IContainer}

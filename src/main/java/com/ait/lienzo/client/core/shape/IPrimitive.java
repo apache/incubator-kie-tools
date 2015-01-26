@@ -114,6 +114,10 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
      */
     public boolean isDraggable();
 
+    public boolean isEditable();
+
+    public T setEditable(boolean editable);
+
     /**
      * Sets whether this node can be dragged.
      * 
@@ -415,6 +419,6 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
     public IControlHandleFactory getControlHandleFactory();
 
     public T setControlHandleFactory(IControlHandleFactory factory);
-    
+
     public T refresh();
 }

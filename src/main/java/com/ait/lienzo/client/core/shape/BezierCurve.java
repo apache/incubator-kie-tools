@@ -32,7 +32,7 @@ import com.google.gwt.json.client.JSONObject;
  * Bezier curves are defined with two anchor points and two control points.
  * This class represents a cubic Bezier curve.
  */
-public class BezierCurve extends Shape<BezierCurve>
+public class BezierCurve extends AbstractMultiPointShape<BezierCurve>
 {
     /**
      * Constructor. Creates an instance of a cubic bezier curve.
@@ -140,6 +140,24 @@ public class BezierCurve extends Shape<BezierCurve>
         getAttributes().setControlPoints(points);
 
         return this;
+    }
+
+    @Override
+    public BezierCurve setPoint2DArray(Point2DArray points)
+    {
+        return setControlPoints(points);
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getControlPoints();
+    }
+    
+    @Override
+    public boolean isControlPointsShape()
+    {
+        return true;
     }
 
     @Override

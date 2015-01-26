@@ -810,11 +810,13 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
+    @Override
     public boolean isEditable()
     {
         return getAttributes().isEditable();
     }
 
+    @Override
     public T setEditable(final boolean editable)
     {
         getAttributes().setEditable(editable);

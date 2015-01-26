@@ -31,7 +31,7 @@ import com.google.gwt.json.client.JSONObject;
 /**
  * Quadratic curves, a type of Bezier curve, are defined by a context point, a control point, and an ending point.
  */
-public class QuadraticCurve extends Shape<QuadraticCurve>
+public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
 {
     /**
      * Constructor. Creates an instance a quadratic curve.
@@ -133,6 +133,24 @@ public class QuadraticCurve extends Shape<QuadraticCurve>
         getAttributes().setControlPoints(points);
 
         return this;
+    }
+
+    @Override
+    public QuadraticCurve setPoint2DArray(Point2DArray points)
+    {
+        return setControlPoints(points);
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getControlPoints();
+    }
+
+    @Override
+    public boolean isControlPointsShape()
+    {
+        return true;
     }
 
     @Override

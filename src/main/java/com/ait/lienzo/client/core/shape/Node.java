@@ -203,6 +203,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             }
         }
     }
+    
+    @Override
+    public IMultiPointShape<?> asMultiPathPointShape()
+    {
+        return null;
+    }
 
     @SuppressWarnings("unchecked")
     protected final <M> M cast()

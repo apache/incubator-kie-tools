@@ -29,7 +29,7 @@ import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public class Spline extends Shape<Spline>
+public class Spline extends AbstractMultiPointShape<Spline>
 {
     private boolean            m_fill = false;
 
@@ -89,12 +89,12 @@ public class Spline extends Shape<Spline>
             super.fill(context, attr, alpha);
         }
     }
-    
+
     @Override
     public Spline refresh()
     {
         m_list.clear();
-        
+
         return this;
     }
 
@@ -314,6 +314,18 @@ public class Spline extends Shape<Spline>
         m_list.clear();
 
         return this;
+    }
+
+    @Override
+    public Spline setPoint2DArray(Point2DArray points)
+    {
+        return setControlPoints(points);
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getControlPoints();
     }
 
     public double getCurveFactor()
