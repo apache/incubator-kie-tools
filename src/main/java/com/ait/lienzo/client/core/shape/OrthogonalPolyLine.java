@@ -36,11 +36,15 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
+public class OrthogonalPolyLine extends AbstractMultiPointShape<OrthogonalPolyLine>
 {
     private final PathPartList  m_list            = new PathPartList();
 
     private static final double CORRECTION_OFFSET = 10;
+
+    private Point2D             m_tailOffsetStart;
+
+    private Point2D             m_headOffsetEnd;
 
     public OrthogonalPolyLine(final Point2D start, final Point2D... points)
     {
@@ -59,6 +63,82 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         super(ShapeType.ORTHOGONAL_POLYLINE, node, ctx);
     }
 
+    public void correctTailWithOffset(Point2DArray points, double offset, Direction direction)
+    {
+        Point2D p0 = points.get(0);
+
+        Point2D p1 = points.get(1);
+
+        Point2D p = correctEndWithOffset(offset, direction, p0, p1, false);
+
+        m_tailOffsetStart = p;
+
+        points.set(0, p);
+    }
+
+    public void correctHeadWithOffset(Point2DArray points, double offset, Direction direction)
+    {
+        int size = points.size();
+
+        Point2D p0 = points.get(size - 2);
+
+        Point2D p1 = points.get(size - 1);
+
+        Point2D p = correctEndWithOffset(offset, direction, p0, p1, true);
+
+        m_headOffsetEnd = p;
+
+        points.set(size - 1, p);
+    }
+
+    private static Point2D correctEndWithOffset(double offset, Direction direction, Point2D p0, Point2D p1, boolean reverse)
+    {
+        Point2D projectedPoint = null;
+
+        Point2D target;
+
+        if (reverse)
+        {
+            target = p1;
+
+            offset = -offset;
+        }
+        else
+        {
+            target = p0;
+        }
+        switch (direction)
+        {
+            case NONE:
+                Point2D dv = p1.sub(p0);
+
+                Point2D dx = dv.unit(); // unit vector in the direction of SE
+
+                if (reverse)
+                {
+                    projectedPoint = target.sub(dx.mul(offset));
+                }
+                else
+                {
+                    projectedPoint = target.add(dx.mul(offset));
+                }
+                break;
+            case NORTH:
+                projectedPoint = target.setY(target.getY() - offset);
+                break;
+            case EAST:
+                projectedPoint = target.setX(target.getX() + offset);
+                break;
+            case SOUTH:
+                projectedPoint = target.setY(target.getY() + offset);
+                break;
+            case WEST:
+                projectedPoint = target.setX(target.getX() - offset);
+                break;
+        }
+        return projectedPoint;
+    }
+
     private final static NFastDoubleArrayJSO getOrthogonalLinePointsTwoPoints(final Point2DArray points, Direction tailDirection, Direction headDirection)
     {
         final NFastDoubleArrayJSO buffer = NFastDoubleArrayJSO.make();
@@ -71,32 +151,29 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
         double p0y = p0.getY();
 
-        double p1x = p1.getX();
-
-        double p1y = p1.getY();
-
         switch (tailDirection)
         {
             case NORTH:
                 p0y = p0y - CORRECTION_OFFSET;
-                buffer.push(p0x, p0y);
+                addPoint(buffer, p0x, p0y);
                 break;
             case SOUTH:
                 p0y = p0y + CORRECTION_OFFSET;
-                buffer.push(p0x, p0y);
+                addPoint(buffer, p0x, p0y);
                 break;
             case EAST:
                 p0x = p0x + CORRECTION_OFFSET;
-                buffer.push(p0x, p0y);
+                addPoint(buffer, p0x, p0y);
                 break;
             case WEST:
                 p0x = p0x - CORRECTION_OFFSET;
-                buffer.push(p0x, p0y);
+                addPoint(buffer, p0x, p0y);
                 break;
             case NONE:
                 tailDirection = getTailDirection(points);
+                break;
         }
-        addHead(buffer, tailDirection, headDirection, p0x, p0y, p1x, p1y);
+        addHead(buffer, tailDirection, headDirection, p0, p1);
 
         return buffer;
     }
@@ -160,7 +237,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
         Point2D p2 = points.get(size - 1);
 
-        addHead(buffer, direction, headDirection, p1.getX(), p1.getY(), p2.getX(), p2.getY());
+        addHead(buffer, direction, headDirection, p1, p2);
 
         return buffer;
     }
@@ -223,10 +300,10 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 double x = p0x;
                 double y = p0y + offset;
 
-                buffer.push(x, y);
+                addPoint(buffer, x, y);
                 x = p1x;
-                buffer.push(x, y);
-                buffer.push(p1x, p1y);
+                addPoint(buffer, x, y);
+                addPoint(buffer, p1x, p1y);
                 return true;
             }
             case WEST:
@@ -236,11 +313,11 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 double x = p0x + offset;
                 double y = p0y;
 
-                buffer.push(x, y);
+                addPoint(buffer, x, y);
                 y = p1y;
-                buffer.push(x, y);
+                addPoint(buffer, x, y);
                 x = p1x;
-                buffer.push(p1x, p1y);
+                addPoint(buffer, p1x, p1y);
                 return true;
             }
             default:
@@ -248,8 +325,16 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         }
     }
 
-    private static void addHead(NFastDoubleArrayJSO buffer, Direction lastDirection, Direction headDirection, double p0x, double p0y, double p1x, double p1y)
+    private static void addHead(NFastDoubleArrayJSO buffer, Direction lastDirection, Direction headDirection, Point2D p0, Point2D p1)
     {
+        double p0x = p0.getX();
+
+        double p0y = p0.getY();
+
+        double p1x = p1.getX();
+
+        double p1y = p1.getY();
+
         // the delta tells us the quadrant we need move to
         final double dx = (p1x - p0x);
 
@@ -271,16 +356,16 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                     {
                         x = p0x + (dx / 2);
                         y = p0y;
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                     }
                     else
                     {
                         x = p0x;
                     }
                     y = p1y + correctionOffset;
-                    buffer.push(x, y);
+                    addPoint(buffer, x, y);
                     x = p1x;
-                    buffer.push(x, y);
+                    addPoint(buffer, x, y);
                 }
                 else
                 {
@@ -289,15 +374,15 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                     {
                         x = p0x;
                         y = p0y + (dy / 2);
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                         x = p1x;
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                     }
                     else
                     {
                         x = p1x;
                         y = p0y;
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                     }
                 }
                 break;
@@ -311,16 +396,16 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                     {
                         x = p0x;
                         y = p0y + (dy / 2);
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                     }
                     else
                     {
                         y = p0y;
                     }
                     x = p1x + correctionOffset;
-                    buffer.push(x, y);
+                    addPoint(buffer, x, y);
                     y = p1y;
-                    buffer.push(x, y);
+                    addPoint(buffer, x, y);
                 }
                 else
                 {
@@ -329,15 +414,15 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                     {
                         x = p0x + (dx / 2);
                         y = p0y;
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                         y = p1y;
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                     }
                     else
                     {
                         x = p0x;
                         y = p1y;
-                        buffer.push(x, y);
+                        addPoint(buffer, x, y);
                     }
                 }
                 break;
@@ -345,7 +430,7 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
                 getOrthogonalLinePointsAndDirection(buffer, lastDirection, p0x, p0y, p1x, p1y);
                 return;
         }
-        buffer.push(p1x, p1y);
+        addPoint(buffer, p1x, p1y);
     }
 
     public final static Direction getTailDirection(final Point2DArray points)
@@ -523,6 +608,11 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         }
     }
 
+    private static final void addPoint(final NFastDoubleArrayJSO buffer, final double x, final double y)
+    {
+        buffer.push(x, y);
+    }
+
     @Override
     public BoundingBox getBoundingBox()
     {
@@ -574,12 +664,24 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
 
         if (null != points)
         {
-            points = points.noAdjacentPoints();
+            points = points.noAdjacentPoints(); // this clones the points, so we are ok to mutate the elements (see head/tail offset)
 
             Direction headDirection = attr.getHeadDirection();
 
             Direction tailDirection = attr.getTailDirection();
 
+            double tailOffset = attr.getTailOffset();
+
+            double headOffset = attr.getHeadOffset();
+
+            if (tailOffset > 0)
+            {
+                correctTailWithOffset(points, tailOffset, tailDirection);
+            }
+            if (headOffset > 0)
+            {
+                correctHeadWithOffset(points, headOffset, headDirection);
+            }
             final Point2D p1 = points.get(0);
 
             NFastDoubleArrayJSO linePoints;
@@ -635,9 +737,25 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
     {
         getAttributes().setControlPoints(points);
 
-        m_list.clear();
+        return refresh();
+    }
 
-        return this;
+    @Override
+    public OrthogonalPolyLine setPoint2DArray(final Point2DArray points)
+    {
+        return setControlPoints(points);
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getControlPoints();
+    }
+
+    @Override
+    public boolean isControlPointShape()
+    {
+        return true;
     }
 
     public Direction getHeadDirection()
@@ -645,9 +763,11 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         return getAttributes().getHeadDirection();
     }
 
-    public void setHeadDirection(final Direction headDirection)
+    public OrthogonalPolyLine setHeadDirection(final Direction direction)
     {
-        getAttributes().setHeadDirection(headDirection);
+        getAttributes().setHeadDirection(direction);
+
+        return refresh();
     }
 
     public Direction getTailDirection()
@@ -655,9 +775,57 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         return getAttributes().getTailDirection();
     }
 
-    public void setTailDirection(final Direction tailDirection)
+    public double getTailOffset()
     {
-        getAttributes().setTailDirection(tailDirection);
+        return getAttributes().getTailOffset();
+    }
+
+    public OrthogonalPolyLine setTailOffset(final double offset)
+    {
+        getAttributes().setTailOffset(offset);
+
+        return refresh();
+    }
+
+    public Point2D getTailOffsetStart()
+    {
+        return m_tailOffsetStart;
+    }
+
+    public Point2D getHeadOffsetEnd()
+    {
+        return m_headOffsetEnd;
+    }
+
+    public double getHeadOffset()
+    {
+        return getAttributes().getHeadOffset();
+    }
+
+    public OrthogonalPolyLine setHeadOffset(final double offset)
+    {
+        getAttributes().setHeadOffset(offset);
+
+        return refresh();
+    }
+
+    public OrthogonalPolyLine setTailDirection(final Direction direction)
+    {
+        getAttributes().setTailDirection(direction);
+
+        return refresh();
+    }
+
+    public double getCorrectionOffset()
+    {
+        return getAttributes().getCorrectionOffset();
+    }
+
+    public OrthogonalPolyLine setCorrectionOffset(final double offset)
+    {
+        getAttributes().setCorrectionOffset(offset);
+
+        return refresh();
     }
 
     @Override
@@ -672,9 +840,15 @@ public class OrthogonalPolyLine extends Shape<OrthogonalPolyLine>
         {
             super(ShapeType.ORTHOGONAL_POLYLINE);
 
-            addAttribute(Attribute.TAIL_DIRECTION);
+            addAttribute(Attribute.HEAD_OFFSET);
+
+            addAttribute(Attribute.TAIL_OFFSET);
+
+            addAttribute(Attribute.CORRECTION_OFFSET);
 
             addAttribute(Attribute.HEAD_DIRECTION);
+
+            addAttribute(Attribute.TAIL_DIRECTION);
 
             addAttribute(Attribute.CONTROL_POINTS, true);
         }
