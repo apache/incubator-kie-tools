@@ -93,7 +93,7 @@ public interface IDrawable<T>
      */
     public Shape<?> asShape();
     
-    public IMultiPointShape<?> asMultiPathPointShape();
+    public IMultiPointShape<?> asMultiPointShape();
 
     /**
      * Returns this object as an {@link IContainer}

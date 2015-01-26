@@ -148,7 +148,7 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
     }
 
     @Override
-    public boolean isControlPointsShape()
+    public boolean isControlPointShape()
     {
         return true;
     }

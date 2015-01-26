@@ -155,7 +155,7 @@ public class BezierCurve extends AbstractMultiPointShape<BezierCurve>
     }
     
     @Override
-    public boolean isControlPointsShape()
+    public boolean isControlPointShape()
     {
         return true;
     }

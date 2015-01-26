@@ -205,7 +205,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
     
     @Override
-    public IMultiPointShape<?> asMultiPathPointShape()
+    public IMultiPointShape<?> asMultiPointShape()
     {
         return null;
     }

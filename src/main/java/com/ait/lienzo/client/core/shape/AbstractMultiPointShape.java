@@ -34,13 +34,13 @@ public abstract class AbstractMultiPointShape<T extends Shape<T> & IMultiPointSh
     }
 
     @Override
-    public boolean isControlPointsShape()
+    public boolean isControlPointShape()
     {
         return false;
     }
     
     @Override
-    public IMultiPointShape<?> asMultiPathPointShape()
+    public IMultiPointShape<?> asMultiPointShape()
     {
         return this;
     }
