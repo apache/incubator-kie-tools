@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -170,29 +171,36 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
     }
 
+    private void startBatchProcess( FileSystem[] fileSystems ) {
+        batchLockControl.start( fileSystems );
+        sortFileSystemsForLocking( fileSystems );
+        for ( FileSystem fs : fileSystems ) {
+            lockService.lock( fs );
+            if(!lockService.isAInnerBatch( fs )){
+                setBatchModeOn( fs );
+            }
+        }
+    }
+
+
+
     @Override
     public void endBatch() {
-        FileSystem[] lockedFileSystems = batchLockControl.getLockedFileSystems();
-        if ( lockedFileSystems == null || lockedFileSystems.length == 0 ) {
+        Collection<FileSystem> lockedFileSystems = batchLockControl.getLockedFileSystems();
+        if ( lockedFileSystems == null || lockedFileSystems.size() == 0 ) {
             throw new RuntimeException( "There is no locked FS" );
         }
         for ( FileSystem fs : lockedFileSystems ) {
+            final boolean innerBatch = lockService.isAInnerBatch( fs );
             lockService.unlock( fs );
-            unsetBatchModeOn( fs );
+            if(!innerBatch){
+                unsetBatchModeOn( fs );
+            }
         }
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
         }
         batchLockControl.end();
-    }
-
-    private void startBatchProcess( FileSystem[] fileSystems ) {
-        batchLockControl.start( fileSystems );
-        sortFileSystemsForLocking( fileSystems );
-        for ( FileSystem fs : fileSystems ) {
-            setBatchModeOn( fs );
-            lockService.lock( fs );
-        }
     }
 
     private void sortFileSystemsForLocking( FileSystem[] fileSystems ) {
@@ -231,6 +239,14 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
 
         fileSystems.removeAll( removeList );
+    }
+
+    private boolean isAlreadyOnBatch( FileSystem fs ) {
+        final Object attribute = getAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR );
+        if ( attribute == FileSystemState.BATCH ) {
+            return true;
+        }
+        return false;
     }
 
     private void setBatchModeOn( FileSystem fs ) {

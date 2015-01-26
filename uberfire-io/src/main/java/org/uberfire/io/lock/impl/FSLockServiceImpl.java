@@ -1,5 +1,6 @@
 package org.uberfire.io.lock.impl;
 
+import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -10,28 +11,28 @@ import org.uberfire.java.nio.file.FileSystem;
 
 public class FSLockServiceImpl implements FSLockService {
 
-    private final Lock lock = new ReentrantLock( true );
+    private final Lock reentrantLock = new ReentrantLock( true );
     private final ConcurrentHashMap<FileSystem, FSLock> lockControl = new ConcurrentHashMap<FileSystem, FSLock>();
 
     @Override
     public void lock( FileSystem fs ) {
-        lock.lock();
+        reentrantLock.lock();
         try {
             FSLock fSLock = getFSLock( fs );
             fSLock.lock();
         } finally {
-            lock.unlock();
+            reentrantLock.unlock();
         }
     }
 
     @Override
     public void unlock( FileSystem fs ) {
-        lock.lock();
+        reentrantLock.lock();
         try {
             FSLock fSLock = getFSLock( fs );
             fSLock.unlock();
         } finally {
-            lock.unlock();
+            reentrantLock.unlock();
         }
     }
 
@@ -50,13 +51,22 @@ public class FSLockServiceImpl implements FSLockService {
 
     @Override
     public void removeFromService( FileSystem fs ) {
-        lock.lock();
+        reentrantLock.lock();
         try {
             lockControl.remove( fs );
         } finally {
-            lock.unlock();
+            reentrantLock.unlock();
         }
 
+    }
+
+    @Override
+    public boolean isAInnerBatch( FileSystem fs ) {
+        final FSLock fsLock = lockControl.get( fs );
+        if ( fsLock.isAInnerBatch() ) {
+            return true;
+        }
+        return false;
     }
 
     private FSLock getFSLock( FileSystem fs ) {
@@ -67,48 +77,51 @@ public class FSLockServiceImpl implements FSLockService {
     private class FSLock {
 
         private Condition conditional;
-        private Boolean locked;
-        private Thread currentThread;
+        private Stack<Thread> currentThreads;
 
         FSLock() {
-            this.locked = Boolean.FALSE;
-            this.conditional = lock.newCondition();
+            currentThreads = new Stack<Thread>();
+            this.conditional = reentrantLock.newCondition();
         }
 
-        boolean isLocked() throws InterruptedException {
-            return locked;
+        boolean isLocked() {
+            return currentThreads.isEmpty();
         }
 
         void lock() {
-            if ( locked && !lockedByMe() ) {
+            if ( isLocked() && !lockedByMe() ) {
                 try {
                     conditional.await();
                 } catch ( InterruptedException e ) {
                     throw new FSLockServiceException( e );
                 }
             }
-            this.locked = Boolean.TRUE;
-            this.currentThread = Thread.currentThread();
+            this.currentThreads.push( Thread.currentThread() );
         }
 
         private boolean lockedByMe() {
-            return this.currentThread == null || currentThread == Thread.currentThread();
+            return this.currentThreads.isEmpty() || this.currentThreads.peek() == Thread.currentThread();
         }
 
         void unlock() {
-            this.locked = Boolean.FALSE;
-            this.currentThread = null;
-            conditional.signal();
+            currentThreads.pop();
+            if ( this.currentThreads.isEmpty() ) {
+                conditional.signal();
+            }
         }
 
         public void waitForUnlock() {
-            while ( this.locked && !lockedByMe() ) {
+            while ( !lockedByMe() ) {
                 try {
                     conditional.await();
                 } catch ( InterruptedException e ) {
                     throw new FSLockServiceException( e );
                 }
             }
+        }
+
+        public boolean isAInnerBatch() {
+            return currentThreads.size() > 1;
         }
 
         private class FSLockServiceException extends RuntimeException {

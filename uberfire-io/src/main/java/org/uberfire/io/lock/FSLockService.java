@@ -11,4 +11,6 @@ public interface FSLockService {
     void waitForUnlock( FileSystem fs );
 
     void removeFromService( FileSystem fs );
+
+    boolean isAInnerBatch( FileSystem fs );
 }

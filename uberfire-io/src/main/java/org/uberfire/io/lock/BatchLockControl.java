@@ -6,7 +6,7 @@ public interface BatchLockControl {
 
     void start( FileSystem[] fileSystems );
 
-    FileSystem[] getLockedFileSystems();
+    java.util.Collection<FileSystem> getLockedFileSystems();
 
     void end();
 }
