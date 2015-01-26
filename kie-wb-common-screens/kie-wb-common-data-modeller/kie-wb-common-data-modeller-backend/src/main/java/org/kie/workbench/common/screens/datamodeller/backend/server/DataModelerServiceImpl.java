@@ -530,6 +530,8 @@ public class DataModelerServiceImpl
                 nameChanged = true;
             }
 
+            fireMetadataSocialEvents( path, metadataService.getMetadata( path ), metadata );
+
             if (packageChanged) {
                 targetPath = Paths.convert(targetPackage.getPackageMainSrcPath()).resolve(targetName);
 
@@ -562,8 +564,6 @@ public class DataModelerServiceImpl
                 result.setPath(path);
 
             }
-
-            //fireMetadataSocialEvents( path );
 
             return result;
         } catch (Exception e) {

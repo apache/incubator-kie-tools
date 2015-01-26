@@ -25,14 +25,11 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetPresenter;
 import org.kie.workbench.common.widgets.client.discussion.DiscussionWidgetView;
 import org.mockito.ArgumentCaptor;
 import org.uberfire.backend.vfs.Path;
 
-import javax.enterprise.event.Event;
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,19 +42,17 @@ public class DiscussionWidgetPresenterTest {
     private DiscussionWidgetView view;
     private User identity;
     private DiscussionWidgetPresenterTest.MockAppConfigServiceCaller appConfigService;
-    private DiscussionWidgetPresenterTest.CommentAddedEventMock commentAddedEvent;
 
     @Before
     public void setUp() throws Exception {
         view = mock(DiscussionWidgetView.class);
         identity = mock(User.class);
         appConfigService = new MockAppConfigServiceCaller();
-        commentAddedEvent = spy(new CommentAddedEventMock());
     }
 
     @Test
     public void testPresenterSet() throws Exception {
-        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, commentAddedEvent, appConfigService);
+        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, appConfigService);
         verify(view).setPresenter(presenter);
     }
 
@@ -69,7 +64,7 @@ public class DiscussionWidgetPresenterTest {
         metadata.getDiscussion().add(new DiscussionRecord(1235, "Michael", "Who is there?"));
         metadata.getDiscussion().add(new DiscussionRecord(1236, "Toni", "Can't think of anything funny :("));
 
-        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, commentAddedEvent, appConfigService);
+        DiscussionWidgetPresenter presenter = new DiscussionWidgetPresenter(view, identity, appConfigService);
 
         presenter.setContent(metadata);
 
@@ -93,7 +88,7 @@ public class DiscussionWidgetPresenterTest {
 
     @Test
     public void testInitWhenThereIsCurrentlyNoAssetOpen() throws Exception {
-        new DiscussionWidgetPresenter(view, identity, commentAddedEvent, appConfigService);
+        new DiscussionWidgetPresenter(view, identity, appConfigService);
 
         verify(view, never()).addRow(any(DiscussionRecord.class));
     }
@@ -105,7 +100,7 @@ public class DiscussionWidgetPresenterTest {
 
         when(identity.getIdentifier()).thenReturn("Toni");
 
-        DiscussionWidgetPresenter presenterImpl = new DiscussionWidgetPresenter(view, identity, commentAddedEvent, appConfigService);
+        DiscussionWidgetPresenter presenterImpl = new DiscussionWidgetPresenter(view, identity, appConfigService);
         DiscussionWidgetView.Presenter presenter = presenterImpl;
 
         Metadata metadata = spy(new Metadata());
@@ -121,12 +116,6 @@ public class DiscussionWidgetPresenterTest {
         assertEquals(line.getTimestamp(), new Long(1234));
         assertEquals(line.getAuthor(), "Toni");
         assertEquals(line.getNote(), "Hello World!");
-
-        verify(commentAddedEvent).fire(any(CommentAddedEvent.class));
-        assertEquals(path, commentAddedEvent.event.getPath());
-        assertEquals("Hello World!", commentAddedEvent.event.getComment());
-        assertEquals("Toni", commentAddedEvent.event.getUserName());
-        assertEquals(new Long(1234), commentAddedEvent.event.getTimestamp());
     }
 
     private class MockAppConfigServiceCaller
@@ -173,26 +162,4 @@ public class DiscussionWidgetPresenterTest {
         }
     }
 
-    public class CommentAddedEventMock
-            implements Event<CommentAddedEvent> {
-
-        private CommentAddedEvent event;
-
-        @Override
-        public void fire(CommentAddedEvent event) {
-
-            this.event = event;
-        }
-
-        @Override
-        public Event<CommentAddedEvent> select(Annotation... annotations) {
-            return null;
-        }
-
-        @Override
-        public <U extends CommentAddedEvent> Event<U> select(Class<U> uClass, Annotation... annotations) {
-            return null;
-        }
-
-    }
 }

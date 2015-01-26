@@ -17,17 +17,19 @@
 package org.kie.workbench.common.services.backend.service;
 
 import java.util.Date;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
 import org.guvnor.common.services.backend.version.PathResolver;
+import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
+import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.services.backend.source.SourceServices;
+import org.kie.workbench.common.services.shared.discussion.CommentAddedEvent;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
@@ -50,6 +52,9 @@ public abstract class KieService<T> {
 
     @Inject
     protected KieProjectService projectService;
+
+    @Inject
+    protected Event<CommentAddedEvent> commentAddedEvent;
 
     @Inject
     protected User identity;
@@ -115,6 +120,22 @@ public abstract class KieService<T> {
                                                        commitMessage,
                                                        when);
         return co;
+    }
+
+    protected void fireMetadataSocialEvents( final Path path, final Metadata currentMetadata, final Metadata newMetadata ) {
+
+        List<DiscussionRecord> newDiscussion = newMetadata != null ? newMetadata.getDiscussion() : null;
+        List<DiscussionRecord> currentDiscussion = currentMetadata != null ? currentMetadata.getDiscussion() : null;
+
+        if ( newDiscussion != null && newDiscussion.size() > 0 ) {
+            for ( DiscussionRecord newRecord : newDiscussion ) {
+                if ( newRecord != null && ( currentDiscussion == null || !currentDiscussion.contains( newRecord ) ) ) {
+                    commentAddedEvent.fire( new CommentAddedEvent( newRecord.getAuthor(),
+                            path, newRecord.getNote(),
+                            newRecord.getTimestamp() ) );
+                }
+            }
+        }
     }
 
 }
