@@ -190,13 +190,14 @@ public class DRLTextEditorServiceImpl
         try {
             final String drl = assertPackageName( content,
                                                   resource );
-
+            Metadata currentMetadata = metadataService.getMetadata( resource );
             ioService.write( Paths.convert( resource ),
                              drl,
                              metadataService.setUpAttributes( resource,
                                                               metadata ),
                              makeCommentedOption( comment ) );
 
+            fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;
 
         } catch ( Exception e ) {

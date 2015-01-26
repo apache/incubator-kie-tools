@@ -159,6 +159,7 @@ public class GlobalsEditorServiceImpl
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
             content.setPackageName( packageName );
 
+            Metadata currentMetadata = metadataService.getMetadata( resource );
             ioService.write( Paths.convert( resource ),
                              GlobalsPersistence.getInstance().marshal( content ),
                              metadataService.setUpAttributes( resource,
@@ -168,6 +169,7 @@ public class GlobalsEditorServiceImpl
             //Invalidate Package-level DMO cache as Globals have changed.
             invalidatePackageDMOEvent.fire( new InvalidateDMOPackageCacheEvent( resource ) );
 
+            fireMetadataSocialEvents( resource, currentMetadata, metadata );
             return resource;
 
         } catch ( Exception e ) {
