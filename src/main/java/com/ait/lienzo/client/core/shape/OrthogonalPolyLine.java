@@ -36,7 +36,7 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public class OrthogonalPolyLine extends AbstractMultiPointShape<OrthogonalPolyLine>
+public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<OrthogonalPolyLine>
 {
     private final PathPartList  m_list            = new PathPartList();
 
@@ -758,74 +758,16 @@ public class OrthogonalPolyLine extends AbstractMultiPointShape<OrthogonalPolyLi
         return true;
     }
 
-    public Direction getHeadDirection()
-    {
-        return getAttributes().getHeadDirection();
-    }
-
-    public OrthogonalPolyLine setHeadDirection(final Direction direction)
-    {
-        getAttributes().setHeadDirection(direction);
-
-        return refresh();
-    }
-
-    public Direction getTailDirection()
-    {
-        return getAttributes().getTailDirection();
-    }
-
-    public double getTailOffset()
-    {
-        return getAttributes().getTailOffset();
-    }
-
-    public OrthogonalPolyLine setTailOffset(final double offset)
-    {
-        getAttributes().setTailOffset(offset);
-
-        return refresh();
-    }
-
+    @Override
     public Point2D getTailOffsetStart()
     {
         return m_tailOffsetStart;
     }
 
+    @Override
     public Point2D getHeadOffsetEnd()
     {
         return m_headOffsetEnd;
-    }
-
-    public double getHeadOffset()
-    {
-        return getAttributes().getHeadOffset();
-    }
-
-    public OrthogonalPolyLine setHeadOffset(final double offset)
-    {
-        getAttributes().setHeadOffset(offset);
-
-        return refresh();
-    }
-
-    public OrthogonalPolyLine setTailDirection(final Direction direction)
-    {
-        getAttributes().setTailDirection(direction);
-
-        return refresh();
-    }
-
-    public double getCorrectionOffset()
-    {
-        return getAttributes().getCorrectionOffset();
-    }
-
-    public OrthogonalPolyLine setCorrectionOffset(final double offset)
-    {
-        getAttributes().setCorrectionOffset(offset);
-
-        return refresh();
     }
 
     @Override
@@ -834,21 +776,11 @@ public class OrthogonalPolyLine extends AbstractMultiPointShape<OrthogonalPolyLi
         return new OrthogonaPolylLineFactory();
     }
 
-    public static class OrthogonaPolylLineFactory extends ShapeFactory<OrthogonalPolyLine>
+    public static class OrthogonaPolylLineFactory extends AbstractDirectionalMultiPointShapeFactory<OrthogonalPolyLine>
     {
         public OrthogonaPolylLineFactory()
         {
             super(ShapeType.ORTHOGONAL_POLYLINE);
-
-            addAttribute(Attribute.HEAD_OFFSET);
-
-            addAttribute(Attribute.TAIL_OFFSET);
-
-            addAttribute(Attribute.CORRECTION_OFFSET);
-
-            addAttribute(Attribute.HEAD_DIRECTION);
-
-            addAttribute(Attribute.TAIL_DIRECTION);
 
             addAttribute(Attribute.CONTROL_POINTS, true);
         }

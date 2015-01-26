@@ -23,6 +23,8 @@ public interface IMultiPointShape<T extends Shape<T> & IMultiPointShape<T>> exte
     public T setPoint2DArray(Point2DArray points);
 
     public Point2DArray getPoint2DArray();
-    
+
     public boolean isControlPointShape();
+
+    public IDirectionalMultiPointShape<?> asDirectionalMultiPointShape();
 }

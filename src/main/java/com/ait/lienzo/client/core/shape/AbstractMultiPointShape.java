@@ -21,7 +21,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class AbstractMultiPointShape<T extends Shape<T> & IMultiPointShape<T>> extends Shape<T> implements IMultiPointShape<T>
+public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<T> & IMultiPointShape<T>> extends Shape<T> implements IMultiPointShape<T>
 {
     protected AbstractMultiPointShape(final ShapeType type)
     {
@@ -38,10 +38,16 @@ public abstract class AbstractMultiPointShape<T extends Shape<T> & IMultiPointSh
     {
         return false;
     }
-    
+
     @Override
     public IMultiPointShape<?> asMultiPointShape()
     {
         return this;
+    }
+
+    @Override
+    public IDirectionalMultiPointShape<?> asDirectionalMultiPointShape()
+    {
+        return null;
     }
 }
