@@ -199,6 +199,12 @@ public class Attribute implements IAttribute
 
     public static final Attribute           BIAS                             = new Attribute("bias", MESSAGES.biasLabel(), MESSAGES.biasDescription(), AttributeType.NUMBER_TYPE);
 
+    public static final Attribute           HEAD_OFFSET                      = new Attribute("headOffset", MESSAGES.headOffsetLabel(), MESSAGES.headOffsetDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           TAIL_OFFSET                      = new Attribute("tailOffset", MESSAGES.tailOffsetLabel(), MESSAGES.tailOffsetDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           CORRECTION_OFFSET                = new Attribute("correctionOffset", MESSAGES.correctionOffsetLabel(), MESSAGES.correctionOffsetDescription(), AttributeType.NUMBER_TYPE);
+
     public static final Attribute           HEAD_DIRECTION                   = new Attribute("headDirection", MESSAGES.headDirectionLabel(), MESSAGES.headDirectionDescription(), AttributeType.DIRECTION_TYPE);
 
     public static final Attribute           TAIL_DIRECTION                   = new Attribute("tailDirection", MESSAGES.tailDirectionLabel(), MESSAGES.tailDirectionDescription(), AttributeType.DIRECTION_TYPE);

@@ -1396,6 +1396,29 @@ public class Attributes
         return getDouble(Attribute.DASH_OFFSET.getProperty());
     }
 
+    public final void setHeadOffset(double offset)
+    {
+        if (offset < 0)
+        {
+            offset = LienzoCore.get().getDefaultConnectorOffset();
+        }
+        put(Attribute.HEAD_OFFSET.getProperty(), offset);
+    }
+
+    public final double getHeadOffset()
+    {
+        if (typeOf(Attribute.HEAD_OFFSET) == NativeInternalType.NUMBER)
+        {
+            double offset = m_jso.getDouble(Attribute.HEAD_OFFSET.getProperty());
+
+            if (offset >= 0)
+            {
+                return offset;
+            }
+        }
+        return LienzoCore.get().getDefaultConnectorOffset();
+    }
+
     public final void setHeadDirection(Direction direction)
     {
         if (null != direction)
@@ -1413,6 +1436,29 @@ public class Attributes
         return Direction.lookup(getString(Attribute.HEAD_DIRECTION.getProperty()));
     }
 
+    public final void setTailOffset(double offset)
+    {
+        if (offset < 0)
+        {
+            offset = LienzoCore.get().getDefaultConnectorOffset();
+        }
+        put(Attribute.TAIL_OFFSET.getProperty(), offset);
+    }
+
+    public final double getTailOffset()
+    {
+        if (typeOf(Attribute.TAIL_OFFSET) == NativeInternalType.NUMBER)
+        {
+            double offset = m_jso.getDouble(Attribute.TAIL_OFFSET.getProperty());
+
+            if (offset >= 0)
+            {
+                return offset;
+            }
+        }
+        return LienzoCore.get().getDefaultConnectorOffset();
+    }
+
     public final void setTailDirection(Direction direction)
     {
         if (null != direction)
@@ -1428,6 +1474,29 @@ public class Attributes
     public final Direction getTailDirection()
     {
         return Direction.lookup(getString(Attribute.TAIL_DIRECTION.getProperty()));
+    }
+
+    public final void setCorrectionOffset(double offset)
+    {
+        if (offset < 0)
+        {
+            offset = LienzoCore.get().getDefaultConnectorOffset();
+        }
+        put(Attribute.CORRECTION_OFFSET.getProperty(), offset);
+    }
+
+    public final double getCorrectionOffset()
+    {
+        if (typeOf(Attribute.CORRECTION_OFFSET) == NativeInternalType.NUMBER)
+        {
+            double offset = m_jso.getDouble(Attribute.CORRECTION_OFFSET.getProperty());
+
+            if (offset >= 0)
+            {
+                return offset;
+            }
+        }
+        return LienzoCore.get().getDefaultConnectorOffset();
     }
 
     public final boolean hasTransformAttributes()

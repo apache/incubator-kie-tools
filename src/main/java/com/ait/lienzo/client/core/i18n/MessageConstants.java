@@ -608,4 +608,22 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("Tail Direction of a PolyLine connector.")
     public String tailDirectionDescription();
+
+    @DefaultStringValue("Head Offset")
+    public String headOffsetLabel();
+
+    @DefaultStringValue("Head Offset of a PolyLine connector.")
+    public String headOffsetDescription();
+
+    @DefaultStringValue("Tail Offset")
+    public String tailOffsetLabel();
+
+    @DefaultStringValue("Tail Offset of a PolyLine connector.")
+    public String tailOffsetDescription();
+
+    @DefaultStringValue("Correction Offset")
+    public String correctionOffsetLabel();
+
+    @DefaultStringValue("Correction Offset of a PolyLine connector.")
+    public String correctionOffsetDescription();
 }

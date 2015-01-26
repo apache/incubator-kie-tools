@@ -43,6 +43,8 @@ public final class LienzoCore
 
     public static final double       DEFAULT_FONT_SIZE        = 48;
 
+    public static final double       DEFAULT_CONNECTOR_OFFSET = 10;
+
     public static final String       DEFAULT_FONT_STYLE       = "normal";
 
     public static final String       DEFAULT_FONT_FAMILY      = "Helvetica";
@@ -50,6 +52,8 @@ public final class LienzoCore
     private double                   m_strokeWidth            = 1;
 
     private double                   m_backingStorePixelRatio = 0;
+
+    private double                   m_defaultConnectorOffset = DEFAULT_CONNECTOR_OFFSET;
 
     private String                   m_strokeColor            = "black";
 
@@ -235,6 +239,20 @@ public final class LienzoCore
     public final String getDefaultStrokeColor()
     {
         return m_strokeColor;
+    }
+
+    public final double getDefaultConnectorOffset()
+    {
+        return m_defaultConnectorOffset;
+    }
+
+    public final LienzoCore setDefaultConnectorOffset(double offset)
+    {
+        if (offset >= 0)
+        {
+            m_defaultConnectorOffset = offset;
+        }
+        return this;
     }
 
     /**
