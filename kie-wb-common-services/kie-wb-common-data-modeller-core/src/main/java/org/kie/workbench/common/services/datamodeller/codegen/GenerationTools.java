@@ -486,7 +486,7 @@ public class GenerationTools {
                     sortedProperties.add(property);
                 }
             }
-            if (sortedProperties.size() > 0) {
+            if ( sortedProperties.size() > 0 && sortedProperties.size() < MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR ) {
                 return resolveConstructor2(dataObject, DataModelUtils.sortByFileOrder(sortedProperties), "    ");
             }
         }
@@ -503,7 +503,7 @@ public class GenerationTools {
                     sortedProperties.add(property);
                 }
             }
-            if (sortedProperties.size() > 0) {
+            if ( sortedProperties.size() > 0 && sortedProperties.size() < MAX_FIELDS_FOR_DEFAULT_CONSTRUCTOR ) {
                 return resolveConstructor2(dataObject, DataModelUtils.sortByPosition(sortedProperties), "    ");
             }
         }
