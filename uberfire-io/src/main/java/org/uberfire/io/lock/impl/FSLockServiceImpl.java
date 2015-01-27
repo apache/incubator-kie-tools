@@ -85,7 +85,7 @@ public class FSLockServiceImpl implements FSLockService {
         }
 
         boolean isLocked() {
-            return currentThreads.isEmpty();
+            return !currentThreads.isEmpty();
         }
 
         void lock() {

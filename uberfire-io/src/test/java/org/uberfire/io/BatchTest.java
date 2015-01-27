@@ -1,7 +1,5 @@
 package org.uberfire.io;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -12,6 +10,7 @@ import java.util.Random;
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -23,6 +22,8 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+
+import static org.junit.Assert.*;
 
 public class BatchTest {
 
@@ -225,7 +226,57 @@ public class BatchTest {
     }
 
     @Test
-    public void testTwoStaredFsOnBatchByTheSameThread() throws IOException, InterruptedException {
+    public void testInnerBatch() throws IOException, InterruptedException {
+        Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        assertTrue( fs1Batch.isOnBatch() );
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        assertTrue( fs1Batch.isOnBatch() );
+        ioService.endBatch();
+        assertTrue( fs1Batch.isOnBatch() );
+        ioService.endBatch();
+        assertFalse( fs1Batch.isOnBatch() );
+    }
+
+    @Test
+    public void assertNumberOfCommitsOnInnerBatch() throws IOException, InterruptedException {
+        final Path f11 = ioService.get( URI.create( "git://check-amend-repo-test/f11.txt" ) );
+        // XXX: Workaround for UF-70: amend-test-repo has to contain something so it can receive the BATCH
+        ioService.write( f11, "init f1!" );
+        // END workaround
+
+        ioService.startBatch( new FileSystem[]{ f11.getFileSystem() } );
+        ioService.write( f11, "f1-u1!" );
+        ioService.endBatch();
+
+        VersionAttributeView v = ioService.getFileAttributeView( f11, VersionAttributeView.class );
+        assertNotNull( v );
+        assertEquals( 2, v.readAttributes().history().records().size() );
+
+        ioService.startBatch( new FileSystem[]{ f11.getFileSystem() } );
+
+        ioService.write( f11, "f2-u2!" );
+
+        //inner batch (samme commit)
+        ioService.startBatch( new FileSystem[]{ f11.getFileSystem() } );
+        ioService.write( f11, "f2-u2 - inner batch!" );
+        ioService.endBatch();
+
+        ioService.endBatch();
+
+        v = ioService.getFileAttributeView( f11, VersionAttributeView.class );
+        assertNotNull( v );
+        assertEquals( 3, v.readAttributes().history().records().size() );
+
+    }
+
+    @Test
+    public void testTwoStartedFsOnBatchByTheSameThread() throws IOException, InterruptedException {
         Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 

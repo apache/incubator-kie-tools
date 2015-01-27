@@ -90,73 +90,11 @@ public class FSLockServiceImplTest {
         assertFalse( lockService.isLocked( fs1 ) );
     }
 
-    @Ignore //Race Condition
-    @Test
-    public void threeThreadsTryingToAcquireLockForTheSameFS() throws Exception {
-        FSThread fsThread1 = new FSThread( fs1, lockService );
-        Thread t1 = new Thread( fsThread1 );
-        FSThread fsThread2 = new FSThread( fs1, lockService );
-        Thread t2 = new Thread( fsThread2 );
-        FSThread fsThread3 = new FSThread( fs1, lockService );
-        Thread t3 = new Thread( fsThread3 );
-
-        t1.start();
-        t2.start();
-        t3.start();
-        t1.join();
-        t2.join();
-        t3.join();
-
-        assertTrue( fsThread1.whenITookLock() < fsThread2.whenITookLock() );
-        assertTrue(fsThread2.whenITookLock() < fsThread3.whenITookLock());
-        assertMinDeltas( fsThread1, fsThread2, fsThread3 );
-    }
 
     @Test
     public void sameThreadShouldNotWaitForLock(){
         lockService.lock( fs1 );
         lockService.waitForUnlock( fs1 );
-
-    }
-
-    private void assertMinDeltas( FSThread fsThread1,
-                                  FSThread fsThread2,
-                                  FSThread fsThread3 ) {
-        assertTrue(fsThread2.whenITookLock()-fsThread1.whenITookLock() >= fsThread1.waitTime());
-        assertTrue(fsThread3.whenITookLock()-fsThread2.whenITookLock() >= fsThread1.waitTime());
-    }
-
-
-    class FSThread implements Runnable {
-
-        private final FileSystem fs;
-        private final FSLockService lockService;
-        private Date timestampThatITakeTheLock;
-
-        public FSThread( FileSystem fs,
-                         FSLockService lockService ) {
-            this.fs = fs;
-            this.lockService = lockService;
-        }
-
-        public void run() {
-            try {
-                lockService.lock( fs );
-                timestampThatITakeTheLock = new Date();
-                sleep( waitTime() );
-                lockService.unlock( fs );
-            } catch ( InterruptedException e ) {
-                e.printStackTrace();
-            }
-        }
-
-        int waitTime() {
-            return 100;
-        }
-
-        long whenITookLock() {
-            return timestampThatITakeTheLock.getTime();
-        }
 
     }
 

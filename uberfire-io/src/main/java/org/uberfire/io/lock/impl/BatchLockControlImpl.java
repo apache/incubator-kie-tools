@@ -2,8 +2,8 @@ package org.uberfire.io.lock.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,32 +46,51 @@ public class BatchLockControlImpl implements BatchLockControl {
 
     private class MultipleBatchControl {
 
-        private Map<Integer, FileSystem> lockedFS = new HashMap<Integer, FileSystem>();
+        private Set<FileSystem> lockedFS = new HashSet<FileSystem>();
         private Stack<Thread> currentThreads = new Stack<Thread>();
         ;
 
         public MultipleBatchControl( FileSystem[] fileSystems ) {
             currentThreads.push( Thread.currentThread() );
             for ( FileSystem fileSystem : fileSystems ) {
-                lockedFS.put( System.identityHashCode( fileSystem ), fileSystem );
+                lockedFS.add( fileSystem );
             }
         }
 
         public void newInnerBatch( FileSystem[] fileSystems ) {
+            if(!alreadyHaveABatchOnThisFs(fileSystems)){
+                throw new IllegalInnerBatchException();
+            }
             currentThreads.push( Thread.currentThread() );
             for ( FileSystem fileSystem : fileSystems ) {
-                lockedFS.put( System.identityHashCode( fileSystem ), fileSystem );
+                lockedFS.add( fileSystem );
             }
         }
 
+        private boolean alreadyHaveABatchOnThisFs( FileSystem[] fileSystems ) {
+            for ( FileSystem fileSystem : fileSystems ) {
+                if(!lockedFS.contains( fileSystem )){
+                    return false;
+                }
+            }
+            return true;
+        }
+
         public Collection<FileSystem> lockedFS() {
-            return lockedFS.values();
+            return lockedFS;
         }
 
         public void endBatch() {
             currentThreads.pop();
             if ( currentThreads.isEmpty() ) {
                 batchLockControl.remove( Thread.currentThread() );
+            }
+        }
+
+        private class IllegalInnerBatchException extends RuntimeException {
+
+            public IllegalInnerBatchException() {
+                super("You can only open an inner batch of an already opened batch.");
             }
         }
     }

@@ -241,14 +241,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         fileSystems.removeAll( removeList );
     }
 
-    private boolean isAlreadyOnBatch( FileSystem fs ) {
-        final Object attribute = getAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR );
-        if ( attribute == FileSystemState.BATCH ) {
-            return true;
-        }
-        return false;
-    }
-
     private void setBatchModeOn( FileSystem fs ) {
         setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
     }
