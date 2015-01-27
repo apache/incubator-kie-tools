@@ -285,10 +285,18 @@ public class BatchTest {
 
         ioService.startBatch( new FileSystem[]{ fs1 } );
         try {
-            ioService.startBatch( new FileSystem[]{ fs2 } );
+            ioService.startBatch( new FileSystem[]{ fs1 } );
+        } catch ( final Exception e ) {
             fail();
-        } catch ( RuntimeException e ) {
+        }
+
+        ioService.endBatch();
+        ioService.endBatch();
+
+        try {
             ioService.endBatch();
+            fail();
+        } catch ( final Exception e ) {
         }
     }
 

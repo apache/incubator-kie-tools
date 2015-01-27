@@ -6,11 +6,8 @@ import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,8 +17,6 @@ import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.lock.FSLockService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.api.FileSystemProviders;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static java.lang.Thread.*;
 import static org.junit.Assert.*;
@@ -90,12 +85,10 @@ public class FSLockServiceImplTest {
         assertFalse( lockService.isLocked( fs1 ) );
     }
 
-
     @Test
-    public void sameThreadShouldNotWaitForLock(){
+    public void sameThreadShouldNotWaitForLock() {
         lockService.lock( fs1 );
         lockService.waitForUnlock( fs1 );
 
     }
-
 }
