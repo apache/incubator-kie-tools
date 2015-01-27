@@ -32,6 +32,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
 import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
 
@@ -40,6 +41,9 @@ public class ValidatorService {
 
     @Inject
     private Caller<ValidationService> validationService;
+
+    public static final String MANAGED_PROPERTY_EXISTS = "MANAGED_PROPERTY_EXISTS";
+    public static final String UN_MANAGED_PROPERTY_EXISTS = "UN_MANAGED_PROPERTY_EXISTS";
 
     public ValidatorService() {
     }
@@ -127,10 +131,16 @@ public class ValidatorService {
 
     public void isUniqueAttributeName( String name,
             DataObjectTO object,
-            ValidatorCallback callback ) {
+            ValidatorWithReasonCallback callback ) {
         for ( ObjectPropertyTO prop : object.getProperties() ) {
             if ( prop.getName().equalsIgnoreCase( name ) ) {
-                callback.onFailure();
+                callback.onFailure( MANAGED_PROPERTY_EXISTS );
+                return;
+            }
+        }
+        for ( ObjectPropertyTO unmanagedProp : object.getUnmanagedProperties() ) {
+            if ( unmanagedProp.getName().equalsIgnoreCase( name ) ) {
+                callback.onFailure( UN_MANAGED_PROPERTY_EXISTS );
                 return;
             }
         }

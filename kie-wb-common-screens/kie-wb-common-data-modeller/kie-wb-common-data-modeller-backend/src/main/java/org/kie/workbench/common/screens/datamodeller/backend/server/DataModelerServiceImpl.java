@@ -328,7 +328,7 @@ public class DataModelerServiceImpl
             ProjectDataModelOracleUtils.loadExternalDependencies(dataModel, projectDataModelOracle, classLoader);
 
             //Objects read from persistent .java format are tagged as PERSISTENT objects
-            DataModelTO dataModelTO = serviceHelper.domain2To(dataModel, result.getClassPaths(), DataModelTO.TOStatus.PERSISTENT, true);
+            DataModelTO dataModelTO = serviceHelper.domain2To(dataModel, result.getClassPaths(), result.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
 
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) {
@@ -384,7 +384,7 @@ public class DataModelerServiceImpl
 
             if (!driverResult.hasErrors()) {
                 if (driverResult.getDataModel().getDataObjects().size() > 0) {
-                    DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), DataModelTO.TOStatus.PERSISTENT, true);
+                    DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
                     dataObjectTO = dataModelTO.getDataObjects().iterator().next();
                 }
                 return new Pair<DataObjectTO, List<DataModelerError>>(dataObjectTO, new ArrayList<DataModelerError>());
@@ -475,7 +475,7 @@ public class DataModelerServiceImpl
                 result.setErrors(serviceHelper.toDataModelerError(driverResult.getErrors()));
             } else {
                 if (driverResult.getDataModel().getDataObjects().size() > 0) {
-                    DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), DataModelTO.TOStatus.PERSISTENT, true);
+                    DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
                     result.setDataObject(dataModelTO.getDataObjects().iterator().next());
                 }
             }
@@ -611,7 +611,7 @@ public class DataModelerServiceImpl
                     result.setErrors(serviceHelper.toDataModelerError(driverResult.getErrors()));
                 } else {
                     if (driverResult.getDataModel().getDataObjects().size() > 0) {
-                        DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), DataModelTO.TOStatus.PERSISTENT, true);
+                        DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
                         result.setDataObject(dataModelTO.getDataObjects().iterator().next());
                     }
                 }

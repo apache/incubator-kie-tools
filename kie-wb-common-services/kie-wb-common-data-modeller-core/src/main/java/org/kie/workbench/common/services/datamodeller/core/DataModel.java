@@ -39,6 +39,8 @@ public interface DataModel {
     
     DataObject addDataObject(String className);
 
+    DataObject addDataObject( DataObject dataObject );
+
     DataObject getDataObject(String className);
     
     DataObject removeDataObject(String className);

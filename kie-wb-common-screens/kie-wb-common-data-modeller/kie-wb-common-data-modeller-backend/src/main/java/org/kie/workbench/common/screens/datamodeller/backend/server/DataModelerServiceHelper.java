@@ -98,7 +98,7 @@ public class DataModelerServiceHelper {
         return dataModel;
     }
 
-    public DataModelTO domain2To( DataModel dataModel, Map<String, Path> classPaths, DataModelTO.TOStatus initialStatus, boolean calculateFingerprints ) throws Exception {
+    public DataModelTO domain2To( DataModel dataModel, Map<String, Path> classPaths, Map<String, List<ObjectProperty>> unmanagedProperties, DataModelTO.TOStatus initialStatus, boolean calculateFingerprints ) throws Exception {
         DataModelTO dataModelTO = new DataModelTO();
         List<DataObject> dataObjects = new ArrayList<DataObject>();
         List<DataObject> externalDataObjects = new ArrayList<DataObject>();
@@ -122,6 +122,11 @@ public class DataModelerServiceHelper {
                 }
                 if ( classPaths != null && classPaths.get( dataObjectTO.getClassName() ) != null ) {
                     dataObjectTO.setPath( Paths.convert( classPaths.get( dataObjectTO.getClassName() ) ) );
+                }
+                if ( unmanagedProperties != null && unmanagedProperties.get( dataObject.getClassName() ) != null ) {
+                    for ( ObjectProperty property : unmanagedProperties.get( dataObject.getClassName() ) ) {
+                        dataObjectTO.getUnmanagedProperties().add( domain2To( property, initialStatus ) );
+                    }
                 }
             }
         }
@@ -178,6 +183,23 @@ public class DataModelerServiceHelper {
         }
 
         dataObjectTO.setProperties( propertiesTO );
+    }
+
+    public ObjectPropertyTO domain2To( ObjectProperty property, DataModelTO.TOStatus initialStatus ) {
+        PropertyTypeFactory typeFactory = PropertyTypeFactoryImpl.getInstance();
+        ObjectPropertyTO propertyTO = new ObjectPropertyTO( property.getName(), property.getClassName(), property.isMultiple(), typeFactory.isBasePropertyType( property.getClassName() ), property.getBag(), property.getModifiers() );
+        propertyTO.setOriginalName( property.getName() );
+        if ( initialStatus != null ) {
+            propertyTO.setStatus( initialStatus );
+        }
+        //process member level annotations.
+        for ( Annotation annotation : property.getAnnotations() ) {
+            AnnotationTO annotationTO = domain2To( annotation );
+            if ( annotationTO != null ) {
+                propertyTO.addAnnotation( annotationTO );
+            }
+        }
+        return propertyTO;
     }
 
     public DataObject to2Domain( DataObjectTO dataObjectTO ) {

@@ -136,4 +136,9 @@ public class DataModelImpl implements DataModel {
         return dataObject;
     }
 
+    @Override
+    public DataObject addDataObject( DataObject dataObject ) {
+        dataObjects.put( dataObject.getClassName(), dataObject );
+        return dataObject;
+    }
 }

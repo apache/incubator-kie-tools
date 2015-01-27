@@ -50,6 +50,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
@@ -164,11 +165,14 @@ public class JavaRoasterModelDriver implements ModelDriver {
                             //if a file has parsing errors it will be skipped.
                             addSyntaxErrors( result, scanResult.getFile(), javaType.getSyntaxErrors() );
                         } else {
-                            DataObject dataObject;
                             try {
                                 //try to load the data object.
-                                dataObject = addDataObject( dataModel, (JavaClassSource)javaType );
-                                if ( dataObject != null ) result.setClassPath( dataObject.getClassName(), scanResult.getFile() );
+                                Pair<DataObject, List<ObjectProperty>> pair = parseDataObject( (JavaClassSource)javaType );
+                                if ( pair.getK1() != null ) {
+                                    dataModel.addDataObject( pair.getK1() );
+                                    result.setClassPath( pair.getK1().getClassName(), scanResult.getFile() );
+                                    result.setUnmanagedProperties( pair.getK1().getClassName(), pair.getK2() );
+                                }
                             } catch (ModelDriverException e) {
                                 logger.error( "An error was produced when file: " + scanResult.getFile() + " was being loaded into a DataObject.", e );
                                 addModelDriverError(result , scanResult.getFile(), e );
@@ -205,11 +209,12 @@ public class JavaRoasterModelDriver implements ModelDriver {
                     //if a file has parsing errors it will be skipped.
                     addSyntaxErrors( result, path, javaType.getSyntaxErrors() );
                 } else {
-                    DataObject dataObject;
                     try {
                         //try to load the data object.
-                        dataObject = addDataObject( dataModel, (JavaClassSource)javaType );
-                        result.setClassPath( dataObject.getClassName(), path );
+                        Pair<DataObject, List<ObjectProperty>> pair = parseDataObject( (JavaClassSource) javaType );
+                        dataModel.addDataObject( pair.getK1() );
+                        result.setClassPath( pair.getK1().getClassName(), path );
+                        result.setUnmanagedProperties( pair.getK1().getClassName(), pair.getK2() );
                     } catch (ModelDriverException e) {
                         logger.error( "An error was produced when source: " + source + " was being loaded into a DataObject.", e );
                         addModelDriverError(result , path, e );
@@ -303,14 +308,13 @@ public class JavaRoasterModelDriver implements ModelDriver {
         return ModelFactoryImpl.getInstance().newModel();
     }
 
-    private DataObject addDataObject( DataModel dataModel, JavaClassSource javaClassSource ) throws ModelDriverException {
+    private Pair<DataObject, List<ObjectProperty>> parseDataObject( JavaClassSource javaClassSource ) throws ModelDriverException {
 
         String className;
         String packageName;
         String superClass;
         String qualifiedName;
         int modifiers;
-        boolean hasErrors = false;
         DriverUtils driverUtils = DriverUtils.getInstance();
         ClassTypeResolver classTypeResolver;
 
@@ -326,7 +330,8 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         modifiers = driverUtils.buildModifierRepresentation( javaClassSource );
 
-        DataObject dataObject = dataModel.addDataObject( packageName, className, modifiers );
+        DataObject dataObject = new DataObjectImpl( packageName, className, modifiers );
+        List<ObjectProperty> unmanagedProperties = new ArrayList<ObjectProperty>();
 
         try {
             if ( javaClassSource.getSuperType() != null ) {
@@ -349,20 +354,17 @@ public class JavaRoasterModelDriver implements ModelDriver {
                         addProperty( dataObject, field, classTypeResolver );
                     } else {
                         logger.debug( "field: " + field + "with fieldName: " + field.getName() + " won't be loaded by the diver because type: " + field.getType().getName() + " isn't a managed type." );
+                        unmanagedProperties.add( new ObjectPropertyImpl( field.getName(), field.getType().toString(), false, driverUtils.buildModifierRepresentation( field ) ) );
                     }
                 }
             }
-            return dataObject;
+            return new Pair<DataObject, List<ObjectProperty>> (dataObject, unmanagedProperties);
         } catch ( ClassNotFoundException e) {
-            hasErrors = true;
             logger.error( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
             throw new ModelDriverException( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
         } catch ( ModelDriverException e ) {
-            hasErrors = true;
             logger.error( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
             throw new ModelDriverException( errorMessage( DATA_OBJECT_LOAD_ERROR, qualifiedName ), e );
-        } finally {
-            if (hasErrors) dataModel.removeDataObject( qualifiedName );
         }
     }
 
@@ -1365,6 +1367,33 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         boolean includeFields = true;
 
+    }
+
+    public static class Pair<K, T> {
+
+        K k1;
+        T k2;
+
+        public Pair( K k1, T k2 ) {
+            this.k1 = k1;
+            this.k2 = k2;
+        }
+
+        public K getK1() {
+            return k1;
+        }
+
+        public void setK1( K k1 ) {
+            this.k1 = k1;
+        }
+
+        public T getK2() {
+            return k2;
+        }
+
+        public void setK2( T k2 ) {
+            this.k2 = k2;
+        }
     }
 
 }

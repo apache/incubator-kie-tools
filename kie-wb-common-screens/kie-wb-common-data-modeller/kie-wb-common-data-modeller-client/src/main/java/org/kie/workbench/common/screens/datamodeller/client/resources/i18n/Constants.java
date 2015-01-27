@@ -263,6 +263,8 @@ public interface Constants extends Messages {
 
     public String validation_error_object_attribute_already_exists(String attributeName);
 
+    public String validation_error_object_un_managed_attribute_already_exists(String attributeName, String attributeType);
+
     public String validation_error_cannot_delete_object(String objectName, String references);
 
     public String validation_error_cannot_change_object_name();

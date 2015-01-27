@@ -58,6 +58,8 @@ public class DataObjectTO {
 
     private List<ObjectPropertyTO> properties = new ArrayList<ObjectPropertyTO>();
 
+    private List<ObjectPropertyTO> unmanagedProperties = new ArrayList<ObjectPropertyTO>( );
+
     private List<AnnotationTO> annotations = new ArrayList<AnnotationTO>();
 
     private String fingerPrint;
@@ -112,6 +114,13 @@ public class DataObjectTO {
 
     public ObjectPropertyTO getProperty(String name) {
         for (ObjectPropertyTO property : properties) {
+            if (property.getName().equals(name)) return property;
+        }
+        return null;
+    }
+
+    public ObjectPropertyTO getUnManagedProperty(String name) {
+        for (ObjectPropertyTO property : unmanagedProperties) {
             if (property.getName().equals(name)) return property;
         }
         return null;
@@ -274,6 +283,14 @@ public class DataObjectTO {
 
     public void setPath( Path path ) {
         this.path = path;
+    }
+
+    public List<ObjectPropertyTO> getUnmanagedProperties() {
+        return unmanagedProperties;
+    }
+
+    public void setUnmanagedProperties( List<ObjectPropertyTO> unmanagedProperties ) {
+        this.unmanagedProperties = unmanagedProperties;
     }
 
     @Override

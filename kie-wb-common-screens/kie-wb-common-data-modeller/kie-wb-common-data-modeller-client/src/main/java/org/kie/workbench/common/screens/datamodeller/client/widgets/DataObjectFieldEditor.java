@@ -65,6 +65,7 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class DataObjectFieldEditor extends Composite {
@@ -386,10 +387,25 @@ public class DataObjectFieldEditor extends Composite {
 
             @Override
             public void onSuccess() {
-                validatorService.isUniqueAttributeName( newValue, getDataObject(), new ValidatorCallback() {
+                validatorService.isUniqueAttributeName( newValue, getDataObject(), new ValidatorWithReasonCallback() {
+
                     @Override
                     public void onFailure() {
-                        ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists( newValue ), null, afterCloseCommand );
+                        showFailure( ValidatorService.MANAGED_PROPERTY_EXISTS );
+                    }
+
+                    @Override
+                    public void onFailure( String reason ) {
+                        showFailure( reason );
+                    }
+
+                    private void showFailure( String reason ) {
+                        if ( ValidatorService.UN_MANAGED_PROPERTY_EXISTS.equals( reason ) ) {
+                            ObjectPropertyTO unmanagedProperty = getDataObject().getUnManagedProperty( newValue );
+                            ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_un_managed_attribute_already_exists( unmanagedProperty.getName(), unmanagedProperty.getClassName() ) );
+                        } else {
+                            ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists( newValue ) );
+                        }
                     }
 
                     @Override

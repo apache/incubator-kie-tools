@@ -81,6 +81,7 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
+import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -421,10 +422,25 @@ public class DataObjectBrowser extends Composite {
 
                 @Override
                 public void onSuccess() {
-                    validatorService.isUniqueAttributeName( propertyName, dataObject, new ValidatorCallback() {
+                    validatorService.isUniqueAttributeName( propertyName, dataObject, new ValidatorWithReasonCallback() {
+
                         @Override
                         public void onFailure() {
-                            ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists( propertyName ) );
+                            showFailure( ValidatorService.MANAGED_PROPERTY_EXISTS );
+                        }
+
+                        @Override
+                        public void onFailure( String reason ) {
+                            showFailure( reason );
+                        }
+
+                        private void showFailure( String reason ) {
+                            if ( ValidatorService.UN_MANAGED_PROPERTY_EXISTS.equals( reason ) ) {
+                                ObjectPropertyTO unmanagedProperty = getDataObject().getUnManagedProperty( propertyName );
+                                ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_un_managed_attribute_already_exists( unmanagedProperty.getName(), unmanagedProperty.getClassName() ) );
+                            } else {
+                                ErrorPopup.showMessage( Constants.INSTANCE.validation_error_object_attribute_already_exists( propertyName ) );
+                            }
                         }
 
                         @Override

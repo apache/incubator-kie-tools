@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.uberfire.java.nio.file.Path;
 
 public class ModelDriverResult extends DriverResult {
@@ -12,6 +13,8 @@ public class ModelDriverResult extends DriverResult {
     private DataModel dataModel;
 
     private Map<String, Path> classPaths = new HashMap<String, Path>(  );
+
+    private Map<String, List<ObjectProperty>> unmanagedProperties = new HashMap<String, List<ObjectProperty>>(  );
 
     public ModelDriverResult() {
     }
@@ -43,5 +46,13 @@ public class ModelDriverResult extends DriverResult {
 
     public Map<String, Path> getClassPaths() {
         return classPaths;
+    }
+
+    public void setUnmanagedProperties(String className, List<ObjectProperty> properties) {
+        unmanagedProperties.put( className, properties );
+    }
+
+    public Map<String, List<ObjectProperty>> getUnmanagedProperties() {
+        return unmanagedProperties;
     }
 }
