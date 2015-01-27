@@ -24,6 +24,7 @@ import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 public interface ListenersPanelView
         extends IsWidget {
 
+
     interface Presenter {
 
         void onAdd();
@@ -32,6 +33,8 @@ public interface ListenersPanelView
     }
 
     void setModels(List<ListenerModel> listeners);
+
+    void redraw();
 
     void setPresenter(Presenter presenter);
 }

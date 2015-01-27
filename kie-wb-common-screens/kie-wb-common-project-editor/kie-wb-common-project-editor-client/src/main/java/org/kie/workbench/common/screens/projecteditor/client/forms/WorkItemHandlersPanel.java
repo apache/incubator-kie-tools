@@ -56,4 +56,8 @@ public class WorkItemHandlersPanel
         handlerModels.remove(model);
         view.setModels(handlerModels);
     }
+
+    public void redraw() {
+        view.redraw();
+    }
 }

@@ -19,14 +19,13 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.base.Style;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.model.WorkItemHandlerModel;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.ListenerModel;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
@@ -35,34 +34,13 @@ public class KSessionModelOptionsPopUpViewImpl
         extends BaseModal
         implements KSessionModelOptionsPopUpView {
 
-    private static final Style PANEL_ENABLED = new Style() {
-        @Override
-        public String get() {
-            return ProjectEditorResources.INSTANCE.mainCss().panelEnabled();
-        }
-    };
-
-    private static final Style PANEL_DISABLED = new Style() {
-        @Override
-        public String get() {
-            return ProjectEditorResources.INSTANCE.mainCss().panelDisabled();
-        }
-    };
-    private static final String WORKING_MEMORY_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.WorkingMemoryEventListener();
-    private static final String AGENDA_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.AgendaEventListener();
-    private static final String PROCESS_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.ProcessEventListener();
-
-    private final String CONSOLE_LOGGER = ProjectEditorResources.CONSTANTS.ConsoleLogger();
-    private final String FILE_LOGGER = ProjectEditorResources.CONSTANTS.FileLogger();
-    private Presenter presenter;
-
     interface Binder
             extends
             UiBinder<Widget, KSessionModelOptionsPopUpViewImpl> {
 
     }
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private static Binder uiBinder = GWT.create(Binder.class);
 
     @UiField(provided = true)
     ListenersPanel listenersPanel;
@@ -70,89 +48,46 @@ public class KSessionModelOptionsPopUpViewImpl
     @UiField(provided = true)
     WorkItemHandlersPanel workItemHandlersPanel;
 
-    //    @UiField
-//    CheckBox loggerCheckBox;
-
-    //    @UiField
-//    ListBox loggerTypeListBox;
-
-    //    @UiField
-//    Container loggerEditorPanel;
-
-    //    @UiField
-//    Container loggerContainer;
-
     @Inject
-    public KSessionModelOptionsPopUpViewImpl( ListenersPanel listenersPanel,
-                                              WorkItemHandlersPanel workItemHandlersPanel ) {
+    public KSessionModelOptionsPopUpViewImpl(ListenersPanel listenersPanel,
+                                             WorkItemHandlersPanel workItemHandlersPanel) {
         this.listenersPanel = listenersPanel;
         this.workItemHandlersPanel = workItemHandlersPanel;
 
-        add( uiBinder.createAndBindUi( this ) );
-        add( new ModalFooterOKButton( new Command() {
+        add(uiBinder.createAndBindUi(this));
+        add(new ModalFooterOKButton(new Command() {
             @Override
             public void execute() {
                 hide();
             }
-        } ) );
+        }));
 
-//        loggerTypeListBox.addItem(CONSOLE_LOGGER);
-//        loggerTypeListBox.addItem(FILE_LOGGER);
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
-        this.presenter = presenter;
+    public void setListeners(List<ListenerModel> listeners) {
+        listenersPanel.setListeners(listeners);
+
+        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+            @Override
+            public boolean execute() {
+                listenersPanel.redraw();
+                return false;
+            }
+        }, 1000);
     }
 
     @Override
-    public void setLoggerEditor( LoggerEditorPanel loggerEditor ) {
-        clearLoggerEditor();
-//        loggerEditorPanel.add(loggerEditor);
-    }
+    public void setWorkItemHandlers(List<WorkItemHandlerModel> workItemHandlerModels) {
+        workItemHandlersPanel.setHandlerModels(workItemHandlerModels);
 
-    @Override
-    public void clearLoggerEditor() {
-//        loggerEditorPanel.clear();
-    }
-
-    @Override
-    public void enableLoggerPanel() {
-//        loggerCheckBox.setValue(true);
-//        loggerTypeListBox.setEnabled(true);
-//        loggerContainer.setStyle(PANEL_ENABLED);
-    }
-
-    @Override
-    public void disableLoggerPanel() {
-//        loggerCheckBox.setValue(false);
-//        loggerTypeListBox.setEnabled(false);
-//        loggerContainer.setStyle(PANEL_DISABLED);
-    }
-
-//    @UiHandler("loggerCheckBox")
-//    public void onLoggerPanelToggle(ValueChangeEvent<Boolean> event) {
-//        presenter.onToggleLoggerPanel(event.getValue());
-//    }
-//
-//    @UiHandler("loggerTypeListBox")
-//    public void onLoggerTypeSelected(ChangeEvent event) {
-//
-//        if (loggerTypeListBox.getValue().equals(FILE_LOGGER)) {
-//            presenter.onFileLoggerSelected();
-//        } else if (loggerTypeListBox.getValue().equals(CONSOLE_LOGGER)) {
-//            presenter.onConsoleLoggerSelected();
-//        }
-//    }
-
-    @Override
-    public void setListeners( List<ListenerModel> listeners ) {
-        listenersPanel.setListeners( listeners );
-    }
-
-    @Override
-    public void setWorkItemHandlers( List<WorkItemHandlerModel> workItemHandlerModels ) {
-        workItemHandlersPanel.setHandlerModels( workItemHandlerModels );
+        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+            @Override
+            public boolean execute() {
+                workItemHandlersPanel.redraw();
+                return false;
+            }
+        }, 1000);
     }
 
 }

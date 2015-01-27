@@ -56,4 +56,8 @@ public class ListenersPanel
         listeners.remove(model);
         view.setModels(listeners);
     }
+
+    public void redraw() {
+        view.redraw();
+    }
 }

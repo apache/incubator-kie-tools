@@ -138,6 +138,11 @@ public class WorkItemHandlersPanelViewImpl
         dataGrid.setRowData( handlerModels );
     }
 
+    @Override
+    public void redraw() {
+        dataGrid.redraw();
+    }
+
     @UiHandler("addButton")
     public void onAddClick( ClickEvent event ) {
         presenter.onAdd();

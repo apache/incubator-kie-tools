@@ -162,6 +162,11 @@ public class ListenersPanelViewImpl
         dataGrid.setRowData( listeners );
     }
 
+    @Override
+    public void redraw() {
+        dataGrid.redraw();
+    }
+
     @UiHandler("addButton")
     public void onAddClick( ClickEvent event ) {
         presenter.onAdd();

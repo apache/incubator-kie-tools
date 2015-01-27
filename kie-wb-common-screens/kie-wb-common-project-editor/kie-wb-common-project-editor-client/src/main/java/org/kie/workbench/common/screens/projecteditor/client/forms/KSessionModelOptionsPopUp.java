@@ -18,75 +18,24 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.inject.Inject;
 
-import org.kie.workbench.common.services.shared.kmodule.ConsoleLogger;
-import org.kie.workbench.common.services.shared.kmodule.FileLogger;
+import com.google.gwt.core.client.Scheduler;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 
-public class KSessionModelOptionsPopUp
-        implements KSessionModelOptionsPopUpView.Presenter {
+public class KSessionModelOptionsPopUp {
 
     private final KSessionModelOptionsPopUpView view;
-    private final ConsoleLoggerEditor consoleLoggerEditor;
-    private final FileLoggerEditor fileLoggerEditor;
-    private KSessionModel model;
 
     @Inject
     public KSessionModelOptionsPopUp(
-            KSessionModelOptionsPopUpView view,
-            ConsoleLoggerEditor consoleLoggerEditor,
-            FileLoggerEditor fileLoggerEditor) {
+            KSessionModelOptionsPopUpView view) {
         this.view = view;
-        this.consoleLoggerEditor = consoleLoggerEditor;
-        this.fileLoggerEditor = fileLoggerEditor;
-        view.setPresenter(this);
     }
 
-    public void show(KSessionModel kSessionModel) {
-        this.model = kSessionModel;
+    public void show(final KSessionModel kSessionModel) {
 
         view.setListeners(kSessionModel.getListeners());
-        view.setWorkItemHandlers(kSessionModel.getWorkItemHandelerModels());
-//        setUpLoggerPanel();
         view.show();
+        view.setWorkItemHandlers(kSessionModel.getWorkItemHandelerModels());
     }
 
-
-    private void setUpLoggerPanel() {
-        if (model.getLogger() != null) {
-            view.enableLoggerPanel();
-            if (model.getLogger() instanceof ConsoleLogger) {
-                consoleLoggerEditor.setModel((ConsoleLogger) model.getLogger());
-                view.setLoggerEditor(consoleLoggerEditor);
-            } else if (model.getLogger() instanceof FileLogger) {
-                fileLoggerEditor.setModel((FileLogger) model.getLogger());
-                view.setLoggerEditor(fileLoggerEditor);
-            }
-        }
-    }
-
-    @Override
-    public void onToggleLoggerPanel(Boolean value) {
-        if (value) {
-            view.enableLoggerPanel();
-            onConsoleLoggerSelected();
-        } else {
-            view.disableLoggerPanel();
-            view.clearLoggerEditor();
-            model.setLogger(null);
-        }
-    }
-
-    @Override
-    public void onConsoleLoggerSelected() {
-        ConsoleLogger consoleLogger = new ConsoleLogger();
-        model.setLogger(consoleLogger);
-        consoleLoggerEditor.setModel(consoleLogger);
-        view.setLoggerEditor(consoleLoggerEditor);
-    }
-
-    @Override
-    public void onFileLoggerSelected() {
-        view.clearLoggerEditor();
-        view.setLoggerEditor(fileLoggerEditor);
-    }
 }

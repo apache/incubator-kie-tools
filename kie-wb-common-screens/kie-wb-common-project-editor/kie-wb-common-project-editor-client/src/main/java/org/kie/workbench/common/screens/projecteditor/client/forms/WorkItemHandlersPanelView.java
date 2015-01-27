@@ -24,6 +24,7 @@ import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 public interface WorkItemHandlersPanelView
         extends IsWidget {
 
+
     interface Presenter {
 
         void onAdd();
@@ -32,6 +33,8 @@ public interface WorkItemHandlersPanelView
     }
 
     void setModels(List<WorkItemHandlerModel> handlerModels);
+
+    void redraw();
 
     void setPresenter(Presenter presenter);
 }

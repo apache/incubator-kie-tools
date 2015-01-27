@@ -23,30 +23,10 @@ import org.guvnor.common.services.project.model.WorkItemHandlerModel;
 
 public interface KSessionModelOptionsPopUpView {
 
-
-    interface Presenter {
-
-        void onToggleLoggerPanel(Boolean value);
-
-        void onConsoleLoggerSelected();
-
-        void onFileLoggerSelected();
-
-    }
-
-    void setPresenter(Presenter presenter);
-
-    void setLoggerEditor(LoggerEditorPanel loggerEditor);
-
-    void clearLoggerEditor();
-
-    void enableLoggerPanel();
-
-    void disableLoggerPanel();
-
     void setListeners(List<ListenerModel> listeners);
 
     void setWorkItemHandlers(List<WorkItemHandlerModel> workItemHandlerModels);
 
     void show();
+
 }
