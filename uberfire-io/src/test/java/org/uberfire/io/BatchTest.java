@@ -1,7 +1,5 @@
 package org.uberfire.io;
 
-import static org.junit.Assert.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -23,6 +21,8 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
+
+import static org.junit.Assert.*;
 
 public class BatchTest {
 
@@ -234,10 +234,18 @@ public class BatchTest {
 
         ioService.startBatch( new FileSystem[]{ fs1 } );
         try {
-            ioService.startBatch( new FileSystem[]{ fs2 } );
+            ioService.startBatch( new FileSystem[]{ fs1 } );
+        } catch ( final Exception e ) {
             fail();
-        } catch ( RuntimeException e ) {
+        }
+
+        ioService.endBatch();
+        ioService.endBatch();
+
+        try {
             ioService.endBatch();
+            fail();
+        } catch ( final Exception e ) {
         }
     }
 

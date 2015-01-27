@@ -6,11 +6,8 @@ import java.net.URI;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.io.FileUtils;
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,8 +17,6 @@ import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.io.lock.FSLockService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.file.api.FileSystemProviders;
-import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static java.lang.Thread.*;
 import static org.junit.Assert.*;
@@ -63,33 +58,6 @@ public class FSLockServiceImplTest {
         }
     }
 
-    @Test
-    public void acquireLock() throws Exception {
-        assertFalse( lockService.isLocked( fs1 ) );
-        lockService.lock( fs1 );
-        assertTrue( lockService.isLocked( fs1 ) );
-        lockService.unlock( fs1 );
-        assertFalse( lockService.isLocked( fs1 ) );
-    }
-
-    @Test
-    public void acquireTwoLock() throws Exception {
-        assertFalse( lockService.isLocked( fs1 ) );
-        assertFalse( lockService.isLocked( fs2 ) );
-        lockService.lock( fs1 );
-        assertTrue( lockService.isLocked( fs1 ) );
-        assertFalse( lockService.isLocked( fs2 ) );
-        lockService.lock( fs2 );
-        assertTrue( lockService.isLocked( fs1 ) );
-        assertTrue( lockService.isLocked( fs2 ) );
-        lockService.unlock( fs2 );
-        assertFalse( lockService.isLocked( fs2 ) );
-        assertTrue( lockService.isLocked( fs1 ) );
-        lockService.unlock( fs1 );
-        assertFalse( lockService.isLocked( fs1 ) );
-        assertFalse( lockService.isLocked( fs1 ) );
-    }
-
     @Ignore //Race Condition
     @Test
     public void threeThreadsTryingToAcquireLockForTheSameFS() throws Exception {
@@ -108,12 +76,12 @@ public class FSLockServiceImplTest {
         t3.join();
 
         assertTrue( fsThread1.whenITookLock() < fsThread2.whenITookLock() );
-        assertTrue(fsThread2.whenITookLock() < fsThread3.whenITookLock());
+        assertTrue( fsThread2.whenITookLock() < fsThread3.whenITookLock() );
         assertMinDeltas( fsThread1, fsThread2, fsThread3 );
     }
 
     @Test
-    public void sameThreadShouldNotWaitForLock(){
+    public void sameThreadShouldNotWaitForLock() {
         lockService.lock( fs1 );
         lockService.waitForUnlock( fs1 );
 
@@ -122,10 +90,9 @@ public class FSLockServiceImplTest {
     private void assertMinDeltas( FSThread fsThread1,
                                   FSThread fsThread2,
                                   FSThread fsThread3 ) {
-        assertTrue(fsThread2.whenITookLock()-fsThread1.whenITookLock() >= fsThread1.waitTime());
-        assertTrue(fsThread3.whenITookLock()-fsThread2.whenITookLock() >= fsThread1.waitTime());
+        assertTrue( fsThread2.whenITookLock() - fsThread1.whenITookLock() >= fsThread1.waitTime() );
+        assertTrue( fsThread3.whenITookLock() - fsThread2.whenITookLock() >= fsThread1.waitTime() );
     }
-
 
     class FSThread implements Runnable {
 
