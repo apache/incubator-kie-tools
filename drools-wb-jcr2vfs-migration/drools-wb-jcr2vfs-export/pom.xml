@@ -55,6 +55,11 @@
         <artifactId>lucene-core</artifactId>
         <version>${version.org.apache.lucene.jcrGuvnor}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.pdfbox</groupId>
+        <artifactId>pdfbox</artifactId>
+        <version>1.8.6</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -149,6 +154,11 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.pdfbox</groupId>
+      <artifactId>pdfbox</artifactId>
     </dependency>
 
     <!-- Weld Modules -->
