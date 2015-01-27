@@ -26,5 +26,7 @@ public interface IMultiPointShape<T extends Shape<T> & IMultiPointShape<T>> exte
 
     public boolean isControlPointShape();
 
+    public IOffsetMultiPointShape<?> asOffsetMultiPointShape();
+
     public IDirectionalMultiPointShape<?> asDirectionalMultiPointShape();
 }

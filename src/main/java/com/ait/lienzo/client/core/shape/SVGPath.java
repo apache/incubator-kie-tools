@@ -73,7 +73,7 @@ public class SVGPath extends Shape<SVGPath>
     @Override
     protected void fill(final Context2D context, final Attributes attr, final double alpha)
     {
-        if (m_fill)
+        if ((m_fill) || (attr.isDefined(Attribute.FILL)))
         {
             super.fill(context, attr, alpha);
         }

@@ -1400,7 +1400,7 @@ public class Attributes
     {
         if (offset < 0)
         {
-            offset = LienzoCore.get().getDefaultConnectorOffset();
+            offset = 0;
         }
         put(Attribute.HEAD_OFFSET.getProperty(), offset);
     }
@@ -1416,7 +1416,7 @@ public class Attributes
                 return offset;
             }
         }
-        return LienzoCore.get().getDefaultConnectorOffset();
+        return 0;
     }
 
     public final void setHeadDirection(Direction direction)
@@ -1440,7 +1440,7 @@ public class Attributes
     {
         if (offset < 0)
         {
-            offset = LienzoCore.get().getDefaultConnectorOffset();
+            offset = 0;
         }
         put(Attribute.TAIL_OFFSET.getProperty(), offset);
     }
@@ -1456,7 +1456,7 @@ public class Attributes
                 return offset;
             }
         }
-        return LienzoCore.get().getDefaultConnectorOffset();
+        return 0;
     }
 
     public final void setTailDirection(Direction direction)

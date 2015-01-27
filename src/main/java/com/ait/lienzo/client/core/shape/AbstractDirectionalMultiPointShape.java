@@ -23,7 +23,7 @@ import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirectionalMultiPointShape<T> & IDirectionalMultiPointShape<T>> extends AbstractMultiPointShape<T> implements IDirectionalMultiPointShape<T>
+public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirectionalMultiPointShape<T> & IDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShape<T> implements IDirectionalMultiPointShape<T>
 {
     protected AbstractDirectionalMultiPointShape(final ShapeType type)
     {
@@ -62,34 +62,6 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
     }
 
     @Override
-    public double getTailOffset()
-    {
-        return getAttributes().getTailOffset();
-    }
-
-    @Override
-    public T setTailOffset(final double offset)
-    {
-        getAttributes().setTailOffset(offset);
-
-        return refresh();
-    }
-
-    @Override
-    public double getHeadOffset()
-    {
-        return getAttributes().getHeadOffset();
-    }
-
-    @Override
-    public T setHeadOffset(final double offset)
-    {
-        getAttributes().setHeadOffset(offset);
-
-        return refresh();
-    }
-
-    @Override
     public T setTailDirection(final Direction direction)
     {
         getAttributes().setTailDirection(direction);
@@ -97,31 +69,11 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
         return refresh();
     }
 
-    @Override
-    public double getCorrectionOffset()
-    {
-        return getAttributes().getCorrectionOffset();
-    }
-
-    @Override
-    public T setCorrectionOffset(final double offset)
-    {
-        getAttributes().setCorrectionOffset(offset);
-
-        return refresh();
-    }
-
-    protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends ShapeFactory<T>
+    protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T>
     {
         protected AbstractDirectionalMultiPointShapeFactory(final ShapeType type)
         {
             super(type);
-
-            addAttribute(Attribute.HEAD_OFFSET);
-
-            addAttribute(Attribute.TAIL_OFFSET);
-
-            addAttribute(Attribute.CORRECTION_OFFSET);
 
             addAttribute(Attribute.HEAD_DIRECTION);
 

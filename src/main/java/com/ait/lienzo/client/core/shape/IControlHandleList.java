@@ -18,6 +18,8 @@ package com.ait.lienzo.client.core.shape;
 
 import java.util.List;
 
+import com.ait.lienzo.shared.core.types.DragMode;
+
 public interface IControlHandleList
 {
     public List<IControlHandle> getList();
@@ -27,4 +29,6 @@ public interface IControlHandleList
     public void setActive(boolean active);
 
     public void destroy();
+    
+    public void setLayerAndDraw(Layer layer, DragMode mode);
 }
