@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.base.FileSystemState;
+import org.uberfire.java.nio.base.FileSystemStateAware;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.ClosedWatchServiceException;
 import org.uberfire.java.nio.file.FileStore;
@@ -64,7 +65,8 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public class JGitFileSystem implements FileSystem,
-                                       FileSystemId {
+                                       FileSystemId,
+                                       FileSystemStateAware {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( JGitFileSystem.class );
 
@@ -525,5 +527,10 @@ public class JGitFileSystem implements FileSystem,
 
     int getNumberOfCommitsSinceLastGC() {
         return numberOfCommitsSinceLastGC.get();
+    }
+
+    @Override
+    public FileSystemState getState() {
+        return state;
     }
 }

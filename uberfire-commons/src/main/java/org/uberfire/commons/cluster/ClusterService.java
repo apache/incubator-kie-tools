@@ -14,4 +14,6 @@ public interface ClusterService extends MessageService,
     void dispose();
 
     void onStart( Runnable runnable );
+
+    boolean isInnerLocked();
 }

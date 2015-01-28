@@ -65,6 +65,7 @@ import org.eclipse.jgit.lib.StoredConfig;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
@@ -234,7 +235,7 @@ public final class JGitUtil {
         }
 
         try {
-            git.fetch()
+            final FetchResult result = git.fetch()
                     .setCredentialsProvider( credentialsProvider )
                     .setRefSpecs( specs )
                     .call();
@@ -269,7 +270,7 @@ public final class JGitUtil {
             specs.add( new RefSpec( "+refs/notes/*:refs/notes/*" ) );
 
             try {
-                git.fetch()
+                final FetchResult result = git.fetch()
                         .setCredentialsProvider( credentialsProvider )
                         .setRefSpecs( specs )
                         .setRemote( origin )

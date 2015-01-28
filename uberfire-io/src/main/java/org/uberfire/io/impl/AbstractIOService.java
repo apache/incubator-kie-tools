@@ -132,24 +132,24 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     }
 
     @Override
-    public void startBatch( FileSystem fs ) throws InterruptedException {
+    public void startBatch( FileSystem fs ) {
         batchProcess( new FileSystem[]{ fs } );
     }
 
     @Override
     public void startBatch( FileSystem fs,
-                            final Option... options ) throws InterruptedException {
+                            final Option... options ) {
         batchProcess( new FileSystem[]{ fs }, options );
     }
 
     @Override
-    public void startBatch( final FileSystem... fs ) throws InterruptedException {
+    public void startBatch( final FileSystem... fs ) {
         batchProcess( fs );
     }
 
     @Override
     public void startBatch( FileSystem[] fs,
-                            final Option... options ) throws InterruptedException {
+                            final Option... options ) {
         batchProcess( fs, options );
     }
 
@@ -176,13 +176,11 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         sortFileSystemsForLocking( fileSystems );
         for ( FileSystem fs : fileSystems ) {
             lockService.lock( fs );
-            if(!lockService.isAInnerBatch( fs )){
+            if ( !lockService.isAInnerBatch( fs ) ) {
                 setBatchModeOn( fs );
             }
         }
     }
-
-
 
     @Override
     public void endBatch() {
@@ -193,7 +191,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         for ( FileSystem fs : lockedFileSystems ) {
             final boolean innerBatch = lockService.isAInnerBatch( fs );
             lockService.unlock( fs );
-            if(!innerBatch){
+            if ( !innerBatch ) {
                 unsetBatchModeOn( fs );
             }
         }
@@ -271,7 +269,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         try {
             return registerFS( FileSystems.getFileSystem( uri ) );
         } catch ( final Exception ex ) {
-            logger.warn( "Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.", ex );
+            logger.error( "Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.", ex );
             return null;
         }
     }

@@ -57,15 +57,15 @@ public interface IOService {
 
     void dispose();
 
-    void startBatch( final FileSystem fs ) throws InterruptedException;
+    void startBatch( final FileSystem fs );
 
     void startBatch( final FileSystem[] fs,
-                     final Option... options ) throws InterruptedException;
+                     final Option... options );
 
     void startBatch( final FileSystem fs,
-                     final Option... options ) throws InterruptedException;
+                     final Option... options );
 
-    void startBatch( final FileSystem... fs ) throws InterruptedException;
+    void startBatch( final FileSystem... fs );
 
     void endBatch();
 

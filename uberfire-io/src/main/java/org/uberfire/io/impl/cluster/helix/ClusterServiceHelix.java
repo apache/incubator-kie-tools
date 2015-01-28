@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.helix.Criteria;
 import org.apache.helix.HelixManager;
@@ -37,7 +38,7 @@ public class ClusterServiceHelix implements ClusterService {
     private final HelixManager participantManager;
     private final SimpleLock lock = new SimpleLock();
     private final String resourceName;
-    private int stackSize = 0;
+    private AtomicInteger stackSize = new AtomicInteger( 0 );
     private final Map<String, MessageHandlerResolver> messageHandlerResolver = new HashMap<String, MessageHandlerResolver>();
     private AtomicBoolean started = new AtomicBoolean( false );
     private final Collection<Runnable> onStart = new ArrayList<Runnable>();
@@ -96,6 +97,11 @@ public class ClusterServiceHelix implements ClusterService {
         this.onStart.add( runnable );
     }
 
+    @Override
+    public boolean isInnerLocked() {
+        return stackSize.get() > 1;
+    }
+
     private void enablePartition() {
         if ( !isStarted() ) {
             return;
@@ -115,7 +121,7 @@ public class ClusterServiceHelix implements ClusterService {
         if ( !isStarted() ) {
             return;
         }
-        stackSize++;
+        stackSize.incrementAndGet();
         if ( lock.isLocked() ) {
             return;
         }
@@ -134,13 +140,13 @@ public class ClusterServiceHelix implements ClusterService {
         if ( !isStarted() ) {
             return;
         }
-        stackSize--;
+        stackSize.decrementAndGet();
         if ( !lock.isLocked() ) {
-            stackSize = 0;
+            stackSize.set( 0 );
             return;
         }
 
-        if ( stackSize == 0 ) {
+        if ( stackSize.get() == 0 ) {
             disablePartition();
 
             while ( lock.isLocked() ) {

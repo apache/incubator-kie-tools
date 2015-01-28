@@ -237,6 +237,7 @@ public class SystemConfigProducer implements Extension {
                     systemFS = ioService.newFileSystem( URI.create( "git://system" ),
                                                         new HashMap<String, Object>() {{
                                                             put( "init", Boolean.TRUE );
+                                                            put( "internal", Boolean.TRUE );
                                                         }} );
                 } catch ( FileSystemAlreadyExistsException e ) {
                     systemFS = ioService.getFileSystem( URI.create( "git://system" ) );

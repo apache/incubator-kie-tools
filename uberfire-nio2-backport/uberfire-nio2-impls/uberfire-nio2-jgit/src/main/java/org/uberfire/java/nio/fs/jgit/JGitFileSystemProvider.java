@@ -328,7 +328,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
      * For a list of properties that affect the configuration of JGitFileSystemProvider, see the DEBUG log output of
      * this class during startup.
      */
-    public JGitFileSystemProvider( Map<String, String> gitPrefs ) {
+    public JGitFileSystemProvider( final Map<String, String> gitPrefs ) {
         this( new ConfigProperties( gitPrefs ) );
     }
 
@@ -337,7 +337,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
      * For a list of properties that affect the configuration of JGitFileSystemProvider, see the DEBUG log output of
      * this class during startup.
      */
-    public JGitFileSystemProvider( ConfigProperties gitPrefs ) {
+    public JGitFileSystemProvider( final ConfigProperties gitPrefs ) {
         loadConfig( gitPrefs );
         CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
 
@@ -1224,7 +1224,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
 
         if ( !source.getRefTree().equals( target.getRefTree() ) ) {
             copyAssetContent( source, target, options );
-        } else if(!source.getFileSystem().equals(target.getFileSystem())) {
+        } else if ( !source.getFileSystem().equals( target.getFileSystem() ) ) {
             copyAssetContent( source, target, options );
         } else {
             final Map<JGitPathImpl, JGitPathImpl> sourceDest = new HashMap<JGitPathImpl, JGitPathImpl>();
