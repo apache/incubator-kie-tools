@@ -2,6 +2,8 @@ package org.uberfire.ext.properties.editor.client;
 
 import com.github.gwtbootstrap.client.ui.Accordion;
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
+import com.github.gwtbootstrap.client.ui.event.HiddenEvent;
+import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.github.gwtbootstrap.client.ui.event.ShowEvent;
 import com.github.gwtbootstrap.client.ui.event.ShowHandler;
 import com.google.gwt.core.client.GWT;
@@ -65,6 +67,12 @@ public class PropertyEditorHelper {
             @Override
             public void onShow( ShowEvent showEvent ) {
                 propertyEditorWidget.setLastOpenAccordionGroupTitle( category.getName() );
+            }
+        } );
+        categoryAccordion.addHiddenHandler( new HiddenHandler() {
+            @Override
+            public void onHidden( HiddenEvent hiddenEvent ) {
+                hiddenEvent.stopPropagation();
             }
         } );
         if ( propertyEditorWidget.getLastOpenAccordionGroupTitle().equals( category.getName() ) ) {

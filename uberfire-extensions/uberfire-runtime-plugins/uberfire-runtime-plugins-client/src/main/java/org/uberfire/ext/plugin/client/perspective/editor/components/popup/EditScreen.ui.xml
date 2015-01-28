@@ -33,7 +33,7 @@
 
   <g:HTMLPanel>
     <b:Accordion>
-      <b:AccordionGroup heading="{i18n.AddNewParameter}">
+      <b:AccordionGroup ui:field="paramAccordion" heading="{i18n.AddNewParameter}">
         <b:ControlGroup ui:field="paramKeyControlGroup">
           <b:Controls>
             <b:TextBox ui:field="key" placeholder="{i18n.ParamKey}"/>

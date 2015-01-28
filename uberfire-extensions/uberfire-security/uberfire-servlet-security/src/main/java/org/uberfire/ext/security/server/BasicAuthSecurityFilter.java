@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.google.common.base.Charsets;
 import org.apache.commons.codec.binary.Base64;
@@ -60,7 +61,10 @@ public class BasicAuthSecurityFilter implements Filter {
                 chain.doFilter(request, response);
             }
         } finally {
-            request.getSession().invalidate();
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                session.invalidate();
+            }
         }
     }
 
