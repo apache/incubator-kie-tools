@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.shape;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ait.lienzo.client.core.event.HandlerRegistrationManager;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -33,6 +34,7 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<T> & IMultiPointShape<T>> extends Shape<T> implements IMultiPointShape<T>
@@ -83,9 +85,56 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         return new DefaultMultiPointShapeHandleFactory(this);
     }
 
+    private static abstract class DefaultControlHandle implements IControlHandle
+    {
+        private boolean                          m_active = true;
+
+        private final HandlerRegistrationManager m_dlist  = new HandlerRegistrationManager();
+
+        public abstract DefaultControlHandle regsiter();
+
+        public HandlerRegistration add(final HandlerRegistration handler)
+        {
+            return m_dlist.add(handler);
+        }
+
+        public void delete(final HandlerRegistrationManager manager)
+        {
+            if (null != manager)
+            {
+                manager.delete(m_dlist);
+            }
+        }
+
+        @Override
+        public ControlHandleType getType()
+        {
+            return ControlHandleStandardType.POINT;
+        }
+
+        @Override
+        public boolean isActive()
+        {
+            return m_active;
+        }
+
+        @Override
+        public void setActive(final boolean active)
+        {
+            m_active = active;
+        }
+
+        public void clear()
+        {
+            m_dlist.clear();
+        }
+    }
+
     private static final class DefaultMultiPointShapeHandleFactory implements IControlHandleFactory
     {
         private final AbstractMultiPointShape<?> m_shape;
+
+        private final HandlerRegistrationManager m_rlist;
 
         private IControlHandleList               m_hlist;
 
@@ -98,12 +147,14 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         private DefaultMultiPointShapeHandleFactory(final AbstractMultiPointShape<?> shape)
         {
             m_shape = shape;
+
+            m_rlist = new HandlerRegistrationManager();
         }
 
         @Override
         public IControlHandleList getControlHandles(final List<ControlHandleType> types)
         {
-            if (false == types.contains(ControlHandleStandardType.DRAG))
+            if (false == types.contains(ControlHandleStandardType.POINT))
             {
                 return null;
             }
@@ -129,57 +180,63 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                     {
                         final Point2D p = point;
 
-                        final Circle prim = new Circle(7).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(m_shape.getX() + p.getX()).setY(m_shape.getY() + p.getY()).setDraggable(true).setDragMode(m_dmode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
+                        final Circle prim = new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(m_shape.getX() + p.getX()).setY(m_shape.getY() + p.getY()).setDraggable(true).setDragMode(m_dmode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
 
                         if (null != m_layer)
                         {
                             m_layer.add(prim);
                         }
-                        prim.addNodeDragMoveHandler(new NodeDragMoveHandler()
+                        m_ilist.add(new DefaultControlHandle()
                         {
                             @Override
-                            public void onNodeDragMove(NodeDragMoveEvent event)
+                            public DefaultControlHandle regsiter()
                             {
-                                if ((isActive()) && (m_hlist.isActive()))
+                                add(m_rlist.add(prim.addNodeDragMoveHandler(new NodeDragMoveHandler()
                                 {
-                                    p.setX(prim.getX() - m_shape.getX());
+                                    @Override
+                                    public void onNodeDragMove(NodeDragMoveEvent event)
+                                    {
+                                        if ((isActive()) && (m_hlist.isActive()))
+                                        {
+                                            p.setX(prim.getX() - m_shape.getX());
 
-                                    p.setY(prim.getY() - m_shape.getY());
+                                            p.setY(prim.getY() - m_shape.getY());
 
-                                    m_shape.refresh();
+                                            m_shape.refresh();
 
-                                    m_shape.getLayer().batch();
-                                }
-                            }
-                        });
-                        prim.addNodeDragStartHandler(new NodeDragStartHandler()
-                        {
-                            @Override
-                            public void onNodeDragStart(NodeDragStartEvent event)
-                            {
-                                if ((isActive()) && (m_hlist.isActive()))
+                                            m_shape.getLayer().draw();
+                                        }
+                                    }
+                                })));
+                                add(m_rlist.add(prim.addNodeDragStartHandler(new NodeDragStartHandler()
                                 {
-                                    prim.setFillColor(ColorName.GREEN);
+                                    @Override
+                                    public void onNodeDragStart(NodeDragStartEvent event)
+                                    {
+                                        if ((isActive()) && (m_hlist.isActive()))
+                                        {
+                                            prim.setFillColor(ColorName.GREEN);
 
-                                    prim.getLayer().batch();
-                                }
-                            }
-                        });
-                        prim.addNodeDragEndHandler(new NodeDragEndHandler()
-                        {
-                            @Override
-                            public void onNodeDragEnd(NodeDragEndEvent event)
-                            {
-                                if ((isActive()) && (m_hlist.isActive()))
+                                            prim.getLayer().draw();
+                                        }
+                                    }
+                                })));
+                                add(m_rlist.add(prim.addNodeDragEndHandler(new NodeDragEndHandler()
                                 {
-                                    prim.setFillColor(ColorName.RED);
+                                    @Override
+                                    public void onNodeDragEnd(NodeDragEndEvent event)
+                                    {
+                                        if ((isActive()) && (m_hlist.isActive()))
+                                        {
+                                            prim.setFillColor(ColorName.RED);
 
-                                    prim.getLayer().batch();
-                                }
+                                            prim.getLayer().draw();
+                                        }
+                                    }
+                                })));
+                                return this;
                             }
-                        });
-                        m_ilist.add(new IControlHandle()
-                        {
+
                             @Override
                             public IPrimitive<?> getControl()
                             {
@@ -187,25 +244,10 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                             }
 
                             @Override
-                            public ControlHandleType getType()
-                            {
-                                return ControlHandleStandardType.DRAG;
-                            }
-
-                            @Override
-                            public boolean isActive()
-                            {
-                                return true;
-                            }
-
-                            @Override
-                            public void setActive(boolean active)
-                            {
-                            }
-
-                            @Override
                             public void destroy()
                             {
+                                delete(m_rlist);
+
                                 Layer save = prim.getLayer();
 
                                 prim.removeFromParent();
@@ -216,11 +258,11 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                                 }
                                 m_ilist.remove(this);
                             }
-                        });
+                        }.regsiter());
                     }
                     if (null != m_layer)
                     {
-                        m_layer.batch();
+                        m_layer.draw();
                     }
                     return m_ilist;
                 }
@@ -239,10 +281,16 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                 @Override
                 public void destroy()
                 {
+                    m_rlist.delete();
+
                     if (null != m_ilist)
                     {
                         for (IControlHandle handle : m_ilist)
                         {
+                            if (handle instanceof DefaultControlHandle)
+                            {
+                                ((DefaultControlHandle) handle).clear();
+                            }
                             IPrimitive<?> prim = handle.getControl();
 
                             Layer save = prim.getLayer();
@@ -260,7 +308,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
                         if (null != m_layer)
                         {
-                            m_layer.batch();
+                            m_layer.draw();
                         }
                     }
                 }

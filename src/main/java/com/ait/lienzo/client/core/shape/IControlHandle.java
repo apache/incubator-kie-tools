@@ -59,13 +59,17 @@ public interface IControlHandle
 
     public static final class ControlHandleStandardType extends ControlHandleType
     {
-        public static final ControlHandleType DRAG      = new ControlHandleStandardType();
+        public static final ControlHandleType POINT     = new ControlHandleStandardType();
 
         public static final ControlHandleType ROTATE    = new ControlHandleStandardType();
 
         public static final ControlHandleType RESIZE    = new ControlHandleStandardType();
 
         public static final ControlHandleType CONNECTOR = new ControlHandleStandardType();
+
+        public static final ControlHandleType HANDLE    = new ControlHandleStandardType();
+
+        public static final ControlHandleType MAGNET    = new ControlHandleStandardType();
 
         private ControlHandleStandardType()
         {
