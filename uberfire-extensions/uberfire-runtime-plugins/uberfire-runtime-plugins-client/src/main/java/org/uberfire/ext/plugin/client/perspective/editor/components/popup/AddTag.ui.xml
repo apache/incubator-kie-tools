@@ -39,7 +39,7 @@
         <ui:text from="{i18n.TagName}"/>
       </b:ControlLabel>
       <b:Controls>
-        <b:TextBox ui:field="tag" placeholder="{i18n.PerspectiveNameHolder}"/>
+        <b:TextBox ui:field="tag" placeholder="{i18n.TagNameHolder}"/>
         <b:Button icon="PLUS" type="PRIMARY" ui:field="addTag">
           <ui:text from="{i18n.AddTag}"/>
         </b:Button>
