@@ -57,16 +57,18 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     private Map<String, List<String>> generateTagMap() {
 
         Map<String, List<String>> tagsMap = new HashMap<String, List<String>>();
-        final Collection<PerspectiveEditorModel> perspectiveEditors =  pluginServices.listPerspectiveEditor();
+        final Collection<PerspectiveEditorModel> perspectiveEditors = pluginServices.listPerspectiveEditor();
         for ( PerspectiveEditorModel perspectiveEditorModel : perspectiveEditors ) {
             final PerspectiveEditor perspectiveEditor = perspectiveEditorModel.getPerspectiveModel();
-            for ( String tag : perspectiveEditor.getTags() ) {
-                List<String> perspectives = tagsMap.get( tag.toUpperCase() );
-                if ( perspectives == null ) {
-                    perspectives = new ArrayList<String>();
+            if ( perspectiveEditor != null ) {
+                for ( String tag : perspectiveEditor.getTags() ) {
+                    List<String> perspectives = tagsMap.get( tag.toUpperCase() );
+                    if ( perspectives == null ) {
+                        perspectives = new ArrayList<String>();
+                    }
+                    perspectives.add( perspectiveEditor.getName() );
+                    tagsMap.put( tag.toUpperCase(), perspectives );
                 }
-                perspectives.add( perspectiveEditor.getName() );
-                tagsMap.put( tag.toUpperCase(), perspectives );
             }
         }
 
@@ -92,7 +94,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
             final DirectoryStream<Path> paths = ioService.newDirectoryStream( dir );
             for ( Path childPath : paths ) {
                 if ( Files.isDirectory( childPath ) ) {
-                    final Directory child = getDirectory( childPath.getFileName().toString(),childPath.toString(), childPath.toUri().toString(), parent );
+                    final Directory child = getDirectory( childPath.getFileName().toString(), childPath.toString(), childPath.toUri().toString(), parent );
                     final List<Directory> childsOfChilds = extractAllChildDirectories( child, childPath );
                     child.addChildDirectories( childsOfChilds );
                     childs.add( child );
@@ -117,7 +119,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
         if ( !ioService.exists( newDir ) ) {
             createDir( newDir );
         }
-        newDir = ioService.get( newDir.toUri());
+        newDir = ioService.get( newDir.toUri() );
         return getDirectory( name, newDir.toString(), newDir.toUri().toString(), parentDirectory );
     }
 
