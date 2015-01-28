@@ -83,6 +83,12 @@ public class SVGPath extends Shape<SVGPath>
     {
         m_list.clear();
 
+        path = path.replaceAll("\\s+", " ").trim();
+
+        for (int n = 0; n < COMMANDS.length; n++)
+        {
+            path = path.replaceAll(COMMANDS[n] + " ", COMMANDS[n]);
+        }
         path = path.replaceAll(" ", ",");
 
         for (int n = 0; n < COMMANDS.length; n++)
