@@ -432,7 +432,12 @@ public class ExplorerServiceImpl
             final UserExplorerData userContent = helper.loadUserContent( path );
             if ( userContent != null ) {
                 if ( userContent.deleteProject( project ) ) {
-                    ioServiceConfig.write( path, xs.toXML( userContent ) );
+                    try {
+                        ioServiceConfig.startBatch( path.getFileSystem() );
+                        ioServiceConfig.write( path, xs.toXML( userContent ) );
+                    } finally {
+                        ioServiceConfig.endBatch();
+                    }
                 }
             }
         }
@@ -441,7 +446,12 @@ public class ExplorerServiceImpl
             final UserExplorerLastData lastUserContent = helper.getLastContent( lastNav );
             if ( lastUserContent != null ) {
                 if ( lastUserContent.deleteProject( project ) ) {
-                    ioServiceConfig.write( lastNav, xs.toXML( lastUserContent ) );
+                    try {
+                        ioServiceConfig.startBatch( lastNav.getFileSystem() );
+                        ioServiceConfig.write( lastNav, xs.toXML( lastUserContent ) );
+                    } finally {
+                        ioServiceConfig.endBatch();
+                    }
                 }
             }
 

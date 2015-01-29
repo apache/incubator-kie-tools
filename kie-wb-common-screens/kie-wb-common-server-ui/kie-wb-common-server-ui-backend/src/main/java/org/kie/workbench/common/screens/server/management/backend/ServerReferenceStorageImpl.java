@@ -41,13 +41,23 @@ public class ServerReferenceStorageImpl {
 
     public void forceRegister( final ServerRef serverRef ) {
         final Path path = buildPath( serverRef );
-        ioService.write( path, xs.toXML( serverRef ) );
+        try {
+            ioService.startBatch( path.getFileSystem() );
+            ioService.write( path, xs.toXML( serverRef ) );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     public void register( final ServerRef serverRef ) {
         if ( !exists( serverRef ) ) {
             final Path path = buildPath( serverRef );
-            ioService.write( path, xs.toXML( serverRef ) );
+            try {
+                ioService.startBatch( path.getFileSystem() );
+                ioService.write( path, xs.toXML( serverRef ) );
+            } finally {
+                ioService.endBatch();
+            }
         } else {
             throw new RuntimeException();
         }
@@ -58,6 +68,7 @@ public class ServerReferenceStorageImpl {
         final Path dir = buildPath( (String) null );
 
         try {
+            ioService.startBatch( dir.getFileSystem() );
             for ( final Path registeredServer : ioService.newDirectoryStream( dir ) ) {
                 try {
                     result.add( restoreConfig( registeredServer ) );
@@ -65,10 +76,12 @@ public class ServerReferenceStorageImpl {
                     ioService.delete( registeredServer );
                 }
             }
+            return result;
         } catch ( final NotDirectoryException ignore ) {
+            return result;
+        } finally {
+            ioService.endBatch();
         }
-
-        return result;
     }
 
     private ServerRef restoreConfig( final Path registeredServer ) {
@@ -81,7 +94,14 @@ public class ServerReferenceStorageImpl {
     }
 
     public void unregister( final ServerRef serverRef ) {
-        ioService.delete( buildPath( serverRef ) );
+        final Path path = buildPath( serverRef );
+
+        try {
+            ioService.startBatch( path.getFileSystem() );
+            ioService.delete( path );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     private Path buildPath( final ServerRef serverRef ) {
@@ -105,13 +125,18 @@ public class ServerReferenceStorageImpl {
 
     public void createContainer( final ContainerRef containerRef ) {
         final Path path = buildPath( containerRef.getServerId() );
-        final ServerRef serverRef = loadServerRef( containerRef.getServerId() );
-        if ( serverRef != null ) {
-            if ( serverRef.hasContainerRef( containerRef.getId() ) ) {
-                throw new ContainerAlreadyRegisteredException( containerRef.getId() );
+        try {
+            ioService.startBatch( path.getFileSystem() );
+            final ServerRef serverRef = loadServerRef( containerRef.getServerId() );
+            if ( serverRef != null ) {
+                if ( serverRef.hasContainerRef( containerRef.getId() ) ) {
+                    throw new ContainerAlreadyRegisteredException( containerRef.getId() );
+                }
+                serverRef.addContainerRef( containerRef );
+                ioService.write( path, xs.toXML( serverRef ) );
             }
-            serverRef.addContainerRef( containerRef );
-            ioService.write( path, xs.toXML( serverRef ) );
+        } finally {
+            ioService.endBatch();
         }
     }
 
@@ -126,7 +151,12 @@ public class ServerReferenceStorageImpl {
         final ServerRef serverRef = loadServerRef( serverId );
         if ( serverRef != null ) {
             serverRef.deleteContainer( containerId );
-            ioService.write( path, xs.toXML( serverRef ) );
+            try {
+                ioService.startBatch( path.getFileSystem() );
+                ioService.write( path, xs.toXML( serverRef ) );
+            } finally {
+                ioService.endBatch();
+            }
         }
 
     }
@@ -145,7 +175,12 @@ public class ServerReferenceStorageImpl {
             serverRef.deleteContainer( containerId );
 
             serverRef.addContainerRef( new ContainerRefImpl( serverId, containerId, containerRef.getStatus(), releaseId, containerRef.getScannerStatus(), containerRef.getPollInterval() ) );
-            ioService.write( path, xs.toXML( serverRef ) );
+            try {
+                ioService.startBatch( path.getFileSystem() );
+                ioService.write( path, xs.toXML( serverRef ) );
+            } finally {
+                ioService.endBatch();
+            }
         }
     }
 
@@ -163,7 +198,12 @@ public class ServerReferenceStorageImpl {
             serverRef.deleteContainer( containerId );
 
             serverRef.addContainerRef( new ContainerRefImpl( serverId, containerId, containerRef.getStatus(), containerRef.getReleasedId(), containerRef.getScannerStatus(), pollInterval ) );
-            ioService.write( path, xs.toXML( serverRef ) );
+            try {
+                ioService.startBatch( path.getFileSystem() );
+                ioService.write( path, xs.toXML( serverRef ) );
+            } finally {
+                ioService.endBatch();
+            }
         }
     }
 }

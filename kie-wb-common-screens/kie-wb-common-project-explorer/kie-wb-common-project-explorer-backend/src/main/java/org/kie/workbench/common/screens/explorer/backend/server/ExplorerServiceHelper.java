@@ -302,10 +302,15 @@ public class ExplorerServiceHelper {
             lastContent.setOptions(options);
         }
         if (!content.isEmpty()) {
-            ioServiceConfig.write(userNav,
-                    xs.toXML(content));
-            ioServiceConfig.write(lastUserNav,
-                    xs.toXML(lastContent));
+            try {
+                ioServiceConfig.startBatch( userNav.getFileSystem() );
+                ioServiceConfig.write(userNav,
+                                      xs.toXML(content));
+                ioServiceConfig.write(lastUserNav,
+                                      xs.toXML(lastContent));
+            } finally {
+                ioServiceConfig.endBatch();
+            }
         }
     }
 
