@@ -41,10 +41,12 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.uberfire.backend.vfs.Path;
 import com.google.gwt.user.client.ui.FlexTable;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class ScenarioWidgetComponentCreator {
 
@@ -209,7 +211,11 @@ public class ScenarioWidgetComponentCreator {
         Button ok = new Button( TestScenarioConstants.INSTANCE.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent event ) {
-                selected.ruleSelected( ruleNameTextBox.getText() );
+                if (ruleNameTextBox.getText() == null || ruleNameTextBox.getText().trim().isEmpty()) {
+                    ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.PleaseSetARuleName());
+                } else {
+                    selected.ruleSelected(ruleNameTextBox.getText());
+                }
             }
         } );
         return ok;

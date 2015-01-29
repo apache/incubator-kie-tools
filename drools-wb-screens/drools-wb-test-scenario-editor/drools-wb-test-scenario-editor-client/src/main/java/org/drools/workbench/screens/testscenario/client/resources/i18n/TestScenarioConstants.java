@@ -265,4 +265,6 @@ public interface
 
     String testScenarioResourceTypeDescription();
 
+    String PleaseSetARuleName();
+
 }
