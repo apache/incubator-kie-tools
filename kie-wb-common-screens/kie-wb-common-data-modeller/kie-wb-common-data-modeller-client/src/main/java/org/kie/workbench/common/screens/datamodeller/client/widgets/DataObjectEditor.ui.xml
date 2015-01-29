@@ -30,7 +30,7 @@
         <style>
             .propertiesTable2 {
             min-height: 320px !Important;
-            min-width: 300px !Important;
+            min-width: 380px !Important;
             overflow: hidden;
             }
 

@@ -29,7 +29,7 @@
         <style>
             .propertiesTable {
             min-height: 320px !Important;
-            min-width: 300px !Important;
+            min-width: 380px !Important;
             overflow: hidden;
             }
 
@@ -41,6 +41,10 @@
             .propertiesTable select,
             .propertiesTable input {
             width: 185px !Important;
+            }
+
+            .typeCheckbox input {
+            width: 15px !Important;
             }
 
         </style>
@@ -98,7 +102,7 @@
                     <b:ListBox ui:field="typeSelector" styleName="span10"></b:ListBox>
                 </td>
                 <td style="padding-left: 4px;">
-                  <table><tr><td><b:CheckBox ui:field="isTypeMultiple" /></td><td><b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}"><gwt:Label text="{i18n.objectBrowser_typeLabelMultiple}"/></b:Tooltip></td></tr></table>
+                  <table><tr><td><div class="typeCheckbox"><b:CheckBox ui:field="isTypeMultiple" /></div></td><td><b:Tooltip text="{i18n.objectBrowser_typeLabelMultipleTooltip}"><gwt:Label text="{i18n.objectBrowser_typeLabelMultiple}"/></b:Tooltip></td></tr></table>
                 </td>
             </tr>
             <tr>
