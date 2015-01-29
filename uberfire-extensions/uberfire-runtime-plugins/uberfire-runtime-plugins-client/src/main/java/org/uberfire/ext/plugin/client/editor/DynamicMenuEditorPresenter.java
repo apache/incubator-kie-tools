@@ -127,7 +127,7 @@ public class DynamicMenuEditorPresenter
         if ( existingItem == null ) {
             dataProvider.getList().add( menuItem );
         } else {
-            ( (DynamicMenuEditorView) baseView ).setSelected( menuItem );
+            //No need to re-select edited item as DynamicMenuEditorView resets itself after *any* edit
             dataProvider.refresh();
         }
 
