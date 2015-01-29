@@ -89,10 +89,8 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         points.set(size - 1, p);
     }
 
-    private static Point2D correctEndWithOffset(double offset, Direction direction, Point2D p0, Point2D p1, boolean reverse)
+    private static final Point2D correctEndWithOffset(double offset, final Direction direction, final Point2D p0, final Point2D p1, final boolean reverse)
     {
-        Point2D projectedPoint = null;
-
         Point2D target;
 
         if (reverse)
@@ -107,37 +105,21 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
         switch (direction)
         {
-            case NONE:
-                Point2D dv = p1.sub(p0);
-
-                Point2D dx = dv.unit(); // unit vector in the direction of SE
-
-                if (reverse)
-                {
-                    projectedPoint = target.sub(dx.mul(offset));
-                }
-                else
-                {
-                    projectedPoint = target.add(dx.mul(offset));
-                }
-                break;
             case NORTH:
-                projectedPoint = target.setY(target.getY() - offset);
-                break;
+                return target.setY(target.getY() - offset);
             case EAST:
-                projectedPoint = target.setX(target.getX() + offset);
-                break;
+                return target.setX(target.getX() + offset);
             case SOUTH:
-                projectedPoint = target.setY(target.getY() + offset);
-                break;
+                return target.setY(target.getY() + offset);
             case WEST:
-                projectedPoint = target.setX(target.getX() - offset);
-                break;
+                return target.setX(target.getX() - offset);
+            case NONE:
+            default:
+                return target.add(p1.sub(p0).unit().mul(offset)); // unit vector in the direction of SE
         }
-        return projectedPoint;
     }
 
-    private final static NFastDoubleArrayJSO getOrthogonalLinePoints(final Point2DArray points, Direction tailDirection, Direction headDirection, final double correction)
+    private static final NFastDoubleArrayJSO getOrthogonalLinePoints(final Point2DArray points, Direction tailDirection, Direction headDirection, final double correction)
     {
         final NFastDoubleArrayJSO buffer = NFastDoubleArrayJSO.make();
 
@@ -237,7 +219,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return buffer;
     }
 
-    private final static boolean addTail(final NFastDoubleArrayJSO buffer, Point2DArray points, final Direction tailDirection, final double correction)
+    private static final boolean addTail(final NFastDoubleArrayJSO buffer, Point2DArray points, final Direction tailDirection, final double correction)
     {
         Point2D p0 = points.get(0);
 
@@ -320,7 +302,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
     }
 
-    private static void addHead(NFastDoubleArrayJSO buffer, Direction lastDirection, Direction headDirection, Point2D p0, Point2D p1, final double correction)
+    private static final void addHead(NFastDoubleArrayJSO buffer, Direction lastDirection, Direction headDirection, Point2D p0, Point2D p1, final double correction)
     {
         double p0x = p0.getX();
 
@@ -428,7 +410,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         addPoint(buffer, p1x, p1y);
     }
 
-    public final static Direction getTailDirection(final Point2DArray points)
+    private static final Direction getTailDirection(final Point2DArray points)
     {
         Point2D p1 = points.get(0);
 
@@ -469,7 +451,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
     }
 
-    public final static Direction getDirection(final double p1x, final double p1y, final double p2x, final double p2y)
+    private static final Direction getDirection(final double p1x, final double p1y, final double p2x, final double p2y)
     {
         final double dx = (p2x - p1x);
 
@@ -502,7 +484,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
      * Draws an orthogonal line between two points, it uses the previous direction to determine the new direction. It
      * will always attempt to continue the line in the same direction if it can do so, without requiring a corner.
      */
-    private final static Direction getOrthogonalLinePointsAndDirection(final NFastDoubleArrayJSO buffer, final Direction direction, final double p1x, final double p1y, final double p2x, final double p2y)
+    private static final Direction getOrthogonalLinePointsAndDirection(final NFastDoubleArrayJSO buffer, final Direction direction, final double p1x, final double p1y, final double p2x, final double p2y)
     {
         Direction next_direction;
 
