@@ -71,7 +71,7 @@ public class IOSecurityService implements IOService {
     }
 
     @Override
-    public void startBatch( FileSystem fs ) throws InterruptedException {
+    public void startBatch( FileSystem fs ) {
         if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
             throw new SecurityException();
         }
@@ -80,7 +80,7 @@ public class IOSecurityService implements IOService {
 
     @Override
     public void startBatch( FileSystem[] fss,
-                            Option... options ) throws InterruptedException {
+                            Option... options ) {
         for ( FileSystem fs : fss ) {
             if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
                 throw new SecurityException();
@@ -91,7 +91,7 @@ public class IOSecurityService implements IOService {
 
     @Override
     public void startBatch( FileSystem fs,
-                            Option... options ) throws InterruptedException {
+                            Option... options ) {
         if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
             throw new SecurityException();
         }
@@ -99,7 +99,7 @@ public class IOSecurityService implements IOService {
     }
 
     @Override
-    public void startBatch( FileSystem... fss ) throws InterruptedException {
+    public void startBatch( FileSystem... fss ) {
         for ( FileSystem fs : fss ) {
             if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
                 throw new SecurityException();

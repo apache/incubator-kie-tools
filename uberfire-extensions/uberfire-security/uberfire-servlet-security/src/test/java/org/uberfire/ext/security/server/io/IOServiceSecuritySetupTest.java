@@ -31,7 +31,7 @@ public class IOServiceSecuritySetupTest {
 
         try {
             service.startBatch( fs );
-        } catch ( InterruptedException e ) {
+        } catch ( Exception e ) {
             fail( "error" );
         }
     }
@@ -56,7 +56,7 @@ public class IOServiceSecuritySetupTest {
             service.startBatch( fs );
             fail( "error" );
         } catch ( SecurityException e ) {
-        } catch ( InterruptedException e ) {
+        } catch ( Exception e ) {
             fail( "error" );
         }
     }
