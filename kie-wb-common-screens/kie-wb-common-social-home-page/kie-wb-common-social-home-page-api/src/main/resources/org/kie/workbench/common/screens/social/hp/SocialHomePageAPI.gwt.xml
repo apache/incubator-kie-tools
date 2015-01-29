@@ -8,5 +8,6 @@
   <source path='predicate'/>
   <source path='model'/>
   <source path='service'/>
+  <source path='config'/>
 
 </module>
