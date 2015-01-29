@@ -259,7 +259,7 @@ public class DataObjectBrowser extends Composite {
         dataObjectPropertiesTable.addColumnSortHandler( propertyLabelColHandler );
 
         //Init property type browsing column
-        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell( true );
+        ClickableImageResourceCell typeImageCell = new ClickableImageResourceCell( true, 25 );
         final TooltipCellDecorator<ImageResource> typeImageDecorator = new TooltipCellDecorator<ImageResource>( typeImageCell );
         typeImageDecorator.setText( Constants.INSTANCE.objectBrowser_action_goToDataObjectDefinition() );
 
@@ -288,7 +288,7 @@ public class DataObjectBrowser extends Composite {
         } );
 
         dataObjectPropertiesTable.addColumn( typeImageColumn );
-        dataObjectPropertiesTable.setColumnWidth( typeImageColumn, 32, Style.Unit.PX );
+        //dataObjectPropertiesTable.setColumnWidth( typeImageColumn, 32, Style.Unit.PX );
 
         //Init property type column
         final TextColumn<ObjectPropertyTO> propertyTypeColumn = new TextColumn<ObjectPropertyTO>() {
@@ -325,8 +325,8 @@ public class DataObjectBrowser extends Composite {
         dataObjectPropertiesTable.setColumnWidth( propertyTypeColumn, 40, Style.Unit.PCT );
 
         //Init delete column
-        ClickableImageResourceCell clickableImageResourceCell = new ClickableImageResourceCell( true );
-        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( clickableImageResourceCell );
+        ClickableImageResourceCell deleteImageCell = new ClickableImageResourceCell( true, 25 );
+        final TooltipCellDecorator<ImageResource> decorator = new TooltipCellDecorator<ImageResource>( deleteImageCell );
         decorator.setPlacement( Placement.LEFT );
         decorator.setText( Constants.INSTANCE.objectBrowser_action_deleteProperty() );
 
@@ -353,7 +353,7 @@ public class DataObjectBrowser extends Composite {
         } );
 
         dataObjectPropertiesTable.addColumn( deletePropertyColumnImg );
-        dataObjectPropertiesTable.setColumnWidth( deletePropertyColumnImg, 32, Style.Unit.PX );
+        //dataObjectPropertiesTable.setColumnWidth( deletePropertyColumnImg, 32, Style.Unit.PX );
 
         ColumnSortEvent.ListHandler<ObjectPropertyTO> propertyTypeColHandler = new ColumnSortEvent.ListHandler<ObjectPropertyTO>( dataObjectPropertiesProvider.getList() );
         propertyTypeColHandler.setComparator( propertyTypeColumn, new ObjectPropertyComparator( "className" ) );
