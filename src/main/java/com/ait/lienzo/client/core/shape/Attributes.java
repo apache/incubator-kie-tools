@@ -143,14 +143,29 @@ public class Attributes
     {
         if ((null != m_map) && (null != m_own))
         {
-            HandlerManager manager = m_map.get(name);
+            final HandlerManager manager = m_map.get(name);
 
             if (null != manager)
             {
-                manager.fireEvent(new NodeAttributeChangedEvent(m_own, name));
+                doRunnableNow(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        manager.fireEvent(new NodeAttributeChangedEvent(m_own, name));
+                    }
+                });
             }
         }
     }
+
+    private final native void doRunnableNow(Runnable r)
+    /*-{
+        var f = function() {
+            r.@java.lang.Runnable::run()();
+        };
+        $wnd.setTimeout(f, 0);
+    }-*/;
 
     public final boolean isClearLayerBeforeDraw()
     {
