@@ -18,6 +18,8 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.event.NodeAttributeChangedEvent;
+import com.ait.lienzo.client.core.event.NodeAttributeChangedHandler;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
@@ -26,6 +28,7 @@ import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.types.NFastStringMap;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
@@ -55,18 +58,49 @@ import com.ait.lienzo.shared.core.types.TextUnit;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
 {
-    private final NFastStringMapMixedJSO m_jso;
+    private final Node<?>                  m_own;
+
+    private final NFastStringMapMixedJSO   m_jso;
+
+    private NFastStringMap<HandlerManager> m_map;
 
     public Attributes()
     {
+        m_own = null;
+
+        m_jso = NFastStringMapMixedJSO.make();
+    }
+
+    public Attributes(Node<?> node)
+    {
+        m_own = node;
+
         m_jso = NFastStringMapMixedJSO.make();
     }
 
     public Attributes(JavaScriptObject valu)
     {
+        m_own = null;
+
+        if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
+        {
+            m_jso = valu.cast();
+        }
+        else
+        {
+            m_jso = NFastStringMapMixedJSO.make();
+        }
+    }
+
+    public Attributes(JavaScriptObject valu, Node<?> node)
+    {
+        m_own = node;
+
         if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
         {
             m_jso = valu.cast();
@@ -80,6 +114,42 @@ public class Attributes
     public final NFastStringMapMixedJSO getJSO()
     {
         return m_jso;
+    }
+
+    final HandlerRegistration addNodeAttributeChangedHandler(final Attribute attribute, final NodeAttributeChangedHandler handler)
+    {
+        if (null != m_own)
+        {
+            if (null == m_map)
+            {
+                m_map = new NFastStringMap<HandlerManager>();
+            }
+            final String name = attribute.getProperty();
+
+            HandlerManager manager = m_map.get(name);
+
+            if (null == manager)
+            {
+                manager = new HandlerManager(m_own);
+
+                m_map.put(name, manager);
+            }
+            return manager.addHandler(NodeAttributeChangedEvent.getType(), handler);
+        }
+        return null;
+    }
+
+    private final void checkDispatchAttributeChanged(final String name)
+    {
+        if ((null != m_map) && (null != m_own))
+        {
+            HandlerManager manager = m_map.get(name);
+
+            if (null != manager)
+            {
+                manager.fireEvent(new NodeAttributeChangedEvent(m_own, name));
+            }
+        }
     }
 
     public final boolean isClearLayerBeforeDraw()
@@ -1522,26 +1592,36 @@ public class Attributes
     public final void put(String name, String value)
     {
         m_jso.put(name, value);
+
+        checkDispatchAttributeChanged(name);
     }
 
     public final void put(String name, int value)
     {
         m_jso.put(name, value);
+
+        checkDispatchAttributeChanged(name);
     }
 
     public final void put(String name, double value)
     {
         m_jso.put(name, value);
+
+        checkDispatchAttributeChanged(name);
     }
 
     public final void put(String name, boolean value)
     {
         m_jso.put(name, value);
+
+        checkDispatchAttributeChanged(name);
     }
 
     public final void put(String name, JavaScriptObject value)
     {
         m_jso.put(name, value);
+
+        checkDispatchAttributeChanged(name);
     }
 
     public final boolean isEmpty()
@@ -1817,6 +1897,8 @@ public class Attributes
     public final void delete(String name)
     {
         m_jso.delete(name);
+
+        checkDispatchAttributeChanged(name);
     }
 
     public final NativeInternalType typeOf(Attribute attr)

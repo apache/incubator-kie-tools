@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.NodeAttributeChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -111,7 +112,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     {
         m_type = type;
 
-        m_attr = new Attributes();
+        m_attr = new Attributes(this);
 
         m_meta = new MetaData();
     }
@@ -138,7 +139,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
         if (null == node)
         {
-            m_attr = new Attributes();
+            m_attr = new Attributes(this);
 
             m_meta = new MetaData();
 
@@ -148,7 +149,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
         if (null == aval)
         {
-            m_attr = new Attributes();
+            m_attr = new Attributes(this);
         }
         else
         {
@@ -156,7 +157,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
             if (null == aobj)
             {
-                m_attr = new Attributes();
+                m_attr = new Attributes(this);
             }
             else
             {
@@ -164,11 +165,11 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
                 if (null == ajso)
                 {
-                    m_attr = new Attributes();
+                    m_attr = new Attributes(this);
                 }
                 else
                 {
-                    m_attr = new Attributes(ajso);
+                    m_attr = new Attributes(ajso, this);
                 }
             }
         }
@@ -714,6 +715,11 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             m_events = new HandlerManager(this);
         }
         return m_events.addHandler(type, handler);
+    }
+    
+    public HandlerRegistration addNodeAttributeChangedHandler(final Attribute attribute, final NodeAttributeChangedHandler handler)
+    {
+        return m_attr.addNodeAttributeChangedHandler(attribute, handler);
     }
 
     public HandlerRegistration addNodeMouseClickHandler(final NodeMouseClickHandler handler)

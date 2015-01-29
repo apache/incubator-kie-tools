@@ -33,7 +33,7 @@ import com.google.gwt.json.client.JSONObject;
  * In Euclidean geometry any three points, when non-collinear, determine a unique triangle and a unique plane 
  * (i.e. a two-dimensional Euclidean space). 
  */
-public class Triangle extends Shape<Triangle>
+public class Triangle extends AbstractMultiPointShape<Triangle>
 {
     /**
      * Constructor. Creates an instance of a triangle.
@@ -109,9 +109,25 @@ public class Triangle extends Shape<Triangle>
      */
     public Triangle setPoints(final Point2D a, final Point2D b, final Point2D c)
     {
-        getAttributes().setPoints(new Point2DArray(a, b, c));
+        return setPoint2DArray(new Point2DArray(a, b, c));
+    }
+
+    @Override
+    public Triangle setPoint2DArray(final Point2DArray points)
+    {
+        while (points.size() > 3)
+        {
+            points.pop();
+        }
+        getAttributes().setPoints(points);
 
         return this;
+    }
+
+    @Override
+    public Point2DArray getPoint2DArray()
+    {
+        return getPoints();
     }
 
     @Override

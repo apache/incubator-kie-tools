@@ -226,6 +226,8 @@ public class Attribute implements IAttribute
         m_property = property;
 
         m_description = description;
+
+        AttributeMapper.get().add(this);
     }
 
     @Override
