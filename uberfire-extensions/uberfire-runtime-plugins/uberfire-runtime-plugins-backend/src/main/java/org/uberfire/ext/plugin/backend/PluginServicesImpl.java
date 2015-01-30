@@ -225,9 +225,14 @@ public class PluginServicesImpl implements PluginServices {
             ioService.startBatch( fileSystem );
             final Path pluginPath = ioService.createFile( pluginRoot.resolve( type.toString().toLowerCase() + ".plugin" ) );
 
-            updatePlugin( pluginPath, pluginName, type, true );
+            updatePlugin( pluginPath,
+                          pluginName,
+                          type,
+                          true );
 
-            return new Plugin( pluginName, type, convert( pluginPath ) );
+            return new Plugin( pluginName,
+                               type,
+                               convert( pluginPath ) );
         } finally {
             ioService.endBatch();
         }
@@ -239,11 +244,17 @@ public class PluginServicesImpl implements PluginServices {
                                final boolean isNewPlugIn ) {
         try {
             ioService.startBatch( fileSystem );
-            ioService.write( pluginPath, new Date().toString() );
+            ioService.write( pluginPath,
+                             new Date().toString() );
             if ( isNewPlugIn ) {
-                pluginAddedEvent.fire( new PluginAdded( new Plugin( pluginName, type, convert( pluginPath ) ), sessionInfo ) );
+                pluginAddedEvent.fire( new PluginAdded( new Plugin( pluginName,
+                                                                    type,
+                                                                    convert( pluginPath ) ),
+                                                        sessionInfo ) );
             } else {
-                pluginSavedEvent.fire( new PluginSaved( pluginName, type, sessionInfo ) );
+                pluginSavedEvent.fire( new PluginSaved( pluginName,
+                                                        type,
+                                                        sessionInfo ) );
             }
         } finally {
             ioService.endBatch();
@@ -253,34 +264,48 @@ public class PluginServicesImpl implements PluginServices {
     @Override
     public PluginContent getPluginContent( final org.uberfire.backend.vfs.Path path ) {
         final String pluginName = convert( path ).getParent().getFileName().toString();
-        return new PluginContent( pluginName, TypeConverterUtil.fromPath( path ), path, loadTemplate( pluginName ), loadCss( pluginName ), loadCodeMap( pluginName ), loadFramework( pluginName ), Language.JAVASCRIPT, loadMediaLibrary( pluginName ) );
+        return new PluginContent( pluginName,
+                                  TypeConverterUtil.fromPath( path ),
+                                  path,
+                                  loadTemplate( pluginName ),
+                                  loadCss( pluginName ),
+                                  loadCodeMap( pluginName ),
+                                  loadFramework( pluginName ),
+                                  Language.JAVASCRIPT,
+                                  loadMediaLibrary( pluginName ) );
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path save( final PluginSimpleContent plugin ) {
+    public org.uberfire.backend.vfs.Path save( final PluginSimpleContent plugin,
+                                               final String commitMessage ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
         try {
-            ioService.startBatch( fileSystem );
+            ioService.startBatch( fileSystem,
+                                  commentedOption( commitMessage ) );
             if ( isNewPlugin ) {
                 ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
             }
 
-            saveCodeMap( plugin.getName(), plugin.getCodeMap() );
+            saveCodeMap( plugin.getName(),
+                         plugin.getCodeMap() );
 
             if ( plugin.getTemplate() != null ) {
-                ioService.write( getTemplatePath( getPluginPath( plugin.getName() ) ), plugin.getTemplate() );
+                ioService.write( getTemplatePath( getPluginPath( plugin.getName() ) ),
+                                 plugin.getTemplate() );
             }
 
             if ( plugin.getCss() != null ) {
-                ioService.write( getCssPath( getPluginPath( plugin.getName() ) ), plugin.getCss() );
+                ioService.write( getCssPath( getPluginPath( plugin.getName() ) ),
+                                 plugin.getCss() );
             }
 
             try {
                 if ( plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty() ) {
                     final Framework fm = plugin.getFrameworks().iterator().next();
-                    ioService.createFile( getDependencyPath( getPluginPath( plugin.getName() ), fm ) );
+                    ioService.createFile( getDependencyPath( getPluginPath( plugin.getName() ),
+                                                             fm ) );
                 }
             } catch ( final FileAlreadyExistsException ex ) {
 
@@ -288,9 +313,13 @@ public class PluginServicesImpl implements PluginServices {
 
             createRegistry( plugin );
 
-            updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+            updatePlugin( pluginPath,
+                          plugin.getName(),
+                          plugin.getType(),
+                          isNewPlugin );
 
             return plugin.getPath();
+
         } finally {
             ioService.endBatch();
         }
@@ -348,27 +377,31 @@ public class PluginServicesImpl implements PluginServices {
 
         sb.append( "});" );
 
-        ioService.write( path.resolve( plugin.getName() + ".registry.js" ), sb.toString() );
+        ioService.write( path.resolve( plugin.getName() + ".registry.js" ),
+                         sb.toString() );
     }
 
     private void saveCodeMap( final String pluginName,
                               final Map<CodeType, String> codeMap ) {
         final Path rootPlugin = getPluginPath( pluginName );
         for ( final Map.Entry<CodeType, String> entry : codeMap.entrySet() ) {
-            final Path codePath = getCodePath( rootPlugin, entry.getKey() );
-            ioService.write( codePath, entry.getValue() );
+            final Path codePath = getCodePath( rootPlugin,
+                                               entry.getKey() );
+            ioService.write( codePath,
+                             entry.getValue() );
         }
     }
 
     private Map<CodeType, String> loadCodeMap( final String pluginName ) {
         try {
             final Path rootPlugin = getPluginPath( pluginName );
-            final DirectoryStream<Path> stream = ioService.newDirectoryStream( getCodeRoot( rootPlugin ), new DirectoryStream.Filter<Path>() {
-                @Override
-                public boolean accept( final Path entry ) throws IOException {
-                    return entry.getFileName().toString().endsWith( ".code" );
-                }
-            } );
+            final DirectoryStream<Path> stream = ioService.newDirectoryStream( getCodeRoot( rootPlugin ),
+                                                                               new DirectoryStream.Filter<Path>() {
+                                                                                   @Override
+                                                                                   public boolean accept( final Path entry ) throws IOException {
+                                                                                       return entry.getFileName().toString().endsWith( ".code" );
+                                                                                   }
+                                                                               } );
 
             final Map<CodeType, String> result = new HashMap<CodeType, String>();
 
@@ -393,7 +426,8 @@ public class PluginServicesImpl implements PluginServices {
             final Set<Media> result = new HashSet<Media>();
 
             for ( final Path path : stream ) {
-                result.add( new Media( getMediaServletURI() + pluginName + "/media/" + path.getFileName(), convert( path ) ) );
+                result.add( new Media( getMediaServletURI() + pluginName + "/media/" + path.getFileName(),
+                                       convert( path ) ) );
             }
 
             return result;
@@ -475,14 +509,23 @@ public class PluginServicesImpl implements PluginServices {
         final Plugin plugin = getPluginContent( path );
         final Path pluginPath = convert( plugin.getPath() );
         if ( ioService.exists( pluginPath ) ) {
+
             try {
-                ioService.startBatch( fileSystem );
-                ioService.deleteIfExists( pluginPath.getParent(), StandardDeleteOption.NON_EMPTY_DIRECTORIES, commentedOption( comment ) );
+                ioService.startBatch( fileSystem,
+                                      commentedOption( comment ) );
+                ioService.deleteIfExists( pluginPath.getParent(),
+                                          StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+
             } finally {
                 ioService.endBatch();
             }
-            pluginDeletedEvent.fire( new PluginDeleted( plugin.getName(), plugin.getType(), sessionInfo ) );
-            resourceDeletedEvent.fire( new ResourceDeletedEvent( plugin.getPath(), comment, sessionInfo ) );
+
+            pluginDeletedEvent.fire( new PluginDeleted( plugin.getName(),
+                                                        plugin.getType(),
+                                                        sessionInfo ) );
+            resourceDeletedEvent.fire( new ResourceDeletedEvent( plugin.getPath(),
+                                                                 comment,
+                                                                 sessionInfo ) );
         }
     }
 
@@ -497,8 +540,11 @@ public class PluginServicesImpl implements PluginServices {
         }
 
         try {
-            ioService.startBatch( fileSystem );
-            ioService.copy( convert( path ).getParent(), newPath, commentedOption( comment ) );
+            ioService.startBatch( fileSystem,
+                                  commentedOption( comment ) );
+            ioService.copy( convert( path ).getParent(),
+                            newPath );
+
         } finally {
             ioService.endBatch();
         }
@@ -510,7 +556,8 @@ public class PluginServicesImpl implements PluginServices {
                                                            comment,
                                                            sessionInfo != null ? sessionInfo : new SessionInfoImpl( "--", identity ) ) );
 
-        pluginAddedEvent.fire( new PluginAdded( getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ), sessionInfo ) );
+        pluginAddedEvent.fire( new PluginAdded( getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ),
+                                                sessionInfo ) );
 
         return result;
     }
@@ -525,8 +572,11 @@ public class PluginServicesImpl implements PluginServices {
         }
 
         try {
-            ioService.startBatch( fileSystem );
-            ioService.move( convert( path ).getParent(), newPath, commentedOption( comment ) );
+            ioService.startBatch( fileSystem,
+                                  commentedOption( comment ) );
+            ioService.move( convert( path ).getParent(),
+                            newPath );
+
         } finally {
             ioService.endBatch();
         }
@@ -540,7 +590,9 @@ public class PluginServicesImpl implements PluginServices {
 
         final String oldPluginName = convert( path ).getParent().getFileName().toString();
 
-        pluginRenamedEvent.fire( new PluginRenamed( oldPluginName, getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ), sessionInfo ) );
+        pluginRenamedEvent.fire( new PluginRenamed( oldPluginName,
+                                                    getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ),
+                                                    sessionInfo ) );
 
         return result;
     }
@@ -555,26 +607,34 @@ public class PluginServicesImpl implements PluginServices {
     @Override
     public void deleteMedia( final Media media ) {
         final Path mediaPath = convert( media.getPath() );
+
         try {
             ioService.startBatch( fileSystem );
             ioService.delete( mediaPath );
+
         } finally {
             ioService.endBatch();
         }
-        mediaDeletedEvent.fire( new MediaDeleted( mediaPath.getParent().getParent().getFileName().toString(), media ) );
+
+        mediaDeletedEvent.fire( new MediaDeleted( mediaPath.getParent().getParent().getFileName().toString(),
+                                                  media ) );
     }
 
     @Override
     public DynamicMenu getDynamicMenuContent( org.uberfire.backend.vfs.Path path ) {
         final String pluginName = convert( path ).getParent().getFileName().toString();
-        return new DynamicMenu( pluginName, TypeConverterUtil.fromPath( path ), path, loadMenuItems( pluginName ) );
+        return new DynamicMenu( pluginName,
+                                TypeConverterUtil.fromPath( path ),
+                                path,
+                                loadMenuItems( pluginName ) );
     }
 
     @Override
     public PerspectiveEditorModel getPerspectiveEditor( org.uberfire.backend.vfs.Path path ) {
         final String pluginName = convert( path ).getParent().getFileName().toString();
 
-        return loadPerspectiveEditor( pluginName, path );
+        return loadPerspectiveEditor( pluginName,
+                                      path );
     }
 
     private PerspectiveEditorModel loadPerspectiveEditor( String pluginName,
@@ -610,12 +670,14 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path saveMenu( final DynamicMenu plugin ) {
+    public org.uberfire.backend.vfs.Path saveMenu( final DynamicMenu plugin,
+                                                   final String commitMessage ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
         try {
-            ioService.startBatch( fileSystem );
+            ioService.startBatch( fileSystem,
+                                  commentedOption( commitMessage ) );
             if ( isNewPlugin ) {
                 ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
             }
@@ -625,24 +687,30 @@ public class PluginServicesImpl implements PluginServices {
             for ( DynamicMenuItem item : plugin.getMenuItems() ) {
                 sb.append( item.getActivityId() ).append( " / " ).append( item.getMenuLabel() ).append( "\n" );
             }
-            ioService.write( menuItemsPath, sb.toString() );
+            ioService.write( menuItemsPath,
+                             sb.toString() );
 
-            updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+            updatePlugin( pluginPath,
+                          plugin.getName(),
+                          plugin.getType(),
+                          isNewPlugin );
 
             return plugin.getPath();
+
         } finally {
             ioService.endBatch();
         }
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path savePerspective( final
-                                                          PerspectiveEditorModel plugin ) {
+    public org.uberfire.backend.vfs.Path savePerspective( final PerspectiveEditorModel plugin,
+                                                          final String commitMessage ) {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
         try {
-            ioService.startBatch( fileSystem );
+            ioService.startBatch( fileSystem,
+                                  commentedOption( commitMessage ) );
             if ( isNewPlugin ) {
                 ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
             }
@@ -651,12 +719,17 @@ public class PluginServicesImpl implements PluginServices {
 
             String perspectiveContent = gson.toJson( plugin.getPerspectiveModel() );
 
-            ioService.write( itemsPath, perspectiveContent.toString() );
+            ioService.write( itemsPath,
+                             perspectiveContent.toString() );
 
-            updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+            updatePlugin( pluginPath,
+                          plugin.getName(),
+                          plugin.getType(),
+                          isNewPlugin );
 
             newPerspectiveEventEvent.fire( new NewPerspectiveEditorEvent( plugin.getPerspectiveModel() ) );
             return plugin.getPath();
+
         } finally {
             ioService.endBatch();
         }
@@ -679,7 +752,10 @@ public class PluginServicesImpl implements PluginServices {
 
                                       if ( file.getFileName().toString().equalsIgnoreCase( "info.dynamic" ) && attrs.isRegularFile() ) {
                                           final String pluginName = file.getParent().getFileName().toString();
-                                          result.add( new DynamicMenu( pluginName, PluginType.DYNAMIC_MENU, convert( file.getParent() ), loadMenuItems( pluginName ) ) );
+                                          result.add( new DynamicMenu( pluginName,
+                                                                       PluginType.DYNAMIC_MENU,
+                                                                       convert( file.getParent() ),
+                                                                       loadMenuItems( pluginName ) ) );
                                       }
                                   } catch ( final Exception ex ) {
                                       return FileVisitResult.TERMINATE;

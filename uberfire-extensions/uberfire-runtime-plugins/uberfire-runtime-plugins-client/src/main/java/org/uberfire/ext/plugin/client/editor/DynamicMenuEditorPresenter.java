@@ -39,6 +39,7 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
@@ -52,6 +53,7 @@ import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
@@ -210,7 +212,16 @@ public class DynamicMenuEditorPresenter
     }
 
     protected void save() {
-        pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).saveMenu( getContent() );
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+                                         new ParameterizedCommand<String>() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).saveMenu( getContent(),
+                                                                                                                                    commitMessage );
+                                             }
+                                         }
+                                       );
+        concurrentUpdateSessionInfo = null;
     }
 
     @WorkbenchPartView

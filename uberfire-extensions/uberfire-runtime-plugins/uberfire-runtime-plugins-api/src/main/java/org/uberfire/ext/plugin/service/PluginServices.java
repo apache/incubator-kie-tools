@@ -39,11 +39,14 @@ public interface PluginServices
 
     DynamicMenu getDynamicMenuContent( final Path path );
 
-    Path save( final PluginSimpleContent plugin );
+    Path save( final PluginSimpleContent plugin,
+               final String commitMessage );
 
-    Path saveMenu( final DynamicMenu menu );
+    Path saveMenu( final DynamicMenu menu,
+                   final String commitMessage );
 
-    Path savePerspective( final PerspectiveEditorModel plugin );
+    Path savePerspective( final PerspectiveEditorModel plugin,
+                          final String commitMessage );
 
     Collection<DynamicMenu> listDynamicMenus();
 

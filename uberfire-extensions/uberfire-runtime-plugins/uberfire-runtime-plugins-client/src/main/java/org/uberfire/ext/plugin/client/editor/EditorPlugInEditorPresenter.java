@@ -28,6 +28,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.plugin.client.type.EditorPluginResourceType;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.plugin.model.PluginContent;
@@ -95,7 +96,16 @@ public class EditorPlugInEditorPresenter
     }
 
     protected void save() {
-        pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save( getContent() );
+        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
+                                         new ParameterizedCommand<String>() {
+                                             @Override
+                                             public void execute( final String commitMessage ) {
+                                                 pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).save( getContent(),
+                                                                                                                                commitMessage );
+                                             }
+                                         }
+                                       );
+        concurrentUpdateSessionInfo = null;
     }
 
     @WorkbenchPartView

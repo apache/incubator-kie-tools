@@ -22,4 +22,7 @@ public interface CommonConstants
     String Cancel();
 
     String DuplicateDirName();
+
+    String DeleteAppPrompt();
+
 }

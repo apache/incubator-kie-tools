@@ -13,12 +13,14 @@ import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.apps.api.Directory;
 import org.uberfire.ext.apps.client.home.components.popup.NewDirectoryPopup;
 import org.uberfire.ext.apps.client.resources.WebAppResource;
+import org.uberfire.ext.apps.client.resources.i18n.CommonConstants;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class TilesApp extends Composite {
@@ -107,13 +109,15 @@ public class TilesApp extends Composite {
 
     private void createDeleteIcon( final ParameterizedCommand<String> deleteCommand,
                                    final String dirURI ) {
-        deleteIcon = new Icon( IconType.REMOVE_CIRCLE );
-        deleteIcon.setIconSize( IconSize.DEFAULT );
+        deleteIcon = new Icon( IconType.REMOVE );
+        deleteIcon.setIconSize( IconSize.LARGE );
         deleteIcon.addStyleName( APP_CSS.CSS().deleteIcon() );
         deleteIcon.addDomHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                deleteCommand.execute( dirURI );
+                if ( Window.confirm( CommonConstants.INSTANCE.DeleteAppPrompt() ) ) {
+                    deleteCommand.execute( dirURI );
+                }
             }
         }, ClickEvent.getType() );
         outerPanel.addDomHandler( new MouseOverHandler() {
@@ -164,8 +168,7 @@ public class TilesApp extends Composite {
         label.setText( name );
     }
 
-    private void createIcon( TYPE type
-                           ) {
+    private void createIcon( TYPE type ) {
         icon.setIconSize( IconSize.LARGE );
         icon.setType( type.icon() );
     }
