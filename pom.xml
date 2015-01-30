@@ -34,42 +34,14 @@
     </repository>
   </repositories>
 
-  <profiles>
-
-    <profile>
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-        <property>
-          <name>default</name>
-        </property>
-      </activation>
-      <modules>
-        <module>drools-wb-screens</module>
-        <module>drools-wb-webapp</module>
-        <module>drools-wb-jcr2vfs-migration</module>
-      </modules>
-    </profile>
-
-    <profile>
-      <id>fullProfile</id>
-      <activation>
-        <property>
-          <name>full</name>
-        </property>
-      </activation>
-      <modules>
-        <module>drools-wb-screens</module>
-        <module>drools-wb-webapp</module>
-        <module>drools-wb-jcr2vfs-migration</module>
-      </modules>
-    </profile>
-  </profiles>
+  <modules>
+    <module>drools-wb-screens</module>
+    <module>drools-wb-webapp</module>
+    <module>drools-wb-jcr2vfs-migration</module>
+  </modules>
 
   <build>
-
     <plugins>
-
       <!--Fix translations from Zanata -->
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
