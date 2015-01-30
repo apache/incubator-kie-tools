@@ -52,7 +52,12 @@ public class WorkbenchServicesImpl
         final String xml = xs.toXML( perspective );
         final Path perspectivePath = userServices.buildPath( "perspectives",
                                                              perspectiveId + ".perspective" );
-        ioService.write( perspectivePath, xml );
+        try {
+            ioService.startBatch( perspectivePath.getFileSystem() );
+            ioService.write( perspectivePath, xml );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     @Override
@@ -60,8 +65,12 @@ public class WorkbenchServicesImpl
         final String xml = xs.toXML( splashFilter );
         final Path splashFilterPath = userServices.buildPath( "splash",
                                                               splashFilter.getName() + ".filter" );
-        ioService.write( splashFilterPath, xml );
-
+        try {
+            ioService.startBatch( splashFilterPath.getFileSystem() );
+            ioService.write( splashFilterPath, xml );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     @Override
@@ -80,8 +89,13 @@ public class WorkbenchServicesImpl
     public void removePerspectiveStates() {
         final Path perspectivesPath = userServices.buildPath( "perspectives" );
         if ( ioService.exists( perspectivesPath ) ) {
-            ioService.delete( perspectivesPath,
-                              StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+            try {
+                ioService.startBatch( perspectivesPath.getFileSystem() );
+                ioService.delete( perspectivesPath,
+                                  StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+            } finally {
+                ioService.endBatch();
+            }
         }
     }
 
@@ -126,12 +140,17 @@ public class WorkbenchServicesImpl
         for ( String key : properties.keySet() ) {
             text.append( String.format( "%s=%s", key, properties.get( key ) ) );
         }
-        ioService.write( getPathToDefaultEditors(),
-                         text.toString() );
+        final Path path = getPathToDefaultEditors();
+        try {
+            ioService.startBatch( path.getFileSystem() );
+            ioService.write( path,
+                             text.toString() );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     private Path getPathToDefaultEditors() {
-        return userServices.buildPath( "defaultEditors",
-                                       null );
+        return userServices.buildPath( "defaultEditors", null );
     }
 }
