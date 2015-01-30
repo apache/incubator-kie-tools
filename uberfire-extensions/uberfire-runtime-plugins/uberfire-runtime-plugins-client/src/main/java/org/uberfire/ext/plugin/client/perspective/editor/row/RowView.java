@@ -100,10 +100,9 @@ public class RowView extends Composite {
 
             Column column = createColumn( columnEditor );
             ColumnEditorUI parent = new ColumnEditorUI( row, column, columnEditor.getSpan() );
-            DropColumnPanel dropColumnPanel = null;
-            if ( !columnEditor.hasElements() ) {
-               dropColumnPanel = generateDropColumnPanel( column, parent );
-            }
+
+            // Create the drop panel always, but don't add it to the column in case we're reloading an existing layout, and the column already contains elements
+            DropColumnPanel dropColumnPanel = generateDropColumnPanel( column, parent, !columnEditor.hasElements() );
 
             for ( RowEditor editor : columnEditor.getRows() ) {
                 column.add( new RowView( parent, editor.getRowSpam(), dropColumnPanel, editor ) );
@@ -147,9 +146,10 @@ public class RowView extends Composite {
     }
 
     private DropColumnPanel generateDropColumnPanel( Column column,
-                                                     ColumnEditorUI parent ) {
+                                                     ColumnEditorUI parent,
+                                                     boolean addToColumn ) {
         final DropColumnPanel drop = new DropColumnPanel( parent );
-        column.add( drop );
+        if ( addToColumn ) column.add( drop );
         return drop;
     }
 
