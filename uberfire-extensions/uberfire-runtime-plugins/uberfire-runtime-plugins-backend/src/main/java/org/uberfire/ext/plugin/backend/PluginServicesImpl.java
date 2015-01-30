@@ -23,8 +23,10 @@ import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.editor.commons.backend.validation.DefaultFileNameValidator;
+import org.uberfire.ext.plugin.editor.ColumnEditor;
 import org.uberfire.ext.plugin.editor.NewPerspectiveEditorEvent;
 import org.uberfire.ext.plugin.editor.PerspectiveEditor;
+import org.uberfire.ext.plugin.editor.RowEditor;
 import org.uberfire.ext.plugin.event.MediaDeleted;
 import org.uberfire.ext.plugin.event.PluginAdded;
 import org.uberfire.ext.plugin.event.PluginDeleted;
@@ -545,10 +547,31 @@ public class PluginServicesImpl implements PluginServices {
         final Path path1 = getPerspectiveEditorPath( getPluginPath( pluginName ) );
         if ( ioService.exists( path1 ) ) {
             String fileContent = ioService.readAllString( path1 );
-            PerspectiveEditor perspectiveEditor = gson.fromJson( fileContent, PerspectiveEditor.class );
-            return new PerspectiveEditorModel( pluginName, TypeConverterUtil.fromPath( path ), path, perspectiveEditor );
+            PerspectiveEditor perspectiveEditor = gson.fromJson( fileContent,
+                                                                 PerspectiveEditor.class );
+            return new PerspectiveEditorModel( pluginName,
+                                               TypeConverterUtil.fromPath( path ),
+                                               path,
+                                               perspectiveEditor );
         }
-        return new PerspectiveEditorModel( pluginName, TypeConverterUtil.fromPath( path ), path );
+
+        //If no definition was found set-up a default one
+        final PerspectiveEditor perspectiveEditor = makeDefaultPerspectiveEditor( pluginName );
+        return new PerspectiveEditorModel( pluginName,
+                                           TypeConverterUtil.fromPath( path ),
+                                           path,
+                                           perspectiveEditor );
+    }
+
+    protected PerspectiveEditor makeDefaultPerspectiveEditor( final String pluginName ) {
+        final PerspectiveEditor perspectiveEditor = new PerspectiveEditor( pluginName,
+                                                                           Collections.EMPTY_LIST );
+        final RowEditor rowEditor = new RowEditor( new ArrayList<String>() {{
+            add( "12" );
+        }} );
+        rowEditor.add( new ColumnEditor( "12" ) );
+        perspectiveEditor.addRow( rowEditor );
+        return perspectiveEditor;
     }
 
     @Override

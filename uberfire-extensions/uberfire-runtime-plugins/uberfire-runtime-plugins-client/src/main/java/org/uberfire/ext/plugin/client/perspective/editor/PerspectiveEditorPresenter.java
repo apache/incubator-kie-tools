@@ -70,8 +70,6 @@ public class PerspectiveEditorPresenter
 
         void setupDndMenu( AccordionGroup... accordionsGroup );
 
-        void createDefaultPerspective( String name );
-
         PerspectiveEditor getModel();
 
         void loadPerspective( PerspectiveEditor perspectiveEditorJSON );
@@ -107,7 +105,6 @@ public class PerspectiveEditorPresenter
         init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
         this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.DYNAMIC_MENU, path );
         setupDndWidget();
-        setupPerspectiveBuilder( place.getParameter( "name", "" ));
     }
 
     @Override
@@ -119,18 +116,12 @@ public class PerspectiveEditorPresenter
                 AddTag addTag = new AddTag( PerspectiveEditorPresenter.this );
                 addTag.show();
             }
-        } ));
+        } ) );
     }
 
     @OnMayClose
     public boolean onMayClose() {
         return super.mayClose( getContent().hashCode() );
-    }
-
-
-
-    private void setupPerspectiveBuilder( String name ) {
-        this.perspectiveEditorView.createDefaultPerspective(name);
     }
 
     private void setupDndWidget() {
@@ -188,7 +179,7 @@ public class PerspectiveEditorPresenter
             @Override
             public void callback( final PerspectiveEditorModel response ) {
                 if ( response.getPerspectiveModel() != null ) {
-                   perspectiveEditorView.loadPerspective( response.getPerspectiveModel() );
+                    perspectiveEditorView.loadPerspective( response.getPerspectiveModel() );
                 }
                 setOriginalHash( getContent().hashCode() );
             }
@@ -219,7 +210,6 @@ public class PerspectiveEditorPresenter
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
         return pluginServices;
     }
-
 
     public List<String> getTags() {
         return perspectiveEditorView.getModel().getTags();

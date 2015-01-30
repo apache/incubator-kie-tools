@@ -14,12 +14,6 @@ public class PerspectiveEditorModel extends Plugin {
 
     public PerspectiveEditorModel( final String name,
                                    final PluginType type,
-                                   final Path path ) {
-        super( name, type, path );
-    }
-
-    public PerspectiveEditorModel( final String name,
-                                   final PluginType type,
                                    final Path path,
                                    final PerspectiveEditor perspectiveModel ) {
         super( name, type, path );
@@ -54,7 +48,7 @@ public class PerspectiveEditorModel extends Plugin {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        if(perspectiveModel!=null){
+        if ( perspectiveModel != null ) {
             result = 31 * result + perspectiveModel.hashCode();
         }
         return result;

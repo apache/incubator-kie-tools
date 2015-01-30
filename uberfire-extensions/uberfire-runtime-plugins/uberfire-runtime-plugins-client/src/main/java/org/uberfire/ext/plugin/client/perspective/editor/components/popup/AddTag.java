@@ -26,18 +26,13 @@ import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
@@ -79,18 +74,19 @@ public class AddTag
         setTitle( CommonConstants.INSTANCE.AddTag() );
         add( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     } )
+                new Command() {
+                    @Override
+                    public void execute() {
+                        okButton();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        cancelButton();
+                    }
+                }
+        )
            );
     }
 
@@ -133,10 +129,8 @@ public class AddTag
         NameValidator validator = NameValidator.tagNameValidator();
         if ( validator.isValid( tag.getText() ) ) {
             tagsList.add( tag.getText() );
-            HorizontalPanel panel = new HorizontalPanel();
-            panel.add( new Label( tag.getText() ) );
-            createRemoveTagIcon( panel );
-            tags.add( panel );
+            tags.add( new Label( tag.getText() ) );
+            tags.add( generateRemoveIcon( tag.getText() ) );
             tag.setText( "" );
             tagControlGroup.setType( ControlGroupType.NONE );
             tagInline.setText( "" );
@@ -146,26 +140,6 @@ public class AddTag
             tagInline.setText( validator.getValidationError() );
         }
 
-    }
-
-    private void createRemoveTagIcon( final HorizontalPanel panel ) {
-        final FlowPanel iconPanel = new FlowPanel();
-        iconPanel.setWidth( "10px" );
-        iconPanel.setHeight( "10px" );
-        final Icon icon = generateRemoveIcon( tag.getText() );
-        panel.addDomHandler( new MouseOverHandler() {
-            @Override
-            public void onMouseOver( MouseOverEvent event ) {
-                iconPanel.add( icon );
-            }
-        }, MouseOverEvent.getType() );
-        panel.addDomHandler( new MouseOutHandler() {
-            @Override
-            public void onMouseOut( MouseOutEvent event ) {
-                iconPanel.remove( icon );
-            }
-        }, MouseOutEvent.getType() );
-        panel.add( iconPanel );
     }
 
     private Icon generateRemoveIcon( final String value ) {
@@ -178,6 +152,7 @@ public class AddTag
             }
         }, ClickEvent.getType() );
         icon.getElement().getStyle().setColor( "rgb(153, 153, 153)" );
+        icon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
         return icon;
     }
 

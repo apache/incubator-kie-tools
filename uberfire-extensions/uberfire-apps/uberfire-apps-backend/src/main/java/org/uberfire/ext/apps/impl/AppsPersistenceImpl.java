@@ -60,6 +60,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
         final Collection<PerspectiveEditorModel> perspectiveEditors = pluginServices.listPerspectiveEditor();
         for ( PerspectiveEditorModel perspectiveEditorModel : perspectiveEditors ) {
             final PerspectiveEditor perspectiveEditor = perspectiveEditorModel.getPerspectiveModel();
+            //PerspectiveEditor is null on legacy PerspectiveLayout definitions
             if ( perspectiveEditor != null ) {
                 for ( String tag : perspectiveEditor.getTags() ) {
                     List<String> perspectives = tagsMap.get( tag.toUpperCase() );

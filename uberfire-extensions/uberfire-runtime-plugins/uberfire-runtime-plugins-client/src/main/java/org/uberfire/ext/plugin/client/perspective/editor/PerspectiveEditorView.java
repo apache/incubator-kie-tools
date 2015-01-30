@@ -38,7 +38,8 @@ import org.uberfire.ext.plugin.editor.RowEditor;
 @Dependent
 public class PerspectiveEditorView
         extends BaseEditorViewImpl
-        implements UberView<PerspectiveEditorPresenter>,PerspectiveEditorPresenter.View{
+        implements UberView<PerspectiveEditorPresenter>,
+                   PerspectiveEditorPresenter.View {
 
     interface ViewBinder
             extends
@@ -49,7 +50,6 @@ public class PerspectiveEditorView
     @UiField
     Accordion dndGrid;
 
-
     interface PerspectiveEditorViewBinder
             extends
             UiBinder<Widget, PerspectiveEditorView> {
@@ -58,7 +58,6 @@ public class PerspectiveEditorView
 
     private static PerspectiveEditorViewBinder uiBinder = GWT.create( PerspectiveEditorViewBinder.class );
 
-
     private PerspectiveEditorPresenter presenter;
 
     @Inject
@@ -66,7 +65,6 @@ public class PerspectiveEditorView
 
     @UiField
     FlowPanel container;
-
 
     @PostConstruct
     public void setup() {
@@ -83,13 +81,6 @@ public class PerspectiveEditorView
         for ( AccordionGroup accordionGroup : accordionsGroup ) {
             dndGrid.add( accordionGroup );
         }
-    }
-
-    public void createDefaultPerspective( String name ) {
-        container.clear();
-        perspectiveEditor.setup( container, name );
-        container.add( new RowView( perspectiveEditor ) );
-        container.add( new DropRowPanel( perspectiveEditor ) );
     }
 
     @Override
