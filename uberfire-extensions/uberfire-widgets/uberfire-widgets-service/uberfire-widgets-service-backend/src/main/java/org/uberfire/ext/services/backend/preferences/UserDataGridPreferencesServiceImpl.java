@@ -21,44 +21,49 @@ import javax.inject.Named;
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.services.shared.preferences.UserDataGridPreferencesService;
-import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
 @Service
 public class UserDataGridPreferencesServiceImpl implements UserDataGridPreferencesService {
 
-  @Inject
-  private UserServicesBackendImpl userServicesBackend;
+    @Inject
+    private UserServicesBackendImpl userServicesBackend;
 
-  @Inject
-  private User identity;
+    @Inject
+    private User identity;
 
-  @Inject
-  @Named("configIO")
-  private IOService ioServiceConfig;
+    @Inject
+    @Named("configIO")
+    private IOService ioServiceConfig;
 
-  private XStream xs = new XStream();
+    private XStream xs = new XStream();
 
-  @Override
-  public void saveGridPreferences(GridPreferencesStore preferences) {
-    Path preferencesPath = userServicesBackend.buildPath(identity.getIdentifier(), "datagrid-preferences", preferences.getGlobalPreferences().getKey());
-    ioServiceConfig.write(preferencesPath, xs.toXML(preferences));
-  }
-
-  @Override
-  public GridPreferencesStore loadGridPreferences(String key) {
-    Path preferencesPath = userServicesBackend.buildPath(identity.getIdentifier(), "datagrid-preferences", key);
-    try {
-      if (ioServiceConfig.exists(preferencesPath)) {
-        final String xml = ioServiceConfig.readAllString(preferencesPath);
-        return (GridPreferencesStore) xs.fromXML(xml);
-      }
-    } catch (final Exception e) {
+    @Override
+    public void saveGridPreferences( GridPreferencesStore preferences ) {
+        final Path preferencesPath = userServicesBackend.buildPath( identity.getIdentifier(), "datagrid-preferences", preferences.getGlobalPreferences().getKey() );
+        try {
+            ioServiceConfig.startBatch( preferencesPath.getFileSystem() );
+            ioServiceConfig.write( preferencesPath, xs.toXML( preferences ) );
+        } finally {
+            ioServiceConfig.endBatch();
+        }
     }
-    return null;
-  }
+
+    @Override
+    public GridPreferencesStore loadGridPreferences( String key ) {
+        Path preferencesPath = userServicesBackend.buildPath( identity.getIdentifier(), "datagrid-preferences", key );
+        try {
+            if ( ioServiceConfig.exists( preferencesPath ) ) {
+                final String xml = ioServiceConfig.readAllString( preferencesPath );
+                return (GridPreferencesStore) xs.fromXML( xml );
+            }
+        } catch ( final Exception e ) {
+        }
+        return null;
+    }
 
 }

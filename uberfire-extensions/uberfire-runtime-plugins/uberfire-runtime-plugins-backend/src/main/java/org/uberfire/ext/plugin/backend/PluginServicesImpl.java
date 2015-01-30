@@ -221,22 +221,32 @@ public class PluginServicesImpl implements PluginServices {
             throw new PluginAlreadyExists();
         }
 
-        final Path pluginPath = ioService.createFile( pluginRoot.resolve( type.toString().toLowerCase() + ".plugin" ) );
+        try {
+            ioService.startBatch( fileSystem );
+            final Path pluginPath = ioService.createFile( pluginRoot.resolve( type.toString().toLowerCase() + ".plugin" ) );
 
-        updatePlugin( pluginPath, pluginName, type, true );
+            updatePlugin( pluginPath, pluginName, type, true );
 
-        return new Plugin( pluginName, type, convert( pluginPath ) );
+            return new Plugin( pluginName, type, convert( pluginPath ) );
+        } finally {
+            ioService.endBatch();
+        }
     }
 
     private void updatePlugin( final Path pluginPath,
                                final String pluginName,
                                final PluginType type,
                                final boolean isNewPlugIn ) {
-        ioService.write( pluginPath, new Date().toString() );
-        if ( isNewPlugIn ) {
-            pluginAddedEvent.fire( new PluginAdded( new Plugin( pluginName, type, convert( pluginPath ) ), sessionInfo ) );
-        } else {
-            pluginSavedEvent.fire( new PluginSaved( pluginName, type, sessionInfo ) );
+        try {
+            ioService.startBatch( fileSystem );
+            ioService.write( pluginPath, new Date().toString() );
+            if ( isNewPlugIn ) {
+                pluginAddedEvent.fire( new PluginAdded( new Plugin( pluginName, type, convert( pluginPath ) ), sessionInfo ) );
+            } else {
+                pluginSavedEvent.fire( new PluginSaved( pluginName, type, sessionInfo ) );
+            }
+        } finally {
+            ioService.endBatch();
         }
     }
 
@@ -251,34 +261,39 @@ public class PluginServicesImpl implements PluginServices {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
-        if ( isNewPlugin ) {
-            ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
-        }
-
-        saveCodeMap( plugin.getName(), plugin.getCodeMap() );
-
-        if ( plugin.getTemplate() != null ) {
-            ioService.write( getTemplatePath( getPluginPath( plugin.getName() ) ), plugin.getTemplate() );
-        }
-
-        if ( plugin.getCss() != null ) {
-            ioService.write( getCssPath( getPluginPath( plugin.getName() ) ), plugin.getCss() );
-        }
-
         try {
-            if ( plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty() ) {
-                final Framework fm = plugin.getFrameworks().iterator().next();
-                ioService.createFile( getDependencyPath( getPluginPath( plugin.getName() ), fm ) );
+            ioService.startBatch( fileSystem );
+            if ( isNewPlugin ) {
+                ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
             }
-        } catch ( final FileAlreadyExistsException ex ) {
 
+            saveCodeMap( plugin.getName(), plugin.getCodeMap() );
+
+            if ( plugin.getTemplate() != null ) {
+                ioService.write( getTemplatePath( getPluginPath( plugin.getName() ) ), plugin.getTemplate() );
+            }
+
+            if ( plugin.getCss() != null ) {
+                ioService.write( getCssPath( getPluginPath( plugin.getName() ) ), plugin.getCss() );
+            }
+
+            try {
+                if ( plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty() ) {
+                    final Framework fm = plugin.getFrameworks().iterator().next();
+                    ioService.createFile( getDependencyPath( getPluginPath( plugin.getName() ), fm ) );
+                }
+            } catch ( final FileAlreadyExistsException ex ) {
+
+            }
+
+            createRegistry( plugin );
+
+            updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+
+            return plugin.getPath();
+        } finally {
+            ioService.endBatch();
         }
-
-        createRegistry( plugin );
-
-        updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
-
-        return plugin.getPath();
     }
 
     private Path getDependencyPath( final Path pluginPath,
@@ -460,7 +475,12 @@ public class PluginServicesImpl implements PluginServices {
         final Plugin plugin = getPluginContent( path );
         final Path pluginPath = convert( plugin.getPath() );
         if ( ioService.exists( pluginPath ) ) {
-            ioService.deleteIfExists( pluginPath.getParent(), StandardDeleteOption.NON_EMPTY_DIRECTORIES, commentedOption( comment ) );
+            try {
+                ioService.startBatch( fileSystem );
+                ioService.deleteIfExists( pluginPath.getParent(), StandardDeleteOption.NON_EMPTY_DIRECTORIES, commentedOption( comment ) );
+            } finally {
+                ioService.endBatch();
+            }
             pluginDeletedEvent.fire( new PluginDeleted( plugin.getName(), plugin.getType(), sessionInfo ) );
             resourceDeletedEvent.fire( new ResourceDeletedEvent( plugin.getPath(), comment, sessionInfo ) );
         }
@@ -476,7 +496,12 @@ public class PluginServicesImpl implements PluginServices {
             throw new RuntimeException( new FileAlreadyExistsException( newPath.toString() ) );
         }
 
-        ioService.copy( convert( path ).getParent(), newPath, commentedOption( comment ) );
+        try {
+            ioService.startBatch( fileSystem );
+            ioService.copy( convert( path ).getParent(), newPath, commentedOption( comment ) );
+        } finally {
+            ioService.endBatch();
+        }
 
         final org.uberfire.backend.vfs.Path result = convert( newPath.resolve( path.getFileName() ) );
 
@@ -499,7 +524,12 @@ public class PluginServicesImpl implements PluginServices {
             throw new RuntimeException( new FileAlreadyExistsException( newPath.toString() ) );
         }
 
-        ioService.move( convert( path ).getParent(), newPath, commentedOption( comment ) );
+        try {
+            ioService.startBatch( fileSystem );
+            ioService.move( convert( path ).getParent(), newPath, commentedOption( comment ) );
+        } finally {
+            ioService.endBatch();
+        }
 
         final org.uberfire.backend.vfs.Path result = convert( newPath.resolve( path.getFileName() ) );
 
@@ -525,7 +555,12 @@ public class PluginServicesImpl implements PluginServices {
     @Override
     public void deleteMedia( final Media media ) {
         final Path mediaPath = convert( media.getPath() );
-        ioService.delete( mediaPath );
+        try {
+            ioService.startBatch( fileSystem );
+            ioService.delete( mediaPath );
+        } finally {
+            ioService.endBatch();
+        }
         mediaDeletedEvent.fire( new MediaDeleted( mediaPath.getParent().getParent().getFileName().toString(), media ) );
     }
 
@@ -579,20 +614,25 @@ public class PluginServicesImpl implements PluginServices {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
-        if ( isNewPlugin ) {
-            ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
+        try {
+            ioService.startBatch( fileSystem );
+            if ( isNewPlugin ) {
+                ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
+            }
+
+            final Path menuItemsPath = getMenuItemsPath( getPluginPath( plugin.getName() ) );
+            final StringBuilder sb = new StringBuilder();
+            for ( DynamicMenuItem item : plugin.getMenuItems() ) {
+                sb.append( item.getActivityId() ).append( " / " ).append( item.getMenuLabel() ).append( "\n" );
+            }
+            ioService.write( menuItemsPath, sb.toString() );
+
+            updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+
+            return plugin.getPath();
+        } finally {
+            ioService.endBatch();
         }
-
-        final Path menuItemsPath = getMenuItemsPath( getPluginPath( plugin.getName() ) );
-        final StringBuilder sb = new StringBuilder();
-        for ( DynamicMenuItem item : plugin.getMenuItems() ) {
-            sb.append( item.getActivityId() ).append( " / " ).append( item.getMenuLabel() ).append( "\n" );
-        }
-        ioService.write( menuItemsPath, sb.toString() );
-
-        updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
-
-        return plugin.getPath();
     }
 
     @Override
@@ -601,20 +641,25 @@ public class PluginServicesImpl implements PluginServices {
         final Path pluginPath = convert( plugin.getPath() );
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
-        if ( isNewPlugin ) {
-            ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
+        try {
+            ioService.startBatch( fileSystem );
+            if ( isNewPlugin ) {
+                ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
+            }
+
+            final Path itemsPath = getPerspectiveEditorPath( getPluginPath( plugin.getName() ) );
+
+            String perspectiveContent = gson.toJson( plugin.getPerspectiveModel() );
+
+            ioService.write( itemsPath, perspectiveContent.toString() );
+
+            updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
+
+            newPerspectiveEventEvent.fire( new NewPerspectiveEditorEvent( plugin.getPerspectiveModel() ) );
+            return plugin.getPath();
+        } finally {
+            ioService.endBatch();
         }
-
-        final Path itemsPath = getPerspectiveEditorPath( getPluginPath( plugin.getName() ) );
-
-        String perspectiveContent = gson.toJson( plugin.getPerspectiveModel() );
-
-        ioService.write( itemsPath, perspectiveContent.toString() );
-
-        updatePlugin( pluginPath, plugin.getName(), plugin.getType(), isNewPlugin );
-
-        newPerspectiveEventEvent.fire( new NewPerspectiveEditorEvent( plugin.getPerspectiveModel() ) );
-        return plugin.getPath();
     }
 
     @Override
