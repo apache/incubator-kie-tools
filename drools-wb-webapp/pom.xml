@@ -916,6 +916,16 @@
           </filesets>
         </configuration>
       </plugin>
+      <!-- The drools-wb-webapp is used just for development/testing, we don't want to publish it into remote repos. -->
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-deploy</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
     <pluginManagement>
