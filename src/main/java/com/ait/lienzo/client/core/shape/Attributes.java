@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.event.NodeAttributeChangedEvent;
-import com.ait.lienzo.client.core.event.NodeAttributeChangedHandler;
+import com.ait.lienzo.client.core.event.AttributeChangedEvent;
+import com.ait.lienzo.client.core.event.AttributeChangedHandler;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
@@ -63,7 +63,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
 {
-    private final Node<?>                  m_own;
+    private final Object                   m_own;
 
     private final NFastStringMapMixedJSO   m_jso;
 
@@ -76,9 +76,9 @@ public class Attributes
         m_jso = NFastStringMapMixedJSO.make();
     }
 
-    public Attributes(Node<?> node)
+    public Attributes(Object that)
     {
-        m_own = node;
+        m_own = that;
 
         m_jso = NFastStringMapMixedJSO.make();
     }
@@ -97,9 +97,9 @@ public class Attributes
         }
     }
 
-    public Attributes(JavaScriptObject valu, Node<?> node)
+    public Attributes(JavaScriptObject valu, Object that)
     {
-        m_own = node;
+        m_own = that;
 
         if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
         {
@@ -116,7 +116,7 @@ public class Attributes
         return m_jso;
     }
 
-    final HandlerRegistration addNodeAttributeChangedHandler(final Attribute attribute, final NodeAttributeChangedHandler handler)
+    final HandlerRegistration addAttributeChangedHandler(final Attribute attribute, final AttributeChangedHandler handler)
     {
         if (null != m_own)
         {
@@ -134,7 +134,7 @@ public class Attributes
 
                 m_map.put(name, manager);
             }
-            return manager.addHandler(NodeAttributeChangedEvent.getType(), handler);
+            return manager.addHandler(AttributeChangedEvent.getType(), handler);
         }
         return null;
     }
@@ -152,7 +152,7 @@ public class Attributes
                     @Override
                     public void run()
                     {
-                        manager.fireEvent(new NodeAttributeChangedEvent(m_own, name));
+                        manager.fireEvent(new AttributeChangedEvent(m_own, name));
                     }
                 });
             }

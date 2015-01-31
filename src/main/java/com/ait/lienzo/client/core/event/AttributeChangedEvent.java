@@ -18,52 +18,52 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.AttributeMapper;
-import com.ait.lienzo.client.core.shape.Node;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class NodeAttributeChangedEvent extends GwtEvent<NodeAttributeChangedHandler>
+public class AttributeChangedEvent extends GwtEvent<AttributeChangedHandler>
 {
-    private static final Type<NodeAttributeChangedHandler> TYPE = new Type<NodeAttributeChangedHandler>();
+    private static final Type<AttributeChangedHandler> TYPE = new Type<AttributeChangedHandler>();
 
-    private final String                                   m_name;
+    private final String                               m_name;
 
-    private final Node<?>                                  m_node;
+    private final Object                               m_self;
 
-    public static Type<NodeAttributeChangedHandler> getType()
+    public static Type<AttributeChangedHandler> getType()
     {
         return TYPE;
     }
 
-    public NodeAttributeChangedEvent(Node<?> node, String name)
+    public AttributeChangedEvent(final Object self, final String name)
     {
-        m_node = node;
+        m_self = self;
 
         m_name = name;
     }
-    
-    public Node<?> getNode()
+
+    @SuppressWarnings("unchecked")
+    public final <T> T getTarget()
     {
-        return m_node;
+        return (T) m_self;
     }
-    
-    public String getName()
+
+    public final String getName()
     {
         return m_name;
     }
-    
-    public Attribute getAttribute()
+
+    public final Attribute getAttribute()
     {
         return AttributeMapper.get().find(getName());
     }
 
     @Override
-    public final Type<NodeAttributeChangedHandler> getAssociatedType()
+    public final Type<AttributeChangedHandler> getAssociatedType()
     {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(NodeAttributeChangedHandler handler)
+    protected void dispatch(AttributeChangedHandler handler)
     {
         handler.onNodeAttributeChanged(this);
     }

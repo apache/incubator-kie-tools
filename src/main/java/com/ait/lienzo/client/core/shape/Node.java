@@ -20,7 +20,7 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.NodeAttributeChangedHandler;
+import com.ait.lienzo.client.core.event.AttributeChangedHandler;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -204,7 +204,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             }
         }
     }
-    
+
     @Override
     public IMultiPointShape<?> asMultiPointShape()
     {
@@ -716,10 +716,10 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
         return m_events.addHandler(type, handler);
     }
-    
-    public HandlerRegistration addNodeAttributeChangedHandler(final Attribute attribute, final NodeAttributeChangedHandler handler)
+
+    public HandlerRegistration addNodeAttributeChangedHandler(final Attribute attribute, final AttributeChangedHandler handler)
     {
-        return m_attr.addNodeAttributeChangedHandler(attribute, handler);
+        return m_attr.addAttributeChangedHandler(attribute, handler);
     }
 
     public HandlerRegistration addNodeMouseClickHandler(final NodeMouseClickHandler handler)
