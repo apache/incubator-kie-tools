@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.AttributeChangedEvent;
 import com.ait.lienzo.client.core.event.AttributeChangedHandler;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
+import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.DragBounds.DragBoundsJSO;
@@ -63,47 +64,26 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
 {
-    private final Object                   m_own;
+    private final IJSONSerializable<?>     m_ser;
 
     private final NFastStringMapMixedJSO   m_jso;
 
     private NFastStringMap<HandlerManager> m_map;
 
-    public Attributes()
+    public Attributes(IJSONSerializable<?> ser)
     {
-        m_own = null;
+        m_ser = ser;
 
         m_jso = NFastStringMapMixedJSO.make();
     }
 
-    public Attributes(Object that)
+    public Attributes(JavaScriptObject jso, IJSONSerializable<?> ser)
     {
-        m_own = that;
+        m_ser = ser;
 
-        m_jso = NFastStringMapMixedJSO.make();
-    }
-
-    public Attributes(JavaScriptObject valu)
-    {
-        m_own = null;
-
-        if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
+        if (NFastStringMapMixedJSO.typeOf(jso) == NativeInternalType.OBJECT)
         {
-            m_jso = valu.cast();
-        }
-        else
-        {
-            m_jso = NFastStringMapMixedJSO.make();
-        }
-    }
-
-    public Attributes(JavaScriptObject valu, Object that)
-    {
-        m_own = that;
-
-        if (NFastStringMapMixedJSO.typeOf(valu) == NativeInternalType.OBJECT)
-        {
-            m_jso = valu.cast();
+            m_jso = jso.cast();
         }
         else
         {
@@ -116,9 +96,9 @@ public class Attributes
         return m_jso;
     }
 
-    final HandlerRegistration addAttributeChangedHandler(final Attribute attribute, final AttributeChangedHandler handler)
+    public final HandlerRegistration addAttributeChangedHandler(final Attribute attribute, final AttributeChangedHandler handler)
     {
-        if (null != m_own)
+        if (null != m_ser)
         {
             if (null == m_map)
             {
@@ -130,7 +110,7 @@ public class Attributes
 
             if (null == manager)
             {
-                manager = new HandlerManager(m_own);
+                manager = new HandlerManager(m_ser);
 
                 m_map.put(name, manager);
             }
@@ -141,7 +121,7 @@ public class Attributes
 
     private final void checkDispatchAttributeChanged(final String name)
     {
-        if ((null != m_map) && (null != m_own))
+        if ((null != m_map) && (null != m_ser))
         {
             final HandlerManager manager = m_map.get(name);
 
@@ -152,7 +132,7 @@ public class Attributes
                     @Override
                     public void run()
                     {
-                        manager.fireEvent(new AttributeChangedEvent(m_own, name));
+                        manager.fireEvent(new AttributeChangedEvent(name));
                     }
                 });
             }

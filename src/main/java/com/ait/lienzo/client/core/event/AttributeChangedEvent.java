@@ -16,8 +16,7 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.AttributeMapper;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class AttributeChangedEvent extends GwtEvent<AttributeChangedHandler>
@@ -26,34 +25,33 @@ public class AttributeChangedEvent extends GwtEvent<AttributeChangedHandler>
 
     private final String                               m_name;
 
-    private final Object                               m_self;
-
     public static Type<AttributeChangedHandler> getType()
     {
         return TYPE;
     }
 
-    public AttributeChangedEvent(final Object self, final String name)
+    public AttributeChangedEvent(final String name)
     {
-        m_self = self;
-
-        m_name = name;
+        m_name = name.trim();
     }
 
     @SuppressWarnings("unchecked")
     public final <T> T getTarget()
     {
-        return (T) m_self;
+        try
+        {
+            return ((T) getSource());
+        }
+        catch (Exception e)
+        {
+            GWT.log("AttributeChangedEvent cast error: ", e);
+        }
+        return null;
     }
 
     public final String getName()
     {
         return m_name;
-    }
-
-    public final Attribute getAttribute()
-    {
-        return AttributeMapper.get().find(getName());
     }
 
     @Override

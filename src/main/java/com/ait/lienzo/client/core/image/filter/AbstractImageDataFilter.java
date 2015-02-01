@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.event.AttributeChangedHandler;
 import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -24,6 +25,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
@@ -38,7 +40,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
     protected AbstractImageDataFilter()
     {
-        m_attr = new Attributes();
+        m_attr = new Attributes(this);
 
         m_meta = new MetaData();
 
@@ -53,7 +55,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
         if (null == node)
         {
-            m_attr = new Attributes();
+            m_attr = new Attributes(this);
 
             m_meta = new MetaData();
 
@@ -63,7 +65,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
         if (null == aval)
         {
-            m_attr = new Attributes();
+            m_attr = new Attributes(this);
         }
         else
         {
@@ -71,7 +73,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
             if (null == aobj)
             {
-                m_attr = new Attributes();
+                m_attr = new Attributes(this);
             }
             else
             {
@@ -79,11 +81,11 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
                 if (null == ajso)
                 {
-                    m_attr = new Attributes();
+                    m_attr = new Attributes(this);
                 }
                 else
                 {
-                    m_attr = new Attributes(ajso);
+                    m_attr = new Attributes(ajso, this);
                 }
             }
         }
@@ -179,6 +181,11 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
         return object;
+    }
+
+    public HandlerRegistration addNodeAttributeChangedHandler(final Attribute attribute, final AttributeChangedHandler handler)
+    {
+        return m_attr.addAttributeChangedHandler(attribute, handler);
     }
 
     protected static abstract class ImageDataFilterFactory<T extends ImageDataFilter<T>> extends AbstractFactory<T>

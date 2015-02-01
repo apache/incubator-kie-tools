@@ -16,10 +16,12 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
+import com.ait.lienzo.client.core.shape.Movie;
+import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.google.gwt.core.client.JavaScriptObject;
 
 /**
  * Interface to be used to create {@link Picture} and {@link Movie} filters.
