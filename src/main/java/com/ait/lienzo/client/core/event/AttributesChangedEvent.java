@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.event;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -71,6 +72,84 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
     public final Set<String> getChanged()
     {
         return Collections.unmodifiableSet(m_changed);
+    }
+
+    public final boolean any(final Attribute... attributes)
+    {
+        for (Attribute attribute : attributes)
+        {
+            if (m_changed.contains(attribute.getProperty()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean any(List<Attribute> attributes)
+    {
+        for (Attribute attribute : attributes)
+        {
+            if (m_changed.contains(attribute.getProperty()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean none(final Attribute... attributes)
+    {
+        for (Attribute attribute : attributes)
+        {
+            if (m_changed.contains(attribute.getProperty()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public final boolean none(List<Attribute> attributes)
+    {
+        for (Attribute attribute : attributes)
+        {
+            if (m_changed.contains(attribute.getProperty()))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public final boolean all(final Attribute... attributes)
+    {
+        boolean seen = false;
+
+        for (Attribute attribute : attributes)
+        {
+            if (false == m_changed.contains(attribute.getProperty()))
+            {
+                return false;
+            }
+            seen = true;
+        }
+        return seen;
+    }
+
+    public final boolean all(List<Attribute> attributes)
+    {
+        boolean seen = false;
+
+        for (Attribute attribute : attributes)
+        {
+            if (false == m_changed.contains(attribute.getProperty()))
+            {
+                return false;
+            }
+            seen = true;
+        }
+        return seen;
     }
 
     public final boolean isAttributeChanged(final Attribute attribute)
