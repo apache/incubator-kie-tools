@@ -18,7 +18,7 @@ package com.ait.lienzo.client.core.event;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface AttributeChangedHandler extends EventHandler
+public interface AttributesChangedHandler extends EventHandler
 {
-    void onNodeAttributeChanged(AttributeChangedEvent event);
+    void onAttributesChanged(AttributesChangedEvent event);
 }

@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.event.AttributeChangedHandler;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -183,9 +183,9 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         return object;
     }
 
-    public HandlerRegistration addNodeAttributeChangedHandler(final Attribute attribute, final AttributeChangedHandler handler)
+    public HandlerRegistration addNodeAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
-        return m_attr.addAttributeChangedHandler(attribute, handler);
+        return m_attr.addAttributesChangedHandler(attribute, handler);
     }
 
     protected static abstract class ImageDataFilterFactory<T extends ImageDataFilter<T>> extends AbstractFactory<T>

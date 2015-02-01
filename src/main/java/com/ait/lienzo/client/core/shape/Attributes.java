@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.event.AttributeChangedEvent;
-import com.ait.lienzo.client.core.event.AttributeChangedHandler;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.DashArray;
@@ -96,7 +96,7 @@ public class Attributes
         return m_jso;
     }
 
-    public final HandlerRegistration addAttributeChangedHandler(final Attribute attribute, final AttributeChangedHandler handler)
+    public final HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
         if (null != m_ser)
         {
@@ -114,7 +114,7 @@ public class Attributes
 
                 m_map.put(name, manager);
             }
-            return manager.addHandler(AttributeChangedEvent.getType(), handler);
+            return manager.addHandler(AttributesChangedEvent.getType(), handler);
         }
         return null;
     }
@@ -132,7 +132,7 @@ public class Attributes
                     @Override
                     public void run()
                     {
-                        manager.fireEvent(new AttributeChangedEvent(name));
+                        manager.fireEvent(new AttributesChangedEvent(name));
                     }
                 });
             }
