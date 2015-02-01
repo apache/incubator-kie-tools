@@ -183,7 +183,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         return object;
     }
 
-    public HandlerRegistration addNodeAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
+    public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
         return m_attr.addAttributesChangedHandler(attribute, handler);
     }

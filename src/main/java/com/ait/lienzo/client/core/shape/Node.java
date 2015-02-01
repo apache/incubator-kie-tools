@@ -717,7 +717,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return m_events.addHandler(type, handler);
     }
 
-    public HandlerRegistration addNodeAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
+    public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
         return m_attr.addAttributesChangedHandler(attribute, handler);
     }
