@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.shape.json.validators.BooleanValidator;
 import com.ait.lienzo.client.core.shape.json.validators.ColorValidator;
 import com.ait.lienzo.client.core.shape.json.validators.DragBoundsValidator;
 import com.ait.lienzo.client.core.shape.json.validators.EnumValidator;
+import com.ait.lienzo.client.core.shape.json.validators.IgnoreTypeValidator;
 import com.ait.lienzo.client.core.shape.json.validators.LinearGradientValidator;
 import com.ait.lienzo.client.core.shape.json.validators.MultiTypeValidator;
 import com.ait.lienzo.client.core.shape.json.validators.NumberValidator;
@@ -62,6 +63,8 @@ import com.google.gwt.json.client.JSONValue;
  */
 public class AttributeType
 {
+    public static AttributeType     SYNTHETIC_TYPE            = new AttributeType(IgnoreTypeValidator.INSTANCE);
+
     public static AttributeType     TRANSFORM_TYPE            = new AttributeType(TransformValidator.INSTANCE);
 
     public static AttributeType     COLOR_TYPE                = new AttributeType(ColorValidator.INSTANCE);
