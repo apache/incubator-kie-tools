@@ -71,6 +71,8 @@ public interface IControlHandle
 
         public static final ControlHandleType MAGNET    = new ControlHandleStandardType();
 
+        public static final ControlHandleType CONFIGURE = new ControlHandleStandardType();
+
         private ControlHandleStandardType()
         {
         }
