@@ -22,12 +22,11 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.shape.json.validators.ArrayValidator;
 import com.ait.lienzo.client.core.shape.json.validators.BehaviorMapValidator;
-import com.ait.lienzo.client.core.shape.json.validators.IAttributeTypeValidator;
 import com.ait.lienzo.client.core.shape.json.validators.BooleanValidator;
 import com.ait.lienzo.client.core.shape.json.validators.ColorValidator;
 import com.ait.lienzo.client.core.shape.json.validators.DragBoundsValidator;
 import com.ait.lienzo.client.core.shape.json.validators.EnumValidator;
-import com.ait.lienzo.client.core.shape.json.validators.IgnoreTypeValidator;
+import com.ait.lienzo.client.core.shape.json.validators.IAttributeTypeValidator;
 import com.ait.lienzo.client.core.shape.json.validators.LinearGradientValidator;
 import com.ait.lienzo.client.core.shape.json.validators.MultiTypeValidator;
 import com.ait.lienzo.client.core.shape.json.validators.NumberValidator;
@@ -42,6 +41,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.CompositeOperation;
+import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
@@ -51,7 +51,6 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
-import com.ait.lienzo.shared.core.types.Direction;
 import com.google.gwt.json.client.JSONValue;
 
 /**
@@ -63,8 +62,6 @@ import com.google.gwt.json.client.JSONValue;
  */
 public class AttributeType
 {
-    public static AttributeType     SYNTHETIC_TYPE            = new AttributeType(IgnoreTypeValidator.INSTANCE);
-
     public static AttributeType     TRANSFORM_TYPE            = new AttributeType(TransformValidator.INSTANCE);
 
     public static AttributeType     COLOR_TYPE                = new AttributeType(ColorValidator.INSTANCE);
