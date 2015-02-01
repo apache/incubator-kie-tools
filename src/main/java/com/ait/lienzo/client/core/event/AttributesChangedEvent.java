@@ -16,10 +16,8 @@
 
 package com.ait.lienzo.client.core.event;
 
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.google.gwt.core.client.GWT;
@@ -67,11 +65,6 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
             GWT.log("AttributesChangedEvent cast error: ", e);
         }
         return null;
-    }
-
-    public final Set<String> getChanged()
-    {
-        return Collections.unmodifiableSet(m_changed);
     }
 
     public final boolean any(final Attribute... attributes)
@@ -122,6 +115,102 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return true;
     }
 
+    public final boolean one(final Attribute... attributes)
+    {
+        int count = 0;
+
+        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+
+        for (Attribute attribute : attributes)
+        {
+            final String name = attribute.getProperty();
+
+            if (false == seen.contains(name))
+            {
+                if (m_changed.contains(name))
+                {
+                    if (++count > 1)
+                    {
+                        return false;
+                    }
+                    seen.add(name);
+                }
+            }
+        }
+        return (0 != count);
+    }
+
+    public final boolean one(List<Attribute> attributes)
+    {
+        int count = 0;
+
+        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+
+        for (Attribute attribute : attributes)
+        {
+            final String name = attribute.getProperty();
+
+            if (false == seen.contains(name))
+            {
+                if (m_changed.contains(name))
+                {
+                    if (++count > 1)
+                    {
+                        return false;
+                    }
+                    seen.add(name);
+                }
+            }
+        }
+        return (0 != count);
+    }
+
+    public final int count(final Attribute... attributes)
+    {
+        int count = 0;
+
+        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+
+        for (Attribute attribute : attributes)
+        {
+            final String name = attribute.getProperty();
+
+            if (false == seen.contains(name))
+            {
+                if (m_changed.contains(name))
+                {
+                    count++;
+
+                    seen.add(name);
+                }
+            }
+        }
+        return count;
+    }
+
+    public final int count(List<Attribute> attributes)
+    {
+        int count = 0;
+
+        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+
+        for (Attribute attribute : attributes)
+        {
+            final String name = attribute.getProperty();
+
+            if (false == seen.contains(name))
+            {
+                if (m_changed.contains(name))
+                {
+                    count++;
+
+                    seen.add(name);
+                }
+            }
+        }
+        return count;
+    }
+
     public final boolean all(final Attribute... attributes)
     {
         boolean seen = false;
@@ -152,14 +241,9 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return seen;
     }
 
-    public final boolean isAttributeChanged(final Attribute attribute)
+    public final boolean has(final Attribute attribute)
     {
         return m_changed.contains(attribute.getProperty());
-    }
-
-    public final boolean isAttributeChanged(final String name)
-    {
-        return m_changed.contains(name);
     }
 
     @Override
