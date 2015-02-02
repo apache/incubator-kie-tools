@@ -85,10 +85,13 @@ public class LoginRedirectServlet extends HttpServlet {
         // perform optional check and redirect in case no authenticated request is available
         if (displayWhenNotAuthenticatedUri != null && req.getUserPrincipal() == null) {
             logger.debug("No authorized user thus cleaning up session and redirecting to " + displayWhenNotAuthenticatedUri);
-            // clean up session
-            req.logout();
-            req.getSession().invalidate();
-
+            try {
+                // clean up session
+                req.logout();
+                req.getSession().invalidate();
+            } catch (Exception e) {
+                // to avoid cases where logout causes issues for first request
+            }
             resp.sendRedirect(displayWhenNotAuthenticatedUri);
 
             return;
