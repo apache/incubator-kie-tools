@@ -178,9 +178,9 @@
       </plugin>
 
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
+        <groupId>org.mortbay.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.2.2.v20140723</version>
+        <version>8.1.16.v20140903</version>
         <configuration>
           <scanIntervalSeconds>10</scanIntervalSeconds>
           <stopKey>StopUberFireIntegrationTests</stopKey>
