@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,6 +43,7 @@ import org.kie.workbench.common.services.datamodel.service.IncrementalDataModelS
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.callbacks.Callback;
 import org.uberfire.commons.validation.PortablePreconditions;
+
 
 /**
  * Default implementation of DataModelOracle
@@ -116,7 +116,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
     private Map<String, String> filteredFieldParametersType = new HashMap<String, String>();
 
     // Filtered (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
-    private Map<String, String[]> filteredEnumLists = new HashMap<String, String[]>();
+    private FilteredEnumLists filteredEnumLists = new FilteredEnumLists();
 
     // Filtered (current package and imports) Map {factType, isEvent} to determine which Fact Type can be treated as events.
     private Map<String, Boolean> filteredEventTypes = new HashMap<String, Boolean>();
@@ -148,9 +148,6 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     // Package-level map of Globals {alias, class name}.
     private Map<String, String> packageGlobalTypes = new HashMap<String, String>();
-
-    // This is used to calculate what fields an enum list may depend on.
-    private transient Map<String, Object> enumLookupFields;
 
     // Keep the link between fact name and the full qualified class name inside the package
     private FactNameToFQCNHandleRegistry factNameToFQCNHandleRegistry = new FactNameToFQCNHandleRegistry();
@@ -1035,157 +1032,26 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * Get enums for a Type and Field where the enum list may depend upon the values of other fields.
      */
     @Override
-    public DropDownData getEnums( final String type,
-                                  final String field,
-                                  final Map<String, String> currentValueMap ) {
-
-        final Map<String, Object> dataEnumLookupFields = loadDataEnumLookupFields();
-
-        if ( !currentValueMap.isEmpty() ) {
-            // we may need to check for data dependent enums
-            final Object _typeFields = dataEnumLookupFields.get( type + "#" + field );
-
-            if ( _typeFields instanceof String ) {
-                final String typeFields = (String) _typeFields;
-                final StringBuilder dataEnumListsKeyBuilder = new StringBuilder( type );
-                dataEnumListsKeyBuilder.append( "#" ).append( field );
-
-                boolean addOpeninColumn = true;
-                final String[] splitTypeFields = typeFields.split( "," );
-                for ( int j = 0; j < splitTypeFields.length; j++ ) {
-                    final String typeField = splitTypeFields[ j ];
-
-                    for ( Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet() ) {
-                        final String fieldName = currentValueEntry.getKey();
-                        final String fieldValue = currentValueEntry.getValue();
-                        if ( fieldName.trim().equals( typeField.trim() ) ) {
-                            if ( addOpeninColumn ) {
-                                dataEnumListsKeyBuilder.append( "[" );
-                                addOpeninColumn = false;
-                            }
-                            dataEnumListsKeyBuilder.append( typeField ).append( "=" ).append( fieldValue );
-
-                            if ( j != ( splitTypeFields.length - 1 ) ) {
-                                dataEnumListsKeyBuilder.append( "," );
-                            }
-                        }
-                    }
-                }
-
-                if ( !addOpeninColumn ) {
-                    dataEnumListsKeyBuilder.append( "]" );
-                }
-
-                final DropDownData data = DropDownData.create( filteredEnumLists.get( dataEnumListsKeyBuilder.toString() ) );
-                if ( data != null ) {
-                    return data;
-                }
-            } else if ( _typeFields != null ) {
-                // these enums are calculated on demand, server side...
-                final String[] fieldsNeeded = (String[]) _typeFields;
-                final String queryString = getQueryString( type,
-                                                           field,
-                                                           fieldsNeeded,
-                                                           filteredEnumLists );
-                final String[] valuePairs = new String[ fieldsNeeded.length ];
-
-                // collect all the values of the fields needed, then return it as a string...
-                for ( int i = 0; i < fieldsNeeded.length; i++ ) {
-                    for ( Map.Entry<String, String> currentValueEntry : currentValueMap.entrySet() ) {
-                        final String fieldName = currentValueEntry.getKey();
-                        final String fieldValue = currentValueEntry.getValue();
-                        if ( fieldName.equals( fieldsNeeded[ i ] ) ) {
-                            valuePairs[ i ] = fieldsNeeded[ i ] + "=" + fieldValue;
-                        }
-                    }
-                }
-
-                if ( valuePairs.length > 0 && valuePairs[ 0 ] != null ) {
-                    return DropDownData.create( queryString,
-                                                valuePairs );
-                }
-            }
-        }
-        return DropDownData.create( getEnumValues( type,
-                                                   field ) );
+    public DropDownData getEnums(final String type,
+                                 final String field,
+                                 final Map<String, String> currentValueMap) {
+        return new EnumDropDownDataFactory(filteredEnumLists, currentValueMap).getEnums(type, field);
     }
 
-    /**
-     * Get the query string for a fact.field It will ignore any specified field,
-     * and just look for the string - as there should only be one Fact.field of
-     * this type (it is all determined server side).
-     * @param fieldsNeeded
-     */
-    private String getQueryString( final String factType,
-                                   final String field,
-                                   final String[] fieldsNeeded,
-                                   final Map<String, String[]> dataEnumLists ) {
-        for ( Iterator<String> iterator = dataEnumLists.keySet().iterator(); iterator.hasNext(); ) {
-            final String key = iterator.next();
-            if ( key.startsWith( factType + "#" + field ) && fieldsNeeded != null && key.contains( "[" ) ) {
-
-                final String[] values = key.substring( key.indexOf( '[' ) + 1,
-                                                       key.lastIndexOf( ']' ) ).split( "," );
-
-                if ( values.length != fieldsNeeded.length ) {
-                    continue;
-                }
-
-                boolean fail = false;
-                for ( int i = 0; i < values.length; i++ ) {
-                    final String a = values[ i ].trim();
-                    final String b = fieldsNeeded[ i ].trim();
-                    if ( !a.equals( b ) ) {
-                        fail = true;
-                        break;
-                    }
-                }
-                if ( fail ) {
-                    continue;
-                }
-
-                final String[] qry = dataEnumLists.get( key );
-                return qry[ 0 ];
-            } else if ( key.startsWith( factType + "#" + field ) && ( fieldsNeeded == null || fieldsNeeded.length == 0 ) ) {
-                final String[] qry = dataEnumLists.get( key );
-                return qry[ 0 ];
-            }
-        }
-        throw new IllegalStateException();
-    }
-
-    /**
-     * For simple cases - where a list of values are known based on a field.
-     */
     @Override
-    public String[] getEnumValues( final String factType,
-                                   final String field ) {
-        return filteredEnumLists.get( factType + "#" + field );
+    public String[] getEnumValues(String factType, String factField) {
+        return filteredEnumLists.getEnumValues(factType, factField);
     }
 
     @Override
     public boolean hasEnums( final String factType,
                              final String field ) {
-        return hasEnums( factType + "#" + field );
+        return hasEnums(factType + "#" + field);
     }
 
     @Override
-    public boolean hasEnums( final String qualifiedFactField ) {
-        boolean hasEnums = false;
-        final String key = qualifiedFactField.replace( ".",
-                                                       "#" );
-        final String dependentType = key + "[";
-        for ( String e : filteredEnumLists.keySet() ) {
-            //e.g. Fact.field1
-            if ( e.equals( key ) ) {
-                return true;
-            }
-            //e.g. Fact.field2[field1=val2]
-            if ( e.startsWith( dependentType ) ) {
-                return true;
-            }
-        }
-        return hasEnums;
+    public boolean hasEnums(final String qualifiedFactField) {
+        return filteredEnumLists.hasEnums(qualifiedFactField);
     }
 
     /**
@@ -1199,76 +1065,10 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
      * @return
      */
     @Override
-    public boolean isDependentEnum( final String factType,
-                                    final String parentField,
-                                    final String childField ) {
-        final Map<String, Object> enums = loadDataEnumLookupFields();
-        if ( enums.isEmpty() ) {
-            return false;
-        }
-        //Check if the childField is a direct descendant of the parentField
-        final String key = factType + "#" + childField;
-        if ( !enums.containsKey( key ) ) {
-            return false;
-        }
-
-        //Otherwise follow the dependency chain...
-        final Object _parent = enums.get( key );
-        if ( _parent instanceof String ) {
-            final String _parentField = (String) _parent;
-            if ( _parentField.equals( parentField ) ) {
-                return true;
-            } else {
-                return isDependentEnum( factType,
-                                        parentField,
-                                        _parentField );
-            }
-        }
-        return false;
-    }
-
-    /**
-     * This is only used by enums that are like Fact.field[something=X] and so on.
-     */
-    private Map<String, Object> loadDataEnumLookupFields() {
-        if ( enumLookupFields == null ) {
-            enumLookupFields = new HashMap<String, Object>();
-            final Set<String> keys = filteredEnumLists.keySet();
-            for ( String key : keys ) {
-                if ( key.indexOf( '[' ) != -1 ) {
-                    int ix = key.indexOf( '[' );
-                    final String factField = key.substring( 0,
-                                                            ix );
-                    final String predicate = key.substring( ix + 1,
-                                                            key.indexOf( ']' ) );
-                    if ( predicate.indexOf( '=' ) > -1 ) {
-
-                        final String[] bits = predicate.split( "," );
-                        final StringBuilder typeFieldBuilder = new StringBuilder();
-
-                        for ( int i = 0; i < bits.length; i++ ) {
-                            typeFieldBuilder.append( bits[ i ].substring( 0,
-                                                                          bits[ i ].indexOf( '=' ) ) );
-                            if ( i != ( bits.length - 1 ) ) {
-                                typeFieldBuilder.append( "," );
-                            }
-                        }
-
-                        enumLookupFields.put( factField,
-                                              typeFieldBuilder.toString() );
-                    } else {
-                        final String[] fields = predicate.split( "," );
-                        for ( int i = 0; i < fields.length; i++ ) {
-                            fields[ i ] = fields[ i ].trim();
-                        }
-                        enumLookupFields.put( factField,
-                                              fields );
-                    }
-                }
-            }
-        }
-
-        return enumLookupFields;
+    public boolean isDependentEnum(final String factType,
+                                   final String parentField,
+                                   final String childField) {
+        return filteredEnumLists.isDependentEnum(factType, parentField, childField);
     }
 
     // ####################################
@@ -1338,7 +1138,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
                                                                                                                 projectTypeFieldsAnnotations ) );
 
         //Filter and rename Enum definitions based on package name and imports
-        filteredEnumLists = new HashMap<String, String[]>();
+        filteredEnumLists = new FilteredEnumLists();
         filteredEnumLists.putAll( packageWorkbenchEnumLists );
         filteredEnumLists.putAll( AsyncPackageDataModelOracleUtilities.filterEnumDefinitions( packageName,
                                                                                               imports,
@@ -1417,17 +1217,17 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addPackageNames( final List<String> packageNames ) {
-        this.packageNames.addAll( packageNames );
+        this.packageNames.addAll(packageNames);
     }
 
     @Override
     public void addWorkbenchEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
-        this.packageWorkbenchEnumLists.putAll( dataEnumLists );
+        this.packageWorkbenchEnumLists.putAll(dataEnumLists);
     }
 
     @Override
     public void addDslConditionSentences( final List<DSLSentence> dslConditionSentences ) {
-        this.packageDSLConditionSentences.addAll( dslConditionSentences );
+        this.packageDSLConditionSentences.addAll(dslConditionSentences);
     }
 
     @Override
@@ -1437,7 +1237,7 @@ public class AsyncPackageDataModelOracleImpl implements AsyncPackageDataModelOra
 
     @Override
     public void addGlobals( final Map<String, String> packageGlobalTypes ) {
-        this.packageGlobalTypes.putAll( packageGlobalTypes );
+        this.packageGlobalTypes.putAll(packageGlobalTypes);
     }
 
 }
