@@ -56,6 +56,29 @@ public class TestScenarioFactory {
         return model;
     }
 
+    public static Scenario makeTestScenarioWithGlobalVerifyGlobal(final String packageName,
+                                                                  final Collection<Import> imports,
+                                                                  final String name) {
+        final Scenario model = new Scenario();
+        model.getImports().getImports().addAll(imports);
+        model.setPackageName(packageName);
+        model.setName(name);
+
+        model.getGlobals().add(new FactData("Date",
+                                             "day",
+                                             new ArrayList<Field>(),
+                                             false));
+        model.getFixtures().add(new VerifyFact("day",
+                                               new ArrayList<VerifyField>() {{
+                                                   add(new VerifyField("minutes",
+                                                                       "45",
+                                                                       "=="));
+                                               }},
+                                               false));
+
+        return model;
+    }
+
     public static Scenario makeTestScenarioWithoutVerifyFact( final String packageName,
                                                               final Collection<Import> imports,
                                                               final String name ) {

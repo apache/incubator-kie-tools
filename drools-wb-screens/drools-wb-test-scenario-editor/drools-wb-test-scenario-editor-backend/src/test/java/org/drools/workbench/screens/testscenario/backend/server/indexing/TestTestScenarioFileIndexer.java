@@ -68,6 +68,13 @@ public class TestTestScenarioFileIndexer extends TestScenarioFileIndexer impleme
                                                    ModelField.FIELD_ORIGIN.DECLARED,
                                                    FieldAccessorsAndMutators.ACCESSOR,
                                                    DataType.TYPE_NUMERIC_INTEGER ) } );
+            put( "java.util.Date",
+                 new ModelField[]{ new ModelField( "minutes",
+                                                   "java.lang.Integer",
+                                                   ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                   ModelField.FIELD_ORIGIN.DECLARED,
+                                                   FieldAccessorsAndMutators.ACCESSOR,
+                                                   DataType.TYPE_NUMERIC_INTEGER ) } );
         }} );
         return dmo;
     }

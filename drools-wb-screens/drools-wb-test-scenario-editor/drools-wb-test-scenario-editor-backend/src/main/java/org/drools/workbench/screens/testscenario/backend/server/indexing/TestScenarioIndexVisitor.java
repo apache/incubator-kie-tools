@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.testscenario.backend.server.indexing;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,9 +69,14 @@ public class TestScenarioIndexVisitor {
         return builder.build();
     }
 
-    private void visit( final Scenario scenario ) {
-        for ( Fixture fixture : scenario.getFixtures() ) {
-            visit( fixture );
+    private void visit(final Scenario scenario) {
+        visit(scenario.getGlobals());
+        visit(scenario.getFixtures());
+    }
+
+    private void visit(List<? extends Fixture> fixtures) {
+        for (Fixture fixture : fixtures) {
+            visit(fixture);
         }
     }
 
