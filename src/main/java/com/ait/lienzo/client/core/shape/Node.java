@@ -229,7 +229,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return (Node<?>) JSONDeserializer.getInstance().fromString(toJSONString(), false); // don't validate
     }
 
-    protected String uuid()
+    public String uuid()
     {
         if (null == m_uuid)
         {
