@@ -21,8 +21,10 @@ import com.ait.lienzo.client.core.i18n.MessageConstants;
 /**
  * This class is used internally by the toolkit to provide type-safe property access. 
  */
-public class Attribute implements IAttribute
+public class Attribute
 {
+    private static long                     S_SEQUENCE_COUNTER               = 0;
+
     protected static final MessageConstants MESSAGES                         = MessageConstants.MESSAGES;
 
     public static final Attribute           WIDTH                            = new Attribute("width", MESSAGES.widthLabel(), MESSAGES.widthDescription(), AttributeType.NUMBER_TYPE);
@@ -217,7 +219,16 @@ public class Attribute implements IAttribute
 
     private final AttributeType             m_type;
 
-    protected Attribute(String property, String label, String description, AttributeType type)
+    private final long                      m_sequence;
+
+    private final boolean                   m_animatable;
+
+    protected Attribute(final String property, final String label, final String description, final AttributeType type)
+    {
+        this(property, label, description, type, true);
+    }
+
+    protected Attribute(final String property, final String label, final String description, final AttributeType type, final boolean animatable)
     {
         m_type = type;
 
@@ -226,27 +237,27 @@ public class Attribute implements IAttribute
         m_property = property;
 
         m_description = description;
+
+        m_animatable = animatable;
+
+        m_sequence = ++S_SEQUENCE_COUNTER;
     }
 
-    @Override
     public final AttributeType getType()
     {
         return m_type;
     }
 
-    @Override
     public final String getProperty()
     {
         return m_property;
     }
 
-    @Override
     public final String getLabel()
     {
         return m_label;
     }
 
-    @Override
     public final String getDescription()
     {
         return m_description;
@@ -256,5 +267,15 @@ public class Attribute implements IAttribute
     public final String toString()
     {
         return m_property;
+    }
+
+    public final boolean isAnimatable()
+    {
+        return m_animatable;
+    }
+
+    public final long getSequence()
+    {
+        return m_sequence;
     }
 }
