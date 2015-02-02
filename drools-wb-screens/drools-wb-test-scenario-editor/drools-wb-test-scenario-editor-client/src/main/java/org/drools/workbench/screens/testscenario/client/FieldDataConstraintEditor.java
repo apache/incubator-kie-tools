@@ -60,7 +60,7 @@ public class FieldDataConstraintEditor
     private final Panel panel = new SimplePanel();
     private final FieldConstraintHelper helper;
 
-    private List<FieldDataConstraintEditor> dependentEnumEditors = null;
+    private List<FieldDataConstraintEditor> dependentEnumEditors = new ArrayList<FieldDataConstraintEditor>();
 
     public FieldDataConstraintEditor( final String factType,
                                       final FieldData field,
@@ -104,7 +104,7 @@ public class FieldDataConstraintEditor
                 } else if ( isFieldVariable() ) {
                     addVariableEditor();
                 } else {
-                    addDefaultTextBoxWidget( flType );
+                    addDropDownEditor( null );
                 }
             }
         }
@@ -123,22 +123,7 @@ public class FieldDataConstraintEditor
 
     private void addDropDownEditor( final DropDownData dropDownData ) {
         field.setNature( FieldData.TYPE_ENUM );
-        dependentEnumEditors = new ArrayList<FieldDataConstraintEditor>();
         valueEditorWidget = dropDownEditor( dropDownData );
-        panel.add( valueEditorWidget );
-    }
-
-    private void addDefaultTextBoxWidget( final String flType ) {
-        valueEditorWidget = textBoxEditor( new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange( ValueChangeEvent<String> newValue ) {
-                valueHasChanged( newValue.getValue() );
-            }
-        },
-                                           flType,
-                                           field.getName(),
-                                           field.getValue() );
-
         panel.add( valueEditorWidget );
     }
 
@@ -209,17 +194,6 @@ public class FieldDataConstraintEditor
             }
         } );
         return editor;
-    }
-
-    private TextBox textBoxEditor( final ValueChangeHandler<String> valueChangeHandler,
-                                   final String dataType,
-                                   final String fieldName,
-                                   final String initialValue ) {
-        final TextBox tb = TextBoxFactory.getTextBox( dataType );
-        tb.setText( initialValue );
-        tb.setTitle( TestScenarioConstants.INSTANCE.ValueFor0( fieldName ) );
-        tb.addValueChangeHandler( valueChangeHandler );
-        return tb;
     }
 
     private Widget variableEditor() {
