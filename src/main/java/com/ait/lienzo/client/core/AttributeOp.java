@@ -36,9 +36,17 @@ public final class AttributeOp
 
     public static final boolean evaluate(NFastStringSet changed, BooleanOp op)
     {
+        if ((null == changed) || (null == op))
+        {
+            return false;
+        }
         s_changed = changed;
 
-        return op.test();
+        final boolean result = op.test();
+
+        s_changed = null;
+
+        return result;
     }
 
     private static final NFastStringSet context()
@@ -66,6 +74,11 @@ public final class AttributeOp
             nset.add(attribute.getProperty());
         }
         return nset;
+    }
+
+    public static final BooleanOp has(final Attribute attributes)
+    {
+        return new AnyStringSetOp(toSet(attributes));
     }
 
     public static final BooleanOp any(final Attribute... attributes)
@@ -150,6 +163,18 @@ public final class AttributeOp
                     }
                 }
                 return true;
+            }
+        };
+    }
+
+    public static final BooleanOp not(final BooleanOp op)
+    {
+        return new BooleanOp()
+        {
+            @Override
+            public final boolean test()
+            {
+                return (false == op.test());
             }
         };
     }
