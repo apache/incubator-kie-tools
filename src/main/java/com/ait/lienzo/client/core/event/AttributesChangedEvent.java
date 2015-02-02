@@ -19,6 +19,8 @@ package com.ait.lienzo.client.core.event;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.AttributeOp;
+import com.ait.lienzo.client.core.AttributeOp.BooleanOp;
 import com.ait.lienzo.client.core.types.NFastStringSet;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
@@ -235,6 +237,11 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
     public final boolean has(final Attribute attribute)
     {
         return m_changed.contains(attribute.getProperty());
+    }
+
+    public final boolean evaluate(final BooleanOp op)
+    {
+        return AttributeOp.evaluate(m_changed, op);
     }
 
     @Override
