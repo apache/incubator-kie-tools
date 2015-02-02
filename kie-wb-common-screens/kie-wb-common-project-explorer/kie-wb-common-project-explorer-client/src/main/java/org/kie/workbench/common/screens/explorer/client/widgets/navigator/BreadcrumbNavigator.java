@@ -232,6 +232,13 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             });
             archiveContainer.getElement().getStyle().setPaddingLeft(10, Style.Unit.PX);
             iconContainer.add(archiveContainer);
+            new Tooltip() {{
+                setWidget( archiveContainer );
+                setText( CommonConstants.INSTANCE.Archive() );
+                setPlacement( Placement.TOP );
+                setShowDelay( 1000 );
+                reconfigure();
+            }};
 
         }
 

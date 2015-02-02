@@ -88,6 +88,8 @@ public interface CommonConstants
 
     String Rename();
 
+    String Archive();
+
     String Restoring();
 
     String Copying();
