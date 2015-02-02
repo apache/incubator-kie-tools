@@ -16,10 +16,10 @@
 
 package com.ait.lienzo.client.core.event;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.types.NFastStringSet;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -27,28 +27,19 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
 {
     private static final Type<AttributesChangedHandler> TYPE = new Type<AttributesChangedHandler>();
 
-    private final LinkedHashSet<String>                 m_changed;
+    private final NFastStringSet                        m_changed;
 
     public static Type<AttributesChangedHandler> getType()
     {
         return TYPE;
     }
 
-    private static final LinkedHashSet<String> set(final String name)
-    {
-        final LinkedHashSet<String> make = new LinkedHashSet<String>(1);
-
-        make.add(name);
-
-        return make;
-    }
-
     public AttributesChangedEvent(final String name)
     {
-        this(set(name));
+        this(new NFastStringSet(name));
     }
 
-    public AttributesChangedEvent(LinkedHashSet<String> changed)
+    public AttributesChangedEvent(final NFastStringSet changed)
     {
         m_changed = changed;
     }
@@ -103,7 +94,7 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return true;
     }
 
-    public final boolean none(List<Attribute> attributes)
+    public final boolean none(final List<Attribute> attributes)
     {
         for (Attribute attribute : attributes)
         {
@@ -119,7 +110,7 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
     {
         int count = 0;
 
-        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+        final NFastStringSet seen = new NFastStringSet();
 
         for (Attribute attribute : attributes)
         {
@@ -140,11 +131,11 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return (0 != count);
     }
 
-    public final boolean one(List<Attribute> attributes)
+    public final boolean one(final List<Attribute> attributes)
     {
         int count = 0;
 
-        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+        final NFastStringSet seen = new NFastStringSet();
 
         for (Attribute attribute : attributes)
         {
@@ -169,7 +160,7 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
     {
         int count = 0;
 
-        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+        final NFastStringSet seen = new NFastStringSet();
 
         for (Attribute attribute : attributes)
         {
@@ -188,11 +179,11 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return count;
     }
 
-    public final int count(List<Attribute> attributes)
+    public final int count(final List<Attribute> attributes)
     {
         int count = 0;
 
-        final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+        final NFastStringSet seen = new NFastStringSet();
 
         for (Attribute attribute : attributes)
         {
@@ -226,7 +217,7 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return seen;
     }
 
-    public final boolean all(List<Attribute> attributes)
+    public final boolean all(final List<Attribute> attributes)
     {
         boolean seen = false;
 
@@ -253,7 +244,7 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
     }
 
     @Override
-    protected void dispatch(AttributesChangedHandler handler)
+    protected void dispatch(final AttributesChangedHandler handler)
     {
         handler.onAttributesChanged(this);
     }
