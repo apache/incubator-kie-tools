@@ -21,6 +21,7 @@ import java.util.Collection;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
 import com.ait.lienzo.client.core.event.NodeDragEndHandler;
 import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
@@ -715,6 +716,13 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             m_events = new HandlerManager(this);
         }
         return m_events.addHandler(type, handler);
+    }
+
+    public final T setAttributesChangedBatcher(final IAttributesChangedBatcher batcher)
+    {
+        m_attr.setAttributesChangedBatcher(batcher);
+
+        return cast();
     }
 
     public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)

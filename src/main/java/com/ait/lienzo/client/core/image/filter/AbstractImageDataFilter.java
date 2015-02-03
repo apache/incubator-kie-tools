@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.image.filter;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -181,6 +182,13 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         object.put("attributes", new JSONObject(getAttributes().getJSO()));
 
         return object;
+    }
+
+    public final T setAttributesChangedBatcher(final IAttributesChangedBatcher batcher)
+    {
+        m_attr.setAttributesChangedBatcher(batcher);
+
+        return cast();
     }
 
     public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)

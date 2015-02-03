@@ -20,6 +20,8 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.event.ImmediateAttributesChangedBatcher;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.DashArray;
@@ -29,8 +31,8 @@ import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
-import com.ait.lienzo.client.core.types.NFastStringMap;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
+import com.ait.lienzo.client.core.types.NFastStringSet;
 import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
@@ -64,11 +66,17 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
 {
-    private final IJSONSerializable<?>     m_ser;
+    private static final ImmediateAttributesChangedBatcher S_BAT = new ImmediateAttributesChangedBatcher();
 
-    private final NFastStringMapMixedJSO   m_jso;
+    private final IJSONSerializable<?>                     m_ser;
 
-    private NFastStringMap<HandlerManager> m_map;
+    private final NFastStringMapMixedJSO                   m_jso;
+
+    private NFastStringSet                                 m_set;
+
+    private HandlerManager                                 m_man;
+
+    private IAttributesChangedBatcher                      m_bat;
 
     public Attributes(IJSONSerializable<?> ser)
     {
@@ -100,52 +108,51 @@ public class Attributes
     {
         if (null != m_ser)
         {
-            if (null == m_map)
-            {
-                m_map = new NFastStringMap<HandlerManager>();
-            }
             final String name = attribute.getProperty();
 
-            HandlerManager manager = m_map.get(name);
-
-            if (null == manager)
+            if (null == m_set)
             {
-                manager = new HandlerManager(m_ser);
-
-                m_map.put(name, manager);
+                m_set = new NFastStringSet(name);
             }
-            return manager.addHandler(AttributesChangedEvent.getType(), handler);
+            else
+            {
+                m_set.add(name);
+            }
+            if (null == m_man)
+            {
+                m_man = new HandlerManager(m_ser);
+            }
+            return m_man.addHandler(AttributesChangedEvent.getType(), handler);
         }
         return null;
     }
 
     private final void checkDispatchAttributeChanged(final String name)
     {
-        if ((null != m_map) && (null != m_ser))
+        if ((null != m_set) && (null != m_ser))
         {
-            final HandlerManager manager = m_map.get(name);
-
-            if (null != manager)
+            if (null == m_bat)
             {
-                doRunnableNow(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        manager.fireEvent(new AttributesChangedEvent(name));
-                    }
-                });
+                S_BAT.bufferAttributeWithManager(name, m_man);
+            }
+            else
+            {
+                m_bat.bufferAttributeWithManager(name, m_man);
             }
         }
     }
 
-    private final native void doRunnableNow(Runnable r)
-    /*-{
-        var f = function() {
-            r.@java.lang.Runnable::run()();
-        };
-        $wnd.setTimeout(f, 0);
-    }-*/;
+    public final void setAttributesChangedBatcher(final IAttributesChangedBatcher bat)
+    {
+        if (null != bat)
+        {
+            m_bat = bat.copy();
+        }
+        else
+        {
+            m_bat = S_BAT;
+        }
+    }
 
     public final boolean isClearLayerBeforeDraw()
     {

@@ -40,6 +40,10 @@ public final class AttributeOp
         {
             return false;
         }
+        if (changed.isEmpty())
+        {
+            return false;
+        }
         s_changed = changed;
 
         final boolean result = op.test();

@@ -132,6 +132,11 @@ public class NFastStringSet implements Iterable<String>
         return this;
     }
 
+    public final boolean isEmpty()
+    {
+        return m_jso.isEmpty();
+    }
+
     @Override
     public final Iterator<String> iterator()
     {
@@ -221,6 +226,18 @@ public class NFastStringSet implements Iterable<String>
         			delete this[name];
         		}
         	}
+        }-*/;
+
+        private final native boolean isEmpty()
+        /*-{
+            for ( var name in this) {
+                if (this.hasOwnProperty(String(name))) {
+                    if (this[name] == true) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }-*/;
     }
 }
