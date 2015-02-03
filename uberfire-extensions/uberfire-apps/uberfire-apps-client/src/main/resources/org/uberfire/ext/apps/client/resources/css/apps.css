@@ -76,7 +76,7 @@
     text-align: center;
     text-decoration: none solid rgb(255, 255, 255);
     border: 0px none rgb(255, 255, 255);
-    font: normal normal normal normal 48px/56px iconFont;
+    font: normal normal normal normal 48px/56px inherit;
     outline: rgb(255, 255, 255) none 0px;
 }
 
