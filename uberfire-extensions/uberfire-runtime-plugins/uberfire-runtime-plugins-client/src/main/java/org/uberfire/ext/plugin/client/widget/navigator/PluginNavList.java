@@ -18,12 +18,14 @@ package org.uberfire.ext.plugin.client.widget.navigator;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -86,6 +88,14 @@ public class PluginNavList extends Composite {
     }
 
     private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+
+    private static final Comparator<String> PLUGIN_NAME_COMPARATOR = new Comparator<String>() {
+        @Override
+        public int compare( final String o1,
+                            final String o2 ) {
+            return o1.compareToIgnoreCase( o2 );
+        }
+    };
 
     @UiField
     WellNavList pluginsList;
@@ -201,9 +211,16 @@ public class PluginNavList extends Composite {
             final NavList itemsNavList = new NavList();
             collapse.add( itemsNavList );
 
-            navLists.put( type, itemsNavList );
+            navLists.put( type,
+                          itemsNavList );
 
+            //Sort Activities by Name. A TreeMap supports sorting on insertion by natural ordering of its keys
+            final Map<String, Activity> activities = new TreeMap<String, Activity>( PLUGIN_NAME_COMPARATOR );
             for ( final Activity item : e.getValue() ) {
+                activities.put( item.getName(),
+                                item );
+            }
+            for ( final Activity item : activities.values() ) {
                 itemsNavList.add( makeItemNavLink( item ) );
             }
             collapse.setDefaultOpen( false );
@@ -261,7 +278,25 @@ public class PluginNavList extends Composite {
     }
 
     public void addNewPlugin( final BaseNewPlugin newPlugin ) {
-        navLists.get( newPlugin.getPlugin().getType() ).add( makeItemNavLink( newPlugin.getPlugin() ) );
+        //Sort Widgets by Plugin Name. A TreeMap supports sorting on insertion by natural ordering of its keys
+        final Map<String, Widget> sortedNavList = new TreeMap<String, Widget>( PLUGIN_NAME_COMPARATOR );
+        final NavList navList = navLists.get( newPlugin.getPlugin().getType() );
+        for ( int i = 0; i < navList.getWidgetCount(); i++ ) {
+            final Widget w = navList.getWidget( i );
+            for ( Map.Entry<String, Widget> e : pluginRef.entrySet() ) {
+                if ( e.getValue().equals( w ) ) {
+                    sortedNavList.put( e.getKey(),
+                                       e.getValue() );
+                }
+            }
+        }
+        sortedNavList.put( newPlugin.getPlugin().getName(),
+                           makeItemNavLink( newPlugin.getPlugin() ) );
+
+        navList.clear();
+        for ( Widget w : sortedNavList.values() ) {
+            navList.add( w );
+        }
     }
 
     public void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
