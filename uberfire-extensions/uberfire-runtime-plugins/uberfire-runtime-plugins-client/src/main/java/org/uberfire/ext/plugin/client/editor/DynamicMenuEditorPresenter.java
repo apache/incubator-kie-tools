@@ -91,7 +91,7 @@ public class DynamicMenuEditorPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE, VALIDATE );
+        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
         this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.DYNAMIC_MENU, path );
     }
 
