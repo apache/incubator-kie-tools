@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 @Dependent
@@ -36,6 +35,7 @@ public class OverviewWidgetPresenter
     private boolean isReadOnly = false;
 
     private OverviewScreenView view;
+    private int                originalHash;
 
     public OverviewWidgetPresenter() {
     }
@@ -50,10 +50,12 @@ public class OverviewWidgetPresenter
 
         this.clientTypeRegistry = clientTypeRegistry;
     }
-    
-    public void setContent(Overview overview, ObservablePath path) {
+
+    public void setContent(final Overview overview,
+                           final ObservablePath path) {
 
         this.overview = overview;
+        originalHash = this.overview.hashCode();
 
         view.setVersionHistory(path);
 
@@ -86,5 +88,19 @@ public class OverviewWidgetPresenter
 
     public void refresh(String version) {
         view.refresh(version);
+    }
+
+    public boolean isDirty() {
+        if (overview == null) {
+            return false;
+        } else {
+            return originalHash != overview.hashCode();
+        }
+    }
+
+    public void resetDirty() {
+        if (overview != null) {
+            originalHash = overview.hashCode();
+        }
     }
 }

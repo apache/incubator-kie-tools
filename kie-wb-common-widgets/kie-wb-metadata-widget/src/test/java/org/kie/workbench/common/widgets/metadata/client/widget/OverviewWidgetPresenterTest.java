@@ -22,7 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
-import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -30,11 +29,10 @@ import static org.mockito.Mockito.*;
 public class OverviewWidgetPresenterTest {
 
     private OverviewScreenView.Presenter presenter;
-    private OverviewScreenView view;
-    private OverviewWidgetPresenter editor;
+    private OverviewScreenView           view;
+    private OverviewWidgetPresenter      editor;
 
     private Overview overview;
-
 
     @Before
     public void setUp() throws Exception {
@@ -65,7 +63,39 @@ public class OverviewWidgetPresenterTest {
 
         presenter.onDescriptionEdited("Hello");
 
-        assertEquals(overview.getMetadata().getDescription(), "Hello");
+        assertEquals("Hello", overview.getMetadata().getDescription());
     }
 
+    @Test
+    public void testDirty() throws Exception {
+
+        Metadata metadata = new Metadata();
+        overview.setMetadata(metadata);
+
+        ObservablePath observablePath = mock(ObservablePath.class);
+        editor.setContent(overview, observablePath);
+
+        assertFalse(editor.isDirty());
+
+        presenter.onDescriptionEdited("Hello");
+
+        assertTrue(editor.isDirty());
+
+        editor.resetDirty();
+
+        assertFalse(editor.isDirty());
+
+    }
+
+    @Test
+    public void testResetDirtyBeforeInit() throws Exception {
+        /**
+         * These should not give an exception
+         */
+        assertFalse(editor.isDirty());
+
+        editor.resetDirty();
+
+        assertFalse(editor.isDirty());
+    }
 }
