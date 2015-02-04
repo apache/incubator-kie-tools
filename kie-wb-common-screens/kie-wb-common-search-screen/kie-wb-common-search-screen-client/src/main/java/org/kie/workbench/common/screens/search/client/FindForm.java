@@ -176,8 +176,8 @@ public class FindForm
         }
 
         if ( !formatTextBox.getText().trim().isEmpty() ) {
-            final String pattern = formatTextBox.getText().trim();
-            metadata.put( "extension", pattern );
+            final String pattern = clientTypeRegistry.resolveWildcardPattern( formatTextBox.getText().trim() );
+            metadata.put( "filename", pattern );
         }
 
         if ( !subjectTextBox.getText().trim().isEmpty() ) {
