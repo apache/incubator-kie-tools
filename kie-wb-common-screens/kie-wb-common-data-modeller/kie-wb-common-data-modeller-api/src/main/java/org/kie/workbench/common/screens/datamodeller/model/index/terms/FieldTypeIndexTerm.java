@@ -21,7 +21,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm
 @Portable
 public class FieldTypeIndexTerm implements IndexTerm {
 
-    public static final String TERM = "field_type";
+    public static final String TERM = "fieldType";
 
     @Override
     public String getTerm() {

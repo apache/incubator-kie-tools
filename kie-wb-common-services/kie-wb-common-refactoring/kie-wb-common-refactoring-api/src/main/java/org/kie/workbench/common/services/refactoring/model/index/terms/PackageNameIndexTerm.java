@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class PackageNameIndexTerm implements IndexTerm {
 
-    public static final String TERM = "package-name";
+    public static final String TERM = "packageName";
 
     @Override
     public String getTerm() {

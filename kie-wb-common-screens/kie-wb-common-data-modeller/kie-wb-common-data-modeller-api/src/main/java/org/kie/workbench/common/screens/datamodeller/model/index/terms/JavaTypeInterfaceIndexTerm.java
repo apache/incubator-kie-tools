@@ -21,7 +21,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm
 @Portable
 public class JavaTypeInterfaceIndexTerm implements IndexTerm {
 
-    public static final String TERM = "java_type_interface";
+    public static final String TERM = "javaTypeInterface";
 
     @Override public String getTerm() {
         return TERM;

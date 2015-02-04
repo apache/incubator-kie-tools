@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class RuleAttributeIndexTerm implements IndexTerm {
 
-    public static final String TERM = "rule_attribute";
+    public static final String TERM = "ruleAttribute";
 
     @Override
     public String getTerm() {

@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class TypeIndexTerm implements IndexTerm {
 
-    public static final String TERM = "type_name";
+    public static final String TERM = "typeName";
 
     @Override
     public String getTerm() {

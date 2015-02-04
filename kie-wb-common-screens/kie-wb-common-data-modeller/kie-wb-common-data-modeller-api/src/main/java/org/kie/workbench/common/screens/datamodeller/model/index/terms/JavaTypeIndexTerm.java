@@ -21,7 +21,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm
 @Portable
 public class JavaTypeIndexTerm implements IndexTerm {
 
-    public static final String TERM = "java_type";
+    public static final String TERM = "javaType";
 
     @Portable
     public static enum JAVA_TYPE {

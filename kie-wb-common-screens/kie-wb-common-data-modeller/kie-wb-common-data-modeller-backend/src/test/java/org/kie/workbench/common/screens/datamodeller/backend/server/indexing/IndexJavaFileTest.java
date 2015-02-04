@@ -103,8 +103,8 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
     private List<Pair<String, String>> initFieldExpectedValues( String fieldName,
                                                                 String className ) {
         List<Pair<String, String>> expectedValues = new ArrayList<Pair<String, String>>();
-        expectedValues.add( new Pair<String, String>( "field_name", fieldName ) );
-        expectedValues.add( new Pair<String, String>( "field_type:" + fieldName, className ) );
+        expectedValues.add( new Pair<String, String>( "fieldName", fieldName ) );
+        expectedValues.add( new Pair<String, String>( "fieldType:" + fieldName, className ) );
         return expectedValues;
     }
 
@@ -112,71 +112,71 @@ public class IndexJavaFileTest extends BaseIndexingTest<JavaResourceTypeDefiniti
 
         List<Pair<String, String>> expectedValues = new ArrayList<Pair<String, String>>();
 
-        expectedValues.add( new Pair<String, String>( "java_type", "class" ) );
-        expectedValues.add( new Pair<String, String>( "java_type_name", "org.kie.workbench.common.screens.datamodeller.backend.server.indexing.Pojo1" ) );
-        expectedValues.add( new Pair<String, String>( "java_type_parent", "java.util.Date" ) );
-        expectedValues.add( new Pair<String, String>( "java_type_interface", "java.io.Serializable" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.io.Serializable" ) );
+        expectedValues.add( new Pair<String, String>( "javaType", "class" ) );
+        expectedValues.add( new Pair<String, String>( "javaTypeName", "org.kie.workbench.common.screens.datamodeller.backend.server.indexing.Pojo1" ) );
+        expectedValues.add( new Pair<String, String>( "javaTypeParent", "java.util.Date" ) );
+        expectedValues.add( new Pair<String, String>( "javaTypeInterface", "java.io.Serializable" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.io.Serializable" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_BigDecimal", "java.math.BigDecimal" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.math.BigDecimal" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.math.BigDecimal" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_BigInteger", "java.math.BigInteger" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.math.BigInteger" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.math.BigInteger" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Boolean", "java.lang.Boolean" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Boolean" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Boolean" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Byte", "java.lang.Byte" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Byte" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Byte" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Character", "java.lang.Character" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Character" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Character" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Date", "java.util.Date" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.util.Date" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.util.Date" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Double", "java.lang.Double" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Double" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Double" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Float", "java.lang.Float" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Float" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Float" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Integer", "java.lang.Integer" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Integer" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Integer" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Long", "java.lang.Long" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Long" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Long" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_Short", "java.lang.Short" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.Short" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.Short" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "o_String", "java.lang.String" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "java.lang.String" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "java.lang.String" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_boolean", "boolean" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "boolean" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "boolean" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_byte", "byte" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "byte" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "byte" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_char", "char" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "char" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "char" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_double", "double" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "double" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "double" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_float", "float" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "float" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "float" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_int", "int" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "int" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "int" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_long", "long" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "long" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "long" ) );
 
         expectedValues.addAll( initFieldExpectedValues( "p_short", "short" ) );
-        expectedValues.add( new Pair<String, String>( "type_name", "short" ) );
+        expectedValues.add( new Pair<String, String>( "typeName", "short" ) );
 
         return expectedValues;
 

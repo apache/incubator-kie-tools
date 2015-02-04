@@ -21,7 +21,7 @@ import org.kie.workbench.common.services.refactoring.model.index.terms.IndexTerm
 @Portable
 public class JavaTypeParentIndexTerm implements IndexTerm {
 
-    public static final String TERM = "java_type_parent";
+    public static final String TERM = "javaTypeParent";
 
     @Override public String getTerm() {
         return TERM;

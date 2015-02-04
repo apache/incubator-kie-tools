@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class ProjectRootPathIndexTerm implements IndexTerm {
 
-    public static final String TERM = "project-root";
+    public static final String TERM = "projectRoot";
 
     @Override
     public String getTerm() {

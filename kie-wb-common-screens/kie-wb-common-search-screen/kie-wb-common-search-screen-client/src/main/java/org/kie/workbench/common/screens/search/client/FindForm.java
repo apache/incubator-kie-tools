@@ -39,13 +39,21 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.search.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.search.client.widgets.SearchResultTable;
 import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
+import org.kie.workbench.common.screens.search.model.SearchPageRow;
+import org.kie.workbench.common.screens.search.service.SearchService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
+import org.uberfire.paging.PageResponse;
+
+import static org.jboss.errai.bus.client.api.base.MessageBuilder.*;
 
 @Dependent
 @WorkbenchScreen(identifier = "FindForm")
@@ -168,8 +176,8 @@ public class FindForm
         }
 
         if ( !formatTextBox.getText().trim().isEmpty() ) {
-            final String pattern = clientTypeRegistry.resolveWildcardPattern( formatTextBox.getText().trim() );
-            metadata.put( "filename", pattern );
+            final String pattern = formatTextBox.getText().trim();
+            metadata.put( "extension", pattern );
         }
 
         if ( !subjectTextBox.getText().trim().isEmpty() ) {
