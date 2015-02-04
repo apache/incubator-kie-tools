@@ -48,6 +48,7 @@ import com.ait.lienzo.client.core.types.SpriteBehaviorMap.SpriteBehaviorMapJSO;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
 import com.ait.lienzo.shared.core.types.ArrowType;
+import com.ait.lienzo.shared.core.types.AutoScaleType;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
@@ -66,7 +67,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
 {
-    private static final ImmediateAttributesChangedBatcher S_BAT = new ImmediateAttributesChangedBatcher();
+    private static final ImmediateAttributesChangedBatcher DEFAULT_BATCHER = new ImmediateAttributesChangedBatcher();
 
     private final IJSONSerializable<?>                     m_ser;
 
@@ -131,13 +132,22 @@ public class Attributes
     {
         if ((null != m_set) && (null != m_ser))
         {
-            if (null == m_bat)
+            if (null != m_bat)
             {
-                S_BAT.bufferAttributeWithManager(name, m_man);
+                m_bat.bufferAttributeWithManager(name, m_man);
             }
             else
             {
-                m_bat.bufferAttributeWithManager(name, m_man);
+                final IAttributesChangedBatcher bat = LienzoCore.get().getAttributesChangedBatcher();
+
+                if (null != bat)
+                {
+                    bat.bufferAttributeWithManager(name, m_man);
+                }
+                else
+                {
+                    ImmediateAttributesChangedBatcher.INSTANCE.bufferAttributeWithManager(name, m_man);
+                }
             }
         }
     }
@@ -150,7 +160,72 @@ public class Attributes
         }
         else
         {
-            m_bat = S_BAT;
+            m_bat = null;
+        }
+    }
+
+    public final AutoScaleType getAutoScale()
+    {
+        return AutoScaleType.lookup(getString(Attribute.AUTO_SCALE.getProperty()));
+    }
+
+    public final void setAutoScale(final AutoScaleType type)
+    {
+        if (null != type)
+        {
+            put(Attribute.AUTO_SCALE.getProperty(), type.getValue());
+        }
+        else
+        {
+            delete(Attribute.AUTO_SCALE.getProperty());
+        }
+    }
+
+    public final Point2D getViewLocation()
+    {
+        final JavaScriptObject view = getObject(Attribute.VIEW_LOCATION.getProperty());
+
+        if (null != view)
+        {
+            final Point2DJSO pjso = view.cast();
+
+            return new Point2D(pjso);
+        }
+        return null;
+    }
+
+    public final void setViewLocation(final Point2D view)
+    {
+        if (null != view)
+        {
+            put(Attribute.VIEW_LOCATION.getProperty(), view.getJSO());
+        }
+        else
+        {
+            delete(Attribute.VIEW_LOCATION.getProperty());
+        }
+    }
+
+    public final double getViewDomain()
+    {
+        final double domain = m_jso.getDouble(Attribute.VIEW_DOMAIN.getProperty());
+
+        if (domain < 1)
+        {
+            return 0;
+        }
+        return domain;
+    }
+
+    public final void setViewDomain(final double domain)
+    {
+        if (domain < 1)
+        {
+            delete(Attribute.VIEW_DOMAIN.getProperty());
+        }
+        else
+        {
+            put(Attribute.VIEW_DOMAIN.getProperty(), domain);
         }
     }
 
@@ -1571,9 +1646,14 @@ public class Attributes
         return LienzoCore.get().getDefaultConnectorOffset();
     }
 
-    public final boolean hasTransformAttributes()
+    public final boolean hasAnyTransformAttributes()
     {
-        return hasTransformAttributes(m_jso);
+        return hasAnyTransformAttributes(m_jso);
+    }
+
+    public final boolean hasComplexTransformAttributes()
+    {
+        return hasComplexTransformAttributes(m_jso);
     }
 
     public final boolean hasExtraStrokeAttributes()
@@ -1581,45 +1661,50 @@ public class Attributes
         return hasExtraStrokeAttributes(m_jso);
     }
 
-    private final native boolean hasTransformAttributes(NFastStringMapMixedJSO jso)
+    private static final native boolean hasAnyTransformAttributes(NFastStringMapMixedJSO jso)
     /*-{
         return ((jso.x !== undefined) || (jso.y !== undefined) || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined) || (jso.transform !== undefined));
     }-*/;
 
-    private final native boolean hasExtraStrokeAttributes(NFastStringMapMixedJSO jso)
+    private static final native boolean hasComplexTransformAttributes(NFastStringMapMixedJSO jso)
+    /*-{
+        return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
+    }-*/;
+
+    private static final native boolean hasExtraStrokeAttributes(NFastStringMapMixedJSO jso)
     /*-{
         return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined) || (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
     }-*/;
 
-    public final void put(String name, String value)
+    public final void put(final String name, final String value)
     {
         m_jso.put(name, value);
 
         checkDispatchAttributeChanged(name);
     }
 
-    public final void put(String name, int value)
+    public final void put(final String name, final int value)
     {
         m_jso.put(name, value);
 
         checkDispatchAttributeChanged(name);
     }
 
-    public final void put(String name, double value)
+    public final void put(final String name, final double value)
     {
         m_jso.put(name, value);
 
         checkDispatchAttributeChanged(name);
     }
 
-    public final void put(String name, boolean value)
+    public final void put(final String name, final boolean value)
     {
         m_jso.put(name, value);
 
         checkDispatchAttributeChanged(name);
     }
 
-    public final void put(String name, JavaScriptObject value)
+    public final void put(final String name, final JavaScriptObject value)
     {
         m_jso.put(name, value);
 

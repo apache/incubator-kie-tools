@@ -20,6 +20,8 @@ import com.google.gwt.event.shared.HandlerManager;
 
 public final class ImmediateAttributesChangedBatcher implements IAttributesChangedBatcher
 {
+    public static final ImmediateAttributesChangedBatcher INSTANCE = new ImmediateAttributesChangedBatcher();
+
     public ImmediateAttributesChangedBatcher()
     {
     }

@@ -43,6 +43,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
+import com.ait.lienzo.shared.core.types.AutoScaleType;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.java.util.function.Predicate;
@@ -314,7 +315,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
             }
         }
     }
-    
+
     public final void batch()
     {
         final NFastArrayList<Scene> scenes = getChildNodes();
@@ -518,6 +519,42 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         return this;
     }
 
+    public Viewport setAutoScale(final AutoScaleType type)
+    {
+        getAttributes().setAutoScale(type);
+
+        return this;
+    }
+
+    public AutoScaleType getAutoScale()
+    {
+        return getAttributes().getAutoScale();
+    }
+
+    public Viewport setViewLocation(final Point2D location)
+    {
+        getAttributes().setViewLocation(location);
+
+        return this;
+    }
+
+    public Point2D getViewLocation()
+    {
+        return getAttributes().getViewLocation();
+    }
+
+    public Viewport setViewDomain(final double domain)
+    {
+        getAttributes().setViewDomain(domain);
+
+        return this;
+    }
+
+    public double getViewDomain()
+    {
+        return getAttributes().getViewDomain();
+    }
+
     /**
      * Returns a {@link JSONObject} representation of the {@link Viewport} with its {@link Attributes} as well as its children.
      * 
@@ -673,6 +710,12 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
             // For Viewports, the Transform is required (for other Nodes it's optional),
             // so override the requirednesss.
+
+            addAttribute(Attribute.AUTO_SCALE);
+
+            addAttribute(Attribute.VIEW_DOMAIN);
+
+            addAttribute(Attribute.VIEW_LOCATION);
 
             addAttribute(Attribute.TRANSFORM, true);
         }

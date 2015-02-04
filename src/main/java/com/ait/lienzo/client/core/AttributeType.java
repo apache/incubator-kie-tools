@@ -51,6 +51,7 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
+import com.ait.lienzo.shared.core.types.AutoScaleType;
 import com.google.gwt.json.client.JSONValue;
 
 /**
@@ -121,6 +122,8 @@ public class AttributeType
     public static AttributeType     STROKE_TYPE               = COLOR_TYPE;
 
     public static AttributeType     DIRECTION_TYPE            = new AttributeType(new EnumValidator<Direction>("Direction", Direction.values()));
+
+    public static AttributeType     AUTO_SCALE_TYPE           = new AttributeType(new EnumValidator<AutoScaleType>("AutoScale", AutoScaleType.values()));
 
     private IAttributeTypeValidator m_validator;
 

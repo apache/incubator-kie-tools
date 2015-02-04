@@ -211,6 +211,12 @@ public class Attribute
 
     public static final Attribute           TAIL_DIRECTION                   = new Attribute("tailDirection", MESSAGES.tailDirectionLabel(), MESSAGES.tailDirectionDescription(), AttributeType.DIRECTION_TYPE);
 
+    public static final Attribute           AUTO_SCALE                       = new Attribute("autoScale", MESSAGES.autoScaleLabel(), MESSAGES.autoScaleDescription(), AttributeType.AUTO_SCALE_TYPE);
+
+    public static final Attribute           VIEW_DOMAIN                      = new Attribute("viewDomain", MESSAGES.viewDomainLabel(), MESSAGES.viewDomainDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           VIEW_LOCATION                    = new Attribute("viewLocation", MESSAGES.viewLocationLabel(), MESSAGES.viewLocationDescription(), AttributeType.POINT2D_TYPE);
+
     private final String                    m_property;
 
     private final String                    m_label;

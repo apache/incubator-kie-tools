@@ -626,4 +626,22 @@ public interface MessageConstants extends Constants
 
     @DefaultStringValue("Correction Offset of a PolyLine connector.")
     public String correctionOffsetDescription();
+
+    @DefaultStringValue("Auto Scale")
+    public String autoScaleLabel();
+
+    @DefaultStringValue("Automatically scale a viewport to fit the window size.")
+    public String autoScaleDescription();
+
+    @DefaultStringValue("View Domain")
+    public String viewDomainLabel();
+
+    @DefaultStringValue("Domain ( positive axis ) of a Viewport.")
+    public String viewDomainDescription();
+
+    @DefaultStringValue("View Location")
+    public String viewLocationLabel();
+
+    @DefaultStringValue("View location in the Viewport Domain.")
+    public String viewLocationDescription();
 }

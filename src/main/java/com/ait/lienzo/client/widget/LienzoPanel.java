@@ -24,8 +24,10 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.CursorMap;
+import com.ait.lienzo.shared.core.types.AutoScaleType;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.java.util.function.Predicate;
@@ -157,6 +159,42 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
         super.onAttach();
 
         onResize();
+    }
+
+    public LienzoPanel setAutoScale(final AutoScaleType type)
+    {
+        getViewport().setAutoScale(type);
+
+        return this;
+    }
+
+    public AutoScaleType getAutoScale()
+    {
+        return getViewport().getAutoScale();
+    }
+
+    public LienzoPanel setViewLocation(final Point2D location)
+    {
+        getViewport().setViewLocation(location);
+
+        return this;
+    }
+
+    public Point2D getViewLocation()
+    {
+        return getViewport().getViewLocation();
+    }
+
+    public LienzoPanel setViewDomain(final double domain)
+    {
+        getViewport().setViewDomain(domain);
+
+        return this;
+    }
+
+    public double getViewDomain()
+    {
+        return getViewport().getViewDomain();
     }
 
     public LienzoPanel setTransform(final Transform transform)

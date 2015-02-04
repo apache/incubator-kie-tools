@@ -443,7 +443,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     protected final Transform getPossibleNodeTransform()
     {
-        if (false == m_attr.hasTransformAttributes())
+        if (false == m_attr.hasAnyTransformAttributes())
         {
             return null;
         }
@@ -468,66 +468,76 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
                 return xfrm;
             }
         }
+        if (false == m_attr.hasComplexTransformAttributes())
+        {
+            return xfrm;
+        }
         // Otherwise use ROTATION, SCALE, OFFSET and SHEAR
 
+        double ox = 0;
+
+        double oy = 0;
+
+        final Point2D offset = m_attr.getOffset();
+
+        if (null != offset)
+        {
+            ox = offset.getX();
+
+            oy = offset.getY();
+        }
         final double r = m_attr.getRotation();
 
         if (r != 0)
         {
-            final Point2D offset = m_attr.getOffset();
-
-            if (null != offset)
+            if ((ox != 0) || (oy != 0))
             {
-                final double ox = offset.getX();
+                xfrm.translate(ox, oy);
 
-                final double oy = offset.getY();
-
-                if ((ox != 0) || (oy != 0))
-                {
-                    xfrm.translate(ox, oy);
-                }
                 xfrm.rotate(r);
 
-                if ((ox != 0) || (oy != 0))
-                {
-                    xfrm.translate(-1 * ox, -1 * oy);
-                }
+                xfrm.translate(-ox, -oy);
             }
             else
             {
                 xfrm.rotate(r);
             }
         }
-        if (m_attr.isDefined(Attribute.SCALE))
+        final Point2D scale = m_attr.getScale();
+
+        if (null != scale)
         {
-            Point2D scale = m_attr.getScale();
+            final double sx = scale.getX();
 
-            if (null != scale)
+            final double sy = scale.getY();
+
+            if ((sx != 1) || (sy != 1))
             {
-                final double sx = scale.getX();
+                if ((ox != 0) || (oy != 0))
+                {
+                    xfrm.translate(ox, oy);
 
-                final double sy = scale.getY();
+                    xfrm.scale(sx, sy);
 
-                if ((sx != 1) || (sy != 1))
+                    xfrm.translate(-ox, -oy);
+                }
+                else
                 {
                     xfrm.scale(sx, sy);
                 }
             }
         }
-        if (m_attr.isDefined(Attribute.SHEAR))
+        final Point2D shear = m_attr.getShear();
+
+        if (null != shear)
         {
-            Point2D shear = m_attr.getShear();
+            final double sx = shear.getX();
 
-            if (null != shear)
+            final double sy = shear.getY();
+
+            if ((sx != 0) || (sy != 0))
             {
-                final double sx = shear.getX();
-
-                final double sy = shear.getY();
-
-                if ((sx != 0) || (sy != 0))
-                {
-                    xfrm.shear(sx, sy);
-                }
+                xfrm.shear(sx, sy);
             }
         }
         return xfrm;
