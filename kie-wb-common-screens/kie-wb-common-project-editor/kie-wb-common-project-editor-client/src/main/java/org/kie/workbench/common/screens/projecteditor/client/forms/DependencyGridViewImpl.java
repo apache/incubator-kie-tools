@@ -290,18 +290,18 @@ public class DependencyGridViewImpl
     }
 
     private void addRemoveRowColumn() {
-        Column<Dependency, ImageResource> column = new Column<Dependency, ImageResource>( new TrashCanImageCell() ) {
+        Column<Dependency, String> column = new Column<Dependency, String>( new TrashCanImageCell() ) {
             @Override
-            public ImageResource getValue( Dependency dependency ) {
-                return ProjectEditorResources.INSTANCE.Trash();
+            public String getValue( Dependency dependency ) {
+                return CommonConstants.INSTANCE.Delete();
             }
         };
 
-        column.setFieldUpdater( new FieldUpdater<Dependency, ImageResource>() {
+        column.setFieldUpdater( new FieldUpdater<Dependency, String>() {
             @Override
             public void update( int index,
                                 Dependency dependency,
-                                ImageResource value ) {
+                                String value ) {
                 presenter.onRemoveDependency( dependency );
             }
         } );
