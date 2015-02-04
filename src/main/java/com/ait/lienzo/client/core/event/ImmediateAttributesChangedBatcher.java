@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.event;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.event.shared.HandlerManager;
 
 public final class ImmediateAttributesChangedBatcher implements IAttributesChangedBatcher
@@ -29,23 +31,17 @@ public final class ImmediateAttributesChangedBatcher implements IAttributesChang
     @Override
     public void bufferAttributeWithManager(final String name, final HandlerManager manager)
     {
-        doRunnableNow(new Runnable()
+        Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
         {
             @Override
-            public void run()
+            public boolean execute()
             {
                 manager.fireEvent(new AttributesChangedEvent(name));
-            }
-        });
-    }
 
-    private static final native void doRunnableNow(Runnable r)
-    /*-{
-        var f = function() {
-            r.@java.lang.Runnable::run()();
-        };
-        $wnd.setTimeout(f, 0);
-    }-*/;
+                return false;
+            }
+        }, 0);
+    }
 
     @Override
     public final IAttributesChangedBatcher copy()

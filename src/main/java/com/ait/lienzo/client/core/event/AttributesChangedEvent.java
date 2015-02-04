@@ -60,6 +60,11 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         return null;
     }
 
+    public final String toJSONString()
+    {
+        return m_changed.toJSONString();
+    }
+
     public final boolean any(final Attribute... attributes)
     {
         for (Attribute attribute : attributes)

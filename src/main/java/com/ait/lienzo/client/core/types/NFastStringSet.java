@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.json.client.JSONObject;
 
 public class NFastStringSet implements Iterable<String>
 {
@@ -141,6 +142,13 @@ public class NFastStringSet implements Iterable<String>
     public final Iterator<String> iterator()
     {
         return Collections.unmodifiableCollection(keys()).iterator();
+    }
+
+    public final String toJSONString()
+    {
+        JSONObject object = new JSONObject(m_jso);
+
+        return object.toString();
     }
 
     private static final class FastStringSetJSO extends JavaScriptObject

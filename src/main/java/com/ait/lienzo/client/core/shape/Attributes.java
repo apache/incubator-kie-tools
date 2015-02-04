@@ -132,21 +132,24 @@ public class Attributes
     {
         if ((null != m_set) && (null != m_ser))
         {
-            if (null != m_bat)
+            if (m_set.contains(name))
             {
-                m_bat.bufferAttributeWithManager(name, m_man);
-            }
-            else
-            {
-                final IAttributesChangedBatcher bat = LienzoCore.get().getAttributesChangedBatcher();
-
-                if (null != bat)
+                if (null != m_bat)
                 {
-                    bat.bufferAttributeWithManager(name, m_man);
+                    m_bat.bufferAttributeWithManager(name, m_man);
                 }
                 else
                 {
-                    ImmediateAttributesChangedBatcher.INSTANCE.bufferAttributeWithManager(name, m_man);
+                    final IAttributesChangedBatcher bat = LienzoCore.get().getAttributesChangedBatcher();
+
+                    if (null != bat)
+                    {
+                        bat.bufferAttributeWithManager(name, m_man);
+                    }
+                    else
+                    {
+                        ImmediateAttributesChangedBatcher.INSTANCE.bufferAttributeWithManager(name, m_man);
+                    }
                 }
             }
         }
