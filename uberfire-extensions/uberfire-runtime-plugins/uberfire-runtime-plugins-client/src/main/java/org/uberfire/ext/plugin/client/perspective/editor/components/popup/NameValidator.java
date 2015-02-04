@@ -5,7 +5,7 @@ import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
 public class NameValidator {
 
-    public static final String VALID_DIR_REGEX = "^([a-zA-Z0-9][^*\"\\/><?\\\\\\!|;:]*)$";
+    public static final String VALID_DIR_REGEX = "^([^*\"\\/><?\\\\\\!|;:]*)$";
 
     private String error;
 
