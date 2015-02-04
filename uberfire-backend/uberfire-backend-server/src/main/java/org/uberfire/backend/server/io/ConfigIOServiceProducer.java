@@ -25,7 +25,8 @@ public class ConfigIOServiceProducer {
     @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
 
-    @Inject @IOSecurityAuth
+    @Inject
+    @IOSecurityAuth
     private Instance<AuthenticationService> applicationProvidedConfigIOAuthService;
 
     private IOService configIOService;
@@ -35,8 +36,7 @@ public class ConfigIOServiceProducer {
         if ( clusterServiceFactory == null ) {
             configIOService = new IOServiceNio2WrapperImpl( "config" );
         } else {
-            configIOService = new IOServiceClusterImpl(
-                                                       new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
+            configIOService = new IOServiceClusterImpl( new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
         }
     }
 

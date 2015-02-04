@@ -36,12 +36,13 @@ public class ClusterServiceHelix implements ClusterService {
     private final String clusterName;
     private final String instanceName;
     private final HelixManager participantManager;
-    private final SimpleLock lock = new SimpleLock();
     private final String resourceName;
-    private AtomicInteger stackSize = new AtomicInteger( 0 );
     private final Map<String, MessageHandlerResolver> messageHandlerResolver = new HashMap<String, MessageHandlerResolver>();
-    private AtomicBoolean started = new AtomicBoolean( false );
+    private final AtomicBoolean started = new AtomicBoolean( false );
     private final Collection<Runnable> onStart = new ArrayList<Runnable>();
+
+    private final SimpleLock lock = new SimpleLock();
+    private final AtomicInteger stackSize = new AtomicInteger( 0 );
 
     public ClusterServiceHelix( final String clusterName,
                                 final String zkAddress,

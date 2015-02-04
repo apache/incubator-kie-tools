@@ -10,7 +10,6 @@ import java.util.Random;
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -33,6 +32,8 @@ public class BatchTest {
     static JGitFileSystem fs1Batch;
     static FileSystem fs2;
     static JGitFileSystem fs2Batch;
+    static FileSystem fs3;
+    static JGitFileSystem fs3Batch;
 
     @BeforeClass
     public static void setup() throws IOException {
@@ -57,6 +58,14 @@ public class BatchTest {
         }} );
         fs2Batch = (JGitFileSystem) fs2;
         init = ioService.get( URI.create( "git://check-amend-repo-test/init.file" ) );
+        ioService.write( init, "setupFS!" );
+
+        final URI newRepo3 = URI.create( "git://check-amend-repo-test-2" );
+        fs3 = ioService.newFileSystem( newRepo3, new HashMap<String, Object>() {{
+            put( "init", "true" );
+        }} );
+        fs3Batch = (JGitFileSystem) fs3;
+        init = ioService.get( URI.create( "git://check-amend-repo-test-2/init.file" ) );
         ioService.write( init, "setupFS!" );
     }
 
@@ -265,14 +274,17 @@ public class BatchTest {
         //inner batch (samme commit)
         ioService.startBatch( new FileSystem[]{ f11.getFileSystem() } );
         ioService.write( f11, "f2-u2 - inner batch!" );
+        ioService.write( f11, "f2-u2 - inner 2 batch!" );
         ioService.endBatch();
+        ioService.write( f11, "f2-u2 - inner batch! last" );
 
         ioService.endBatch();
+
+        assertEquals( "f2-u2 - inner batch! last", ioService.readAllString( f11 ) );
 
         v = ioService.getFileAttributeView( f11, VersionAttributeView.class );
         assertNotNull( v );
-        assertEquals( 3, v.readAttributes().history().records().size() );
-
+        assertEquals( 4, v.readAttributes().history().records().size() );
     }
 
     @Test

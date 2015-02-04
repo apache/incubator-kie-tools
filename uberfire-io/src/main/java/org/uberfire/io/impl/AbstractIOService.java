@@ -25,21 +25,18 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.lock.BatchLockControl;
-import org.uberfire.io.lock.FSLockService;
-import org.uberfire.io.lock.impl.BatchLockControlImpl;
-import org.uberfire.io.lock.impl.FSLockServiceImpl;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractPath;
 import org.uberfire.java.nio.base.FileSystemState;
@@ -76,59 +73,34 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
 
     protected static final Charset UTF_8 = Charset.forName( "UTF-8" );
 
-    protected final FSLockService lockService;
-    protected final BatchLockControl batchLockControl;
     protected final IOWatchService ioWatchService;
-    protected final Set<FileSystem> fileSystems = new HashSet<FileSystem>();
+    protected final Set<FileSystem> fileSystems = Collections.newSetFromMap( new ConcurrentHashMap<FileSystem, Boolean>() );
 
     protected NewFileSystemListener newFileSystemListener = null;
     protected boolean isDisposed = false;
     private String id;
 
+    private final BatchLockControl batchLockControl = new BatchLockControl();
+
     public AbstractIOService() {
         this.id = DEFAULT_SERVICE_NAME;
-        lockService = new FSLockServiceImpl();
-        batchLockControl = new BatchLockControlImpl();
         ioWatchService = null;
     }
 
     public AbstractIOService( final String id ) {
         this.id = id;
-        lockService = new FSLockServiceImpl();
-        batchLockControl = new BatchLockControlImpl();
         ioWatchService = null;
     }
 
     public AbstractIOService( final IOWatchService watchService ) {
         this.id = DEFAULT_SERVICE_NAME;
-        lockService = new FSLockServiceImpl();
-        batchLockControl = new BatchLockControlImpl();
         ioWatchService = watchService;
     }
 
     public AbstractIOService( final String id,
                               final IOWatchService watchService ) {
         this.id = id;
-        lockService = new FSLockServiceImpl();
-        batchLockControl = new BatchLockControlImpl();
         ioWatchService = watchService;
-    }
-
-    public AbstractIOService( final FSLockService lockService,
-                              final IOWatchService watchService ) {
-        this.id = DEFAULT_SERVICE_NAME;
-        this.lockService = lockService;
-        this.batchLockControl = new BatchLockControlImpl();
-        this.ioWatchService = watchService;
-    }
-
-    public AbstractIOService( final String id,
-                              final FSLockService lockService,
-                              final IOWatchService watchService ) {
-        this.id = id;
-        this.lockService = lockService;
-        this.ioWatchService = watchService;
-        this.batchLockControl = new BatchLockControlImpl();
     }
 
     @Override
@@ -153,8 +125,8 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         batchProcess( fs, options );
     }
 
-    private void batchProcess( FileSystem[] fs,
-                               Option... options ) {
+    private void batchProcess( final FileSystem[] fs,
+                               final Option... options ) {
         startBatchProcess( fs );
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
@@ -171,68 +143,36 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
     }
 
-    private void startBatchProcess( FileSystem[] fileSystems ) {
-        batchLockControl.start( fileSystems );
-        sortFileSystemsForLocking( fileSystems );
-        for ( FileSystem fs : fileSystems ) {
-            lockService.lock( fs );
-            if ( !lockService.isAInnerBatch( fs ) ) {
-                setBatchModeOn( fs );
-            }
+    private synchronized void startBatchProcess( final FileSystem... fileSystems ) {
+        batchLockControl.lock( fileSystems );
+        for ( final FileSystem fs : fileSystems ) {
+            setBatchModeOn( fs );
         }
     }
 
     @Override
     public void endBatch() {
-        Collection<FileSystem> lockedFileSystems = batchLockControl.getLockedFileSystems();
-        if ( lockedFileSystems == null || lockedFileSystems.size() == 0 ) {
-            throw new RuntimeException( "There is no locked FS" );
+        if ( !batchLockControl.isLocked() ) {
+            throw new RuntimeException( "There is no batch process." );
         }
-        for ( FileSystem fs : lockedFileSystems ) {
-            final boolean innerBatch = lockService.isAInnerBatch( fs );
-            lockService.unlock( fs );
-            if ( !innerBatch ) {
+
+        batchLockControl.unlock();
+        if ( !batchLockControl.isLocked() ) {
+            for ( final FileSystem fs : fileSystems ) {
                 unsetBatchModeOn( fs );
             }
         }
+
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
         }
-        batchLockControl.end();
-    }
-
-    private void sortFileSystemsForLocking( FileSystem[] fileSystems ) {
-        Arrays.sort( fileSystems, new Comparator<FileSystem>() {
-            @Override
-            public int compare( FileSystem o1,
-                                FileSystem o2 ) {
-                Integer idO1 = System.identityHashCode( o1 );
-                Integer idO2 = System.identityHashCode( o2 );
-                return idO1.compareTo( idO2 );
-            }
-        } );
     }
 
     private synchronized void cleanupClosedFileSystems() {
-
         final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
         for ( final FileSystem fileSystem : fileSystems ) {
             if ( !fileSystem.isOpen() ) {
                 removeList.add( fileSystem );
-                lockService.removeFromService( fileSystem );
-            }
-        }
-
-        fileSystems.removeAll( removeList );
-    }
-
-    private synchronized void removeClosedFileSystems() {
-
-        final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
-        for ( final FileSystem fileSystem : fileSystems ) {
-            if ( !fileSystem.isOpen() ) {
-                removeList.add( fileSystem );
-                lockService.removeFromService( fileSystem );
             }
         }
 
@@ -240,11 +180,11 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     }
 
     private void setBatchModeOn( FileSystem fs ) {
-        setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+        Files.setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
     }
 
     private void unsetBatchModeOn( FileSystem fs ) {
-        setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+        Files.setAttribute( fs.getRootDirectories().iterator().next(), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
     }
 
     @Override
@@ -300,9 +240,8 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
             ioWatchService.addWatchService( fs, fs.newWatchService() );
         }
 
-        synchronized ( this ) {
-            fileSystems.add( fs );
-        }
+        fileSystems.add( fs );
+
         return fs;
     }
 
@@ -332,7 +271,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                                          final OpenOption... options )
             throws IllegalArgumentException, UnsupportedOperationException,
             IOException, SecurityException {
-        waitFSUnlock( path );
         return Files.newOutputStream( path, options );
     }
 
@@ -341,7 +279,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                                                final OpenOption... options )
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException {
-        waitFSUnlock( path );
         return Files.newByteChannel( path, options );
     }
 
@@ -407,7 +344,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                               final String attribute,
                               final Object value )
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        waitFSUnlock( path );
         Files.setAttribute( path, attribute, value );
         return path;
     }
@@ -450,7 +386,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                                          final FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
-        waitFSUnlock( path );
         try {
             newByteChannel( path, CREATE_NEW_FILE_OPTIONS, attrs ).close();
         } catch ( java.io.IOException e ) {
@@ -471,7 +406,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     public long copy( final Path source,
                       final OutputStream out )
             throws IOException, SecurityException {
-        waitFSUnlock( source );
         return Files.copy( source, out );
     }
 
@@ -515,7 +449,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                                              final Charset cs,
                                              final OpenOption... options )
             throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
-        waitFSUnlock( path );
         return Files.newBufferedWriter( path, cs, options );
     }
 
@@ -524,7 +457,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                       final Path target,
                       final CopyOption... options )
             throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException, UnsupportedOperationException, SecurityException {
-        waitFSUnlock( target );
         return Files.copy( in, target, options );
     }
 
@@ -660,7 +592,6 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
                                     final byte[] bytes,
                                     final Set<? extends OpenOption> options,
                                     final FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        waitFSUnlock( path );
         SeekableByteChannel byteChannel;
         try {
             byteChannel = newByteChannel( path, buildOptions( options ), attrs );
@@ -685,11 +616,5 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     @Override
     public String getId() {
         return id;
-    }
-
-    protected void waitFSUnlock( Path path ) {
-        if ( path != null && path.getFileSystem() != null ) {
-            lockService.waitForUnlock( path.getFileSystem() );
-        }
     }
 }

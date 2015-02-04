@@ -73,7 +73,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     private final IOServiceIdentifiable service;
     private final ClusterService clusterService;
     private final AtomicBoolean started = new AtomicBoolean( false );
-    private final Set<FileSystem> batchFileSystems = Collections.newSetFromMap( new ConcurrentHashMap<FileSystem, Boolean>() );
+    private final Set<String> batchFileSystems = Collections.newSetFromMap( new ConcurrentHashMap<String, Boolean>() );
 
     private NewFileSystemListener newFileSystemListener = null;
 
@@ -218,54 +218,70 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public void startBatch( FileSystem fs ) {
+    public synchronized void startBatch( FileSystem fs ) {
         startBatch( new FileSystem[]{ fs } );
     }
 
     @Override
-    public void startBatch( FileSystem[] fs,
-                            final Option... options ) {
+    public synchronized void startBatch( FileSystem[] fs,
+                                         final Option... options ) {
         clusterService.lock();
         for ( final FileSystem f : fs ) {
-            batchFileSystems.add( f );
+            if ( f instanceof FileSystemId ) {
+                batchFileSystems.add( ( (FileSystemId) f ).id() );
+            }
         }
         service.startBatch( fs, options );
     }
 
     @Override
-    public void startBatch( final FileSystem fs,
-                            final Option... options ) {
+    public synchronized void startBatch( final FileSystem fs,
+                                         final Option... options ) {
         clusterService.lock();
-        batchFileSystems.add( fs );
+        if ( fs instanceof FileSystemId ) {
+            batchFileSystems.add( ( (FileSystemId) fs ).id() );
+        }
+
         service.startBatch( fs, options );
     }
 
     @Override
-    public void startBatch( final FileSystem... fs ) {
+    public synchronized void startBatch( final FileSystem... fs ) {
         clusterService.lock();
-        for ( FileSystem f : fs ) {
-            batchFileSystems.add( f );
+        for ( final FileSystem f : fs ) {
+            if ( f instanceof FileSystemId ) {
+                batchFileSystems.add( ( (FileSystemId) f ).id() );
+            }
         }
         service.startBatch( fs );
     }
 
     @Override
-    public void endBatch() {
+    public synchronized void endBatch() {
         service.endBatch();
         if ( !clusterService.isInnerLocked() ) {
-            final AtomicInteger process = new AtomicInteger();
-            final int size = batchFileSystems.size();
+            final AtomicInteger process = new AtomicInteger( batchFileSystems.size() );
 
-            for ( final FileSystem fs : batchFileSystems ) {
-                new FileSystemSyncLock<Void>( service.getId(), fs ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
-                    @Override
-                    public Void call() throws Exception {
-                        if ( process.incrementAndGet() == size ) {
+            for ( final FileSystem fs : service.getFileSystems() ) {
+                if ( fs instanceof FileSystemId &&
+                        batchFileSystems.contains( ( (FileSystemId) fs ).id() ) ) {
+                    try {
+                        new FileSystemSyncLock<Void>( service.getId(), fs ).execute( clusterService, new FutureTask<Void>( new Callable<Void>() {
+                            @Override
+                            public Void call() throws Exception {
+                                if ( process.decrementAndGet() == 0 ) {
+                                    clusterService.unlock();
+                                }
+                                return null;
+                            }
+                        } ) );
+                    } catch ( Exception ex ) {
+                        logger.error( "End batch error", ex );
+                        if ( process.decrementAndGet() == 0 ) {
                             clusterService.unlock();
                         }
-                        return null;
                     }
-                } ) );
+                }
             }
             batchFileSystems.clear();
         } else {

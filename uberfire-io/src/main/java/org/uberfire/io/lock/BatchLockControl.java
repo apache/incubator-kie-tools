@@ -1,12 +1,22 @@
 package org.uberfire.io.lock;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.uberfire.java.nio.file.FileSystem;
 
-public interface BatchLockControl {
+public class BatchLockControl {
 
-    void start( FileSystem[] fileSystems );
+    private ReentrantLock lock = new ReentrantLock( true );
 
-    java.util.Collection<FileSystem> getLockedFileSystems();
+    public void lock( final FileSystem... fileSystems ) {
+        lock.lock();
+    }
 
-    void end();
+    public void unlock() {
+        lock.unlock();
+    }
+
+    public boolean isLocked() {
+        return lock.isLocked();
+    }
 }

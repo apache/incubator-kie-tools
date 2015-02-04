@@ -1,19 +1,21 @@
 package org.uberfire.io.impl.cluster.helix;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 class SimpleLock {
 
-    private boolean isLocked;
+    private AtomicBoolean isLocked = new AtomicBoolean( false );
 
-    public void lock() {
-        this.isLocked = true;
+    public synchronized void lock() {
+        isLocked.set( true );
     }
 
-    public boolean isLocked() {
-        return isLocked;
+    public synchronized boolean isLocked() {
+        return isLocked.get();
     }
 
     public void unlock() {
-        isLocked = false;
+        isLocked.set( false );
     }
 
 }
