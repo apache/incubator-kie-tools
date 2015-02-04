@@ -227,13 +227,12 @@ public class ExplorerServiceHelper {
         return folderItems;
     }
 
-    public void store(
-            OrganizationalUnit selectedOrganizationalUnit,
-            Repository selectedRepository,
-            Project selectedProject,
-            FolderListing folderListing,
-            Package selectedPackage,
-            final Set<Option> options ) {
+    public void store( final OrganizationalUnit selectedOrganizationalUnit,
+                       final Repository selectedRepository,
+                       final Project selectedProject,
+                       final FolderListing folderListing,
+                       final Package selectedPackage,
+                       final Set<Option> options ) {
 
         final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
         final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );

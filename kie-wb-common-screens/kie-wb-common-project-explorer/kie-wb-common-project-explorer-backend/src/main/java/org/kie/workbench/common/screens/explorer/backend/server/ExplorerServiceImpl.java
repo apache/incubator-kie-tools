@@ -23,6 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -141,9 +142,7 @@ public class ExplorerServiceImpl
 
     @Override
     public ProjectExplorerContent getContent( final ProjectExplorerContentQuery query ) {
-
         return projectExplorerContentResolver.resolve( query );
-
     }
 
     @Override

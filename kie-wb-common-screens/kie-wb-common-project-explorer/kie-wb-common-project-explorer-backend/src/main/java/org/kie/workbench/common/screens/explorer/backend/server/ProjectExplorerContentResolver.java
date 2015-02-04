@@ -69,82 +69,72 @@ public class ProjectExplorerContentResolver {
     @SessionScoped
     protected User identity;
 
-    private OrganizationalUnit selectedOrganizationalUnit;
-    private Repository selectedRepository;
-    private Project selectedProject;
-    private Package selectedPackage;
-    private FolderItem selectedItem;
-    private FolderListing folderListing;
-    private Map<FolderItem, List<FolderItem>> siblings;
-
-    private Set<OrganizationalUnit> organizationalUnits;
-    private Map<String, Repository> repositories;
-    private Map<String, Project> projects;
-
-    public ProjectExplorerContentResolver() {
-
-    }
-
     @Inject
-    public ProjectExplorerContentResolver(
-            KieProjectService projectService,
-            ExplorerServiceHelper helper,
-            AuthorizationManager authorizationManager,
-            OrganizationalUnitService organizationalUnitService ) {
+    public ProjectExplorerContentResolver( final KieProjectService projectService,
+                                           final ExplorerServiceHelper helper,
+                                           final AuthorizationManager authorizationManager,
+                                           final OrganizationalUnitService organizationalUnitService ) {
         this.projectService = projectService;
         this.helper = helper;
         this.authorizationManager = authorizationManager;
         this.organizationalUnitService = organizationalUnitService;
     }
 
-    public ProjectExplorerContent resolve( final ProjectExplorerContentQuery query ) {
+    public synchronized ProjectExplorerContent resolve( final ProjectExplorerContentQuery query ) {
 
-        setupSelectedItems( query );
+        final Content content = setupSelectedItems( query );
 
-        setSelectedOrganizationalUnit();
-        setSelectedRepository();
-        setSelectedProject();
+        setSelectedOrganizationalUnit( content );
+        setSelectedRepository( content );
+        setSelectedProject( content );
 
-        if ( selectedOrganizationalUnit == null || selectedRepository == null || selectedProject == null ) {
-            return emptyProjectExplorerContent();
+        if ( content.getSelectedOrganizationalUnit() == null || content.getSelectedRepository() == null || content.getSelectedProject() == null ) {
+            return emptyProjectExplorerContent( content );
         } else {
-            return projectExplorerContentWithSelections( query.getOptions() );
+            return projectExplorerContentWithSelections( content, query.getOptions() );
         }
     }
 
-    private ProjectExplorerContent projectExplorerContentWithSelections( final Set<Option> options ) {
+    private ProjectExplorerContent projectExplorerContentWithSelections( final Content content,
+                                                                         final Set<Option> options ) {
 
-        setFolderListing( options );
+        setFolderListing( content, options );
 
-        setSiblings();
+        setSiblings( content );
 
-        helper.store( selectedOrganizationalUnit, selectedRepository, selectedProject, folderListing, selectedPackage, options );
+        helper.store( content.getSelectedOrganizationalUnit(),
+                      content.getSelectedRepository(),
+                      content.getSelectedProject(),
+                      content.getFolderListing(),
+                      content.getSelectedPackage(),
+                      options );
 
         return new ProjectExplorerContent(
                 new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER ) {{
-                    addAll( organizationalUnits );
+                    addAll( content.getOrganizationalUnits() );
                 }},
-                selectedOrganizationalUnit,
+                content.getSelectedOrganizationalUnit(),
                 new TreeSet<Repository>( Sorters.REPOSITORY_SORTER ) {{
-                    addAll( repositories.values() );
+                    addAll( content.getRepositories().values() );
                 }},
-                selectedRepository,
+                content.getSelectedRepository(),
                 new TreeSet<Project>( Sorters.PROJECT_SORTER ) {{
-                    addAll( projects.values() );
+                    addAll( content.getProjects().values() );
                 }},
-                selectedProject,
-                folderListing,
-                siblings
+                content.getSelectedProject(),
+                content.getFolderListing(),
+                content.getSiblings()
         );
     }
 
-    private void setFolderListing( Set<Option> options ) {
-        folderListing = helper.getFolderListing( selectedItem, selectedProject, selectedPackage, options );
+    private void setFolderListing( final Content content,
+                                   final Set<Option> options ) {
+        content.setFolderListing( helper.getFolderListing( content.getSelectedItem(), content.getSelectedProject(), content.getSelectedPackage(), options ) );
     }
 
-    private void setSiblings() {
-        if ( folderListing.getSegments().size() > 1 ) {
-            final ListIterator<FolderItem> li = folderListing.getSegments().listIterator( folderListing.getSegments().size() );
+    private void setSiblings( final Content content ) {
+        if ( content.getFolderListing().getSegments().size() > 1 ) {
+            final ListIterator<FolderItem> li = content.getFolderListing().getSegments().listIterator( content.getFolderListing().getSegments().size() );
             while ( li.hasPrevious() ) {
                 final FolderItem currentItem = li.previous();
                 final List<FolderItem> result = new ArrayList<FolderItem>();
@@ -155,105 +145,103 @@ public class ProjectExplorerContentResolver {
                 } else if ( currentItem.getItem() instanceof Path ) {
                     result.addAll( getSegmentSiblings( (Path) currentItem.getItem() ) );
                 }
-                siblings.put( currentItem,
-                              result );
+                content.getSiblings().put( currentItem, result );
             }
         }
-        if ( selectedItem != null && selectedItem.getType().equals( FolderItemType.FOLDER ) &&
-                !siblings.containsKey( selectedItem ) ) {
-            final List<FolderItem> result = new ArrayList<FolderItem>();
-            result.add( selectedItem );
 
-            if ( selectedItem.getItem() instanceof Package ) {
-                result.addAll( getSegmentSiblings( (Package) selectedItem.getItem() ) );
-            } else if ( selectedItem.getItem() instanceof Path ) {
-                result.addAll( getSegmentSiblings( (Path) selectedItem.getItem() ) );
+        if ( content.getSelectedItem() != null && content.getSelectedItem().getType().equals( FolderItemType.FOLDER ) &&
+                !content.getSiblings().containsKey( content.getSelectedItem() ) ) {
+            final List<FolderItem> result = new ArrayList<FolderItem>();
+            result.add( content.getSelectedItem() );
+
+            if ( content.getSelectedItem().getItem() instanceof Package ) {
+                result.addAll( getSegmentSiblings( (Package) content.getSelectedItem().getItem() ) );
+            } else if ( content.getSelectedItem().getItem() instanceof Path ) {
+                result.addAll( getSegmentSiblings( (Path) content.getSelectedItem().getItem() ) );
             }
-            siblings.put( selectedItem,
-                          result );
+            content.getSiblings().put( content.getSelectedItem(),
+                                       result );
         }
 
-        if ( folderListing.getItem().getType().equals( FolderItemType.FOLDER ) &&
-                !siblings.containsKey( folderListing.getItem() ) ) {
+        if ( content.getFolderListing().getItem().getType().equals( FolderItemType.FOLDER ) &&
+                !content.getSiblings().containsKey( content.getFolderListing().getItem() ) ) {
             final List<FolderItem> result = new ArrayList<FolderItem>();
-            result.add( folderListing.getItem() );
+            result.add( content.getFolderListing().getItem() );
 
-            if ( folderListing.getItem().getItem() instanceof Package ) {
-                result.addAll( getSegmentSiblings( (Package) folderListing.getItem().getItem() ) );
-            } else if ( folderListing.getItem().getItem() instanceof Path ) {
-                result.addAll( getSegmentSiblings( (Path) folderListing.getItem().getItem() ) );
+            if ( content.getFolderListing().getItem().getItem() instanceof Package ) {
+                result.addAll( getSegmentSiblings( (Package) content.getFolderListing().getItem().getItem() ) );
+            } else if ( content.getFolderListing().getItem().getItem() instanceof Path ) {
+                result.addAll( getSegmentSiblings( (Path) content.getFolderListing().getItem().getItem() ) );
             }
             if ( !result.isEmpty() ) {
-                siblings.put( folderListing.getItem(),
-                              result );
+                content.getSiblings().put( content.getFolderListing().getItem(),
+                                           result );
             }
         }
 
         //Sort sibling lists before returning to client
-        for ( Map.Entry<FolderItem, List<FolderItem>> e : siblings.entrySet() ) {
+        for ( Map.Entry<FolderItem, List<FolderItem>> e : content.getSiblings().entrySet() ) {
             Collections.sort( e.getValue(),
                               Sorters.ITEM_SORTER );
         }
     }
 
-    private ProjectExplorerContent emptyProjectExplorerContent() {
+    private ProjectExplorerContent emptyProjectExplorerContent( final Content content ) {
         return new ProjectExplorerContent(
                 new TreeSet<OrganizationalUnit>( Sorters.ORGANIZATIONAL_UNIT_SORTER ) {{
-                    addAll( organizationalUnits );
+                    addAll( content.getOrganizationalUnits() );
                 }},
-                selectedOrganizationalUnit,
+                content.getSelectedOrganizationalUnit(),
                 new TreeSet<Repository>( Sorters.REPOSITORY_SORTER ) {{
-                    addAll( repositories.values() );
+                    addAll( content.getRepositories().values() );
                 }},
-                selectedRepository,
+                content.getSelectedRepository(),
                 new TreeSet<Project>( Sorters.PROJECT_SORTER ) {{
-                    addAll( projects.values() );
+                    addAll( content.getProjects().values() );
                 }},
-                selectedProject,
+                content.getSelectedProject(),
                 new FolderListing( null, Collections.<FolderItem>emptyList(), Collections.<FolderItem>emptyList() ),
                 Collections.<FolderItem, List<FolderItem>>emptyMap()
         );
     }
 
-    private void setSelectedProject() {
-        projects = getProjects( selectedRepository );
+    private void setSelectedProject( final Content content ) {
+        content.setProjects( getProjects( content.getSelectedRepository() ) );
 
-        if ( selectedProject == null || !projects.containsKey( selectedProject.getProjectName() ) ) {
-            selectedProject = ( projects.isEmpty() ? null : projects.values().iterator().next() );
+        if ( content.getSelectedProject() == null || !content.getProjects().containsKey( content.getSelectedProject().getProjectName() ) ) {
+            content.setSelectedProject( ( content.getProjects().isEmpty() ? null : content.getProjects().values().iterator().next() ) );
         } else {
-            selectedProject = projects.get( selectedProject.getProjectName() );
+            content.setSelectedProject( content.getProjects().get( content.getSelectedProject().getProjectName() ) );
         }
     }
 
-    private void setSelectedRepository() {
-        repositories = getRepositories( selectedOrganizationalUnit );
-        if ( selectedRepository == null || !repositories.containsKey( selectedRepository.getAlias() ) ) {
-            selectedRepository = ( repositories.isEmpty() ? null : repositories.values().iterator().next() );
-
-        } else if ( isCurrentRepositoryUpToDate() ) {
-
-            String branch = selectedRepository.getCurrentBranch();
-            selectedRepository = repositories.get( selectedRepository.getAlias() );
-            if ( selectedRepository instanceof GitRepository ) {
-                ( (GitRepository) selectedRepository ).changeBranch( branch );
+    private void setSelectedRepository( final Content content ) {
+        content.setRepositories( getRepositories( content.getSelectedOrganizationalUnit() ) );
+        if ( content.getSelectedRepository() == null || !content.getRepositories().containsKey( content.getSelectedRepository().getAlias() ) ) {
+            content.setSelectedRepository( ( content.getRepositories().isEmpty() ? null : content.getRepositories().values().iterator().next() ) );
+        } else if ( isCurrentRepositoryUpToDate( content ) ) {
+            final String branch = content.getSelectedRepository().getCurrentBranch();
+            content.setSelectedRepository( content.getRepositories().get( content.getSelectedRepository().getAlias() ) );
+            if ( content.getSelectedRepository() instanceof GitRepository ) {
+                ( (GitRepository) content.getSelectedRepository() ).changeBranch( branch );
             }
         }
     }
 
-    private boolean isCurrentRepositoryUpToDate() {
-        return !selectedRepository.equals( repositories.get( selectedRepository.getAlias() ) );
+    private boolean isCurrentRepositoryUpToDate( final Content content ) {
+        return !content.getSelectedRepository().equals( content.getRepositories().get( content.getSelectedRepository().getAlias() ) );
     }
 
-    private void setSelectedOrganizationalUnit() {
-        organizationalUnits = getOrganizationalUnits();
-        if ( !organizationalUnits.contains( selectedOrganizationalUnit ) ) {
-            selectedOrganizationalUnit = ( organizationalUnits.isEmpty() ? null : organizationalUnits.iterator().next() );
+    private void setSelectedOrganizationalUnit( final Content content ) {
+        content.setOrganizationalUnits( getOrganizationalUnits() );
+        if ( !content.getOrganizationalUnits().contains( content.getSelectedOrganizationalUnit() ) ) {
+            content.setSelectedOrganizationalUnit( ( content.getOrganizationalUnits().isEmpty() ? null : content.getOrganizationalUnits().iterator().next() ) );
         }
     }
 
-    private void setupSelectedItems( ProjectExplorerContentQuery query ) {
+    private Content setupSelectedItems( ProjectExplorerContentQuery query ) {
 
-        clear( query );
+        final Content content = new Content( query );
 
         final UserExplorerLastData lastContent = helper.getLastContent();
         final UserExplorerData userContent = helper.loadUserContent();
@@ -261,50 +249,41 @@ public class ProjectExplorerContentResolver {
         if ( !lastContent.isDataEmpty() ) {
             if ( query.getOrganizationalUnit() == null && query.getRepository() == null && query.getProject() == null ) {
                 if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
-                    selectedOrganizationalUnit = lastContent.getLastPackage().getOrganizationalUnit();
-                    selectedRepository = lastContent.getLastPackage().getRepository();
-                    selectedProject = lastContent.getLastPackage().getProject();
-                    selectedPackage = lastContent.getLastPackage().getPkg();
-                    selectedItem = null;
+                    content.setSelectedOrganizationalUnit( lastContent.getLastPackage().getOrganizationalUnit() );
+                    content.setSelectedRepository( lastContent.getLastPackage().getRepository() );
+                    content.setSelectedProject( lastContent.getLastPackage().getProject() );
+                    content.setSelectedPackage( lastContent.getLastPackage().getPkg() );
+                    content.setSelectedItem( null );
                 } else if ( query.getOptions().contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
-                    selectedOrganizationalUnit = lastContent.getLastFolderItem().getOrganizationalUnit();
-                    selectedRepository = lastContent.getLastFolderItem().getRepository();
-                    selectedProject = lastContent.getLastFolderItem().getProject();
-                    selectedItem = lastContent.getLastFolderItem().getItem();
-                    selectedPackage = null;
+                    content.setSelectedOrganizationalUnit( lastContent.getLastFolderItem().getOrganizationalUnit() );
+                    content.setSelectedRepository( lastContent.getLastFolderItem().getRepository() );
+                    content.setSelectedProject( lastContent.getLastFolderItem().getProject() );
+                    content.setSelectedPackage( null );
                 }
             } else if ( query.getOptions().contains( Option.BUSINESS_CONTENT ) && lastContent.getLastPackage() != null ) {
                 if ( !query.getOrganizationalUnit().equals( lastContent.getLastPackage().getOrganizationalUnit() ) ||
                         query.getRepository() != null && !query.getRepository().equals( lastContent.getLastPackage().getRepository() ) ||
                         query.getProject() != null && !query.getProject().equals( lastContent.getLastPackage().getProject() ) ) {
-                    selectedOrganizationalUnit = loadOrganizationalUnit( query.getOrganizationalUnit(), userContent );
-                    selectedRepository = loadRepository( selectedOrganizationalUnit, query.getRepository(), userContent );
-                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, query.getProject(), userContent );
-                    selectedPackage = loadPackage( selectedOrganizationalUnit, selectedRepository, selectedProject, query.getPkg(), userContent );
-                    selectedItem = null;
+                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( query.getOrganizationalUnit(), userContent ) );
+                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(), query.getRepository(), userContent ) );
+                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), query.getProject(), userContent ) );
+                    content.setSelectedPackage( loadPackage( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), content.getSelectedProject(), query.getPkg(), userContent ) );
+                    content.setSelectedItem( null );
                 }
             } else if ( query.getOptions().contains( Option.TECHNICAL_CONTENT ) && lastContent.getLastFolderItem() != null ) {
                 if ( !query.getOrganizationalUnit().equals( lastContent.getLastFolderItem().getOrganizationalUnit() ) ||
                         query.getRepository() != null && !query.getRepository().equals( lastContent.getLastFolderItem().getRepository() ) ||
                         query.getProject() != null && !query.getProject().equals( lastContent.getLastFolderItem().getProject() ) ) {
-                    selectedOrganizationalUnit = loadOrganizationalUnit( query.getOrganizationalUnit(), userContent );
-                    selectedRepository = loadRepository( selectedOrganizationalUnit, query.getRepository(), userContent );
-                    selectedProject = loadProject( selectedOrganizationalUnit, selectedRepository, query.getProject(), userContent );
-                    selectedItem = loadFolderItem( selectedOrganizationalUnit, selectedRepository, selectedProject, query.getItem(), userContent );
-                    selectedPackage = null;
+                    content.setSelectedOrganizationalUnit( loadOrganizationalUnit( query.getOrganizationalUnit(), userContent ) );
+                    content.setSelectedRepository( loadRepository( content.getSelectedOrganizationalUnit(), query.getRepository(), userContent ) );
+                    content.setSelectedProject( loadProject( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), query.getProject(), userContent ) );
+                    content.setSelectedItem( loadFolderItem( content.getSelectedOrganizationalUnit(), content.getSelectedRepository(), content.getSelectedProject(), query.getItem(), userContent ) );
+                    content.setSelectedPackage( null );
                 }
             }
         }
-    }
 
-    private void clear( ProjectExplorerContentQuery query ) {
-        selectedOrganizationalUnit = query.getOrganizationalUnit();
-        selectedRepository = query.getRepository();
-        selectedProject = query.getProject();
-        selectedPackage = query.getPkg();
-        selectedItem = query.getItem();
-        folderListing = null;
-        siblings = new HashMap<FolderItem, List<FolderItem>>();
+        return content;
     }
 
     private List<FolderItem> getSegmentSiblings( final Path path ) {
