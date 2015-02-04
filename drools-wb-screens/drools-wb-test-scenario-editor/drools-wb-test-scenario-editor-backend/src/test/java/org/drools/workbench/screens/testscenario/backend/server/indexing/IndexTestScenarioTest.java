@@ -53,47 +53,6 @@ import static org.junit.Assert.*;
 public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResourceTypeDefinition> {
 
     @Test
-    @Ignore("temp ignore")
-    public void testIndexTestScenarioWithGlobal() throws IOException, InterruptedException {
-        final Path path1 = basePath.resolve( "scenarioWithGlobal.scenario" );
-        final Scenario model1 = TestScenarioFactory.makeTestScenarioWithGlobalVerifyGlobal("org.drools.workbench.screens.testscenario.backend.server.indexing",
-                                                                                           new ArrayList<Import>() {{
-                                                                                               add(new Import("java.util.Date"));
-                                                                                           }},
-                                                                                           "scenario1");
-        final String xml1 = ScenarioXMLPersistence.getInstance().marshal( model1 );
-        ioService().write( path1,
-                           xml1 );
-
-        Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
-
-        final Index index = getConfig().getIndexManager().get( org.uberfire.ext.metadata.io.KObjectUtil.toKCluster( basePath.getFileSystem() ) );
-
-        //Test Scenarios using org.drools.workbench.screens.testscenario.backend.server.indexing.classes.Applicant
-        {
-            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
-                                                                                true );
-            final Query query = new QueryBuilder().addTerm( new ValueTypeIndexTerm( "java.util.Date" ) ).build();
-
-            searcher.search( query,
-                             collector );
-            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 1,
-                          hits.length );
-
-            final List<KObject> results = new ArrayList<KObject>();
-            for ( int i = 0; i < hits.length; i++ ) {
-                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
-            }
-            assertContains( results,
-                            path1 );
-
-            ( (LuceneIndex) index ).nrtRelease( searcher );
-        }
-    }
-
-    @Test
     public void testIndexTestScenario() throws IOException, InterruptedException {
         //Add test files
         final Path path1 = basePath.resolve( "scenario1.scenario" );
@@ -128,6 +87,16 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
         final String xml3 = ScenarioXMLPersistence.getInstance().marshal( model3 );
         ioService().write( path3,
                            xml3 );
+
+        final Path path4 = basePath.resolve( "scenario4.scenario" );
+        final Scenario model4 = TestScenarioFactory.makeTestScenarioWithGlobalVerifyGlobal("org.drools.workbench.screens.testscenario.backend.server.indexing",
+                                                                                           new ArrayList<Import>() {{
+                                                                                               add(new Import("java.util.Date"));
+                                                                                           }},
+                                                                                           "scenario1");
+        final String xml4 = ScenarioXMLPersistence.getInstance().marshal( model4 );
+        ioService().write( path4,
+                           xml4 );
 
         Thread.sleep( 5000 ); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
 
@@ -214,7 +183,7 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
             searcher.search( query,
                              collector );
             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
-            assertEquals( 2,
+            assertEquals( 3,
                           hits.length );
 
             final List<KObject> results = new ArrayList<KObject>();
@@ -252,6 +221,27 @@ public class IndexTestScenarioTest extends BaseIndexingTest<TestScenarioResource
             ( (LuceneIndex) index ).nrtRelease( searcher );
         }
 
+        {
+            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
+            final TopScoreDocCollector collector = TopScoreDocCollector.create( 10,
+                                                                                true );
+            final Query query = new QueryBuilder().addTerm( new ValueTypeIndexTerm( "java.util.Date" ) ).build();
+
+            searcher.search( query,
+                             collector );
+            final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+            assertEquals( 1,
+                          hits.length );
+
+            final List<KObject> results = new ArrayList<KObject>();
+            for ( int i = 0; i < hits.length; i++ ) {
+                results.add( KObjectUtil.toKObject( searcher.doc( hits[ i ].doc ) ) );
+            }
+            assertContains( results,
+                            path4 );
+
+            ( (LuceneIndex) index ).nrtRelease( searcher );
+        }
     }
 
     @Override
