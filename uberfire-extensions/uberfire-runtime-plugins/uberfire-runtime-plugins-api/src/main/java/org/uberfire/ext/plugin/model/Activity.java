@@ -39,6 +39,6 @@ public class Activity {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return ~~name.hashCode();
     }
 }

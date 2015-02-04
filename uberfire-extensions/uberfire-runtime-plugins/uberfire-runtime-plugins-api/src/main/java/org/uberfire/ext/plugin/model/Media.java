@@ -54,7 +54,9 @@ public class Media {
     @Override
     public int hashCode() {
         int result = externalURI != null ? externalURI.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

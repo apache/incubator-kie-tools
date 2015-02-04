@@ -1,5 +1,6 @@
 package org.uberfire.ext.apps.impl;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.StandardDeleteOption;
@@ -27,21 +29,30 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 @ApplicationScoped
 public class AppsPersistenceImpl implements AppsPersistenceAPI {
 
-    public static final String HOME_DIR = "Home";
+    public static final String HOME_DIR = ".app_dir/home";
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Inject
-    @Named("systemFS")
-    private FileSystem fileSystem;
-
-    @Inject
     PluginServices pluginServices;
+
+    private FileSystem fileSystem;
+    private Path root;
 
     @PostConstruct
     public void setup() {
+        try {
+            fileSystem = ioService.newFileSystem( URI.create( "default://plugins" ),
+                                                  new HashMap<String, Object>() {{
+                                                      put( "init", Boolean.TRUE );
+                                                      put( "internal", Boolean.TRUE );
+                                                  }} );
+        } catch ( final FileSystemAlreadyExistsException e ) {
+            fileSystem = ioService.getFileSystem( URI.create( "default://plugins" ) );
+        }
+        this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
     @Override
@@ -49,7 +60,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
 
         final Map<String, List<String>> tagMap = generateTagMap();
 
-        Directory root = buildDirectories( tagMap );
+        final Directory root = buildDirectories( tagMap );
 
         return root;
     }
@@ -159,7 +170,7 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     }
 
     private Path getHomeDir() {
-        Path homeDir = fileSystem.getPath( HOME_DIR );
+        final Path homeDir = root.resolve( HOME_DIR );
 
         if ( !ioService.exists( homeDir ) ) {
             createDir( homeDir );
@@ -171,4 +182,5 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
         final Path dummy_file = dir.resolve( "dummy_file" );
         ioService.write( dummy_file, "." );
     }
+
 }

@@ -57,7 +57,9 @@ public class DynamicMenuItem {
     @Override
     public int hashCode() {
         int result = activityId != null ? activityId.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( menuLabel != null ? menuLabel.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

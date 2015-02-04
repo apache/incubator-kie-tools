@@ -3,6 +3,8 @@ package org.uberfire.ext.plugin.backend;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.util.HashMap;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -20,6 +22,7 @@ import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.server.BaseUploadServlet;
 import org.uberfire.server.MimeType;
@@ -28,12 +31,8 @@ public class PluginMediaServlet
         extends BaseUploadServlet {
 
     @Inject
-    @Named("configIO")
+    @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    @Named("systemFS")
-    private FileSystem fileSystem;
 
     @Inject
     private Event<MediaAdded> newMediaEvent;
@@ -41,6 +40,9 @@ public class PluginMediaServlet
     private String pattern = "/plugins/";
 
     private static MediaServletURI mediaServletURI = new MediaServletURI( "plugins/" );
+
+    private FileSystem fileSystem;
+    private Path root;
 
     @Override
     public void init( final ServletConfig config ) throws ServletException {
@@ -56,8 +58,17 @@ public class PluginMediaServlet
             } else {
                 mediaServletURI.setURI( this.pattern );
             }
-
         }
+        try {
+            fileSystem = ioService.newFileSystem( URI.create( "default://plugins" ),
+                                                  new HashMap<String, Object>() {{
+                                                      put( "init", Boolean.TRUE );
+                                                      put( "internal", Boolean.TRUE );
+                                                  }} );
+        } catch ( final FileSystemAlreadyExistsException e ) {
+            fileSystem = ioService.getFileSystem( URI.create( "default://plugins" ) );
+        }
+        this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
     @Produces
@@ -83,7 +94,7 @@ public class PluginMediaServlet
             filename = _filename;
         }
 
-        final Path mediaPath = fileSystem.getPath( "plugins", filename.replace( pattern, "/" ) );
+        final Path mediaPath = root.resolve( filename.replace( pattern, "/" ) );
         if ( !ioService.exists( mediaPath ) ) {
             mime = "image/png";
             in = getClass().getResourceAsStream( "/nofound.png" );
@@ -128,7 +139,7 @@ public class PluginMediaServlet
             final String pluginName = filename.replace( pattern, "/" );
             if ( pluginName != null ) {
                 final FileItem fileItem = getFileItem( req );
-                final Path path = fileSystem.getPath( "plugins", pluginName, "media", fileItem.getName() );
+                final Path path = root.resolve( pluginName + "/media/" + fileItem.getName() );
 
                 if ( ioService.exists( path ) ) {
                     writeResponse( response, "FAIL - ALREADY EXISTS" );

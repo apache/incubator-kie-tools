@@ -49,7 +49,9 @@ public class DynamicMenu extends Plugin {
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + ( menuItems != null ? menuItems.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

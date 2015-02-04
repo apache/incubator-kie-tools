@@ -112,4 +112,53 @@ public class PluginSimpleContent extends Plugin {
         return language;
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof PluginSimpleContent ) ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        PluginSimpleContent that = (PluginSimpleContent) o;
+
+        if ( codeMap != null ? !codeMap.equals( that.codeMap ) : that.codeMap != null ) {
+            return false;
+        }
+        if ( css != null ? !css.equals( that.css ) : that.css != null ) {
+            return false;
+        }
+        if ( frameworks != null ? !frameworks.equals( that.frameworks ) : that.frameworks != null ) {
+            return false;
+        }
+        if ( language != that.language ) {
+            return false;
+        }
+        if ( template != null ? !template.equals( that.template ) : that.template != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( template != null ? template.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( css != null ? css.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( codeMap != null ? codeMap.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( frameworks != null ? frameworks.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( language != null ? language.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

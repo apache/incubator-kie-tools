@@ -46,7 +46,9 @@ public class Plugin extends Activity {
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = ~~result;
         return result;
     }
 }

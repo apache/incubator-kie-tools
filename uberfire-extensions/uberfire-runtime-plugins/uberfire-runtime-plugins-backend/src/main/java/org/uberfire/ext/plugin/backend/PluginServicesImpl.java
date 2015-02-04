@@ -1,6 +1,7 @@
 package org.uberfire.ext.plugin.backend;
 
 import java.io.StringWriter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +54,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.Path;
@@ -60,11 +62,6 @@ import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.rpc.SessionInfo;
-import org.uberfire.rpc.impl.SessionInfoImpl;
-import org.uberfire.workbench.events.ResourceCopiedEvent;
-import org.uberfire.workbench.events.ResourceDeletedEvent;
-import org.uberfire.workbench.events.ResourceRenamedEvent;
-import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import static org.uberfire.backend.server.util.Paths.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
@@ -75,12 +72,8 @@ import static org.uberfire.java.nio.file.Files.*;
 public class PluginServicesImpl implements PluginServices {
 
     @Inject
-    @Named("configIO")
+    @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    @Named("systemFS")
-    private FileSystem fileSystem;
 
     @Inject
     @Named("MediaServletURI")
@@ -105,18 +98,6 @@ public class PluginServicesImpl implements PluginServices {
     private Event<MediaDeleted> mediaDeletedEvent;
 
     @Inject
-    private Event<ResourceDeletedEvent> resourceDeletedEvent;
-
-    @Inject
-    private Event<ResourceUpdatedEvent> resourceUpdatedEvent;
-
-    @Inject
-    private Event<ResourceCopiedEvent> resourceCopiedEvent;
-
-    @Inject
-    private Event<ResourceRenamedEvent> resourceRenamedEvent;
-
-    @Inject
     private Event<NewPerspectiveEditorEvent> newPerspectiveEventEvent;
 
     @Inject
@@ -127,9 +108,22 @@ public class PluginServicesImpl implements PluginServices {
 
     private Gson gson;
 
+    private FileSystem fileSystem;
+    private Path root;
+
     @PostConstruct
     public void init() {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
+        try {
+            fileSystem = ioService.newFileSystem( URI.create( "default://plugins" ),
+                                                  new HashMap<String, Object>() {{
+                                                      put( "init", Boolean.TRUE );
+                                                      put( "internal", Boolean.TRUE );
+                                                  }} );
+        } catch ( FileSystemAlreadyExistsException e ) {
+            fileSystem = ioService.getFileSystem( URI.create( "default://plugins" ) );
+        }
+        this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
     @Override
@@ -140,11 +134,10 @@ public class PluginServicesImpl implements PluginServices {
     @Override
     public Collection<RuntimePlugin> listRuntimePlugins() {
         final Collection<RuntimePlugin> runtimePlugins = new ArrayList<RuntimePlugin>();
-        final Path plugins = fileSystem.getPath( "plugins", "/" );
         final Set<Framework> frameworks = new HashSet<Framework>();
 
-        if ( ioService.exists( plugins ) ) {
-            walkFileTree( checkNotNull( "root", plugins ),
+        if ( ioService.exists( root ) ) {
+            walkFileTree( checkNotNull( "root", root ),
                           new SimpleFileVisitor<Path>() {
                               @Override
                               public FileVisitResult visitFile( final Path file,
@@ -183,10 +176,9 @@ public class PluginServicesImpl implements PluginServices {
     @Override
     public Collection<Plugin> listPlugins() {
         final Collection<Plugin> result = new ArrayList<Plugin>();
-        final Path plugins = fileSystem.getPath( "plugins", "/" );
 
-        if ( ioService.exists( plugins ) ) {
-            walkFileTree( checkNotNull( "root", plugins ),
+        if ( ioService.exists( root ) ) {
+            walkFileTree( checkNotNull( "root", root ),
                           new SimpleFileVisitor<Path>() {
                               @Override
                               public FileVisitResult visitFile( final Path file,
@@ -221,21 +213,22 @@ public class PluginServicesImpl implements PluginServices {
             throw new PluginAlreadyExists();
         }
 
+        final Path pluginPath;
+
         try {
             ioService.startBatch( fileSystem );
-            final Path pluginPath = ioService.createFile( pluginRoot.resolve( type.toString().toLowerCase() + ".plugin" ) );
-
+            pluginPath = pluginRoot.resolve( type.toString().toLowerCase() + ".plugin" );
             updatePlugin( pluginPath,
                           pluginName,
                           type,
                           true );
-
-            return new Plugin( pluginName,
-                               type,
-                               convert( pluginPath ) );
         } finally {
             ioService.endBatch();
         }
+
+        return new Plugin( pluginName,
+                           type,
+                           convert( pluginPath ) );
     }
 
     private void updatePlugin( final Path pluginPath,
@@ -246,18 +239,18 @@ public class PluginServicesImpl implements PluginServices {
             ioService.startBatch( fileSystem );
             ioService.write( pluginPath,
                              new Date().toString() );
-            if ( isNewPlugIn ) {
-                pluginAddedEvent.fire( new PluginAdded( new Plugin( pluginName,
-                                                                    type,
-                                                                    convert( pluginPath ) ),
-                                                        sessionInfo ) );
-            } else {
-                pluginSavedEvent.fire( new PluginSaved( pluginName,
-                                                        type,
-                                                        sessionInfo ) );
-            }
         } finally {
             ioService.endBatch();
+        }
+        if ( isNewPlugIn ) {
+            pluginAddedEvent.fire( new PluginAdded( new Plugin( pluginName,
+                                                                type,
+                                                                convert( pluginPath ) ),
+                                                    sessionInfo ) );
+        } else {
+            pluginSavedEvent.fire( new PluginSaved( pluginName,
+                                                    type,
+                                                    sessionInfo ) );
         }
     }
 
@@ -284,9 +277,6 @@ public class PluginServicesImpl implements PluginServices {
         try {
             ioService.startBatch( fileSystem,
                                   commentedOption( commitMessage ) );
-            if ( isNewPlugin ) {
-                ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
-            }
 
             saveCodeMap( plugin.getName(),
                          plugin.getCodeMap() );
@@ -301,14 +291,9 @@ public class PluginServicesImpl implements PluginServices {
                                  plugin.getCss() );
             }
 
-            try {
-                if ( plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty() ) {
-                    final Framework fm = plugin.getFrameworks().iterator().next();
-                    ioService.createFile( getDependencyPath( getPluginPath( plugin.getName() ),
-                                                             fm ) );
-                }
-            } catch ( final FileAlreadyExistsException ex ) {
-
+            if ( plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty() ) {
+                final Framework fm = plugin.getFrameworks().iterator().next();
+                ioService.write( getDependencyPath( getPluginPath( plugin.getName() ), fm ), "--" );
             }
 
             createRegistry( plugin );
@@ -318,11 +303,11 @@ public class PluginServicesImpl implements PluginServices {
                           plugin.getType(),
                           isNewPlugin );
 
-            return plugin.getPath();
-
         } finally {
             ioService.endBatch();
         }
+
+        return plugin.getPath();
     }
 
     private Path getDependencyPath( final Path pluginPath,
@@ -500,7 +485,7 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     private Path getPluginPath( final String name ) {
-        return fileSystem.getPath( "plugins", "/" + name );
+        return root.resolve( name );
     }
 
     @Override
@@ -523,9 +508,6 @@ public class PluginServicesImpl implements PluginServices {
             pluginDeletedEvent.fire( new PluginDeleted( plugin.getName(),
                                                         plugin.getType(),
                                                         sessionInfo ) );
-            resourceDeletedEvent.fire( new ResourceDeletedEvent( plugin.getPath(),
-                                                                 comment,
-                                                                 sessionInfo ) );
         }
     }
 
@@ -550,11 +532,6 @@ public class PluginServicesImpl implements PluginServices {
         }
 
         final org.uberfire.backend.vfs.Path result = convert( newPath.resolve( path.getFileName() ) );
-
-        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
-                                                           result,
-                                                           comment,
-                                                           sessionInfo != null ? sessionInfo : new SessionInfoImpl( "--", identity ) ) );
 
         pluginAddedEvent.fire( new PluginAdded( getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ),
                                                 sessionInfo ) );
@@ -582,11 +559,6 @@ public class PluginServicesImpl implements PluginServices {
         }
 
         final org.uberfire.backend.vfs.Path result = convert( newPath.resolve( path.getFileName() ) );
-
-        resourceRenamedEvent.fire( new ResourceRenamedEvent( path,
-                                                             result,
-                                                             comment,
-                                                             sessionInfo != null ? sessionInfo : new SessionInfoImpl( "--", identity ) ) );
 
         final String oldPluginName = convert( path ).getParent().getFileName().toString();
 
@@ -678,9 +650,6 @@ public class PluginServicesImpl implements PluginServices {
         try {
             ioService.startBatch( fileSystem,
                                   commentedOption( commitMessage ) );
-            if ( isNewPlugin ) {
-                ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
-            }
 
             final Path menuItemsPath = getMenuItemsPath( getPluginPath( plugin.getName() ) );
             final StringBuilder sb = new StringBuilder();
@@ -695,11 +664,11 @@ public class PluginServicesImpl implements PluginServices {
                           plugin.getType(),
                           isNewPlugin );
 
-            return plugin.getPath();
-
         } finally {
             ioService.endBatch();
         }
+
+        return plugin.getPath();
     }
 
     @Override
@@ -709,11 +678,7 @@ public class PluginServicesImpl implements PluginServices {
         final boolean isNewPlugin = !ioService.exists( pluginPath );
 
         try {
-            ioService.startBatch( fileSystem,
-                                  commentedOption( commitMessage ) );
-            if ( isNewPlugin ) {
-                ioService.createFile( getPluginPath( plugin.getName() ).resolve( plugin.getType().toString().toLowerCase() + ".plugin" ) );
-            }
+            ioService.startBatch( fileSystem, commentedOption( commitMessage ) );
 
             final Path itemsPath = getPerspectiveEditorPath( getPluginPath( plugin.getName() ) );
 
@@ -728,20 +693,19 @@ public class PluginServicesImpl implements PluginServices {
                           isNewPlugin );
 
             newPerspectiveEventEvent.fire( new NewPerspectiveEditorEvent( plugin.getPerspectiveModel() ) );
-            return plugin.getPath();
-
         } finally {
             ioService.endBatch();
         }
+
+        return plugin.getPath();
     }
 
     @Override
     public Collection<DynamicMenu> listDynamicMenus() {
         final Collection<DynamicMenu> result = new ArrayList<DynamicMenu>();
-        final Path plugins = fileSystem.getPath( "plugins", "/" );
 
-        if ( ioService.exists( plugins ) ) {
-            walkFileTree( checkNotNull( "root", plugins ),
+        if ( ioService.exists( root ) ) {
+            walkFileTree( checkNotNull( "root", root ),
                           new SimpleFileVisitor<Path>() {
                               @Override
                               public FileVisitResult visitFile( final Path file,
@@ -771,10 +735,9 @@ public class PluginServicesImpl implements PluginServices {
     @Override
     public Collection<PerspectiveEditorModel> listPerspectiveEditor() {
         final Collection<PerspectiveEditorModel> result = new ArrayList<PerspectiveEditorModel>();
-        final Path plugins = fileSystem.getPath( "plugins", "/" );
 
-        if ( ioService.exists( plugins ) ) {
-            walkFileTree( checkNotNull( "root", plugins ),
+        if ( ioService.exists( root ) ) {
+            walkFileTree( checkNotNull( "root", root ),
                           new SimpleFileVisitor<Path>() {
                               @Override
                               public FileVisitResult visitFile( final Path file,

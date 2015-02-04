@@ -33,7 +33,6 @@ import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.io.IOWatchService;
 import org.uberfire.io.impl.IOServiceDotFileImpl;
-import org.uberfire.io.lock.FSLockService;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.FSPath;
 import org.uberfire.java.nio.base.WatchContext;
@@ -104,17 +103,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
               views );
     }
 
-    public IOServiceIndexedImpl( final FSLockService lockService,
-                                 final IOWatchService watchService,
-                                 final MetaIndexEngine indexEngine,
-                                 final Class<? extends FileAttributeView>... views ) {
-        this( lockService,
-              watchService,
-              indexEngine,
-              new NOPObserver(),
-              views );
-    }
-
     public IOServiceIndexedImpl( final MetaIndexEngine indexEngine,
                                  final Observer observer,
                                  final Class<? extends FileAttributeView>... views ) {
@@ -168,24 +156,6 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
                                  final Observer observer,
                                  final Class<? extends FileAttributeView>... views ) {
         super( id,
-               watchService );
-        this.indexEngine = checkNotNull( "indexEngine",
-                                         indexEngine );
-        this.observer = checkNotNull( "observer",
-                                      observer );
-        this.batchIndex = new BatchIndex( indexEngine,
-                                          this,
-                                          observer,
-                                          views );
-        this.views = views;
-    }
-
-    public IOServiceIndexedImpl( final FSLockService lockService,
-                                 final IOWatchService watchService,
-                                 final MetaIndexEngine indexEngine,
-                                 final Observer observer,
-                                 final Class<? extends FileAttributeView>... views ) {
-        super( lockService,
                watchService );
         this.indexEngine = checkNotNull( "indexEngine",
                                          indexEngine );
