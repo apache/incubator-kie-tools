@@ -53,6 +53,7 @@
       <g:cell width="33%">
         <g:FlowPanel width="100%"  ui:field="rightToolbar" addStyleNames="{style.rightToolBar}">
           <b:Button ui:field="columnPickerButton" toggle="true" icon="LIST_UL"/>
+          <b:Button ui:field="pageSizesSelector" toggle="true" icon="LIST_ALT" />
         </g:FlowPanel>
       </g:cell>
     </g:HorizontalPanel>

@@ -97,4 +97,6 @@ public interface CommonConstants
 
 
     String Version();
+
+    String Items();
 }
