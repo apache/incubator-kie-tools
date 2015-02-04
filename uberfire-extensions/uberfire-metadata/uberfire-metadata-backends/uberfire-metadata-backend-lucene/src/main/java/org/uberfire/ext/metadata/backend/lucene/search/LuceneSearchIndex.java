@@ -24,7 +24,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.sandbox.queries.regex.RegexQuery;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -35,7 +34,6 @@ import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.search.TotalHitCountCollector;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
-import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndex;
 import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexManager;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.search.ClusterSegment;
@@ -45,7 +43,6 @@ import org.uberfire.ext.metadata.search.SearchIndex;
 import static java.util.Collections.*;
 import static org.apache.lucene.search.BooleanClause.Occur.*;
 import static org.apache.lucene.search.NumericRangeQuery.*;
-import static org.uberfire.commons.regex.util.GlobToRegEx.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 import static org.uberfire.ext.metadata.backend.lucene.util.KObjectUtil.*;
 import static org.uberfire.ext.metadata.engine.MetaIndexEngine.*;
@@ -146,13 +143,9 @@ public class LuceneSearchIndex implements SearchIndex {
                 final Long to = ( (DateRange) entry.getValue() ).before().getTime();
                 query.add( newLongRange( entry.getKey(), from, to, true, true ), MUST );
             } else if ( entry.getValue() instanceof String ) {
-                if ( entry.getKey().equalsIgnoreCase( LuceneIndex.CUSTOM_FIELD_FILENAME ) ) {
-                    query.add( new RegexQuery( new Term( entry.getKey(), globToRegex( entry.getValue().toString().toLowerCase() ) ) ), MUST );
-                } else {
-                    query.add( new WildcardQuery( new Term( entry.getKey(), entry.getValue().toString() ) ), MUST );
-                }
+                query.add( new WildcardQuery( new Term( buildTerm( entry.getKey() ), entry.getValue().toString() ) ), MUST );
             } else if ( entry.getValue() instanceof Boolean ) {
-                query.add( new TermQuery( new Term( entry.getKey(), ( (Boolean) entry.getValue() ) ? "0" : "1" ) ), MUST );
+                query.add( new TermQuery( new Term( buildTerm( entry.getKey() ), ( (Boolean) entry.getValue() ) ? "0" : "1" ) ), MUST );
             }
         }
         return composeQuery( query, clusterSegments );
@@ -169,6 +162,17 @@ public class LuceneSearchIndex implements SearchIndex {
         }
 
         return composeQuery( fullText, clusterSegments );
+    }
+
+    // DublinCoreView has field names containing the "[" and "]" characters.
+    // Lucene reserves use of "[" and "]" and hence we need to escape them in the Term.
+    private String buildTerm( final String term ) {
+        String _term = term;
+        _term = _term.replaceAll( "\\[",
+                                  "\\\\[" );
+        _term = _term.replaceAll( "\\]",
+                                  "\\\\]" );
+        return _term;
     }
 
     private Query composeQuery( final Query query,
