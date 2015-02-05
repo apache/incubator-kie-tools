@@ -15,6 +15,7 @@ import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.api.model.ServiceResponse;
 import org.kie.server.client.KieServicesClient;
+import org.kie.server.client.KieServicesFactory;
 import org.kie.workbench.common.screens.server.management.model.ConnectionType;
 import org.kie.workbench.common.screens.server.management.model.Container;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
@@ -45,7 +46,7 @@ public class RemoteAccessImpl {
                                   final Collection<ContainerRef> containerRefs ) {
 
         String _endpoint = cleanup( endpoint );
-        KieServicesClient client = new KieServicesClient( _endpoint, username, password );
+        KieServicesClient client = KieServicesFactory.newKieServicesRestClient( _endpoint, username, password );
         String _version = null;
         try {
             final ServiceResponse<KieServerInfo> response = client.getServerInfo();
@@ -54,7 +55,7 @@ public class RemoteAccessImpl {
             }
         } catch ( final Exception ex ) {
             _endpoint = _endpoint.concat( BASE_URI );
-            client = new KieServicesClient( _endpoint, username, password );
+            client = KieServicesFactory.newKieServicesRestClient( _endpoint, username, password );
             final ServiceResponse<KieServerInfo> response = client.getServerInfo();
             if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
                 _version = response.getResult().getVersion();
@@ -84,7 +85,7 @@ public class RemoteAccessImpl {
 
         final ServerRef serverRef = toServerRef( endpoint, name, username, password, connectionType, containerRefs );
         try {
-            final KieServicesClient client = new KieServicesClient( serverRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
             final Collection<Container> containers = new ArrayList<Container>();
 
             final ServiceResponse<KieContainerResourceList> containerResourcesResponse = client.listContainers();
@@ -109,7 +110,7 @@ public class RemoteAccessImpl {
                               final GAV gav ) {
 
         try {
-            final KieServicesClient client = new KieServicesClient( serverId, username, password );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverId, username, password );
 
             final ServiceResponse<KieContainerResource> response = client.createContainer( containerId, new KieContainerResource( new ReleaseId( gav.getGroupId(), gav.getArtifactId(), gav.getVersion() ) ) );
 
@@ -128,7 +129,7 @@ public class RemoteAccessImpl {
                          final String username,
                          final String password ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId, username, password );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverId, username, password );
             final ServiceResponse<KieScannerResource> response = client.updateScanner( containerId, new KieScannerResource( KieScannerStatus.STOPPED ) );
 
             return response.getType().equals( ServiceResponse.ResponseType.SUCCESS );
@@ -189,7 +190,7 @@ public class RemoteAccessImpl {
                                     final String username,
                                     final String password ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId, username, password );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverId, username, password );
             return client.disposeContainer( containerId ).getType().equals( ServiceResponse.ResponseType.SUCCESS );
         } catch ( final Exception ex ) {
             throw new RuntimeException( ex );
@@ -201,7 +202,7 @@ public class RemoteAccessImpl {
                                     final String username,
                                     final String password ) {
         try {
-            return new KieServicesClient( serverId, username, password ).getContainerInfo( containerId ).getType().equals( ServiceResponse.ResponseType.SUCCESS );
+            return KieServicesFactory.newKieServicesRestClient( serverId, username, password ).getContainerInfo( containerId ).getType().equals( ServiceResponse.ResponseType.SUCCESS );
         } catch ( final Exception ex ) {
             throw new RuntimeException( ex );
         }
@@ -220,7 +221,7 @@ public class RemoteAccessImpl {
                                                   final String username,
                                                   final String password ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId, username, password );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverId, username, password );
             final ServiceResponse<KieContainerResource> response = client.getContainerInfo( containerId );
 
             if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
@@ -263,7 +264,7 @@ public class RemoteAccessImpl {
                                                         final KieScannerStatus status,
                                                         final Long interval ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId, username, password );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverId, username, password );
             final KieScannerResource resource;
             if ( interval == null ) {
                 resource = new KieScannerResource( status );
@@ -288,7 +289,7 @@ public class RemoteAccessImpl {
                                   final String password,
                                   final GAV releaseId ) {
         try {
-            final KieServicesClient client = new KieServicesClient( serverId, username, password );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverId, username, password );
             final ServiceResponse<ReleaseId> response = client.updateReleaseId( containerId, new ReleaseId( releaseId.getGroupId(), releaseId.getArtifactId(), releaseId.getVersion() ) );
 
             if ( !response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
