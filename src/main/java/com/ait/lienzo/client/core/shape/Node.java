@@ -700,6 +700,15 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return null;
     }
 
+    public HandlerManager getHandlerManager()
+    {
+        if (null == m_events)
+        {
+            m_events = new HandlerManager(this);
+        }
+        return m_events;
+    }
+
     @Override
     public boolean isEventHandled(final Type<?> type)
     {
