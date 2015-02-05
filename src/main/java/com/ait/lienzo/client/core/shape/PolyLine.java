@@ -31,8 +31,16 @@ import com.google.gwt.json.client.JSONObject;
  * PolyLine is a continuous line composed of one or more line segments.
  * To create a dashed PolyLine, use one of the setDashArray() methods. 
  */
-public class PolyLine extends AbstractMultiPointShape<PolyLine>
+public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 {
+    private double  m_tailOffsetValue = 0;
+
+    private double  m_headOffsetValue = 0;
+
+    private Point2D m_tailOffsetPoint = null;
+
+    private Point2D m_headOffsetPoint = null;
+
     /**
      * Constructor. Creates an instance of a polyline.
      * 
@@ -53,6 +61,18 @@ public class PolyLine extends AbstractMultiPointShape<PolyLine>
     protected PolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYLINE, node, ctx);
+
+        refresh();
+    }
+
+    @Override
+    public PolyLine refresh()
+    {
+        if (m_tailOffsetValue != m_headOffsetValue)
+        {
+            return this;
+        }
+        return this;
     }
 
     @Override
@@ -120,9 +140,9 @@ public class PolyLine extends AbstractMultiPointShape<PolyLine>
     {
         getAttributes().setPoints(points);
 
-        return this;
+        return refresh();
     }
-    
+
     @Override
     public PolyLine setPoint2DArray(Point2DArray points)
     {
@@ -136,12 +156,24 @@ public class PolyLine extends AbstractMultiPointShape<PolyLine>
     }
 
     @Override
+    public Point2D getTailOffsetPoint()
+    {
+        return m_tailOffsetPoint;
+    }
+
+    @Override
+    public Point2D getHeadOffsetPoint()
+    {
+        return m_headOffsetPoint;
+    }
+
+    @Override
     public IFactory<PolyLine> getFactory()
     {
         return new PolyLineFactory();
     }
 
-    public static class PolyLineFactory extends ShapeFactory<PolyLine>
+    public static class PolyLineFactory extends AbstractOffsetMultiPointShapeFactory<PolyLine>
     {
         public PolyLineFactory()
         {

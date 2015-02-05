@@ -34,8 +34,16 @@ import com.google.gwt.json.client.JSONObject;
  * The class can be used to draw regular lines as well as dashed lines.
  * To create a dashed line, use one of the setDashArray() methods.
  */
-public class Line extends AbstractMultiPointShape<Line>
+public class Line extends AbstractOffsetMultiPointShape<Line>
 {
+    private double  m_tailOffsetValue = 0;
+
+    private double  m_headOffsetValue = 0;
+
+    private Point2D m_tailOffsetPoint = null;
+
+    private Point2D m_headOffsetPoint = null;
+
     /**
      * Constructor.  Creates an instance of a line of 0-pixel length, at the 0,0
      * coordinates.
@@ -68,6 +76,18 @@ public class Line extends AbstractMultiPointShape<Line>
     protected Line(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.LINE, node, ctx);
+
+        refresh();
+    }
+
+    @Override
+    public Line refresh()
+    {
+        if (m_tailOffsetValue != m_headOffsetValue)
+        {
+            return this;
+        }
+        return this;
     }
 
     @Override
@@ -151,7 +171,7 @@ public class Line extends AbstractMultiPointShape<Line>
     {
         getAttributes().setPoints(points);
 
-        return this;
+        return refresh();
     }
 
     @Override
@@ -164,6 +184,18 @@ public class Line extends AbstractMultiPointShape<Line>
     public Point2DArray getPoint2DArray()
     {
         return getPoints();
+    }
+
+    @Override
+    public Point2D getTailOffsetPoint()
+    {
+        return m_tailOffsetPoint;
+    }
+
+    @Override
+    public Point2D getHeadOffsetPoint()
+    {
+        return m_headOffsetPoint;
     }
 
     /**
@@ -250,7 +282,7 @@ public class Line extends AbstractMultiPointShape<Line>
         return new LineFactory();
     }
 
-    public static class LineFactory extends ShapeFactory<Line>
+    public static class LineFactory extends AbstractOffsetMultiPointShapeFactory<Line>
     {
         public LineFactory()
         {

@@ -31,8 +31,8 @@ import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.types.NFastStringCountingSet;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
-import com.ait.lienzo.client.core.types.NFastStringSet;
 import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
@@ -67,30 +67,28 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
 {
-    private static final ImmediateAttributesChangedBatcher DEFAULT_BATCHER = new ImmediateAttributesChangedBatcher();
+    private final IJSONSerializable<?>   m_ser;
 
-    private final IJSONSerializable<?>                     m_ser;
+    private final NFastStringMapMixedJSO m_jso;
 
-    private final NFastStringMapMixedJSO                   m_jso;
+    private NFastStringCountingSet       m_set;
 
-    private NFastStringSet                                 m_set;
+    private HandlerManager               m_man;
 
-    private HandlerManager                                 m_man;
+    private IAttributesChangedBatcher    m_bat;
 
-    private IAttributesChangedBatcher                      m_bat;
-
-    public Attributes(IJSONSerializable<?> ser)
+    public Attributes(final IJSONSerializable<?> ser)
     {
         m_ser = ser;
 
         m_jso = NFastStringMapMixedJSO.make();
     }
 
-    public Attributes(JavaScriptObject jso, IJSONSerializable<?> ser)
+    public Attributes(final JavaScriptObject jso, final IJSONSerializable<?> ser)
     {
         m_ser = ser;
 
-        if (NFastStringMapMixedJSO.typeOf(jso) == NativeInternalType.OBJECT)
+        if ((null != jso) && (NFastStringMapMixedJSO.typeOf(jso) == NativeInternalType.OBJECT))
         {
             m_jso = jso.cast();
         }
@@ -107,23 +105,43 @@ public class Attributes
 
     public final HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
+        if ((null == attribute) || (null == handler))
+        {
+            return null;
+        }
         if (null != m_ser)
         {
             final String name = attribute.getProperty();
 
             if (null == m_set)
             {
-                m_set = new NFastStringSet(name);
+                m_set = new NFastStringCountingSet();
             }
-            else
-            {
-                m_set.add(name);
-            }
+            m_set.inc(name);
+
             if (null == m_man)
             {
                 m_man = new HandlerManager(m_ser);
             }
-            return m_man.addHandler(AttributesChangedEvent.getType(), handler);
+            final HandlerRegistration proxy = m_man.addHandler(AttributesChangedEvent.getType(), handler);
+
+            return new HandlerRegistration()
+            {
+                @Override
+                public void removeHandler()
+                {
+                    if (null != m_set)
+                    {
+                        m_set.dec(name);
+
+                        if (m_set.isEmpty())
+                        {
+                            m_set = null;
+                        }
+                    }
+                    proxy.removeHandler();
+                }
+            };
         }
         return null;
     }
