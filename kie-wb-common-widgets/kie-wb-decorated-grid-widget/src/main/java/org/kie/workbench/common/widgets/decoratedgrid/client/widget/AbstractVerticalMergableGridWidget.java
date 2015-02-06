@@ -350,7 +350,7 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
                                        Coordinate eventCoordinate ) {
         if ( event.getButton() == NativeEvent.BUTTON_LEFT ) {
 
-            if ( bDragOperationPrimed ) {
+            if ( bDragOperationPrimed && !rangeOriginCell.equals( data.get( eventCoordinate ) ) ) {
                 extendSelection( eventCoordinate );
                 return;
             }
