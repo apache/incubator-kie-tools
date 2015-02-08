@@ -22,7 +22,7 @@ import com.ait.lienzo.client.core.types.NFastStringMap;
 
 public enum AutoScaleType implements EnumWithValue
 {
-    NONE("scale-none"), MIN("scale-min"), MAX("scale-max"), WIDTH("scale-width"), HEIGHT("scale-height"), PRESERVE_ASPECT("scale-preserve-aspect");
+    NONE("scale-none"), MIN("scale-min"), MAX("scale-max"), WIDTH("scale-width"), HEIGHT("scale-height");
 
     private final String                               m_value;
 

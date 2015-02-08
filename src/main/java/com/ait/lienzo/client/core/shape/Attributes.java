@@ -146,7 +146,7 @@ public class Attributes
         return null;
     }
 
-    private final void checkDispatchAttributeChanged(final String name)
+    private final void checkDispatchAttributesChanged(final String name)
     {
         if ((null != m_set) && (null != m_ser))
         {
@@ -1701,35 +1701,35 @@ public class Attributes
     {
         m_jso.put(name, value);
 
-        checkDispatchAttributeChanged(name);
+        checkDispatchAttributesChanged(name);
     }
 
     public final void put(final String name, final int value)
     {
         m_jso.put(name, value);
 
-        checkDispatchAttributeChanged(name);
+        checkDispatchAttributesChanged(name);
     }
 
     public final void put(final String name, final double value)
     {
         m_jso.put(name, value);
 
-        checkDispatchAttributeChanged(name);
+        checkDispatchAttributesChanged(name);
     }
 
     public final void put(final String name, final boolean value)
     {
         m_jso.put(name, value);
 
-        checkDispatchAttributeChanged(name);
+        checkDispatchAttributesChanged(name);
     }
 
     public final void put(final String name, final JavaScriptObject value)
     {
         m_jso.put(name, value);
 
-        checkDispatchAttributeChanged(name);
+        checkDispatchAttributesChanged(name);
     }
 
     public final boolean isEmpty()
@@ -2006,7 +2006,7 @@ public class Attributes
     {
         m_jso.delete(name);
 
-        checkDispatchAttributeChanged(name);
+        checkDispatchAttributesChanged(name);
     }
 
     public final NativeInternalType typeOf(Attribute attr)
