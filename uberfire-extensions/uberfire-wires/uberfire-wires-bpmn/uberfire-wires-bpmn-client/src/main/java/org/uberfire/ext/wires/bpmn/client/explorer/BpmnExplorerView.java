@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.resources.i18n;
+package org.uberfire.ext.wires.bpmn.client.explorer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import java.util.List;
 
-public interface BpmnEditorConstants
-        extends
-        Messages {
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.editor.commons.client.BaseEditorView;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEditorContent;
+import org.uberfire.ext.wires.bpmn.client.editor.BpmnEditorPresenter;
 
-    public static final BpmnEditorConstants INSTANCE = GWT.create( BpmnEditorConstants.class );
+public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
 
-    String bpmnResourceTypeDescription();
-
-    String bpmnPerspectiveTitle();
-
-    String bpmnExplorerTitle();
-
-    String bpmnExplorerNoFilesFound();
-
-    String bpmnExplorerNoFilesOpen();
-
-    String bpmnExplorerFileUrl();
-
-    String bpmnEditorTitle();
+    void setContent( final List<Path> files );
 
 }

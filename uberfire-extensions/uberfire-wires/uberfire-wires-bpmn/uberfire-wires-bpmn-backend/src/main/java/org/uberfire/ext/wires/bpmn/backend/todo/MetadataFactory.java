@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.service;
+package org.uberfire.ext.wires.bpmn.backend.todo;
 
-import org.jboss.errai.bus.server.annotations.Remote;
+import java.util.Collections;
+import java.util.Map;
 
-@Remote
-public class ServicePlaceHolder {
+import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
+
+/**
+ * When Bpmn moves to KIE-WB this class can be removed.
+ */
+public class MetadataFactory {
+
+    public static Map<String, Object> makeMetadata( final Metadata metadata ) {
+        return Collections.EMPTY_MAP;
+    }
 
 }

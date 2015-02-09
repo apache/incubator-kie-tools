@@ -20,9 +20,13 @@ import javax.enterprise.context.ApplicationScoped;
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.ext.wires.bpmn.client.resources.i18n.BpmnEditorConstants;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.CompassPosition;
+import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
@@ -39,7 +43,13 @@ public class BpmnPerspective {
         final PerspectiveDefinitionImpl perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
         perspective.setName( BpmnEditorConstants.INSTANCE.bpmnPerspectiveTitle() );
 
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "BPMN Editor" ) ) );
+        final PanelDefinition west = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        west.setWidth( 300 );
+        west.setMinWidth( 200 );
+        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "BPMN Explorer" ) ) );
+
+        perspective.getRoot().insertChild( CompassPosition.WEST,
+                                           west );
 
         return perspective;
     }

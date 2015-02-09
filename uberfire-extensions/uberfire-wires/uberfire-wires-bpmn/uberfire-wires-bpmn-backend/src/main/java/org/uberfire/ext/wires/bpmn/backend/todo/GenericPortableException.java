@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.resources.i18n;
+package org.uberfire.ext.wires.bpmn.backend.todo;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-public interface BpmnEditorConstants
-        extends
-        Messages {
+/**
+ * When Bpmn moves to KIE-WB this class can be removed.
+ */
+@Portable
+public class GenericPortableException extends RuntimeException {
 
-    public static final BpmnEditorConstants INSTANCE = GWT.create( BpmnEditorConstants.class );
+    public GenericPortableException() {
+    }
 
-    String bpmnResourceTypeDescription();
+    public GenericPortableException( final String message ) {
+        super( message );
+    }
 
-    String bpmnPerspectiveTitle();
-
-    String bpmnExplorerTitle();
-
-    String bpmnExplorerNoFilesFound();
-
-    String bpmnExplorerNoFilesOpen();
-
-    String bpmnExplorerFileUrl();
-
-    String bpmnEditorTitle();
+    public GenericPortableException( final String message,
+                                     Exception e ) {
+        super( message, e );
+    }
 
 }

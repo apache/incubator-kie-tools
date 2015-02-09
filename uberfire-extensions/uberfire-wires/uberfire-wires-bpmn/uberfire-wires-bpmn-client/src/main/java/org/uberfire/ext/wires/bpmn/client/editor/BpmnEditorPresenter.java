@@ -19,6 +19,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -27,7 +29,9 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEditorContent;
 import org.uberfire.ext.wires.bpmn.api.model.BpmnModel;
+import org.uberfire.ext.wires.bpmn.api.service.BpmnService;
 import org.uberfire.ext.wires.bpmn.client.resources.i18n.BpmnEditorConstants;
 import org.uberfire.ext.wires.bpmn.client.type.BpmnResourceType;
 import org.uberfire.lifecycle.OnMayClose;
@@ -46,8 +50,16 @@ public class BpmnEditorPresenter
     private BpmnResourceType resourceType;
 
     @Inject
+    private Caller<BpmnService> service;
+
+    private BpmnEditorView view;
+
+    private BpmnModel model;
+
+    @Inject
     public BpmnEditorPresenter( final BpmnEditorView baseView ) {
         super( baseView );
+        this.view = baseView;
     }
 
     @OnStartup
@@ -86,16 +98,33 @@ public class BpmnEditorPresenter
 
     @OnMayClose
     public boolean onMayClose() {
-        return super.mayClose( getContent().hashCode() );
+        return super.mayClose( model.hashCode() );
     }
 
     @Override
     protected void loadContent() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //TODO {manstis} When we move to KIE-WB this class can extend KieBaseEditor and be refactored
+        service.call( getModelSuccessCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
-    protected BpmnModel getContent() {
-        return new BpmnModel();
+    private RemoteCallback<BpmnEditorContent> getModelSuccessCallback() {
+        //TODO {manstis} When we move to KIE-WB this class can extend KieBaseEditor and be refactored
+        return new RemoteCallback<BpmnEditorContent>() {
+
+            @Override
+            public void callback( final BpmnEditorContent content ) {
+                //Path is set to null when the Editor is closed (which can happen before async calls complete).
+                if ( versionRecordManager.getCurrentPath() == null ) {
+                    return;
+                }
+
+                model = content.getModel();
+
+                view.setContent( content,
+                                 isReadOnly );
+                view.hideBusyIndicator();
+            }
+        };
     }
 
 }

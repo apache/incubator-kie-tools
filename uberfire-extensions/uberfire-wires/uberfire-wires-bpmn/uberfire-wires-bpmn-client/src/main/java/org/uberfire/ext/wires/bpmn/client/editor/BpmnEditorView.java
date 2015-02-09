@@ -15,38 +15,14 @@
  */
 package org.uberfire.ext.wires.bpmn.client.editor;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
+import org.uberfire.ext.editor.commons.client.BaseEditorView;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEditorContent;
 
-@Dependent
-public class BpmnEditorView
-        extends BaseEditorViewImpl
-        implements UberView<BpmnEditorPresenter> {
+public interface BpmnEditorView extends BaseEditorView,
+                                        UberView<BpmnEditorPresenter> {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, BpmnEditorView> {
-
-    }
-
-    final private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
-    private BpmnEditorPresenter presenter;
-
-    @PostConstruct
-    public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-    }
-
-    @Override
-    public void init( final BpmnEditorPresenter presenter ) {
-        this.presenter = presenter;
-    }
+    void setContent( final BpmnEditorContent content,
+                     final boolean isReadOnly );
 
 }

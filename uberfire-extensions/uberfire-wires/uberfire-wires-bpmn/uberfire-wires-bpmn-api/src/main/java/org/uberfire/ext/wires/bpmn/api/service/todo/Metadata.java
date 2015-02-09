@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.resources.i18n;
+package org.uberfire.ext.wires.bpmn.api.service.todo;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-public interface BpmnEditorConstants
-        extends
-        Messages {
-
-    public static final BpmnEditorConstants INSTANCE = GWT.create( BpmnEditorConstants.class );
-
-    String bpmnResourceTypeDescription();
-
-    String bpmnPerspectiveTitle();
-
-    String bpmnExplorerTitle();
-
-    String bpmnExplorerNoFilesFound();
-
-    String bpmnExplorerNoFilesOpen();
-
-    String bpmnExplorerFileUrl();
-
-    String bpmnEditorTitle();
+/**
+ * When Bpmn moves to KIE-WB this class can be removed and we can use Guvnor's Metadata class.
+ */
+@Portable
+public class Metadata {
 
 }

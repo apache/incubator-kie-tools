@@ -13,29 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.resources.i18n;
+package org.uberfire.ext.wires.bpmn.api.model;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.validation.PortablePreconditions;
 
-public interface BpmnEditorConstants
-        extends
-        Messages {
+@Portable
+public class BpmnEditorContent {
 
-    public static final BpmnEditorConstants INSTANCE = GWT.create( BpmnEditorConstants.class );
+    private BpmnModel model;
 
-    String bpmnResourceTypeDescription();
+    public BpmnEditorContent() {
+    }
 
-    String bpmnPerspectiveTitle();
+    public BpmnEditorContent( final BpmnModel model ) {
+        this.model = PortablePreconditions.checkNotNull( "model",
+                                                         model );
+    }
 
-    String bpmnExplorerTitle();
-
-    String bpmnExplorerNoFilesFound();
-
-    String bpmnExplorerNoFilesOpen();
-
-    String bpmnExplorerFileUrl();
-
-    String bpmnEditorTitle();
+    public BpmnModel getModel() {
+        return this.model;
+    }
 
 }
