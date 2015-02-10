@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.bpmn.client.editor;
 
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnEditorContent;
+import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 
 public interface BpmnEditorView extends BaseEditorView,
                                         UberView<BpmnEditorPresenter> {

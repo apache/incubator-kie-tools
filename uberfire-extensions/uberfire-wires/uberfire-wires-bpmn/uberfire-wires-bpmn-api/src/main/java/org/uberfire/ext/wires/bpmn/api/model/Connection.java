@@ -13,15 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.explorer;
+package org.uberfire.ext.wires.bpmn.api.model;
 
-import java.util.List;
+/**
+ * A connection between Nodes in the diagram.
+ */
+public interface Connection {
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+    /**
+     * The Connector used to form the Connection
+     * @return
+     */
+    Connector getConnector();
 
-public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
+    /**
+     * The start of the Connection
+     * @return
+     */
+    Node getStart();
 
-    void setContent( final List<Path> files );
+    /**
+     * The end of the Connection
+     * @return
+     */
+    Node getEnd();
 
 }

@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.explorer;
+package org.uberfire.ext.wires.bpmn.api.model.impl;
 
-import java.util.List;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
-
-public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
-
-    void setContent( final List<Path> files );
+@Portable
+public class BpmnDiagram {
 
 }

@@ -13,15 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.explorer;
+package org.uberfire.ext.wires.bpmn.api.model.rules;
 
-import java.util.List;
+import java.util.Set;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.ext.wires.bpmn.api.model.Role;
 
-public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
+/**
+ * Rule restricting the Elements that can be contained within another Element.
+ */
+public interface ContainmentRule extends Rule {
 
-    void setContent( final List<Path> files );
+    /**
+     * The Roles of Elements permitted to be held within another Element.
+     * @return
+     */
+    Set<Role> getPermittedContent();
 
 }

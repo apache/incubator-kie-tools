@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.explorer;
+package org.uberfire.ext.wires.bpmn.api.model.impl;
 
-import java.util.List;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.validation.PortablePreconditions;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+@Portable
+public class BpmnEditorContent {
 
-public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
+    private BpmnDiagram diagram;
 
-    void setContent( final List<Path> files );
+    public BpmnEditorContent() {
+    }
+
+    public BpmnEditorContent( final BpmnDiagram diagram ) {
+        this.diagram = PortablePreconditions.checkNotNull( "diagram",
+                                                           diagram );
+    }
+
+    public BpmnDiagram getDiagram() {
+        return this.diagram;
+    }
 
 }

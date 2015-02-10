@@ -15,9 +15,9 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
-@Portable
-public class BpmnModel {
+/**
+ * A connector used to form a Connection between Nodes in the diagram.
+ */
+public interface Connector extends Element {
 
 }

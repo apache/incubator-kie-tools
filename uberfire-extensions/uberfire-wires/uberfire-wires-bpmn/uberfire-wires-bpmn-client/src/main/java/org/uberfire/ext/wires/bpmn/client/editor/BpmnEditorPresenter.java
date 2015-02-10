@@ -29,8 +29,8 @@ import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnEditorContent;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnModel;
+import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnDiagram;
+import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 import org.uberfire.ext.wires.bpmn.api.service.BpmnService;
 import org.uberfire.ext.wires.bpmn.client.resources.i18n.BpmnEditorConstants;
 import org.uberfire.ext.wires.bpmn.client.type.BpmnResourceType;
@@ -54,7 +54,7 @@ public class BpmnEditorPresenter
 
     private BpmnEditorView view;
 
-    private BpmnModel model;
+    private BpmnDiagram model;
 
     @Inject
     public BpmnEditorPresenter( final BpmnEditorView baseView ) {
@@ -118,7 +118,7 @@ public class BpmnEditorPresenter
                     return;
                 }
 
-                model = content.getModel();
+                model = content.getDiagram();
 
                 view.setContent( content,
                                  isReadOnly );

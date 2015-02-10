@@ -13,15 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.explorer;
+package org.uberfire.ext.wires.bpmn.api.model;
 
-import java.util.List;
+/**
+ * A Property of an Element
+ */
+public interface Property {
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+    String getId();
 
-public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
+    Type getType();
 
-    void setContent( final List<Path> files );
+    String getCaption();
+
+    String getDescription();
+
+    boolean isReadOnly();
+
+    boolean isOptional();
+
+    /**
+     * Type of Property
+     */
+    public static interface Type {
+
+    }
 
 }

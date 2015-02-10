@@ -24,7 +24,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnEditorContent;
+import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 
 @Dependent
 public class BpmnEditorViewImpl extends BaseEditorViewImpl
@@ -56,6 +56,6 @@ public class BpmnEditorViewImpl extends BaseEditorViewImpl
     @Override
     public void setContent( final BpmnEditorContent content,
                             final boolean isReadOnly ) {
-        label.setText( content.getModel().toString() );
+        label.setText( content.getDiagram().toString() );
     }
 }

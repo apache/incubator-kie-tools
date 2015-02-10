@@ -13,15 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.explorer;
+package org.uberfire.ext.wires.bpmn.api.model.rules;
 
-import java.util.List;
+import org.uberfire.ext.wires.bpmn.api.model.Role;
 
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.mvp.UberView;
+/**
+ * Rules define restrictions on behaviour of Elements in a diagram
+ */
+public interface Rule {
 
-public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
-
-    void setContent( final List<Path> files );
+    /**
+     * The Role for which the Rule applies. All Elements with this Role will be affected by the Rule.
+     * @return
+     */
+    Role getRole();
 
 }

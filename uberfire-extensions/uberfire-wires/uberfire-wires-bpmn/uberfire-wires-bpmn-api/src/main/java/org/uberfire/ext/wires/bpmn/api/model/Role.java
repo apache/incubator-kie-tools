@@ -15,24 +15,11 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.commons.validation.PortablePreconditions;
+/**
+ * The Role of an Element. Roles are used to associate behaviour to Elements in a diagram.
+ */
+public interface Role {
 
-@Portable
-public class BpmnEditorContent {
-
-    private BpmnModel model;
-
-    public BpmnEditorContent() {
-    }
-
-    public BpmnEditorContent( final BpmnModel model ) {
-        this.model = PortablePreconditions.checkNotNull( "model",
-                                                         model );
-    }
-
-    public BpmnModel getModel() {
-        return this.model;
-    }
+    String getName();
 
 }

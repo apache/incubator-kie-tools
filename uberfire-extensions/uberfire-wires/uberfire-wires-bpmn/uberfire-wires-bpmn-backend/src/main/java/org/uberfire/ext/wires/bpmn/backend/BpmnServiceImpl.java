@@ -32,8 +32,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnEditorContent;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnModel;
+import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnDiagram;
+import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 import org.uberfire.ext.wires.bpmn.api.service.BpmnService;
 import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
 import org.uberfire.ext.wires.bpmn.api.type.BpmnResourceTypeDefinition;
@@ -77,7 +77,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public Path create( final Path context,
                         final String fileName,
-                        final BpmnModel content,
+                        final BpmnDiagram content,
                         final String comment ) {
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -103,7 +103,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public BpmnEditorContent loadContent( final Path path ) {
         try {
-            final BpmnModel model = load( path );
+            final BpmnDiagram model = load( path );
             final BpmnEditorContent content = new BpmnEditorContent( model );
 
             return content;
@@ -114,7 +114,7 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public BpmnModel load( final Path path ) {
+    public BpmnDiagram load( final Path path ) {
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
@@ -127,7 +127,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public Path save( final Path path,
-                      final BpmnModel content,
+                      final BpmnDiagram content,
                       final Metadata metadata,
                       final String comment ) {
         try {
