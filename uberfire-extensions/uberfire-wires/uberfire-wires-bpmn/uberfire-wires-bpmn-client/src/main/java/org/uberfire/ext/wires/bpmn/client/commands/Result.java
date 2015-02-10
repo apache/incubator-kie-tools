@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model;
+package org.uberfire.ext.wires.bpmn.client.commands;
 
 /**
- * A connection between Nodes in the diagram.
+ * Result from the execution of a command
  */
-public interface Connection {
+public interface Result {
 
     /**
-     * The Connector used to form the Connection
+     * Type of Result
      * @return
      */
-    Connector getConnector();
+    ResultType getType();
 
     /**
-     * The start of the Connection
+     * Detailed message for the Result
      * @return
      */
-    Node getStart();
-
-    /**
-     * The end of the Connection
-     * @return
-     */
-    Node getEnd();
+    String getMessage();
 
 }

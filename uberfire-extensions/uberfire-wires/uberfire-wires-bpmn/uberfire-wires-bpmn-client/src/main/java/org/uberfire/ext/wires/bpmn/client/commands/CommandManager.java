@@ -13,32 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model;
+package org.uberfire.ext.wires.bpmn.client.commands;
+
+import java.util.List;
 
 /**
- * A Property of an Element
+ * Command Manager to handle execution of commands to mutate Elements
  */
-public interface Property {
-
-    String getId();
-
-    Type getType();
-
-    String getCaption();
-
-    String getDescription();
-
-    boolean isReadOnly();
-
-    boolean isOptional();
+public interface CommandManager {
 
     /**
-     * Type of Property
+     * Execute a Command and return results
+     * @param command
+     * @return
      */
-    public static interface Type {
+    List<Result> execute( final Command command );
 
-        String getName();
-
-    }
+    /**
+     * Undo the most recent command
+     * @return
+     */
+    List<Result> undo();
 
 }

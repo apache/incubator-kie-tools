@@ -16,29 +16,12 @@
 package org.uberfire.ext.wires.bpmn.api.model;
 
 /**
- * A Property of an Element
+ * Base content for all Nodes in the graph.
  */
-public interface Property {
+public interface Content {
 
-    String getId();
-
-    Type getType();
-
-    String getCaption();
+    String getTitle();
 
     String getDescription();
-
-    boolean isReadOnly();
-
-    boolean isOptional();
-
-    /**
-     * Type of Property
-     */
-    public static interface Type {
-
-        String getName();
-
-    }
 
 }

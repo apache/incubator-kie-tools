@@ -15,30 +15,13 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
+import java.util.Set;
+
 /**
- * A Property of an Element
+ * Marker interface for elements that have Roles.
  */
-public interface Property {
+public interface HasRoles {
 
-    String getId();
-
-    Type getType();
-
-    String getCaption();
-
-    String getDescription();
-
-    boolean isReadOnly();
-
-    boolean isOptional();
-
-    /**
-     * Type of Property
-     */
-    public static interface Type {
-
-        String getName();
-
-    }
+    Set<Role> getRoles();
 
 }

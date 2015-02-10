@@ -12,8 +12,8 @@
   <artifactId>uberfire-wires-bpmn-client</artifactId>
   <packaging>jar</packaging>
 
-  <name>Uberfire Wires :: Bpmn Client</name>
-  <description>Wires Bpmn Client</description>
+  <name>Uberfire Wires :: BPMN Client</name>
+  <description>Wires BPMN Client</description>
 
   <dependencies>
 

@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model.impl;
+package org.uberfire.ext.wires.bpmn.beliefs.graph;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+public interface Graph<T> extends Iterable<GraphNode<T>> {
 
-@Portable
-public class BpmnDiagram {
+    public GraphNode<T> addNode();
+
+    public GraphNode<T> removeNode( int id );
+
+    public GraphNode<T> getNode( int id );
+
+    public int size();
 
 }

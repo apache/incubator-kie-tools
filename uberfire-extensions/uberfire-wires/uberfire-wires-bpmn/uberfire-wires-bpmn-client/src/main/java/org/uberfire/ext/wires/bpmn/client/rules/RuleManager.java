@@ -13,32 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model;
+package org.uberfire.ext.wires.bpmn.client.rules;
+
+import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 
 /**
- * A Property of an Element
+ * Rule Manager to report validation issues when attempting to mutate Elements
  */
-public interface Property {
-
-    String getId();
-
-    Type getType();
-
-    String getCaption();
-
-    String getDescription();
-
-    boolean isReadOnly();
-
-    boolean isOptional();
+public interface RuleManager {
 
     /**
-     * Type of Property
+     * Add a rule to the Rule Manager
+     * @param rule
      */
-    public static interface Type {
-
-        String getName();
-
-    }
+    void addRule( final Rule rule );
 
 }

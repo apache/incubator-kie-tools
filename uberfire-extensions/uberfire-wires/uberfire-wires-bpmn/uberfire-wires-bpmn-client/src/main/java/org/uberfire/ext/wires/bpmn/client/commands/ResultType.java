@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model;
+package org.uberfire.ext.wires.bpmn.client.commands;
 
 /**
- * A Node in the diagram that can be joined to others with Connections
+ * Type of Result
  */
-public interface Node extends Element {
+public enum ResultType {
+
+    SUCCESS,
+    WARNING,
+    ERROR
 
 }

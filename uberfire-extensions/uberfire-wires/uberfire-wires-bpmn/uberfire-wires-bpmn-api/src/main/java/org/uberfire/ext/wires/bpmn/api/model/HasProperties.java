@@ -15,30 +15,13 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
+import java.util.Set;
+
 /**
- * A Property of an Element
+ * Marker interface for elements that have Properties.
  */
-public interface Property {
+public interface HasProperties {
 
-    String getId();
-
-    Type getType();
-
-    String getCaption();
-
-    String getDescription();
-
-    boolean isReadOnly();
-
-    boolean isOptional();
-
-    /**
-     * Type of Property
-     */
-    public static interface Type {
-
-        String getName();
-
-    }
+    Set<Property> getProperties();
 
 }

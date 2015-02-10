@@ -15,9 +15,13 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
+import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+
 /**
- * A connector used to form a Connection between Nodes in the diagram.
+ * A BpmnNode in the diagram that can be joined to others with Connections
  */
-public interface Connector extends Element {
+public interface BpmnNode extends GraphNode<Content>,
+                                  HasRoles,
+                                  HasProperties {
 
 }

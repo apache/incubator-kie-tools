@@ -7,5 +7,6 @@
   <inherits name="org.jboss.errai.common.ErraiCommon"/>
 
 	<source path="api"></source>
+  <source path="beliefs"></source>
 
 </module>

@@ -56,6 +56,6 @@ public class BpmnEditorViewImpl extends BaseEditorViewImpl
     @Override
     public void setContent( final BpmnEditorContent content,
                             final boolean isReadOnly ) {
-        label.setText( content.getDiagram().toString() );
+        label.setText( content.getGraph().toString() );
     }
 }

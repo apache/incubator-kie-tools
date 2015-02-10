@@ -13,32 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model;
+package org.uberfire.ext.wires.bpmn.beliefs.graph;
 
-/**
- * A Property of an Element
- */
-public interface Property {
+import java.util.List;
 
-    String getId();
+public interface GraphNode<T> {
 
-    Type getType();
+    public int getId();
 
-    String getCaption();
+    public List<Edge> getInEdges();
 
-    String getDescription();
+    public List<Edge> getOutEdges();
 
-    boolean isReadOnly();
+    public T getContent();
 
-    boolean isOptional();
-
-    /**
-     * Type of Property
-     */
-    public static interface Type {
-
-        String getName();
-
-    }
+    public void setContent( T content );
 
 }

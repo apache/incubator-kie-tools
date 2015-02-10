@@ -21,18 +21,18 @@ import org.uberfire.commons.validation.PortablePreconditions;
 @Portable
 public class BpmnEditorContent {
 
-    private BpmnDiagram diagram;
+    private BpmnGraph graph;
 
     public BpmnEditorContent() {
     }
 
-    public BpmnEditorContent( final BpmnDiagram diagram ) {
-        this.diagram = PortablePreconditions.checkNotNull( "diagram",
-                                                           diagram );
+    public BpmnEditorContent( final BpmnGraph graph ) {
+        this.graph = PortablePreconditions.checkNotNull( "graph",
+                                                         graph );
     }
 
-    public BpmnDiagram getDiagram() {
-        return this.diagram;
+    public BpmnGraph getGraph() {
+        return this.graph;
     }
 
 }

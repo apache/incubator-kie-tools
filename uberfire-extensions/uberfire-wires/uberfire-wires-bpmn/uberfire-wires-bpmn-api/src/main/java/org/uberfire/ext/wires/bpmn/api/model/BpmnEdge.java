@@ -15,21 +15,13 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
-import java.util.Set;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 
 /**
- * Base for all elements within a diagram
+ * A connector used to form a Connection between Nodes in the diagram.
  */
-public interface Element {
-
-    String getId();
-
-    String getTitle();
-
-    String getDescription();
-
-    Set<Role> getRoles();
-
-    Set<Property> getProperties();
+public interface BpmnEdge extends Edge,
+                                  HasRoles,
+                                  HasProperties {
 
 }
