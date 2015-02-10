@@ -215,6 +215,9 @@ public class BusinessViewWidget extends Composite implements View {
         } else {
             explorer.setNavType( Explorer.NavType.BREADCRUMB, businessOptions );
         }
+        if (options.contains( Option.NO_CONTEXT_NAVIGATION )){
+            explorer.hideHeaderNavigator();
+        }
     }
 
     @Override

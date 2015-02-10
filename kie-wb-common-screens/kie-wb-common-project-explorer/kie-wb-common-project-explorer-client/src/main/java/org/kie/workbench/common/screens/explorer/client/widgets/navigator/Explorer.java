@@ -42,6 +42,8 @@ public class Explorer extends Composite {
     private final CustomDropdown organizationUnits = new CustomDropdown();
     private final CustomDropdown repos = new CustomDropdown();
     private final CustomDropdown prjs = new CustomDropdown();
+    private NavigatorBreadcrumbs navigatorBreadcrumbs;
+    private boolean hideHeaderNavigator = false;
 
     private Mode mode = Mode.REGULAR;
 
@@ -211,9 +213,15 @@ public class Explorer extends Composite {
                 container.getElement().appendChild( element );
             }
 
-            container.add( new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.HEADER ) {{
+            this.navigatorBreadcrumbs = new NavigatorBreadcrumbs( NavigatorBreadcrumbs.Mode.HEADER ) {{
                 build( organizationUnits, repos, prjs );
-            }} );
+            }};
+
+            if ( hideHeaderNavigator ) {
+                navigatorBreadcrumbs.setVisible( false );
+            }
+
+            container.add( navigatorBreadcrumbs );
 
             if ( activeNavigator != null && mode.equals( Mode.EXPANDED ) ) {
                 container.add( activeNavigator );
@@ -223,8 +231,15 @@ public class Explorer extends Composite {
         }
     }
 
-    public void loadContent(FolderListing folderListing) {
-        this.loadContent(folderListing, null);
+    public void hideHeaderNavigator() {
+        hideHeaderNavigator = true;
+        if ( navigatorBreadcrumbs != null ) {
+            navigatorBreadcrumbs.setVisible( false );
+        }
+    }
+
+    public void loadContent( FolderListing folderListing ) {
+        this.loadContent( folderListing, null );
     }
 
     public void loadContent( final FolderListing content,

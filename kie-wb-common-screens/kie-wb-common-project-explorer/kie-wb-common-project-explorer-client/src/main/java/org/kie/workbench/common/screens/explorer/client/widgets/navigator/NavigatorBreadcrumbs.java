@@ -82,5 +82,10 @@ public class NavigatorBreadcrumbs extends Composite {
             breadcrumbs.add( header );
         }
     }
+
+    @Override
+    public void setVisible( boolean visible ) {
+        breadcrumbs.setVisible( visible );
+    }
 }
 

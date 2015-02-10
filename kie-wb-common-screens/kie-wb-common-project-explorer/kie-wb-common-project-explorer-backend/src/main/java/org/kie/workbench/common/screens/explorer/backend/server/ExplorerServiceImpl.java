@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,7 +24,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -66,6 +66,7 @@ import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static java.util.Collections.*;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Service
 @ApplicationScoped
@@ -138,6 +139,26 @@ public class ExplorerServiceImpl
         this.projectService = projectService;
         this.organizationalUnitService = organizationalUnitService;
         this.identity = identity;
+    }
+
+    @Override
+    public ProjectExplorerContent getContent( final String _path,
+                                              final Set<Option> activeOptions ) {
+        checkNotEmpty( "path", _path );
+
+        final Path path = Paths.convert( ioService.get( URI.create( _path.trim() ) ) );
+        final Project project = projectService.resolveProject( path );
+
+        final Repository repo = repositoryService.getRepository( Paths.convert( Paths.convert( path ).getRoot() ) );
+        OrganizationalUnit ou = null;
+        for ( final OrganizationalUnit organizationalUnit : organizationalUnitService.getOrganizationalUnits() ) {
+            if ( organizationalUnit.getRepositories().contains( repo ) ) {
+                ou = organizationalUnit;
+                break;
+            }
+        }
+
+        return getContent( new ProjectExplorerContentQuery( ou, repo, project, activeOptions ) );
     }
 
     @Override

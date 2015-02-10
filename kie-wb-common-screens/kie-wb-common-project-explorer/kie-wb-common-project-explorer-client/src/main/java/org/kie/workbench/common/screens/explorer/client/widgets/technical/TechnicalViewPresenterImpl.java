@@ -39,7 +39,7 @@ public class TechnicalViewPresenterImpl extends BaseViewPresenter {
 
     @Override
     protected void setOptions( Set<Option> options ) {
-        this.options = new HashSet<Option>( options  ) ;
+        this.options = new HashSet<Option>( options );
     }
 
     @Override
@@ -52,7 +52,12 @@ public class TechnicalViewPresenterImpl extends BaseViewPresenter {
         return view;
     }
 
-    public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
-        view.addBranchChangeHandler(branchChangeHandler);
+    @Override
+    public void addOption( final Option option ) {
+        options.add( option );
+    }
+
+    public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
+        view.addBranchChangeHandler( branchChangeHandler );
     }
 }

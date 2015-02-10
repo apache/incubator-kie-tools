@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.screens.explorer.service;
 
+import java.util.Set;
+
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.explorer.model.FolderItem;
-
-import java.util.Set;
 
 @Portable
 public class ProjectExplorerContentQuery {
@@ -38,29 +38,39 @@ public class ProjectExplorerContentQuery {
     public ProjectExplorerContentQuery() {
     }
 
-    public ProjectExplorerContentQuery(OrganizationalUnit organizationalUnit) {
+    public ProjectExplorerContentQuery( OrganizationalUnit organizationalUnit ) {
         this.organizationalUnit = organizationalUnit;
     }
 
-    public ProjectExplorerContentQuery(OrganizationalUnit organizationalUnit, Repository repository) {
+    public ProjectExplorerContentQuery( OrganizationalUnit organizationalUnit,
+                                        Repository repository ) {
         this.organizationalUnit = organizationalUnit;
         this.repository = repository;
     }
 
-    public ProjectExplorerContentQuery(OrganizationalUnit organizationalUnit, Repository repository, Project project) {
+    public ProjectExplorerContentQuery( OrganizationalUnit organizationalUnit,
+                                        Repository repository,
+                                        Project project ) {
         this.organizationalUnit = organizationalUnit;
         this.repository = repository;
         this.project = project;
     }
 
-    public ProjectExplorerContentQuery(OrganizationalUnit organizationalUnit, Repository repository, Project project, Package pkg) {
+    public ProjectExplorerContentQuery( OrganizationalUnit organizationalUnit,
+                                        Repository repository,
+                                        Project project,
+                                        Package pkg ) {
         this.organizationalUnit = organizationalUnit;
         this.repository = repository;
         this.project = project;
         this.pkg = pkg;
     }
 
-    public ProjectExplorerContentQuery(OrganizationalUnit organizationalUnit, Repository repository, Project project, Package pkg, FolderItem item) {
+    public ProjectExplorerContentQuery( OrganizationalUnit organizationalUnit,
+                                        Repository repository,
+                                        Project project,
+                                        Package pkg,
+                                        FolderItem item ) {
         this.organizationalUnit = organizationalUnit;
         this.repository = repository;
         this.project = project;
@@ -68,6 +78,15 @@ public class ProjectExplorerContentQuery {
         this.item = item;
     }
 
+    public ProjectExplorerContentQuery( final OrganizationalUnit organizationalUnit,
+                                        final Repository repository,
+                                        final Project project,
+                                        final Set<Option> activeOptions ) {
+        this.organizationalUnit = organizationalUnit;
+        this.repository = repository;
+        this.project = project;
+        this.options = activeOptions;
+    }
 
     public OrganizationalUnit getOrganizationalUnit() {
         return organizationalUnit;
@@ -93,7 +112,7 @@ public class ProjectExplorerContentQuery {
         return options;
     }
 
-    public void setOptions(Set<Option> options) {
+    public void setOptions( Set<Option> options ) {
         this.options = options;
     }
 

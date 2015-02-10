@@ -144,6 +144,15 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     protected abstract View getView();
 
     @Override
+    public void initialiseViewForActiveContext( final String path ) {
+        getView().showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+
+        explorerService.call(
+                getContentCallback(),
+                new HasBusyIndicatorDefaultErrorCallback( getView() ) ).getContent( path, getActiveOptions() );
+    }
+
+    @Override
     public void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit ) {
         doInitialiseViewForActiveContext(
                 new ProjectExplorerContentQuery( organizationalUnit ),
@@ -695,7 +704,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         if ( project == null ) {
             return;
         }
-        if ( ! sessionInfo.getId().equals( event.getSessionId() ) ) {
+        if ( !sessionInfo.getId().equals( event.getSessionId() ) ) {
             refresh( false );
             return;
         }
@@ -999,4 +1008,5 @@ public abstract class BaseViewPresenter implements ViewPresenter {
         refresh( false );
     }
 
+    public abstract void addOption( final Option option );
 }

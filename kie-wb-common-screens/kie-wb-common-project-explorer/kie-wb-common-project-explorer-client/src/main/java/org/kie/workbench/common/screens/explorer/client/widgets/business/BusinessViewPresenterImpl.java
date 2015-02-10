@@ -38,7 +38,7 @@ public class BusinessViewPresenterImpl extends BaseViewPresenter {
     private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR, Option.EXCLUDE_HIDDEN_ITEMS ) );
 
     @Override
-    protected void setOptions( Set<Option> options ) {
+    protected void setOptions( final Set<Option> options ) {
         this.options = new HashSet<Option>( options );
     }
 
@@ -52,7 +52,12 @@ public class BusinessViewPresenterImpl extends BaseViewPresenter {
         return view;
     }
 
-    public void addBranchChangeHandler(BranchChangeHandler branchChangeHandler) {
-        view.addBranchChangeHandler(branchChangeHandler);
+    @Override
+    public void addOption( Option option ) {
+        options.add( option );
+    }
+
+    public void addBranchChangeHandler( BranchChangeHandler branchChangeHandler ) {
+        view.addBranchChangeHandler( branchChangeHandler );
     }
 }

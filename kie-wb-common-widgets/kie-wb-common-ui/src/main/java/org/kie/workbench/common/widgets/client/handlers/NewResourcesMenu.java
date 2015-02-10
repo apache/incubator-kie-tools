@@ -58,8 +58,8 @@ public class NewResourcesMenu {
         if ( handlerBeans.size() > 0 ) {
             for ( IOCBeanDef<NewResourceHandler> handlerBean : handlerBeans ) {
                 final NewResourceHandler activeHandler = handlerBean.getInstance();
-                boolean isProjectMenuItem = activeHandler.getClass().getName().contains("NewProjectHandler");
-                
+                boolean isProjectMenuItem = activeHandler.getClass().getName().contains( "NewProjectHandler" );
+
                 final String description = activeHandler.getDescription();
                 final MenuItem menuItem = MenuFactory.newSimpleItem( description ).respondsWith( new Command() {
                     @Override
@@ -69,9 +69,9 @@ public class NewResourcesMenu {
                 } ).endMenu().build().getItems().get( 0 );
                 newResourceHandlers.put( activeHandler,
                                          menuItem );
-                if(!isProjectMenuItem){
+                if ( !isProjectMenuItem ) {
                     items.add( menuItem );
-                }else{
+                } else {
                     projectMenuItem = menuItem;
                 }
             }
@@ -86,14 +86,18 @@ public class NewResourcesMenu {
                                   return o1.getCaption().compareToIgnoreCase( o2.getCaption() );
                               }
                           } );
-        if(projectMenuItem != null){
-            items.add(0, projectMenuItem);
+        if ( projectMenuItem != null ) {
+            items.add( 0, projectMenuItem );
         }
 
     }
 
     public List<MenuItem> getMenuItems() {
         return items;
+    }
+
+    public List<MenuItem> getMenuItemsWithoutProject() {
+        return items.subList( 1, items.size() - 1 );
     }
 
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {

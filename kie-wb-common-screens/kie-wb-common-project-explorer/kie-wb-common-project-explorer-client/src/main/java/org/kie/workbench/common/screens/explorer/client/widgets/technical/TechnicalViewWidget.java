@@ -149,6 +149,10 @@ public class TechnicalViewWidget extends Composite implements View {
         } else {
             explorer.setNavType( Explorer.NavType.BREADCRUMB, techOptions );
         }
+
+        if ( options.contains( Option.NO_CONTEXT_NAVIGATION ) ) {
+            explorer.hideHeaderNavigator();
+        }
     }
 
     @Override

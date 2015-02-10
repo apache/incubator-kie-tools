@@ -17,6 +17,7 @@ package org.kie.workbench.common.screens.explorer.client;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
@@ -52,6 +53,8 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.common.ContextDropdownButton;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.lifecycle.OnStartup;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -96,48 +99,67 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     private final NavLink archiveProject = new NavLink( ProjectExplorerConstants.INSTANCE.downloadProject() );
 
     private Set<Option> options = new HashSet<Option>( Arrays.asList( Option.BUSINESS_CONTENT, Option.EXCLUDE_HIDDEN_ITEMS ) );
+    private String initPath = null;
 
     @AfterInitialization
     public void init() {
-
         addBranchChangeHandlers();
-
-        explorerService.call( new RemoteCallback<Set<Option>>() {
-                                  @Override
-                                  public void callback( Set<Option> o ) {
-                                      if ( o != null && !o.isEmpty() ) {
-                                          options.clear();
-                                          options.addAll( o );
-                                      }
-                                      config();
-                                  }
-                              }, new ErrorCallback<Object>() {
-                                  @Override
-                                  public boolean error( Object o,
-                                                        Throwable throwable ) {
-                                      config();
-                                      return false;
-                                  }
-                              }
-                            ).getLastUserOptions();
     }
 
-    private void addBranchChangeHandlers() {
-        BranchChangeHandler branchChangeHandler = new BranchChangeHandler() {
+    @OnStartup
+    public void onStartup( final PlaceRequest placeRequest ) {
+        final boolean noContextNavigationOption = ( Window.Location.getParameterMap().containsKey( "no_context_navigation" ) );
+        final String paramExplorerMode = ( ( Window.Location.getParameterMap().containsKey( "explorer_mode" ) ) ? Window.Location.getParameterMap().get( "explorer_mode" ).get( 0 ) : "" ).trim();
+        final String projectPathString = ( ( Window.Location.getParameterMap().containsKey( "path" ) ) ? Window.Location.getParameterMap().get( "path" ).get( 0 ) : null );
 
-            @Override
-            public void onBranchSelected( String branch ) {
-                businessViewPresenter.branchChanged( branch );
-                technicalViewPresenter.branchChanged( branch );
+        this.initPath = placeRequest.getParameter( "init_path", projectPathString );
+        final String explorerMode = placeRequest.getParameter( "mode", "" );
+        final boolean noContext = placeRequest.getParameterNames().contains( "no_context" );
 
-                ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(), context.getActiveRepository(), context.getActiveProject(), branch );
+        if ( explorerMode.equalsIgnoreCase( "business_tree" ) ) {
+            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
+        } else if ( explorerMode.equalsIgnoreCase( "business_explorer" ) ) {
+            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+        } else if ( explorerMode.equalsIgnoreCase( "tech_tree" ) ) {
+            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
+        } else if ( explorerMode.equalsIgnoreCase( "tech_explorer" ) ) {
+            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+        } else if ( paramExplorerMode.equalsIgnoreCase( "business_tree" ) ) {
+            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.TREE_NAVIGATOR );
+        } else if ( paramExplorerMode.equalsIgnoreCase( "business_explorer" ) ) {
+            Collections.addAll( options, Option.BUSINESS_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+        } else if ( paramExplorerMode.equalsIgnoreCase( "tech_tree" ) ) {
+            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.TREE_NAVIGATOR );
+        } else if ( paramExplorerMode.equalsIgnoreCase( "tech_explorer" ) ) {
+            Collections.addAll( options, Option.TECHNICAL_CONTENT, Option.BREADCRUMB_NAVIGATOR );
+        }
 
-                contextChangedEvent.fire( event );
-            }
-        };
+        if ( noContext || noContextNavigationOption ) {
+            options.add( Option.NO_CONTEXT_NAVIGATION );
+        }
 
-        businessViewPresenter.addBranchChangeHandler( branchChangeHandler );
-        technicalViewPresenter.addBranchChangeHandler( branchChangeHandler );
+        if ( options.isEmpty() ) {
+            explorerService.call( new RemoteCallback<Set<Option>>() {
+                                      @Override
+                                      public void callback( Set<Option> o ) {
+                                          if ( o != null && !o.isEmpty() ) {
+                                              options.clear();
+                                              options.addAll( o );
+                                          }
+                                          config();
+                                      }
+                                  }, new ErrorCallback<Object>() {
+                                      @Override
+                                      public boolean error( Object o,
+                                                            Throwable throwable ) {
+                                          config();
+                                          return false;
+                                      }
+                                  }
+                                ).getLastUserOptions();
+        } else {
+            config();
+        }
     }
 
     private void config() {
@@ -217,6 +239,24 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
 
         setupMenuItems();
         update();
+    }
+
+    private void addBranchChangeHandlers() {
+        BranchChangeHandler branchChangeHandler = new BranchChangeHandler() {
+
+            @Override
+            public void onBranchSelected( String branch ) {
+                businessViewPresenter.branchChanged( branch );
+                technicalViewPresenter.branchChanged( branch );
+
+                ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(), context.getActiveRepository(), context.getActiveProject(), branch );
+
+                contextChangedEvent.fire( event );
+            }
+        };
+
+        businessViewPresenter.addBranchChangeHandler( branchChangeHandler );
+        technicalViewPresenter.addBranchChangeHandler( branchChangeHandler );
     }
 
     private void setupMenuItems() {
@@ -462,29 +502,44 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
     public void selectBusinessView() {
         businessViewPresenter.setVisible( true );
         technicalViewPresenter.setVisible( false );
-        options = businessViewPresenter.getActiveOptions();
-        businessViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
-                                                              context.getActiveRepository(),
-                                                              context.getActiveProject(),
-                                                              context.getActivePackage() );
+        if ( initPath == null ) {
+            options = businessViewPresenter.getActiveOptions();
+            businessViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
+                                                                  context.getActiveRepository(),
+                                                                  context.getActiveProject(),
+                                                                  context.getActivePackage() );
+        } else {
+            businessViewPresenter.update( options );
+            technicalViewPresenter.update( options );
+
+            businessViewPresenter.initialiseViewForActiveContext( initPath );
+            initPath = null;
+        }
     }
 
     @Override
     public void selectTechnicalView() {
         businessViewPresenter.setVisible( false );
         technicalViewPresenter.setVisible( true );
-        options = technicalViewPresenter.getActiveOptions();
-        technicalViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
-                                                               context.getActiveRepository(),
-                                                               context.getActiveProject(),
-                                                               context.getActivePackage() );
+        if ( initPath == null ) {
+            options = technicalViewPresenter.getActiveOptions();
+            technicalViewPresenter.initialiseViewForActiveContext( context.getActiveOrganizationalUnit(),
+                                                                   context.getActiveRepository(),
+                                                                   context.getActiveProject(),
+                                                                   context.getActivePackage() );
+        } else {
+            businessViewPresenter.update( options );
+            technicalViewPresenter.update( options );
+
+            technicalViewPresenter.initialiseViewForActiveContext( initPath );
+            initPath = null;
+        }
     }
 
     @Override
     public void refresh() {
         if ( businessViewPresenter.isVisible() ) {
             businessViewPresenter.refresh();
-
         } else if ( technicalViewPresenter.isVisible() ) {
             technicalViewPresenter.refresh();
         }

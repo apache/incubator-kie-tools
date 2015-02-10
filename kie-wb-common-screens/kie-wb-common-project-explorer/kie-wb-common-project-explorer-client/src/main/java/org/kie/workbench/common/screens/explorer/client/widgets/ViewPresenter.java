@@ -33,6 +33,8 @@ public interface ViewPresenter extends HasVisibility {
 
     void update( final Set<Option> options );
 
+    void initialiseViewForActiveContext( final String path );
+
     void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit );
 
     void initialiseViewForActiveContext( final OrganizationalUnit organizationalUnit,
@@ -74,6 +76,6 @@ public interface ViewPresenter extends HasVisibility {
 
     void copyItem( FolderItem folderItem );
 
-    void uploadArchivedFolder(FolderItem folderItem);
+    void uploadArchivedFolder( FolderItem folderItem );
 
 }
