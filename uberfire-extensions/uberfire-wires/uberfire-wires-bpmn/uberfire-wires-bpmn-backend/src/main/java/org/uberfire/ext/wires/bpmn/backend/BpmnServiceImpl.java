@@ -33,7 +33,7 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
-import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.BPMNDiagramNode;
 import org.uberfire.ext.wires.bpmn.api.service.BpmnService;
 import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
 import org.uberfire.ext.wires.bpmn.api.type.BpmnResourceTypeDefinition;
@@ -77,7 +77,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public Path create( final Path context,
                         final String fileName,
-                        final BpmnGraph content,
+                        final BPMNDiagramNode content,
                         final String comment ) {
         try {
             final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
@@ -103,7 +103,7 @@ public class BpmnServiceImpl implements BpmnService {
     @Override
     public BpmnEditorContent loadContent( final Path path ) {
         try {
-            final BpmnGraph graph = load( path );
+            final BPMNDiagramNode graph = load( path );
             final BpmnEditorContent content = new BpmnEditorContent( graph );
 
             return content;
@@ -114,7 +114,7 @@ public class BpmnServiceImpl implements BpmnService {
     }
 
     @Override
-    public BpmnGraph load( final Path path ) {
+    public BPMNDiagramNode load( final Path path ) {
         try {
             final String content = ioService.readAllString( Paths.convert( path ) );
 
@@ -127,7 +127,7 @@ public class BpmnServiceImpl implements BpmnService {
 
     @Override
     public Path save( final Path path,
-                      final BpmnGraph content,
+                      final BPMNDiagramNode content,
                       final Metadata metadata,
                       final String comment ) {
         try {

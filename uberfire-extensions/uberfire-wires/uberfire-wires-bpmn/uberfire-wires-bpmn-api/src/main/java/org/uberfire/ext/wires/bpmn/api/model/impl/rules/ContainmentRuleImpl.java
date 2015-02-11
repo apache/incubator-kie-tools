@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.bpmn.api.model.impl.rules;
 
 import java.util.Set;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
@@ -25,24 +26,20 @@ import org.uberfire.ext.wires.bpmn.api.model.rules.ContainmentRule;
 @Portable
 public class ContainmentRuleImpl implements ContainmentRule {
 
-    private Role role;
+    private String id;
     private Set<Role> permittedRoles;
 
-    //Errai marshalling
-    public ContainmentRuleImpl() {
-    }
-
-    public ContainmentRuleImpl( final Role role,
-                                final Set<Role> permittedRoles ) {
-        this.role = PortablePreconditions.checkNotNull( "role",
-                                                        role );
+    public ContainmentRuleImpl( @MapsTo("id") final String id,
+                                @MapsTo("permittedRoles") final Set<Role> permittedRoles ) {
+        this.id = PortablePreconditions.checkNotNull( "id",
+                                                      id );
         this.permittedRoles = PortablePreconditions.checkNotNull( "permittedRoles",
                                                                   permittedRoles );
     }
 
     @Override
-    public Role getRole() {
-        return role;
+    public String getId() {
+        return id;
     }
 
     @Override

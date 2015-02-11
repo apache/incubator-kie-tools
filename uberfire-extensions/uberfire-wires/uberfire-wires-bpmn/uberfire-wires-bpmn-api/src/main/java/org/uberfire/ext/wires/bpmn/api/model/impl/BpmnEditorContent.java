@@ -15,23 +15,22 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model.impl;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.BPMNDiagramNode;
 
 @Portable
 public class BpmnEditorContent {
 
-    private BpmnGraph graph;
+    private BPMNDiagramNode graph;
 
-    public BpmnEditorContent() {
-    }
-
-    public BpmnEditorContent( final BpmnGraph graph ) {
+    public BpmnEditorContent( @MapsTo("graph") final BPMNDiagramNode graph ) {
         this.graph = PortablePreconditions.checkNotNull( "graph",
                                                          graph );
     }
 
-    public BpmnGraph getGraph() {
+    public BPMNDiagramNode getGraph() {
         return this.graph;
     }
 

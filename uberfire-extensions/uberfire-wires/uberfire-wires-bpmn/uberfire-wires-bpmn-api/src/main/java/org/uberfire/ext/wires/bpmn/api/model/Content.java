@@ -15,13 +15,21 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
+import java.util.Set;
+
 /**
  * Base content for all Nodes in the graph.
  */
 public interface Content {
 
+    String getId();
+
     String getTitle();
 
     String getDescription();
+
+    Set<Role> getRoles();
+
+    Set<Property> getProperties();
 
 }

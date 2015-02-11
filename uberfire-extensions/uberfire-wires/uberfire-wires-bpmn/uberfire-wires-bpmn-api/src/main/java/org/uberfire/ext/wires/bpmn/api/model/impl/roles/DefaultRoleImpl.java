@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.rules.impl;
+package org.uberfire.ext.wires.bpmn.api.model.impl.roles;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 
-public class PermittedRole implements Role {
+@Portable
+public class DefaultRoleImpl implements Role {
 
-    private static final String name = "permittedRole";
+    private String name;
+
+    public DefaultRoleImpl( @MapsTo("name") final String name ) {
+        this.name = PortablePreconditions.checkNotNull( "name",
+                                                        name );
+    }
 
     @Override
     public String getName() {
@@ -31,11 +40,11 @@ public class PermittedRole implements Role {
         if ( this == o ) {
             return true;
         }
-        if ( !( o instanceof PermittedRole ) ) {
+        if ( !( o instanceof DefaultRoleImpl ) ) {
             return false;
         }
 
-        PermittedRole that = (PermittedRole) o;
+        DefaultRoleImpl that = (DefaultRoleImpl) o;
 
         if ( !name.equals( that.name ) ) {
             return false;
@@ -51,7 +60,7 @@ public class PermittedRole implements Role {
 
     @Override
     public String toString() {
-        return "PermittedRole{" +
+        return "DefaultRoleImpl{" +
                 "name='" + name + '\'' +
                 '}';
     }

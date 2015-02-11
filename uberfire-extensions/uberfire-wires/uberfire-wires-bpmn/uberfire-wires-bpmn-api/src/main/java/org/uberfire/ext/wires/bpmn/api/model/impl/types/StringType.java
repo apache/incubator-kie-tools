@@ -23,11 +23,6 @@ public class StringType implements Property.Type {
 
     private static final String name = "java.lang.String";
 
-    public static final StringType INSTANCE = new StringType();
-
-    public StringType() {
-    }
-
     @Override
     public String getName() {
         return name;

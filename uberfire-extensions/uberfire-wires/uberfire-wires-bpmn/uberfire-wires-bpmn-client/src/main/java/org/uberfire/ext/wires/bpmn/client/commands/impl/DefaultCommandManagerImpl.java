@@ -29,7 +29,17 @@ import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
  */
 public class DefaultCommandManagerImpl implements CommandManager {
 
+    private static final CommandManager INSTANCE = new DefaultCommandManagerImpl();
+
     private Stack<Command> commands = new Stack<Command>();
+
+    private DefaultCommandManagerImpl() {
+        //Singleton
+    }
+
+    public static CommandManager getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public List<Result> execute( final Command command ) {

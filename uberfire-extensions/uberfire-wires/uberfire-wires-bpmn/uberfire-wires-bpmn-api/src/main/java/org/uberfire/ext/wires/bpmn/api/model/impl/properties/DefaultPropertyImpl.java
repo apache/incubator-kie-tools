@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model.impl.properties;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Property;
@@ -29,16 +30,12 @@ public class DefaultPropertyImpl implements Property {
     private boolean isReadOnly;
     private boolean isOptional;
 
-    //Errai marshalling
-    public DefaultPropertyImpl() {
-    }
-
-    public DefaultPropertyImpl( final String id,
-                                final Type type,
-                                final String caption,
-                                final String description,
-                                final boolean isReadOnly,
-                                final boolean isOptional ) {
+    public DefaultPropertyImpl( @MapsTo("id") final String id,
+                                @MapsTo("type") final Type type,
+                                @MapsTo("caption") final String caption,
+                                @MapsTo("description") final String description,
+                                @MapsTo("isReadOnly") final boolean isReadOnly,
+                                @MapsTo("isOptional") final boolean isOptional ) {
         this.id = PortablePreconditions.checkNotNull( "id",
                                                       id );
         this.type = PortablePreconditions.checkNotNull( "type",

@@ -18,9 +18,12 @@ package org.uberfire.ext.wires.bpmn.beliefs.graph.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
+@Portable
 public class GraphNodeImpl<T> implements GraphNode<T> {
 
     private int id;
@@ -29,7 +32,7 @@ public class GraphNodeImpl<T> implements GraphNode<T> {
     private List<Edge> inEdges = new ArrayList<Edge>();
     private List<Edge> outEdges = new ArrayList<Edge>();
 
-    public GraphNodeImpl( int id ) {
+    public GraphNodeImpl( @MapsTo("id") int id ) {
         this.id = id;
     }
 

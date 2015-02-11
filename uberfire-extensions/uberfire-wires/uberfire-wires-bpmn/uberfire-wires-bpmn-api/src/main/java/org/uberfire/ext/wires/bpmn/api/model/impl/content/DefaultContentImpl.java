@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model.impl.nodes;
+package org.uberfire.ext.wires.bpmn.api.model.impl.content;
 
+import java.util.Set;
+
+import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.Property;
+import org.uberfire.ext.wires.bpmn.api.model.Role;
 
 /**
  * Content of a BpmnNode
@@ -25,19 +30,32 @@ import org.uberfire.ext.wires.bpmn.api.model.Content;
 @Portable
 public class DefaultContentImpl implements Content {
 
+    private String id;
     private String title;
     private String description;
+    private Set<Role> roles;
+    private Set<Property> properties;
 
-    //Errai marshalling
-    public DefaultContentImpl() {
-    }
-
-    public DefaultContentImpl( final String title,
-                               final String description ) {
+    public DefaultContentImpl( @MapsTo("id") final String id,
+                               @MapsTo("title") final String title,
+                               @MapsTo("description") final String description,
+                               @MapsTo("roles") final Set<Role> roles,
+                               @MapsTo("properties") final Set<Property> properties ) {
+        this.id = PortablePreconditions.checkNotNull( "id",
+                                                      id );
         this.title = PortablePreconditions.checkNotNull( "title",
                                                          title );
         this.description = PortablePreconditions.checkNotNull( "description",
                                                                description );
+        this.roles = PortablePreconditions.checkNotNull( "roles",
+                                                         roles );
+        this.properties = PortablePreconditions.checkNotNull( "properties",
+                                                              properties );
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     @Override
@@ -48,6 +66,16 @@ public class DefaultContentImpl implements Content {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public Set<Property> getProperties() {
+        return properties;
     }
 
     @Override
@@ -64,6 +92,15 @@ public class DefaultContentImpl implements Content {
         if ( !description.equals( that.description ) ) {
             return false;
         }
+        if ( !id.equals( that.id ) ) {
+            return false;
+        }
+        if ( !properties.equals( that.properties ) ) {
+            return false;
+        }
+        if ( !roles.equals( that.roles ) ) {
+            return false;
+        }
         if ( !title.equals( that.title ) ) {
             return false;
         }
@@ -73,9 +110,15 @@ public class DefaultContentImpl implements Content {
 
     @Override
     public int hashCode() {
-        int result = title.hashCode();
+        int result = id.hashCode();
+        result = ~~result;
+        result = 31 * result + title.hashCode();
         result = ~~result;
         result = 31 * result + description.hashCode();
+        result = ~~result;
+        result = 31 * result + roles.hashCode();
+        result = ~~result;
+        result = 31 * result + properties.hashCode();
         result = ~~result;
         return result;
     }
@@ -83,9 +126,13 @@ public class DefaultContentImpl implements Content {
     @Override
     public String toString() {
         return "DefaultContentImpl{" +
-                "title='" + title + '\'' +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", roles=" + roles +
+                ", properties=" + properties +
                 '}';
     }
 
 }
+

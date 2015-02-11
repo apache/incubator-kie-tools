@@ -15,17 +15,15 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model.rules;
 
-import org.uberfire.ext.wires.bpmn.api.model.Role;
-
 /**
  * Rules define restrictions on behaviour of Elements in a diagram
  */
 public interface Rule {
 
     /**
-     * The Role for which the Rule applies. All Elements with this Role will be affected by the Rule.
+     * The identifier for which the Rule applies. All Elements with this Role will be affected by the Rule.
      * @return
      */
-    Role getRole();
+    String getId();
 
 }

@@ -16,34 +16,30 @@
 package org.uberfire.ext.wires.bpmn.client.rules.impl;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.Test;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
-import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.BPMNDiagramNode;
+import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ContainmentRuleImpl;
+import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
+import org.uberfire.ext.wires.bpmn.client.commands.impl.DefaultCommandManagerImpl;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
-
-import static org.junit.Assert.*;
 
 public class ContainmentRulesTest {
 
     @Test
     public void testBpmnDiagramAddPermittedNode() {
-        final BpmnGraph graph = new BpmnGraph();
+        final BPMNDiagramNode graph = new BPMNDiagramNode();
         final RuleManager ruleManager = DefaultRuleManagerImpl.getInstance();
-        ruleManager.addRule( new ContainmentRuleImpl( getFirstRole( graph.getRoles() ),
-                                                      new HashSet<Role>() {{
-                                                          add( new PermittedRole() );
-                                                      }} ) );
-        //TODO {manstis} Test is not implemented!
-    }
+            ruleManager.addRule( new ContainmentRuleImpl( graph.getContent().getId(),
+                                                          new HashSet<Role>() {{
+                                                              add( new DefaultRoleImpl( "all" ) );
+                                                          }} ) );
 
-    private Role getFirstRole( final Set<Role> roles ) {
-        if ( roles == null || roles.isEmpty() ) {
-            fail( "Roles have not been set" );
-        }
-        return roles.iterator().next();
+        final CommandManager commandManager = DefaultCommandManagerImpl.getInstance();
+        //commandManager.execute()
+        //TODO {manstis} Test is not implemented!
     }
 
 }

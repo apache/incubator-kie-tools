@@ -26,13 +26,13 @@ import org.uberfire.ext.editor.commons.service.support.SupportsRead;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
 import org.uberfire.ext.editor.commons.service.support.SupportsUpdate;
 import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
-import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.BPMNDiagramNode;
 import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
 
 @Remote
-public interface BpmnService extends SupportsCreate<BpmnGraph>,
-                                     SupportsRead<BpmnGraph>,
-                                     SupportsUpdate<BpmnGraph, Metadata>,
+public interface BpmnService extends SupportsCreate<BPMNDiagramNode>,
+                                     SupportsRead<BPMNDiagramNode>,
+                                     SupportsUpdate<BPMNDiagramNode, Metadata>,
                                      SupportsDelete,
                                      SupportsCopy,
                                      SupportsRename {

@@ -17,15 +17,18 @@ package org.uberfire.ext.wires.bpmn.beliefs.graph.impl;
 
 import java.util.Iterator;
 
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
+@Portable
 public class GraphImpl<T> implements Graph<T>,
                                      Iterable<GraphNode<T>> {
 
     GraphStore<T> graphStore;
 
-    public GraphImpl( GraphStore<T> graphStore ) {
+    public GraphImpl( @MapsTo("graphStore") GraphStore<T> graphStore ) {
         this.graphStore = graphStore;
     }
 
