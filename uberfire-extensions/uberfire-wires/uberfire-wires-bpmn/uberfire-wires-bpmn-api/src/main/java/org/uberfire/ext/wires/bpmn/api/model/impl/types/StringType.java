@@ -25,7 +25,7 @@ public class StringType implements Property.Type {
 
     public static final StringType INSTANCE = new StringType();
 
-    private StringType() {
+    public StringType() {
     }
 
     @Override
