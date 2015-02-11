@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.bpmn.beliefs.graph;
 
 public interface Graph<T> extends Iterable<GraphNode<T>> {
 
-    public GraphNode<T> addNode();
+    public GraphNode<T> addNode( GraphNode<T> node );
 
     public GraphNode<T> removeNode( int id );
 

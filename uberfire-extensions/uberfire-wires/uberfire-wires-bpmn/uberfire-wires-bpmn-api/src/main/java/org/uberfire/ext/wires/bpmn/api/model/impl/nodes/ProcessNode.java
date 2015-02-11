@@ -37,8 +37,7 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.MapGraphStore;
  * A BPMN "Process"
  */
 @Portable
-public class BPMNDiagramNode extends GraphNodeImpl<Content> implements Graph<Content>,
-                                                                       GraphNode<Content> {
+public class ProcessNode extends GraphNodeImpl<Content> implements Graph<Content> {
 
     private Graph<Content> graph = new GraphImpl<Content>( new MapGraphStore<Content>() );
 
@@ -67,18 +66,17 @@ public class BPMNDiagramNode extends GraphNodeImpl<Content> implements Graph<Con
                                       true ) );
     }};
 
-    public BPMNDiagramNode() {
-        super( 0 );
-        setContent( new DefaultContentImpl( "BPMNDiagram",
-                                            "BPMN-Diagram",
-                                            "A BPMN 2.0 Diagram.",
+    public ProcessNode() {
+        setContent( new DefaultContentImpl( "BPMNProcess",
+                                            "BPMN-Process",
+                                            "A BPMN 2.0 Process.",
                                             roles,
                                             properties ) );
     }
 
     @Override
-    public GraphNode<Content> addNode() {
-        return graph.addNode();
+    public GraphNode<Content> addNode( final GraphNode<Content> node ) {
+        return graph.addNode( node );
     }
 
     @Override
@@ -100,5 +98,4 @@ public class BPMNDiagramNode extends GraphNodeImpl<Content> implements Graph<Con
     public Iterator<GraphNode<Content>> iterator() {
         return graph.iterator();
     }
-
 }

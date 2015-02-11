@@ -18,7 +18,6 @@ package org.uberfire.ext.wires.bpmn.beliefs.graph.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
@@ -32,36 +31,24 @@ public class GraphNodeImpl<T> implements GraphNode<T> {
     private List<Edge> inEdges = new ArrayList<Edge>();
     private List<Edge> outEdges = new ArrayList<Edge>();
 
-    public GraphNodeImpl( @MapsTo("id") int id ) {
-        this.id = id;
-    }
-
+    @Override
     public void setContent( T content ) {
         this.content = content;
     }
 
+    @Override
     public T getContent() {
         return content;
     }
 
+    @Override
     public int getId() {
         return this.id;
     }
 
-    public void addInEdge( Edge outEdge ) {
-        inEdges.add( outEdge );
-    }
-
-    public void addOutEdge( Edge inEdge ) {
-        outEdges.add( inEdge );
-    }
-
-    public void removeInEdge( Edge outEdge ) {
-        inEdges.remove( outEdge );
-    }
-
-    public void removeOutEdge( Edge inEdge ) {
-        outEdges.remove( inEdge );
+    @Override
+    public void setId( int id ) {
+        this.id = id;
     }
 
     @Override

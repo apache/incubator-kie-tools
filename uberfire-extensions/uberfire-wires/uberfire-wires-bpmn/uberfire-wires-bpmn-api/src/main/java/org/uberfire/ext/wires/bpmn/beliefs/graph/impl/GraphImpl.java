@@ -32,10 +32,9 @@ public class GraphImpl<T> implements Graph<T>,
         this.graphStore = graphStore;
     }
 
-    protected int idCounter;
-
-    public GraphNode<T> addNode() {
-        return graphStore.addNode();
+    @Override
+    public GraphNode<T> addNode( GraphNode<T> node ) {
+        return graphStore.addNode( node );
     }
 
     public GraphNode<T> removeNode( int id ) {
@@ -61,7 +60,6 @@ public class GraphImpl<T> implements Graph<T>,
     public String toString() {
         return "GraphImpl{" +
                 "graphStore=" + graphStore +
-                ", idCounter=" + idCounter +
                 '}';
     }
 

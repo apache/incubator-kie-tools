@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.bpmn.backend;
 
-import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.BPMNDiagramNode;
+import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 
 public class BpmnPersistence {
 
@@ -28,16 +28,16 @@ public class BpmnPersistence {
         return INSTANCE;
     }
 
-    public String marshal( final BPMNDiagramNode model ) {
+    public String marshal( final ProcessNode process ) {
         //TODO {manstis} Save the model as XML
         final StringBuilder sb = new StringBuilder();
         return sb.toString();
     }
 
-    public BPMNDiagramNode unmarshal( final String content ) {
+    public ProcessNode unmarshal( final String content ) {
         //TODO {manstis} Load the model from XML
-        final BPMNDiagramNode graph = new BPMNDiagramNode();
-        return graph;
+        final ProcessNode process = new ProcessNode();
+        return process;
     }
 
 }

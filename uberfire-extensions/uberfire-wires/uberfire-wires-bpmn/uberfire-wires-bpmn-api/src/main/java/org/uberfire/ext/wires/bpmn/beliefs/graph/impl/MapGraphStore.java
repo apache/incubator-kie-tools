@@ -33,10 +33,12 @@ public class MapGraphStore<T> implements GraphStore<T> {
         return nodes;
     }
 
-    public GraphNode<T> addNode() {
-        GraphNode<T> v = new GraphNodeImpl<T>( idCounter++ );
-        nodes.put( v.getId(), v );
-        return v;
+    @Override
+    public GraphNode<T> addNode( GraphNode<T> node ) {
+        node.setId( idCounter++ );
+        nodes.put( node.getId(),
+                   node );
+        return node;
     }
 
     public GraphNode<T> removeNode( int id ) {

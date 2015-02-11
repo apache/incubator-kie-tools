@@ -24,32 +24,30 @@ import org.uberfire.ext.wires.bpmn.api.model.Property;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 import org.uberfire.ext.wires.bpmn.api.model.impl.content.DefaultContentImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
 
 /**
- * A BPMN "Start Node"
+ * A BPMN "End Node"
  */
 @Portable
-public class StartNoneEvent extends GraphNodeImpl<Content> implements GraphNode<Content> {
+public class EndProcessNode extends GraphNodeImpl<Content> {
 
     private Set<Role> roles = new HashSet<Role>() {{
         add( new DefaultRoleImpl( "all" ) );
-        add( new DefaultRoleImpl( "Startevents_all" ) );
-        add( new DefaultRoleImpl( "sequence_start" ) );
+        add( new DefaultRoleImpl( "Endevents_all" ) );
+        add( new DefaultRoleImpl( "sequence_end" ) );
         add( new DefaultRoleImpl( "to_task_event" ) );
         add( new DefaultRoleImpl( "from_task_event" ) );
         add( new DefaultRoleImpl( "fromtoall" ) );
-        add( new DefaultRoleImpl( "StartEventsMorph" ) );
+        add( new DefaultRoleImpl( "EndEventsMorph" ) );
     }};
 
     private Set<Property> properties = new HashSet<Property>();
 
-    public StartNoneEvent() {
-        super( 0 );
-        setContent( new DefaultContentImpl( "StartNoneEvent",
-                                            "StartNoneEvent",
-                                            "Untyped start event.",
+    public EndProcessNode() {
+        setContent( new DefaultContentImpl( "EndNoneEvent",
+                                            "EndNoneEvent",
+                                            "The untyped end event typically marks the standard end of a process.",
                                             roles,
                                             properties ) );
     }

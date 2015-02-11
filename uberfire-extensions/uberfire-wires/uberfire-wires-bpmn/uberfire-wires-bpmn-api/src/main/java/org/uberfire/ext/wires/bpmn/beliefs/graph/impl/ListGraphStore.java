@@ -25,15 +25,13 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 @Portable
 public class ListGraphStore<T> implements GraphStore<T> {
 
-    List<GraphNode<T>> nodes = new ArrayList<GraphNode<T>>();
-
-    List<Integer> oldIds = new ArrayList<Integer>();
+    private List<GraphNode<T>> nodes = new ArrayList<GraphNode<T>>();
 
     @Override
-    public GraphNode<T> addNode() {
-        GraphNode<T> v = new GraphNodeImpl<T>( nodes.size() );
-        nodes.add( v );
-        return v;
+    public GraphNode<T> addNode( GraphNode<T> node ) {
+        nodes.add( node );
+        node.setId( nodes.size() );
+        return node;
     }
 
     @Override

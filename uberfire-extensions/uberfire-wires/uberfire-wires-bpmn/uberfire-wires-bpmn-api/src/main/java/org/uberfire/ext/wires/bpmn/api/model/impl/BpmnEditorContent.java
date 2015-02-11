@@ -18,20 +18,20 @@ package org.uberfire.ext.wires.bpmn.api.model.impl;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.BPMNDiagramNode;
+import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 
 @Portable
 public class BpmnEditorContent {
 
-    private BPMNDiagramNode graph;
+    private ProcessNode process;
 
-    public BpmnEditorContent( @MapsTo("graph") final BPMNDiagramNode graph ) {
-        this.graph = PortablePreconditions.checkNotNull( "graph",
-                                                         graph );
+    public BpmnEditorContent( @MapsTo("process") final ProcessNode process ) {
+        this.process = PortablePreconditions.checkNotNull( "process",
+                                                           process );
     }
 
-    public BPMNDiagramNode getGraph() {
-        return this.graph;
+    public ProcessNode getProcess() {
+        return this.process;
     }
 
 }

@@ -34,16 +34,6 @@ public class EdgeImpl implements Edge {
         return outGraphNode;
     }
 
-    public void setInGraphNode( GraphNode inGraphNode ) {
-        this.inGraphNode = inGraphNode;
-        ( (GraphNodeImpl) inGraphNode ).addInEdge( this );
-    }
-
-    public void setOutGraphNode( GraphNode outGraphNode ) {
-        this.outGraphNode = outGraphNode;
-        ( (GraphNodeImpl) outGraphNode ).addOutEdge( this );
-    }
-
     @Override
     public String toString() {
         return "EdgeImpl{" +

@@ -21,6 +21,8 @@ public interface GraphNode<T> {
 
     public int getId();
 
+    public void setId( int id );
+
     public List<Edge> getInEdges();
 
     public List<Edge> getOutEdges();
