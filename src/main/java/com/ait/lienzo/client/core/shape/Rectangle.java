@@ -18,9 +18,14 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.util.AlignAndDistribute;
+import com.ait.lienzo.client.core.util.AlignAndDistribute.AlignAndDistributeHandler;
+import com.ait.lienzo.client.core.util.AlignAndDistribute.AlignAndDistributeMatchesCallback;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -205,4 +210,24 @@ public class Rectangle extends Shape<Rectangle>
             return new Rectangle(node, ctx);
         }
     }
+
+    @Override
+    public AlignAndDistributeHandler getAlignAndDistributeHandler(AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback)
+    {
+        return new RectangleAlignAndDistributeHandler(this, alignAndDistribute, alignAndDistributeMatchesCallback);
+    }
+
+    public static class RectangleAlignAndDistributeHandler extends AlignAndDistributeHandler
+    {
+        public RectangleAlignAndDistributeHandler(Rectangle rect, AlignAndDistribute alignAndDistribute, AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback)
+        {
+            super(rect, alignAndDistribute, alignAndDistributeMatchesCallback, Attribute.X, Attribute.Y, Attribute.WIDTH, Attribute.HEIGHT);
+        }
+
+        public boolean attributesChanged(AttributesChangedEvent event)
+        {
+            return  ( event.any( Attribute.X, Attribute.Y, Attribute.WIDTH, Attribute.HEIGHT));
+        }
+    }
+
 }
