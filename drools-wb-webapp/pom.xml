@@ -922,7 +922,9 @@
         <executions>
           <execution>
             <id>default-deploy</id>
-            <phase>none</phase>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
           </execution>
         </executions>
       </plugin>
