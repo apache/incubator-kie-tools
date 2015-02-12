@@ -15,14 +15,13 @@
  */
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
+import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
-import org.uberfire.ext.wires.bpmn.client.commands.Result;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
+import org.uberfire.ext.wires.bpmn.client.commands.Results;
 
 /**
  * Default implementation of CommandManager
@@ -42,38 +41,22 @@ public class DefaultCommandManagerImpl implements CommandManager {
     }
 
     @Override
-    public List<Result> execute( final Command command ) {
-        if ( command == null ) {
-            return new ArrayList<Result>() {{
-                add( new DefaultResultImpl( ResultType.ERROR,
-                                            "Null command" ) );
-            }};
-        }
-        final List<Result> results = command.apply();
-        if ( success( results ) ) {
+    public Results execute( final Command command ) {
+        PortablePreconditions.checkNotNull( "command",
+                                            command );
+        final Results results = command.apply();
+        if ( !results.contains( ResultType.ERROR ) ) {
             commands.push( command );
         }
         return results;
     }
 
     @Override
-    public List<Result> undo() {
+    public Results undo() {
         if ( commands.isEmpty() ) {
             throw new IllegalStateException( "No commands to undo" );
         }
         return commands.pop().undo();
-    }
-
-    private boolean success( final List<Result> results ) {
-        if ( results == null || results.isEmpty() ) {
-            return true;
-        }
-        for ( Result result : results ) {
-            if ( result.getType().equals( ResultType.ERROR ) ) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

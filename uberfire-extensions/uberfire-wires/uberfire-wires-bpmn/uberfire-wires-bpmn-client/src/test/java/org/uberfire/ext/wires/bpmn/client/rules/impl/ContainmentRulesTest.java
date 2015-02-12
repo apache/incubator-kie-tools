@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
@@ -30,7 +29,8 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ContainmentRuleImpl;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
-import org.uberfire.ext.wires.bpmn.client.commands.Result;
+import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
+import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.commands.impl.AddGraphNodeCommand;
 import org.uberfire.ext.wires.bpmn.client.commands.impl.DefaultCommandManagerImpl;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
@@ -40,7 +40,7 @@ import static junit.framework.Assert.*;
 public class ContainmentRulesTest {
 
     @Test
-    public void testProcessNodeAddPermittedNode() {
+    public void testAddStartProcessNodeToProcess() {
         final ProcessNode process = new ProcessNode();
         final StartProcessNode node = new StartProcessNode();
         final RuleManager ruleManager = DefaultRuleManagerImpl.getInstance();
@@ -53,12 +53,12 @@ public class ContainmentRulesTest {
         }
 
         final CommandManager commandManager = DefaultCommandManagerImpl.getInstance();
-        final List<Result> result = commandManager.execute( new AddGraphNodeCommand( process,
-                                                                                     node ) );
+        final Results results = commandManager.execute( new AddGraphNodeCommand( process,
+                                                                                 node ) );
 
-        assertNotNull( result );
+        assertNotNull( results );
         assertEquals( 0,
-                      result.size() );
+                      results.getMessages().size() );
 
         assertEquals( 1,
                       process.size() );
@@ -67,8 +67,34 @@ public class ContainmentRulesTest {
     }
 
     @Test
-    @Ignore("Not implemented validation yet!")
-    public void testProcessNodeAddNotPermittedNode() {
+    public void testAddEndProcessNodeToProcess() {
+        final ProcessNode process = new ProcessNode();
+        final StartProcessNode node = new StartProcessNode();
+        final RuleManager ruleManager = DefaultRuleManagerImpl.getInstance();
+
+        for ( final Role role : node.getContent().getRoles() ) {
+            ruleManager.addRule( new ContainmentRuleImpl( process.getContent().getId(),
+                                                          new HashSet<Role>() {{
+                                                              add( role );
+                                                          }} ) );
+        }
+
+        final CommandManager commandManager = DefaultCommandManagerImpl.getInstance();
+        final Results results = commandManager.execute( new AddGraphNodeCommand( process,
+                                                                                 node ) );
+
+        assertNotNull( results );
+        assertEquals( 0,
+                      results.getMessages().size() );
+
+        assertEquals( 1,
+                      process.size() );
+        assertEquals( node,
+                      process.getNode( node.getId() ) );
+    }
+
+    @Test
+    public void testAddDummyNodeToProcess() {
         final ProcessNode process = new ProcessNode();
         final GraphNode<Content> node = new DummyNode();
         final RuleManager ruleManager = DefaultRuleManagerImpl.getInstance();
@@ -81,12 +107,14 @@ public class ContainmentRulesTest {
         }
 
         final CommandManager commandManager = DefaultCommandManagerImpl.getInstance();
-        final List<Result> result = commandManager.execute( new AddGraphNodeCommand( process,
-                                                                                     node ) );
+        final Results results = commandManager.execute( new AddGraphNodeCommand( process,
+                                                                                 node ) );
 
-        assertNotNull( result );
+        assertNotNull( results );
         assertEquals( 1,
-                      result.size() );
+                      results.getMessages().size() );
+        assertEquals( 1,
+                      results.getMessages( ResultType.ERROR ).size() );
 
         assertEquals( 0,
                       process.size() );

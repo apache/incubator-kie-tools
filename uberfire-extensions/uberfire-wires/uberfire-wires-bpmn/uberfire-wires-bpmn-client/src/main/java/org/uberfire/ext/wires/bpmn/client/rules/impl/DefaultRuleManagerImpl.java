@@ -19,7 +19,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.Role;
+import org.uberfire.ext.wires.bpmn.api.model.rules.CardinalityRule;
+import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
+import org.uberfire.ext.wires.bpmn.api.model.rules.ContainmentRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
+import org.uberfire.ext.wires.bpmn.client.commands.Results;
+import org.uberfire.ext.wires.bpmn.client.commands.impl.DefaultResultImpl;
+import org.uberfire.ext.wires.bpmn.client.commands.impl.DefaultResultsImpl;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
 /**
@@ -29,7 +40,9 @@ public class DefaultRuleManagerImpl implements RuleManager {
 
     private static final RuleManager INSTANCE = new DefaultRuleManagerImpl();
 
-    private final Set<Rule> rules = new HashSet<Rule>();
+    private final Set<ContainmentRule> containmentRules = new HashSet<ContainmentRule>();
+    private final Set<CardinalityRule> cardinalityRules = new HashSet<CardinalityRule>();
+    private final Set<ConnectionRule> connectionRules = new HashSet<ConnectionRule>();
 
     private DefaultRuleManagerImpl() {
         //Singleton
@@ -41,8 +54,36 @@ public class DefaultRuleManagerImpl implements RuleManager {
 
     @Override
     public void addRule( final Rule rule ) {
-        rules.add( PortablePreconditions.checkNotNull( "rule",
-                                                       rule ) );
+        PortablePreconditions.checkNotNull( "rule",
+                                            rule );
+        // Filter Rules upon insertion as different types of validation use different rules
+        // It's quicker to filter once here than every time the Rules are needed.
+        if ( rule instanceof ContainmentRule ) {
+            containmentRules.add( (ContainmentRule) rule );
+        } else if ( rule instanceof CardinalityRule ) {
+            cardinalityRules.add( (CardinalityRule) rule );
+        } else if ( rule instanceof ConnectionRule ) {
+            connectionRules.add( (ConnectionRule) rule );
+        }
+    }
+
+    @Override
+    public Results checkContainment( final Graph<Content> target,
+                                     final GraphNode<Content> proposed ) {
+        final Results results = new DefaultResultsImpl();
+
+        for ( ContainmentRule rule : containmentRules ) {
+            if ( rule.getId().equals( target.getContent().getId() ) ) {
+                final Set<Role> permittedRoles = new HashSet( rule.getPermittedRoles() );
+                permittedRoles.retainAll( proposed.getContent().getRoles() );
+                if ( permittedRoles.size() > 0 ) {
+                    return results;
+                }
+            }
+        }
+        results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                   "'" + target.getContent().getId() + "' cannot contain '" + proposed.getContent().getId() + "'." ) );
+        return results;
     }
 
 }

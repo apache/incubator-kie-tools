@@ -15,22 +15,19 @@
  */
 package org.uberfire.ext.wires.bpmn.client.commands;
 
+import java.util.List;
+
 /**
- * Command Manager to handle execution of commands to mutate Elements
+ * Result from the execution of a command
  */
-public interface CommandManager {
+public interface Results {
 
-    /**
-     * Execute a Command and return results
-     * @param command
-     * @return
-     */
-    Results execute( final Command command );
+    void addMessage(final Result result);
 
-    /**
-     * Undo the most recent command
-     * @return
-     */
-    Results undo();
+    List<Result> getMessages();
+
+    List<Result> getMessages(final ResultType type);
+
+    boolean contains(final ResultType type);
 
 }

@@ -15,8 +15,6 @@
  */
 package org.uberfire.ext.wires.bpmn.client.commands;
 
-import java.util.List;
-
 /**
  * Command to mutate Elements
  */
@@ -26,12 +24,12 @@ public interface Command {
      * Apply the command
      * @return
      */
-    List<Result> apply();
+    Results apply();
 
     /**
      * Undo the changes the command made to the model
      * @return
      */
-    List<Result> undo();
+    Results undo();
 
 }

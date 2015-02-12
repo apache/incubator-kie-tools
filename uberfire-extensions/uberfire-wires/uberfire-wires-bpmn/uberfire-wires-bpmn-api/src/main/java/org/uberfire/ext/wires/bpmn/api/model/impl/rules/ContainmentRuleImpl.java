@@ -43,7 +43,7 @@ public class ContainmentRuleImpl implements ContainmentRule {
     }
 
     @Override
-    public Set<Role> getPermittedContent() {
+    public Set<Role> getPermittedRoles() {
         return permittedRoles;
     }
 

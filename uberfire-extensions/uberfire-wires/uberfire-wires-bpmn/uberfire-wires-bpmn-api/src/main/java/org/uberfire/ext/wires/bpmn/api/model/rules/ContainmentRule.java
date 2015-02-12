@@ -28,6 +28,6 @@ public interface ContainmentRule extends Rule {
      * The Roles of Elements permitted to be held within another Element.
      * @return
      */
-    Set<Role> getPermittedContent();
+    Set<Role> getPermittedRoles();
 
 }

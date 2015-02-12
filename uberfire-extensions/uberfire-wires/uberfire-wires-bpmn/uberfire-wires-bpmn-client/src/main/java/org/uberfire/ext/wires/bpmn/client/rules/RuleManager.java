@@ -15,7 +15,11 @@
  */
 package org.uberfire.ext.wires.bpmn.client.rules;
 
+import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.client.commands.Results;
 
 /**
  * Rule Manager to report validation issues when attempting to mutate Elements
@@ -27,5 +31,14 @@ public interface RuleManager {
      * @param rule
      */
     void addRule( final Rule rule );
+
+    /**
+     * Check whether adding the proposed Node to the target Process breaks any containment Rules
+     * @param target Target process
+     * @param proposed Proposed node
+     * @return
+     */
+    Results checkContainment( final Graph<Content> target,
+                              final GraphNode<Content> proposed );
 
 }

@@ -23,6 +23,10 @@ public interface Graph<T> extends Iterable<GraphNode<T>> {
 
     public GraphNode<T> getNode( int id );
 
+    public T getContent();
+
+    public void setContent( T content );
+
     public int size();
 
 }
