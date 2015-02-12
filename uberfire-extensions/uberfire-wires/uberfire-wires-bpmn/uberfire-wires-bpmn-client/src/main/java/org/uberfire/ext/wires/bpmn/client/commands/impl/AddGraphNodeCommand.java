@@ -15,39 +15,43 @@
  */
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
-import org.uberfire.ext.wires.bpmn.client.commands.Result;
+import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
+import org.uberfire.ext.wires.bpmn.client.commands.Results;
+import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
 
 public class AddGraphNodeCommand implements Command {
 
-    private Graph<Content> graph;
-    private GraphNode<Content> node;
+    private Graph<Content> target;
+    private GraphNode<Content> proposed;
 
-    public AddGraphNodeCommand( final Graph<Content> process,
-                                final GraphNode<Content> node ) {
-        this.graph = PortablePreconditions.checkNotNull( "process",
-                                                         process );
-        this.node = PortablePreconditions.checkNotNull( "node",
-                                                        node );
+    public AddGraphNodeCommand( final Graph<Content> target,
+                                final GraphNode<Content> proposed ) {
+        this.target = PortablePreconditions.checkNotNull( "target",
+                                                          target );
+        this.proposed = PortablePreconditions.checkNotNull( "proposed",
+                                                            proposed );
     }
 
     @Override
-    public List<Result> apply() {
-        graph.addNode( node );
-        return Collections.emptyList();
+    public Results apply() {
+        final Results results = DefaultRuleManagerImpl.getInstance().checkContainment( target,
+                                                                                       proposed );
+        if ( !results.contains( ResultType.ERROR ) ) {
+            target.addNode( proposed );
+        }
+        return results;
     }
 
     @Override
-    public List<Result> undo() {
-        graph.removeNode( node.getId() );
-        return Collections.emptyList();
+    public Results undo() {
+        target.removeNode( proposed.getId() );
+        //We'll return results when all types of Rule are implemented as removing a Node could invalidate the Graph
+        return new DefaultResultsImpl();
     }
 
 }

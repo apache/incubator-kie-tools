@@ -20,7 +20,6 @@ package org.uberfire.ext.wires.bpmn.client.commands;
  */
 public enum ResultType {
 
-    SUCCESS,
     WARNING,
     ERROR
 

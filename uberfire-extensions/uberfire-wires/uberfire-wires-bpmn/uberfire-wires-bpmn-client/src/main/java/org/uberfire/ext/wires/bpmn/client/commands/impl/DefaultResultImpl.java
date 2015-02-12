@@ -24,9 +24,8 @@ import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
  */
 public class DefaultResultImpl implements Result {
 
-    //Errai marshalling
-    public DefaultResultImpl() {
-    }
+    private ResultType type;
+    private String message;
 
     public DefaultResultImpl( final ResultType type,
                               final String message ) {
@@ -35,9 +34,6 @@ public class DefaultResultImpl implements Result {
         this.message = PortablePreconditions.checkNotNull( "message",
                                                            message );
     }
-
-    private ResultType type;
-    private String message;
 
     @Override
     public ResultType getType() {
