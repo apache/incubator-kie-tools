@@ -141,22 +141,6 @@
       <artifactId>uberfire-wires-bayesian-network-client</artifactId>
     </dependency>
 
-    <!--BPMN dependencies-->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-wires-bpmn-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-wires-bpmn-backend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-wires-bpmn-client</artifactId>
-    </dependency>
-
     <!-- UberFire -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -277,8 +261,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-wires-core-trees</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-parser-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-wires-bayesian-network-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-wires-bpmn-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-wires-bpmn-client</compileSourcesArtifact>
           </compileSourcesArtifacts>
           <runTarget>wires.html</runTarget>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms2048m -XX:PermSize=128m -Xss1M</extraJvmArgs>

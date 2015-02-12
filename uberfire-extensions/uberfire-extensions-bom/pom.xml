@@ -424,45 +424,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-wires-bpmn-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-wires-bpmn-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-wires-bpmn-backend</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-wires-bpmn-backend</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-wires-bpmn-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-wires-bpmn-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
 </project>

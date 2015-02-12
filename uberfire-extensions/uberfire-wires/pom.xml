@@ -20,7 +20,6 @@
     <module>uberfire-wires-bayesian-parser</module>
     <module>uberfire-wires-bayesian-network</module>
     <module>uberfire-wires-webapp</module>
-    <module>uberfire-wires-bpmn</module>
   </modules>
 
 </project>
