@@ -16,7 +16,7 @@ public class PluginSimpleContent extends Plugin {
     private String template;
     private String css;
     private Map<CodeType, String> codeMap;
-    private Set<Framework> frameworks;
+    private Set<Framework> frameworks = new HashSet<Framework>();
     private Language language;
 
     public PluginSimpleContent() {
@@ -51,12 +51,12 @@ public class PluginSimpleContent extends Plugin {
                 this.codeMap.put( codeTypeStringEntry.getKey(), codeTypeStringEntry.getValue() );
             }
         }
-        this.frameworks = new HashSet<Framework>( pluginContent.getFrameworks() != null ? pluginContent.getFrameworks() : Collections.<Framework>emptyList() );
-        if ( frameworks != null && !frameworks.isEmpty() ) {
-            for ( final Framework framework : frameworks ) {
-                this.frameworks.add( framework );
-            }
+
+        if (frameworks != null) {
+            this.frameworks.clear();
+            this.frameworks.addAll(frameworks);
         }
+
         this.language = pluginContent.getLanguage();
         if ( language != null ) {
             this.language = language;

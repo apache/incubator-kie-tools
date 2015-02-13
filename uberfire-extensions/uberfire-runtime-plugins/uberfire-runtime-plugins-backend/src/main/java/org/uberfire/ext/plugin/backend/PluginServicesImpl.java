@@ -23,6 +23,8 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.ext.editor.commons.backend.validation.DefaultFileNameValidator;
 import org.uberfire.ext.plugin.editor.ColumnEditor;
 import org.uberfire.ext.plugin.editor.NewPerspectiveEditorEvent;
@@ -255,53 +257,56 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     @Override
-    public PluginContent getPluginContent( final org.uberfire.backend.vfs.Path path ) {
-        final String pluginName = convert( path ).getParent().getFileName().toString();
-        return new PluginContent( pluginName,
-                                  TypeConverterUtil.fromPath( path ),
-                                  path,
-                                  loadTemplate( pluginName ),
-                                  loadCss( pluginName ),
-                                  loadCodeMap( pluginName ),
-                                  loadFramework( pluginName ),
-                                  Language.JAVASCRIPT,
-                                  loadMediaLibrary( pluginName ) );
+    public PluginContent getPluginContent(final org.uberfire.backend.vfs.Path path) {
+        final String pluginName = convert(path).getParent().getFileName().toString();
+        return new PluginContent(pluginName,
+                                 TypeConverterUtil.fromPath(path),
+                                 path,
+                                 loadTemplate(pluginName),
+                                 loadCss(pluginName),
+                                 loadCodeMap(pluginName),
+                                 loadFramework(pluginName),
+                                 Language.JAVASCRIPT,
+                                 loadMediaLibrary(pluginName));
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path save( final PluginSimpleContent plugin,
-                                               final String commitMessage ) {
-        final Path pluginPath = convert( plugin.getPath() );
-        final boolean isNewPlugin = !ioService.exists( pluginPath );
+    public org.uberfire.backend.vfs.Path save(final PluginSimpleContent plugin,
+                                              final String commitMessage) {
+
+        final Path pluginPath = convert(plugin.getPath());
+        final boolean isNewPlugin = !ioService.exists(pluginPath);
 
         try {
-            ioService.startBatch( fileSystem,
-                                  commentedOption( commitMessage ) );
+            ioService.startBatch(fileSystem,
+                                 commentedOption(commitMessage));
 
-            saveCodeMap( plugin.getName(),
-                         plugin.getCodeMap() );
+            saveCodeMap(plugin.getName(),
+                        plugin.getCodeMap());
 
-            if ( plugin.getTemplate() != null ) {
-                ioService.write( getTemplatePath( getPluginPath( plugin.getName() ) ),
-                                 plugin.getTemplate() );
+            if (plugin.getTemplate() != null) {
+                ioService.write(getTemplatePath(getPluginPath(plugin.getName())),
+                                plugin.getTemplate());
             }
 
-            if ( plugin.getCss() != null ) {
-                ioService.write( getCssPath( getPluginPath( plugin.getName() ) ),
-                                 plugin.getCss() );
+            if (plugin.getCss() != null) {
+                ioService.write(getCssPath(getPluginPath(plugin.getName())),
+                                plugin.getCss());
             }
 
-            if ( plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty() ) {
-                final Framework fm = plugin.getFrameworks().iterator().next();
-                ioService.write( getDependencyPath( getPluginPath( plugin.getName() ), fm ), "--" );
+            clearDirectory(getPluginPath(plugin.getName()).resolve("dependencies"));
+
+            if (plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty()) {
+                final Framework framework = plugin.getFrameworks().iterator().next();
+                ioService.write(getDependencyPath(getPluginPath(plugin.getName()), framework), "--");
             }
 
-            createRegistry( plugin );
+            createRegistry(plugin);
 
-            updatePlugin( pluginPath,
-                          plugin.getName(),
-                          plugin.getType(),
-                          isNewPlugin );
+            updatePlugin(pluginPath,
+                         plugin.getName(),
+                         plugin.getType(),
+                         isNewPlugin);
 
         } finally {
             ioService.endBatch();
@@ -310,247 +315,254 @@ public class PluginServicesImpl implements PluginServices {
         return plugin.getPath();
     }
 
-    private Path getDependencyPath( final Path pluginPath,
-                                    final Framework framework ) {
-        return pluginPath.resolve( "dependencies" ).resolve( framework.toString() + ".dependency" );
+    private void clearDirectory(Path directory) {
+        for (Path path : ioService.newDirectoryStream(directory)) {
+            boolean b = ioService.deleteIfExists(path);
+        }
     }
 
-    private void createRegistry( final PluginSimpleContent plugin ) {
-        final Path path = getPluginPath( plugin.getName() );
+
+    private Path getDependencyPath(final Path pluginPath,
+                                   final Framework framework) {
+        return pluginPath.resolve("dependencies").resolve(framework.toString() + ".dependency");
+    }
+
+    private void createRegistry(final PluginSimpleContent plugin) {
+        final Path path = getPluginPath(plugin.getName());
 
         final StringBuilder sb = new StringBuilder();
 
-        if ( plugin.getCodeMap().containsKey( CodeType.MAIN ) ) {
-            sb.append( plugin.getCodeMap().get( CodeType.MAIN ) );
+        if (plugin.getCodeMap().containsKey(CodeType.MAIN)) {
+            sb.append(plugin.getCodeMap().get(CodeType.MAIN));
         }
 
-        if ( plugin.getType().equals( PluginType.SCREEN ) ) {
-            sb.append( "$registerPlugin({" );
-        } else if ( plugin.getType().equals( PluginType.SPLASH ) ) {
-            sb.append( "$registerSplashScreen({" );
-        } else if ( plugin.getType().equals( PluginType.EDITOR ) ) {
-            sb.append( "$registerEditor({" );
-        } else if ( plugin.getType().equals( PluginType.PERSPECTIVE ) ) {
-            sb.append( "$registerPerspective({" );
+        if (plugin.getType().equals(PluginType.SCREEN)) {
+            sb.append("$registerPlugin({");
+        } else if (plugin.getType().equals(PluginType.SPLASH)) {
+            sb.append("$registerSplashScreen({");
+        } else if (plugin.getType().equals(PluginType.EDITOR)) {
+            sb.append("$registerEditor({");
+        } else if (plugin.getType().equals(PluginType.PERSPECTIVE)) {
+            sb.append("$registerPerspective({");
         }
 
-        sb.append( "id:" ).append( '"' ).append( plugin.getName() ).append( '"' ).append( "," );
+        sb.append("id:").append('"').append(plugin.getName()).append('"').append(",");
 
-        if ( plugin.getCodeMap().size() > 1 ) {
-            for ( final Map.Entry<CodeType, String> entry : plugin.getCodeMap().entrySet() ) {
-                if ( !entry.getKey().equals( CodeType.MAIN ) ) {
-                    sb.append( entry.getKey().toString().toLowerCase() ).append( ": " );
-                    sb.append( entry.getValue() ).append( "," );
+        if (plugin.getCodeMap().size() > 1) {
+            for (final Map.Entry<CodeType, String> entry : plugin.getCodeMap().entrySet()) {
+                if (!entry.getKey().equals(CodeType.MAIN)) {
+                    sb.append(entry.getKey().toString().toLowerCase()).append(": ");
+                    sb.append(entry.getValue()).append(",");
                 }
             }
         } else {
-            sb.append( "," );
+            sb.append(",");
         }
 
-        if ( plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty() ) {
+        if (plugin.getFrameworks() != null && !plugin.getFrameworks().isEmpty()) {
             final Framework fm = plugin.getFrameworks().iterator().next();
-            sb.append( "type: " ).append( '"' ).append( fm.getType() ).append( '"' ).append( ',' );
+            sb.append("type: ").append('"').append(fm.getType()).append('"').append(',');
         }
 
-        if ( !plugin.getType().equals( PluginType.PERSPECTIVE ) ) {
-            sb.append( "template: " );
+        if (!plugin.getType().equals(PluginType.PERSPECTIVE)) {
+            sb.append("template: ");
 
-            gson.toJson( plugin.getTemplate(), sb );
+            gson.toJson(plugin.getTemplate(), sb);
         } else {
-            sb.append( "view: {" ).append( plugin.getTemplate() ).append( "}" );
+            sb.append("view: {").append(plugin.getTemplate()).append("}");
         }
 
-        sb.append( "});" );
+        sb.append("});");
 
-        ioService.write( path.resolve( plugin.getName() + ".registry.js" ),
-                         sb.toString() );
+        ioService.write(path.resolve(plugin.getName() + ".registry.js"),
+                        sb.toString());
     }
 
-    private void saveCodeMap( final String pluginName,
-                              final Map<CodeType, String> codeMap ) {
-        final Path rootPlugin = getPluginPath( pluginName );
-        for ( final Map.Entry<CodeType, String> entry : codeMap.entrySet() ) {
-            final Path codePath = getCodePath( rootPlugin,
-                                               entry.getKey() );
-            ioService.write( codePath,
-                             entry.getValue() );
+    private void saveCodeMap(final String pluginName,
+                             final Map<CodeType, String> codeMap) {
+        final Path rootPlugin = getPluginPath(pluginName);
+        for (final Map.Entry<CodeType, String> entry : codeMap.entrySet()) {
+            final Path codePath = getCodePath(rootPlugin,
+                                              entry.getKey());
+            ioService.write(codePath,
+                            entry.getValue());
         }
     }
 
-    private Map<CodeType, String> loadCodeMap( final String pluginName ) {
+    private Map<CodeType, String> loadCodeMap(final String pluginName) {
         try {
-            final Path rootPlugin = getPluginPath( pluginName );
-            final DirectoryStream<Path> stream = ioService.newDirectoryStream( getCodeRoot( rootPlugin ),
-                                                                               new DirectoryStream.Filter<Path>() {
-                                                                                   @Override
-                                                                                   public boolean accept( final Path entry ) throws IOException {
-                                                                                       return entry.getFileName().toString().endsWith( ".code" );
-                                                                                   }
-                                                                               } );
+            final Path rootPlugin = getPluginPath(pluginName);
+            final DirectoryStream<Path> stream = ioService.newDirectoryStream(getCodeRoot(rootPlugin),
+                                                                              new DirectoryStream.Filter<Path>() {
+                                                                                  @Override
+                                                                                  public boolean accept(final Path entry) throws IOException {
+                                                                                      return entry.getFileName().toString().endsWith(".code");
+                                                                                  }
+                                                                              });
 
             final Map<CodeType, String> result = new HashMap<CodeType, String>();
 
-            for ( final Path path : stream ) {
-                final CodeType type = getCodeType( path );
-                if ( type != null ) {
-                    result.put( type, ioService.readAllString( path ) );
+            for (final Path path : stream) {
+                final CodeType type = getCodeType(path);
+                if (type != null) {
+                    result.put(type, ioService.readAllString(path));
                 }
             }
 
             return result;
-        } catch ( final NotDirectoryException exception ) {
+        } catch (final NotDirectoryException exception) {
             return Collections.emptyMap();
         }
     }
 
-    private Set<Media> loadMediaLibrary( final String pluginName ) {
+    private Set<Media> loadMediaLibrary(final String pluginName) {
         try {
-            final Path rootPlugin = getPluginPath( pluginName );
-            final DirectoryStream<Path> stream = ioService.newDirectoryStream( getMediaRoot( rootPlugin ) );
+            final Path rootPlugin = getPluginPath(pluginName);
+            final DirectoryStream<Path> stream = ioService.newDirectoryStream(getMediaRoot(rootPlugin));
 
             final Set<Media> result = new HashSet<Media>();
 
-            for ( final Path path : stream ) {
-                result.add( new Media( getMediaServletURI() + pluginName + "/media/" + path.getFileName(),
-                                       convert( path ) ) );
+            for (final Path path : stream) {
+                result.add(new Media(getMediaServletURI() + pluginName + "/media/" + path.getFileName(),
+                                     convert(path)));
             }
 
             return result;
-        } catch ( final NotDirectoryException exception ) {
+        } catch (final NotDirectoryException exception) {
             return Collections.emptySet();
         }
     }
 
-    private String loadTemplate( final String pluginName ) {
-        final Path template = getTemplatePath( getPluginPath( pluginName ) );
-        if ( ioService.exists( template ) ) {
-            return ioService.readAllString( template );
+    private String loadTemplate(final String pluginName) {
+        final Path template = getTemplatePath(getPluginPath(pluginName));
+        if (ioService.exists(template)) {
+            return ioService.readAllString(template);
         }
         return "";
     }
 
-    private String loadCss( final String pluginName ) {
-        final Path css = getCssPath( getPluginPath( pluginName ) );
-        if ( ioService.exists( css ) ) {
-            return ioService.readAllString( css );
+    private String loadCss(final String pluginName) {
+        final Path css = getCssPath(getPluginPath(pluginName));
+        if (ioService.exists(css)) {
+            return ioService.readAllString(css);
         }
         return "";
     }
 
-    private Set<Framework> loadFramework( final String pluginName ) {
+    private Set<Framework> loadFramework(final String pluginName) {
         try {
             final Set<Framework> result = new HashSet<Framework>();
-            final DirectoryStream<Path> stream = ioService.newDirectoryStream( getPluginPath( pluginName ).resolve( "dependencies" ) );
+            final DirectoryStream<Path> stream = ioService.newDirectoryStream(getPluginPath(pluginName).resolve("dependencies"));
 
-            for ( final Path path : stream ) {
+            for (final Path path : stream) {
                 try {
-                    result.add( Framework.valueOf( path.getFileName().toString().replace( ".dependency", "" ).toUpperCase() ) );
-                } catch ( final Exception ignored ) {
+                    result.add(Framework.valueOf(path.getFileName().toString().replace(".dependency", "").toUpperCase()));
+                } catch (final Exception ignored) {
                 }
             }
 
             return result;
-        } catch ( final NotDirectoryException exception ) {
+        } catch (final NotDirectoryException exception) {
             return Collections.emptySet();
         }
     }
 
-    private Path getTemplatePath( final Path rootPlugin ) {
-        return rootPlugin.resolve( "template.html" );
+    private Path getTemplatePath(final Path rootPlugin) {
+        return rootPlugin.resolve("template.html");
     }
 
-    private Path getCssPath( final Path rootPlugin ) {
-        return rootPlugin.resolve( "css" ).resolve( "style.css" );
+    private Path getCssPath(final Path rootPlugin) {
+        return rootPlugin.resolve("css").resolve("style.css");
     }
 
-    private Path getCodePath( final Path rootPlugin,
-                              final CodeType codeType ) {
-        return getCodeRoot( rootPlugin ).resolve( codeType.toString().toLowerCase() + ".code" );
+    private Path getCodePath(final Path rootPlugin,
+                             final CodeType codeType) {
+        return getCodeRoot(rootPlugin).resolve(codeType.toString().toLowerCase() + ".code");
     }
 
-    private CodeType getCodeType( final Path path ) {
+    private CodeType getCodeType(final Path path) {
         try {
-            return CodeType.valueOf( path.getFileName().toString().replace( ".code", "" ).toUpperCase() );
-        } catch ( final Exception ignored ) {
+            return CodeType.valueOf(path.getFileName().toString().replace(".code", "").toUpperCase());
+        } catch (final Exception ignored) {
         }
         return null;
     }
 
-    private Path getCodeRoot( final Path rootPlugin ) {
-        return rootPlugin.resolve( "code" );
+    private Path getCodeRoot(final Path rootPlugin) {
+        return rootPlugin.resolve("code");
     }
 
-    private Path getMediaRoot( final Path rootPlugin ) {
-        return rootPlugin.resolve( "media" );
+    private Path getMediaRoot(final Path rootPlugin) {
+        return rootPlugin.resolve("media");
     }
 
-    private Path getPluginPath( final String name ) {
-        return root.resolve( name );
+    private Path getPluginPath(final String name) {
+        return root.resolve(name);
     }
 
     @Override
-    public void delete( final org.uberfire.backend.vfs.Path path,
-                        final String comment ) {
-        final Plugin plugin = getPluginContent( path );
-        final Path pluginPath = convert( plugin.getPath() );
-        if ( ioService.exists( pluginPath ) ) {
+    public void delete(final org.uberfire.backend.vfs.Path path,
+                       final String comment) {
+        final Plugin plugin = getPluginContent(path);
+        final Path pluginPath = convert(plugin.getPath());
+        if (ioService.exists(pluginPath)) {
 
             try {
-                ioService.startBatch( fileSystem,
-                                      commentedOption( comment ) );
-                ioService.deleteIfExists( pluginPath.getParent(),
-                                          StandardDeleteOption.NON_EMPTY_DIRECTORIES );
+                ioService.startBatch(fileSystem,
+                                     commentedOption(comment));
+                ioService.deleteIfExists(pluginPath.getParent(),
+                                         StandardDeleteOption.NON_EMPTY_DIRECTORIES);
 
             } finally {
                 ioService.endBatch();
             }
 
-            pluginDeletedEvent.fire( new PluginDeleted( plugin.getName(),
-                                                        plugin.getType(),
-                                                        sessionInfo ) );
+            pluginDeletedEvent.fire(new PluginDeleted(plugin.getName(),
+                                                      plugin.getType(),
+                                                      sessionInfo));
         }
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path copy( final org.uberfire.backend.vfs.Path path,
-                                               final String newName,
-                                               final String comment ) {
+    public org.uberfire.backend.vfs.Path copy(final org.uberfire.backend.vfs.Path path,
+                                              final String newName,
+                                              final String comment) {
 
-        final Path newPath = getPluginPath( newName );
-        if ( ioService.exists( newPath ) ) {
-            throw new RuntimeException( new FileAlreadyExistsException( newPath.toString() ) );
+        final Path newPath = getPluginPath(newName);
+        if (ioService.exists(newPath)) {
+            throw new RuntimeException(new FileAlreadyExistsException(newPath.toString()));
         }
 
         try {
-            ioService.startBatch( fileSystem,
-                                  commentedOption( comment ) );
-            ioService.copy( convert( path ).getParent(),
-                            newPath );
+            ioService.startBatch(fileSystem,
+                                 commentedOption(comment));
+            ioService.copy(convert(path).getParent(),
+                           newPath);
 
         } finally {
             ioService.endBatch();
         }
 
-        final org.uberfire.backend.vfs.Path result = convert( newPath.resolve( path.getFileName() ) );
+        final org.uberfire.backend.vfs.Path result = convert(newPath.resolve(path.getFileName()));
 
-        pluginAddedEvent.fire( new PluginAdded( getPluginContent( convert( newPath.resolve( path.getFileName() ) ) ),
-                                                sessionInfo ) );
+        pluginAddedEvent.fire(new PluginAdded(getPluginContent(convert(newPath.resolve(path.getFileName()))),
+                                              sessionInfo));
 
         return result;
     }
 
     @Override
-    public org.uberfire.backend.vfs.Path rename( final org.uberfire.backend.vfs.Path path,
-                                                 final String newName,
-                                                 final String comment ) {
-        final Path newPath = getPluginPath( newName );
-        if ( ioService.exists( newPath ) ) {
-            throw new RuntimeException( new FileAlreadyExistsException( newPath.toString() ) );
+    public org.uberfire.backend.vfs.Path rename(final org.uberfire.backend.vfs.Path path,
+                                                final String newName,
+                                                final String comment) {
+        final Path newPath = getPluginPath(newName);
+        if (ioService.exists(newPath)) {
+            throw new RuntimeException(new FileAlreadyExistsException(newPath.toString()));
         }
 
         try {
-            ioService.startBatch( fileSystem,
-                                  commentedOption( comment ) );
+            ioService.startBatch(fileSystem,
+                                 commentedOption( comment ) );
             ioService.move( convert( path ).getParent(),
                             newPath );
 
