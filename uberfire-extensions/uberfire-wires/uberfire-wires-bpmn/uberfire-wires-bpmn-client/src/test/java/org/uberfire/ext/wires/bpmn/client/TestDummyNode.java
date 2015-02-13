@@ -16,51 +16,27 @@
 package org.uberfire.ext.wires.bpmn.client;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 
 import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.Role;
 import org.uberfire.ext.wires.bpmn.api.model.impl.content.DefaultContentImpl;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
 
 /**
  * A TestDummyNode that cannot be added to a Process
  */
-public class TestDummyNode implements GraphNode<Content> {
+public class TestDummyNode extends GraphNodeImpl<Content> {
 
-    private final Content content = new DefaultContentImpl( "dummy",
-                                                            "dummy",
-                                                            "dummy",
-                                                            Collections.EMPTY_SET,
-                                                            Collections.EMPTY_SET );
-
-    @Override
-    public int getId() {
-        return 0;
+    public TestDummyNode() {
+        setContent( new DefaultContentImpl( "dummy",
+                                            "dummy",
+                                            "dummy",
+                                            new HashSet<Role>() {{
+                                                add( new DefaultRoleImpl( "dummy" ) );
+                                            }},
+                                            Collections.EMPTY_SET ) );
     }
 
-    @Override
-    public void setId( int id ) {
-        //Stub
-    }
-
-    @Override
-    public List<Edge> getInEdges() {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public List<Edge> getOutEdges() {
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public Content getContent() {
-        return content;
-    }
-
-    @Override
-    public void setContent( Content content ) {
-        //Stub
-    }
 }

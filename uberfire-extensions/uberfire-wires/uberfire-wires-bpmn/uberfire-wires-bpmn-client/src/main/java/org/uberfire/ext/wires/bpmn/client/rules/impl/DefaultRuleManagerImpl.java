@@ -61,7 +61,7 @@ public class DefaultRuleManagerImpl implements RuleManager {
 
     @Override
     public Results checkContainment( final Graph<Content> target,
-                                     final GraphNode<Content> proposed ) {
+                                     final GraphNode<Content> candidate ) {
         final Results results = new DefaultResultsImpl();
         if ( containmentRules.isEmpty() ) {
             return results;
@@ -70,41 +70,42 @@ public class DefaultRuleManagerImpl implements RuleManager {
         for ( ContainmentRule rule : containmentRules ) {
             if ( rule.getId().equals( target.getContent().getId() ) ) {
                 final Set<Role> permittedRoles = new HashSet( rule.getPermittedRoles() );
-                permittedRoles.retainAll( proposed.getContent().getRoles() );
+                permittedRoles.retainAll( candidate.getContent().getRoles() );
                 if ( permittedRoles.size() > 0 ) {
                     return results;
                 }
             }
         }
         results.addMessage( new DefaultResultImpl( ResultType.ERROR,
-                                                   "'" + target.getContent().getId() + "' cannot contain '" + proposed.getContent().getId() + "'." ) );
+                                                   "'" + target.getContent().getId() + "' cannot contain '" + candidate.getContent().getId() + "'." ) );
         return results;
     }
 
     @Override
     public Results checkCardinality( final Graph<Content> target,
-                                     final GraphNode<Content> proposed ) {
+                                     final GraphNode<Content> candidate,
+                                     final Operation operation ) {
         final Results results = new DefaultResultsImpl();
         if ( cardinalityRules.isEmpty() ) {
             return results;
         }
 
         for ( CardinalityRule rule : cardinalityRules ) {
-            if ( proposed.getContent().getRoles().contains( rule.getRole() ) ) {
+            if ( candidate.getContent().getRoles().contains( rule.getRole() ) ) {
                 final long minOccurrences = rule.getMinOccurrences();
                 final long maxOccurrences = rule.getMaxOccurrences();
-                long count = 0;
+                long count = ( operation == Operation.ADD ? 1 : -1 );
                 for ( GraphNode<Content> node : target ) {
-                    if ( node.getContent().getId().equals( proposed.getContent().getId() ) ) {
+                    if ( node.getContent().getId().equals( candidate.getContent().getId() ) ) {
                         count++;
                     }
                 }
                 if ( count < minOccurrences ) {
                     results.addMessage( new DefaultResultImpl( ResultType.ERROR,
-                                                               "'" + target.getContent().getId() + "' needs a minimum '" + minOccurrences + "' of '" + proposed.getContent().getId() + "' nodes. Found '" + count + "'." ) );
-                } else if ( count >= maxOccurrences ) {
+                                                               "'" + target.getContent().getId() + "' needs a minimum '" + minOccurrences + "' of '" + candidate.getContent().getId() + "' nodes. Found '" + count + "'." ) );
+                } else if ( count > maxOccurrences ) {
                     results.addMessage( new DefaultResultImpl( ResultType.ERROR,
-                                                               "'" + target.getContent().getId() + "' can have a maximum  '" + minOccurrences + "' of '" + proposed.getContent().getId() + "' nodes. Found '\"+count+\"'.\"" ) );
+                                                               "'" + target.getContent().getId() + "' can have a maximum  '" + maxOccurrences + "' of '" + candidate.getContent().getId() + "' nodes. Found '" + count + "'." ) );
                 }
             }
         }

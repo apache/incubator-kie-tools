@@ -35,19 +35,32 @@ public interface RuleManager {
     /**
      * Check whether adding the proposed Node to the target Process breaks any containment Rules
      * @param target Target process
-     * @param proposed Proposed node
+     * @param candidate Candidate node
      * @return
      */
     Results checkContainment( final Graph<Content> target,
-                              final GraphNode<Content> proposed );
+                              final GraphNode<Content> candidate );
 
     /**
      * Check whether adding the proposed Node to the target Process breaks any cardinality Rules
      * @param target Target process
-     * @param proposed Proposed node
+     * @param candidate Candidate node
+     * @param operation Is the Proposed Node being added or removed
      * @return
      */
     Results checkCardinality( final Graph<Content> target,
-                              final GraphNode<Content> proposed );
+                              final GraphNode<Content> candidate,
+                              final Operation operation );
+
+    /**
+     * Rules are applied against an unmodified Graph to check whether the proposed mutated state is valid.
+     * This is deliberate to avoid, for example, costly "undo" operations if we were to mutate the state
+     * first and then validate. An invalidate state would need to be reverted. If we decided to change
+     * this we'd need to mutate the graph state first and then validate the whole graph.
+     */
+    public enum Operation {
+        ADD,
+        DELETE
+    }
 
 }
