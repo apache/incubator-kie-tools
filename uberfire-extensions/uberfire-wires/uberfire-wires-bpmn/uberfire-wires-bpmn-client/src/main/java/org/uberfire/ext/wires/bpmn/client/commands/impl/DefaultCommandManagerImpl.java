@@ -16,35 +16,29 @@
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import java.util.Stack;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
+import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
 /**
  * Default implementation of CommandManager
  */
+@ApplicationScoped
 public class DefaultCommandManagerImpl implements CommandManager {
-
-    private static final CommandManager INSTANCE = new DefaultCommandManagerImpl();
 
     private Stack<Command> commands = new Stack<Command>();
 
-    private DefaultCommandManagerImpl() {
-        //Singleton
-    }
-
-    public static CommandManager getInstance() {
-        return INSTANCE;
-    }
-
     @Override
-    public Results execute( final Command command ) {
+    public Results execute( final RuleManager ruleManager,
+                            final Command command ) {
         PortablePreconditions.checkNotNull( "command",
                                             command );
-        final Results results = command.apply();
+        final Results results = command.apply( ruleManager );
         if ( !results.contains( ResultType.ERROR ) ) {
             commands.push( command );
         }
@@ -52,11 +46,11 @@ public class DefaultCommandManagerImpl implements CommandManager {
     }
 
     @Override
-    public Results undo() {
+    public Results undo( final RuleManager ruleManager ) {
         if ( commands.isEmpty() ) {
             throw new IllegalStateException( "No commands to undo" );
         }
-        return commands.pop().undo();
+        return commands.pop().undo( ruleManager );
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.bpmn.client.commands;
 
+import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
+
 /**
  * Command to mutate Elements
  */
@@ -22,14 +24,16 @@ public interface Command {
 
     /**
      * Apply the command
+     * @param ruleManager
      * @return
      */
-    Results apply();
+    Results apply( final RuleManager ruleManager );
 
     /**
      * Undo the changes the command made to the model
+     * @param ruleManager
      * @return
      */
-    Results undo();
+    Results undo( final RuleManager ruleManager );
 
 }

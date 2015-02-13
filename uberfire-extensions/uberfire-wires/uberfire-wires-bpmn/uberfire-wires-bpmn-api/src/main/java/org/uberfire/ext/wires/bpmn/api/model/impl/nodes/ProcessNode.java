@@ -42,13 +42,7 @@ public class ProcessNode extends GraphNodeImpl<Content> implements Graph<Content
     private Graph<Content> graph = new GraphImpl<Content>( new MapGraphStore<Content>() );
 
     private Set<Role> roles = new HashSet<Role>() {{
-        add( new DefaultRoleImpl( "all" ) );
-        add( new DefaultRoleImpl( "Endevents_all" ) );
-        add( new DefaultRoleImpl( "sequence_end" ) );
-        add( new DefaultRoleImpl( "to_task_event" ) );
-        add( new DefaultRoleImpl( "from_task_event" ) );
-        add( new DefaultRoleImpl( "fromtoall" ) );
-        add( new DefaultRoleImpl( "EndEventsMorph" ) );
+        add( new DefaultRoleImpl( "canContainArtifacts" ) );
     }};
 
     private Set<Property> properties = new HashSet<Property>() {{

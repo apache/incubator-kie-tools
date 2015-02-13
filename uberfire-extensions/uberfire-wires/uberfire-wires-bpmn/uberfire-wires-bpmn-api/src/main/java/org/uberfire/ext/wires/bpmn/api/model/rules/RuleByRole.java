@@ -15,19 +15,17 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model.rules;
 
-import java.util.Set;
-
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 
 /**
- * Rule restricting the Elements that can be contained within another Element.
+ * Rules define restrictions on behaviour of Elements in a diagram
  */
-public interface ContainmentRule extends RuleById {
+public interface RuleByRole extends Rule {
 
     /**
-     * The Roles of Elements permitted to be held within another Element.
+     * The Role for which the Rule applies. All Elements with this Role will be affected by the Rule.
      * @return
      */
-    Set<Role> getPermittedRoles();
+    Role getRole();
 
 }
