@@ -55,13 +55,13 @@ public interface CardinalityRule extends RuleByRole {
          * The minimum number of connections an Element can have.
          * @return
          */
-        long getMinimum();
+        long getMinOccurrences();
 
         /**
          * The maximum number of connections an Element can have.
          * @return
          */
-        long getMaximum();
+        long getMaxOccurrences();
 
     }
 

@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.bpmn.client;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,11 +46,15 @@ public class TestRuleFactory {
         rules.add( new CardinalityRuleImpl( "Start Node Cardinality Rule",
                                             new DefaultRoleImpl( "sequence_start" ),
                                             0,
-                                            1 ) );
+                                            1,
+                                            Collections.EMPTY_SET,
+                                            Collections.EMPTY_SET ) );
         rules.add( new CardinalityRuleImpl( "End Node Cardinality Rule",
                                             new DefaultRoleImpl( "sequence_end" ),
                                             0,
-                                            1 ) );
+                                            1,
+                                            Collections.EMPTY_SET,
+                                            Collections.EMPTY_SET ) );
         return rules;
     }
 
