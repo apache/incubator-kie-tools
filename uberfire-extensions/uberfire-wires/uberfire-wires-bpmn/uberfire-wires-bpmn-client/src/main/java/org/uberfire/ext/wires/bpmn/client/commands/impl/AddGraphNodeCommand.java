@@ -46,7 +46,8 @@ public class AddGraphNodeCommand implements Command {
         results.getMessages().addAll( ruleManager.checkContainment( target,
                                                                     candidate ).getMessages() );
         results.getMessages().addAll( ruleManager.checkCardinality( target,
-                                                                    candidate ).getMessages() );
+                                                                    candidate,
+                                                                    RuleManager.Operation.ADD ).getMessages() );
         if ( !results.contains( ResultType.ERROR ) ) {
             target.addNode( candidate );
         }

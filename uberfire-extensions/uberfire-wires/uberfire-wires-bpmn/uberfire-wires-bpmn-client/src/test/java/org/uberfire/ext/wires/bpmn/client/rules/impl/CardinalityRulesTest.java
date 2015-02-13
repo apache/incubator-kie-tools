@@ -35,7 +35,7 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
     @Test
     public void testAddStartProcessNodeToProcess() {
         final ProcessNode process = new ProcessNode();
-        final StartProcessNode node = new StartProcessNode();
+        final StartProcessNode candidate = new StartProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getCardinalityRules() ) {
@@ -44,16 +44,18 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
 
         //Try to add a single StartProcessNode
         final Results results1 = ruleManager.checkCardinality( process,
-                                                               node );
+                                                               candidate,
+                                                               RuleManager.Operation.ADD );
 
         assertNotNull( results1 );
         assertEquals( 0,
                       results1.getMessages().size() );
-        process.addNode( node );
+        process.addNode( candidate );
 
         //Try to add a second StartProcessNode
         final Results results2 = ruleManager.checkCardinality( process,
-                                                               node );
+                                                               candidate,
+                                                               RuleManager.Operation.ADD );
 
         assertNotNull( results2 );
         assertEquals( 1,
@@ -65,7 +67,7 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
     @Test
     public void testAddEndProcessNodeToProcess() {
         final ProcessNode process = new ProcessNode();
-        final EndProcessNode node = new EndProcessNode();
+        final EndProcessNode candidate = new EndProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getCardinalityRules() ) {
@@ -74,16 +76,18 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
 
         //Try to add a single EndProcessNode.
         final Results results1 = ruleManager.checkCardinality( process,
-                                                               node );
+                                                               candidate,
+                                                               RuleManager.Operation.ADD );
 
         assertNotNull( results1 );
         assertEquals( 0,
                       results1.getMessages().size() );
-        process.addNode( node );
+        process.addNode( candidate );
 
         //Try to add a second EndProcessNode
         final Results results2 = ruleManager.checkCardinality( process,
-                                                               node );
+                                                               candidate,
+                                                               RuleManager.Operation.ADD );
 
         assertNotNull( results2 );
         assertEquals( 1,
@@ -95,7 +99,7 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
     @Test
     public void testAddDummyNodeToProcess() {
         final ProcessNode process = new ProcessNode();
-        final GraphNode<Content> node = new TestDummyNode();
+        final GraphNode<Content> candidate = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getCardinalityRules() ) {
@@ -104,7 +108,8 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
 
         //Try to add a single TestDummyNode. There are no rules restricting the cardinality of TestDummyNode.
         final Results results = ruleManager.checkCardinality( process,
-                                                              node );
+                                                              candidate,
+                                                              RuleManager.Operation.ADD );
 
         assertNotNull( results );
         assertEquals( 0,

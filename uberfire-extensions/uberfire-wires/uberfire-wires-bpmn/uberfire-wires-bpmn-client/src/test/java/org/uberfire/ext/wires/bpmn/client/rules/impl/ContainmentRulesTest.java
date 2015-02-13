@@ -35,7 +35,7 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
     @Test
     public void testAddStartProcessNodeToProcess() {
         final ProcessNode process = new ProcessNode();
-        final StartProcessNode node = new StartProcessNode();
+        final StartProcessNode candidate = new StartProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getContainmentRules() ) {
@@ -43,7 +43,7 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
         }
 
         final Results results = ruleManager.checkContainment( process,
-                                                              node );
+                                                              candidate );
 
         assertNotNull( results );
         assertEquals( 0,
@@ -53,7 +53,7 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
     @Test
     public void testAddEndProcessNodeToProcess() {
         final ProcessNode process = new ProcessNode();
-        final EndProcessNode node = new EndProcessNode();
+        final EndProcessNode candidate = new EndProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getContainmentRules() ) {
@@ -61,7 +61,7 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
         }
 
         final Results results = ruleManager.checkContainment( process,
-                                                              node );
+                                                              candidate );
 
         assertNotNull( results );
         assertEquals( 0,
@@ -71,7 +71,7 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
     @Test
     public void testAddDummyNodeToProcess() {
         final ProcessNode process = new ProcessNode();
-        final GraphNode<Content> node = new TestDummyNode();
+        final GraphNode<Content> candidate = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getContainmentRules() ) {
@@ -79,7 +79,7 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
         }
 
         final Results results = ruleManager.checkContainment( process,
-                                                              node );
+                                                              candidate );
 
         assertNotNull( results );
         assertEquals( 1,

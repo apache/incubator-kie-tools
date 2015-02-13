@@ -44,7 +44,8 @@ public class DeleteGraphNodeCommand implements Command {
     public Results apply( final RuleManager ruleManager ) {
         final Results results = new DefaultResultsImpl();
         results.getMessages().addAll( ruleManager.checkCardinality( target,
-                                                                    candidate ).getMessages() );
+                                                                    candidate,
+                                                                    RuleManager.Operation.DELETE ).getMessages() );
         if ( !results.contains( ResultType.ERROR ) ) {
             target.removeNode( candidate.getId() );
         }
