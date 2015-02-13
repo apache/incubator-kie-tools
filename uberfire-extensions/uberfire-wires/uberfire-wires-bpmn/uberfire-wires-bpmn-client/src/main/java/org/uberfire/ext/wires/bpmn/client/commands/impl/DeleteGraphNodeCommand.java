@@ -25,15 +25,15 @@ import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
 /**
- * A Command to add a GraphNode to a Graph
+ * A Command to delete a GraphNode from a Graph
  */
-public class AddGraphNodeCommand implements Command {
+public class DeleteGraphNodeCommand implements Command {
 
     private Graph<Content> target;
     private GraphNode<Content> candidate;
 
-    public AddGraphNodeCommand( final Graph<Content> target,
-                                final GraphNode<Content> candidate ) {
+    public DeleteGraphNodeCommand( final Graph<Content> target,
+                                   final GraphNode<Content> candidate ) {
         this.target = PortablePreconditions.checkNotNull( "target",
                                                           target );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
@@ -43,20 +43,18 @@ public class AddGraphNodeCommand implements Command {
     @Override
     public Results apply( final RuleManager ruleManager ) {
         final Results results = new DefaultResultsImpl();
-        results.getMessages().addAll( ruleManager.checkContainment( target,
-                                                                    candidate ).getMessages() );
         results.getMessages().addAll( ruleManager.checkCardinality( target,
                                                                     candidate ).getMessages() );
         if ( !results.contains( ResultType.ERROR ) ) {
-            target.addNode( candidate );
+            target.removeNode( candidate.getId() );
         }
         return results;
     }
 
     @Override
     public Results undo( final RuleManager ruleManager ) {
-        final Command undoCommand = new DeleteGraphNodeCommand( target,
-                                                                candidate );
+        final Command undoCommand = new AddGraphNodeCommand( target,
+                                                             candidate );
         return undoCommand.apply( ruleManager );
     }
 
