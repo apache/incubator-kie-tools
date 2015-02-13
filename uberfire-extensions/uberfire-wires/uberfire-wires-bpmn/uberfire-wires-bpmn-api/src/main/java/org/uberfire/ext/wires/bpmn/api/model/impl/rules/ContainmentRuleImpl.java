@@ -26,15 +26,24 @@ import org.uberfire.ext.wires.bpmn.api.model.rules.ContainmentRule;
 @Portable
 public class ContainmentRuleImpl implements ContainmentRule {
 
+    private String name;
     private String id;
     private Set<Role> permittedRoles;
 
-    public ContainmentRuleImpl( @MapsTo("id") final String id,
+    public ContainmentRuleImpl( @MapsTo("name") final String name,
+                                @MapsTo("id") final String id,
                                 @MapsTo("permittedRoles") final Set<Role> permittedRoles ) {
+        this.name = PortablePreconditions.checkNotNull( "name",
+                                                        name );
         this.id = PortablePreconditions.checkNotNull( "id",
                                                       id );
         this.permittedRoles = PortablePreconditions.checkNotNull( "permittedRoles",
                                                                   permittedRoles );
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

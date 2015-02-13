@@ -17,6 +17,7 @@ package org.uberfire.ext.wires.bpmn.client.rules.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
@@ -36,21 +37,12 @@ import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 /**
  * Default implementation of Rule Manager
  */
+@ApplicationScoped
 public class DefaultRuleManagerImpl implements RuleManager {
-
-    private static final RuleManager INSTANCE = new DefaultRuleManagerImpl();
 
     private final Set<ContainmentRule> containmentRules = new HashSet<ContainmentRule>();
     private final Set<CardinalityRule> cardinalityRules = new HashSet<CardinalityRule>();
     private final Set<ConnectionRule> connectionRules = new HashSet<ConnectionRule>();
-
-    private DefaultRuleManagerImpl() {
-        //Singleton
-    }
-
-    public static RuleManager getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public void addRule( final Rule rule ) {
@@ -71,6 +63,9 @@ public class DefaultRuleManagerImpl implements RuleManager {
     public Results checkContainment( final Graph<Content> target,
                                      final GraphNode<Content> proposed ) {
         final Results results = new DefaultResultsImpl();
+        if ( containmentRules.isEmpty() ) {
+            return results;
+        }
 
         for ( ContainmentRule rule : containmentRules ) {
             if ( rule.getId().equals( target.getContent().getId() ) ) {
@@ -86,4 +81,33 @@ public class DefaultRuleManagerImpl implements RuleManager {
         return results;
     }
 
+    @Override
+    public Results checkCardinality( final Graph<Content> target,
+                                     final GraphNode<Content> proposed ) {
+        final Results results = new DefaultResultsImpl();
+        if ( cardinalityRules.isEmpty() ) {
+            return results;
+        }
+
+        for ( CardinalityRule rule : cardinalityRules ) {
+            if ( proposed.getContent().getRoles().contains( rule.getRole() ) ) {
+                final long minOccurrences = rule.getMinOccurrences();
+                final long maxOccurrences = rule.getMaxOccurrences();
+                long count = 0;
+                for ( GraphNode<Content> node : target ) {
+                    if ( node.getContent().getId().equals( proposed.getContent().getId() ) ) {
+                        count++;
+                    }
+                }
+                if ( count < minOccurrences ) {
+                    results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                               "'" + target.getContent().getId() + "' needs a minimum '" + minOccurrences + "' of '" + proposed.getContent().getId() + "' nodes. Found '" + count + "'." ) );
+                } else if ( count >= maxOccurrences ) {
+                    results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                               "'" + target.getContent().getId() + "' can have a maximum  '" + minOccurrences + "' of '" + proposed.getContent().getId() + "' nodes. Found '\"+count+\"'.\"" ) );
+                }
+            }
+        }
+        return results;
+    }
 }

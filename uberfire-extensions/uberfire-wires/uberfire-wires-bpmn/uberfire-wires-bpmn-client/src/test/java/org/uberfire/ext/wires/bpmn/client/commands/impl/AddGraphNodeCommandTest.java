@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.client.rules.impl;
+package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import org.junit.Test;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
@@ -24,13 +24,15 @@ import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
 import org.uberfire.ext.wires.bpmn.client.TestRuleFactory;
+import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
+import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
 
 import static junit.framework.Assert.*;
 
-public class ContainmentRulesTest {
+public class AddGraphNodeCommandTest {
 
     @Test
     public void testAddStartProcessNodeToProcess() {
@@ -42,12 +44,19 @@ public class ContainmentRulesTest {
             ruleManager.addRule( rule );
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              node );
+        final CommandManager commandManager = new DefaultCommandManagerImpl();
+        final Results results = commandManager.execute( ruleManager,
+                                                        new AddGraphNodeCommand( process,
+                                                                                 node ) );
 
         assertNotNull( results );
         assertEquals( 0,
                       results.getMessages().size() );
+
+        assertEquals( 1,
+                      process.size() );
+        assertEquals( node,
+                      process.getNode( node.getId() ) );
     }
 
     @Test
@@ -60,12 +69,19 @@ public class ContainmentRulesTest {
             ruleManager.addRule( rule );
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              node );
+        final CommandManager commandManager = new DefaultCommandManagerImpl();
+        final Results results = commandManager.execute( ruleManager,
+                                                        new AddGraphNodeCommand( process,
+                                                                                 node ) );
 
         assertNotNull( results );
         assertEquals( 0,
                       results.getMessages().size() );
+
+        assertEquals( 1,
+                      process.size() );
+        assertEquals( node,
+                      process.getNode( node.getId() ) );
     }
 
     @Test
@@ -78,14 +94,19 @@ public class ContainmentRulesTest {
             ruleManager.addRule( rule );
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              node );
+        final CommandManager commandManager = new DefaultCommandManagerImpl();
+        final Results results = commandManager.execute( ruleManager,
+                                                        new AddGraphNodeCommand( process,
+                                                                                 node ) );
 
         assertNotNull( results );
         assertEquals( 1,
                       results.getMessages().size() );
         assertEquals( 1,
                       results.getMessages( ResultType.ERROR ).size() );
+
+        assertEquals( 0,
+                      process.size() );
     }
 
 }

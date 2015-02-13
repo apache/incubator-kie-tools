@@ -15,6 +15,8 @@
  */
 package org.uberfire.ext.wires.bpmn.client.commands;
 
+import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
+
 /**
  * Command Manager to handle execution of commands to mutate Elements
  */
@@ -22,15 +24,18 @@ public interface CommandManager {
 
     /**
      * Execute a Command and return results
+     * @param ruleManager
      * @param command
      * @return
      */
-    Results execute( final Command command );
+    Results execute( final RuleManager ruleManager,
+                     final Command command );
 
     /**
      * Undo the most recent command
+     * @param ruleManager
      * @return
      */
-    Results undo();
+    Results undo( final RuleManager ruleManager );
 
 }

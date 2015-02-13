@@ -22,7 +22,7 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
-import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
+import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
 public class AddGraphNodeCommand implements Command {
 
@@ -38,9 +38,12 @@ public class AddGraphNodeCommand implements Command {
     }
 
     @Override
-    public Results apply() {
-        final Results results = DefaultRuleManagerImpl.getInstance().checkContainment( target,
-                                                                                       proposed );
+    public Results apply( final RuleManager ruleManager ) {
+        final Results results = new DefaultResultsImpl();
+        results.getMessages().addAll( ruleManager.checkContainment( target,
+                                                                    proposed ).getMessages() );
+        results.getMessages().addAll( ruleManager.checkCardinality( target,
+                                                                    proposed ).getMessages() );
         if ( !results.contains( ResultType.ERROR ) ) {
             target.addNode( proposed );
         }
@@ -48,7 +51,7 @@ public class AddGraphNodeCommand implements Command {
     }
 
     @Override
-    public Results undo() {
+    public Results undo( final RuleManager ruleManager ) {
         target.removeNode( proposed.getId() );
         //We'll return results when all types of Rule are implemented as removing a Node could invalidate the Graph
         return new DefaultResultsImpl();

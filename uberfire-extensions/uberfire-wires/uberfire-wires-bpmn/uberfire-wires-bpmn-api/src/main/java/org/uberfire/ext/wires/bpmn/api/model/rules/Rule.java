@@ -21,9 +21,9 @@ package org.uberfire.ext.wires.bpmn.api.model.rules;
 public interface Rule {
 
     /**
-     * The identifier for which the Rule applies. All Elements with this Role will be affected by the Rule.
+     * A name for the rule.
      * @return
-     */
-    String getId();
+     *//**/
+    String getName();
 
 }

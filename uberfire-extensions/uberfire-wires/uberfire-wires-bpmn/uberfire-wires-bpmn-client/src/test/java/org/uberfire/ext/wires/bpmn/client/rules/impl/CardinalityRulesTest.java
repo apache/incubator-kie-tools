@@ -30,7 +30,7 @@ import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
 import static junit.framework.Assert.*;
 
-public class ContainmentRulesTest {
+public class CardinalityRulesTest {
 
     @Test
     public void testAddStartProcessNodeToProcess() {
@@ -38,16 +38,28 @@ public class ContainmentRulesTest {
         final StartProcessNode node = new StartProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : TestRuleFactory.getCardinalityRules() ) {
             ruleManager.addRule( rule );
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              node );
+        //Try to add a single StartProcessNode
+        final Results results1 = ruleManager.checkCardinality( process,
+                                                               node );
 
-        assertNotNull( results );
+        assertNotNull( results1 );
         assertEquals( 0,
-                      results.getMessages().size() );
+                      results1.getMessages().size() );
+        process.addNode( node );
+
+        //Try to add a second StartProcessNode
+        final Results results2 = ruleManager.checkCardinality( process,
+                                                               node );
+
+        assertNotNull( results2 );
+        assertEquals( 1,
+                      results2.getMessages().size() );
+        assertEquals( 1,
+                      results2.getMessages( ResultType.ERROR ).size() );
     }
 
     @Test
@@ -56,16 +68,28 @@ public class ContainmentRulesTest {
         final EndProcessNode node = new EndProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : TestRuleFactory.getCardinalityRules() ) {
             ruleManager.addRule( rule );
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              node );
+        //Try to add a single EndProcessNode.
+        final Results results1 = ruleManager.checkCardinality( process,
+                                                               node );
 
-        assertNotNull( results );
+        assertNotNull( results1 );
         assertEquals( 0,
-                      results.getMessages().size() );
+                      results1.getMessages().size() );
+        process.addNode( node );
+
+        //Try to add a second EndProcessNode
+        final Results results2 = ruleManager.checkCardinality( process,
+                                                               node );
+
+        assertNotNull( results2 );
+        assertEquals( 1,
+                      results2.getMessages().size() );
+        assertEquals( 1,
+                      results2.getMessages( ResultType.ERROR ).size() );
     }
 
     @Test
@@ -74,18 +98,17 @@ public class ContainmentRulesTest {
         final GraphNode<Content> node = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : TestRuleFactory.getCardinalityRules() ) {
             ruleManager.addRule( rule );
         }
 
-        final Results results = ruleManager.checkContainment( process,
+        //Try to add a single TestDummyNode. There are no rules restricting the cardinality of TestDummyNode.
+        final Results results = ruleManager.checkCardinality( process,
                                                               node );
 
         assertNotNull( results );
-        assertEquals( 1,
+        assertEquals( 0,
                       results.getMessages().size() );
-        assertEquals( 1,
-                      results.getMessages( ResultType.ERROR ).size() );
     }
 
 }

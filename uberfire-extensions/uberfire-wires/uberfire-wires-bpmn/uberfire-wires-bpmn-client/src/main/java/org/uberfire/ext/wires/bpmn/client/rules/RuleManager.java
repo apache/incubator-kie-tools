@@ -41,4 +41,13 @@ public interface RuleManager {
     Results checkContainment( final Graph<Content> target,
                               final GraphNode<Content> proposed );
 
+    /**
+     * Check whether adding the proposed Node to the target Process breaks any cardinality Rules
+     * @param target Target process
+     * @param proposed Proposed node
+     * @return
+     */
+    Results checkCardinality( final Graph<Content> target,
+                              final GraphNode<Content> proposed );
+
 }
