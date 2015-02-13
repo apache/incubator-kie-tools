@@ -15,7 +15,6 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model.impl.rules;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,18 +37,6 @@ public class CardinalityRuleImpl implements CardinalityRule {
     public CardinalityRuleImpl( @MapsTo("name") final String name,
                                 @MapsTo("role") Role role,
                                 @MapsTo("minOccurrences") long minOccurrences,
-                                @MapsTo("maxOccurrences") long maxOccurrences ) {
-        this( name,
-              role,
-              minOccurrences,
-              maxOccurrences,
-              Collections.EMPTY_SET,
-              Collections.EMPTY_SET );
-    }
-
-    public CardinalityRuleImpl( @MapsTo("name") final String name,
-                                @MapsTo("role") Role role,
-                                @MapsTo("minOccurrences") long minOccurrences,
                                 @MapsTo("maxOccurrences") long maxOccurrences,
                                 @MapsTo("incomingConnectionRules") Set<ConnectorRule> incomingConnectionRules,
                                 @MapsTo("outgoingConnectionRules") Set<ConnectorRule> outgoingConnectionRules ) {
@@ -57,10 +44,36 @@ public class CardinalityRuleImpl implements CardinalityRule {
                                                         name );
         this.role = PortablePreconditions.checkNotNull( "role",
                                                         role );
+        if ( minOccurrences < 0 ) {
+            throw new IllegalArgumentException( "minOccurrences cannot be less than 0." );
+        }
         this.minOccurrences = minOccurrences;
+        if ( maxOccurrences < minOccurrences ) {
+            throw new IllegalArgumentException( "maxOccurrences cannot be less than minOccurrences." );
+        }
         this.maxOccurrences = maxOccurrences;
+        for ( ConnectorRule cr : incomingConnectionRules ) {
+            final long crMinOccurrences = cr.getMinOccurrences();
+            final long crMaxOccurrences = cr.getMaxOccurrences();
+            if ( crMinOccurrences < 0 ) {
+                throw new IllegalArgumentException( "Incoming ConnectorRule minOccurrences cannot be less than 0." );
+            }
+            if ( crMaxOccurrences < crMinOccurrences ) {
+                throw new IllegalArgumentException( "Incoming ConnectorRule maxOccurrences cannot be less than minOccurrences." );
+            }
+        }
         this.incomingConnectionRules = PortablePreconditions.checkNotNull( "incomingConnectionRules",
                                                                            incomingConnectionRules );
+        for ( ConnectorRule cr : outgoingConnectionRules ) {
+            final long crMinOccurrences = cr.getMinOccurrences();
+            final long crMaxOccurrences = cr.getMaxOccurrences();
+            if ( crMinOccurrences < 0 ) {
+                throw new IllegalArgumentException( "Outgoing ConnectorRule minOccurrences cannot be less than 0." );
+            }
+            if ( crMaxOccurrences < crMinOccurrences ) {
+                throw new IllegalArgumentException( "Outgoing ConnectorRule maxOccurrences cannot be less than minOccurrences." );
+            }
+        }
         this.outgoingConnectionRules = PortablePreconditions.checkNotNull( "outgoingConnectionRules",
                                                                            outgoingConnectionRules );
     }
