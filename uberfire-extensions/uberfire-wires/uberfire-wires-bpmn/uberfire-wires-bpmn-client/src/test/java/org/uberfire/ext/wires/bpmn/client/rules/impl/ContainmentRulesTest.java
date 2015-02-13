@@ -22,15 +22,15 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.StartProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
-import org.uberfire.ext.wires.bpmn.client.TestRuleFactory;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
 import static junit.framework.Assert.*;
 
-public class ContainmentRulesTest {
+public class ContainmentRulesTest extends AbstractBaseRuleTest {
 
     @Test
     public void testAddStartProcessNodeToProcess() {
@@ -38,7 +38,7 @@ public class ContainmentRulesTest {
         final StartProcessNode node = new StartProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : getContainmentRules() ) {
             ruleManager.addRule( rule );
         }
 
@@ -56,7 +56,7 @@ public class ContainmentRulesTest {
         final EndProcessNode node = new EndProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : getContainmentRules() ) {
             ruleManager.addRule( rule );
         }
 
@@ -74,7 +74,7 @@ public class ContainmentRulesTest {
         final GraphNode<Content> node = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : getContainmentRules() ) {
             ruleManager.addRule( rule );
         }
 

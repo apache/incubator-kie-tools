@@ -22,8 +22,8 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.StartProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
-import org.uberfire.ext.wires.bpmn.client.TestRuleFactory;
 import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
@@ -32,7 +32,7 @@ import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
 
 import static junit.framework.Assert.*;
 
-public class AddGraphNodeCommandTest {
+public class AddGraphNodeCommandTest extends AbstractBaseRuleTest {
 
     @Test
     public void testAddStartProcessNodeToProcess() {
@@ -40,7 +40,7 @@ public class AddGraphNodeCommandTest {
         final StartProcessNode node = new StartProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : getContainmentRules() ) {
             ruleManager.addRule( rule );
         }
 
@@ -65,7 +65,7 @@ public class AddGraphNodeCommandTest {
         final EndProcessNode node = new EndProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : getContainmentRules() ) {
             ruleManager.addRule( rule );
         }
 
@@ -90,7 +90,7 @@ public class AddGraphNodeCommandTest {
         final GraphNode<Content> node = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : getContainmentRules() ) {
             ruleManager.addRule( rule );
         }
 

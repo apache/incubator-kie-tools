@@ -19,19 +19,24 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.CardinalityRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ContainmentRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+
+import static org.junit.Assert.*;
 
 /**
- * A Factory for Rules for testing
+ * Base for Rule related tests
  */
-public class TestRuleFactory {
+public abstract class AbstractBaseRuleTest {
 
-    public static Set<Rule> getContainmentRules() {
+    protected Set<Rule> getContainmentRules() {
         final Set<Rule> rules = new HashSet<Rule>();
         rules.add( new ContainmentRuleImpl( "Process Node Containment Rule",
                                             new ProcessNode().getContent().getId(),
@@ -41,7 +46,7 @@ public class TestRuleFactory {
         return rules;
     }
 
-    public static Set<Rule> getCardinalityRules() {
+    protected Set<Rule> getCardinalityRules() {
         final Set<Rule> rules = new HashSet<Rule>();
         rules.add( new CardinalityRuleImpl( "Start Node Cardinality Rule",
                                             new DefaultRoleImpl( "sequence_start" ),
@@ -56,6 +61,47 @@ public class TestRuleFactory {
                                             Collections.EMPTY_SET,
                                             Collections.EMPTY_SET ) );
         return rules;
+    }
+
+    protected void assertProcessContainsNodes( final Graph<Content> graph,
+                                               final GraphNode<Content>... nodes ) {
+        final Set<GraphNode<Content>> nodesToExist = new HashSet<GraphNode<Content>>();
+        for ( GraphNode<Content> node : nodes ) {
+            nodesToExist.add( node );
+        }
+        for ( GraphNode<Content> gn : graph ) {
+            for ( GraphNode<Content> node : nodes ) {
+                if ( gn.equals( node ) ) {
+                    nodesToExist.remove( node );
+                }
+            }
+        }
+        if ( !nodesToExist.isEmpty() ) {
+            final StringBuffer sb = new StringBuffer( "Not all GraphNodes were present in Graph.\n" );
+            for ( GraphNode<Content> node : nodesToExist ) {
+                sb.append( "--> Not present: GraphNode [" + node.toString() + "].\n" );
+            }
+            fail( sb.toString() );
+        }
+    }
+
+    protected void assertProcessNotContainsNodes( final Graph<Content> graph,
+                                                  final GraphNode<Content>... nodes ) {
+        final Set<GraphNode<Content>> nodesToNotExist = new HashSet<GraphNode<Content>>();
+        for ( GraphNode<Content> gn : graph ) {
+            for ( GraphNode<Content> node : nodes ) {
+                if ( gn.equals( node ) ) {
+                    nodesToNotExist.add( node );
+                }
+            }
+        }
+        if ( !nodesToNotExist.isEmpty() ) {
+            final StringBuffer sb = new StringBuffer( "One or more GraphNodes were present in Graph.\n" );
+            for ( GraphNode<Content> node : nodesToNotExist ) {
+                sb.append( "--> Present: GraphNode [" + node.toString() + "].\n" );
+            }
+            fail( sb.toString() );
+        }
     }
 
 }

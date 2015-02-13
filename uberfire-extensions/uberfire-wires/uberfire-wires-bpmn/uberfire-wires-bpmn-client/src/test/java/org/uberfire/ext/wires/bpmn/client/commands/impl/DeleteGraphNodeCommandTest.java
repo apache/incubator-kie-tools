@@ -26,8 +26,8 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.CardinalityRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
-import org.uberfire.ext.wires.bpmn.client.TestRuleFactory;
 import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
@@ -35,7 +35,7 @@ import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
 
 import static junit.framework.Assert.*;
 
-public class DeleteGraphNodeCommandTest {
+public class DeleteGraphNodeCommandTest extends AbstractBaseRuleTest {
 
     @Test
     public void testDeleteStartProcessNodeFromProcess() {
@@ -105,7 +105,7 @@ public class DeleteGraphNodeCommandTest {
         final GraphNode<Content> node = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : TestRuleFactory.getContainmentRules() ) {
+        for ( Rule rule : getContainmentRules() ) {
             ruleManager.addRule( rule );
         }
 
