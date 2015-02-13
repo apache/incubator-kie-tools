@@ -19,9 +19,11 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
+import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.CardinalityRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ContainmentRule;
@@ -111,4 +113,47 @@ public class DefaultRuleManagerImpl implements RuleManager {
         }
         return results;
     }
+
+    @Override
+    public Results checkConnectionRules( final GraphNode<Content> outgoingNode,
+                                         final GraphNode<Content> incomingNode,
+                                         final BpmnEdge edge ) {
+        final Results results = new DefaultResultsImpl();
+        if ( connectionRules.isEmpty() ) {
+            return results;
+        }
+
+        final Set<Pair<String, String>> couples = new HashSet<Pair<String, String>>();
+        for ( ConnectionRule rule : connectionRules ) {
+            if ( edge.getRole().equals( rule.getRole() ) ) {
+                for ( ConnectionRule.PermittedConnection pc : rule.getPermittedConnections() ) {
+                    couples.add( new Pair( pc.getStartRole().getName(),
+                                           pc.getEndRole().getName() ) );
+                    if ( outgoingNode.getContent().getRoles().contains( pc.getStartRole() ) ) {
+                        if ( incomingNode.getContent().getRoles().contains( pc.getEndRole() ) ) {
+                            return results;
+                        }
+                    }
+                }
+            }
+        }
+
+        results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                   "Edge does not emanate from a GraphNode with a permitted Role nor terminate at GraphNode with a permitted Role. Permitted Connections are: " + couples.toString() ) );
+        return results;
+    }
+
+    @Override
+    public Results checkCardinality( final GraphNode<Content> outgoingNode,
+                                     final GraphNode<Content> incomingNode,
+                                     final BpmnEdge edge,
+                                     final Operation operation ) {
+        final Results results = new DefaultResultsImpl();
+        if ( cardinalityRules.isEmpty() ) {
+            return results;
+        }
+        //TODO {manstis} Not implemented
+        return results;
+    }
+
 }

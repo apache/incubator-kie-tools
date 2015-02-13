@@ -24,7 +24,9 @@ import org.uberfire.ext.wires.bpmn.api.model.Role;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.CardinalityRuleImpl;
+import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ConnectionRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ContainmentRuleImpl;
+import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
@@ -60,6 +62,38 @@ public abstract class AbstractBaseRuleTest {
                                             1,
                                             Collections.EMPTY_SET,
                                             Collections.EMPTY_SET ) );
+        return rules;
+    }
+
+    protected Set<Rule> getConnectionRules() {
+        final Set<Rule> rules = new HashSet<Rule>();
+        rules.add( new ConnectionRuleImpl( "StartNode to TestDummyNode Connector Rule",
+                                           new DefaultRoleImpl( "general_edge" ),
+                                           new HashSet<ConnectionRule.PermittedConnection>() {{
+                                               add( new ConnectionRule.PermittedConnection() {
+                                                   @Override
+                                                   public Role getStartRole() {
+                                                       return new DefaultRoleImpl( "sequence_start" );
+                                                   }
+
+                                                   @Override
+                                                   public Role getEndRole() {
+                                                       return new DefaultRoleImpl( "dummy" );
+                                                   }
+                                               } );
+                                               add( new ConnectionRule.PermittedConnection() {
+                                                   @Override
+                                                   public Role getStartRole() {
+                                                       return new DefaultRoleImpl( "dummy" );
+                                                   }
+
+                                                   @Override
+                                                   public Role getEndRole() {
+                                                       return new DefaultRoleImpl( "sequence_end" );
+                                                   }
+                                               } );
+
+                                           }} ) );
         return rules;
     }
 
