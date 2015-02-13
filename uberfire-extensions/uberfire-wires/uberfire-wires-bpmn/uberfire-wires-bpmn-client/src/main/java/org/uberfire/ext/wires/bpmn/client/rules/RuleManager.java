@@ -16,6 +16,7 @@
 package org.uberfire.ext.wires.bpmn.client.rules;
 
 import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
@@ -45,11 +46,35 @@ public interface RuleManager {
      * Check whether adding the proposed Node to the target Process breaks any cardinality Rules
      * @param target Target process
      * @param candidate Candidate node
-     * @param operation Is the Proposed Node being added or removed
+     * @param operation Is the candidate Node being added or removed
      * @return
      */
     Results checkCardinality( final Graph<Content> target,
                               final GraphNode<Content> candidate,
+                              final Operation operation );
+
+    /**
+     * Check whether adding the proposed Edge to the target Process breaks any connection Rules
+     * @param outgoingNode Node from which the Edge will emanate
+     * @param incomingNode Node to which the Edge will terminate
+     * @param edge Candidate edge
+     * @return Is the Edge being added or removed
+     */
+    Results checkConnectionRules( final GraphNode<Content> outgoingNode,
+                                  final GraphNode<Content> incomingNode,
+                                  final BpmnEdge edge );
+
+    /**
+     * Check whether adding the proposed Edge to the target Process breaks any cardinality Rules
+     * @param outgoingNode Node from which the Edge will emanate
+     * @param incomingNode Node to which the Edge will terminate
+     * @param edge Candidate edge
+     * @param operation
+     * @return Is the Edge being added or removed
+     */
+    Results checkCardinality( final GraphNode<Content> outgoingNode,
+                              final GraphNode<Content> incomingNode,
+                              final BpmnEdge edge,
                               final Operation operation );
 
     /**
