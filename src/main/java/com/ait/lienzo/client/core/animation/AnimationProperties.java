@@ -16,15 +16,13 @@
 
 package com.ait.lienzo.client.core.animation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.ait.lienzo.client.core.types.NFastArrayList;
 
 public class AnimationProperties
 {
-    private final ArrayList<AnimationProperty> m_properties = new ArrayList<AnimationProperty>();
+    private final NFastArrayList<AnimationProperty> m_properties = new NFastArrayList<AnimationProperty>();
 
-    public static final AnimationProperties toPropertyList(AnimationProperty property, AnimationProperty... properties)
+    public static final AnimationProperties toPropertyList(final AnimationProperty property, final AnimationProperty... properties)
     {
         return new AnimationProperties(property, properties);
     }
@@ -33,25 +31,36 @@ public class AnimationProperties
     {
     }
 
-    public AnimationProperties(AnimationProperty property, AnimationProperty... properties)
+    public AnimationProperties(final AnimationProperty property, final AnimationProperty... properties)
     {
         push(property);
 
         if (null != properties)
         {
-            for (int i = 0; i < properties.length; i++)
+            final int size = properties.length;
+
+            for (int i = 0; i < size; i++)
             {
                 push(properties[i]);
             }
         }
     }
 
-    public List<AnimationProperty> getProperties()
+    public final int size()
     {
-        return Collections.unmodifiableList(m_properties);
+        return m_properties.size();
     }
 
-    public AnimationProperties push(AnimationProperty property)
+    public final AnimationProperty get(final int i)
+    {
+        if ((i < 0) || (i >= m_properties.size()))
+        {
+            return null;
+        }
+        return m_properties.get(i);
+    }
+
+    public final AnimationProperties push(AnimationProperty property)
     {
         if (null != property)
         {

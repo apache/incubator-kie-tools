@@ -16,19 +16,18 @@
 
 package com.ait.lienzo.client.core.animation;
 
-import java.util.ArrayList;
-
 import com.ait.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.types.NFastArrayList;
 
 public class TweeningAnimation extends TimedAnimation
 {
-    private final AnimationTweener       m_tweener;
+    private final AnimationTweener            m_tweener;
 
-    private final AnimationProperties    m_properties;
+    private final AnimationProperties         m_properties;
 
-    private ArrayList<AnimationProperty> m_workingset;
+    private NFastArrayList<AnimationProperty> m_workingset;
 
-    public TweeningAnimation(Node<?> node, AnimationTweener tweener, AnimationProperties properties, double duration, IAnimationCallback callback)
+    public TweeningAnimation(final Node<?> node, final AnimationTweener tweener, final AnimationProperties properties, final double duration, final IAnimationCallback callback)
     {
         super(duration, callback);
 
@@ -42,15 +41,31 @@ public class TweeningAnimation extends TimedAnimation
     @Override
     public IAnimation doStart()
     {
-        if (null != m_properties)
-        {
-            m_workingset = new ArrayList<AnimationProperty>();
+        final Node<?> node = getNode();
 
-            for (AnimationProperty property : m_properties.getProperties())
+        if ((null != m_properties) && (m_properties.size() > 0))
+        {
+            m_workingset = new NFastArrayList<AnimationProperty>();
+
+            final int size = m_properties.size();
+
+            for (int i = 0; i < size; i++)
             {
-                if (property.init(getNode()))
+                AnimationProperty property = m_properties.get(i);
+
+                if (null != property)
                 {
-                    m_workingset.add(property);
+                    if (property.isStateful())
+                    {
+                        property = property.copy();
+                    }
+                    if (null != property)
+                    {
+                        if (property.init(node))
+                        {
+                            m_workingset.add(property);
+                        }
+                    }
                 }
             }
         }

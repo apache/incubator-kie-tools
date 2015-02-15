@@ -16,28 +16,11 @@
 
 package com.ait.lienzo.shared.core.types;
 
-/**
- * NodeType is an extensible enumeration of top-level node types used in the Lienzo toolkit.
- */
-public class NodeType
+public abstract class ProxyType
 {
-    public static final NodeType SCENE      = new NodeType("Scene");
+    private final String m_valu;
 
-    public static final NodeType LAYER      = new NodeType("Layer");
-
-    public static final NodeType GROUP      = new NodeType("Group");
-
-    public static final NodeType SHAPE      = new NodeType("Shape");
-
-    public static final NodeType PROXY      = new NodeType("Proxy");
-
-    public static final NodeType VIEWPORT   = new NodeType("Viewport");
-
-    public static final NodeType GRID_LAYER = new NodeType("GridLayer");
-
-    private final String         m_valu;
-
-    protected NodeType(String valu)
+    protected ProxyType(String valu)
     {
         m_valu = valu;
     }
@@ -56,7 +39,7 @@ public class NodeType
     @Override
     public boolean equals(Object other)
     {
-        if ((other == null) || (false == (other instanceof NodeType)))
+        if ((other == null) || (false == (other instanceof ProxyType)))
         {
             return false;
         }
@@ -64,7 +47,7 @@ public class NodeType
         {
             return true;
         }
-        NodeType that = ((NodeType) other);
+        ProxyType that = ((ProxyType) other);
 
         return (that.getValue().equals(getValue()));
     }

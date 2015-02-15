@@ -21,4 +21,8 @@ import com.ait.lienzo.client.core.types.Point2D;
 public interface IPositioningCalculator
 {
     public Point2D calculate(double percent);
+    
+    public boolean isStateful();
+    
+    public IPositioningCalculator copy();
 }

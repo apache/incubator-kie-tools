@@ -16,88 +16,63 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 
-import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.animation.TweeningAnimation;
 import com.ait.lienzo.client.core.shape.IControlHandle.ControlHandleType;
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.DragBounds;
-import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
-import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.lienzo.shared.java.util.function.Predicate;
-import com.google.gwt.json.client.JSONArray;
+import com.ait.lienzo.shared.core.types.ProxyType;
 import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONString;
 
-/**
- * A Container capable of holding a collection of T objects
- */
-public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C> implements IPrimitive<C>, IJSONSerializable<C>
+public class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C> implements IPrimitive<C>, IJSONSerializable<C>
 {
-    private GroupType              m_type                   = null;
+    private ProxyType              m_type                   = null;
 
     private IControlHandleFactory  m_controlHandleFactory   = null;
 
     private DragConstraintEnforcer m_dragConstraintEnforcer = null;
 
-    /**
-     * Constructor. Creates an instance of a group.
-     */
-    protected GroupOf(final GroupType type)
+    protected CompositeProxy(final ProxyType type)
     {
-        super(NodeType.GROUP);
+        super(NodeType.PROXY);
 
         m_type = type;
     }
 
-    /**
-     * Constructor. Creates an instance of a group.
-     */
-    protected GroupOf(final GroupType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    public CompositeProxy(final ProxyType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
-        super(NodeType.GROUP, node, ctx);
+        super(NodeType.PROXY, node, ctx);
 
         m_type = type;
     }
 
-    /**
-     * Only sub-classes that wish to extend a Shape should use this.
-     * 
-     * @param type
-     */
-    protected void setGroupType(final GroupType type)
+    protected P getProxy()
+    {
+        return null;
+    }
+
+    protected void setProxyType(final ProxyType type)
     {
         m_type = type;
     }
 
-    public GroupType getGroupType()
+    public ProxyType getProxyType()
     {
         return m_type;
-    }
-
-    /**
-     * Returns this group as an {@link IPrimitive}.
-     * 
-     * @return IPrimitive
-     */
-    @Override
-    public IPrimitive<?> asPrimitive()
-    {
-        return this;
     }
 
     /**
@@ -562,56 +537,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
         return cast();
     }
 
-    /**
-     * Returns this group as a {@link IContainer}
-     * 
-     * @return IContainer<IPrimitive>
-     */
-    @Override
-    public IContainer<C, T> asContainer()
-    {
-        return cast();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public GroupOf<IPrimitive<?>, ?> asGroup()
-    {
-        return (GroupOf<IPrimitive<?>, ?>) this;
-    }
-
-    /**
-     * Adds a primitive to the collection. Override to ensure primitive is put in Layers Color Map
-     * <p>
-     * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
-     * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
-     */
-    @Override
-    public C add(final T child)
-    {
-        child.removeFromParent();
-
-        super.add(child);
-
-        child.attachToLayerColorMap();
-
-        return cast();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public C add(final T child, final T... children)
-    {
-        add(child);
-
-        for (T node : children)
-        {
-            add(node);
-        }
-        return cast();
-    }
-
     @Override
     public boolean removeFromParent()
     {
@@ -640,143 +565,10 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     /**
-     * Removes a primitive from the container. Override to ensure primitive is removed from Layers Color Map
-     * <p>
-     * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
-     * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
-     */
-    @Override
-    public C remove(final T child)
-    {
-        child.detachFromLayerColorMap();
-
-        super.remove(child);
-
-        return cast();
-    }
-
-    /**
-     * Removes all primitives from the collection. Override to ensure all primitives are removed from Layers Color Map
-     * <p>
-     * It should be noted that this operation will not have an apparent effect for an already rendered (drawn) Container.
-     * In other words, if the Container has already been drawn and a new primitive is added, you'll need to invoke draw() on the
-     * Container. This is done to enhance performance, otherwise, for every add we would have draws impacting performance.
-     */
-    @Override
-    public C removeAll()
-    {
-        detachFromLayerColorMap();
-
-        super.removeAll();
-
-        return cast();
-    }
-
-    /**
-     * Attaches all primitives to the Layers Color Map
-     */
-    @Override
-    public void attachToLayerColorMap()
-    {
-        final Layer layer = getLayer();
-
-        if (null != layer)
-        {
-            final NFastArrayList<T> list = getChildNodes();
-
-            if (null != list)
-            {
-                final int size = list.size();
-
-                for (int i = 0; i < size; i++)
-                {
-                    list.get(i).attachToLayerColorMap();
-                }
-            }
-        }
-    }
-
-    /**
-     * Detaches all primitives from the Layers Color Map
-     */
-    @Override
-    public void detachFromLayerColorMap()
-    {
-        final Layer layer = getLayer();
-
-        if (null != layer)
-        {
-            final NFastArrayList<T> list = getChildNodes();
-
-            if (null != list)
-            {
-                final int size = list.size();
-
-                for (int i = 0; i < size; i++)
-                {
-                    list.get(i).detachFromLayerColorMap();
-                }
-            }
-        }
-    }
-
-    /**
-     * Serialize this group as a {@link JSONObject}.
-     * 
-     * @return JSONObject
-     */
-    @Override
-    public JSONObject toJSONObject()
-    {
-        final JSONObject object = new JSONObject();
-
-        object.put("type", new JSONString(getGroupType().getValue()));
-
-        if (false == getMetaData().isEmpty())
-        {
-            object.put("meta", new JSONObject(getMetaData().getJSO()));
-        }
-        object.put("attributes", new JSONObject(getAttributes().getJSO()));
-
-        final NFastArrayList<T> list = getChildNodes();
-
-        final JSONArray children = new JSONArray();
-
-        if (list != null)
-        {
-            final int size = list.size();
-
-            for (int i = 0; i < size; i++)
-            {
-                final T prim = list.get(i);
-
-                if (null != prim)
-                {
-                    final Node<?> node = prim.asNode();
-
-                    if (null != node)
-                    {
-                        JSONObject make = node.toJSONObject();
-
-                        if (null != make)
-                        {
-                            children.set(children.size(), make);
-                        }
-                    }
-                }
-            }
-        }
-        object.put("children", children);
-
-        return object;
-    }
-
-    /**
-     * Moves this group's {@link Layer} one level up
-     * 
-     * @return Group this Group
-     */
+    * Moves this shape one layer up.
+    * 
+    * @return T
+    */
     @SuppressWarnings("unchecked")
     @Override
     public C moveUp()
@@ -796,9 +588,9 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     /**
-     * Moves this group's {@link Layer} one level down
+     * Moves this shape one layer down.
      * 
-     * @return Group this Group
+     * @return T
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -819,9 +611,9 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     /**
-     * Moves this group's {@link Layer} to the top of the layer stack.
+     * Moves this shape to the top of the layers stack.
      * 
-     * @return Group this Group
+     * @return T
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -842,9 +634,9 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     /**
-     * Moves this group's {@link Layer} to the bottom of the layer stack.
+     * Moves this shape to the bottomw of the layers stack.
      * 
-     * @return Group this Group
+     * @return T
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -861,75 +653,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
                 container.moveToBottom(this);
             }
         }
-        return cast();
-    }
-
-    @Override
-    public void find(final Predicate<Node<?>> predicate, final LinkedHashSet<Node<?>> buff)
-    {
-        if (predicate.test(this))
-        {
-            buff.add(this);
-        }
-        final NFastArrayList<T> list = getChildNodes();
-
-        final int size = list.size();
-
-        for (int i = 0; i < size; i++)
-        {
-            final T prim = list.get(i);
-
-            if (null != prim)
-            {
-                final Node<?> node = prim.asNode();
-
-                if (null != node)
-                {
-                    if (predicate.test(node))
-                    {
-                        buff.add(node);
-                    }
-                    final IContainer<?, ?> cont = node.asContainer();
-
-                    if (null != cont)
-                    {
-                        cont.find(predicate, buff);
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, null).run();
-    }
-
-    @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, callback).run();
-    }
-
-    @Override
-    public DragConstraintEnforcer getDragConstraints()
-    {
-        if (m_dragConstraintEnforcer == null)
-        {
-            return new DefaultDragConstraintEnforcer();
-        }
-        else
-        {
-            return m_dragConstraintEnforcer;
-        }
-    }
-
-    @Override
-    public C setDragConstraints(final DragConstraintEnforcer enforcer)
-    {
-        m_dragConstraintEnforcer = enforcer;
-
         return cast();
     }
 
@@ -960,57 +683,75 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     @Override
-    public C refresh()
+    public JSONObject toJSONObject()
     {
-        final NFastArrayList<T> list = getChildNodes();
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-        final int size = list.size();
+    @Override
+    public IFactory<C> getFactory()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-        for (int i = 0; i < size; i++)
+    @Override
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
+    {
+        return new TweeningAnimation(this, tweener, properties, duration, null).run();
+    }
+
+    @Override
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
+    {
+        return new TweeningAnimation(this, tweener, properties, duration, callback).run();
+    }
+
+    @Override
+    public DragConstraintEnforcer getDragConstraints()
+    {
+        if (null == m_dragConstraintEnforcer)
         {
-            list.get(i).refresh();
+            return new DefaultDragConstraintEnforcer();
         }
+        else
+        {
+            return m_dragConstraintEnforcer;
+        }
+    }
+
+    @Override
+    public C setDragConstraints(final DragConstraintEnforcer enforcer)
+    {
+        m_dragConstraintEnforcer = enforcer;
+
         return cast();
     }
 
-    protected static abstract class GroupOfFactory<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C>
+    @Override
+    public void attachToLayerColorMap()
     {
-        protected GroupOfFactory(final GroupType type)
-        {
-            super(type.getValue());
+        // TODO Auto-generated method stub
 
-            addAttribute(Attribute.X);
+    }
 
-            addAttribute(Attribute.Y);
+    @Override
+    public void detachFromLayerColorMap()
+    {
+        // TODO Auto-generated method stub
+    }
 
-            addAttribute(Attribute.ALPHA);
+    @Override
+    public C refresh()
+    {
+        return null;
+    }
 
-            addAttribute(Attribute.FILL_ALPHA);
-
-            addAttribute(Attribute.STROKE_ALPHA);
-
-            addAttribute(Attribute.DRAGGABLE);
-
-            addAttribute(Attribute.EDITABLE);
-
-            addAttribute(Attribute.SCALE);
-
-            addAttribute(Attribute.SHEAR);
-
-            addAttribute(Attribute.ROTATION);
-
-            addAttribute(Attribute.OFFSET);
-
-            addAttribute(Attribute.DRAG_CONSTRAINT);
-
-            addAttribute(Attribute.DRAG_BOUNDS);
-
-            addAttribute(Attribute.DRAG_MODE);
-        }
-
-        protected void setGroupType(final GroupType type)
-        {
-            setTypeName(type.getValue());
-        }
+    @Override
+    public C copy()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
