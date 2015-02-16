@@ -14,9 +14,37 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.shape.wires;
+package com.ait.lienzo.shared.java.util;
 
-public interface MagnetPowerFunction
+public class Activatible implements IActivatable
 {
-    public double calculate(double value);
+    private boolean m_active;
+
+    public Activatible()
+    {
+        this(true);
+    }
+
+    public Activatible(final boolean active)
+    {
+        m_active = active;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        return m_active;
+    }
+
+    @Override
+    public boolean setActive(final boolean active)
+    {
+        if (active != m_active)
+        {
+            m_active = active;
+
+            return true;
+        }
+        return false;
+    }
 }

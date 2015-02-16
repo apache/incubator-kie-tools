@@ -41,11 +41,11 @@ public class TweeningAnimation extends TimedAnimation
     @Override
     public IAnimation doStart()
     {
-        final Node<?> node = getNode();
-
         if ((null != m_properties) && (m_properties.size() > 0))
         {
             m_workingset = new NFastArrayList<AnimationProperty>();
+            
+            final Node<?> node = getNode();
 
             final int size = m_properties.size();
 
@@ -96,7 +96,7 @@ public class TweeningAnimation extends TimedAnimation
     {
         if (null != m_tweener)
         {
-            percent = m_tweener.tween(percent);
+            percent = m_tweener.apply(percent);
         }
         if (null != m_workingset)
         {

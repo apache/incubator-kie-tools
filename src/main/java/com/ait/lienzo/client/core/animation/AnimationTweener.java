@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.animation;
 
-public interface AnimationTweener
+import com.ait.lienzo.shared.java.util.function.DoublePowerFunction;
+
+public interface AnimationTweener extends DoublePowerFunction
 {
     public static final AnimationTweener LINEAR      = TweenerBuilder.MAKE_LINEAR();
 
@@ -29,8 +31,6 @@ public interface AnimationTweener
     public static final AnimationTweener ELASTIC     = TweenerBuilder.MAKE_ELASTIC(3);
 
     public static final AnimationTweener BOUNCE      = TweenerBuilder.MAKE_BOUNCE(3);
-
-    public double tween(double percent);
 
     public static final class TweenerBuilder
     {
@@ -49,7 +49,7 @@ public interface AnimationTweener
             return new AnimationTweener()
             {
                 @Override
-                public double tween(double percent)
+                public double apply(double percent)
                 {
                     return percent;
                 }
@@ -61,7 +61,7 @@ public interface AnimationTweener
             return new AnimationTweener()
             {
                 @Override
-                public double tween(double percent)
+                public double apply(double percent)
                 {
                     return Math.pow(percent, strength * 2.0);
                 }
@@ -73,7 +73,7 @@ public interface AnimationTweener
             return new AnimationTweener()
             {
                 @Override
-                public double tween(double percent)
+                public double apply(double percent)
                 {
                     return (1.0 - Math.pow(1.0 - percent, strength * 2.0));
                 }
@@ -85,7 +85,7 @@ public interface AnimationTweener
             return new AnimationTweener()
             {
                 @Override
-                public double tween(double percent)
+                public double apply(double percent)
                 {
                     return (percent - Math.sin(percent * 2.0 * Math.PI) / (2.0 * Math.PI));
                 }
@@ -97,7 +97,7 @@ public interface AnimationTweener
             return new AnimationTweener()
             {
                 @Override
-                public double tween(double percent)
+                public double apply(double percent)
                 {
                     return (((1.0 - Math.cos(percent * Math.PI * passes)) * (1.0 - percent)) + percent);
                 }
@@ -111,9 +111,9 @@ public interface AnimationTweener
             return new AnimationTweener()
             {
                 @Override
-                public double tween(double percent)
+                public double apply(double percent)
                 {
-                    percent = elastic.tween(percent);
+                    percent = elastic.apply(percent);
 
                     return ((percent <= 1.0) ? (percent) : (2.0 - percent));
                 }

@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.ait.lienzo.client.core.shape.IControlHandle;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.lienzo.shared.java.util.function.DoublePowerFunction;
 
-public class Magnet implements IControlHandle, Iterable<Handle>
+public class Magnet extends AbstractControlHandle implements Iterable<Handle>
 {
     private final int              m_indexer;
 
@@ -34,11 +34,9 @@ public class Magnet implements IControlHandle, Iterable<Handle>
 
     private double                 m_strong  = 0.5;
 
-    private boolean                m_active  = true;
-
     private NFastArrayList<Handle> m_handles = null;
 
-    private MagnetPowerFunction    m_powerfn = null;
+    private DoublePowerFunction    m_powerfn = null;
 
     public Magnet(final IWiresContext context, final int indexer, final IPrimitive<?> control)
     {
@@ -119,14 +117,14 @@ public class Magnet implements IControlHandle, Iterable<Handle>
         return this;
     }
 
-    public Magnet setPowerFunction(final MagnetPowerFunction power)
+    public Magnet setPowerFunction(final DoublePowerFunction power)
     {
         m_powerfn = power;
 
         return this;
     }
 
-    public MagnetPowerFunction getPowerFunction()
+    public DoublePowerFunction getPowerFunction()
     {
         return m_powerfn;
     }
@@ -144,7 +142,7 @@ public class Magnet implements IControlHandle, Iterable<Handle>
     {
         if (null != m_powerfn)
         {
-            return m_powerfn.calculate(m_strong);
+            return m_powerfn.apply(m_strong);
         }
         return m_strong;
     }
@@ -190,20 +188,10 @@ public class Magnet implements IControlHandle, Iterable<Handle>
     }
 
     @Override
-    public boolean isActive()
-    {
-        return m_active;
-    }
-
-    @Override
-    public void setActive(final boolean active)
-    {
-        m_active = active;
-    }
-
-    @Override
     public void destroy()
     {
+        super.destroy();
+
         m_context.getMagnetManager().destroy(this);
     }
 }

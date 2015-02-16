@@ -53,7 +53,7 @@ public final class HandlerRegistrationManager
         return clear();
     }
 
-    public final HandlerRegistration add(final HandlerRegistration handler)
+    public final HandlerRegistration register(final HandlerRegistration handler)
     {
         if (null != handler)
         {

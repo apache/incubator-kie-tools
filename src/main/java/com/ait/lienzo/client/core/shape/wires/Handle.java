@@ -16,10 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.shape.IControlHandle;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 
-public class Handle implements IControlHandle
+public class Handle extends AbstractControlHandle
 {
     private final int           m_indexer;
 
@@ -28,8 +27,6 @@ public class Handle implements IControlHandle
     private final IWiresContext m_context;
 
     private Magnet              m_magnet = null;
-
-    private boolean             m_active = true;
 
     public Handle(final IWiresContext context, final int indexer, final IPrimitive<?> control)
     {
@@ -93,20 +90,10 @@ public class Handle implements IControlHandle
     }
 
     @Override
-    public boolean isActive()
-    {
-        return m_active;
-    }
-
-    @Override
-    public void setActive(final boolean active)
-    {
-        m_active = active;
-    }
-
-    @Override
     public void destroy()
     {
+        super.destroy();
+
         m_context.getHandleManager().destroy(this);
     }
 }

@@ -14,21 +14,9 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.shape;
+package com.ait.lienzo.shared.java.util.function;
 
-import java.util.List;
-
-import com.ait.lienzo.shared.core.types.DragMode;
-
-public interface IControlHandleList
+public interface DoublePowerFunction
 {
-    public List<IControlHandle> getList();
-
-    public boolean isActive();
-
-    public void setActive(boolean active);
-
-    public void destroy();
-    
-    public void setLayerAndDraw(Layer layer, DragMode mode);
+    public double apply(double value);
 }

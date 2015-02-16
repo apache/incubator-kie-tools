@@ -14,13 +14,24 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.shape;
+package com.ait.lienzo.client.core.shape.wires;
 
-import java.util.List;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.shared.java.util.IActivatable;
 
-import com.ait.lienzo.client.core.shape.IControlHandle.ControlHandleType;
-
-public interface IControlHandleFactory
+public interface IControlHandleList extends IActivatable, Iterable<IControlHandle>
 {
-    public IControlHandleList getControlHandles(List<ControlHandleType> types);
+    public int size();
+
+    public boolean isEmpty();
+
+    public void add(IControlHandle handle);
+
+    public void remove(IControlHandle handle);
+
+    public boolean contains(IControlHandle handle);
+
+    public void destroy();
+
+    public void display(Layer layer);
 }
