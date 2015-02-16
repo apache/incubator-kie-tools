@@ -205,7 +205,7 @@ public class BpmnServiceImpl implements BpmnService {
         this.root = fileSystem.getRootDirectories().iterator().next();
 
         ioService.write( root.resolve( "file1.bpmn" ),
-                         "<content/>" );
+                         BpmnPersistence.getInstance().marshal( new ProcessNode() ) );
     }
 
     @Override
