@@ -15,11 +15,14 @@
  */
 package org.uberfire.ext.wires.bpmn.backend;
 
+import com.thoughtworks.xstream.XStream;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 
 public class BpmnPersistence {
 
     private static final BpmnPersistence INSTANCE = new BpmnPersistence();
+
+    private XStream xs = new XStream();
 
     protected BpmnPersistence() {
     }
@@ -29,14 +32,11 @@ public class BpmnPersistence {
     }
 
     public String marshal( final ProcessNode process ) {
-        //TODO {manstis} Save the model as XML
-        final StringBuilder sb = new StringBuilder();
-        return sb.toString();
+        return xs.toXML( process );
     }
 
     public ProcessNode unmarshal( final String content ) {
-        //TODO {manstis} Load the model from XML
-        final ProcessNode process = new ProcessNode();
+        final ProcessNode process = (ProcessNode) xs.fromXML( content );
         return process;
     }
 

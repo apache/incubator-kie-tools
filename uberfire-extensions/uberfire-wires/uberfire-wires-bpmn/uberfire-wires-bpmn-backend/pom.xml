@@ -48,6 +48,11 @@
       <artifactId>uberfire-wires-bpmn-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>
