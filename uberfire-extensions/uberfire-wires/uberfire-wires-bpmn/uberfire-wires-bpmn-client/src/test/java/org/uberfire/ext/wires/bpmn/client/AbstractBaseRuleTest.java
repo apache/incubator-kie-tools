@@ -26,6 +26,7 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.CardinalityRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ConnectionRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ContainmentRuleImpl;
+import org.uberfire.ext.wires.bpmn.api.model.rules.CardinalityRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
@@ -55,12 +56,56 @@ public abstract class AbstractBaseRuleTest {
                                             0,
                                             1,
                                             Collections.EMPTY_SET,
-                                            Collections.EMPTY_SET ) );
+                                            new HashSet<CardinalityRule.ConnectorRule>() {{
+                                                add( new CardinalityRule.ConnectorRule() {
+                                                    @Override
+                                                    public long getMinOccurrences() {
+                                                        return 0;
+                                                    }
+
+                                                    @Override
+                                                    public long getMaxOccurrences() {
+                                                        return 1;
+                                                    }
+
+                                                    @Override
+                                                    public Role getRole() {
+                                                        return new DefaultRoleImpl( "general_edge" );
+                                                    }
+
+                                                    @Override
+                                                    public String getName() {
+                                                        return "Start Node Outgoing Connector Rule 1";
+                                                    }
+                                                } );
+                                            }} ) );
         rules.add( new CardinalityRuleImpl( "End Node Cardinality Rule",
                                             new DefaultRoleImpl( "sequence_end" ),
                                             0,
                                             1,
-                                            Collections.EMPTY_SET,
+                                            new HashSet<CardinalityRule.ConnectorRule>() {{
+                                                add( new CardinalityRule.ConnectorRule() {
+                                                    @Override
+                                                    public long getMinOccurrences() {
+                                                        return 0;
+                                                    }
+
+                                                    @Override
+                                                    public long getMaxOccurrences() {
+                                                        return 1;
+                                                    }
+
+                                                    @Override
+                                                    public Role getRole() {
+                                                        return new DefaultRoleImpl( "general_edge" );
+                                                    }
+
+                                                    @Override
+                                                    public String getName() {
+                                                        return "End Node Incoming Connector Rule 1";
+                                                    }
+                                                } );
+                                            }},
                                             Collections.EMPTY_SET ) );
         return rules;
     }
@@ -90,6 +135,17 @@ public abstract class AbstractBaseRuleTest {
                                                    @Override
                                                    public Role getEndRole() {
                                                        return new DefaultRoleImpl( "sequence_end" );
+                                                   }
+                                               } );
+                                               add( new ConnectionRule.PermittedConnection() {
+                                                   @Override
+                                                   public Role getStartRole() {
+                                                       return new DefaultRoleImpl( "dummy" );
+                                                   }
+
+                                                   @Override
+                                                   public Role getEndRole() {
+                                                       return new DefaultRoleImpl( "dummy" );
                                                    }
                                                } );
 
