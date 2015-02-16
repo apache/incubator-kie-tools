@@ -19,12 +19,15 @@ package com.ait.lienzo.client.core.shape.wires;
 import java.util.Collections;
 import java.util.Iterator;
 
+import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.shared.java.util.Activatible;
 
 public final class ControlHandleList extends Activatible implements IControlHandleList
 {
+    private Layer                                m_layer;
+
     private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
 
     public ControlHandleList()
@@ -85,12 +88,48 @@ public final class ControlHandleList extends Activatible implements IControlHand
                 handle.destroy();
             }
         }
+        m_chlist.clear();
+
+        if (null != m_layer)
+        {
+            m_layer.batch();
+
+            m_layer = null;
+        }
     }
 
     @Override
-    public void display(Layer layer)
+    public void display(final Layer layer)
     {
+        if (null != layer)
+        {
+            int totl = 0;
 
+            final int size = size();
+
+            for (int i = 0; i < size; i++)
+            {
+                final IControlHandle handle = m_chlist.get(i);
+
+                if (null != handle)
+                {
+                    IPrimitive<?> prim = handle.getControl();
+
+                    if (null != prim)
+                    {
+                        layer.add(prim);
+
+                        totl++;
+                    }
+                }
+            }
+            if (totl > 0)
+            {
+                m_layer = layer;
+
+                m_layer.batch();
+            }
+        }
     }
 
     @Override
