@@ -18,6 +18,7 @@ package org.uberfire.ext.wires.bpmn.client.commands.impl;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
@@ -47,13 +48,32 @@ public class DeleteEdgeCommand implements Command {
     @Override
     public Results apply( final RuleManager ruleManager ) {
         final Results results = new DefaultResultsImpl();
-        results.getMessages().addAll( ruleManager.checkCardinality( outgoingNode,
-                                                                    incomingNode,
-                                                                    edge,
-                                                                    RuleManager.Operation.DELETE ).getMessages() );
-        if ( !results.contains( ResultType.ERROR ) ) {
-            outgoingNode.getOutEdges().remove( edge );
-            incomingNode.getInEdges().remove( edge );
+        boolean isEdgeOutgoing = false;
+        boolean isEdgeIncoming = false;
+        for ( Edge e : outgoingNode.getOutEdges() ) {
+            if ( e.equals( edge ) ) {
+                isEdgeOutgoing = true;
+                break;
+            }
+        }
+        for ( Edge e : incomingNode.getInEdges() ) {
+            if ( e.equals( edge ) ) {
+                isEdgeIncoming = true;
+                break;
+            }
+        }
+        if ( isEdgeOutgoing && isEdgeIncoming ) {
+            results.getMessages().addAll( ruleManager.checkCardinality( outgoingNode,
+                                                                        incomingNode,
+                                                                        edge,
+                                                                        RuleManager.Operation.DELETE ).getMessages() );
+            if ( !results.contains( ResultType.ERROR ) ) {
+                outgoingNode.getOutEdges().remove( edge );
+                incomingNode.getInEdges().remove( edge );
+            }
+        } else {
+            results.addMessage( new DefaultResultImpl( ResultType.WARNING,
+                                                       "The Edge does not connect the given GraphNodes and hence was not deleted." ) );
         }
         return results;
     }

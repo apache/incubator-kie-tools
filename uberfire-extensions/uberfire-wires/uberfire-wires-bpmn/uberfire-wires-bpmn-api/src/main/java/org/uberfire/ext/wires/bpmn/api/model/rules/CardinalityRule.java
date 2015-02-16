@@ -49,7 +49,7 @@ public interface CardinalityRule extends RuleByRole {
     /**
      * Rule to restrict the cardinality of Connections. The direction of the Connection is defined in CardinalityRule.
      */
-    public static interface ConnectorRule extends Rule {
+    public static interface ConnectorRule extends RuleByRole {
 
         /**
          * The minimum number of connections an Element can have.

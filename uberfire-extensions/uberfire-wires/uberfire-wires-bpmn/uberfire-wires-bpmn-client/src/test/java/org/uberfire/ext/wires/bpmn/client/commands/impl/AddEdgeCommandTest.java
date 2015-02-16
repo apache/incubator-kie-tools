@@ -45,6 +45,11 @@ public class AddEdgeCommandTest extends AbstractBaseRuleTest {
 
     @Before
     public void setupNodes() {
+        //Dummy process for each test consists of 3 unconnected nodes
+        //-----------------------------------------------------------
+        //
+        // [StartNode]       [DummyNode]       [EndNode]
+        //
         process = new ProcessNode();
         ruleManager = new DefaultRuleManagerImpl();
         node1 = new StartProcessNode();
@@ -91,12 +96,12 @@ public class AddEdgeCommandTest extends AbstractBaseRuleTest {
     public void testAddEdgeBetweenStartNodeAndDummyNode() {
         final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
 
+        //An Edge with role "general_edge" is permitted between StartNode and DummyNode
         final Results results1 = commandManager.execute( ruleManager,
                                                          new AddEdgeCommand( node1,
                                                                              node2,
                                                                              e1 ) );
 
-        //An Edge with role "general_edge" is permitted between StartNode and DummyNode
         assertNotNull( results1 );
         assertEquals( 0,
                       results1.getMessages().size() );
@@ -120,12 +125,12 @@ public class AddEdgeCommandTest extends AbstractBaseRuleTest {
     public void testAddEdgeBetweenDummyNodeAndEndNode() {
         final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
 
+        //An Edge with role "general_edge" is permitted between DummyNode and EndNode
         final Results results1 = commandManager.execute( ruleManager,
                                                          new AddEdgeCommand( node2,
                                                                              node3,
                                                                              e1 ) );
 
-        //An Edge with role "general_edge" is permitted between DummyNode and EndNode
         assertNotNull( results1 );
         assertEquals( 0,
                       results1.getMessages().size() );
@@ -149,12 +154,12 @@ public class AddEdgeCommandTest extends AbstractBaseRuleTest {
     public void testAddEdgeBetweenStartNodeAndEndNode() {
         final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
 
+        //An Edge with role "general_edge" is NOT permitted between StartNode and EndNode
         final Results results1 = commandManager.execute( ruleManager,
                                                          new AddEdgeCommand( node1,
                                                                              node3,
                                                                              e1 ) );
 
-        //An Edge with role "general_edge" is NOT permitted between StartNode and EndNode
         assertNotNull( results1 );
         assertEquals( 1,
                       results1.getMessages().size() );
@@ -169,6 +174,116 @@ public class AddEdgeCommandTest extends AbstractBaseRuleTest {
                       node3.getInEdges().size() );
         assertEquals( 0,
                       node3.getOutEdges().size() );
+    }
+
+    @Test
+    public void testStartNodeOutgoingCardinalityAndDummyNode() {
+        final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
+
+        //An Edge with role "general_edge" is permitted between StartNode and DummyNode
+        final Results results1 = commandManager.execute( ruleManager,
+                                                         new AddEdgeCommand( node1,
+                                                                             node2,
+                                                                             e1 ) );
+
+        assertNotNull( results1 );
+        assertEquals( 0,
+                      results1.getMessages().size() );
+
+        assertEquals( 0,
+                      node1.getInEdges().size() );
+        assertEquals( 1,
+                      node1.getOutEdges().size() );
+        assertEquals( 1,
+                      node2.getInEdges().size() );
+        assertEquals( 0,
+                      node2.getOutEdges().size() );
+
+        assertEquals( e1,
+                      node1.getOutEdges().toArray()[ 0 ] );
+        assertEquals( e1,
+                      node2.getInEdges().toArray()[ 0 ] );
+
+        //Try to add another Edge with role "general_edge" between StartNode and DummyNode. This should not be allowed.
+        final Results results2 = commandManager.execute( ruleManager,
+                                                         new AddEdgeCommand( node1,
+                                                                             node2,
+                                                                             e1 ) );
+
+        assertNotNull( results2 );
+        assertEquals( 1,
+                      results2.getMessages().size() );
+        assertEquals( 1,
+                      results2.getMessages( ResultType.ERROR ).size() );
+
+        assertEquals( 0,
+                      node1.getInEdges().size() );
+        assertEquals( 1,
+                      node1.getOutEdges().size() );
+        assertEquals( 1,
+                      node2.getInEdges().size() );
+        assertEquals( 0,
+                      node2.getOutEdges().size() );
+
+        assertEquals( e1,
+                      node1.getOutEdges().toArray()[ 0 ] );
+        assertEquals( e1,
+                      node2.getInEdges().toArray()[ 0 ] );
+    }
+
+    @Test
+    public void testDummyNodeAndEndNodeIncomingCardinality() {
+        final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
+
+        //An Edge with role "general_edge" is permitted between DummyNode and EndNode
+        final Results results1 = commandManager.execute( ruleManager,
+                                                         new AddEdgeCommand( node2,
+                                                                             node3,
+                                                                             e1 ) );
+
+        assertNotNull( results1 );
+        assertEquals( 0,
+                      results1.getMessages().size() );
+
+        assertEquals( 0,
+                      node2.getInEdges().size() );
+        assertEquals( 1,
+                      node2.getOutEdges().size() );
+        assertEquals( 1,
+                      node3.getInEdges().size() );
+        assertEquals( 0,
+                      node3.getOutEdges().size() );
+
+        assertEquals( e1,
+                      node2.getOutEdges().toArray()[ 0 ] );
+        assertEquals( e1,
+                      node3.getInEdges().toArray()[ 0 ] );
+
+        //Try to add another Edge with role "general_edge" between DummyNode and EndNode. This should not be allowed.
+        final Results results2 = commandManager.execute( ruleManager,
+                                                         new AddEdgeCommand( node2,
+                                                                             node3,
+                                                                             e1 ) );
+
+        assertNotNull( results2 );
+        assertEquals( 1,
+                      results2.getMessages().size() );
+        assertEquals( 1,
+                      results2.getMessages( ResultType.ERROR ).size() );
+
+        assertEquals( 0,
+                      node2.getInEdges().size() );
+        assertEquals( 1,
+                      node2.getOutEdges().size() );
+        assertEquals( 1,
+                      node3.getInEdges().size() );
+        assertEquals( 0,
+                      node3.getOutEdges().size() );
+
+        assertEquals( e1,
+                      node2.getOutEdges().toArray()[ 0 ] );
+        assertEquals( e1,
+                      node3.getInEdges().toArray()[ 0 ] );
     }
 
 }

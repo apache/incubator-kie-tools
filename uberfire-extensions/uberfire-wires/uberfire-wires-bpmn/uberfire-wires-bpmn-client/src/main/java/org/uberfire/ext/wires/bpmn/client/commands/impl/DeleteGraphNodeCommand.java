@@ -43,11 +43,23 @@ public class DeleteGraphNodeCommand implements Command {
     @Override
     public Results apply( final RuleManager ruleManager ) {
         final Results results = new DefaultResultsImpl();
-        results.getMessages().addAll( ruleManager.checkCardinality( target,
-                                                                    candidate,
-                                                                    RuleManager.Operation.DELETE ).getMessages() );
-        if ( !results.contains( ResultType.ERROR ) ) {
-            target.removeNode( candidate.getId() );
+        boolean isNodeInGraph = false;
+        for ( GraphNode<Content> node : target ) {
+            if ( node.equals( candidate ) ) {
+                isNodeInGraph = true;
+                break;
+            }
+        }
+        if ( isNodeInGraph ) {
+            results.getMessages().addAll( ruleManager.checkCardinality( target,
+                                                                        candidate,
+                                                                        RuleManager.Operation.DELETE ).getMessages() );
+            if ( !results.contains( ResultType.ERROR ) ) {
+                target.removeNode( candidate.getId() );
+            }
+        } else {
+            results.addMessage( new DefaultResultImpl( ResultType.WARNING,
+                                                       "GraphNode was not present in Graph and hence was not deleted." ) );
         }
         return results;
     }

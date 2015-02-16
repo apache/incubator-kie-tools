@@ -28,6 +28,7 @@ import org.uberfire.ext.wires.bpmn.api.model.rules.CardinalityRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ContainmentRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
@@ -152,7 +153,62 @@ public class DefaultRuleManagerImpl implements RuleManager {
         if ( cardinalityRules.isEmpty() ) {
             return results;
         }
-        //TODO {manstis} Not implemented
+
+        for ( CardinalityRule rule : cardinalityRules ) {
+            //Check outgoing connections
+            if ( outgoingNode.getContent().getRoles().contains( rule.getRole() ) ) {
+                for ( CardinalityRule.ConnectorRule cr : rule.getOutgoingConnectionRules() ) {
+                    if ( cr.getRole().equals( edge.getRole() ) ) {
+                        final long minOccurrences = cr.getMinOccurrences();
+                        final long maxOccurrences = cr.getMaxOccurrences();
+                        long count = ( operation == Operation.ADD ? 1 : -1 );
+                        for ( Edge e : outgoingNode.getOutEdges() ) {
+                            if ( e instanceof BpmnEdge ) {
+                                final BpmnEdge be = (BpmnEdge) e;
+                                if ( be.getRole().equals( edge.getRole() ) ) {
+                                    count++;
+                                }
+                            }
+                        }
+
+                        if ( count < minOccurrences ) {
+                            results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                                       "'" + outgoingNode.getContent().getId() + "' needs a minimum '" + minOccurrences + "' of '" + cr.getRole() + "' edges. Found '" + count + "'." ) );
+                        } else if ( count > maxOccurrences ) {
+                            results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                                       "'" + outgoingNode.getContent().getId() + "' can have a maximum  '" + maxOccurrences + "' of '" + cr.getRole() + "' edges. Found '" + count + "'." ) );
+                        }
+                    }
+                }
+            }
+
+            //Check incoming connections
+            if ( incomingNode.getContent().getRoles().contains( rule.getRole() ) ) {
+                for ( CardinalityRule.ConnectorRule cr : rule.getIncomingConnectionRules() ) {
+                    if ( cr.getRole().equals( edge.getRole() ) ) {
+                        final long minOccurrences = cr.getMinOccurrences();
+                        final long maxOccurrences = cr.getMaxOccurrences();
+                        long count = ( operation == Operation.ADD ? 1 : -1 );
+                        for ( Edge e : incomingNode.getInEdges() ) {
+                            if ( e instanceof BpmnEdge ) {
+                                final BpmnEdge be = (BpmnEdge) e;
+                                if ( be.getRole().equals( edge.getRole() ) ) {
+                                    count++;
+                                }
+                            }
+                        }
+
+                        if ( count < minOccurrences ) {
+                            results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                                       "'" + incomingNode.getContent().getId() + "' needs a minimum '" + minOccurrences + "' of '" + cr.getRole() + "' edges. Found '" + count + "'." ) );
+                        } else if ( count > maxOccurrences ) {
+                            results.addMessage( new DefaultResultImpl( ResultType.ERROR,
+                                                                       "'" + incomingNode.getContent().getId() + "' can have a maximum  '" + maxOccurrences + "' of '" + cr.getRole() + "' edges. Found '" + count + "'." ) );
+                        }
+                    }
+                }
+            }
+        }
         return results;
     }
 
