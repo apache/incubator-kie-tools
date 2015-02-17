@@ -23,30 +23,30 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
 @Portable
-public class MapGraphStore<T> implements GraphStore<T> {
+public class MapGraphStore<T extends GraphNode> implements GraphStore<T> {
 
     protected int idCounter;
 
-    protected Map<Integer, GraphNode<T>> nodes = new HashMap();
+    protected Map<Integer, T> nodes = new HashMap();
 
-    public Map<Integer, GraphNode<T>> getNodes() {
+    public Map<Integer, T> getNodes() {
         return nodes;
     }
 
     @Override
-    public GraphNode<T> addNode( GraphNode<T> node ) {
+    public T addNode( T node ) {
         node.setId( idCounter++ );
         nodes.put( node.getId(),
                    node );
         return node;
     }
 
-    public GraphNode<T> removeNode( int id ) {
+    public T removeNode( int id ) {
         return nodes.remove( id );
     }
 
     @Override
-    public GraphNode<T> getNode( int id ) {
+    public T getNode( int id ) {
         return nodes.get( id );
     }
 
@@ -56,7 +56,7 @@ public class MapGraphStore<T> implements GraphStore<T> {
     }
 
     @Override
-    public Iterator<GraphNode<T>> iterator() {
+    public Iterator<T> iterator() {
         return nodes.values().iterator();
     }
 }

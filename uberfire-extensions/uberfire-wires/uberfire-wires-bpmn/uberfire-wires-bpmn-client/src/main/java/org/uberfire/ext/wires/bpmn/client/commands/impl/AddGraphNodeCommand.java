@@ -16,9 +16,8 @@
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.wires.bpmn.api.model.Content;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
@@ -29,11 +28,11 @@ import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
  */
 public class AddGraphNodeCommand implements Command {
 
-    private Graph<Content> target;
-    private GraphNode<Content> candidate;
+    private BpmnGraph target;
+    private BpmnGraphNode candidate;
 
-    public AddGraphNodeCommand( final Graph<Content> target,
-                                final GraphNode<Content> candidate ) {
+    public AddGraphNodeCommand( final BpmnGraph target,
+                                final BpmnGraphNode candidate ) {
         this.target = PortablePreconditions.checkNotNull( "target",
                                                           target );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",

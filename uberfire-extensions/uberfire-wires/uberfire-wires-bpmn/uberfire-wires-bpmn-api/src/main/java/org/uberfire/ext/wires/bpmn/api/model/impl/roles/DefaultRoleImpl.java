@@ -36,6 +36,11 @@ public class DefaultRoleImpl implements Role {
     }
 
     @Override
+    public Role copy() {
+        return new DefaultRoleImpl( this.name );
+    }
+
+    @Override
     public boolean equals( Object o ) {
         if ( this == o ) {
             return true;

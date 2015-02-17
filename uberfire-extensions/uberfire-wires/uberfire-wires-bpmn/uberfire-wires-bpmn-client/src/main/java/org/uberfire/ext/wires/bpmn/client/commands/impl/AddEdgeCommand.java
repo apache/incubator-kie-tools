@@ -16,9 +16,8 @@
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.wires.bpmn.api.model.Content;
-import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
@@ -29,12 +28,12 @@ import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
  */
 public class AddEdgeCommand implements Command {
 
-    private GraphNode<Content> outgoingNode;
-    private GraphNode<Content> incomingNode;
+    private BpmnGraphNode outgoingNode;
+    private BpmnGraphNode incomingNode;
     private BpmnEdge edge;
 
-    public AddEdgeCommand( final GraphNode<Content> outgoingNode,
-                           final GraphNode<Content> incomingNode,
+    public AddEdgeCommand( final BpmnGraphNode outgoingNode,
+                           final BpmnGraphNode incomingNode,
                            final BpmnEdge edge ) {
         this.outgoingNode = PortablePreconditions.checkNotNull( "outgoingNode",
                                                                 outgoingNode );

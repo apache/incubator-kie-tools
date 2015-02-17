@@ -18,7 +18,7 @@ package org.uberfire.ext.wires.bpmn.api.model;
 /**
  * A Property of an Element
  */
-public interface Property {
+public interface Property extends Copyable<Property> {
 
     String getId();
 

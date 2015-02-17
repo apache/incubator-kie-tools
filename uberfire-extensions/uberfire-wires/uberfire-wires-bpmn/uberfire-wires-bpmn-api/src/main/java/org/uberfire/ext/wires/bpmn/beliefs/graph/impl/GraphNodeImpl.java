@@ -23,21 +23,21 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
 @Portable
-public class GraphNodeImpl<T> implements GraphNode<T> {
+public class GraphNodeImpl<C, T extends Edge> implements GraphNode<C, T> {
 
     private int id;
-    private T content;
+    private C content;
 
-    private List<Edge> inEdges = new ArrayList<Edge>();
-    private List<Edge> outEdges = new ArrayList<Edge>();
+    private List<T> inEdges = new ArrayList<T>();
+    private List<T> outEdges = new ArrayList<T>();
 
     @Override
-    public void setContent( T content ) {
+    public void setContent( C content ) {
         this.content = content;
     }
 
     @Override
-    public T getContent() {
+    public C getContent() {
         return content;
     }
 
@@ -52,12 +52,12 @@ public class GraphNodeImpl<T> implements GraphNode<T> {
     }
 
     @Override
-    public List<Edge> getInEdges() {
+    public List<T> getInEdges() {
         return inEdges;
     }
 
     @Override
-    public List<Edge> getOutEdges() {
+    public List<T> getOutEdges() {
         return outEdges;
     }
 

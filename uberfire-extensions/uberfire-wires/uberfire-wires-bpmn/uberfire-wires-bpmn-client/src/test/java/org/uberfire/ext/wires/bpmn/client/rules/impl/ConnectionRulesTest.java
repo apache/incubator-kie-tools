@@ -22,7 +22,7 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.EndProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.StartProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
-import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;

@@ -16,10 +16,8 @@
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.wires.bpmn.api.model.Content;
-import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
@@ -30,12 +28,12 @@ import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
  */
 public class DeleteEdgeCommand implements Command {
 
-    private GraphNode<Content> outgoingNode;
-    private GraphNode<Content> incomingNode;
+    private BpmnGraphNode outgoingNode;
+    private BpmnGraphNode incomingNode;
     private BpmnEdge edge;
 
-    public DeleteEdgeCommand( final GraphNode<Content> outgoingNode,
-                              final GraphNode<Content> incomingNode,
+    public DeleteEdgeCommand( final BpmnGraphNode outgoingNode,
+                              final BpmnGraphNode incomingNode,
                               final BpmnEdge edge ) {
         this.outgoingNode = PortablePreconditions.checkNotNull( "outgoingNode",
                                                                 outgoingNode );
@@ -50,13 +48,13 @@ public class DeleteEdgeCommand implements Command {
         final Results results = new DefaultResultsImpl();
         boolean isEdgeOutgoing = false;
         boolean isEdgeIncoming = false;
-        for ( Edge e : outgoingNode.getOutEdges() ) {
+        for ( BpmnEdge e : outgoingNode.getOutEdges() ) {
             if ( e.equals( edge ) ) {
                 isEdgeOutgoing = true;
                 break;
             }
         }
-        for ( Edge e : incomingNode.getInEdges() ) {
+        for ( BpmnEdge e : incomingNode.getInEdges() ) {
             if ( e.equals( edge ) ) {
                 isEdgeIncoming = true;
                 break;

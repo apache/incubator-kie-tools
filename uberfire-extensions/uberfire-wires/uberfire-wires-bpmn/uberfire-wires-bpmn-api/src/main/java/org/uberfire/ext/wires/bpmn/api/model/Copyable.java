@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model.rules;
+package org.uberfire.ext.wires.bpmn.api.model;
 
-import org.uberfire.ext.wires.bpmn.api.model.Role;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
+import java.util.Set;
 
 /**
- * An Edge in a BPMN diagram
+ * Mar
  */
-public interface BpmnEdge extends Edge {
+public interface Copyable<T> {
 
-    /**
-     * The Role for the Edge.
-     * @return
-     */
-    Role getRole();
+T copy();
 
 }

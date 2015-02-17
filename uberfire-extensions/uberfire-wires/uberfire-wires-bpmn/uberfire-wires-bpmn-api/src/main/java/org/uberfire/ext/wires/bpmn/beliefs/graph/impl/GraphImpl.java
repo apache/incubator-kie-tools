@@ -23,37 +23,37 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
 @Portable
-public class GraphImpl<T> implements Graph<T>,
-                                     Iterable<GraphNode<T>> {
+public class GraphImpl<C, T extends GraphNode> implements Graph<C, T>,
+                                                          Iterable<T> {
 
     private GraphStore<T> graphStore;
-    private T content;
+    private C content;
 
     public GraphImpl( @MapsTo("graphStore") GraphStore<T> graphStore ) {
         this.graphStore = graphStore;
     }
 
     @Override
-    public GraphNode<T> addNode( GraphNode<T> node ) {
+    public T addNode( T node ) {
         return graphStore.addNode( node );
     }
 
-    public GraphNode<T> removeNode( int id ) {
+    public T removeNode( int id ) {
         return graphStore.removeNode( id );
     }
 
     @Override
-    public GraphNode<T> getNode( int id ) {
+    public T getNode( int id ) {
         return graphStore.getNode( id );
     }
 
     @Override
-    public void setContent( T content ) {
+    public void setContent( C content ) {
         this.content = content;
     }
 
     @Override
-    public T getContent() {
+    public C getContent() {
         return content;
     }
 
@@ -63,7 +63,7 @@ public class GraphImpl<T> implements Graph<T>,
     }
 
     @Override
-    public Iterator<GraphNode<T>> iterator() {
+    public Iterator<T> iterator() {
         return graphStore.iterator();
     }
 

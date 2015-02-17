@@ -17,18 +17,18 @@ package org.uberfire.ext.wires.bpmn.beliefs.graph;
 
 import java.util.List;
 
-public interface GraphNode<T> {
+public interface GraphNode<C, T extends Edge> {
 
     public int getId();
 
     public void setId( int id );
 
-    public List<Edge> getInEdges();
+    public List<T> getInEdges();
 
-    public List<Edge> getOutEdges();
+    public List<T> getOutEdges();
 
-    public T getContent();
+    public C getContent();
 
-    public void setContent( T content );
+    public void setContent( C content );
 
 }

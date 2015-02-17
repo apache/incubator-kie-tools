@@ -79,6 +79,16 @@ public class DefaultPropertyImpl implements Property {
     }
 
     @Override
+    public Property copy() {
+        return new DefaultPropertyImpl( this.id,
+                                        this.type,
+                                        this.caption,
+                                        this.description,
+                                        this.isReadOnly,
+                                        this.isOptional );
+    }
+
+    @Override
     public boolean equals( Object o ) {
         if ( this == o ) {
             return true;

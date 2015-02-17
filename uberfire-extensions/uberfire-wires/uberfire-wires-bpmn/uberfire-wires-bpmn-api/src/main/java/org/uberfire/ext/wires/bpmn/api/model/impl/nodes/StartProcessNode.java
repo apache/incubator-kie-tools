@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.Property;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
@@ -30,7 +32,7 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
  * A BPMN "Start Node"
  */
 @Portable
-public class StartProcessNode extends GraphNodeImpl<Content> {
+public class StartProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements BpmnGraphNode {
 
     private Set<Role> roles = new HashSet<Role>() {{
         add( new DefaultRoleImpl( "all" ) );
@@ -50,6 +52,21 @@ public class StartProcessNode extends GraphNodeImpl<Content> {
                                             "Untyped start event.",
                                             roles,
                                             properties ) );
+    }
+
+    @Override
+    public StartProcessNode copy() {
+        final StartProcessNode copy = new StartProcessNode();
+        copy.setContent( this.getContent().copy() );
+        return copy;
+    }
+
+    @Override
+    public String toString() {
+        return "StartProcessNode{" +
+                "roles=" + roles +
+                ", properties=" + properties +
+                '}';
     }
 
 }

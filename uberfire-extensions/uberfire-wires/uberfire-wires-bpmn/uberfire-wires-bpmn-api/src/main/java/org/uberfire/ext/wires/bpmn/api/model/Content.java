@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * Base content for all Nodes in the graph.
  */
-public interface Content {
+public interface Content extends Copyable<Content> {
 
     String getId();
 
