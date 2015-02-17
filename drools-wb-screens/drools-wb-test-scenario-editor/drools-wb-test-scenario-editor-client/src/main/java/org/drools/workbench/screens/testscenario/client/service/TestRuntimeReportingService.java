@@ -1,25 +1,20 @@
 package org.drools.workbench.screens.testscenario.client.service;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.drools.workbench.screens.testscenario.model.Success;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.common.services.shared.test.Failure;
 import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.mvp.PlaceManager;
 
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ListDataProvider;
-
 @ApplicationScoped
 public class TestRuntimeReportingService {
 
     private PlaceManager placeManager;
-
-    private Event<Success> successEvent;
 
     protected User identity;
 
@@ -30,10 +25,8 @@ public class TestRuntimeReportingService {
 
     @Inject
     public TestRuntimeReportingService(PlaceManager placeManager,
-                                       Event<Success> successEvent,
                                        User identity) {
         this.placeManager = placeManager;
-        this.successEvent = successEvent;
         this.identity = identity;
     }
 
@@ -41,9 +34,7 @@ public class TestRuntimeReportingService {
         if (message.getIdentifier().equals(identity.getIdentifier())) {
             dataProvider.getList().clear();
 
-            if (message.wasSuccessful()) {
-                successEvent.fire(new Success(message.getRunCount()));
-            } else {
+            if (!message.wasSuccessful()) {
                 dataProvider.getList().addAll(message.getFailures());
                 dataProvider.flush();
             }

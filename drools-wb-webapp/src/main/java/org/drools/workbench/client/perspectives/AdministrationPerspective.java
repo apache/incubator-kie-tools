@@ -92,11 +92,14 @@ public class AdministrationPerspective {
                 .newTopLevelMenu( AppConstants.INSTANCE.MenuExplore() )
                 .withItems( getExploreMenuItems() )
                 .endMenu()
-                .newTopLevelMenu( AppConstants.INSTANCE.MenuOrganizationalUnits() )
+                .newTopLevelMenu(AppConstants.INSTANCE.MenuOrganizationalUnits())
                 .withItems( getOrganizationalUnitsMenuItem() )
                 .endMenu()
                 .newTopLevelMenu( AppConstants.INSTANCE.MenuRepositories() )
                 .withItems( getRepositoriesMenuItems() )
+                .endMenu()
+                .newTopLevelMenu( "Editor Properties" )
+                .withItems( getEditorsMenuItem() )
                 .endMenu()
                 .build();
     }
@@ -143,6 +146,22 @@ public class AdministrationPerspective {
                         newRepositoryWizard.start();
                     }
                 } ).endMenu().build().getItems().get( 0 ) );
+
+
+        return menuItems;
+    }
+
+    private List<? extends MenuItem> getEditorsMenuItem() {
+        ArrayList<MenuItem> menuItems = new ArrayList<MenuItem>();
+
+        menuItems.add(MenuFactory.newSimpleItem("Test Scenario Editor").withRoles(PERMISSIONS_ADMIN).respondsWith(
+                new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo("WiresPropertiesScreen");
+                    }
+                }).endMenu().build().getItems().get(0));
+
         return menuItems;
     }
 

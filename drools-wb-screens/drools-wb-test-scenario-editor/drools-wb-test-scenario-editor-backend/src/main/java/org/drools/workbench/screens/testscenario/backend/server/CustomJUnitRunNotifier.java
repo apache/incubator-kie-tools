@@ -2,24 +2,20 @@ package org.drools.workbench.screens.testscenario.backend.server;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.junit.runner.Description;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 
 public class CustomJUnitRunNotifier
         extends RunNotifier {
 
-    private String identifier;
+    private       String                   identifier;
     private final Event<TestResultMessage> testResultMessageEvent;
 
-    private ArrayList<org.guvnor.common.services.shared.test.Failure> failures = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
-    private int testsSucceeded = 0;
+    private final Result result;
 
     public CustomJUnitRunNotifier(final String identifier,
                                   final Event<TestResultMessage> testResultMessageEvent) {
@@ -27,57 +23,28 @@ public class CustomJUnitRunNotifier
         this.identifier = identifier;
         this.testResultMessageEvent = testResultMessageEvent;
 
-        addListener(
-                new RunListener() {
+        result = new Result();
 
-                    public void testFinished(final Description description) throws Exception {
-                        testsSucceeded++;
-                    }
-
-                    public void testFailure(final Failure failure) throws Exception {
-                        addTestFailure(failure);
-                    }
-
-                    public void testAssumptionFailure(final Failure failure) {
-                        addTestFailure(failure);
-                    }
-
-                    public void testRunFinished(final Result result) throws Exception {
-                    }
-                });
+        addListener(result.createListener());
     }
-
-    private void reportTestSuccess() {
-        fireMessageEvent(
-                new TestResultMessage(
-                        identifier,
-                        amountOfTestsRan(),
-                        new ArrayList<org.guvnor.common.services.shared.test.Failure>()));
-    }
-
 
     public void fireNotificationEvent() {
-        if (failures.isEmpty()) {
-            reportTestSuccess();
-        } else {
-            fireMessageEvent(
-                    new TestResultMessage(
-                            identifier,
-                            amountOfTestsRan(),
-                            failures));
+        testResultMessageEvent.fire(
+                new TestResultMessage(
+                        identifier,
+                        result.getRunCount(),
+                        result.getRunTime(),
+                        failuresToFailures(result.getFailures())));
+    }
+
+    private List<org.guvnor.common.services.shared.test.Failure> failuresToFailures(List<Failure> failures) {
+        ArrayList<org.guvnor.common.services.shared.test.Failure> result = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
+
+        for (Failure failure : failures) {
+            result.add(failureToFailure(failure));
         }
-    }
 
-    private int amountOfTestsRan() {
-        return testsSucceeded + failures.size();
-    }
-    
-    private void addTestFailure(final Failure failure) {
-        failures.add(failureToFailure(failure));
-    }
-
-    private void fireMessageEvent(final TestResultMessage testResultMessage) {
-        testResultMessageEvent.fire(testResultMessage);
+        return result;
     }
 
     private org.guvnor.common.services.shared.test.Failure failureToFailure(final Failure failure) {

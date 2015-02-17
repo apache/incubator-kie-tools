@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface TestRunnerReportingView
         extends IsWidget {
 
+
     interface Presenter {
 
         void onMessageSelected(Failure failure);
@@ -24,5 +25,7 @@ public interface TestRunnerReportingView
     void showFailure();
 
     void setExplanation(String explanation);
+
+    void setRunStatus(int runCount, long runTime);
 
 }

@@ -20,6 +20,7 @@ import java.util.Set;
 
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -43,8 +44,8 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 
     private Scenario scenario;
     private AccordionGroup results = new AccordionGroup();
-    private VerticalPanel layout = new VerticalPanel();
-    private SimplePanel actions = new SimplePanel();
+    private VerticalPanel  layout  = new VerticalPanel();
+    private SimplePanel    actions = new SimplePanel();
 
     public TestRunnerWidget(final Scenario scenario,
                             final Caller<ScenarioTestEditorService> testScenarioEditorService,
@@ -55,6 +56,8 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
         results.setIcon(IconType.CERTIFICATE);
         results.setHeading(TestScenarioConstants.INSTANCE.AuditLogColon());
         results.setDefaultOpen(false);
+        results.getElement().getStyle().setMarginTop(2, Style.Unit.PX);
+        results.getElement().getStyle().setMarginBottom(2, Style.Unit.PX);
 
         actions.add(getRunButton(testScenarioEditorService, path, callback));
         layout.add(actions);
@@ -84,7 +87,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
 
                     }
                 }, new HasBusyIndicatorDefaultErrorCallback(TestRunnerWidget.this)).runScenario(path,
-                        TestRunnerWidget.this.scenario);
+                                                                                                TestRunnerWidget.this.scenario);
             }
         });
         return run;
@@ -99,7 +102,7 @@ public class TestRunnerWidget extends Composite implements HasBusyIndicator {
             list.add(new Line(line));
         }
 
-        ScrollPanel scrollPanel=new ScrollPanel(list);
+        ScrollPanel scrollPanel = new ScrollPanel(list);
         scrollPanel.setHeight("300px");
         results.add(scrollPanel);
     }

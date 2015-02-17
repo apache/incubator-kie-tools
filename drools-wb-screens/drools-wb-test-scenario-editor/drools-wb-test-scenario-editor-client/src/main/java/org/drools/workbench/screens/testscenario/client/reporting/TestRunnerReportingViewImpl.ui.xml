@@ -24,7 +24,14 @@
   <ui:with field="i18n" type="org.kie.workbench.common.screens.projecteditor.client.resources.i18n.ProjectEditorConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <gwt:VerticalPanel ui:field="panel" width="100%">
+  <ui:style>
+    .base {
+      width: 100%;
+      margin: 5px;
+    }
+  </ui:style>
+  
+  <gwt:VerticalPanel ui:field="panel" addStyleNames='{style.base}' >
     <gwt:HTML ui:field="successPanel"/>
     <gwt:Label ui:field="stats"/>
     <gwt:HorizontalPanel>

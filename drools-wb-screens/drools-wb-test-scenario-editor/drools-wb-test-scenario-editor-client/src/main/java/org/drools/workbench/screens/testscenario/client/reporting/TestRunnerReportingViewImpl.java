@@ -1,17 +1,14 @@
 package org.drools.workbench.screens.testscenario.client.reporting;
 
+import java.util.Date;
 import javax.inject.Inject;
-
-import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
-import org.guvnor.common.services.shared.test.Failure;
-import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageResourceCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -25,17 +22,20 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
+import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
+import org.guvnor.common.services.shared.test.Failure;
+import org.kie.workbench.common.widgets.client.resources.CommonImages;
 
 public class TestRunnerReportingViewImpl
         extends Composite
         implements TestRunnerReportingView,
-        RequiresResize {
+                   RequiresResize {
 
     interface SuccessTemplate extends SafeHtmlTemplates {
 
-        @Template("<span style='color:{0}'>{1}</span>")
-        SafeHtml title(String color,
-                       String text);
+        @Template("<span style='color:{0}'>{1}</span>") SafeHtml title(String color,
+                                                                       String text);
     }
 
     private static final SuccessTemplate SUCCESS_TEMPLATE = GWT.create(SuccessTemplate.class);
@@ -79,7 +79,7 @@ public class TestRunnerReportingViewImpl
     @Override
     public void onResize() {
         dataGrid.setPixelSize((int) (getParent().getOffsetWidth() * 0.60),
-                getParent().getOffsetHeight());
+                              getParent().getOffsetHeight());
         dataGrid.onResize();
     }
 
@@ -149,5 +149,14 @@ public class TestRunnerReportingViewImpl
     @Override
     public void setExplanation(String explanation) {
         explanationLabel.setText(explanation);
+    }
+
+    @Override
+    public void setRunStatus(int runCount, long runTime) {
+        Date date = new Date(runTime);
+        DateTimeFormat minutesFormat = DateTimeFormat.getFormat("m");
+        DateTimeFormat secondsFormat = DateTimeFormat.getFormat("s");
+
+        stats.setText(TestScenarioConstants.INSTANCE.XTestsRanInYMinutesZSeconds(runCount, minutesFormat.format(date), secondsFormat.format(date)));
     }
 }

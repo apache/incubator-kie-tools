@@ -267,4 +267,6 @@ public interface
 
     String PleaseSetARuleName();
 
+    String XTestsRanInYMinutesZSeconds(int runCount, String minutes, String seconds);
+
 }

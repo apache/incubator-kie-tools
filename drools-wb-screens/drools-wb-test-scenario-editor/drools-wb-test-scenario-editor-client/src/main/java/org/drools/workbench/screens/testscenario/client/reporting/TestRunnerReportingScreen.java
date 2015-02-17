@@ -4,17 +4,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.testscenario.client.service.TestRuntimeReportingService;
-import org.drools.workbench.screens.testscenario.model.Success;
 import org.guvnor.common.services.shared.test.Failure;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.uberfire.client.annotations.DefaultPosition;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
-
-import com.google.gwt.user.client.ui.Widget;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "org.kie.guvnor.TestResults")
@@ -46,9 +45,14 @@ public class TestRunnerReportingScreen
         return view.asWidget();
     }
 
-    public void onSuccess(@Observes Success success){
-        view.showSuccess();
-        view.setExplanation("");
+    public void onSuccess(@Observes TestResultMessage testResultMessage) {
+        if (testResultMessage.wasSuccessful()) {
+            view.showSuccess();
+            view.setExplanation("");
+        }
+
+        view.setRunStatus(testResultMessage.getRunCount(), testResultMessage.getRunTime());
+
     }
 
     @Override

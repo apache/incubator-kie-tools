@@ -22,6 +22,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -60,7 +61,6 @@ public class ScenarioEditorViewImpl
         implements ScenarioEditorView,
                    ScenarioParentWidget {
 
-    private final Event<NotificationEvent> notification;
     private final VerticalPanel layout = new VerticalPanel();
 
     private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
@@ -82,16 +82,15 @@ public class ScenarioEditorViewImpl
             final @New MultiPageEditor multiPage,
             final @New BulkRunTestScenarioEditor bulkRunTestScenarioEditor,
             final OverviewWidgetPresenter overviewWidget,
-            final Event<NotificationEvent> notification,
             final Caller<RuleNamesService> ruleNameService) {
         this.importsWidget = importsWidget;
         this.multiPage = multiPage;
         this.overviewWidget = overviewWidget;
-        this.notification = notification;
         this.ruleNameService = ruleNameService;
         this.bulkRunTestScenarioEditor = bulkRunTestScenarioEditor;
 
         layout.setWidth("100%");
+        layout.getElement().getStyle().setMargin(5, Style.Unit.PX);
 
         // Let's not do this. It breaks the UI.
         // Instead we overwrite asWidget();
