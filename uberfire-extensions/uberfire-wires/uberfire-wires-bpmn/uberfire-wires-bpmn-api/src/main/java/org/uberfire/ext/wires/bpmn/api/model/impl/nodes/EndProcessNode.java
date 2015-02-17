@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.Property;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
@@ -30,7 +32,7 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
  * A BPMN "End Node"
  */
 @Portable
-public class EndProcessNode extends GraphNodeImpl<Content> {
+public class EndProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements BpmnGraphNode {
 
     private Set<Role> roles = new HashSet<Role>() {{
         add( new DefaultRoleImpl( "all" ) );
@@ -50,6 +52,21 @@ public class EndProcessNode extends GraphNodeImpl<Content> {
                                             "The untyped end event typically marks the standard end of a process.",
                                             roles,
                                             properties ) );
+    }
+
+    @Override
+    public EndProcessNode copy() {
+        final EndProcessNode copy = new EndProcessNode();
+        copy.setContent( this.getContent().copy() );
+        return copy;
+    }
+
+    @Override
+    public String toString() {
+        return "EndProcessNode{" +
+                "roles=" + roles +
+                ", properties=" + properties +
+                '}';
     }
 
 }

@@ -20,6 +20,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.Content;
 import org.uberfire.ext.wires.bpmn.api.model.Property;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
@@ -28,7 +31,6 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.properties.DefaultPropertyImpl
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.types.StringType;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphImpl;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.MapGraphStore;
@@ -37,9 +39,11 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.MapGraphStore;
  * A BPMN "Process"
  */
 @Portable
-public class ProcessNode extends GraphNodeImpl<Content> implements Graph<Content> {
+public class ProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements
+                                                                  BpmnGraph,
+                                                                  BpmnGraphNode {
 
-    private Graph<Content> graph = new GraphImpl<Content>( new MapGraphStore<Content>() );
+    private Graph<Content, BpmnGraphNode> graph = new GraphImpl<Content, BpmnGraphNode>( new MapGraphStore<BpmnGraphNode>() );
 
     private Set<Role> roles = new HashSet<Role>() {{
         add( new DefaultRoleImpl( "canContainArtifacts" ) );
@@ -69,17 +73,17 @@ public class ProcessNode extends GraphNodeImpl<Content> implements Graph<Content
     }
 
     @Override
-    public GraphNode<Content> addNode( final GraphNode<Content> node ) {
+    public BpmnGraphNode addNode( final BpmnGraphNode node ) {
         return graph.addNode( node );
     }
 
     @Override
-    public GraphNode<Content> removeNode( final int id ) {
+    public BpmnGraphNode removeNode( final int id ) {
         return graph.removeNode( id );
     }
 
     @Override
-    public GraphNode<Content> getNode( final int id ) {
+    public BpmnGraphNode getNode( final int id ) {
         return graph.getNode( id );
     }
 
@@ -89,7 +93,27 @@ public class ProcessNode extends GraphNodeImpl<Content> implements Graph<Content
     }
 
     @Override
-    public Iterator<GraphNode<Content>> iterator() {
+    public Iterator<BpmnGraphNode> iterator() {
         return graph.iterator();
     }
+
+    @Override
+    public ProcessNode copy() {
+        final ProcessNode copy = new ProcessNode();
+        copy.setContent( this.getContent().copy() );
+        for ( BpmnGraphNode node : graph ) {
+            copy.addNode( node );
+        }
+        return copy;
+    }
+
+    @Override
+    public String toString() {
+        return "ProcessNode{" +
+                "graph=" + graph +
+                ", roles=" + roles +
+                ", properties=" + properties +
+                '}';
+    }
+
 }

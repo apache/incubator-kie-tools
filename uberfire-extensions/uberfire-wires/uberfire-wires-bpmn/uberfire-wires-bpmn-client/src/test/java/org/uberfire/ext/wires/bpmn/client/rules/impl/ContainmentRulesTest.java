@@ -16,12 +16,11 @@
 package org.uberfire.ext.wires.bpmn.client.rules.impl;
 
 import org.junit.Test;
-import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.EndProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.StartProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
@@ -71,7 +70,7 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
     @Test
     public void testAddDummyNodeToProcess() {
         final ProcessNode process = new ProcessNode();
-        final GraphNode<Content> candidate = new TestDummyNode();
+        final BpmnGraphNode candidate = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getContainmentRules() ) {

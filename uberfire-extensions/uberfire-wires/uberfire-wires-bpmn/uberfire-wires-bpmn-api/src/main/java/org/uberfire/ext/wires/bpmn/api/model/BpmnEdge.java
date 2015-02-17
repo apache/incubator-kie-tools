@@ -15,11 +15,18 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
-/**
- * The Role of an Element. Roles are used to associate behaviour to Elements in a diagram.
- */
-public interface Role extends Copyable<Role> {
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 
-    String getName();
+/**
+ * An Edge in a BPMN diagram
+ */
+public interface BpmnEdge extends Copyable<BpmnEdge>,
+                                  Edge<BpmnGraphNode> {
+
+    /**
+     * The Role for the Edge.
+     * @return
+     */
+    Role getRole();
 
 }

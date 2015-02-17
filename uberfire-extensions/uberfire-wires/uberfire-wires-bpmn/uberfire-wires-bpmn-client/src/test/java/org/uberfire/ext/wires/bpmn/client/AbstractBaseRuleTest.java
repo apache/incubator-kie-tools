@@ -19,20 +19,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.CardinalityRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ConnectionRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ContainmentRuleImpl;
-import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.CardinalityRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
 import static org.junit.Assert.*;
 
@@ -155,14 +153,14 @@ public abstract class AbstractBaseRuleTest {
         return rules;
     }
 
-    protected void assertProcessContainsNodes( final Graph<Content> graph,
-                                               final GraphNode<Content>... nodes ) {
-        final Set<GraphNode<Content>> nodesToExist = new HashSet<GraphNode<Content>>();
-        for ( GraphNode<Content> node : nodes ) {
+    protected void assertProcessContainsNodes( final BpmnGraph graph,
+                                               final BpmnGraphNode... nodes ) {
+        final Set<BpmnGraphNode> nodesToExist = new HashSet<BpmnGraphNode>();
+        for ( BpmnGraphNode node : nodes ) {
             nodesToExist.add( node );
         }
-        for ( GraphNode<Content> gn : graph ) {
-            for ( GraphNode<Content> node : nodes ) {
+        for ( BpmnGraphNode gn : graph ) {
+            for ( BpmnGraphNode node : nodes ) {
                 if ( gn.equals( node ) ) {
                     nodesToExist.remove( node );
                 }
@@ -170,18 +168,18 @@ public abstract class AbstractBaseRuleTest {
         }
         if ( !nodesToExist.isEmpty() ) {
             final StringBuffer sb = new StringBuffer( "Not all GraphNodes were present in Graph.\n" );
-            for ( GraphNode<Content> node : nodesToExist ) {
+            for ( BpmnGraphNode node : nodesToExist ) {
                 sb.append( "--> Not present: GraphNode [" + node.toString() + "].\n" );
             }
             fail( sb.toString() );
         }
     }
 
-    protected void assertProcessNotContainsNodes( final Graph<Content> graph,
-                                                  final GraphNode<Content>... nodes ) {
-        final Set<GraphNode<Content>> nodesToNotExist = new HashSet<GraphNode<Content>>();
-        for ( GraphNode<Content> gn : graph ) {
-            for ( GraphNode<Content> node : nodes ) {
+    protected void assertProcessNotContainsNodes( final BpmnGraph graph,
+                                                  final BpmnGraphNode... nodes ) {
+        final Set<BpmnGraphNode> nodesToNotExist = new HashSet<BpmnGraphNode>();
+        for ( BpmnGraphNode gn : graph ) {
+            for ( BpmnGraphNode node : nodes ) {
                 if ( gn.equals( node ) ) {
                     nodesToNotExist.add( node );
                 }
@@ -189,20 +187,20 @@ public abstract class AbstractBaseRuleTest {
         }
         if ( !nodesToNotExist.isEmpty() ) {
             final StringBuffer sb = new StringBuffer( "One or more GraphNodes were present in Graph.\n" );
-            for ( GraphNode<Content> node : nodesToNotExist ) {
+            for ( BpmnGraphNode node : nodesToNotExist ) {
                 sb.append( "--> Present: GraphNode [" + node.toString() + "].\n" );
             }
             fail( sb.toString() );
         }
     }
 
-    protected void assertNodeContainsOutgoingEdges( final GraphNode<Content> node,
+    protected void assertNodeContainsOutgoingEdges( final BpmnGraphNode node,
                                                     final BpmnEdge... edges ) {
         final Set<BpmnEdge> edgesToExist = new HashSet<BpmnEdge>();
         for ( BpmnEdge edge : edges ) {
             edgesToExist.add( edge );
         }
-        for ( Edge edge : node.getOutEdges() ) {
+        for ( BpmnEdge edge : node.getOutEdges() ) {
             for ( BpmnEdge be : edges ) {
                 if ( be.equals( edge ) ) {
                     edgesToExist.remove( edge );
@@ -218,13 +216,13 @@ public abstract class AbstractBaseRuleTest {
         }
     }
 
-    protected void assertNodeContainsIncomingEdges( final GraphNode<Content> node,
+    protected void assertNodeContainsIncomingEdges( final BpmnGraphNode node,
                                                     final BpmnEdge... edges ) {
         final Set<BpmnEdge> edgesToExist = new HashSet<BpmnEdge>();
         for ( BpmnEdge edge : edges ) {
             edgesToExist.add( edge );
         }
-        for ( Edge edge : node.getInEdges() ) {
+        for ( BpmnEdge edge : node.getInEdges() ) {
             for ( BpmnEdge be : edges ) {
                 if ( be.equals( edge ) ) {
                     edgesToExist.remove( edge );

@@ -18,14 +18,13 @@ package org.uberfire.ext.wires.bpmn.client.commands.impl;
 import java.util.Collections;
 
 import org.junit.Test;
-import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.EndProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.StartProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.CardinalityRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
 import org.uberfire.ext.wires.bpmn.client.commands.CommandManager;
@@ -102,7 +101,7 @@ public class DeleteGraphNodeCommandTest extends AbstractBaseRuleTest {
     @Test
     public void testDeleteDummyNodeFromProcess() {
         final ProcessNode process = new ProcessNode();
-        final GraphNode<Content> node = new TestDummyNode();
+        final BpmnGraphNode node = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         for ( Rule rule : getContainmentRules() ) {

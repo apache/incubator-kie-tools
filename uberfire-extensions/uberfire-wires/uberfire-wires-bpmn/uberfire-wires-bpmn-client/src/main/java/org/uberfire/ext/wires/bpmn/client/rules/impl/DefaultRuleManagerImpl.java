@@ -21,16 +21,14 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.uberfire.commons.data.Pair;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.wires.bpmn.api.model.Content;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
-import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.CardinalityRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ContainmentRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.commands.impl.DefaultResultImpl;
@@ -63,8 +61,8 @@ public class DefaultRuleManagerImpl implements RuleManager {
     }
 
     @Override
-    public Results checkContainment( final Graph<Content> target,
-                                     final GraphNode<Content> candidate ) {
+    public Results checkContainment( final BpmnGraph target,
+                                     final BpmnGraphNode candidate ) {
         final Results results = new DefaultResultsImpl();
         if ( containmentRules.isEmpty() ) {
             return results;
@@ -85,8 +83,8 @@ public class DefaultRuleManagerImpl implements RuleManager {
     }
 
     @Override
-    public Results checkCardinality( final Graph<Content> target,
-                                     final GraphNode<Content> candidate,
+    public Results checkCardinality( final BpmnGraph target,
+                                     final BpmnGraphNode candidate,
                                      final Operation operation ) {
         final Results results = new DefaultResultsImpl();
         if ( cardinalityRules.isEmpty() ) {
@@ -98,7 +96,7 @@ public class DefaultRuleManagerImpl implements RuleManager {
                 final long minOccurrences = rule.getMinOccurrences();
                 final long maxOccurrences = rule.getMaxOccurrences();
                 long count = ( operation == Operation.ADD ? 1 : -1 );
-                for ( GraphNode<Content> node : target ) {
+                for ( BpmnGraphNode node : target ) {
                     if ( node.getContent().getId().equals( candidate.getContent().getId() ) ) {
                         count++;
                     }
@@ -116,8 +114,8 @@ public class DefaultRuleManagerImpl implements RuleManager {
     }
 
     @Override
-    public Results checkConnectionRules( final GraphNode<Content> outgoingNode,
-                                         final GraphNode<Content> incomingNode,
+    public Results checkConnectionRules( final BpmnGraphNode outgoingNode,
+                                         final BpmnGraphNode incomingNode,
                                          final BpmnEdge edge ) {
         final Results results = new DefaultResultsImpl();
         if ( connectionRules.isEmpty() ) {
@@ -145,8 +143,8 @@ public class DefaultRuleManagerImpl implements RuleManager {
     }
 
     @Override
-    public Results checkCardinality( final GraphNode<Content> outgoingNode,
-                                     final GraphNode<Content> incomingNode,
+    public Results checkCardinality( final BpmnGraphNode outgoingNode,
+                                     final BpmnGraphNode incomingNode,
                                      final BpmnEdge edge,
                                      final Operation operation ) {
         final Results results = new DefaultResultsImpl();
@@ -162,7 +160,7 @@ public class DefaultRuleManagerImpl implements RuleManager {
                         final long minOccurrences = cr.getMinOccurrences();
                         final long maxOccurrences = cr.getMaxOccurrences();
                         long count = ( operation == Operation.ADD ? 1 : -1 );
-                        for ( Edge e : outgoingNode.getOutEdges() ) {
+                        for ( BpmnEdge e : outgoingNode.getOutEdges() ) {
                             if ( e instanceof BpmnEdge ) {
                                 final BpmnEdge be = (BpmnEdge) e;
                                 if ( be.getRole().equals( edge.getRole() ) ) {
@@ -189,7 +187,7 @@ public class DefaultRuleManagerImpl implements RuleManager {
                         final long minOccurrences = cr.getMinOccurrences();
                         final long maxOccurrences = cr.getMaxOccurrences();
                         long count = ( operation == Operation.ADD ? 1 : -1 );
-                        for ( Edge e : incomingNode.getInEdges() ) {
+                        for ( BpmnEdge e : incomingNode.getInEdges() ) {
                             if ( e instanceof BpmnEdge ) {
                                 final BpmnEdge be = (BpmnEdge) e;
                                 if ( be.getRole().equals( edge.getRole() ) ) {

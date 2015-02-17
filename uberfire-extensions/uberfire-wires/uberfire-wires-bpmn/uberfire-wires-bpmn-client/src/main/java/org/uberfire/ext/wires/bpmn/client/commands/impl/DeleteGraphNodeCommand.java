@@ -16,9 +16,8 @@
 package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.ext.wires.bpmn.api.model.Content;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Command;
 import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
@@ -29,11 +28,11 @@ import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
  */
 public class DeleteGraphNodeCommand implements Command {
 
-    private Graph<Content> target;
-    private GraphNode<Content> candidate;
+    private BpmnGraph target;
+    private BpmnGraphNode candidate;
 
-    public DeleteGraphNodeCommand( final Graph<Content> target,
-                                   final GraphNode<Content> candidate ) {
+    public DeleteGraphNodeCommand( final BpmnGraph target,
+                                   final BpmnGraphNode candidate ) {
         this.target = PortablePreconditions.checkNotNull( "target",
                                                           target );
         this.candidate = PortablePreconditions.checkNotNull( "candidate",
@@ -44,7 +43,7 @@ public class DeleteGraphNodeCommand implements Command {
     public Results apply( final RuleManager ruleManager ) {
         final Results results = new DefaultResultsImpl();
         boolean isNodeInGraph = false;
-        for ( GraphNode<Content> node : target ) {
+        for ( BpmnGraphNode node : target ) {
             if ( node.equals( candidate ) ) {
                 isNodeInGraph = true;
                 break;

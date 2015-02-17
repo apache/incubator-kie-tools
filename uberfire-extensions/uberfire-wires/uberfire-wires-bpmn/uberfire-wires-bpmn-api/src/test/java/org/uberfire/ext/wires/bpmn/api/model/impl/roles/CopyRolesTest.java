@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.uberfire.ext.wires.bpmn.api.model;
+package org.uberfire.ext.wires.bpmn.api.model.impl.roles;
 
-/**
- * The Role of an Element. Roles are used to associate behaviour to Elements in a diagram.
- */
-public interface Role extends Copyable<Role> {
+import org.junit.Test;
+import org.uberfire.ext.wires.bpmn.api.model.Role;
 
-    String getName();
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class CopyRolesTest {
+
+    @Test
+    public void testCopyRole() {
+        final Role role = new DefaultRoleImpl( "a-role" );
+        final Role copy = role.copy();
+
+        assertNotNull( copy );
+        assertFalse( role == copy );
+        assertEquals( role.getName(),
+                      copy.getName() );
+    }
 
 }

@@ -18,19 +18,19 @@ package org.uberfire.ext.wires.bpmn.beliefs.graph.impl;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
-public class EdgeImpl implements Edge {
+public class EdgeImpl<T extends GraphNode> implements Edge<T> {
 
-    private GraphNode inGraphNode;
+    private T inGraphNode;
 
-    private GraphNode outGraphNode;
+    private T outGraphNode;
 
     @Override
-    public GraphNode getInGraphNode() {
+    public T getInGraphNode() {
         return inGraphNode;
     }
 
     @Override
-    public GraphNode getOutGraphNode() {
+    public T getOutGraphNode() {
         return outGraphNode;
     }
 

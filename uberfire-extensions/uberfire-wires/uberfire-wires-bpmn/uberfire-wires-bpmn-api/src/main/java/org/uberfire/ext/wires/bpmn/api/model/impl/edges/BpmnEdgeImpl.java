@@ -18,15 +18,16 @@ package org.uberfire.ext.wires.bpmn.api.model.impl.edges;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
-import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.EdgeImpl;
 
 /**
  * A BPMN Edge
  */
 @Portable
-public class BpmnEdgeImpl extends EdgeImpl implements BpmnEdge {
+public class BpmnEdgeImpl extends EdgeImpl<BpmnGraphNode> implements BpmnEdge {
 
     private Role role;
 
@@ -38,6 +39,18 @@ public class BpmnEdgeImpl extends EdgeImpl implements BpmnEdge {
     @Override
     public Role getRole() {
         return role;
+    }
+
+    @Override
+    public BpmnEdge copy() {
+        return new BpmnEdgeImpl( this.getRole() );
+    }
+
+    @Override
+    public String toString() {
+        return "BpmnEdgeImpl{" +
+                "role=" + role +
+                '}';
     }
 
 }

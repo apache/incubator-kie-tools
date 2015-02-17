@@ -15,11 +15,10 @@
  */
 package org.uberfire.ext.wires.bpmn.client.rules;
 
-import org.uberfire.ext.wires.bpmn.api.model.Content;
-import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraph;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnGraphNode;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
-import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 
 /**
@@ -39,8 +38,8 @@ public interface RuleManager {
      * @param candidate Candidate node
      * @return
      */
-    Results checkContainment( final Graph<Content> target,
-                              final GraphNode<Content> candidate );
+    Results checkContainment( final BpmnGraph target,
+                              final BpmnGraphNode candidate );
 
     /**
      * Check whether adding the proposed Node to the target Process breaks any cardinality Rules
@@ -49,8 +48,8 @@ public interface RuleManager {
      * @param operation Is the candidate Node being added or removed
      * @return
      */
-    Results checkCardinality( final Graph<Content> target,
-                              final GraphNode<Content> candidate,
+    Results checkCardinality( final BpmnGraph target,
+                              final BpmnGraphNode candidate,
                               final Operation operation );
 
     /**
@@ -60,8 +59,8 @@ public interface RuleManager {
      * @param edge Candidate edge
      * @return Is the Edge being added or removed
      */
-    Results checkConnectionRules( final GraphNode<Content> outgoingNode,
-                                  final GraphNode<Content> incomingNode,
+    Results checkConnectionRules( final BpmnGraphNode outgoingNode,
+                                  final BpmnGraphNode incomingNode,
                                   final BpmnEdge edge );
 
     /**
@@ -72,8 +71,8 @@ public interface RuleManager {
      * @param operation
      * @return Is the Edge being added or removed
      */
-    Results checkCardinality( final GraphNode<Content> outgoingNode,
-                              final GraphNode<Content> incomingNode,
+    Results checkCardinality( final BpmnGraphNode outgoingNode,
+                              final BpmnGraphNode incomingNode,
                               final BpmnEdge edge,
                               final Operation operation );
 

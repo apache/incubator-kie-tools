@@ -15,10 +15,10 @@
  */
 package org.uberfire.ext.wires.bpmn.beliefs.graph;
 
-public interface Edge {
+public interface Edge<T extends GraphNode> {
 
-    public GraphNode getOutGraphNode();
+    public T getOutGraphNode();
 
-    public GraphNode getInGraphNode();
+    public T getInGraphNode();
 
 }

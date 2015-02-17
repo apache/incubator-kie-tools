@@ -23,24 +23,24 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
 @Portable
-public class ListGraphStore<T> implements GraphStore<T> {
+public class ListGraphStore<T extends GraphNode> implements GraphStore<T> {
 
-    private List<GraphNode<T>> nodes = new ArrayList<GraphNode<T>>();
+    private List<T> nodes = new ArrayList<T>();
 
     @Override
-    public GraphNode<T> addNode( GraphNode<T> node ) {
+    public T addNode( T node ) {
         nodes.add( node );
         node.setId( nodes.size() );
         return node;
     }
 
     @Override
-    public GraphNode<T> removeNode( int id ) {
+    public T removeNode( int id ) {
         throw new UnsupportedOperationException( "ListGraphStore is additive only." );
     }
 
     @Override
-    public GraphNode<T> getNode( int id ) {
+    public T getNode( int id ) {
         return nodes.get( id );
     }
 
@@ -50,7 +50,7 @@ public class ListGraphStore<T> implements GraphStore<T> {
     }
 
     @Override
-    public Iterator<GraphNode<T>> iterator() {
+    public Iterator<T> iterator() {
         return nodes.iterator();
     }
 }

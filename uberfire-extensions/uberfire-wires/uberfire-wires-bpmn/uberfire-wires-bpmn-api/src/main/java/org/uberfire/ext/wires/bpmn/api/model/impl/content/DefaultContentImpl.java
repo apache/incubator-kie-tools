@@ -15,6 +15,7 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model.impl.content;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -25,7 +26,7 @@ import org.uberfire.ext.wires.bpmn.api.model.Property;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 
 /**
- * Content of a BpmnNode
+ * Content of a Bpmn GraphNode
  */
 @Portable
 public class DefaultContentImpl implements Content {
@@ -76,6 +77,32 @@ public class DefaultContentImpl implements Content {
     @Override
     public Set<Property> getProperties() {
         return properties;
+    }
+
+    @Override
+    public Content copy() {
+        final Content copy = new DefaultContentImpl( this.id,
+                                                     this.title,
+                                                     this.description,
+                                                     copyRoles( this.roles ),
+                                                     copyProperties( this.properties ) );
+        return copy;
+    }
+
+    private Set<Role> copyRoles( final Set<Role> roles ) {
+        final Set<Role> copy = new HashSet<Role>();
+        for ( Role role : roles ) {
+            copy.add( role.copy() );
+        }
+        return copy;
+    }
+
+    private Set<Property> copyProperties( final Set<Property> properties ) {
+        final Set<Property> copy = new HashSet<Property>();
+        for ( Property property : properties ) {
+            copy.add( property.copy() );
+        }
+        return copy;
     }
 
     @Override
