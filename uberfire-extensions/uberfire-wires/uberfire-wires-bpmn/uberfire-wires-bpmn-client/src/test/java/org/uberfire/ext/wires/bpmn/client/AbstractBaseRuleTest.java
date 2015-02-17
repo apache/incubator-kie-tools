@@ -26,9 +26,11 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.CardinalityRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ConnectionRuleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.rules.ContainmentRuleImpl;
+import org.uberfire.ext.wires.bpmn.api.model.rules.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.CardinalityRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.ConnectionRule;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
+import org.uberfire.ext.wires.bpmn.beliefs.graph.Edge;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.Graph;
 import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
@@ -189,6 +191,50 @@ public abstract class AbstractBaseRuleTest {
             final StringBuffer sb = new StringBuffer( "One or more GraphNodes were present in Graph.\n" );
             for ( GraphNode<Content> node : nodesToNotExist ) {
                 sb.append( "--> Present: GraphNode [" + node.toString() + "].\n" );
+            }
+            fail( sb.toString() );
+        }
+    }
+
+    protected void assertNodeContainsOutgoingEdges( final GraphNode<Content> node,
+                                                    final BpmnEdge... edges ) {
+        final Set<BpmnEdge> edgesToExist = new HashSet<BpmnEdge>();
+        for ( BpmnEdge edge : edges ) {
+            edgesToExist.add( edge );
+        }
+        for ( Edge edge : node.getOutEdges() ) {
+            for ( BpmnEdge be : edges ) {
+                if ( be.equals( edge ) ) {
+                    edgesToExist.remove( edge );
+                }
+            }
+        }
+        if ( !edgesToExist.isEmpty() ) {
+            final StringBuffer sb = new StringBuffer( "Not all Edges were present in GraphNode Outgoing connections.\n" );
+            for ( BpmnEdge edge : edgesToExist ) {
+                sb.append( "--> Not present: Edge [" + edge.toString() + "].\n" );
+            }
+            fail( sb.toString() );
+        }
+    }
+
+    protected void assertNodeContainsIncomingEdges( final GraphNode<Content> node,
+                                                    final BpmnEdge... edges ) {
+        final Set<BpmnEdge> edgesToExist = new HashSet<BpmnEdge>();
+        for ( BpmnEdge edge : edges ) {
+            edgesToExist.add( edge );
+        }
+        for ( Edge edge : node.getInEdges() ) {
+            for ( BpmnEdge be : edges ) {
+                if ( be.equals( edge ) ) {
+                    edgesToExist.remove( edge );
+                }
+            }
+        }
+        if ( !edgesToExist.isEmpty() ) {
+            final StringBuffer sb = new StringBuffer( "Not all Edges were present in GraphNode Incoming connections.\n" );
+            for ( BpmnEdge edge : edgesToExist ) {
+                sb.append( "--> Not present: Edge [" + edge.toString() + "].\n" );
             }
             fail( sb.toString() );
         }
