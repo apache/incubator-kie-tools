@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.security.Identity;
+import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -78,11 +79,13 @@ public class PartContextMenusView
             return null;
         }
 
-        return new Dropdown( groups.getCaption() ) {{
+        Dropdown dropdown = new Dropdown( groups.getCaption() ) {{
             for ( final Widget widget : widgetList ) {
                 add( widget );
             }
         }};
+        dropdown.addStyleName( WorkbenchResources.INSTANCE.CSS().partContextMenus() );
+        return dropdown;
     }
 
     Widget makeMenuItemCommand( final MenuItem item ) {
@@ -101,9 +104,11 @@ public class PartContextMenusView
         item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
             @Override
             public void enabledStateChanged( final boolean enabled ) {
-                ( (NavLink) gwtItem ).setDisabled( !enabled );
+                ( ( NavLink ) gwtItem ).setDisabled( !enabled );
             }
         } );
+
+        gwtItem.addStyleName( WorkbenchResources.INSTANCE.CSS().partContextMenus() );
 
         return gwtItem;
     }
