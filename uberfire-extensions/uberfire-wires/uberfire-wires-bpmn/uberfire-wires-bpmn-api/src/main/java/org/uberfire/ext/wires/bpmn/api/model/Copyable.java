@@ -15,13 +15,11 @@
  */
 package org.uberfire.ext.wires.bpmn.api.model;
 
-import java.util.Set;
-
 /**
- * Mar
+ * Implementations can provide a copy of themselves.
  */
 public interface Copyable<T> {
 
-T copy();
+    T copy();
 
 }

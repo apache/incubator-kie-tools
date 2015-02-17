@@ -102,7 +102,7 @@ public class ProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements
         final ProcessNode copy = new ProcessNode();
         copy.setContent( this.getContent().copy() );
         for ( BpmnGraphNode node : graph ) {
-            copy.addNode( node );
+            copy.addNode( node.copy() );
         }
         return copy;
     }
