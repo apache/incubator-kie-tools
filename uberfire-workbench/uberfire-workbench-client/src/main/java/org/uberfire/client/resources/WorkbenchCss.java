@@ -38,6 +38,15 @@ public interface WorkbenchCss
 
     String tabCloseButton();
 
+    @ClassName("workbenchMenuBar")
+    String workbenchMenuBar();
+
+    @ClassName("perspectiveContextMenus")
+    String perspectiveContextMenus();
+
+    @ClassName("partContextMenus")
+    String partContextMenus();
+
     @ClassName("uf-listbar")
     String listbar();
 
