@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -136,9 +135,7 @@ public class WorkbenchMenuBarView extends Composite
     Widget makeMenuCustom( MenuCustom item ) {
         final MenuCustom custom = (MenuCustom) item;
 
-        Widget w = (Widget) custom.build();
-        w.addStyleName( WorkbenchResources.INSTANCE.CSS().workbenchMenuBar() );
-        return w;
+        return (Widget) custom.build();
     }
 
     Widget makeMenuGroup( MenuGroup item ) {
@@ -155,13 +152,11 @@ public class WorkbenchMenuBarView extends Composite
             return null;
         }
 
-        Dropdown dropdown = new Dropdown( groups.getCaption() ) {{
+        return new Dropdown( groups.getCaption() ) {{
             for ( final Widget widget : widgetList ) {
                 add( widget );
             }
         }};
-        dropdown.addStyleName( WorkbenchResources.INSTANCE.CSS().workbenchMenuBar() );
-        return dropdown;
     }
 
     Widget makeMenuItemCommand( final MenuItem item ) {
@@ -183,8 +178,6 @@ public class WorkbenchMenuBarView extends Composite
                 ( (NavLink) gwtItem ).setDisabled( !enabled );
             }
         } );
-
-        gwtItem.addStyleName( WorkbenchResources.INSTANCE.CSS().workbenchMenuBar() );
 
         return gwtItem;
     }

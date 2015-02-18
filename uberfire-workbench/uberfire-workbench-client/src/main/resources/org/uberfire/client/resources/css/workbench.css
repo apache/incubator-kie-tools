@@ -4,18 +4,6 @@
     padding: 0;
 }
 
-.workbenchMenuBar {
-    z-index: 100015;
-}
-
-.perspectiveContextMenus {
-    z-index: 100010;
-}
-
-.partContextMenus {
-    z-index: 100005;
-}
-
 .toolbar {
     min-height: 30px;
     margin-top: 0;
