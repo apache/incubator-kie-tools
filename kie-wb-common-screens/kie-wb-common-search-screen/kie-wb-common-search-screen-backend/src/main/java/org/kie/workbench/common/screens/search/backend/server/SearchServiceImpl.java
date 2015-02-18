@@ -1,11 +1,14 @@
 package org.kie.workbench.common.screens.search.backend.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -15,8 +18,10 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.attribute.OtherMetaView;
+import org.guvnor.structure.repositories.Repository;
 import org.guvnor.structure.repositories.RepositoryService;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.search.model.QueryMetadataPageRequest;
 import org.kie.workbench.common.screens.search.model.SearchPageRow;
 import org.kie.workbench.common.screens.search.model.SearchTermPageRequest;
@@ -29,6 +34,7 @@ import org.uberfire.io.attribute.DublinCoreView;
 import org.uberfire.java.nio.base.version.VersionAttributeView;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.paging.PageResponse;
+import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 @Service
@@ -40,11 +46,17 @@ public class SearchServiceImpl implements SearchService {
     private IOSearchService ioSearchService;
 
     @Inject
+    @Named("ioStrategy")
+    private IOService ioService;
+
+    @Inject
     private RepositoryService repositoryService;
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    protected User identity;
+
+    @Inject
+    private AuthorizationManager authorizationManager;
 
     private PageResponse<SearchPageRow> emptyResponse = null;
 
@@ -56,8 +68,8 @@ public class SearchServiceImpl implements SearchService {
 
     @PostConstruct
     private void init() {
-        for ( ResourceTypeDefinition actviveType : typeRegister ) {
-            types.put( actviveType.getShortName().toLowerCase(), actviveType );
+        for ( ResourceTypeDefinition activeType : typeRegister ) {
+            types.put( activeType.getShortName().toLowerCase(), activeType );
         }
         emptyResponse = new PageResponse<SearchPageRow>();
         emptyResponse.setPageRowList( Collections.<SearchPageRow>emptyList() );
@@ -70,10 +82,17 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public PageResponse<SearchPageRow> fullTextSearch( final SearchTermPageRequest pageRequest ) {
         try {
-            final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm() );
+            final int hits = ioSearchService.fullTextSearchHits( pageRequest.getTerm(),
+                                                                 getAuthorizedRepositoryRoots() );
             if ( hits > 0 ) {
-                final List<Path> pathResult = ioSearchService.fullTextSearch( pageRequest.getTerm(), pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
-                return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
+                final List<Path> pathResult = ioSearchService.fullTextSearch( pageRequest.getTerm(),
+                                                                              pageRequest.getPageSize(),
+                                                                              pageRequest.getStartRowIndex(),
+                                                                              getAuthorizedRepositoryRoots() );
+                return buildResponse( pathResult,
+                                      hits,
+                                      pageRequest.getPageSize(),
+                                      pageRequest.getStartRowIndex() );
             }
             return emptyResponse;
 
@@ -88,16 +107,25 @@ public class SearchServiceImpl implements SearchService {
             final Map<String, Object> attrs = new HashMap<String, Object>( pageRequest.getMetadata() );
 
             if ( pageRequest.getCreatedAfter() != null || pageRequest.getCreatedBefore() != null ) {
-                attrs.put( "creationTime", toDateRange( pageRequest.getCreatedBefore(), pageRequest.getCreatedAfter() ) );
+                attrs.put( "creationTime", toDateRange( pageRequest.getCreatedBefore(),
+                                                        pageRequest.getCreatedAfter() ) );
             }
             if ( pageRequest.getLastModifiedAfter() != null || pageRequest.getLastModifiedBefore() != null ) {
-                attrs.put( "lastModifiedTime", toDateRange( pageRequest.getLastModifiedBefore(), pageRequest.getLastModifiedAfter() ) );
+                attrs.put( "lastModifiedTime", toDateRange( pageRequest.getLastModifiedBefore(),
+                                                            pageRequest.getLastModifiedAfter() ) );
             }
 
-            final int hits = ioSearchService.searchByAttrsHits( attrs );
+            final int hits = ioSearchService.searchByAttrsHits( attrs,
+                                                                getAuthorizedRepositoryRoots() );
             if ( hits > 0 ) {
-                final List<Path> pathResult = ioSearchService.searchByAttrs( attrs, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
-                return buildResponse( pathResult, hits, pageRequest.getPageSize(), pageRequest.getStartRowIndex() );
+                final List<Path> pathResult = ioSearchService.searchByAttrs( attrs,
+                                                                             pageRequest.getPageSize(),
+                                                                             pageRequest.getStartRowIndex(),
+                                                                             getAuthorizedRepositoryRoots() );
+                return buildResponse( pathResult,
+                                      hits,
+                                      pageRequest.getPageSize(),
+                                      pageRequest.getStartRowIndex() );
             }
             return emptyResponse;
 
@@ -114,9 +142,12 @@ public class SearchServiceImpl implements SearchService {
         for ( final Path path : pathResult ) {
             final SearchPageRow row = new SearchPageRow( Paths.convert( path ) );
 
-            final DublinCoreView dcoreView = ioService.getFileAttributeView( path, DublinCoreView.class );
-            final OtherMetaView otherMetaView = ioService.getFileAttributeView( path, OtherMetaView.class );
-            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path, VersionAttributeView.class );
+            final DublinCoreView dcoreView = ioService.getFileAttributeView( path,
+                                                                             DublinCoreView.class );
+            final OtherMetaView otherMetaView = ioService.getFileAttributeView( path,
+                                                                                OtherMetaView.class );
+            final VersionAttributeView versionAttributeView = ioService.getFileAttributeView( path,
+                                                                                              VersionAttributeView.class );
 
             row.setCreator( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( 0 ).author() : "" );
             row.setLastContributor( versionAttributeView.readAttributes().history().records().size() > 0 ? versionAttributeView.readAttributes().history().records().get( versionAttributeView.readAttributes().history().records().size() - 1 ).author() : "" );
@@ -136,16 +167,18 @@ public class SearchServiceImpl implements SearchService {
         return response;
     }
 
-//    private Path[] roots() {
-//        final Collection<Repository> repos = repositoryService.getRepositories();
-//        final Path[] roots = new Path[ repos.size() ];
-//        int i = 0;
-//        for ( final Repository repo : repos ) {
-//            roots[ i ] = paths.convert( repo.getRoot() );
-//            i++;
-//        }
-//        return roots;
-//    }
+    //Only search the Repositories for which the User has permission to access
+    private Path[] getAuthorizedRepositoryRoots() {
+        final Collection<Repository> repositories = repositoryService.getRepositories();
+        final Set<Path> authorizedRoots = new HashSet<Path>();
+        for ( final Repository repository : repositories ) {
+            if ( authorizationManager.authorize( repository,
+                                                 identity ) ) {
+                authorizedRoots.add( Paths.convert( repository.getRoot() ) );
+            }
+        }
+        return authorizedRoots.toArray( new Path[ authorizedRoots.size() ] );
+    }
 
     private DateRange toDateRange( final Date before,
                                    final Date after ) {
