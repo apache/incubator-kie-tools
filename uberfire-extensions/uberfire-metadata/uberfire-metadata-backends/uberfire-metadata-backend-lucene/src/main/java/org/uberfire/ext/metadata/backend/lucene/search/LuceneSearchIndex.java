@@ -177,49 +177,60 @@ public class LuceneSearchIndex implements SearchIndex {
 
     private Query composeQuery( final Query query,
                                 final ClusterSegment... clusterSegments ) {
-        if ( clusterSegments != null && clusterSegments.length > 0 ) {
-            final BooleanQuery booleanQuery = new BooleanQuery();
-            booleanQuery.add( query, MUST );
-
-            final BooleanQuery complement;
-
-            if ( clusterSegments.length == 1 ) {
-                complement = booleanQuery;
-            } else {
-                complement = new BooleanQuery();
-            }
-
-            for ( final ClusterSegment clusterSegment : clusterSegments ) {
-                final BooleanQuery clusterBoolean = new BooleanQuery();
-                if ( clusterSegment.getClusterId() != null ) {
-                    final Query cluster = new TermQuery( new Term( "cluster.id", clusterSegment.getClusterId() ) );
-                    clusterBoolean.add( cluster, MUST );
-                }
-                if ( clusterSegment.segmentIds() != null && clusterSegment.segmentIds().length > 0 ) {
-                    if ( clusterSegment.segmentIds().length == 1 ) {
-                        final Query segment = new TermQuery( new Term( "segment.id", clusterSegment.segmentIds()[ 0 ] ) );
-                        clusterBoolean.add( segment, MUST );
-                    } else {
-                        final BooleanQuery segments = new BooleanQuery();
-                        for ( final String segmentId : clusterSegment.segmentIds() ) {
-                            final Query segment = new TermQuery( new Term( "segment.id", segmentId ) );
-                            segments.add( segment, BooleanClause.Occur.SHOULD );
-                        }
-                        clusterBoolean.add( segments, MUST );
-                    }
-                }
-                complement.add( clusterBoolean, MUST );
-            }
-
-            if ( clusterSegments.length == 1 ) {
-                return complement;
-            }
-
-            booleanQuery.add( complement, MUST );
-            return booleanQuery;
+        if ( clusterSegments == null || clusterSegments.length == 0 ) {
+            return query;
         }
 
-        return query;
+        final BooleanQuery booleanQuery = new BooleanQuery();
+        booleanQuery.add( query,
+                          MUST );
+
+        final BooleanClause.Occur occur = ( clusterSegments.length == 1 ? MUST : SHOULD );
+        for ( ClusterSegment clusterSegment : clusterSegments ) {
+            final BooleanQuery clusterSegmentQuery = new BooleanQuery();
+            addClusterIdTerms( clusterSegmentQuery,
+                               clusterSegment );
+            addSegmentIdTerms( clusterSegmentQuery,
+                               clusterSegment );
+            booleanQuery.add( clusterSegmentQuery,
+                              occur );
+        }
+
+        return booleanQuery;
+    }
+
+    private void addClusterIdTerms( final BooleanQuery query,
+                                    final ClusterSegment clusterSegment ) {
+        if ( clusterSegment.getClusterId() != null ) {
+            final Query cluster = new TermQuery( new Term( "cluster.id",
+                                                           clusterSegment.getClusterId() ) );
+            query.add( cluster,
+                       MUST );
+        }
+    }
+
+    private void addSegmentIdTerms( final BooleanQuery query,
+                                    final ClusterSegment clusterSegment ) {
+        if ( clusterSegment.segmentIds() == null || clusterSegment.segmentIds().length == 0 ) {
+            return;
+        }
+
+        if ( clusterSegment.segmentIds().length == 1 ) {
+            final Query segment = new TermQuery( new Term( "segment.id",
+                                                           clusterSegment.segmentIds()[ 0 ] ) );
+            query.add( segment,
+                       MUST );
+        } else {
+            final BooleanQuery segments = new BooleanQuery();
+            for ( final String segmentId : clusterSegment.segmentIds() ) {
+                final Query segment = new TermQuery( new Term( "segment.id",
+                                                               segmentId ) );
+                segments.add( segment,
+                              SHOULD );
+            }
+            query.add( segments,
+                       MUST );
+        }
     }
 
     private String format( final String term ) {
