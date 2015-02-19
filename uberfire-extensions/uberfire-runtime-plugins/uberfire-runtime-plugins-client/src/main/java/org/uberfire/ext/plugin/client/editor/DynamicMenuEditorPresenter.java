@@ -91,8 +91,22 @@ public class DynamicMenuEditorPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
-        this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.DYNAMIC_MENU, path );
+        init( path,
+              place,
+              resourceType,
+              true,
+              false,
+              SAVE,
+              COPY,
+              RENAME,
+              DELETE );
+
+        // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
+        // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
+        this.plugin = new Plugin( place.getParameter( "name",
+                                                      "" ),
+                                  PluginType.DYNAMIC_MENU,
+                                  path );
     }
 
     @WorkbenchPartTitleDecoration
@@ -113,8 +127,12 @@ public class DynamicMenuEditorPresenter
     protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
         if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
                 pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
-            plugin = new Plugin( pluginRenamed.getPlugin().getName(), PluginType.DYNAMIC_MENU, pluginRenamed.getPlugin().getPath() );
-            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
+            plugin = new Plugin( pluginRenamed.getPlugin().getName(),
+                                 PluginType.DYNAMIC_MENU,
+                                 pluginRenamed.getPlugin().getPath() );
+            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place,
+                                                                      getTitleText(),
+                                                                      getTitle() ) );
         }
     }
 
@@ -157,12 +175,14 @@ public class DynamicMenuEditorPresenter
 
         final DynamicMenuItem oldItem = dataProvider.getList().set( newIndex, object );
         if ( oldItem != null ) {
-            dataProvider.getList().set( index, oldItem );
+            dataProvider.getList().set( index,
+                                        oldItem );
         }
     }
 
     enum UpdateIndexOperation {
-        UP, DOWN;
+        UP,
+        DOWN;
     }
 
     public void setDataDisplay( final HasData<DynamicMenuItem> display ) {
@@ -176,6 +196,7 @@ public class DynamicMenuEditorPresenter
             public void callback( final DynamicMenu response ) {
                 setOriginalHash( response.hashCode() );
                 menuItem = response;
+                dataProvider.getList().clear();
                 for ( final DynamicMenuItem menuItem : response.getMenuItems() ) {
                     dataProvider.getList().add( menuItem );
                 }
@@ -195,9 +216,11 @@ public class DynamicMenuEditorPresenter
                     }
                 }
                 if ( invalidActivities.isEmpty() ) {
-                    notification.fire( new NotificationEvent( "Item Validated Successfully", NotificationEvent.NotificationType.SUCCESS ) );
+                    notification.fire( new NotificationEvent( "Item Validated Successfully",
+                                                              NotificationEvent.NotificationType.SUCCESS ) );
                 } else {
-                    notification.fire( new NotificationEvent( "Activity(ies) not found: '" + DynamicMenuEditorPresenter.this.toString( invalidActivities ) + "'", NotificationEvent.NotificationType.ERROR ) );
+                    notification.fire( new NotificationEvent( "Activity(ies) not found: '" + DynamicMenuEditorPresenter.this.toString( invalidActivities ) + "'",
+                                                              NotificationEvent.NotificationType.ERROR ) );
                 }
             }
         };
@@ -208,7 +231,8 @@ public class DynamicMenuEditorPresenter
         for ( final String string : invalidActivities ) {
             result.append( string ).append( "," );
         }
-        return result.length() > 0 ? result.substring( 0, result.length() - 1 ) : "";
+        return result.length() > 0 ? result.substring( 0,
+                                                       result.length() - 1 ) : "";
     }
 
     protected void save() {
@@ -235,7 +259,10 @@ public class DynamicMenuEditorPresenter
     }
 
     public DynamicMenu getContent() {
-        return new DynamicMenu( menuItem.getName(), PluginType.DYNAMIC_MENU, versionRecordManager.getCurrentPath(), new ArrayList<DynamicMenuItem>( dataProvider.getList() ) );
+        return new DynamicMenu( menuItem.getName(),
+                                PluginType.DYNAMIC_MENU,
+                                versionRecordManager.getCurrentPath(),
+                                new ArrayList<DynamicMenuItem>( dataProvider.getList() ) );
     }
 
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
