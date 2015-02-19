@@ -204,11 +204,18 @@ public class DragContext
      */
     public void dragDone()
     {
-        // update X,Y attributes
+        final double x = m_prmx + m_lclp.getX();
 
-        m_prim.setX(m_prmx + m_lclp.getX());
+        final double y = m_prmy + m_lclp.getY();
 
-        m_prim.setY(m_prmy + m_lclp.getY());
+        if (m_lstx != x)
+        {
+            m_prim.setX(m_lstx = x);
+        }
+        if (m_lsty != y)
+        {
+            m_prim.setY(m_lsty = y);
+        }
     }
 
     /**
