@@ -47,8 +47,8 @@ public class WorkbenchServicesImpl
     private final XStream xs = new XStream();
 
     @Override
-    public void save( final String perspectiveId,
-                      final PerspectiveDefinition perspective ) {
+    public synchronized void save( final String perspectiveId,
+                                   final PerspectiveDefinition perspective ) {
         final String xml = xs.toXML( perspective );
         final Path perspectivePath = userServices.buildPath( "perspectives",
                                                              perspectiveId + ".perspective" );
@@ -61,7 +61,7 @@ public class WorkbenchServicesImpl
     }
 
     @Override
-    public void save( SplashScreenFilter splashFilter ) {
+    public synchronized void save( SplashScreenFilter splashFilter ) {
         final String xml = xs.toXML( splashFilter );
         final Path splashFilterPath = userServices.buildPath( "splash",
                                                               splashFilter.getName() + ".filter" );
@@ -86,7 +86,7 @@ public class WorkbenchServicesImpl
     }
 
     @Override
-    public void removePerspectiveStates() {
+    public synchronized void removePerspectiveStates() {
         final Path perspectivesPath = userServices.buildPath( "perspectives" );
         if ( ioService.exists( perspectivesPath ) ) {
             try {
@@ -135,7 +135,7 @@ public class WorkbenchServicesImpl
     }
 
     @Override
-    public void saveDefaultEditors( final Map<String, String> properties ) {
+    public synchronized void saveDefaultEditors( final Map<String, String> properties ) {
         final StringBuilder text = new StringBuilder();
         for ( String key : properties.keySet() ) {
             text.append( String.format( "%s=%s", key, properties.get( key ) ) );
