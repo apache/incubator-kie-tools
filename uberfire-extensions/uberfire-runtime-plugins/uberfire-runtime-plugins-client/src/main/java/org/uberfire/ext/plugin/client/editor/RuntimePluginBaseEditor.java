@@ -1,5 +1,8 @@
 package org.uberfire.ext.plugin.client.editor;
 
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.api.Caller;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -16,11 +19,7 @@ import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
-
 
 public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
@@ -40,16 +39,35 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init( path, place, getResourceType(), true, false, SAVE, COPY, RENAME, DELETE );
-        this.plugin = new Plugin( place.getParameter( "name", "" ), getPluginType(), path );
+        init( path,
+              place,
+              getResourceType(),
+              true,
+              false,
+              SAVE,
+              COPY,
+              RENAME,
+              DELETE );
+
+        // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
+        // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
+        this.plugin = new Plugin( place.getParameter( "name",
+                                                      "" ),
+                                  getPluginType(),
+                                  path );
+
         this.place = place;
     }
 
     protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
         if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
                 pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
-            this.plugin = new Plugin( pluginRenamed.getPlugin().getName(), getPluginType(), pluginRenamed.getPlugin().getPath() );
-            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place, getTitleText(), getTitle() ) );
+            this.plugin = new Plugin( pluginRenamed.getPlugin().getName(),
+                                      getPluginType(),
+                                      pluginRenamed.getPlugin().getPath() );
+            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place,
+                                                                      getTitleText(),
+                                                                      getTitle() ) );
         }
     }
 
@@ -64,6 +82,5 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     protected Caller<? extends SupportsCopy> getCopyServiceCaller() {
         return pluginServices;
     }
-
 
 }
