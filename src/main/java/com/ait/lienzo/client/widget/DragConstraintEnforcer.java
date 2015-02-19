@@ -37,5 +37,5 @@ public interface DragConstraintEnforcer
      * @param dxy (dx,dy) specified in local coordinates, 
      *      i.e. in the parent node's coordinate system
      */
-    public void adjust(Point2D dxy);
+    public boolean adjust(Point2D dxy);
 }

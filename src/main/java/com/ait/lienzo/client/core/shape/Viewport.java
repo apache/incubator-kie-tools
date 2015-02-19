@@ -43,7 +43,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.shared.core.types.AutoScaleType;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.java.util.function.Predicate;
@@ -457,7 +456,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         {
             return;
         }
-        Transform t = getTransform();
+        final Transform t = getTransform();
 
         if (null != t)
         {
@@ -465,7 +464,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
             Point2D b = new Point2D(x + width, y + height);
 
-            Transform inv = t.getInverse();
+            final Transform inv = t.getInverse();
 
             inv.transform(a, a);
 
@@ -491,9 +490,9 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @param width
      * @param height
      */
-    public final void viewLocalArea(double x, double y, double width, double height)
+    public final void viewLocalArea(final double x, final double y, final double width, final double height)
     {
-        Transform t = Transform.createViewportTransform(x, y, width, height, m_wide, m_high);
+        final Transform t = Transform.createViewportTransform(x, y, width, height, m_wide, m_high);
 
         if (t != null)
         {
@@ -517,42 +516,6 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         super.fireEvent(new ViewportTransformChangedEvent(this));
 
         return this;
-    }
-
-    public Viewport setAutoScale(final AutoScaleType type)
-    {
-        getAttributes().setAutoScale(type);
-
-        return this;
-    }
-
-    public AutoScaleType getAutoScale()
-    {
-        return getAttributes().getAutoScale();
-    }
-
-    public Viewport setViewLocation(final Point2D location)
-    {
-        getAttributes().setViewLocation(location);
-
-        return this;
-    }
-
-    public Point2D getViewLocation()
-    {
-        return getAttributes().getViewLocation();
-    }
-
-    public Viewport setViewDomain(final double domain)
-    {
-        getAttributes().setViewDomain(domain);
-
-        return this;
-    }
-
-    public double getViewDomain()
-    {
-        return getAttributes().getViewDomain();
     }
 
     /**
@@ -710,12 +673,6 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
             // For Viewports, the Transform is required (for other Nodes it's optional),
             // so override the requirednesss.
-
-            addAttribute(Attribute.AUTO_SCALE);
-
-            addAttribute(Attribute.VIEW_DOMAIN);
-
-            addAttribute(Attribute.VIEW_LOCATION);
 
             addAttribute(Attribute.TRANSFORM, true);
         }

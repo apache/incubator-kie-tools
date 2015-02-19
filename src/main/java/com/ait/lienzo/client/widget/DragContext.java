@@ -49,6 +49,10 @@ public class DragContext
 
     private int                          m_dsty;
 
+    private double                       m_lstx;
+
+    private double                       m_lsty;
+
     private final Transform              m_gtol;
 
     private final Transform              m_ltog;
@@ -79,9 +83,9 @@ public class DragContext
     {
         m_prim = prim;
 
-        m_prmx = m_prim.getX();
+        m_lstx = m_prmx = m_prim.getX();
 
-        m_prmy = m_prim.getY();
+        m_lsty = m_prmy = m_prim.getY();
 
         m_evtx = m_begx = event.getX();
 
@@ -112,7 +116,7 @@ public class DragContext
      * 
      * @param context
      */
-    public void drawNodeWithTransforms(Context2D context)
+    public void drawNodeWithTransforms(final Context2D context)
     {
         context.save();
 
@@ -154,7 +158,7 @@ public class DragContext
      * 
      * @param event Drag Move event
      */
-    public void dragUpdate(INodeXYEvent event)
+    public void dragUpdate(final INodeXYEvent event)
     {
         m_evtx = event.getX();
 
@@ -164,7 +168,7 @@ public class DragContext
 
         m_dsty = m_evty - m_begy;
 
-        Point2D p2 = new Point2D(0, 0);
+        final Point2D p2 = new Point2D(0, 0);
 
         m_gtol.transform(new Point2D(m_dstx, m_dsty), p2);
 
@@ -178,9 +182,18 @@ public class DragContext
         {
             m_drag.adjust(m_lclp);
         }
-        m_prim.setX(m_prmx + m_lclp.getX());
+        final double x = m_prmx + m_lclp.getX();
 
-        m_prim.setY(m_prmy + m_lclp.getY());
+        final double y = m_prmy + m_lclp.getY();
+
+        if (m_lstx != x)
+        {
+            m_prim.setX(m_lstx = x);
+        }
+        if (m_lsty != y)
+        {
+            m_prim.setY(m_lsty = y);
+        }
     }
 
     /**

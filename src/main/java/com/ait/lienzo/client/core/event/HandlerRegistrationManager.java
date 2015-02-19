@@ -42,7 +42,7 @@ public final class HandlerRegistrationManager
         return m_list.get(i);
     }
 
-    public final HandlerRegistrationManager delete()
+    public final HandlerRegistrationManager destroy()
     {
         final int size = size();
 
@@ -55,22 +55,19 @@ public final class HandlerRegistrationManager
 
     public final HandlerRegistration register(final HandlerRegistration handler)
     {
-        if (null != handler)
+        if ((null != handler) && (false == m_list.contains(handler)))
         {
-            if (false == m_list.contains(handler))
-            {
-                m_list.add(handler);
-            }
+            m_list.add(handler);
         }
         return handler;
     }
 
-    public final boolean contains(final HandlerRegistration handler)
+    public final boolean isRegistered(final HandlerRegistration handler)
     {
         return ((null != handler) && (size() > 0) && (m_list.contains(handler)));
     }
 
-    public final HandlerRegistrationManager delete(final HandlerRegistration handler)
+    public final HandlerRegistrationManager deregister(final HandlerRegistration handler)
     {
         if (null != handler)
         {
@@ -86,7 +83,7 @@ public final class HandlerRegistrationManager
         return this;
     }
 
-    public final HandlerRegistrationManager delete(final HandlerRegistrationManager manager)
+    public final HandlerRegistrationManager deregister(final HandlerRegistrationManager manager)
     {
         if ((null != manager) && (manager != this))
         {
@@ -94,7 +91,7 @@ public final class HandlerRegistrationManager
 
             for (int i = 0; i < size; i++)
             {
-                delete(manager.get(i));
+                deregister(manager.get(i));
             }
             manager.clear();
         }

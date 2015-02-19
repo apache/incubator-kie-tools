@@ -75,12 +75,14 @@ public final class DefaultDragConstraintEnforcer implements DragConstraintEnforc
     }
 
     @Override
-    public final void adjust(final Point2D d)
+    public final boolean adjust(final Point2D d)
     {
         if ((DragConstraint.NONE == m_constraint) && (null == m_bounds))
         {
-            return;
+            return false;
         }
+        boolean move = false;
+
         double x = d.getX();
 
         double y = d.getY();
@@ -88,32 +90,46 @@ public final class DefaultDragConstraintEnforcer implements DragConstraintEnforc
         if (DragConstraint.HORIZONTAL == m_constraint)
         {
             y = 0;
+
+            move = true;
         }
         else if (DragConstraint.VERTICAL == m_constraint)
         {
             x = 0;
+
+            move = true;
         }
         if (null != m_bounds)
         {
             if (m_bounds.isX1() && (x < m_dx1))
             {
                 x = m_dx1;
+
+                move = true;
             }
             else if (m_bounds.isX2() && (x > m_dx2))
             {
                 x = m_dx2;
+
+                move = true;
             }
             if (m_bounds.isY1() && (y < m_dy1))
             {
                 y = m_dy1;
+
+                move = true;
             }
             else if (m_bounds.isY2() && (y > m_dy2))
             {
                 y = m_dy2;
+
+                move = true;
             }
         }
         d.setX(x);
 
         d.setY(y);
+
+        return move;
     }
 }

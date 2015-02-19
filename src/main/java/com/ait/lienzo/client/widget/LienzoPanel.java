@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.CursorMap;
 import com.ait.lienzo.shared.core.types.AutoScaleType;
@@ -52,7 +51,7 @@ import com.google.gwt.user.client.ui.RequiresResize;
  */
 public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesResize
 {
-    private LienzoHandlerManager m_events;
+    private final Viewport       m_view;
 
     private int                  m_wide;
 
@@ -60,7 +59,9 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     private boolean              m_flex;
 
-    private final Viewport       m_view;
+    private AutoScaleType        m_auto;
+
+    private LienzoHandlerManager m_events;
 
     private Cursor               m_widget_cursor;
 
@@ -163,38 +164,18 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
 
     public LienzoPanel setAutoScale(final AutoScaleType type)
     {
-        getViewport().setAutoScale(type);
+        m_auto = type;
 
         return this;
     }
 
     public AutoScaleType getAutoScale()
     {
-        return getViewport().getAutoScale();
-    }
-
-    public LienzoPanel setViewLocation(final Point2D location)
-    {
-        getViewport().setViewLocation(location);
-
-        return this;
-    }
-
-    public Point2D getViewLocation()
-    {
-        return getViewport().getViewLocation();
-    }
-
-    public LienzoPanel setViewDomain(final double domain)
-    {
-        getViewport().setViewDomain(domain);
-
-        return this;
-    }
-
-    public double getViewDomain()
-    {
-        return getViewport().getViewDomain();
+        if (null == m_auto)
+        {
+            return AutoScaleType.NONE;
+        }
+        return m_auto;
     }
 
     public LienzoPanel setTransform(final Transform transform)

@@ -30,17 +30,17 @@ public abstract class AbstractControlHandle extends Activatible implements ICont
         return m_manage.register(handler);
     }
 
-    protected void delete(final HandlerRegistrationManager manager)
+    protected void deregister(final HandlerRegistrationManager manager)
     {
         if (null != manager)
         {
-            manager.delete(m_manage);
+            manager.deregister(m_manage);
         }
     }
 
-    protected void delete(final HandlerRegistration handler)
+    protected void deregister(final HandlerRegistration handler)
     {
-        m_manage.delete(handler);
+        m_manage.deregister(handler);
     }
 
     @Override
@@ -52,7 +52,7 @@ public abstract class AbstractControlHandle extends Activatible implements ICont
         {
             prim.removeFromParent();
         }
-        m_manage.delete();
+        m_manage.destroy();
     }
 
     @Override

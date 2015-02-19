@@ -48,7 +48,6 @@ import com.ait.lienzo.client.core.types.SpriteBehaviorMap.SpriteBehaviorMapJSO;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
 import com.ait.lienzo.shared.core.types.ArrowType;
-import com.ait.lienzo.shared.core.types.AutoScaleType;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
@@ -182,71 +181,6 @@ public class Attributes
         else
         {
             m_bat = null;
-        }
-    }
-
-    public final AutoScaleType getAutoScale()
-    {
-        return AutoScaleType.lookup(getString(Attribute.AUTO_SCALE.getProperty()));
-    }
-
-    public final void setAutoScale(final AutoScaleType type)
-    {
-        if (null != type)
-        {
-            put(Attribute.AUTO_SCALE.getProperty(), type.getValue());
-        }
-        else
-        {
-            delete(Attribute.AUTO_SCALE.getProperty());
-        }
-    }
-
-    public final Point2D getViewLocation()
-    {
-        final JavaScriptObject view = getObject(Attribute.VIEW_LOCATION.getProperty());
-
-        if (null != view)
-        {
-            final Point2DJSO pjso = view.cast();
-
-            return new Point2D(pjso);
-        }
-        return null;
-    }
-
-    public final void setViewLocation(final Point2D view)
-    {
-        if (null != view)
-        {
-            put(Attribute.VIEW_LOCATION.getProperty(), view.getJSO());
-        }
-        else
-        {
-            delete(Attribute.VIEW_LOCATION.getProperty());
-        }
-    }
-
-    public final double getViewDomain()
-    {
-        final double domain = m_jso.getDouble(Attribute.VIEW_DOMAIN.getProperty());
-
-        if (domain < 1)
-        {
-            return 0;
-        }
-        return domain;
-    }
-
-    public final void setViewDomain(final double domain)
-    {
-        if (domain < 1)
-        {
-            delete(Attribute.VIEW_DOMAIN.getProperty());
-        }
-        else
-        {
-            put(Attribute.VIEW_DOMAIN.getProperty(), domain);
         }
     }
 
