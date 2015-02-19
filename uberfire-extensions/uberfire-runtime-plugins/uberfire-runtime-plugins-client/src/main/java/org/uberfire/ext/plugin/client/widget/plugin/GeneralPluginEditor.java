@@ -32,9 +32,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.ext.widgets.common.client.ace.AceEditor;
-import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
-import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 import org.uberfire.ext.plugin.client.code.CodeElement;
 import org.uberfire.ext.plugin.client.widget.media.MediaLibraryWidget;
 import org.uberfire.ext.plugin.client.widget.split.HorizontalSplit;
@@ -42,6 +39,9 @@ import org.uberfire.ext.plugin.client.widget.split.VerticalSplit;
 import org.uberfire.ext.plugin.model.CodeType;
 import org.uberfire.ext.plugin.model.Media;
 import org.uberfire.ext.plugin.model.PluginContent;
+import org.uberfire.ext.widgets.common.client.ace.AceEditor;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -133,7 +133,8 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
     final ParameterizedCommand<CodeType> codeChange = new ParameterizedCommand<CodeType>() {
         @Override
         public void execute( final CodeType parameter ) {
-            codeMap.put( currentElement, jsEditor.getText() );
+            codeMap.put( currentElement,
+                         jsEditor.getText() );
             currentElement = parameter;
             final String content = codeMap.get( currentElement );
             if ( content != null ) {
@@ -151,13 +152,25 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
 
         rightBottomContent.add( mediaLibraryWidget );
 
-        verticalSplit.init( leftArea, rightArea, content, editorResizing );
-        leftHorizontalSplit.init( leftTopArea, leftBottomArea, content, editorResizing );
-        rightHorizontalSplit.init( rightTopArea, rightBottomArea, content, editorResizing );
+        verticalSplit.init( leftArea,
+                            rightArea,
+                            content,
+                            editorResizing );
+        leftHorizontalSplit.init( leftTopArea,
+                                  leftBottomArea,
+                                  content,
+                                  editorResizing );
+        rightHorizontalSplit.init( rightTopArea,
+                                   rightBottomArea,
+                                   content,
+                                   editorResizing );
 
-        setupEditor( templateEditor, leftTopContent );
-        setupEditor( cssEditor, rightTopContent );
-        setupEditor( jsEditor, leftBottomContent );
+        setupEditor( templateEditor,
+                     leftTopContent );
+        setupEditor( cssEditor,
+                     rightTopContent );
+        setupEditor( jsEditor,
+                     leftBottomContent );
 
         templateEditor.startEditor();
         templateEditor.setMode( AceEditorMode.HTML );
@@ -178,22 +191,28 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
         currentElement = elements[ 0 ].getType();
 
         for ( final CodeElement element : elements ) {
-            element.addNav( lifecycles, codeChange );
+            element.addNav( lifecycles,
+                            codeChange );
         }
     }
 
     public void setupContent( final PluginContent pluginContent,
                               final ParameterizedCommand<Media> onMediaDelete ) {
 
+        codeMap.clear();
+
         for ( final Map.Entry<CodeType, String> entry : pluginContent.getCodeMap().entrySet() ) {
-            codeMap.put( entry.getKey(), entry.getValue() );
+            codeMap.put( entry.getKey(),
+                         entry.getValue() );
         }
 
         jsEditor.setText( codeMap.get( currentElement ) );
         templateEditor.setText( pluginContent.getTemplate() );
         cssEditor.setText( pluginContent.getCss() );
 
-        mediaLibraryWidget.setup( pluginContent.getName(), pluginContent.getMediaLibrary(), onMediaDelete );
+        mediaLibraryWidget.setup( pluginContent.getName(),
+                                  pluginContent.getMediaLibrary(),
+                                  onMediaDelete );
 
         this.pluginContent = pluginContent;
     }
