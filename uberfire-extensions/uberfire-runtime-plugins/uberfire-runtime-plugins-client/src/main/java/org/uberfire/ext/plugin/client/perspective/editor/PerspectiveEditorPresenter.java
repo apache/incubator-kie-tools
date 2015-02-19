@@ -19,6 +19,7 @@ package org.uberfire.ext.plugin.client.perspective.editor;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.AccordionGroup;
@@ -33,6 +34,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
@@ -47,6 +49,7 @@ import org.uberfire.ext.plugin.client.perspective.editor.util.DragType;
 import org.uberfire.ext.plugin.client.perspective.editor.util.TagButton;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
 import org.uberfire.ext.plugin.editor.PerspectiveEditor;
+import org.uberfire.ext.plugin.event.PluginRenamed;
 import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
@@ -104,8 +107,23 @@ public class PerspectiveEditorPresenter
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        init( path, place, resourceType, true, false, SAVE, COPY, RENAME, DELETE );
-        this.plugin = new Plugin( place.getParameter( "name", "" ), PluginType.DYNAMIC_MENU, path );
+        init( path,
+              place,
+              resourceType,
+              true,
+              false,
+              SAVE,
+              COPY,
+              RENAME,
+              DELETE );
+
+        // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
+        // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
+        plugin = new Plugin( place.getParameter( "name",
+                                                 "" ),
+                             PluginType.PERSPECTIVE_LAYOUT,
+                             path );
+
         setupDndWidget();
     }
 
@@ -137,9 +155,15 @@ public class PerspectiveEditorPresenter
         accordion.setHeading( "Grid System" );
         accordion.setIcon( IconType.TH );
         accordion.setDefaultOpen( true );
-        accordion.add( new DragGridElement( DragType.GRID, "12", ufNotification ) );
-        accordion.add( new DragGridElement( DragType.GRID, "6 6", ufNotification ) );
-        accordion.add( new DragGridElement( DragType.GRID, "4 4 4", ufNotification ) );
+        accordion.add( new DragGridElement( DragType.GRID,
+                                            "12",
+                                            ufNotification ) );
+        accordion.add( new DragGridElement( DragType.GRID,
+                                            "6 6",
+                                            ufNotification ) );
+        accordion.add( new DragGridElement( DragType.GRID,
+                                            "4 4 4",
+                                            ufNotification ) );
         return accordion;
     }
 
@@ -147,15 +171,21 @@ public class PerspectiveEditorPresenter
         AccordionGroup accordion = new AccordionGroup();
         accordion.setHeading( "Components" );
         accordion.setIcon( IconType.FOLDER_OPEN );
-        accordion.add( new DragGridElement( DragType.SCREEN, DragType.SCREEN.label(), ufNotification ) );
-        accordion.add( new DragGridElement( DragType.HTML, DragType.HTML.label(), ufNotification ) );
+        accordion.add( new DragGridElement( DragType.SCREEN,
+                                            DragType.SCREEN.label(),
+                                            ufNotification ) );
+        accordion.add( new DragGridElement( DragType.HTML,
+                                            DragType.HTML.label(),
+                                            ufNotification ) );
         generateExternalComponents( accordion );
         return accordion;
     }
 
     private void generateExternalComponents( AccordionGroup accordion ) {
         for ( ExternalPerspectiveEditorComponent externalPerspectiveEditorComponent : helper.lookupExternalComponents() ) {
-            accordion.add( new DragGridElement( DragType.EXTERNAL, externalPerspectiveEditorComponent.getPlaceName(), externalPerspectiveEditorComponent ) );
+            accordion.add( new DragGridElement( DragType.EXTERNAL,
+                                                externalPerspectiveEditorComponent.getPlaceName(),
+                                                externalPerspectiveEditorComponent ) );
         }
     }
 
@@ -182,6 +212,7 @@ public class PerspectiveEditorPresenter
             public void callback( final PerspectiveEditorModel response ) {
                 if ( response.getPerspectiveModel() != null ) {
                     perspectiveEditorView.loadPerspective( response.getPerspectiveModel() );
+                    plugin = response;
                 }
                 setOriginalHash( getContent().hashCode() );
             }
@@ -202,12 +233,27 @@ public class PerspectiveEditorPresenter
     }
 
     public PerspectiveEditorModel getContent() {
-        return new PerspectiveEditorModel( plugin.getName(), PluginType.PERSPECTIVE_LAYOUT, versionRecordManager.getCurrentPath(), perspectiveEditorView.getModel() );
+        return new PerspectiveEditorModel( plugin.getName(),
+                                           PluginType.PERSPECTIVE_LAYOUT,
+                                           versionRecordManager.getCurrentPath(),
+                                           perspectiveEditorView.getModel() );
     }
 
     @WorkbenchPartView
     public UberView<PerspectiveEditorPresenter> getWidget() {
         return (UberView<PerspectiveEditorPresenter>) super.baseView;
+    }
+
+    protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
+        if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
+                pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
+            plugin = new Plugin( pluginRenamed.getPlugin().getName(),
+                                 PluginType.PERSPECTIVE_LAYOUT,
+                                 pluginRenamed.getPlugin().getPath() );
+            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place,
+                                                                      getTitleText(),
+                                                                      getTitle() ) );
+        }
     }
 
     protected Caller<? extends SupportsDelete> getDeleteServiceCaller() {
