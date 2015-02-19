@@ -44,12 +44,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.ext.widgets.common.client.common.FileUpload;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.plugin.client.config.PluginConfigService;
 import org.uberfire.ext.plugin.event.MediaAdded;
 import org.uberfire.ext.plugin.event.MediaDeleted;
 import org.uberfire.ext.plugin.model.Media;
-import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.common.client.common.FileUpload;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -128,6 +128,10 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
                        final ParameterizedCommand<Media> onMediaDelete ) {
         this.pluginName = pluginName;
         this.onMediaDelete = onMediaDelete;
+
+        this.mediaRef.clear();
+        this.thumbs.clear();
+
         for ( final Media media : mediaLibrary ) {
             addMedia( media );
         }
@@ -194,7 +198,8 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
             }
         } );
 
-        mediaRef.put( media.getPath(), thumbnail );
+        mediaRef.put( media.getPath(),
+                      thumbnail );
 
         thumbs.add( thumbnail );
     }
