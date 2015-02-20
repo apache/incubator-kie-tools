@@ -60,6 +60,7 @@ import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
+import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
@@ -82,6 +83,10 @@ public class ExplorerServiceImpl
     @Inject
     @Named("configIO")
     private IOService ioServiceConfig;
+
+    @Inject
+    @Named("systemFS")
+    private FileSystem fileSystem;
 
     @Inject
     private KieProjectService projectService;
@@ -436,33 +441,28 @@ public class ExplorerServiceImpl
         final Collection<org.uberfire.java.nio.file.Path> lastNavs = userServicesBackend.getAllUsersData( "explorer", "last.user.nav" );
         final Collection<org.uberfire.java.nio.file.Path> userNavs = userServicesBackend.getAllUsersData( "explorer", "user.nav" );
 
-        for ( org.uberfire.java.nio.file.Path path : userNavs ) {
-            final UserExplorerData userContent = helper.loadUserContent( path );
-            if ( userContent != null ) {
-                if ( userContent.deleteProject( project ) ) {
-                    try {
-                        ioServiceConfig.startBatch( path.getFileSystem() );
+        try {
+            ioServiceConfig.startBatch( fileSystem );
+
+            for ( org.uberfire.java.nio.file.Path path : userNavs ) {
+                final UserExplorerData userContent = helper.loadUserContent( path );
+                if ( userContent != null ) {
+                    if ( userContent.deleteProject( project ) ) {
                         ioServiceConfig.write( path, xs.toXML( userContent ) );
-                    } finally {
-                        ioServiceConfig.endBatch();
                     }
                 }
             }
-        }
 
-        for ( org.uberfire.java.nio.file.Path lastNav : lastNavs ) {
-            final UserExplorerLastData lastUserContent = helper.getLastContent( lastNav );
-            if ( lastUserContent != null ) {
-                if ( lastUserContent.deleteProject( project ) ) {
-                    try {
-                        ioServiceConfig.startBatch( lastNav.getFileSystem() );
+            for ( org.uberfire.java.nio.file.Path lastNav : lastNavs ) {
+                final UserExplorerLastData lastUserContent = helper.getLastContent( lastNav );
+                if ( lastUserContent != null ) {
+                    if ( lastUserContent.deleteProject( project ) ) {
                         ioServiceConfig.write( lastNav, xs.toXML( lastUserContent ) );
-                    } finally {
-                        ioServiceConfig.endBatch();
                     }
                 }
             }
-
+        } finally {
+            ioServiceConfig.endBatch();
         }
     }
 

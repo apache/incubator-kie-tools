@@ -80,7 +80,7 @@ public class ProjectExplorerContentResolver {
         this.organizationalUnitService = organizationalUnitService;
     }
 
-    public synchronized ProjectExplorerContent resolve( final ProjectExplorerContentQuery query ) {
+    public ProjectExplorerContent resolve( final ProjectExplorerContentQuery query ) {
 
         final Content content = setupSelectedItems( query );
 
