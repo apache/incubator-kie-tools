@@ -66,14 +66,18 @@ public class ColumnPicker<T> {
 
     public void addColumns(List<ColumnMeta<T>> columnMetas) {
         columnMetaList.addAll(columnMetas);
-
         sortAndAddColumns(columnMetas);
         adjustColumnWidths();
     }
 
     protected void sortAndAddColumns(List<ColumnMeta<T>> columnMetas) {
+        // Check for column preferences and orders
+        for (ColumnMeta meta : columnMetas) {
+            checkColumnMeta(meta);
+        }
+        // Sort based on preferences applied
         Collections.sort(columnMetas);
-
+        //Add the columns based on the preferences
         for (ColumnMeta meta : columnMetas) {
             addColumn(meta);
         }
@@ -117,7 +121,6 @@ public class ColumnPicker<T> {
     public void addColumn(ColumnMeta<T> columnMeta) {
         if (columnMeta == null) return;
         if (!columnMetaList.contains(columnMeta)) columnMetaList.add(columnMeta);
-        checkColumnMeta(columnMeta);
         if (columnMeta.isVisible()) dataGrid.addColumn(columnMeta.getColumn(), columnMeta.getHeader());
     }
 
@@ -218,9 +221,6 @@ public class ColumnPicker<T> {
 
         adjustColumnWidths();
 
-        for (ColumnChangedHandler handler : columnChangedHandler) {
-            handler.beforeColumnChanged();
-        }
         showColumnPickerPopup(left, top);
     }
 
@@ -257,7 +257,7 @@ public class ColumnPicker<T> {
 
         List<GridColumnPreference> preferences = getColumnsState();
 
-        if ( preferences.size() == 0 ) return;
+        if ( preferences.isEmpty() ) return;
         if ( preferences.size() == 1 ) {
             dataGrid.setColumnWidth(dataGrid.getColumn( 0 ),
                     100,
