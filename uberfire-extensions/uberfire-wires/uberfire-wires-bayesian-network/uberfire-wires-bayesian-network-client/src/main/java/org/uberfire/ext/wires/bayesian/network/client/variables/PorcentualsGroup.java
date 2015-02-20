@@ -20,11 +20,11 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.LienzoPanel;
+import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.ext.wires.bayesian.network.client.factory.ProbabilityFactory;
 import org.uberfire.ext.wires.bayesian.network.client.shapes.EditableBayesianNode;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
-import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.ext.wires.core.api.events.ClearEvent;
 import org.uberfire.ext.wires.core.api.events.ShapeSelectedEvent;
 

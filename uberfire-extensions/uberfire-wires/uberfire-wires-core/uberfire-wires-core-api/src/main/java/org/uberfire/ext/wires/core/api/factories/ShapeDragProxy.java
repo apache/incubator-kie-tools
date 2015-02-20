@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.api.factories;
 
-import com.emitrom.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Group;
 
 /**
  * Proxy for Shapes being dragged from the Palette

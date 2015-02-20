@@ -15,11 +15,11 @@
  */
 package org.uberfire.ext.wires.bayesian.network.client.templates;
 
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Shape;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 

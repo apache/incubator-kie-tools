@@ -15,8 +15,8 @@
  */
 package org.uberfire.ext.wires.core.trees.client.canvas;
 
-import com.emitrom.lienzo.client.core.shape.Line;
-import com.emitrom.lienzo.shared.core.types.LineCap;
+import com.ait.lienzo.client.core.shape.Line;
+import com.ait.lienzo.shared.core.types.LineCap;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
 /**

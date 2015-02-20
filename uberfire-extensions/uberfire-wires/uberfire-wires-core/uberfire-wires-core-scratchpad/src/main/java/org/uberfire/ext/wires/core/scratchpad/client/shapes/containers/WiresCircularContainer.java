@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.scratchpad.client.shapes.containers;
 
-import com.emitrom.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.shape.Circle;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
 import org.uberfire.ext.wires.core.api.magnets.Magnet;
@@ -53,31 +53,33 @@ public class WiresCircularContainer extends WiresBaseDynamicContainer {
         add( circle );
 
         magnets.clear();
-        magnet1 = new DefaultMagnet( 0 - radius,
-                                     0 );
-        magnet2 = new DefaultMagnet( radius,
-                                     0 );
-        magnet3 = new DefaultMagnet( 0,
-                                     0 - radius );
-        magnet4 = new DefaultMagnet( 0,
-                                     radius );
+        magnet1 = new DefaultMagnet( getX() - radius,
+                                     getY() );
+        magnet2 = new DefaultMagnet( getX() + radius,
+                                     getY() );
+        magnet3 = new DefaultMagnet( getX(),
+                                     getY() - radius );
+        magnet4 = new DefaultMagnet( getX(),
+                                     getY() + radius );
         addMagnet( magnet1 );
         addMagnet( magnet2 );
         addMagnet( magnet3 );
         addMagnet( magnet4 );
 
         controlPoints.clear();
-        controlPoint1 = new DefaultControlPoint( radius,
-                                                 0,
+        controlPoint1 = new DefaultControlPoint( getX() + radius,
+                                                 getY(),
                                                  new ControlPointMoveHandler() {
                                                      @Override
                                                      public void onMove( final double x,
                                                                          final double y ) {
-                                                         final double r = Math.sqrt( Math.pow( x, 2 ) + Math.pow( y, 2 ) );
-                                                         magnet1.setX( 0 - r );
-                                                         magnet2.setX( r );
-                                                         magnet3.setY( 0 - r );
-                                                         magnet4.setY( r );
+                                                         final double dx = getX() - x;
+                                                         final double dy = getY() - y;
+                                                         final double r = Math.sqrt( Math.pow( dx, 2 ) + Math.pow( dy, 2 ) );
+                                                         magnet1.setX( getX() - r );
+                                                         magnet2.setX( getX() + r );
+                                                         magnet3.setY( getY() - r );
+                                                         magnet4.setY( getY() + r );
                                                          circle.setRadius( r );
                                                          bounding.setRadius( r + ( BOUNDARY_SIZE / 2 ) );
                                                      }

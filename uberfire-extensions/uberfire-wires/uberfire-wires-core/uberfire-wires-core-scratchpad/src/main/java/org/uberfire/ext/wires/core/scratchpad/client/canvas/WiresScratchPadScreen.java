@@ -32,6 +32,7 @@ import org.uberfire.ext.wires.core.api.events.ShapeDeletedEvent;
 import org.uberfire.ext.wires.core.api.events.ShapeDragCompleteEvent;
 import org.uberfire.ext.wires.core.api.events.ShapeDragPreviewEvent;
 import org.uberfire.ext.wires.core.api.events.ShapeSelectedEvent;
+import org.uberfire.ext.wires.core.api.shapes.WiresBaseDynamicShape;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 import org.uberfire.ext.wires.core.api.shapes.WiresShape;
 import org.uberfire.ext.wires.core.client.canvas.WiresCanvas;

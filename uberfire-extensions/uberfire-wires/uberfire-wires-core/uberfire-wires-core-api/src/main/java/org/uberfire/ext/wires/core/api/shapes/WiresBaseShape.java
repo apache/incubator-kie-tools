@@ -20,21 +20,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.emitrom.lienzo.client.core.animation.AnimationProperties;
-import com.emitrom.lienzo.client.core.animation.AnimationTweener;
-import com.emitrom.lienzo.client.core.animation.IAnimation;
-import com.emitrom.lienzo.client.core.animation.IAnimationCallback;
-import com.emitrom.lienzo.client.core.animation.IAnimationHandle;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.event.NodeMouseClickEvent;
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.core.types.Point2D;
-import org.uberfire.ext.wires.core.api.selection.SelectionManager;
-import org.uberfire.ext.wires.core.api.selection.RequiresSelectionManager;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimation;
+import com.ait.lienzo.client.core.animation.IAnimationCallback;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.wires.core.api.selection.RequiresSelectionManager;
+import org.uberfire.ext.wires.core.api.selection.SelectionManager;
 
 /**
  * A Fixed Shape that cannot be re-sized or have connectors attached
@@ -129,7 +129,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                        @Override
                                        public void onFrame( final IAnimation iAnimation,
                                                             final IAnimationHandle iAnimationHandle ) {
-                                           final double pct = tweener.tween( iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent() );
+                                           final double pct = tweener.apply( iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent() );
 
                                            //Move each Control along the line between its origin and the target destination
                                            for ( Map.Entry<Group, Pair<Point2D, Point2D>> e : transformations.entrySet() ) {
@@ -195,7 +195,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                        @Override
                                        public void onFrame( final IAnimation iAnimation,
                                                             final IAnimationHandle iAnimationHandle ) {
-                                           final double pct = tweener.tween( iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent() );
+                                           final double pct = tweener.apply( iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent() );
 
                                            //Move each Control along the line between its origin and the target destination
                                            for ( Map.Entry<Group, Pair<Point2D, Point2D>> e : transformations.entrySet() ) {
@@ -326,7 +326,7 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
                                        @Override
                                        public void onFrame( final IAnimation iAnimation,
                                                             final IAnimationHandle iAnimationHandle ) {
-                                           final double pct = tweener.tween( iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent() );
+                                           final double pct = tweener.apply( iAnimation.getPercent() > 1.0 ? 1.0 : iAnimation.getPercent() );
 
                                            //Move each Control along the line between its origin and the target destination
                                            for ( Map.Entry<Group, Pair<Point2D, Point2D>> e : transformations.entrySet() ) {
@@ -419,38 +419,4 @@ public abstract class WiresBaseShape extends Group implements WiresShape,
         return g;
     }
 
-    @Override
-    public Group setLocation( final Point2D p ) {
-        final Group g = super.setLocation( p );
-        updateControlLocations();
-        return g;
-    }
-
-    @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( !( o instanceof WiresBaseShape ) ) {
-            return false;
-        }
-        if ( !super.equals( o ) ) {
-            return false;
-        }
-
-        WiresBaseShape that = (WiresBaseShape) o;
-
-        if ( !id.equals( that.id ) ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + id.hashCode();
-        return result;
-    }
 }

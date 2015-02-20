@@ -22,11 +22,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.emitrom.lienzo.client.core.event.NodeMouseClickEvent;
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.core.shape.Picture;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.ext.wires.core.api.events.ClearEvent;
@@ -38,8 +37,6 @@ import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
 @Dependent
 public class ActionsGroup extends Composite {
-
-    private static final String PICTURE_CATEGORY = "ActionsGroupPictureCategory";
 
     private Layer layer;
     private LienzoPanel panel;
@@ -64,18 +61,9 @@ public class ActionsGroup extends Composite {
     private void drawActions() {
         //Hard-coded list of ActionShapes
         final List<ActionShape> shapes = new ArrayList<ActionShape>();
-        shapes.add( stencilBuilder.build( PICTURE_CATEGORY,
-                                          getClearCanvasClickHandler(),
+        shapes.add( stencilBuilder.build( getClearCanvasClickHandler(),
                                           AppResource.INSTANCE.images().clear() ) );
-
-        //Draw containing Layer when images have been loaded
-        Picture.onCategoryLoaded( PICTURE_CATEGORY,
-                                  new Runnable() {
-                                      @Override
-                                      public void run() {
-                                          layer.draw();
-                                      }
-                                  } );
+        layer.draw();
 
         //Add ActionShapes to the UI
         int shapeCount = 1;

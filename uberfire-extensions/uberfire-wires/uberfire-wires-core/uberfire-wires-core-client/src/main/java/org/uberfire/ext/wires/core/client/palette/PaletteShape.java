@@ -17,9 +17,9 @@ package org.uberfire.ext.wires.core.client.palette;
 
 import java.io.Serializable;
 
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
 
 /**
  * A PaletteShape is an icon and text, bound by a rectangle, used in the Palette.

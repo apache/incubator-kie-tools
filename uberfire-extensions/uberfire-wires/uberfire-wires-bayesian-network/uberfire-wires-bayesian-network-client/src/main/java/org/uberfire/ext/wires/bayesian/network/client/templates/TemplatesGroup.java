@@ -22,13 +22,13 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.ext.wires.bayesian.network.client.events.BayesianTemplateSelectedEvent;
-import com.emitrom.lienzo.client.core.event.NodeMouseClickEvent;
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.common.collect.ImmutableSet;
 import com.google.gwt.user.client.ui.Composite;
+import org.uberfire.ext.wires.bayesian.network.client.events.BayesianTemplateSelectedEvent;
 import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 
 @Dependent

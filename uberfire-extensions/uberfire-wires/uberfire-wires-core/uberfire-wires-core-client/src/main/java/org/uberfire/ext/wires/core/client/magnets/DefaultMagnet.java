@@ -8,8 +8,8 @@ package org.uberfire.ext.wires.core.client.magnets;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.emitrom.lienzo.client.core.shape.Circle;
-import com.emitrom.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.magnets.Magnet;
 import org.uberfire.ext.wires.core.api.shapes.UUID;
@@ -85,10 +85,10 @@ public class DefaultMagnet extends Circle implements Magnet<Circle> {
     }
 
     @Override
-    public Circle setOffset( final Point2D offset ) {
-        final Circle c = super.setOffset( offset );
-        moveAttachedControlPoints();
-        return c;
+    public void move( final double dx,
+                      final double dy ) {
+        setLocation( getLocation().add( new Point2D( dx,
+                                                     dy ) ) );
     }
 
     protected void moveAttachedControlPoints() {
@@ -97,8 +97,8 @@ public class DefaultMagnet extends Circle implements Magnet<Circle> {
             return;
         }
         for ( ControlPoint cp : controlPoints ) {
-            final double dx = getX() + getOffset().getX() - cp.getOffset().getX();
-            final double dy = getY() + getOffset().getY() - cp.getOffset().getY();
+            final double dx = getX();
+            final double dy = getY();
             cp.setX( dx );
             cp.setY( dy );
             cp.getHandler().onMove( dx,

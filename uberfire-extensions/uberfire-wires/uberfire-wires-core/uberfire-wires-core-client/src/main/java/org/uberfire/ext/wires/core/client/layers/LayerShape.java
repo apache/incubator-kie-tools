@@ -15,9 +15,9 @@
  */
 package org.uberfire.ext.wires.core.client.layers;
 
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
 
 public class LayerShape extends Group {
 

@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.trees.client.shapes;
 
-import com.emitrom.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.shape.Circle;
 
 /**
  * Example Node that can only have WiresExampleTreeNode2 or WiresExampleTreeNode3 types of node added as children

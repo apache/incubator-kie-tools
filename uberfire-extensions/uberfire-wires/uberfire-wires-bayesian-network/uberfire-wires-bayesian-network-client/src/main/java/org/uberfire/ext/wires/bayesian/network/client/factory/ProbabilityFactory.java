@@ -17,13 +17,13 @@ package org.uberfire.ext.wires.bayesian.network.client.factory;
 
 import java.util.Map;
 
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.Color;
+import com.google.common.collect.Maps;
 import org.uberfire.ext.wires.bayesian.network.client.shapes.EditableBayesianProbability;
 import org.uberfire.ext.wires.bayesian.network.client.utils.BayesianUtils;
 import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesVariable;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.shared.core.types.Color;
-import com.google.common.collect.Maps;
 
 public class ProbabilityFactory extends BaseFactory {
 

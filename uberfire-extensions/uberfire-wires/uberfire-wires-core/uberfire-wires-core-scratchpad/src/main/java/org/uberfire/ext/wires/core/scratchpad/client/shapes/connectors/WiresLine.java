@@ -15,9 +15,9 @@
  */
 package org.uberfire.ext.wires.core.scratchpad.client.shapes.connectors;
 
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.shape.Line;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.shape.Line;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
 import org.uberfire.ext.wires.core.api.magnets.Magnet;
 import org.uberfire.ext.wires.core.api.magnets.MagnetManager;
@@ -45,10 +45,10 @@ public class WiresLine extends WiresBaseDynamicShape implements MagnetManager,
     private MagnetManager magnetManager;
 
     public WiresLine( final Line shape ) {
-        final double x1 = shape.getPoints().getPoint( 0 ).getX();
-        final double y1 = shape.getPoints().getPoint( 0 ).getY();
-        final double x2 = shape.getPoints().getPoint( 1 ).getX();
-        final double y2 = shape.getPoints().getPoint( 1 ).getY();
+        final double x1 = shape.getPoints().get( 0 ).getX();
+        final double y1 = shape.getPoints().get( 0 ).getY();
+        final double x2 = shape.getPoints().get( 1 ).getX();
+        final double y2 = shape.getPoints().get( 1 ).getY();
 
         line = shape;
         bounding = new Line( x1,
@@ -72,10 +72,10 @@ public class WiresLine extends WiresBaseDynamicShape implements MagnetManager,
                                                          @Override
                                                          public void onMove( final double x,
                                                                              final double y ) {
-                                                             line.getPoints().getPoint( 0 ).setX( x );
-                                                             line.getPoints().getPoint( 0 ).setY( y );
-                                                             bounding.getPoints().getPoint( 0 ).setX( x );
-                                                             bounding.getPoints().getPoint( 0 ).setY( y );
+                                                             line.getPoints().get( 0 ).setX( x - getX() );
+                                                             line.getPoints().get( 0 ).setY( y - getY() );
+                                                             bounding.getPoints().get( 0 ).setX( x - getX() );
+                                                             bounding.getPoints().get( 0 ).setY( y - getY() );
                                                          }
                                                      } );
 
@@ -87,10 +87,10 @@ public class WiresLine extends WiresBaseDynamicShape implements MagnetManager,
                                                          @Override
                                                          public void onMove( final double x,
                                                                              final double y ) {
-                                                             line.getPoints().getPoint( 1 ).setX( x );
-                                                             line.getPoints().getPoint( 1 ).setY( y );
-                                                             bounding.getPoints().getPoint( 1 ).setX( x );
-                                                             bounding.getPoints().getPoint( 1 ).setY( y );
+                                                             line.getPoints().get( 1 ).setX( x - getX() );
+                                                             line.getPoints().get( 1 ).setY( y - getY() );
+                                                             bounding.getPoints().get( 1 ).setX( x - getX() );
+                                                             bounding.getPoints().get( 1 ).setY( y - getY() );
                                                          }
                                                      } );
         addControlPoint( controlPoint1 );
@@ -151,10 +151,10 @@ public class WiresLine extends WiresBaseDynamicShape implements MagnetManager,
                              final double cy ) {
         final double _x = cx - getX();
         final double _y = cy - getY();
-        return Math.sqrt( GeometryUtil.ptSegDistSq( line.getPoints().getPoint( 0 ).getX(),
-                                                    line.getPoints().getPoint( 0 ).getY(),
-                                                    line.getPoints().getPoint( 1 ).getX(),
-                                                    line.getPoints().getPoint( 1 ).getY(),
+        return Math.sqrt( GeometryUtil.ptSegDistSq( line.getPoints().get( 0 ).getX(),
+                                                    line.getPoints().get( 0 ).getY(),
+                                                    line.getPoints().get( 1 ).getX(),
+                                                    line.getPoints().get( 1 ).getY(),
                                                     _x,
                                                     _y ) ) < BOUNDARY_SIZE;
     }

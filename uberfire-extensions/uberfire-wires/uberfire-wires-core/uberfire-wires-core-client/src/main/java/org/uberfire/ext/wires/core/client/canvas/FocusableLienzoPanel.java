@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.client.canvas;
 
-import com.emitrom.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DomEvent;

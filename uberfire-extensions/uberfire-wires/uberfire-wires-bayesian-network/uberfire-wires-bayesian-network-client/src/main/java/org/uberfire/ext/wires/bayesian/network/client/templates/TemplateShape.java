@@ -15,10 +15,10 @@
  */
 package org.uberfire.ext.wires.bayesian.network.client.templates;
 
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Shape;
-import com.emitrom.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Text;
 
 public class TemplateShape extends Group {
 

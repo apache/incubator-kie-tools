@@ -15,14 +15,14 @@
  */
 package org.uberfire.ext.wires.core.scratchpad.client.shapes.fixed;
 
-import com.emitrom.lienzo.client.core.event.NodeDragEndEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragEndHandler;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.event.NodeMouseDoubleClickEvent;
-import com.emitrom.lienzo.client.core.event.NodeMouseDoubleClickHandler;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.TextAlign;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.BlurEvent;

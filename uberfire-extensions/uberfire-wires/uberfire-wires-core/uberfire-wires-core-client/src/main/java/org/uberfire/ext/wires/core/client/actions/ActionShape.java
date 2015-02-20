@@ -17,9 +17,9 @@ package org.uberfire.ext.wires.core.client.actions;
 
 import java.io.Serializable;
 
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Picture;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Picture;
+import com.ait.lienzo.client.core.shape.Rectangle;
 
 public class ActionShape extends Group implements Serializable {
 

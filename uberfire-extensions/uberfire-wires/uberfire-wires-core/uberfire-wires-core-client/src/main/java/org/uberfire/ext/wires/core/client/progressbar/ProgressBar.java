@@ -1,14 +1,14 @@
 package org.uberfire.ext.wires.core.client.progressbar;
 
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.client.core.types.LinearGradient;
-import com.emitrom.lienzo.client.core.types.Shadow;
-import com.emitrom.lienzo.shared.core.types.ColorName;
-import com.emitrom.lienzo.shared.core.types.TextAlign;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.LinearGradient;
+import com.ait.lienzo.client.core.types.Shadow;
+import com.ait.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.user.client.Timer;
 
 public class ProgressBar extends Group {
@@ -36,8 +36,10 @@ public class ProgressBar extends Group {
 
     private Layer layer;
 
-    public ProgressBar(int width, int height, Layer layer) {
-        setInfinite(true);
+    public ProgressBar( int width,
+                        int height,
+                        Layer layer ) {
+        setInfinite( true );
         this.layer = layer;
 
         this.width = width;
@@ -47,32 +49,32 @@ public class ProgressBar extends Group {
 
         init();
 
-        add(substrate);
-        add(progress);
-        add(progressPercentage);
+        add( substrate );
+        add( progress );
+        add( progressPercentage );
 
     }
 
     public void show() {
         infinite = true;
-        setVisible(true);
+        setVisible( true );
         progressWidth = 0;
-        timer.scheduleRepeating(1);
+        timer.scheduleRepeating( 1 );
     }
 
     public void hide() {
-        setVisible(false);
+        setVisible( false );
         timer.cancel();
     }
 
     public void center() {
 
-        int x = (int) (width / 2 - substrate.getWidth() / 2);
-        int y = (int) (height / 2 - substrate.getHeight() / 2);
+        int x = (int) ( width / 2 - substrate.getWidth() / 2 );
+        int y = (int) ( height / 2 - substrate.getHeight() / 2 );
 
-        substrate.setX(x).setY(y);
-        progress.setX(x + 2).setY(y + 2);
-        progressPercentage.setX(x + substrate.getWidth() / 2).setY(y + 2 + progress.getHeight() / 2);
+        substrate.setX( x ).setY( y );
+        progress.setX( x + 2 ).setY( y + 2 );
+        progressPercentage.setX( x + substrate.getWidth() / 2 ).setY( y + 2 + progress.getHeight() / 2 );
 
         layer.draw();
 
@@ -82,9 +84,9 @@ public class ProgressBar extends Group {
         return substrateWidth;
     }
 
-    public void setProgressWidth(int progressWidth) {
+    public void setProgressWidth( int progressWidth ) {
         this.progressWidth = progressWidth;
-        progress.setWidth(progressWidth);
+        progress.setWidth( progressWidth );
     }
 
     public int getProgressWidth() {
@@ -101,27 +103,27 @@ public class ProgressBar extends Group {
 
     private void init() {
 
-        substrate = new Rectangle(substrateWidth, substrateHeight);
-        progress = new Rectangle(progressWidth, progressHeight);
+        substrate = new Rectangle( substrateWidth, substrateHeight );
+        progress = new Rectangle( progressWidth, progressHeight );
 
-        progressPercentage = new Text("0 %", "Lucida Console", 12).setFillColor(ColorName.WHITE.getValue())
-                .setStrokeColor(substrateColor).setTextBaseLine(TextBaseLine.MIDDLE).setTextAlign(TextAlign.CENTER);
+        progressPercentage = new Text( "0 %", "Lucida Console", 12 ).setFillColor( ColorName.WHITE.getValue() )
+                .setStrokeColor( substrateColor ).setTextBaseLine( TextBaseLine.MIDDLE ).setTextAlign( TextAlign.CENTER );
 
-        substrateGradient = new LinearGradient(0, substrateHeight, 0, 0);
-        substrateGradient.addColorStop(0.4, "rgba(255,255,255, 0.1)");
-        substrateGradient.addColorStop(0.6, "rgba(255,255,255, 0.7)");
-        substrateGradient.addColorStop(0.9, "rgba(255,255,255,0.4)");
-        substrateGradient.addColorStop(1, "rgba(189,189,189,1)");
+        substrateGradient = new LinearGradient( 0, substrateHeight, 0, 0 );
+        substrateGradient.addColorStop( 0.4, "rgba(255,255,255, 0.1)" );
+        substrateGradient.addColorStop( 0.6, "rgba(255,255,255, 0.7)" );
+        substrateGradient.addColorStop( 0.9, "rgba(255,255,255,0.4)" );
+        substrateGradient.addColorStop( 1, "rgba(189,189,189,1)" );
 
-        substrate.setFillGradient(substrateGradient).setShadow(new Shadow(substrateColor, 5, 3, 3))
-                .setStrokeColor(substrateColor).setStrokeWidth(1);
+        substrate.setFillGradient( substrateGradient ).setShadow( new Shadow( substrateColor, 5, 3, 3 ) )
+                .setStrokeColor( substrateColor ).setStrokeWidth( 1 );
 
-        progressGradient = new LinearGradient(0, -50, 0, 50);
-        progressGradient.addColorStop(0.5, "#4DA4F3");
-        progressGradient.addColorStop(0.8, "#ADD9FF");
-        progressGradient.addColorStop(1, "#9ED1FF");
+        progressGradient = new LinearGradient( 0, -50, 0, 50 );
+        progressGradient.addColorStop( 0.5, "#4DA4F3" );
+        progressGradient.addColorStop( 0.8, "#ADD9FF" );
+        progressGradient.addColorStop( 1, "#9ED1FF" );
 
-        progress.setFillGradient(progressGradient);
+        progress.setFillGradient( progressGradient );
 
         center();
         progress();
@@ -132,19 +134,19 @@ public class ProgressBar extends Group {
         timer = new Timer() {
             @Override
             public void run() {
-                if (!isInfinite()) {
+                if ( !isInfinite() ) {
                     hide();
                 }
                 progressWidth++;
-                if (progressWidth > substrateWidth - 4) {
+                if ( progressWidth > substrateWidth - 4 ) {
                     this.cancel();
                 }
-                progressPercentage.setText((int) progressWidth / 3 + " %");
-                setProgressWidth(progressWidth);
+                progressPercentage.setText( (int) progressWidth / 3 + " %" );
+                setProgressWidth( progressWidth );
                 layer.draw();
             }
         };
-        timer.scheduleRepeating(1);
+        timer.scheduleRepeating( 1 );
 
     }
 
@@ -152,7 +154,7 @@ public class ProgressBar extends Group {
         return infinite;
     }
 
-    public static void setInfinite(boolean infinite) {
+    public static void setInfinite( boolean infinite ) {
         ProgressBar.infinite = infinite;
     }
 

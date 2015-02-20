@@ -17,8 +17,8 @@ package org.uberfire.ext.wires.core.trees.client.layout;
 
 import java.util.Map;
 
-import com.emitrom.lienzo.client.core.shape.Viewport;
-import com.emitrom.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 import org.uberfire.ext.wires.core.client.canvas.WiresCanvas;
 import org.uberfire.ext.wires.core.trees.client.layout.treelayout.Rectangle2D;

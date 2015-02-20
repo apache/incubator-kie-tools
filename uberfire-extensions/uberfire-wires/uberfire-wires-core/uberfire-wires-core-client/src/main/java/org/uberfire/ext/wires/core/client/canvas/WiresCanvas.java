@@ -20,11 +20,11 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
-import com.emitrom.lienzo.client.core.shape.GridLayer;
-import com.emitrom.lienzo.client.core.shape.IPrimitive;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.core.shape.Line;
-import com.emitrom.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.client.core.shape.GridLayer;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Line;
+import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
@@ -281,8 +281,8 @@ public class WiresCanvas extends Composite implements ShapesManager,
                         for ( Magnet magnet : magnets ) {
                             magnet.setActive( false );
 
-                            double deltaX = cx - magnet.getX() - magnet.getOffset().getX();
-                            double deltaY = cy - magnet.getY() - magnet.getOffset().getY();
+                            double deltaX = cx - magnet.getX();
+                            double deltaY = cy - magnet.getY();
                             double distance = Math.sqrt( Math.pow( deltaX, 2 ) + Math.pow( deltaY, 2 ) );
 
                             if ( finalDistance > distance ) {

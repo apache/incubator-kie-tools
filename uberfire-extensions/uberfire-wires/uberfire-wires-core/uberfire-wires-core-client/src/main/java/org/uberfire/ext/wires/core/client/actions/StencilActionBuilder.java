@@ -1,9 +1,9 @@
 package org.uberfire.ext.wires.core.client.actions;
 
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.shape.Picture;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Picture;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.resources.client.ImageResource;
 
 public class StencilActionBuilder {
@@ -13,15 +13,13 @@ public class StencilActionBuilder {
     private static final int HEIGHT_PICTURE = 16;
     private static final int WIDTH_PICTURE = 16;
 
-    public ActionShape build( final String pictureCategory,
-                              final NodeMouseClickHandler clickHandler,
+    public ActionShape build( final NodeMouseClickHandler clickHandler,
                               final ImageResource img ) {
         final Rectangle bounding = getBoundingImage( clickHandler );
         final Picture icon = new Picture( img,
                                           WIDTH_PICTURE,
                                           HEIGHT_PICTURE,
-                                          false,
-                                          pictureCategory );
+                                          false );
 
         final ActionShape shape = new ActionShape();
         shape.setPicture( icon );

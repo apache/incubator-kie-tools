@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 
-import com.emitrom.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextAlign;
 import com.google.common.collect.Lists;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;

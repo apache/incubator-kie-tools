@@ -17,8 +17,8 @@ package org.uberfire.ext.wires.core.scratchpad.client.factories.connectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.emitrom.lienzo.client.core.shape.Line;
-import com.emitrom.lienzo.shared.core.types.LineCap;
+import com.ait.lienzo.client.core.shape.Line;
+import com.ait.lienzo.shared.core.types.LineCap;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;

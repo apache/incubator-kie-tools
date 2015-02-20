@@ -22,21 +22,21 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.uberfire.ext.wires.bayesian.network.client.events.RenderBayesianNetworkEvent;
-import org.uberfire.ext.wires.bayesian.network.client.shapes.EditableBayesianNode;
-import org.uberfire.ext.wires.bayesian.network.client.utils.BayesianUtils;
-import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesNetwork;
-import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesVariable;
-import org.uberfire.ext.wires.bayesian.network.parser.client.service.BayesianService;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.shared.core.types.Color;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.Color;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.Window;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.ext.wires.bayesian.network.client.events.RenderBayesianNetworkEvent;
+import org.uberfire.ext.wires.bayesian.network.client.shapes.EditableBayesianNode;
+import org.uberfire.ext.wires.bayesian.network.client.utils.BayesianUtils;
+import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesNetwork;
+import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesVariable;
+import org.uberfire.ext.wires.bayesian.network.parser.client.service.BayesianService;
 import org.uberfire.ext.wires.core.client.progressbar.ProgressBar;
 
 @ApplicationScoped

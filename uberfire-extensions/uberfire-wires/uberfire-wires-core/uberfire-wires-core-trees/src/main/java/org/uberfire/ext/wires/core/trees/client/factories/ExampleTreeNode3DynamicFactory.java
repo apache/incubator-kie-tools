@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.emitrom.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.shape.Circle;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.ShapeFactory;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;

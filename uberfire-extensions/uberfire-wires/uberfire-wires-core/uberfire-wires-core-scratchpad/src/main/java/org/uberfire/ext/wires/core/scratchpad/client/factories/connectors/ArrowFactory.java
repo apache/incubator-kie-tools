@@ -17,9 +17,9 @@ package org.uberfire.ext.wires.core.scratchpad.client.factories.connectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.emitrom.lienzo.client.core.shape.Arrow;
-import com.emitrom.lienzo.client.core.types.Point2D;
-import com.emitrom.lienzo.shared.core.types.ArrowType;
+import com.ait.lienzo.client.core.shape.Arrow;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.ArrowType;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;

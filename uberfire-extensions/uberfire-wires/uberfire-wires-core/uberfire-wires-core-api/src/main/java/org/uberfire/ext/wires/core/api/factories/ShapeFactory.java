@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.api.factories;
 
-import com.emitrom.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Shape;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 

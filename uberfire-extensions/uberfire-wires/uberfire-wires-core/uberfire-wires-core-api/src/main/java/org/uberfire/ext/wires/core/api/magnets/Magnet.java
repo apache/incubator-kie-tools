@@ -17,8 +17,8 @@ package org.uberfire.ext.wires.core.api.magnets;
 
 import java.util.List;
 
-import com.emitrom.lienzo.client.core.shape.IPrimitive;
-import com.emitrom.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Node;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 
 public interface Magnet<T extends Node<T>> extends IPrimitive<T> {
@@ -52,5 +52,8 @@ public interface Magnet<T extends Node<T>> extends IPrimitive<T> {
      * @param isActive
      */
     void setActive( final boolean isActive );
+
+    void move( final double dx,
+               final double dy );
 
 }

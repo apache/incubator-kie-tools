@@ -8,7 +8,7 @@
   <inherits name="org.uberfire.client.views.Bootstrap2"/>
 
   <!-- Wires dependencies -->
-  <inherits name="com.emitrom.lienzo.Lienzo"/>
+  <inherits name="com.ait.lienzo.Lienzo"/>
   <inherits name="org.uberfire.ext.wires.core.WiresCoreClient"/>
 
   <!-- Wires Scratch Pad dependencies -->

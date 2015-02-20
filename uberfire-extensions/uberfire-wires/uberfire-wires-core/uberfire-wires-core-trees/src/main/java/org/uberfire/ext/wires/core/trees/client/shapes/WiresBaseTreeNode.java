@@ -20,24 +20,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.emitrom.lienzo.client.core.animation.AnimationProperties;
-import com.emitrom.lienzo.client.core.animation.AnimationTweener;
-import com.emitrom.lienzo.client.core.animation.IAnimation;
-import com.emitrom.lienzo.client.core.animation.IAnimationCallback;
-import com.emitrom.lienzo.client.core.animation.IAnimationHandle;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimation;
+import com.ait.lienzo.client.core.animation.IAnimationCallback;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.types.Point2D;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.api.layout.LayoutManager;
 import org.uberfire.ext.wires.core.api.layout.RequiresLayoutManager;
 import org.uberfire.ext.wires.core.api.shapes.RequiresShapesManager;
 import org.uberfire.ext.wires.core.api.shapes.ShapesManager;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 import org.uberfire.ext.wires.core.trees.client.canvas.WiresTreeNodeConnector;
-import org.uberfire.ext.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.uberfire.ext.wires.core.trees.client.layout.WiresLayoutUtilities;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.uberfire.mvp.Command;
 
 public abstract class WiresBaseTreeNode extends WiresBaseShape implements RequiresShapesManager,
@@ -63,7 +63,7 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
             @Override
             public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
                 for ( WiresTreeNodeConnector connector : connectors ) {
-                    connector.getPoints().getPoint( 0 ).set( getLocation() );
+                    connector.getPoints().get( 0 ).set( getLocation() );
                 }
                 getLayer().draw();
             }
@@ -134,8 +134,8 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
      */
     public void addChildNode( final WiresBaseTreeNode child ) {
         final WiresTreeNodeConnector connector = new WiresTreeNodeConnector();
-        connector.getPoints().getPoint( 0 ).set( getLocation() );
-        connector.getPoints().getPoint( 1 ).set( child.getLocation() );
+        connector.getPoints().get( 0 ).set( getLocation() );
+        connector.getPoints().get( 1 ).set( child.getLocation() );
         getLayer().add( connector );
         connector.moveToBottom();
 
@@ -150,7 +150,7 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
         child.addNodeDragMoveHandler( new NodeDragMoveHandler() {
             @Override
             public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                connector.getPoints().getPoint( 1 ).set( child.getLocation() );
+                connector.getPoints().get( 1 ).set( child.getLocation() );
             }
         } );
     }
@@ -169,8 +169,8 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
     }
 
     private double getConnectorAngle( final WiresTreeNodeConnector connector ) {
-        final double cdx = connector.getPoints().getPoint( 1 ).getX() - connector.getPoints().getPoint( 0 ).getX();
-        final double cdy = connector.getPoints().getPoint( 1 ).getY() - connector.getPoints().getPoint( 0 ).getY();
+        final double cdx = connector.getPoints().get( 1 ).getX() - connector.getPoints().get( 0 ).getX();
+        final double cdy = connector.getPoints().get( 1 ).getY() - connector.getPoints().get( 0 ).getY();
         final double theta = Math.atan2( cdy,
                                          cdx ) + Math.PI / 2;
         return ( theta < 0 ? theta + ( 2 * Math.PI ) : theta );
@@ -202,8 +202,8 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
                              final double ny ) {
         final int index = children.indexOf( child );
         final WiresTreeNodeConnector connector = connectors.get( index );
-        connector.getPoints().getPoint( 1 ).setX( nx );
-        connector.getPoints().getPoint( 1 ).setY( ny );
+        connector.getPoints().get( 1 ).setX( nx );
+        connector.getPoints().get( 1 ).setY( ny );
     }
 
     /**
@@ -503,8 +503,8 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
             return;
         }
         for ( WiresTreeNodeConnector connector : connectors ) {
-            connector.getPoints().getPoint( 0 ).setX( getX() );
-            connector.getPoints().getPoint( 0 ).setY( getY() );
+            connector.getPoints().get( 0 ).setX( getX() );
+            connector.getPoints().get( 0 ).setY( getY() );
         }
         if ( parent != null ) {
             parent.childMoved( this,
@@ -523,13 +523,6 @@ public abstract class WiresBaseTreeNode extends WiresBaseShape implements Requir
     @Override
     public Group setY( final double y ) {
         final Group g = super.setY( y );
-        updateConnectorsEndPoints();
-        return g;
-    }
-
-    @Override
-    public Group setLocation( final Point2D p ) {
-        final Group g = super.setLocation( p );
         updateConnectorsEndPoints();
         return g;
     }

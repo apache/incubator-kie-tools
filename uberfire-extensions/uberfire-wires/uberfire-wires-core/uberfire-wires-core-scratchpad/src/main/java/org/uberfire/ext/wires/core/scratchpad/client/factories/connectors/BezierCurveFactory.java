@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.core.scratchpad.client.factories.connectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.emitrom.lienzo.client.core.shape.BezierCurve;
+import com.ait.lienzo.client.core.shape.BezierCurve;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;

@@ -15,13 +15,16 @@
  */
 package org.uberfire.ext.wires.core.api.controlpoints;
 
-import com.emitrom.lienzo.client.core.shape.IPrimitive;
-import com.emitrom.lienzo.client.core.shape.Node;
+import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Node;
 
 public interface ControlPoint<T extends Node<T>> extends IPrimitive<T> {
 
     String getId();
 
     ControlPointMoveHandler getHandler();
+
+    void move( final double dx,
+               final double dy );
 
 }

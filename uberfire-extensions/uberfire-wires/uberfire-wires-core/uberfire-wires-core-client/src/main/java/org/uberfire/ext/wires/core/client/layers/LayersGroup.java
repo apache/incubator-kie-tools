@@ -21,13 +21,13 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.ext.wires.core.api.factories.ShapeFactory;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
-import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 import org.uberfire.ext.wires.core.client.canvas.FocusableLienzoPanel;
+import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 
 @Dependent
 public class LayersGroup extends Composite {

@@ -15,9 +15,10 @@
  */
 package org.uberfire.ext.wires.core.client.controlpoints;
 
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
 import org.uberfire.ext.wires.core.api.shapes.UUID;
@@ -57,6 +58,13 @@ public class DefaultControlPoint extends Circle implements ControlPoint<Circle> 
     @Override
     public ControlPointMoveHandler getHandler() {
         return cpMoveHandler;
+    }
+
+    @Override
+    public void move( final double dx,
+                      final double dy ) {
+        setLocation( getLocation().add( new Point2D( dx,
+                                                     dy ) ) );
     }
 
     protected void setupHandlers( final ControlPointMoveHandler moveHandler ) {

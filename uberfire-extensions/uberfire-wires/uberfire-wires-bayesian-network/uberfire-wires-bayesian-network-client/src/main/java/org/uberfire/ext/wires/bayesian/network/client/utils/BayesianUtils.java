@@ -2,9 +2,9 @@ package org.uberfire.ext.wires.bayesian.network.client.utils;
 
 import java.util.Map;
 
-import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesVariable;
-import com.emitrom.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.Color;
 import com.google.common.collect.ImmutableMap;
+import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesVariable;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
 public class BayesianUtils {

@@ -15,10 +15,10 @@
  */
 package org.uberfire.ext.wires.core.client.controlpoints;
 
-import com.emitrom.lienzo.client.core.event.NodeDragEndEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragEndHandler;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
 import org.uberfire.ext.wires.core.api.controlpoints.HasControlPoints;
 import org.uberfire.ext.wires.core.api.magnets.Magnet;
@@ -62,8 +62,8 @@ public class ConnectibleControlPoint extends DefaultControlPoint {
                 }
 
                 boundMagnet = magnetManager.getMagnet( shape,
-                                                       ConnectibleControlPoint.this.getX() + getOffset().getX(),
-                                                       ConnectibleControlPoint.this.getY() + getOffset().getY() );
+                                                       ConnectibleControlPoint.this.getX(),
+                                                       ConnectibleControlPoint.this.getY() );
 
                 getLayer().draw();
             }
@@ -74,13 +74,13 @@ public class ConnectibleControlPoint extends DefaultControlPoint {
             @Override
             public void onNodeDragEnd( final NodeDragEndEvent nodeDragEndEvent ) {
                 if ( boundMagnet != null ) {
-                    double deltaX = ( getX() + getOffset().getX() ) - ( boundMagnet.getX() + boundMagnet.getOffset().getX() );
-                    double deltaY = ( getY() + getOffset().getY() ) - ( boundMagnet.getY() + boundMagnet.getOffset().getY() );
+                    double deltaX = getX() - boundMagnet.getX();
+                    double deltaY = getY() - boundMagnet.getY();
                     double distance = Math.sqrt( Math.pow( deltaX, 2 ) + Math.pow( deltaY, 2 ) );
                     if ( distance < MAGNET_ATTRACTION ) {
                         boundMagnet.attachControlPoint( ConnectibleControlPoint.this );
-                        final double x = boundMagnet.getX() + boundMagnet.getOffset().getX() - getOffset().getX();
-                        final double y = boundMagnet.getY() + boundMagnet.getOffset().getY() - getOffset().getY();
+                        final double x = boundMagnet.getX();
+                        final double y = boundMagnet.getY();
                         setX( x );
                         setY( y );
                         handler.onMove( x,

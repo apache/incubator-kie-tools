@@ -15,11 +15,11 @@
  */
 package org.uberfire.ext.wires.core.scratchpad.client.shapes.connectors;
 
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.shape.Arrow;
-import com.emitrom.lienzo.client.core.types.Point2D;
-import com.emitrom.lienzo.shared.core.types.ArrowType;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.shape.Arrow;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.ArrowType;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
 import org.uberfire.ext.wires.core.api.magnets.Magnet;
 import org.uberfire.ext.wires.core.api.magnets.MagnetManager;
@@ -79,10 +79,10 @@ public class WiresArrow extends WiresBaseDynamicShape implements MagnetManager,
                                                          @Override
                                                          public void onMove( final double x,
                                                                              final double y ) {
-                                                             arrow.setStart( new Point2D( x,
-                                                                                          y ) );
-                                                             bounding.setStart( new Point2D( x,
-                                                                                             y ) );
+                                                             arrow.setStart( new Point2D( x - getX(),
+                                                                                          y - getY() ) );
+                                                             bounding.setStart( new Point2D( x - getX(),
+                                                                                             y - getY() ) );
                                                          }
                                                      }
         );
@@ -95,10 +95,10 @@ public class WiresArrow extends WiresBaseDynamicShape implements MagnetManager,
                                                          @Override
                                                          public void onMove( final double x,
                                                                              final double y ) {
-                                                             arrow.setEnd( new Point2D( x,
-                                                                                        y ) );
-                                                             bounding.setEnd( new Point2D( x,
-                                                                                           y ) );
+                                                             arrow.setEnd( new Point2D( x - getX(),
+                                                                                        y - getY() ) );
+                                                             bounding.setEnd( new Point2D( x - getX(),
+                                                                                           y - getY() ) );
                                                          }
                                                      }
         );
@@ -160,10 +160,10 @@ public class WiresArrow extends WiresBaseDynamicShape implements MagnetManager,
                              final double cy ) {
         final double _x = cx - getX();
         final double _y = cy - getY();
-        return Math.sqrt( GeometryUtil.ptSegDistSq( arrow.getPoints().getPoint( 0 ).getX(),
-                                                    arrow.getPoints().getPoint( 0 ).getY(),
-                                                    arrow.getPoints().getPoint( 1 ).getX(),
-                                                    arrow.getPoints().getPoint( 1 ).getY(),
+        return Math.sqrt( GeometryUtil.ptSegDistSq( arrow.getPoints().get( 0 ).getX(),
+                                                    arrow.getPoints().get( 0 ).getY(),
+                                                    arrow.getPoints().get( 1 ).getX(),
+                                                    arrow.getPoints().get( 1 ).getY(),
                                                     _x,
                                                     _y ) ) < BOUNDARY_SIZE;
     }

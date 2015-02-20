@@ -15,8 +15,8 @@
  */
 package org.uberfire.ext.wires.core.client.factories;
 
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Shape;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Shape;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.ShapeDragProxy;
 import org.uberfire.ext.wires.core.api.factories.ShapeDragProxyCompleteCallback;

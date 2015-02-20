@@ -1,6 +1,6 @@
 package org.uberfire.ext.wires.core.client.util;
 
-import com.emitrom.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.Color;
 
 public class ShapeFactoryUtil {
 

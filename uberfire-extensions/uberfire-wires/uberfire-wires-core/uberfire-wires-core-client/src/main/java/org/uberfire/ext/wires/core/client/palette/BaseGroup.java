@@ -20,15 +20,15 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.ext.wires.core.api.factories.ShapeFactory;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;
-import org.uberfire.ext.wires.core.client.factories.ShapeFactoryCache;
-import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 import org.uberfire.ext.wires.core.client.canvas.FocusableLienzoPanel;
+import org.uberfire.ext.wires.core.client.factories.ShapeFactoryCache;
 import org.uberfire.ext.wires.core.client.factories.StringFactoryHelper;
+import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
 public abstract class BaseGroup extends Composite {

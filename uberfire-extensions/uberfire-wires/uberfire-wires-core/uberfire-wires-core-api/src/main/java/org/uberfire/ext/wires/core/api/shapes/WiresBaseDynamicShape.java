@@ -8,11 +8,10 @@ package org.uberfire.ext.wires.core.api.shapes;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.controlpoints.HasControlPoints;
 import org.uberfire.ext.wires.core.api.magnets.HasMagnets;
@@ -35,8 +34,8 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
         addNodeDragMoveHandler( new NodeDragMoveHandler() {
             @Override
             public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                updateMagnetOffsets();
-                updateControlPointOffsets();
+                updateMagnetLocations( 0, 0 );
+                updateControlPointLocations( 0, 0 );
                 getLayer().draw();
             }
         } );
@@ -52,7 +51,6 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
         final Layer layer = getLayer();
         if ( !controlPoints.isEmpty() && !showingControlPoints ) {
             for ( ControlPoint cp : controlPoints ) {
-                cp.setOffset( getLocation() );
                 layer.add( cp );
             }
             showingControlPoints = true;
@@ -87,7 +85,6 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
         final Layer layer = getLayer();
         if ( !magnets.isEmpty() && !showingMagnets ) {
             for ( Magnet m : magnets ) {
-                m.setOffset( getLocation() );
                 layer.add( m );
             }
             showingMagnets = true;
@@ -116,51 +113,47 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
 
     @Override
     public Group setX( final double x ) {
+        final double dx = x - getX();
+        final double dy = 0;
+        updateMagnetLocations( dx,
+                               dy );
+        updateControlPointLocations( dx,
+                                     dy );
         final Group g = super.setX( x );
-        updateMagnetOffsets();
-        updateControlPointOffsets();
         return g;
     }
 
     @Override
     public Group setY( final double y ) {
+        final double dx = 0;
+        final double dy = y - getY();
+        updateMagnetLocations( dx,
+                               dy );
+        updateControlPointLocations( dx,
+                                     dy );
         final Group g = super.setY( y );
-        updateMagnetOffsets();
-        updateControlPointOffsets();
         return g;
     }
 
-    @Override
-    public Group setLocation( final Point2D p ) {
-        final Group g = super.setLocation( p );
-        updateMagnetOffsets();
-        updateControlPointOffsets();
-        return g;
-    }
-
-    @Override
-    public Group setOffset( final Point2D offset ) {
-        final Group g = super.setOffset( offset );
-        updateMagnetOffsets();
-        updateControlPointOffsets();
-        return g;
-    }
-
-    protected void updateMagnetOffsets() {
+    protected void updateMagnetLocations( final double dx,
+                                          final double dy ) {
         if ( magnets == null ) {
             return;
         }
         for ( Magnet m : magnets ) {
-            m.setOffset( getLocation() );
+            m.move( dx,
+                    dy );
         }
     }
 
-    protected void updateControlPointOffsets() {
+    protected void updateControlPointLocations( final double dx,
+                                                final double dy ) {
         if ( controlPoints == null ) {
             return;
         }
         for ( ControlPoint cp : controlPoints ) {
-            cp.setOffset( getLocation() );
+            cp.move( dx,
+                     dy );
         }
     }
 

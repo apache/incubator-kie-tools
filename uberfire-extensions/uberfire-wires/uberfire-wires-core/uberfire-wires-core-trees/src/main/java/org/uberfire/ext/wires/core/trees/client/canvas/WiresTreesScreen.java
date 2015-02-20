@@ -23,14 +23,19 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.emitrom.lienzo.client.core.animation.AnimationProperties;
-import com.emitrom.lienzo.client.core.animation.AnimationTweener;
-import com.emitrom.lienzo.client.core.animation.IAnimation;
-import com.emitrom.lienzo.client.core.animation.IAnimationCallback;
-import com.emitrom.lienzo.client.core.animation.IAnimationHandle;
-import com.emitrom.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimation;
+import com.ait.lienzo.client.core.animation.IAnimationCallback;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
+import com.ait.lienzo.client.core.types.Point2D;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.client.annotations.WorkbenchMenu;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.wires.core.api.events.ClearEvent;
 import org.uberfire.ext.wires.core.api.events.ShapeAddedEvent;
 import org.uberfire.ext.wires.core.api.events.ShapeDeletedEvent;
@@ -41,14 +46,9 @@ import org.uberfire.ext.wires.core.api.layout.LayoutManager;
 import org.uberfire.ext.wires.core.api.layout.RequiresLayoutManager;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 import org.uberfire.ext.wires.core.client.canvas.WiresCanvas;
-import org.uberfire.ext.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.uberfire.ext.wires.core.trees.client.layout.WiresLayoutUtilities;
+import org.uberfire.ext.wires.core.trees.client.layout.treelayout.Rectangle2D;
 import org.uberfire.ext.wires.core.trees.client.shapes.WiresBaseTreeNode;
-import org.uberfire.client.annotations.WorkbenchMenu;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.commons.data.Pair;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -204,8 +204,8 @@ public class WiresTreesScreen extends WiresCanvas {
                 canvasLayer.add( connector );
                 connector.moveToBottom();
             }
-            connector.getPoints().getPoint( 0 ).set( prospectiveParent.getLocation() );
-            connector.getPoints().getPoint( 1 ).set( new Point2D( cx,
+            connector.getPoints().get( 0 ).set( prospectiveParent.getLocation() );
+            connector.getPoints().get( 1 ).set( new Point2D( cx,
                                                                   cy ) );
         } else if ( connector != null ) {
             canvasLayer.remove( connector );

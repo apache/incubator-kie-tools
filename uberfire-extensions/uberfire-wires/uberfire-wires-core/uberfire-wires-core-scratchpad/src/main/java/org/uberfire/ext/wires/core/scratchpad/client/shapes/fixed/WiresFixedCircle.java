@@ -15,11 +15,11 @@
  */
 package org.uberfire.ext.wires.core.scratchpad.client.shapes.fixed;
 
-import com.emitrom.lienzo.client.core.event.NodeDragEndEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragEndHandler;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.shape.Circle;
 import org.uberfire.ext.wires.core.api.containers.ContainerManager;
 import org.uberfire.ext.wires.core.api.containers.RequiresContainerManager;
 import org.uberfire.ext.wires.core.api.containers.WiresContainer;

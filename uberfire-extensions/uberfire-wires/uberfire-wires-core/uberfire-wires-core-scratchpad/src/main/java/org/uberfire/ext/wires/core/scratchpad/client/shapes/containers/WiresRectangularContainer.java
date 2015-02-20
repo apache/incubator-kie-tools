@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.wires.core.scratchpad.client.shapes.containers;
 
-import com.emitrom.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseDynamicContainer;
@@ -37,21 +37,16 @@ public class WiresRectangularContainer extends WiresBaseDynamicContainer {
     private final ControlPoint controlPoint4;
 
     public WiresRectangularContainer( final Rectangle shape ) {
-        final double x1 = shape.getOffset().getX();
-        final double y1 = shape.getOffset().getY();
-        final double x2 = shape.getOffset().getX() + shape.getWidth();
-        final double y2 = shape.getOffset().getY() + shape.getHeight();
+        final double x1 = shape.getX();
+        final double y1 = shape.getY();
+        final double x2 = shape.getX() + shape.getWidth();
+        final double y2 = shape.getY() + shape.getHeight();
         final double width = Math.abs( x2 - x1 );
         final double height = Math.abs( y2 - y1 );
 
         rectangle = shape;
         rectangleFillColour = shape.getFillColor();
         rectangleStokeColour = shape.getStrokeColor();
-
-        rectangle.setX( x1 );
-        rectangle.setY( y1 );
-        rectangle.setOffset( 0,
-                             0 );
 
         bounding = new Rectangle( width + BOUNDARY_SIZE,
                                   height + BOUNDARY_SIZE,
@@ -76,8 +71,8 @@ public class WiresRectangularContainer extends WiresBaseDynamicContainer {
                                                                          final double y ) {
                                                          controlPoint2.setY( controlPoint1.getY() );
                                                          controlPoint3.setX( controlPoint1.getX() );
-                                                         rectangle.setX( x );
-                                                         rectangle.setY( y );
+                                                         rectangle.setX( x - getX() );
+                                                         rectangle.setY( y - getY() );
                                                          rectangle.setWidth( controlPoint2.getX() - controlPoint1.getX() );
                                                          rectangle.setHeight( controlPoint3.getY() - controlPoint1.getY() );
                                                          bounding.setX( x - ( BOUNDARY_SIZE / 2 ) );
@@ -98,7 +93,7 @@ public class WiresRectangularContainer extends WiresBaseDynamicContainer {
                                                                          double y ) {
                                                          controlPoint1.setY( controlPoint2.getY() );
                                                          controlPoint4.setX( controlPoint2.getX() );
-                                                         rectangle.setY( y );
+                                                         rectangle.setY( y - getY() );
                                                          rectangle.setWidth( controlPoint2.getX() - controlPoint1.getX() );
                                                          rectangle.setHeight( controlPoint3.getY() - controlPoint1.getY() );
                                                          bounding.setY( y - ( BOUNDARY_SIZE / 2 ) );
@@ -118,7 +113,7 @@ public class WiresRectangularContainer extends WiresBaseDynamicContainer {
                                                                          double y ) {
                                                          controlPoint1.setX( controlPoint3.getX() );
                                                          controlPoint4.setY( controlPoint3.getY() );
-                                                         rectangle.setX( x );
+                                                         rectangle.setX( x - getX() );
                                                          rectangle.setWidth( controlPoint2.getX() - controlPoint1.getX() );
                                                          rectangle.setHeight( controlPoint3.getY() - controlPoint1.getY() );
                                                          bounding.setX( x - ( BOUNDARY_SIZE / 2 ) );

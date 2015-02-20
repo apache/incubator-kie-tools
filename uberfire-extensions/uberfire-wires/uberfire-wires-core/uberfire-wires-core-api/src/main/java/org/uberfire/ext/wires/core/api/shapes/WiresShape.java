@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.core.api.shapes;
 
 import java.util.List;
 
-import com.emitrom.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Group;
 
 public interface WiresShape {
 

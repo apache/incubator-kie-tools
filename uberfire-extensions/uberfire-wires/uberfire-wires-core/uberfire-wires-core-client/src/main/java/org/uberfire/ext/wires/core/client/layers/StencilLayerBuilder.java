@@ -19,12 +19,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.emitrom.lienzo.client.core.event.NodeMouseClickEvent;
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.user.client.ui.Composite;
 import org.uberfire.ext.wires.core.api.events.ShapeSelectedEvent;
 import org.uberfire.ext.wires.core.api.factories.ShapeFactory;

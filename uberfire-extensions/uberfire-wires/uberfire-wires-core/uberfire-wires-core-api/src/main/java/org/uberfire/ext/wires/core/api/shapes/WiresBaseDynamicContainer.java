@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.emitrom.lienzo.client.core.event.NodeDragMoveEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragMoveHandler;
-import com.emitrom.lienzo.client.core.event.NodeDragStartEvent;
-import com.emitrom.lienzo.client.core.event.NodeDragStartHandler;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.types.Point2D;
-import org.uberfire.ext.wires.core.api.containers.WiresContainer;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
+import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
+import com.ait.lienzo.client.core.event.NodeDragStartEvent;
+import com.ait.lienzo.client.core.event.NodeDragStartHandler;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.types.Point2D;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.wires.core.api.containers.WiresContainer;
 
 /**
  * A Container that can be re-sized and have connectors attached.
@@ -54,7 +54,7 @@ public abstract class WiresBaseDynamicContainer extends WiresBaseDynamicShape im
                 final Point2D delta = new Point2D( deltaX,
                                                    deltaY );
                 for ( Pair<WiresBaseShape, Point2D> dragStartLocation : dragStartLocations ) {
-                    dragStartLocation.getK1().setLocation( dragStartLocation.getK2().plus( delta ) );
+                    dragStartLocation.getK1().setLocation( dragStartLocation.getK2().add( delta ) );
                 }
                 getLayer().draw();
             }
@@ -84,53 +84,27 @@ public abstract class WiresBaseDynamicContainer extends WiresBaseDynamicShape im
 
     @Override
     public Group setX( final double x ) {
-        updateChildrenLocation( x - getX(),
-                                0 );
+        updateChildrenLocations( x - getX(),
+                                 0 );
         return super.setX( x );
     }
 
     @Override
     public Group setY( final double y ) {
-        updateChildrenLocation( 0,
-                                y - getY() );
+        updateChildrenLocations( 0,
+                                 y - getY() );
         return super.setY( y );
     }
 
-    @Override
-    public Group setLocation( final Point2D p ) {
-        updateChildrenLocation( p.getX() - getX(),
-                                p.getY() - getY() );
-        return super.setLocation( p );
-    }
-
-    @Override
-    public Group setOffset( final Point2D offset ) {
-        updateChildrenOffset( offset.getX() - getX(),
-                              offset.getY() - getY() );
-        return super.setOffset( offset );
-    }
-
-    protected void updateChildrenLocation( final double deltaX,
-                                           final double deltaY ) {
+    protected void updateChildrenLocations( final double deltaX,
+                                            final double deltaY ) {
         if ( children == null ) {
             return;
         }
         final Point2D delta = new Point2D( deltaX,
                                            deltaY );
         for ( WiresBaseShape shape : children ) {
-            shape.setLocation( shape.getLocation().plus( delta ) );
-        }
-    }
-
-    protected void updateChildrenOffset( final double deltaX,
-                                         final double deltaY ) {
-        if ( children == null ) {
-            return;
-        }
-        final Point2D delta = new Point2D( deltaX,
-                                           deltaY );
-        for ( WiresBaseShape shape : children ) {
-            shape.setLocation( shape.getOffset().plus( delta ) );
+            shape.setLocation( shape.getLocation().add( delta ) );
         }
     }
 

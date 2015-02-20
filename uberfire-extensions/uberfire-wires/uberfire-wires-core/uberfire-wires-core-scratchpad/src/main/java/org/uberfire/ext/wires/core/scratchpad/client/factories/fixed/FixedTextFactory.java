@@ -17,12 +17,12 @@ package org.uberfire.ext.wires.core.scratchpad.client.factories.fixed;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.client.core.types.TextMetrics;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
-import com.emitrom.lienzo.shared.core.types.TextAlign;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.TextMetrics;
+import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;

@@ -15,11 +15,11 @@
  */
 package org.uberfire.ext.wires.core.trees.client.shapes;
 
-import com.emitrom.lienzo.client.core.shape.Circle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.shared.core.types.ColorName;
-import com.emitrom.lienzo.shared.core.types.TextAlign;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 
 /**
  * Example Node that can have all other types of node added as children

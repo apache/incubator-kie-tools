@@ -15,23 +15,19 @@
  */
 package org.uberfire.ext.wires.bayesian.network.client.shapes;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.google.common.collect.Maps;
 import org.uberfire.ext.wires.bayesian.network.client.utils.BayesianUtils;
 import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesVariable;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.google.common.collect.Maps;
 import org.uberfire.ext.wires.core.api.shapes.OverridesFactoryDescription;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
-public class EditableBayesianNode extends WiresBaseShape implements OverridesFactoryDescription,
-                                                                    Serializable {
-
-    private static final long serialVersionUID = -5490131652690005490L;
+public class EditableBayesianNode extends WiresBaseShape implements OverridesFactoryDescription {
 
     private static final int BOUNDARY_SIZE = 10;
 
@@ -55,8 +51,8 @@ public class EditableBayesianNode extends WiresBaseShape implements OverridesFac
     public EditableBayesianNode( final Rectangle shape ) {
         this( shape.getWidth(),
               shape.getHeight(),
-              shape.getOffset().getX(),
-              shape.getOffset().getY(),
+              shape.getX(),
+              shape.getY(),
               BayesianUtils.getNodeColors()[ 0 ][ 0 ] );
     }
 

@@ -17,7 +17,7 @@ package org.uberfire.ext.wires.core.scratchpad.client.factories.dynamic;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.emitrom.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Rectangle;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.categories.Category;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
@@ -59,8 +59,8 @@ public class RectangleFactory extends AbstractBaseFactory<Rectangle> {
         final Rectangle rectangle = new Rectangle( SHAPE_SIZE_X,
                                                    SHAPE_SIZE_Y,
                                                    5 );
-        rectangle.setOffset( 0 - ( SHAPE_SIZE_X / 2 ),
-                             0 - ( SHAPE_SIZE_Y / 2 ) )
+        rectangle.setX( 0 - ( SHAPE_SIZE_X / 2 ) )
+                .setY( 0 - ( SHAPE_SIZE_Y / 2 ) )
                 .setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
                 .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
                 .setFillColor( ShapesUtils.RGB_FILL_SHAPE )

@@ -15,18 +15,15 @@
  */
 package org.uberfire.ext.wires.bayesian.network.client.shapes;
 
-import java.io.Serializable;
 import java.util.Map;
 
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.shared.core.types.ColorName;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.common.collect.Maps;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 
-public class EditableBayesianProbability extends WiresBaseShape implements Serializable {
-
-    private static final long serialVersionUID = 286548230036126637L;
+public class EditableBayesianProbability extends WiresBaseShape {
 
     private Map<Text, Rectangle> parentNode;
     private Map<Text, Rectangle> porcentualOptions;
