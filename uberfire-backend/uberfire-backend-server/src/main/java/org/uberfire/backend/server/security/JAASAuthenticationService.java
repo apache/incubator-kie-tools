@@ -1,4 +1,5 @@
 package org.uberfire.backend.server.security;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.acl.Group;
@@ -6,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.security.auth.Subject;
@@ -25,6 +25,7 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSource;
 
 /**
  * Implements stateful, thread-local authentication of a user via the JAAS API (
@@ -35,7 +36,7 @@ import org.uberfire.commons.validation.PortablePreconditions;
  * with the Git SSH daemon, but would cause serious security issues if used for authenticating HTTP requests.
  */
 @ApplicationScoped @Alternative
-public class JAASAuthenticationService implements AuthenticationService {
+public class JAASAuthenticationService extends GroupAdapterAuthorizationSource implements AuthenticationService {
 
     public static final String DEFAULT_DOMAIN = "ApplicationRealm";
 
@@ -55,7 +56,7 @@ public class JAASAuthenticationService implements AuthenticationService {
         try {
             final LoginContext loginContext = new LoginContext( domain, new UsernamePasswordCallbackHandler( username, password ) );
             loginContext.login();
-            UserImpl user = new UserImpl( username, loadRoles( loginContext.getSubject() ) );
+            UserImpl user = new UserImpl( username, loadRoles( username, loginContext.getSubject() ) );
             userOnThisThread.set( user );
 
             return user;
@@ -83,7 +84,7 @@ public class JAASAuthenticationService implements AuthenticationService {
         return userOnThisThread.get() != null;
     }
 
-    private List<Role> loadRoles(Subject subject ) {
+    private List<Role> loadRoles( String username, Subject subject ) {
         List<Role> roles = new ArrayList<Role>();
         try {
             Set<java.security.Principal> principals = subject.getPrincipals();
@@ -102,6 +103,11 @@ public class JAASAuthenticationService implements AuthenticationService {
                     }
 
                 }
+            }
+
+            Set<Role> rolesFromAdapters = collectGroupsAsRoles(username);
+            if (rolesFromAdapters != null && !rolesFromAdapters.isEmpty()) {
+                roles.addAll(rolesFromAdapters);
             }
         } catch ( Exception e ) {
             throw new RuntimeException( e );
