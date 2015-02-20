@@ -100,8 +100,8 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                                                         normalizedPackageName,
                                                         obj.getSuperType() );
 
-            // Add fields to data object
-            int position = 0;
+            // TODO add fileOrder to object properties, and adapt kie-wb-common accordingly so that the param order in the
+            // param constructor respects the order of the properties in the generated java source file.
             for ( Iterator<DataModelAsset.DataObjectProperty> propIt = obj.properties(); propIt.hasNext(); ) {
                 DataModelAsset.DataObjectProperty objProp = propIt.next();
                 String fieldName = objProp.getName();
@@ -113,8 +113,6 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                                                                   fieldType,
                                                                   isMultiple,
                                                                   isBaseType );
-                property.addAnnotation( positionAnnotationDef, AnnotationDefinitionTO.VALUE_PARAM, position + "" );
-                position++;
 
                 dataObject.getProperties().add( property );
             }
@@ -128,10 +126,6 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
 
                 if ( "Role".equals( name ) ) {
                     dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ), key, value );
-                } else if ( "Position".equals( name ) ) {
-                    dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.POSITION_ANNOTATION ), key, value );
-                } else if ( "Equals".equals( name ) ) {
-                    dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.KEY_ANNOTATION ), key, value );
                 }
             }
 
