@@ -39,7 +39,7 @@ public class ServerReferenceStorageImpl {
         return ioService.exists( buildPath( serverRef ) );
     }
 
-    public void forceRegister( final ServerRef serverRef ) {
+    public synchronized void forceRegister( final ServerRef serverRef ) {
         final Path path = buildPath( serverRef );
         try {
             ioService.startBatch( path.getFileSystem() );
@@ -49,7 +49,7 @@ public class ServerReferenceStorageImpl {
         }
     }
 
-    public void register( final ServerRef serverRef ) {
+    public synchronized void register( final ServerRef serverRef ) {
         if ( !exists( serverRef ) ) {
             final Path path = buildPath( serverRef );
             try {
@@ -63,7 +63,7 @@ public class ServerReferenceStorageImpl {
         }
     }
 
-    public Collection<ServerRef> listRegisteredServers() {
+    public synchronized Collection<ServerRef> listRegisteredServers() {
         final Collection<ServerRef> result = new ArrayList<ServerRef>();
         final Path dir = buildPath( (String) null );
 
@@ -93,7 +93,7 @@ public class ServerReferenceStorageImpl {
         return null;
     }
 
-    public void unregister( final ServerRef serverRef ) {
+    public synchronized void unregister( final ServerRef serverRef ) {
         final Path path = buildPath( serverRef );
 
         try {
@@ -123,7 +123,7 @@ public class ServerReferenceStorageImpl {
         return String.format( "%x", new BigInteger( 1, arg.toLowerCase().getBytes( Charset.forName( "UTF-8" ) ) ) );
     }
 
-    public void createContainer( final ContainerRef containerRef ) {
+    public synchronized void createContainer( final ContainerRef containerRef ) {
         final Path path = buildPath( containerRef.getServerId() );
         try {
             ioService.startBatch( path.getFileSystem() );
@@ -145,8 +145,8 @@ public class ServerReferenceStorageImpl {
         return restoreConfig( path );
     }
 
-    public void deleteContainer( String serverId,
-                                 String containerId ) {
+    public synchronized void deleteContainer( String serverId,
+                                              String containerId ) {
         final Path path = buildPath( serverId );
         final ServerRef serverRef = loadServerRef( serverId );
         if ( serverRef != null ) {
@@ -161,9 +161,9 @@ public class ServerReferenceStorageImpl {
 
     }
 
-    public void updateContainer( String serverId,
-                                 String containerId,
-                                 GAV releaseId ) {
+    public synchronized void updateContainer( String serverId,
+                                              String containerId,
+                                              GAV releaseId ) {
         final Path path = buildPath( serverId );
         final ServerRef serverRef = loadServerRef( serverId );
         if ( serverRef != null ) {
@@ -184,9 +184,9 @@ public class ServerReferenceStorageImpl {
         }
     }
 
-    public void updateContainer( String serverId,
-                                 String containerId,
-                                 Long pollInterval ) {
+    public synchronized void updateContainer( String serverId,
+                                              String containerId,
+                                              Long pollInterval ) {
         final Path path = buildPath( serverId );
         final ServerRef serverRef = loadServerRef( serverId );
         if ( serverRef != null ) {
