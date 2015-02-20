@@ -349,8 +349,8 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     @Override
-    public synchronized void delete( final Path path,
-                                     final DeleteOption... options ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
+    public void delete( final Path path,
+                        final DeleteOption... options ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
         final KCluster cluster = KObjectUtil.toKCluster( path.getFileSystem() );
         super.delete( path,
                       options );
@@ -360,8 +360,8 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     @Override
-    public synchronized boolean deleteIfExists( Path path,
-                                                DeleteOption... options ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+    public boolean deleteIfExists( Path path,
+                                   DeleteOption... options ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
         final KCluster cluster = KObjectUtil.toKCluster( path.getFileSystem() );
         final boolean result = super.deleteIfExists( path,
                                                      options );
