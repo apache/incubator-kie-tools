@@ -20,8 +20,6 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
-import java.util.ServiceLoader;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.security.auth.Subject;
@@ -38,16 +36,16 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
-import org.uberfire.ext.security.server.adapter.GroupsAdapter;
+import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSource;
 
 @Service
 @ApplicationScoped
-public class ServletSecurityAuthenticationService implements AuthenticationService {
+public class ServletSecurityAuthenticationService extends GroupAdapterAuthorizationSource implements AuthenticationService {
 
     private static final String USER_SESSION_ATTR_NAME = "uf.security.user";
     private static final String DEFAULT_ROLE_PRINCIPLE_NAME = "Roles";
 
-    private final ServiceLoader<GroupsAdapter> groupsAdapterServiceLoader = ServiceLoader.load( GroupsAdapter.class );
+
 
     private String[] rolePrincipleNames = new String[]{ DEFAULT_ROLE_PRINCIPLE_NAME };
 
@@ -113,11 +111,9 @@ public class ServletSecurityAuthenticationService implements AuthenticationServi
                 final String name = request.getUserPrincipal().getName();
 
                 final Set<Group> userGroups = new HashSet<Group>( loadGroups() );
-                for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
-                    final List<Group> groupRoles = adapter.getGroups( name );
-                    if ( groupRoles != null ) {
-                        userGroups.addAll( groupRoles );
-                    }
+                Set<Group> rolesFromAdapters = collectGroups(name);
+                if (rolesFromAdapters != null && !rolesFromAdapters.isEmpty()) {
+                    userGroups.addAll(rolesFromAdapters);
                 }
 
                 user = new UserImpl( name, userRoles, userGroups );
