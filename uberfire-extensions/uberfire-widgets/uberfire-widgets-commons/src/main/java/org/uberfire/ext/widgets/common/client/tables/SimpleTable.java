@@ -105,7 +105,7 @@ public class SimpleTable<T>
                         GridGlobalPreferences gridGlobalPreferences ) {
         dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
                                     providesKey );
-        gridPreferencesStore = new GridPreferencesStore( gridGlobalPreferences );
+        this.gridPreferencesStore = new GridPreferencesStore( gridGlobalPreferences );
         setupGridTable();
     }
 
@@ -127,31 +127,19 @@ public class SimpleTable<T>
         setEmptyTableWidget();
 
         columnPicker = new ColumnPicker<T>( dataGrid, gridPreferencesStore );
-
+        
         columnPicker.addColumnChangedHandler( new ColumnChangedHandler() {
 
             @Override
-            public void beforeColumnChanged() {
-
-                if ( preferencesService != null && gridPreferencesStore != null ) {
-                    preferencesService.call( new RemoteCallback<Void>() {
-
-                        @Override
-                        public void callback( Void response ) {
-
-                        }
-                    } ).saveGridPreferences( gridPreferencesStore );
-                }
-            }
+            public void beforeColumnChanged() {}
 
             @Override
             public void afterColumnChanged() {
                 if ( gridPreferencesStore != null && preferencesService != null ) {
                     List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
-
                     gridPreferencesStore.resetGridColumnPreferences();
                     for ( GridColumnPreference gcp : columnsState ) {
-                        gridPreferencesStore.addGridColumnPreference( gcp );
+                            gridPreferencesStore.addGridColumnPreference( gcp );
                     }
 
                     preferencesService.call( new RemoteCallback<Void>() {
@@ -160,7 +148,7 @@ public class SimpleTable<T>
                         public void callback( Void response ) {
 
                         }
-                    } ).saveGridPreferences( gridPreferencesStore );
+                    } ).saveGridPreferences( gridPreferencesStore );     
                 }
 
             }
@@ -359,9 +347,8 @@ public class SimpleTable<T>
                     List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
                     gridPreferencesStore.resetGridColumnPreferences();
                     for ( GridColumnPreference gcp : columnsState ) {
-                        gridPreferencesStore.addGridColumnPreference( gcp );
+                            gridPreferencesStore.addGridColumnPreference( gcp );
                     }
-
                     preferencesService.call( new RemoteCallback<Void>() {
 
                         @Override
@@ -439,6 +426,9 @@ public class SimpleTable<T>
     }
 
     public void setGridPreferencesStore( GridPreferencesStore gridPreferences ) {
+        // I need to update my local copy of the preferences 
+        //   if I would like to compare with the current state for changes
+        this.gridPreferencesStore = gridPreferences;
         columnPicker.setGridPreferencesStore( gridPreferences );
     }
 
