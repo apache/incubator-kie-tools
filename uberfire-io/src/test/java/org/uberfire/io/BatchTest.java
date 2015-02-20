@@ -2,6 +2,7 @@ package org.uberfire.io;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
@@ -209,7 +210,6 @@ public class BatchTest {
         final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 
-        assertFalse( fs1Batch.isOnBatch() );
         ioService.startBatch( new FileSystem[]{ fs1 } );
         assertTrue( fs1Batch.isOnBatch() );
         ioService.endBatch();
@@ -224,8 +224,6 @@ public class BatchTest {
         init = ioService.get( URI.create( "git://check-amend-repo-test/readme.txt" ) );
         ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
 
-        assertFalse( fs1Batch.isOnBatch() );
-        assertFalse( fs2Batch.isOnBatch() );
         ioService.startBatch( new FileSystem[]{ fs1 } );
         assertTrue( fs1Batch.isOnBatch() );
         assertFalse( fs2Batch.isOnBatch() );
@@ -343,5 +341,217 @@ public class BatchTest {
         ioService.endBatch();
         assertFalse( fs1Batch.isOnBatch() );
         assertFalse( fs2Batch.isOnBatch() );
+    }
+
+    @Test
+    public void testDifferentThreads() throws IOException, InterruptedException {
+
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!" );
+
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        System.out.println( "After start batch" );
+        new Thread( "second" ) {
+            @Override
+            public void run() {
+                try {
+                    System.out.println( "Inner starting" );
+                    ioService.startBatch( new FileSystem[]{ fs1 } );
+                    System.out.println( "Inner after batch" );
+                    final OutputStream innerOut = ioService.newOutputStream( init );
+                    for ( int i = 0; i < 100; i++ ) {
+                        innerOut.write( ( "sss" + i ).getBytes() );
+                    }
+                    System.out.println( "Inner after write" );
+                    innerOut.close();
+                    System.out.println( "Inner after close" );
+                    ioService.endBatch();
+                    System.out.println( "Inner after end batch" );
+                } catch ( Exception ex ) {
+                    ex.printStackTrace();
+                }
+            }
+        }.start();
+        System.out.println( "After start 2nd Thread" );
+        for ( int i = 0; i < 100; i++ ) {
+            if ( i % 20 == 0 ) {
+                Thread.sleep( 10 );
+            }
+            ioService.write( init, ( "sss" + i ).getBytes() );
+        }
+        System.out.println( "After writes" );
+        ioService.endBatch();
+        System.out.println( "After end batch" );
+    }
+
+    @Test
+    public void testDifferentThreadsWithoutBatch() throws IOException, InterruptedException {
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!" );
+
+        new Thread( "second" ) {
+            @Override
+            public void run() {
+                try {
+                    System.out.println( "Inner starting" );
+                    final OutputStream innerOut = ioService.newOutputStream( init );
+                    for ( int i = 0; i < 100; i++ ) {
+                        innerOut.write( ( "sss" + i ).getBytes() );
+                    }
+                    System.out.println( "Inner after write" );
+                    innerOut.close();
+                } catch ( Exception ex ) {
+                    ex.printStackTrace();
+                }
+            }
+        }.start();
+        System.out.println( "After start 2nd Thread" );
+        for ( int i = 0; i < 100; i++ ) {
+            if ( i % 20 == 0 ) {
+                Thread.sleep( 10 );
+            }
+            ioService.write( init, ( "sss" + i ).getBytes() );
+        }
+        System.out.println( "After writes" );
+    }
+
+    @Test
+    public void testDifferentThreads3() throws IOException, InterruptedException {
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!" );
+
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        System.out.println( "After start batch" );
+
+        final Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    System.out.println( "Inner starting" );
+                    ioService.startBatch( new FileSystem[]{ fs1 } );
+                    System.out.println( "Inner after batch" );
+                    final OutputStream innerOut = ioService.newOutputStream( init );
+                    for ( int i = 0; i < 100; i++ ) {
+                        innerOut.write( ( "sss" + i ).getBytes() );
+                    }
+                    System.out.println( "Inner after write" );
+                    innerOut.close();
+                    System.out.println( "Inner after close" );
+                    ioService.endBatch();
+                    System.out.println( "Inner after end batch" );
+                } catch ( Exception ex ) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        final Thread thread = new Thread( runnable, "second" );
+        final Thread thread2 = new Thread( runnable, "third" );
+        thread.start();
+        Thread.sleep( 100 );
+        thread2.start();
+        Thread.sleep( 100 );
+
+        System.out.println( "After start 2nd Thread" );
+        for ( int i = 0; i < 100; i++ ) {
+            if ( i % 20 == 0 ) {
+                Thread.sleep( 10 );
+            }
+            ioService.write( init, ( "sss" + i ).getBytes() );
+        }
+        System.out.println( "After writes" );
+        ioService.endBatch();
+        System.out.println( "After end batch" );
+    }
+
+    @Test
+    public void testDifferentThreadsNotBatchInners() throws IOException, InterruptedException {
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!" );
+
+        ioService.startBatch( new FileSystem[]{ fs1 } );
+        System.out.println( "After start batch" );
+
+        final Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    System.out.println( "Inner starting" );
+                    final OutputStream innerOut = ioService.newOutputStream( init );
+                    for ( int i = 0; i < 100; i++ ) {
+                        innerOut.write( ( "sss" + i ).getBytes() );
+                    }
+                    System.out.println( "Inner after write" );
+                    innerOut.close();
+                    System.out.println( "Inner after end batch" );
+                } catch ( Exception ex ) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        final Thread thread = new Thread( runnable, "second" );
+        final Thread thread2 = new Thread( runnable, "third" );
+        thread.start();
+        Thread.sleep( 100 );
+        thread2.start();
+        Thread.sleep( 100 );
+
+        System.out.println( "After start 2nd Thread" );
+        for ( int i = 0; i < 100; i++ ) {
+            if ( i % 20 == 0 ) {
+                Thread.sleep( 10 );
+            }
+            ioService.write( init, ( "sss" + i ).getBytes() );
+        }
+        System.out.println( "After writes" );
+        ioService.endBatch();
+        System.out.println( "After end batch" );
+    }
+
+    @Test
+    public void testDifferentThreadsNotBatchOuter() throws IOException, InterruptedException {
+        final Path init = ioService.get( URI.create( "git://amend-repo-test/readme.txt" ) );
+        ioService.write( init, "init!" );
+
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println( "Inner starting" );
+                    ioService.startBatch( new FileSystem[]{ fs1 } );
+                    System.out.println( "Inner after batch" );
+                    final OutputStream innerOut = ioService.newOutputStream( init );
+                    for ( int i = 0; i < 100; i++ ) {
+                        ioService.write( init, ( "sss" + i ).getBytes() );
+                    }
+                    System.out.println( "Inner after write" );
+                    innerOut.close();
+                    System.out.println( "Inner after close" );
+                    ioService.endBatch();
+                    System.out.println( "Inner after end batch" );
+                } catch ( Exception ex ) {
+                    ex.printStackTrace();
+                }
+            }
+        };
+
+        final Thread thread = new Thread( runnable, "second" );
+        final Thread thread2 = new Thread( runnable, "third" );
+        thread.start();
+        Thread.sleep( 100 );
+        thread2.start();
+        Thread.sleep( 100 );
+
+        System.out.println( "After start 2nd Thread" );
+        for ( int i = 0; i < 100; i++ ) {
+            if ( i % 20 == 0 ) {
+                Thread.sleep( 10 );
+            }
+            ioService.write( init, ( "sss" + i ).getBytes() );
+        }
+        System.out.println( "After writes" );
     }
 }

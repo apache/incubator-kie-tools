@@ -143,7 +143,7 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
     }
 
-    private synchronized void startBatchProcess( final FileSystem... fileSystems ) {
+    private void startBatchProcess( final FileSystem... fileSystems ) {
         batchLockControl.lock( fileSystems );
         for ( final FileSystem fs : fileSystems ) {
             setBatchModeOn( fs );
@@ -156,19 +156,23 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
             throw new RuntimeException( "There is no batch process." );
         }
 
-        batchLockControl.unlock();
-        if ( !batchLockControl.isLocked() ) {
-            for ( final FileSystem fs : fileSystems ) {
-                unsetBatchModeOn( fs );
-            }
+        if ( batchLockControl.getHoldCount() > 1 ) {
+            batchLockControl.unlock();
+            return;
         }
 
         if ( !fileSystems.isEmpty() ) {
             cleanupClosedFileSystems();
         }
+
+        for ( final FileSystem fs : fileSystems ) {
+            unsetBatchModeOn( fs );
+        }
+
+        batchLockControl.unlock();
     }
 
-    private synchronized void cleanupClosedFileSystems() {
+    private void cleanupClosedFileSystems() {
         final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
         for ( final FileSystem fileSystem : fileSystems ) {
             if ( !fileSystem.isOpen() ) {
@@ -382,8 +386,8 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     }
 
     @Override
-    public synchronized Path createFile( final Path path,
-                                         final FileAttribute<?>... attrs )
+    public Path createFile( final Path path,
+                            final FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
         try {
@@ -588,10 +592,10 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
     }
 
     @Override
-    public synchronized Path write( final Path path,
-                                    final byte[] bytes,
-                                    final Set<? extends OpenOption> options,
-                                    final FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write( final Path path,
+                       final byte[] bytes,
+                       final Set<? extends OpenOption> options,
+                       final FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         SeekableByteChannel byteChannel;
         try {
             byteChannel = newByteChannel( path, buildOptions( options ), attrs );

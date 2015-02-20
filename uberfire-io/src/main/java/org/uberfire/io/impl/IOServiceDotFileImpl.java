@@ -69,8 +69,8 @@ public class IOServiceDotFileImpl
     }
 
     @Override
-    public synchronized void delete( final Path path,
-                                     final DeleteOption... options )
+    public void delete( final Path path,
+                        final DeleteOption... options )
             throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException,
             IOException, SecurityException {
         Files.delete( path, options );
@@ -84,8 +84,8 @@ public class IOServiceDotFileImpl
     }
 
     @Override
-    public synchronized boolean deleteIfExists( final Path path,
-                                                final DeleteOption... options )
+    public boolean deleteIfExists( final Path path,
+                                   final DeleteOption... options )
             throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
         final boolean result = Files.deleteIfExists( path, options );
         try {
@@ -99,13 +99,12 @@ public class IOServiceDotFileImpl
     }
 
     @Override
-    public synchronized SeekableByteChannel newByteChannel( final Path path,
-                                                            final Set<? extends OpenOption> options,
-                                                            final FileAttribute<?>... attrs )
+    public SeekableByteChannel newByteChannel( final Path path,
+                                               final Set<? extends OpenOption> options,
+                                               final FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException {
         checkNotNull( "path", path );
-
         final Properties properties = new Properties();
         if ( exists( dot( path ) ) ) {
             properties.load( newInputStream( dot( path ) ) );
@@ -122,16 +121,16 @@ public class IOServiceDotFileImpl
     }
 
     @Override
-    public synchronized Path createDirectory( final Path dir,
-                                              final FileAttribute<?>... attrs )
+    public Path createDirectory( final Path dir,
+                                 final FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
         return internalCreateDirectory( dir, false, attrs );
     }
 
     @Override
-    public synchronized Path createDirectories( final Path dir,
-                                                final FileAttribute<?>... attrs )
+    public Path createDirectories( final Path dir,
+                                   final FileAttribute<?>... attrs )
             throws UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
         final Path result = Files.createDirectories( dir, attrs );
@@ -142,9 +141,9 @@ public class IOServiceDotFileImpl
     }
 
     @Override
-    public synchronized Path copy( final Path source,
-                                   final Path target,
-                                   final CopyOption... options )
+    public Path copy( final Path source,
+                      final Path target,
+                      final CopyOption... options )
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, IOException, SecurityException {
         if ( Files.exists( dot( source ) ) ) {
@@ -159,9 +158,9 @@ public class IOServiceDotFileImpl
     }
 
     @Override
-    public synchronized Path move( final Path source,
-                                   final Path target,
-                                   final CopyOption... options )
+    public Path move( final Path source,
+                      final Path target,
+                      final CopyOption... options )
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
         if ( Files.exists( dot( source ) ) ) {
@@ -222,8 +221,8 @@ public class IOServiceDotFileImpl
     }
 
     @Override
-    public synchronized Path setAttributes( final Path path,
-                                            final FileAttribute<?>... attrs )
+    public Path setAttributes( final Path path,
+                               final FileAttribute<?>... attrs )
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         checkNotNull( "path", path );
         if ( Files.isDirectory( path ) ) {
@@ -317,9 +316,9 @@ public class IOServiceDotFileImpl
         return null;
     }
 
-    protected synchronized Path internalCreateDirectory( final Path dir,
-                                                         final boolean skipAlreadyExistsException,
-                                                         final FileAttribute<?>... attrs )
+    protected Path internalCreateDirectory( final Path dir,
+                                            final boolean skipAlreadyExistsException,
+                                            final FileAttribute<?>... attrs )
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
         checkNotNull( "dir", dir );

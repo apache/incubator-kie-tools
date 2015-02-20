@@ -19,4 +19,8 @@ public class BatchLockControl {
     public boolean isLocked() {
         return lock.isLocked();
     }
+
+    public int getHoldCount(){
+        return lock.getHoldCount();
+    }
 }

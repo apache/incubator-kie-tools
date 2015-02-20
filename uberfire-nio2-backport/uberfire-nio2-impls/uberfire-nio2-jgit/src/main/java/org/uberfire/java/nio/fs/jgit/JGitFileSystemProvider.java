@@ -1834,9 +1834,9 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         }} ) );
     }
 
-    private void commit( final JGitPathImpl path,
-                         final CommitInfo commitInfo,
-                         final CommitContent commitContent ) {
+    private synchronized void commit( final JGitPathImpl path,
+                                      final CommitInfo commitInfo,
+                                      final CommitContent commitContent ) {
         final Git git = path.getFileSystem().gitRepo();
         final String branchName = path.getRefTree();
         JGitFileSystem fileSystem = path.getFileSystem();

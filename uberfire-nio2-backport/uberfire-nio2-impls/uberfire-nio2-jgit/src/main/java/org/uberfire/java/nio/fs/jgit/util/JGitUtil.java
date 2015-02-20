@@ -483,12 +483,12 @@ public final class JGitUtil {
         }
     }
 
-    public static boolean commit( final Git git,
-                                  final String branchName,
-                                  final CommitInfo commitInfo,
-                                  final boolean amend,
-                                  final ObjectId _originId,
-                                  final CommitContent content ) {
+    private static boolean commit( final Git git,
+                                   final String branchName,
+                                   final CommitInfo commitInfo,
+                                   final boolean amend,
+                                   final ObjectId _originId,
+                                   final CommitContent content ) {
         boolean hadEffecitiveCommit = true;
         final PersonIdent author = buildPersonIdent( git, commitInfo.getName(), commitInfo.getEmail(), commitInfo.getTimeZone(), commitInfo.getWhen() );
 
