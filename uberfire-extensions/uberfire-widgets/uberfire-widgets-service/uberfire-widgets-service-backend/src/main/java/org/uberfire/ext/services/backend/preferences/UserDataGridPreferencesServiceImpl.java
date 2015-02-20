@@ -43,7 +43,7 @@ public class UserDataGridPreferencesServiceImpl implements UserDataGridPreferenc
     private XStream xs = new XStream();
 
     @Override
-    public void saveGridPreferences( GridPreferencesStore preferences ) {
+    public synchronized void saveGridPreferences( final GridPreferencesStore preferences ) {
         final Path preferencesPath = userServicesBackend.buildPath( identity.getIdentifier(), "datagrid-preferences", preferences.getGlobalPreferences().getKey() );
         try {
             ioServiceConfig.startBatch( preferencesPath.getFileSystem() );
