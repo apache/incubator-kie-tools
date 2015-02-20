@@ -1,0 +1,3 @@
+org.uberfire.backend.server.security.adapter.JettyGroupsAdapter
+org.uberfire.backend.server.security.adapter.WeblogicGroupsAdapter
+org.uberfire.backend.server.security.adapter.WebSphereGroupsAdapter
