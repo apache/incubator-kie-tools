@@ -458,6 +458,9 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public void dispose() {
+        if (!isClosed){
+            close();
+        }
         provider.onDisposeFileSystem( this );
     }
 

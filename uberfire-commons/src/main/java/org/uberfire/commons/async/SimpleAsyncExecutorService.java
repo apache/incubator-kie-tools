@@ -1,7 +1,5 @@
 package org.uberfire.commons.async;
 
-import static javax.ejb.TransactionAttributeType.*;
-
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
@@ -9,7 +7,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.ejb.Asynchronous;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -21,6 +18,8 @@ import javax.naming.InitialContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static javax.ejb.TransactionAttributeType.*;
+
 @Singleton
 @Startup
 @TransactionAttribute(NOT_SUPPORTED)
@@ -28,9 +27,9 @@ public class SimpleAsyncExecutorService {
 
     private static final Logger LOG = LoggerFactory.getLogger( SimpleAsyncExecutorService.class );
 
-    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.watcher.quitetimeout", "3"));
+    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt( System.getProperty( "org.uberfire.watcher.quitetimeout", "3" ) );
 
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
 
     private final ExecutorService executorService;
 
@@ -41,8 +40,8 @@ public class SimpleAsyncExecutorService {
 
     private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
 
-    public static  SimpleAsyncExecutorService getDefaultInstance() {
-        synchronized (lock) {
+    public static SimpleAsyncExecutorService getDefaultInstance() {
+        synchronized ( lock ) {
             if ( instance == null ) {
 
                 SimpleAsyncExecutorService _executorManager = null;
@@ -63,24 +62,24 @@ public class SimpleAsyncExecutorService {
     }
 
     public static SimpleAsyncExecutorService getUnmanagedInstance() {
-        synchronized (lock) {
+        synchronized ( lock ) {
             if ( instance != null && instance.executorService != null ) {
                 return instance;
             } else if ( unmanagedInstance == null ) {
                 unmanagedInstance = new SimpleAsyncExecutorService( false );
             }
-        return unmanagedInstance;
+            return unmanagedInstance;
         }
     }
 
     public static void shutdownInstances() {
-        synchronized (lock) {
+        synchronized ( lock ) {
             if ( unmanagedInstance != null ) {
                 unmanagedInstance.shutdown();
             }
             if ( instance != null && instance.executorService != null ) {
                 instance.shutdown();
-        }
+            }
         }
     }
 
