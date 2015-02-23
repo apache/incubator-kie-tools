@@ -3,6 +3,7 @@ package org.uberfire.ext.properties.editor.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.uberfire.ext.properties.editor.model.validators.ColorValidator;
 import org.uberfire.ext.properties.editor.model.validators.LongValidator;
 import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 
@@ -64,6 +65,12 @@ public enum PropertyEditorType {
         }
     }, SECRET_TEXT {
 
+    }, COLOR {
+        public List<PropertyFieldValidator> getValidators() {
+            ArrayList validators = new ArrayList();
+            validators.add( new ColorValidator() );
+            return validators;
+        }
     };
 
     public boolean isType( Class<?> type ) {
