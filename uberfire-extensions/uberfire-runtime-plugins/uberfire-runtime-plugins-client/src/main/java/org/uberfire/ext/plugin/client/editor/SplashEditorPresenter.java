@@ -91,6 +91,7 @@ public class SplashEditorPresenter
                     }
                 } );
                 baseView.hideBusyIndicator();
+                setOriginalHash( getContent().hashCode() );
             }
         } ).getPluginContent( versionRecordManager.getCurrentPath() );
     }

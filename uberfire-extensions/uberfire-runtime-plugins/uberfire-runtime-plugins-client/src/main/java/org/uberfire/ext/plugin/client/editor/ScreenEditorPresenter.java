@@ -91,6 +91,7 @@ public class ScreenEditorPresenter
                     }
                 } );
                 view().hideBusyIndicator();
+                setOriginalHash( getContent().hashCode() );
             }
         } ).getPluginContent( versionRecordManager.getCurrentPath() );
     }

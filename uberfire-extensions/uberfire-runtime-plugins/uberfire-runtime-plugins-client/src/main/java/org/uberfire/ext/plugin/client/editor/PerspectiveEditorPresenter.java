@@ -84,6 +84,7 @@ public class PerspectiveEditorPresenter
             public void callback( final PluginContent response ) {
                 view().setupContent( response );
                 view().hideBusyIndicator();
+                setOriginalHash( getContent().hashCode() );
             }
 
         } ).getPluginContent( versionRecordManager.getCurrentPath() );

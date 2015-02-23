@@ -91,6 +91,7 @@ public class EditorPlugInEditorPresenter
                     }
                 } );
                 view().hideBusyIndicator();
+                setOriginalHash( getContent().hashCode() );
             }
         } ).getPluginContent( versionRecordManager.getCurrentPath() );
     }
