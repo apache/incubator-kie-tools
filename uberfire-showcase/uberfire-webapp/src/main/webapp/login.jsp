@@ -15,70 +15,66 @@
   --%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>UberFire Showcase</title>
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+
+  <title>Uberfire Showcase</title>
 
   <style type="text/css">
     * {
       font-family: Helvetica, Arial, sans-serif;
     }
-
+    html {
+        position: relative;
+        height: 100%;
+        width: 100%;
+    }
     body {
       margin: 0;
       padding: 0;
       color: #fff;
-      background: url('<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/bg-login.png') repeat #1b1b1b;
+      background: url('<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/bgr.png') no-repeat #464141;
+        background-size: auto 100%;
+        background-position: top left;
       font-size: 14px;
       text-shadow: #050505 0 -1px 0;
-      font-weight: bold;
+        position: relative;
+        height: 100%;
+        width: 100%;
     }
 
     li {
       list-style: none;
     }
 
-    #dummy {
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-bottom: solid 3px #777973;
-      height: 250px;
-      width: 100%;
-      background: url('<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/bg-login-top.png') repeat #fff;
-      z-index: 1;
-    }
-
-    #dummy2 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-bottom: solid 2px #545551;
-      height: 252px;
-      width: 100%;
-      background: transparent;
-      z-index: 2;
-    }
-
     #login-wrapper {
-      margin: 0 0 0 -160px;
-      width: 320px;
-      text-align: center;
-      z-index: 99;
       position: absolute;
-      top: 0;
+      top: 50%;
       left: 50%;
+      margin-top: -105px;
     }
 
     #login-top {
-      height: 120px;
-      width: 401px;
-      padding-top: 20px;
-      text-align: center;
+      height: 70px;
+      opacity: 0;
+          -webkit-transition: opacity .6s ease-out;
+      -o-transition: opacity .6s ease-in-out;
+      transition: opacity .6s ease-in-out;
+    }
+      
+    .show-login  #login-top {
+        opacity: 1;
     }
 
     #login-content {
-      margin-top: 120px;
+         -webkit-transition: opacity .6s ease-out;
+      -o-transition: opacity .6s ease-in-out;
+      transition: opacity .6s ease-in-out;
+        transition-delay: .3s;
+        -webkit-transition-delay: .3s;
+        opacity: 0;
+    }
+    .show-login  #login-content {
+          opacity: 1;
     }
 
     label {
@@ -90,82 +86,118 @@
     }
 
     input.text-input {
-      width: 200px;
-      float: right;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;
-      border-radius: 4px;
+      width: 230px;
       background: #fff;
-      border: solid 1px transparent;
-      color: #555;
-      padding: 8px;
-      font-size: 13px;
+      border: none;
+      font-size: 15px;
+      color: #464040;
+      padding: 0 10px;
+        height: 35px;
+        line-height: 35px;
+        margin-bottom: 2px;
+        position: relative;
+        
     }
 
     input.button {
-      float: right;
-      padding: 6px 10px;
-      color: #fff;
-      font-size: 14px;
-      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#a4d04a), to(#459300));
-      text-shadow: #050505 0 -1px 0;
-      background-color: #459300;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;
-      border-radius: 4px;
-      border: solid 1px transparent;
-      font-weight: bold;
+      width: 250px;
+      background-color: #EA5B36 ;
+      border: none;
+      color: #FFF;
+      font-size: 15px;
+      text-align: center;
+      height: 35px;
+      line-height: 32px;
+      margin-bottom: 2px;   
+      -webkit-transition: all .3s ease-out;
+      -o-transition: all .3s ease-out;
+      transition: all .3s ease-out;
       cursor: pointer;
-      letter-spacing: 1px;
     }
 
     input.button:hover {
-      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#a4d04a), to(#a4d04a), color-stop(80%, #76b226));
-      text-shadow: #050505 0 -1px 2px;
-      background-color: #a4d04a;
-      color: #fff;
+       background-color: #EDCB5F  ;
+       color: #464040;
+    }
+    .input-container {
+        position: relative;
     }
 
-    div.error {
-      padding: 8px;
-      background: rgba(52, 4, 0, 0.4);
-      -moz-border-radius: 8px;
-      -webkit-border-radius: 8px;
-      border-radius: 8px;
-      border: solid 1px transparent;
-      margin: 6px 0;
+    .error::before {
+      width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 10px 10px 0 0;
+        border-color: #e93b50 transparent transparent transparent;
+        content: "";
+        position: absolute;
+        left: 1px;
+        top: 1px;
+        z-index: 10;
+    }
+      
+    .error {
+       display: inline-block;
+      font-size: 10px;
+       margin: 15px 0;
+       text-transform: uppercase;
+       opacity:.5;
+    }
+   
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        border: 0;
     }
   </style>
 </head>
 
 <body id="login">
 
-<div id="login-wrapper" class="png_bg">
+<div id="login-wrapper">
   <div id="login-top">
-    <img src="<%=request.getContextPath()%>/org.uberfire.UberfireShowcase/images/uf_logo.png" alt="UberFire Logo" title="Powered By Uberfire"/>
+    <img src="images/uf.png" alt="UberFire Logo" title="Powered By Uberfire" height="44">
   </div>
 
   <div id="login-content">
     <form action="uf_security_check" method="post">
-      <p>
-        <label>Username</label>
-        <input value="" name="uf_username" class="text-input" type="text"/>
-      </p>
-      <br style="clear: both;"/>
+      
+        <label class="sr-only">Username</label>
+        <div class="input-container ">
+        <input name="uf_username" class="text-input" type="text" placeholder="Username">
+        </div>
+      
+        <label class="sr-only">Password</label>
+        <div class="input-container">
+        <input name="uf_password" class="text-input" type="password" placeholder="Password">
+        </div>
+        
+        
+        
+        
+        <input class="button" value="Sign In" type="submit"><br/>
 
-      <p>
-        <label>Password</label>
-        <input name="uf_password" class="text-input" type="password"/>
-      </p>
-      <br style="clear: both;"/>
-
-      <p>
-        <input class="button" type="submit" value="Sign In"/>
-      </p>
     </form>
   </div>
 </div>
-<div id="dummy"></div>
-<div id="dummy2"></div>
+
+<script>
+    function showLogin() {
+     var loginElement = document.getElementById('login-wrapper');
+      if(loginElement) {
+
+        loginElement.className += 'show-login';
+      }
+    }
+    window.onload=showLogin;
+</script>
+
 </body>
+
+
 </html>
