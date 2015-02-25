@@ -79,7 +79,7 @@ public abstract class DefaultEditorFileUploadBase
         return new FileUpload(new Command() {
             @Override
             public void execute() {
-                BusyPopup.showMessage(CoreConstants.INSTANCE.Uploading());
+                //BusyPopup.showMessage(CoreConstants.INSTANCE.Uploading());
 
                 form.setAction(GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL());
 
