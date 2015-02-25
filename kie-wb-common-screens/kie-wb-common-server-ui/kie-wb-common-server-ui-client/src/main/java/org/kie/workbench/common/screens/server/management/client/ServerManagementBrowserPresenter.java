@@ -304,7 +304,7 @@ public class ServerManagementBrowserPresenter {
         if ( !serverNames.isEmpty() ) {
             sb.append( "Are you sure you want delete the following server(s):<br/>" );
             for ( final String s : serverNames.values() ) {
-                sb.append( s ).append( " ," );
+                sb.append( s ).append( ", " );
             }
             sb.setLength( sb.length() - 2 );
             sb.append( "." );
@@ -317,7 +317,7 @@ public class ServerManagementBrowserPresenter {
             }
             for ( final Map.Entry<String, List<String>> entry : container2delete.entrySet() ) {
                 for ( String s : entry.getValue() ) {
-                    sb.append( s ).append( " ," );
+                    sb.append( s ).append( ", " );
                 }
             }
             sb.setLength( sb.length() - 2 );
