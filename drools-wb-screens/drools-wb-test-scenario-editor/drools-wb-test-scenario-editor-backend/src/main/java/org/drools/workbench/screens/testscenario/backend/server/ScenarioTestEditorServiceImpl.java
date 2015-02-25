@@ -69,7 +69,7 @@ public class ScenarioTestEditorServiceImpl
         extends KieService<TestScenarioModelContent>
         implements ScenarioTestEditorService {
 
-    private static final Logger logger = LoggerFactory.getLogger( ScenarioTestEditorServiceImpl.class );
+    private static final Logger logger = LoggerFactory.getLogger(ScenarioTestEditorServiceImpl.class);
 
     @Inject
     @Named("ioStrategy")
@@ -100,107 +100,107 @@ public class ScenarioTestEditorServiceImpl
     private ConfigurationService configurationService;
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final Scenario content,
-                        final String comment ) {
+    public Path create(final Path context,
+                       final String fileName,
+                       final Scenario content,
+                       final String comment) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            final Path newPath = Paths.convert( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            final Path newPath = Paths.convert(nioPath);
 
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            ioService.write( nioPath,
-                             ScenarioXMLPersistence.getInstance().marshal( content ),
-                             makeCommentedOption( comment ) );
+            ioService.write(nioPath,
+                            ScenarioXMLPersistence.getInstance().marshal(content),
+                            makeCommentedOption(comment));
 
             return newPath;
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Scenario load( final Path path ) {
+    public Scenario load(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
+            final String content = ioService.readAllString(Paths.convert(path));
 
-            Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal( content );
-            scenario.setName( path.getFileName() );
+            Scenario scenario = ScenarioXMLPersistence.getInstance().unmarshal(content);
+            scenario.setName(path.getFileName());
 
             return scenario;
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path save( final Path resource,
-                      final Scenario content,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final Scenario content,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            Metadata currentMetadata = metadataService.getMetadata( resource );
-            ioService.write( Paths.convert( resource ),
-                             ScenarioXMLPersistence.getInstance().marshal( content ),
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             makeCommentedOption( comment ) );
+            Metadata currentMetadata = metadataService.getMetadata(resource);
+            ioService.write(Paths.convert(resource),
+                            ScenarioXMLPersistence.getInstance().marshal(content),
+                            metadataService.setUpAttributes(resource,
+                                                            metadata),
+                            makeCommentedOption(comment));
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
+            fireMetadataSocialEvents(resource, currentMetadata, metadata);
             return resource;
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
+            deleteService.delete(path,
+                                 comment);
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public TestScenarioModelContent loadContent( Path path ) {
+    public TestScenarioModelContent loadContent(Path path) {
         return super.loadContent(path);
     }
 
@@ -233,30 +233,33 @@ public class ScenarioTestEditorServiceImpl
     }
 
     @Override
-    public TestScenarioResult runScenario( final Path path,
-                                           final Scenario scenario ) {
+    public TestScenarioResult runScenario(final Path path,
+                                          final Scenario scenario) {
         try {
 
-            final KieProject project = projectService.resolveProject( path );
-            final KieSession ksession = sessionService.newKieSessionWithPseudoClock(project);
-            final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper( testResultMessageEvent,
-                                                                            getMaxRuleFirings() );
+            final KieProject project = projectService.resolveProject(path);
 
-            return runner.run( identity.getIdentifier(),
-                               scenario,
-                               ksession );
+            String ksessionName = scenario.getKSessions().iterator().next();
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final KieSession ksession = sessionService.newKieSession(project, ksessionName);
+            final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper(testResultMessageEvent,
+                                                                           getMaxRuleFirings());
+
+            return runner.run(identity.getIdentifier(),
+                              scenario,
+                              ksession);
+
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     private int getMaxRuleFirings() {
-        for ( ConfigGroup editorConfigGroup : configurationService.getConfiguration( ConfigType.EDITOR ) ) {
-            if ( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS.equals( editorConfigGroup.getName() ) ) {
-                for ( ConfigItem item : editorConfigGroup.getItems() ) {
+        for (ConfigGroup editorConfigGroup : configurationService.getConfiguration(ConfigType.EDITOR)) {
+            if (ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS.equals(editorConfigGroup.getName())) {
+                for (ConfigItem item : editorConfigGroup.getItems()) {
                     String itemName = item.getName();
-                    if ( itemName.equals( ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS ) ) {
+                    if (itemName.equals(ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS)) {
                         return (Integer) item.getValue();
                     }
                 }
@@ -266,61 +269,61 @@ public class ScenarioTestEditorServiceImpl
     }
 
     @Override
-    public void runAllTests( final Path testResourcePath ) {
-        runAllTests( testResourcePath,
-                     testResultMessageEvent );
+    public void runAllTests(final Path testResourcePath) {
+        runAllTests(testResourcePath,
+                    testResultMessageEvent);
     }
 
     @Override
-    public void runAllTests( final Path testResourcePath,
-                             Event<TestResultMessage> customTestResultEvent ) {
+    public void runAllTests(final Path testResourcePath,
+                            Event<TestResultMessage> customTestResultEvent) {
         try {
-            final KieProject project = projectService.resolveProject( testResourcePath );
-            List<Path> scenarioPaths = loadScenarioPaths( testResourcePath );
+            final KieProject project = projectService.resolveProject(testResourcePath);
+            List<Path> scenarioPaths = loadScenarioPaths(testResourcePath);
             List<Scenario> scenarios = new ArrayList<Scenario>();
-            for ( Path path : scenarioPaths ) {
-                Scenario s = load( path );
-                scenarios.add( s );
+            for (Path path : scenarioPaths) {
+                Scenario s = load(path);
+                scenarios.add(s);
             }
 
-            new ScenarioRunnerWrapper( testResultMessageEvent, getMaxRuleFirings() ).run(
+            new ScenarioRunnerWrapper(testResultMessageEvent, getMaxRuleFirings()).run(
                     identity.getIdentifier(),
                     scenarios,
                     sessionService.newKieSessionWithPseudoClock(project)
-                                                                                        );
+                                                                                      );
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    public List<Path> loadScenarioPaths( final Path path ) {
+    public List<Path> loadScenarioPaths(final Path path) {
         try {
             // Check Path exists
             final List<Path> items = new ArrayList<Path>();
-            if ( !Files.exists( Paths.convert( path ) ) ) {
+            if (!Files.exists(Paths.convert(path))) {
                 return items;
             }
 
             // Ensure Path represents a Folder
-            org.uberfire.java.nio.file.Path pPath = Paths.convert( path );
-            if ( !Files.isDirectory( pPath ) ) {
+            org.uberfire.java.nio.file.Path pPath = Paths.convert(path);
+            if (!Files.isDirectory(pPath)) {
                 pPath = pPath.getParent();
             }
 
             LinkedFilter filter = new LinkedDotFileFilter();
             LinkedFilter metaInfFolderFilter = new LinkedMetaInfFolderFilter();
-            filter.setNextFilter( metaInfFolderFilter );
-            FileExtensionFilter fileExtensionFilter = new FileExtensionFilter( ".scenario" );
+            filter.setNextFilter(metaInfFolderFilter);
+            FileExtensionFilter fileExtensionFilter = new FileExtensionFilter(".scenario");
 
             // Get list of immediate children
-            final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( pPath );
-            for ( final org.uberfire.java.nio.file.Path p : directoryStream ) {
-                if ( filter.accept( p ) && fileExtensionFilter.accept( p ) ) {
-                    if ( Files.isRegularFile( p ) ) {
-                        items.add( Paths.convert( p ) );
-                    } else if ( Files.isDirectory( p ) ) {
-                        items.add( Paths.convert( p ) );
+            final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(pPath);
+            for (final org.uberfire.java.nio.file.Path p : directoryStream) {
+                if (filter.accept(p) && fileExtensionFilter.accept(p)) {
+                    if (Files.isRegularFile(p)) {
+                        items.add(Paths.convert(p));
+                    } else if (Files.isDirectory(p)) {
+                        items.add(Paths.convert(p));
                     }
                 }
             }
@@ -330,8 +333,8 @@ public class ScenarioTestEditorServiceImpl
 
             return items;
 
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 

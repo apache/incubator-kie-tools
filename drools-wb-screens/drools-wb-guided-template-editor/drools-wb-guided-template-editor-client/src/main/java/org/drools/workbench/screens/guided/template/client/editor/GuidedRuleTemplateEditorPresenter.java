@@ -221,7 +221,7 @@ public class GuidedRuleTemplateEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         service.call( new RemoteCallback<String>() {
             @Override
             public void callback( String source ) {

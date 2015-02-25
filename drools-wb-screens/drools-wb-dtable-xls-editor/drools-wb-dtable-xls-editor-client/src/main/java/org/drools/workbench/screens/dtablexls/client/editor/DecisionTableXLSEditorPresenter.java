@@ -101,7 +101,7 @@ public class DecisionTableXLSEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         decisionTableXLSService.call(
                 new RemoteCallback<String>() {
                     @Override

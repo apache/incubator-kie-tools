@@ -172,7 +172,7 @@ public class GuidedDecisionTreeEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         service.call( new RemoteCallback<String>() {
             @Override
             public void callback( final String source ) {

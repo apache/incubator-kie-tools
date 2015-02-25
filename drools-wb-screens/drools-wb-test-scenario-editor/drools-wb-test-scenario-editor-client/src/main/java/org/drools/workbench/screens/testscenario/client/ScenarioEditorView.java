@@ -1,27 +1,40 @@
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.Set;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 public interface ScenarioEditorView
         extends IsWidget,
-        KieEditorView {
+                KieEditorView {
 
-    void setContent(final ObservablePath path,
-                    final boolean isReadOnly,
-                    final Scenario scenario,
-                    final Overview overview,
-                    final AsyncPackageDataModelOracle oracle,
-                    final Caller<ScenarioTestEditorService> service, Callback<Scenario> callback);
+    interface Presenter {
 
-    void setVersionRecordManager(VersionRecordManager versionRecordManager);
+        void onRunScenario();
+
+        void onRedraw();
+
+        void onRunAllScenarios();
+
+    }
+
+    void setPresenter(Presenter presenter);
+
+    MenuItem getRunScenarioMenuItem();
+
+    MenuItem getRunAllScenariosMenuItem();
+
+    void initKSessionSelector(final ObservablePath path,
+                              final Scenario scenario);
+
+    void showAuditView(Set<String> log);
+
+    void renderFixtures(Path path, AsyncPackageDataModelOracle oracle, Scenario scenario);
 
 }

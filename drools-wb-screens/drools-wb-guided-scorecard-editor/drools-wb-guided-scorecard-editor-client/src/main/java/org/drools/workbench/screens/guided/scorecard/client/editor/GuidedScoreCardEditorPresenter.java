@@ -187,7 +187,7 @@ public class GuidedScoreCardEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         scoreCardEditorService.call( new RemoteCallback<String>() {
             @Override
             public void callback( String source ) {

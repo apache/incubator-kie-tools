@@ -223,7 +223,7 @@ public class DRLEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         updateSource( view.getContent() );
     }
 

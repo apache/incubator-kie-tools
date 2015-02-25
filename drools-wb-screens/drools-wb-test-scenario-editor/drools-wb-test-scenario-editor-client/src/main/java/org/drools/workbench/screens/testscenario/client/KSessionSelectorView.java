@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,27 @@ package org.drools.workbench.screens.testscenario.client;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.project.model.Dependency;
-import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
-public interface BulkRunTestScenarioEditorView extends HasBusyIndicator,
-                                                       IsWidget {
+public interface KSessionSelectorView
+        extends IsWidget {
+
 
     interface Presenter {
 
-        void onRunAllButton();
+        void onKBaseSelected(String kbaseName);
+
+        void onKSessionSelected(String ksession);
+
     }
 
-    void setPresenter( Presenter presenter );
+    void setPresenter(Presenter presenter);
 
-    String getTitleWidget();
+    void setSelected(String kbase, String ksession);
 
-    void setTitleText( String titleText );
+    String getSelectedKBase();
 
-    void showSaveSuccessful( String fileName );
+    void addKBase(String name);
 
-    void setDependencies( List<Dependency> dependencies );
+    void setKSessions(List<String> ksessions);
 
-    void setReadOnly();
 }

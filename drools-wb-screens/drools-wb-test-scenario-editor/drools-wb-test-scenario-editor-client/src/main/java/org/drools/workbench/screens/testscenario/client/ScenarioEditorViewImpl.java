@@ -16,44 +16,22 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.datamodel.imports.Imports;
-import org.drools.workbench.models.testscenarios.shared.CallFixtureMap;
-import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
-import org.drools.workbench.models.testscenarios.shared.Fixture;
-import org.drools.workbench.models.testscenarios.shared.FixtureList;
-import org.drools.workbench.models.testscenarios.shared.FixturesMap;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
-import org.drools.workbench.models.testscenarios.shared.VerifyFact;
-import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
-import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
-import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
-import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
-import org.uberfire.ext.widgets.common.client.common.Page;
-import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuItem;
 
 @Dependent
 public class ScenarioEditorViewImpl
@@ -61,34 +39,37 @@ public class ScenarioEditorViewImpl
         implements ScenarioEditorView,
                    ScenarioParentWidget {
 
-    private final VerticalPanel layout = new VerticalPanel();
+    private Presenter presenter;
 
-    private ScenarioWidgetComponentCreator scenarioWidgetComponentCreator;
+    interface Binder
+            extends
+            UiBinder<Widget, ScenarioEditorViewImpl> {
 
-    private final ImportsWidgetPresenter importsWidget;
+    }
 
-    private MultiPageEditor multiPage;
+    private static Binder uiBinder = GWT.create(Binder.class);
 
-    private BulkRunTestScenarioEditor bulkRunTestScenarioEditor;
+    private final Widget layout;
 
-    private Caller<RuleNamesService> ruleNameService;
-    private OverviewWidgetPresenter  overviewWidget;
-    private Callback<Scenario>       updateModelCallback;
-    private VersionRecordManager     versionRecordManager;
+    @UiField(provided = true)
+    AuditLog auditLog;
+
+    @UiField(provided = true)
+    KSessionSelector kSessionSelector;
+
+    @UiField(provided = true)
+    FixtureLayout fixtureLayout;
 
     @Inject
     public ScenarioEditorViewImpl(
-            final @New ImportsWidgetPresenter importsWidget,
-            final @New MultiPageEditor multiPage,
-            final @New BulkRunTestScenarioEditor bulkRunTestScenarioEditor,
-            final OverviewWidgetPresenter overviewWidget,
-            final Caller<RuleNamesService> ruleNameService) {
-        this.importsWidget = importsWidget;
-        this.multiPage = multiPage;
-        this.overviewWidget = overviewWidget;
-        this.ruleNameService = ruleNameService;
-        this.bulkRunTestScenarioEditor = bulkRunTestScenarioEditor;
+            final AuditLog auditLog,
+            final FixtureLayout fixtureLayout,
+            final KSessionSelector kSessionSelector) {
+        this.auditLog = auditLog;
+        this.fixtureLayout = fixtureLayout;
+        this.kSessionSelector = kSessionSelector;
 
+        layout = uiBinder.createAndBindUi(this);
         layout.setWidth("100%");
         layout.getElement().getStyle().setMargin(5, Style.Unit.PX);
 
@@ -102,268 +83,56 @@ public class ScenarioEditorViewImpl
      * Overriding this since initWidget(...) breaks the UI.
      */
     public Widget asWidget() {
-        return multiPage.asWidget();
+        return layout;
     }
 
     @Override
-    public void setContent(final ObservablePath path,
-                           final boolean isReadOnly,
-                           final Scenario scenario,
-                           final Overview overview,
-                           final AsyncPackageDataModelOracle oracle,
-                           final Caller<ScenarioTestEditorService> service,
-                           final Callback<Scenario> updateModelCallback) {
-        this.updateModelCallback = updateModelCallback;
-        layout.clear();
-        multiPage.clear();
-
-        multiPage.addWidget(layout,
-                            TestScenarioConstants.INSTANCE.TestScenario());
-        addOverviewPage(path, overview);
-        multiPage.addWidget(importsWidget,
-                            CommonConstants.INSTANCE.ConfigTabTitle());
-
-        addBulkRunTestScenarioPanel(path,
-                                    isReadOnly);
-
-        setScenario(path,
-                    scenario,
-                    oracle);
-
-        if (!isReadOnly) {
-            addTestRunnerWidget(
-                    scenario,
-                    service,
-                    path,
-                    oracle);
-        }
-
-        renderEditor();
-
-        initImportsTab(oracle,
-                       scenario.getImports(),
-                       isReadOnly);
-    }
-
-    private void addOverviewPage(ObservablePath path, Overview overview) {
-        multiPage.addPage(
-                new Page(this.overviewWidget,
-                         CommonConstants.INSTANCE.Overview()) {
-                    @Override
-                    public void onFocus() {
-                        overviewWidget.refresh(versionRecordManager.getVersion());
-                    }
-
-                    @Override
-                    public void onLostFocus() {
-
-                    }
-                });
-        overviewWidget.setContent(overview, path);
-    }
-
-    private void createWidgetForEditorLayout(final FlexTable editorLayout,
-                                             final int layoutRow,
-                                             final int layoutColumn,
-                                             final Widget widget) {
-        editorLayout.setWidget(layoutRow,
-                               layoutColumn,
-                               widget);
-    }
-
-    public void renderEditor() {
-        //Remove body (i.e Test Scenario definition) when refreshing; leaving Test Scenario Runner widget
-        if (this.layout.getWidgetCount() == 2) {
-            this.layout.remove(1);
-        }
-
-        FlexTable editorLayout = scenarioWidgetComponentCreator.createFlexTable();
-        this.layout.add(editorLayout);
-        ScenarioHelper scenarioHelper = new ScenarioHelper();
-
-        List<Fixture> fixtures = scenarioHelper.lumpyMap(getScenario().getFixtures());
-        List<ExecutionTrace> listExecutionTrace = scenarioHelper.getExecutionTraceFor(fixtures);
-
-        int layoutRow = 1;
-        int executionTraceLine = 0;
-        ExecutionTrace previousExecutionTrace = null;
-        for (final Fixture fixture : fixtures) {
-            if (fixture instanceof ExecutionTrace) {
-                ExecutionTrace currentExecutionTrace = (ExecutionTrace) fixture;
-                createWidgetForEditorLayout(editorLayout,
-                                            layoutRow,
-                                            0,
-                                            scenarioWidgetComponentCreator.createExpectPanel(currentExecutionTrace));
-
-                executionTraceLine++;
-                if (executionTraceLine >= listExecutionTrace.size()) {
-                    executionTraceLine = listExecutionTrace.size() - 1;
-                }
-                createWidgetForEditorLayout(editorLayout,
-                                            layoutRow,
-                                            1,
-                                            scenarioWidgetComponentCreator.createExecutionWidget(currentExecutionTrace));
-                editorLayout.getFlexCellFormatter().setHorizontalAlignment(layoutRow,
-                                                                           2,
-                                                                           HasHorizontalAlignment.ALIGN_LEFT);
-
-                previousExecutionTrace = currentExecutionTrace;
-
-            } else if (fixture instanceof FixturesMap) {
-                createWidgetForEditorLayout(editorLayout,
-                                            layoutRow,
-                                            0,
-                                            scenarioWidgetComponentCreator.createGivenLabelButton(listExecutionTrace,
-                                                                                                  executionTraceLine,
-                                                                                                  previousExecutionTrace)
-                                           );
-                layoutRow++;
-                createWidgetForEditorLayout(editorLayout,
-                                            layoutRow,
-                                            1,
-                                            scenarioWidgetComponentCreator.createGivenPanel(listExecutionTrace,
-                                                                                            executionTraceLine,
-                                                                                            (FixturesMap) fixture)
-                                           );
-            } else if (fixture instanceof CallFixtureMap) {
-                createWidgetForEditorLayout(editorLayout,
-                                            layoutRow,
-                                            0,
-                                            scenarioWidgetComponentCreator.createCallMethodLabelButton(listExecutionTrace,
-                                                                                                       executionTraceLine,
-                                                                                                       previousExecutionTrace)
-                                           );
-                layoutRow++;
-                createWidgetForEditorLayout(editorLayout,
-                                            layoutRow,
-                                            1,
-                                            scenarioWidgetComponentCreator.createCallMethodOnGivenPanel(listExecutionTrace,
-                                                                                                        executionTraceLine,
-                                                                                                        (CallFixtureMap) fixture)
-                                           );
-            } else {
-                FixtureList fixturesList = (FixtureList) fixture;
-                Fixture first = fixturesList.get(0);
-
-                if (first instanceof VerifyFact) {
-                    createWidgetForEditorLayout(editorLayout,
-                                                layoutRow,
-                                                1,
-                                                scenarioWidgetComponentCreator.createVerifyFactsPanel(listExecutionTrace,
-                                                                                                      executionTraceLine,
-                                                                                                      fixturesList)
-                                               );
-                } else if (first instanceof VerifyRuleFired) {
-                    createWidgetForEditorLayout(editorLayout,
-                                                layoutRow,
-                                                1,
-                                                scenarioWidgetComponentCreator.createVerifyRulesFiredWidget(fixturesList));
-                }
-
-            }
-            layoutRow++;
-        }
-
-        // add more execution sections.
-        createWidgetForEditorLayout(editorLayout,
-                                    layoutRow,
-                                    0,
-                                    scenarioWidgetComponentCreator.createAddExecuteButton());
-        layoutRow++;
-        createWidgetForEditorLayout(editorLayout,
-                                    layoutRow,
-                                    0,
-                                    scenarioWidgetComponentCreator.createSmallLabel());
-
-        // config section
-        createWidgetForEditorLayout(editorLayout,
-                                    layoutRow,
-                                    1,
-                                    scenarioWidgetComponentCreator.createConfigWidget());
-
-        layoutRow++;
-
-        // global section
-        HorizontalPanel horizontalPanel = scenarioWidgetComponentCreator.createHorizontalPanel();
-        createWidgetForEditorLayout(editorLayout,
-                                    layoutRow,
-                                    0,
-                                    horizontalPanel);
-
-        createWidgetForEditorLayout(editorLayout,
-                                    layoutRow,
-                                    1,
-                                    scenarioWidgetComponentCreator.createGlobalPanel(scenarioHelper,
-                                                                                     previousExecutionTrace)
-                                   );
-    }
-
-    private void addTestRunnerWidget(
-            final Scenario scenario,
-            final Caller<ScenarioTestEditorService> service,
-            final Path path,
-            final AsyncPackageDataModelOracle oracle) {
-        layout.add(
-                new TestRunnerWidget(
-                        scenario,
-                        service,
-                        path,
-                        new Callback<Scenario>() {
-                            @Override
-                            public void callback(Scenario result) {
-                                updateModelCallback.callback(result);
-                                setScenario(path, result, oracle);
-
-                                setShowResults(true);
-                                renderEditor();
-                            }
-                        }));
-    }
-
-    private void addBulkRunTestScenarioPanel(final Path path,
-                                             final boolean isReadOnly) {
-        multiPage.addPage(new Page(bulkRunTestScenarioEditor, TestScenarioConstants.INSTANCE.TestScenarios()) {
-            @Override
-            public void onFocus() {
-                bulkRunTestScenarioEditor.init(path, isReadOnly);
-            }
-
-            @Override
-            public void onLostFocus() {
+    public MenuItem getRunScenarioMenuItem() {
+        return new SimpleMenuItem(TestScenarioConstants.INSTANCE.RunScenario(), new com.google.gwt.user.client.Command() {
+            @Override public void execute() {
+                presenter.onRunScenario();
             }
         });
     }
 
-    private void setScenario(final Path path,
-                             final Scenario scenario,
-                             final AsyncPackageDataModelOracle oracle) {
-        scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator(this,
-                                                                            path,
-                                                                            oracle,
-                                                                            scenario,
-                                                                            ruleNameService);
-        scenarioWidgetComponentCreator.setShowResults(false);
+    @Override
+    public MenuItem getRunAllScenariosMenuItem() {
+        return new SimpleMenuItem(TestScenarioConstants.INSTANCE.RunAllScenarios(), new com.google.gwt.user.client.Command() {
+            @Override public void execute() {
+                presenter.onRunAllScenarios();
+            }
+        });
     }
 
-    private void initImportsTab(final AsyncPackageDataModelOracle oracle,
-                                final Imports imports,
-                                final boolean readOnly) {
-        importsWidget.setContent(oracle,
-                                 imports,
-                                 readOnly);
+    @Override
+    public void initKSessionSelector(final ObservablePath path,
+                                     final Scenario scenario) {
+        kSessionSelector.init(path, scenario);
     }
 
-    @Override public void setVersionRecordManager(VersionRecordManager versionRecordManager) {
-        this.versionRecordManager=versionRecordManager;
+    public void renderEditor() {
+        presenter.onRedraw();
     }
 
-    void setShowResults(boolean showResults) {
-        scenarioWidgetComponentCreator.setShowResults(showResults);
+    @Override
+    public void renderFixtures(Path path,
+                               AsyncPackageDataModelOracle oracle,
+                               Scenario scenario) {
+        fixtureLayout.reset(this,
+                            path,
+                            oracle,
+                            scenario);
     }
 
-    public Scenario getScenario() {
-        return scenarioWidgetComponentCreator.getScenario();
+    @Override
+    public void showAuditView(Set<String> log) {
+        auditLog.setVisible(true);
+        auditLog.fill(log);
     }
 
+    @Override
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
 
 }

@@ -141,7 +141,7 @@ public class GlobalsEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         globalsEditorService.call(new RemoteCallback<String>() {
             @Override
             public void callback(String source) {

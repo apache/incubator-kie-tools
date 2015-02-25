@@ -150,7 +150,7 @@ public class DSLEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         updateSource( view.getContent() );
     }
 

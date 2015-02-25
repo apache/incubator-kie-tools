@@ -151,7 +151,7 @@ public class GuidedDecisionTableEditorPresenter
     }
 
     @Override
-    protected void onEditTabSelected() {
+    public void onEditTabSelected() {
         view.setContent( versionRecordManager.getCurrentPath(),
                          model,
                          content.getWorkItemDefinitions(),
@@ -198,7 +198,7 @@ public class GuidedDecisionTableEditorPresenter
     }
 
     @Override
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
         service.call( new RemoteCallback<String>() {
             @Override
             public void callback( String source ) {
