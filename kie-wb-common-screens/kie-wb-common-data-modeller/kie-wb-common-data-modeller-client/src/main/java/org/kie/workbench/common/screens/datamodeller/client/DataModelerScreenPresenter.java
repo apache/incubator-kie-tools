@@ -721,7 +721,7 @@ public class DataModelerScreenPresenter
                     publishSystemMessages( getCurrentMessageType(), true, content.getErrors() );
                 }
                 if ( content.getDataObject() != null ) {
-                    setSelectedTab( EDITOR_TAB_INDEX );
+                    selectEditorTab();
                     uiStarted = true;
                 } else {
                     showParseErrorsDialog( Constants.INSTANCE.modelEditor_message_file_parsing_errors(),
@@ -841,7 +841,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    protected void onSourceTabSelected() {
+    public void onSourceTabSelected() {
 
         if ( context.isParsed() && context.isEditorChanged() ) {
 
@@ -885,7 +885,7 @@ public class DataModelerScreenPresenter
     }
 
     @Override
-    protected void onEditTabSelected() {
+    public void onEditTabSelected() {
 
         boolean doParsing = false;
         if ( context.isSourceChanged() ) {

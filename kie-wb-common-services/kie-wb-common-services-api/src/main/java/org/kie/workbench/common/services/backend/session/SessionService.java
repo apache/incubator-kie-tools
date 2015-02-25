@@ -13,4 +13,5 @@ public interface SessionService {
      */
     KieSession newKieSessionWithPseudoClock(final KieProject project);
 
+    KieSession newKieSession(KieProject project, String ksessionName);
 }

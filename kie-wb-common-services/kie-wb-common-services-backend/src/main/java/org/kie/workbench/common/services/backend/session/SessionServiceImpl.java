@@ -15,13 +15,11 @@
  */
 package org.kie.workbench.common.services.backend.session;
 
-import java.util.Collection;
 import javax.inject.Inject;
 
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.guvnor.common.services.shared.exceptions.GenericPortableException;
-import org.kie.api.KieBase;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.builder.Builder;
@@ -43,6 +41,30 @@ public class SessionServiceImpl
     }
 
     @Override
+    public KieSession newKieSession(KieProject project, String ksessionName) {
+
+        final Builder builder = cache.assertBuilder(project);
+
+        try {
+            if (ksessionName == null || ksessionName.equals("defaultKieSession")) {
+                return newKieSessionWithPseudoClock(project);
+            } else {
+                KieContainer kieContainer = builder.getKieContainer();
+
+                //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
+                if (kieContainer == null) {
+                    return null;
+                }
+
+                return kieContainer.newKieSession(ksessionName);
+            }
+
+        } catch (RuntimeException e) {
+            throw new GenericPortableException(e.getMessage());
+        }
+    }
+
+    @Override
     public KieSession newKieSessionWithPseudoClock(final KieProject project) {
 
         final Builder builder = cache.assertBuilder(project);
@@ -59,7 +81,7 @@ public class SessionServiceImpl
             final SessionConfiguration conf = new SessionConfiguration();
             conf.setClockType(ClockType.PSEUDO_CLOCK);
 
-            return kieContainer.getKieBase("defaultKieBase").newKieSession(conf, null );
+            return kieContainer.getKieBase("defaultKieBase").newKieSession(conf, null);
 
         } catch (RuntimeException e) {
             throw new GenericPortableException(e.getMessage());
