@@ -131,6 +131,8 @@ public class PluginNavList extends Composite {
 
     private final Map<PluginType, NavList> navLists = new HashMap<PluginType, NavList>();
 
+    private final Map<PluginType, Collapse> collapses = new HashMap<PluginType, Collapse>( );
+
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -210,6 +212,7 @@ public class PluginNavList extends Composite {
 
             final NavList itemsNavList = new NavList();
             collapse.add( itemsNavList );
+            collapses.put( type, collapse );
 
             navLists.put( type,
                           itemsNavList );
@@ -220,10 +223,19 @@ public class PluginNavList extends Composite {
                 activities.put( item.getName(),
                                 item );
             }
+            boolean hasItems = false;
             for ( final Activity item : activities.values() ) {
                 itemsNavList.add( makeItemNavLink( item ) );
+                hasItems = true;
             }
-            collapse.setDefaultOpen( false );
+
+            if ( !hasItems ) {
+                //workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1195232
+                collapse.setDefaultOpen( true );
+                collapse.reconfigure();
+            } else {
+                collapse.setDefaultOpen( false );
+            }
 
             pluginsList.add( collapseTrigger );
             pluginsList.add( collapse );
@@ -245,11 +257,15 @@ public class PluginNavList extends Composite {
     private CollapseTrigger makeTriggerWidget( final ClientResourceType resourceType,
                                                final PluginType type ) {
         return new CollapseTrigger( "#" + type.toString() ) {{
+
+            TriggerWidget trigger;
+
             if ( resourceType.getIcon() == null ) {
-                setWidget( new TriggerWidget( resourceType.getDescription() ) );
+                trigger = new TriggerWidget( resourceType.getDescription() );
             } else {
-                setWidget( new TriggerWidget( resourceType.getIcon(), resourceType.getDescription() ) );
+                trigger = new TriggerWidget( resourceType.getIcon(), resourceType.getDescription() );
             }
+            setWidget( trigger );
         }};
     }
 
@@ -280,7 +296,7 @@ public class PluginNavList extends Composite {
     public void addNewPlugin( final BaseNewPlugin newPlugin ) {
         //Sort Widgets by Plugin Name. A TreeMap supports sorting on insertion by natural ordering of its keys
         final Map<String, Widget> sortedNavList = new TreeMap<String, Widget>( PLUGIN_NAME_COMPARATOR );
-        final NavList navList = navLists.get( newPlugin.getPlugin().getType() );
+        NavList navList = navLists.get( newPlugin.getPlugin().getType() );
         for ( int i = 0; i < navList.getWidgetCount(); i++ ) {
             final Widget w = navList.getWidget( i );
             for ( Map.Entry<String, Widget> e : pluginRef.entrySet() ) {
@@ -294,8 +310,17 @@ public class PluginNavList extends Composite {
                            makeItemNavLink( newPlugin.getPlugin() ) );
 
         navList.clear();
+        Collapse collapse = collapses.get( newPlugin.getPlugin().getType() );
+        int i = 0;
         for ( Widget w : sortedNavList.values() ) {
             navList.add( w );
+            i++;
+        }
+        if ( i == 1 ) {
+            //workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1195232
+            collapse.setDefaultOpen( true );
+            collapse.reconfigure();
+            collapse.show();
         }
     }
 
@@ -311,6 +336,14 @@ public class PluginNavList extends Composite {
         final Widget nav = pluginRef.get( pluginDeleted.getPluginName() );
         if ( nav != null ) {
             nav.removeFromParent();
+        }
+
+        Collapse collapse = collapses.get( pluginDeleted.getType());
+        NavList navList = navLists.get( pluginDeleted.getType() );
+        if ( navList.getWidgetCount() == 0 ) {
+            //workaround for https://bugzilla.redhat.com/show_bug.cgi?id=1195232
+            collapse.setDefaultOpen( true );
+            collapse.reconfigure();
         }
     }
 
