@@ -38,130 +38,130 @@ public class EnumDropDown
         extends SimplePanel {
 
     private final DropDownValueChanged valueChangedCommand;
-    private final Path                 resource;
+    private final Path resource;
 
     private final ListBox listBox;
 
     private EnumDropDownUtilities utilities = new EnumDropDownUtilities() {
         @Override
-        protected int addItems(final ListBox listBox) {
+        protected int addItems( final ListBox listBox ) {
             return 0;
         }
 
         @Override
-        protected void selectItem(final ListBox listBox) {
+        protected void selectItem( final ListBox listBox ) {
             final int itemCount = listBox.getItemCount();
-            listBox.setEnabled(itemCount > 0);
-            if (itemCount > 0) {
-                listBox.setSelectedIndex(0);
+            listBox.setEnabled( itemCount > 0 );
+            if ( itemCount > 0 ) {
+                listBox.setSelectedIndex( 0 );
 
                 //Schedule notification after GWT has finished tying everything together as not all
                 //Event Handlers have been set-up by consumers of this class at Construction time
-                Scheduler.get().scheduleFinally(new ScheduledCommand() {
+                Scheduler.get().scheduleFinally( new ScheduledCommand() {
 
                     @Override
                     public void execute() {
-                        valueChangedCommand.valueChanged(listBox.getItemText(0),
-                                                         listBox.getValue(0));
+                        valueChangedCommand.valueChanged( encodeSelectedItems(),
+                                                          encodeSelectedItems() );
                     }
 
-                });
+                } );
             }
         }
     };
-    private TextBox               textBox   = new TextBox();
+    private TextBox textBox = new TextBox();
 
-    public EnumDropDown(final String currentValue,
-                        final DropDownValueChanged valueChanged,
-                        final DropDownData dropData,
-                        final Path resource) {
-        this(currentValue,
-             valueChanged,
-             dropData,
-             false,
-             resource);
+    public EnumDropDown( final String currentValue,
+                         final DropDownValueChanged valueChanged,
+                         final DropDownData dropData,
+                         final Path resource ) {
+        this( currentValue,
+              valueChanged,
+              dropData,
+              false,
+              resource );
     }
 
-    public EnumDropDown(final String currentValue,
-                        final DropDownValueChanged valueChanged,
-                        final DropDownData dropData,
-                        final boolean multipleSelect,
-                        final Path resource) {
-        listBox = new ListBox(multipleSelect);
+    public EnumDropDown( final String currentValue,
+                         final DropDownValueChanged valueChanged,
+                         final DropDownData dropData,
+                         final boolean multipleSelect,
+                         final Path resource ) {
+        listBox = new ListBox( multipleSelect );
         this.valueChangedCommand = valueChanged;
         this.resource = resource;
 
-        listBox.addChangeHandler(new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                valueChangedCommand.valueChanged(encodeSelectedItems(),
-                                                 encodeSelectedItems());
+        listBox.addChangeHandler( new ChangeHandler() {
+            public void onChange( ChangeEvent event ) {
+                valueChangedCommand.valueChanged( encodeSelectedItems(),
+                                                  encodeSelectedItems() );
             }
-        });
+        } );
 
-        textBox.addKeyUpHandler(new KeyUpHandler() {
+        textBox.addKeyUpHandler( new KeyUpHandler() {
             @Override
-            public void onKeyUp(KeyUpEvent event) {
-                valueChanged.valueChanged(textBox.getValue(),
-                                          textBox.getValue());
+            public void onKeyUp( KeyUpEvent event ) {
+                valueChanged.valueChanged( textBox.getValue(),
+                                           textBox.getValue() );
             }
-        });
-        setDropDownData(currentValue,
-                        dropData);
+        } );
+        setDropDownData( currentValue,
+                         dropData );
     }
 
     //Build a comma separated list of values form a multi-select drop-down.
     //org.drools.ide.common.server.util.BRDRLPersistence is blissfully unaware that 
     //the "in" and "not in" operators require a list of values hence it is constructed here.
     String encodeSelectedItems() {
-        if (listBox.getItemCount() == 0) {
+        if ( listBox.getItemCount() == 0 ) {
             return "";
         }
         StringBuffer buffer = new StringBuffer();
-        if (listBox.isMultipleSelect()) {
+        if ( listBox.isMultipleSelect() ) {
             boolean first = true;
-            buffer.append("( ");
-            for (int i = 0; i < listBox.getItemCount(); i++) {
-                if (listBox.isItemSelected(i)) {
-                    if (!first) {
-                        buffer.append(",");
+            buffer.append( "( " );
+            for ( int i = 0; i < listBox.getItemCount(); i++ ) {
+                if ( listBox.isItemSelected( i ) ) {
+                    if ( !first ) {
+                        buffer.append( "," );
                     }
                     first = false;
-                    buffer.append("\"");
-                    buffer.append(listBox.getValue(i));
-                    buffer.append("\"");
+                    buffer.append( "\"" );
+                    buffer.append( listBox.getValue( i ) );
+                    buffer.append( "\"" );
                 }
             }
-            buffer.append(" )");
+            buffer.append( " )" );
         } else {
-            buffer.append(listBox.getValue(listBox.getSelectedIndex()));
+            buffer.append( listBox.getValue( listBox.getSelectedIndex() ) );
         }
         return buffer.toString();
     }
 
-    public void setDropDownData(final String currentValue,
-                                final DropDownData dropData) {
-        if (dropData == null) {
-            textBox.setText(currentValue);
-            setEditorWidget(textBox);
+    public void setDropDownData( final String currentValue,
+                                 final DropDownData dropData ) {
+        if ( dropData == null ) {
+            textBox.setText( currentValue );
+            setEditorWidget( textBox );
         } else {
-            utilities.setDropDownData(currentValue,
-                                      dropData,
-                                      listBox.isMultipleSelect(),
-                                      resource,
-                                      listBox);
-            setEditorWidget(listBox);
+            utilities.setDropDownData( currentValue,
+                                       dropData,
+                                       listBox.isMultipleSelect(),
+                                       resource,
+                                       listBox );
+            setEditorWidget( listBox );
         }
     }
 
-    private void setEditorWidget(Widget widget) {
+    private void setEditorWidget( Widget widget ) {
         clear();
-        add(widget);
+        add( widget );
     }
 
     public String getValue() {
-        if (getWidget().equals(listBox)) {
-            if (listBox.getSelectedIndex() != -1) {
-                return listBox.getValue(listBox.getSelectedIndex());
+        if ( getWidget().equals( listBox ) ) {
+            if ( listBox.getSelectedIndex() != -1 ) {
+                return listBox.getValue( listBox.getSelectedIndex() );
             } else {
                 return "";
             }
