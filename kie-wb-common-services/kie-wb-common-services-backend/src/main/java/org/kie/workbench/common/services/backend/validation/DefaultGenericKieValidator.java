@@ -129,8 +129,10 @@ public class DefaultGenericKieValidator implements GenericValidator {
             final Results kieResults = kieBuilder.buildAll().getResults();
             final String destinationBasePath = getBasePath( destinationPath );
             for ( final Message message : kieResults.getMessages() ) {
-                final String messageBasePath = getBasePath( message.getPath() );
-                if ( destinationBasePath.endsWith( messageBasePath ) ) {
+                final String messageBasePath = message.getPath() != null ? getBasePath( message.getPath() ) : null;
+                if ( messageBasePath == null ||
+                        "".equals( messageBasePath ) ||
+                        destinationBasePath.endsWith( messageBasePath ) ) {
                     validationMessages.add( convertMessage( message ) );
                 }
             }
@@ -151,7 +153,7 @@ public class DefaultGenericKieValidator implements GenericValidator {
     //For example we write MyGuidedTemplate.template to KieFileSystem but KieBuilder returns
     //Messages containing MyGuidedTemplate.drl
     private String getBasePath( final String path ) {
-        if ( path.contains( "." ) ) {
+        if ( path != null && path.contains( "." ) ) {
             return path.substring( 0,
                                    path.lastIndexOf( "." ) );
         }
