@@ -120,10 +120,11 @@ public class NewProjectHandler
 
                 @Override
                 public void callback( RepositoryStructureModel repoModel ) {
-
                     if ( repoModel != null && repoModel.isManaged() ) {
                         boolean isMultiModule = repoModel.isMultiModule();
                         response.onSuccess( isMultiModule );
+                    } else {
+                        response.onSuccess( true );
                     }
                 }
             } ).load( context.getActiveRepository() );
