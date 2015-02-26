@@ -46,18 +46,14 @@ public class SessionServiceImpl
         final Builder builder = cache.assertBuilder(project);
 
         try {
-            if (ksessionName == null || ksessionName.equals("defaultKieSession")) {
-                return newKieSessionWithPseudoClock(project);
-            } else {
-                KieContainer kieContainer = builder.getKieContainer();
+            KieContainer kieContainer = builder.getKieContainer();
 
-                //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
-                if (kieContainer == null) {
-                    return null;
-                }
-
-                return kieContainer.newKieSession(ksessionName);
+            //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
+            if (kieContainer == null) {
+                return null;
             }
+
+            return kieContainer.newKieSession(ksessionName);
 
         } catch (RuntimeException e) {
             throw new GenericPortableException(e.getMessage());
@@ -65,7 +61,7 @@ public class SessionServiceImpl
     }
 
     @Override
-    public KieSession newKieSessionWithPseudoClock(final KieProject project) {
+    public KieSession newDefaultKieSessionWithPseudoClock(final KieProject project) {
 
         final Builder builder = cache.assertBuilder(project);
 

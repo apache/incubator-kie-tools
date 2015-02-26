@@ -270,4 +270,6 @@ public interface CommonConstants
 
     String PromptResetPerspectives();
 
+    String WarningTheSelectedKSessionDoesNotExist();
+
 }

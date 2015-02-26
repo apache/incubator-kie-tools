@@ -11,7 +11,7 @@ public interface SessionService {
     /**
      * Returns the default KSession for a Project with the clock hard set to pseudo clock.
      */
-    KieSession newKieSessionWithPseudoClock(final KieProject project);
+    KieSession newDefaultKieSessionWithPseudoClock(final KieProject project);
 
     KieSession newKieSession(KieProject project, String ksessionName);
 }
