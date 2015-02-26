@@ -218,13 +218,13 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public synchronized void startBatch( FileSystem fs ) {
+    public void startBatch( FileSystem fs ) {
         startBatch( new FileSystem[]{ fs } );
     }
 
     @Override
-    public synchronized void startBatch( FileSystem[] fs,
-                                         final Option... options ) {
+    public void startBatch( FileSystem[] fs,
+                            final Option... options ) {
         clusterService.lock();
         for ( final FileSystem f : fs ) {
             if ( f instanceof FileSystemId ) {
@@ -235,8 +235,8 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public synchronized void startBatch( final FileSystem fs,
-                                         final Option... options ) {
+    public void startBatch( final FileSystem fs,
+                            final Option... options ) {
         clusterService.lock();
         if ( fs instanceof FileSystemId ) {
             batchFileSystems.add( ( (FileSystemId) fs ).id() );
@@ -246,7 +246,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public synchronized void startBatch( final FileSystem... fs ) {
+    public void startBatch( final FileSystem... fs ) {
         clusterService.lock();
         for ( final FileSystem f : fs ) {
             if ( f instanceof FileSystemId ) {
@@ -257,7 +257,7 @@ public class IOServiceClusterImpl implements IOClusteredService {
     }
 
     @Override
-    public synchronized void endBatch() {
+    public void endBatch() {
         service.endBatch();
         if ( !clusterService.isInnerLocked() ) {
             final AtomicInteger process = new AtomicInteger( batchFileSystems.size() );

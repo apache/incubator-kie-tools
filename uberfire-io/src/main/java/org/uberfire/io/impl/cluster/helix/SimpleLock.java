@@ -6,11 +6,11 @@ class SimpleLock {
 
     private AtomicBoolean isLocked = new AtomicBoolean( false );
 
-    public synchronized void lock() {
+    public void lock() {
         isLocked.set( true );
     }
 
-    public synchronized boolean isLocked() {
+    public boolean isLocked() {
         return isLocked.get();
     }
 
