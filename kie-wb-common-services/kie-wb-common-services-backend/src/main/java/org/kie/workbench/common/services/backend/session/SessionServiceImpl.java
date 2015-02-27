@@ -77,7 +77,7 @@ public class SessionServiceImpl
             final SessionConfiguration conf = new SessionConfiguration();
             conf.setClockType(ClockType.PSEUDO_CLOCK);
 
-            return kieContainer.getKieBase("defaultKieBase").newKieSession(conf, null);
+            return kieContainer.getKieBase().newKieSession(conf, null);
 
         } catch (RuntimeException e) {
             throw new GenericPortableException(e.getMessage());
