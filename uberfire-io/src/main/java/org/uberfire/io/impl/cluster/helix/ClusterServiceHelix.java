@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,7 +26,6 @@ import org.uberfire.commons.message.MessageType;
 import org.uberfire.io.impl.cluster.ClusterMessageType;
 
 import static java.util.Arrays.*;
-import static java.util.Collections.*;
 import static java.util.UUID.*;
 import static org.apache.helix.HelixManagerFactory.*;
 
@@ -37,7 +37,7 @@ public class ClusterServiceHelix implements ClusterService {
     private final String instanceName;
     private final HelixManager participantManager;
     private final String resourceName;
-    private final Map<String, MessageHandlerResolver> messageHandlerResolver = new HashMap<String, MessageHandlerResolver>();
+    private final Map<String, MessageHandlerResolver> messageHandlerResolver = new ConcurrentHashMap<String, MessageHandlerResolver>();
     private final AtomicBoolean started = new AtomicBoolean( false );
     private final Collection<Runnable> onStart = new ArrayList<Runnable>();
 
@@ -72,8 +72,8 @@ public class ClusterServiceHelix implements ClusterService {
             this.participantManager.connect();
             disablePartition();
             this.participantManager.getStateMachineEngine().registerStateModelFactory( "LeaderStandby", new LockTransitionalFactory( lock ) );
-            this.participantManager.getMessagingService().registerMessageHandlerFactory( Message.MessageType.USER_DEFINE_MSG.toString(), new MessageHandlerResolverWrapper( messageHandlerResolver ).convert() );
-            started.set( true );
+            this.participantManager.getMessagingService().registerMessageHandlerFactory( Message.MessageType.USER_DEFINE_MSG.toString(), new MessageHandlerResolverWrapper().convert() );
+            this.started.set( true );
             for ( final Runnable runnable : onStart ) {
                 runnable.run();
             }
@@ -131,7 +131,7 @@ public class ClusterServiceHelix implements ClusterService {
         while ( !lock.isLocked() ) {
             try {
                 Thread.sleep( 10 );
-            } catch ( InterruptedException e ) {
+            } catch ( final InterruptedException ignored ) {
             }
         }
     }
@@ -288,12 +288,6 @@ public class ClusterServiceHelix implements ClusterService {
 
     class MessageHandlerResolverWrapper {
 
-        private final Map<String, MessageHandlerResolver> resolvers;
-
-        MessageHandlerResolverWrapper( final Map<String, MessageHandlerResolver> resolvers ) {
-            this.resolvers = unmodifiableMap( resolvers );
-        }
-
         MessageHandlerFactory convert() {
             return new MessageHandlerFactory() {
 
@@ -309,7 +303,7 @@ public class ClusterServiceHelix implements ClusterService {
                                 final MessageType type = buildMessageType( _message.getRecord().getSimpleField( "type" ) );
                                 final Map<String, String> map = getMessageContent( _message );
 
-                                final Pair<MessageType, Map<String, String>> result = resolvers.get( serviceId ).resolveHandler( serviceId, type ).handleMessage( type, map );
+                                final Pair<MessageType, Map<String, String>> result = messageHandlerResolver.get( serviceId ).resolveHandler( serviceId, type ).handleMessage( type, map );
 
                                 if ( result == null ) {
                                     return new HelixTaskResult() {{
@@ -400,5 +394,4 @@ public class ClusterServiceHelix implements ClusterService {
             }
         }};
     }
-
 }
