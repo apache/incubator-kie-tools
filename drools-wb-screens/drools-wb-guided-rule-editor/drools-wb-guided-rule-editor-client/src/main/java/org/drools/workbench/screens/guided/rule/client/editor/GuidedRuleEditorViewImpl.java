@@ -21,14 +21,12 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
 
@@ -43,36 +41,40 @@ public class GuidedRuleEditorViewImpl
     @Inject
     public GuidedRuleEditorViewImpl() {
 
-        panel.setWidth("100%");
-        initWidget(panel);
+        panel.setWidth( "100%" );
+        initWidget( panel );
     }
 
     @Override
-    public void setContent(final Path path,
-            final RuleModel model,
-            final AsyncPackageDataModelOracle oracle,
-            final Caller<RuleNamesService> ruleNamesService,
-            final boolean isReadOnly,
-            final boolean isDSLEnabled) {
-        this.modeller = new RuleModeller(path,
-                model,
-                oracle,
-                new RuleModellerWidgetFactory(),
-                localBus,
-                isReadOnly,
-                isDSLEnabled);
-        panel.setWidget(modeller);
+    public void setContent( final Path path,
+                            final RuleModel model,
+                            final AsyncPackageDataModelOracle oracle,
+                            final Caller<RuleNamesService> ruleNamesService,
+                            final boolean isReadOnly,
+                            final boolean isDSLEnabled ) {
+        this.modeller = new RuleModeller( path,
+                                          model,
+                                          oracle,
+                                          new RuleModellerWidgetFactory(),
+                                          localBus,
+                                          isReadOnly,
+                                          isDSLEnabled );
+        panel.setWidget( modeller );
 
-        ruleNamesService.call(new RemoteCallback<Collection<String>>() {
+        ruleNamesService.call( new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback(Collection<String> ruleNames) {
-                modeller.setRuleNamesForPackage(ruleNames);
+            public void callback( Collection<String> ruleNames ) {
+                modeller.setRuleNamesForPackage( ruleNames );
             }
-        }).getRuleNames(path, model.getPackageName());
+        } ).getRuleNames( path, model.getPackageName() );
     }
 
     @Override
     public RuleModel getContent() {
+        //RuleModeller could be null if the Rule failed to load (e.g. the file was not found in VFS)
+        if ( modeller == null ) {
+            return null;
+        }
         return modeller.getModel();
     }
 

@@ -19,7 +19,6 @@ package org.drools.workbench.screens.guided.template.client.editor;
 import java.util.Collection;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleModeller;
@@ -27,7 +26,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 import org.uberfire.backend.vfs.Path;
 
@@ -66,11 +64,15 @@ public class GuidedRuleTemplateEditorViewImpl
             public void callback( Collection<String> ruleNames ) {
                 modeller.setRuleNamesForPackage( ruleNames );
             }
-        } ).getRuleNames(path, model.getPackageName());
+        } ).getRuleNames( path, model.getPackageName() );
     }
 
     @Override
     public TemplateModel getContent() {
+        //RuleModeller could be null if the Rule failed to load (e.g. the file was not found in VFS)
+        if ( modeller == null ) {
+            return null;
+        }
         return (TemplateModel) modeller.getRuleModeller().getModel();
     }
 
