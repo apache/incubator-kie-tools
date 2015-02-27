@@ -683,16 +683,16 @@ public class DataModelerScreenPresenter
     protected void loadContent() {
 
         modelerService.call( new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
-                                 @Override
-                                 public void callback( final Map<String, AnnotationDefinitionTO> defs ) {
+            @Override
+            public void callback( final Map<String, AnnotationDefinitionTO> defs ) {
 
-                                     context.setAnnotationDefinitions( defs );
+                context.setAnnotationDefinitions( defs );
 
-                                     modelerService.call( getLoadModelSuccessCallback(),
-                                                          new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_loading_error() ) ).loadContent( versionRecordManager.getCurrentPath() );
-                                 }
-                             }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
-                           ).getAnnotationDefinitions();
+                modelerService.call( getLoadModelSuccessCallback(),
+                        getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+            }
+        }, new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_annotationDef_loading_error() )
+        ).getAnnotationDefinitions();
     }
 
     private RemoteCallback<EditorModelContent> getLoadModelSuccessCallback() {
