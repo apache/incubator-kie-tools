@@ -16,29 +16,49 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
-import org.kie.api.definition.rule.Rule;
-import org.kie.api.event.process.*;
-import org.kie.api.event.rule.*;
-import org.kie.api.runtime.KieSession;
-
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.KieSession;
 
 public class AuditLogger {
 
     private final Set<String> logs = new HashSet<String>();
-    private final KieSession ksession;
+    private final Map<String, KieSession> ksessions;
 
+    public AuditLogger(Map<String, KieSession> ksessions) {
 
-    public AuditLogger(KieSession ksession) {
+        this.ksessions = ksessions;
 
-        this.ksession = ksession;
+        for (KieSession ksession : ksessions.values()) {
 
-        addRuleRuntimeEventListener();
+            addRuleRuntimeEventListener(ksession);
 
-        addAgendaEventListener();
+            addAgendaEventListener(ksession);
 
-        addProcessEventListener();
+            addProcessEventListener(ksession);
+        }
 
     }
 
@@ -46,7 +66,7 @@ public class AuditLogger {
         return logs;
     }
 
-    private void addProcessEventListener() {
+    private void addProcessEventListener(KieSession ksession) {
         ksession.addEventListener(new ProcessEventListener() {
             @Override
             public void beforeProcessStarted(ProcessStartedEvent processStartedEvent) {
@@ -100,7 +120,7 @@ public class AuditLogger {
         });
     }
 
-    private void addAgendaEventListener() {
+    private void addAgendaEventListener(KieSession ksession) {
         ksession.addEventListener(new AgendaEventListener() {
             @Override
             public void matchCreated(MatchCreatedEvent matchCreatedEvent) {
@@ -154,7 +174,7 @@ public class AuditLogger {
         });
     }
 
-    private void addRuleRuntimeEventListener() {
+    private void addRuleRuntimeEventListener(KieSession ksession) {
         ksession.addEventListener(new RuleRuntimeEventListener() {
             @Override
             public void objectInserted(ObjectInsertedEvent objectInsertedEvent) {
@@ -176,11 +196,11 @@ public class AuditLogger {
                 if (rule == null) {
 
                     logs.add("Object " + object.getClass().getName() + " updated. Old fact[ " + oldObject.toString()
-                            + " ]. New fact[ " + object.toString() + " ].");
+                             + " ]. New fact[ " + object.toString() + " ].");
                 } else {
                     logs.add("Object " + object.getClass().getName() + " updated in rule " + rule.getName()
-                            + ". Old fact[ " + oldObject.toString()
-                            + " ]. New fact[ " + object.toString() + " ].");
+                             + ". Old fact[ " + oldObject.toString()
+                             + " ]. New fact[ " + object.toString() + " ].");
                 }
             }
 

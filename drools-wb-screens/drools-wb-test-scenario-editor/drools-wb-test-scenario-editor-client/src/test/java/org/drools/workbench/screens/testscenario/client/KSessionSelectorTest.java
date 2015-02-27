@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -77,17 +76,13 @@ public class KSessionSelectorTest {
         presenter = selector;
     }
 
-    // TODO: No ksessions
-    // TODO: No preset data
-    // TODO: When using just the defaults
-    // TODO: kmodule.xml empty, but scenario has kbase+ksession defined
-
-    // TODO: Change needs to clean the map in scenario
 
     @Test
     public void testSimple() throws Exception {
         view.setPresenter(presenter);
     }
+
+    // TODO: Change needs to clean the list in scenario
 
     @Test
     public void testSetKBaseAndKSession() throws Exception {
@@ -144,6 +139,66 @@ public class KSessionSelectorTest {
         // Model needs to be updated
         assertEquals(1, scenario.getKSessions().size());
         assertEquals("defaultKieSession", scenario.getKSessions().iterator().next());
+    }
+
+    @Test
+    public void testKSessionDefinedInScenarioNoLongerExists() throws Exception {
+
+        Scenario scenario = new Scenario();
+        scenario.getKSessions().add("ksessionThatHasBeenRemovedFromKModuleXML");
+        selector.init(path, scenario);
+
+        verify(view).addKBase("kbase1");
+        verify(view).addKBase("kbase2");
+        verify(view).addKBase("kbase3");
+        verify(view).addKBase("---");
+
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setKSessions(listArgumentCaptor.capture());
+
+        verify(view).setSelected(eq("---"), eq("ksessionThatHasBeenRemovedFromKModuleXML"));
+
+        verify(view).showWarningSelectedKSessionDoesNotExist();
+
+        List ksessionNamesList = listArgumentCaptor.getValue();
+        assertEquals(1, ksessionNamesList.size());
+
+        assertEquals("ksessionThatHasBeenRemovedFromKModuleXML", ksessionNamesList.get(0));
+
+        // Model needs to be updated
+        assertEquals(1, scenario.getKSessions().size());
+        assertEquals("ksessionThatHasBeenRemovedFromKModuleXML", scenario.getKSessions().iterator().next());
+
+    }
+
+    @Test
+    public void testKSessionDefinedInScenarioNoLongerExistsAndKModuleIsEmpty() throws Exception {
+        // No kbases or ksessions defined in the kmodule.xml
+        this.kModule = new KModuleModel();
+
+        Scenario scenario = new Scenario();
+        scenario.getKSessions().add("ksessionThatHasBeenRemovedFromKModuleXML");
+        selector.init(path, scenario);
+
+        verify(view).addKBase("defaultKieBase");
+        verify(view).addKBase("---");
+
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setKSessions(listArgumentCaptor.capture());
+
+        verify(view).setSelected(eq("---"), eq("ksessionThatHasBeenRemovedFromKModuleXML"));
+
+        verify(view).showWarningSelectedKSessionDoesNotExist();
+
+        List ksessionNamesList = listArgumentCaptor.getValue();
+        assertEquals(1, ksessionNamesList.size());
+
+        assertEquals("ksessionThatHasBeenRemovedFromKModuleXML", ksessionNamesList.get(0));
+
+        // Model needs to be updated
+        assertEquals(1, scenario.getKSessions().size());
+        assertEquals("ksessionThatHasBeenRemovedFromKModuleXML", scenario.getKSessions().iterator().next());
+
     }
 
     private KBaseModel getKBase(final String kbaseName,

@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface KSessionSelectorView
         extends IsWidget {
 
-
     interface Presenter {
 
         void onKBaseSelected(String kbaseName);
@@ -41,5 +40,7 @@ public interface KSessionSelectorView
     void addKBase(String name);
 
     void setKSessions(List<String> ksessions);
+
+    void showWarningSelectedKSessionDoesNotExist();
 
 }

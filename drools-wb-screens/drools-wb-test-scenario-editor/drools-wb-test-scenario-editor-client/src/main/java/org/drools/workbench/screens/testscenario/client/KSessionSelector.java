@@ -39,6 +39,7 @@ public class KSessionSelector
 
     private static String DEFAULT_KIE_BASE    = "defaultKieBase";
     private static String DEFAULT_KIE_SESSION = "defaultKieSession";
+    private static String NON_EXISTING_KBASE = "---";
 
     private KSessionSelectorView      view;
     private Caller<KieProjectService> projectService;
@@ -79,21 +80,61 @@ public class KSessionSelector
             public void callback(KModuleModel kmodule) {
                 KSessionSelector.this.kmodule = kmodule;
 
-                for (KBaseModel kBase : kmodule.getKBases().values()) {
-                    view.addKBase(kBase.getName());
-                }
-
-                // Some tricks here, currently we only have one ksession to test against,
-                // but in the future it might make sense to use several.
-                if (kmodule.getKBases().isEmpty()) {
-                    setDefault();
-                } else if (scenario.getKSessions().isEmpty()) {
-                    setFirst();
-                } else {
-                    setFromModel();
-                }
+                initKBases();
+                selectCurrentKBaseAndKSession();
             }
         };
+    }
+
+    private void selectCurrentKBaseAndKSession() {
+        if (scenarioHasKSessionDefined() && kmoduleContainsCurrentKSession(kmodule)) {
+            selectFromModel();
+        } else {
+            selectFirst();
+        }
+    }
+
+    private void initKBases() {
+        if (kmodule.getKBases().isEmpty()) {
+            addMockKBaseModel(DEFAULT_KIE_BASE, DEFAULT_KIE_SESSION);
+            view.addKBase(DEFAULT_KIE_BASE);
+        } else {
+            for (KBaseModel kBase : kmodule.getKBases().values()) {
+                view.addKBase(kBase.getName());
+            }
+        }
+        if (scenarioHasKSessionDefined() && !kmoduleContainsCurrentKSession(kmodule)) {
+            addMockKBaseModel(NON_EXISTING_KBASE, getKSessionName());
+            view.addKBase(NON_EXISTING_KBASE);
+            view.showWarningSelectedKSessionDoesNotExist();
+        }
+    }
+
+    private void addMockKBaseModel(String kbaseName, String ksessionsName) {
+        KBaseModel kbaseModel = new KBaseModel();
+        kbaseModel.setName(kbaseName);
+        KSessionModel ksessionModel = new KSessionModel();
+        ksessionModel.setName(ksessionsName);
+        kbaseModel.getKSessions().add(ksessionModel);
+        kmodule.getKBases().put(kbaseName, kbaseModel);
+    }
+
+    private boolean scenarioHasKSessionDefined() {
+        return !scenario.getKSessions().isEmpty();
+    }
+
+    private boolean kmoduleContainsCurrentKSession(KModuleModel kmodule) {
+        if (!scenario.getKSessions().isEmpty()) {
+            for (KBaseModel kbase : kmodule.getKBases().values()) {
+                for (KSessionModel ksession : kbase.getKSessions()) {
+                    if (ksession.getName().equals(getKSessionName())) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -107,33 +148,23 @@ public class KSessionSelector
         scenario.getKSessions().add(ksession);
     }
 
-    private void setDefault() {
-        view.addKBase(DEFAULT_KIE_BASE);
-        ArrayList<String> defaultKieSession = makeKSessionList(DEFAULT_KIE_SESSION);
-        view.setKSessions(defaultKieSession);
-        view.setSelected(DEFAULT_KIE_BASE, DEFAULT_KIE_SESSION);
-        scenario.getKSessions().add(DEFAULT_KIE_SESSION);
-    }
-
-    private void setFromModel() {
-        String kbaseName = "";
-        String ksessionName = scenario.getKSessions().get(0);
-
+    private void selectFromModel() {
         for (KBaseModel kbase : kmodule.getKBases().values()) {
             for (KSessionModel ksession : kbase.getKSessions()) {
-                if (ksession.getName().equals(ksessionName)) {
-                    kbaseName = kbase.getName();
+                if (ksession.getName().equals(getKSessionName())) {
+                    setKSessions(kmodule.getKBases().get(kbase.getName()).getKSessions());
+                    view.setSelected(kbase.getName(), getKSessionName());
+                    break;
                 }
             }
         }
-
-        List<KSessionModel> kSessions = kmodule.getKBases().get(kbaseName).getKSessions();
-        setKSessions(kSessions);
-
-        view.setSelected(kbaseName, ksessionName);
     }
 
-    private void setFirst() {
+    private String getKSessionName() {
+        return scenario.getKSessions().get(0);
+    }
+
+    private void selectFirst() {
 
         KBaseModel firstKBase = kmodule.getKBases().values().iterator().next();
 
@@ -153,12 +184,6 @@ public class KSessionSelector
             ksessions.add(kSession.getName());
         }
         view.setKSessions(ksessions);
-    }
-
-    private ArrayList<String> makeKSessionList(String ksession) {
-        ArrayList<String> ksessions = new ArrayList<String>();
-        ksessions.add(ksession);
-        return ksessions;
     }
 
     @Override

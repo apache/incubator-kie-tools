@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import javax.enterprise.event.Event;
-
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
@@ -26,7 +24,7 @@ import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.guvnor.common.services.shared.test.TestResultMessage;
+import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -68,6 +66,7 @@ public class ScenarioEditorPresenterTest {
         AsyncPackageDataModelOracleFactory modelOracleFactory = mock(AsyncPackageDataModelOracleFactory.class);
         editor = new ScenarioEditorPresenter(view,
                                              new ScenarioTestEditorServiceCallerMock(),
+                                             new TestServiceMock(),
                                              new TestScenarioResourceType(),
                                              modelOracleFactory) {
             {
@@ -144,14 +143,6 @@ public class ScenarioEditorPresenterTest {
                 return null;
             }
 
-            @Override public void runAllTests(Path path) {
-
-            }
-
-            @Override public void runAllTests(Path path, Event<TestResultMessage> customTestResultEvent) {
-
-            }
-
             @Override public Path copy(Path path, String s, String s1) {
                 return null;
             }
@@ -175,6 +166,22 @@ public class ScenarioEditorPresenterTest {
             @Override public Path save(Path path, Scenario content, Metadata metadata, String comment) {
                 return null;
             }
+        }
+    }
+
+    class TestServiceMock
+            implements Caller<TestService> {
+
+        @Override public TestService call() {
+            return null;
+        }
+
+        @Override public TestService call(RemoteCallback<?> remoteCallback) {
+            return null;
+        }
+
+        @Override public TestService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
+            return null;
         }
     }
 }

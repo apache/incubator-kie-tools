@@ -16,8 +16,6 @@
 
 package org.drools.workbench.screens.testscenario.backend.server;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
@@ -31,21 +29,10 @@ import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
-import org.guvnor.common.services.backend.file.FileExtensionFilter;
-import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
-import org.guvnor.common.services.backend.file.LinkedFilter;
-import org.guvnor.common.services.backend.file.LinkedMetaInfFolderFilter;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.guvnor.common.services.shared.test.TestResultMessage;
-import org.guvnor.structure.server.config.ConfigGroup;
-import org.guvnor.structure.server.config.ConfigItem;
-import org.guvnor.structure.server.config.ConfigType;
-import org.guvnor.structure.server.config.ConfigurationService;
 import org.jboss.errai.bus.server.annotations.Service;
-import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.service.KieService;
-import org.kie.workbench.common.services.backend.session.SessionService;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -58,9 +45,7 @@ import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
-import org.uberfire.java.nio.file.Files;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
 
 @Service
@@ -69,14 +54,11 @@ public class ScenarioTestEditorServiceImpl
         extends KieService<TestScenarioModelContent>
         implements ScenarioTestEditorService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScenarioTestEditorServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioTestEditorServiceImpl.class);
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
-
-    @Inject
-    private SessionService sessionService;
 
     @Inject
     private CopyService copyService;
@@ -91,13 +73,10 @@ public class ScenarioTestEditorServiceImpl
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
 
     @Inject
-    private Event<TestResultMessage> testResultMessageEvent;
-
-    @Inject
     private DataModelService dataModelService;
 
     @Inject
-    private ConfigurationService configurationService;
+    private ScenarioRunnerService scenarioRunner;
 
     @Override
     public Path create(final Path context,
@@ -236,102 +215,9 @@ public class ScenarioTestEditorServiceImpl
     public TestScenarioResult runScenario(final Path path,
                                           final Scenario scenario) {
         try {
-
-            final KieProject project = projectService.resolveProject(path);
-
-            String ksessionName = scenario.getKSessions().iterator().next();
-
-            final KieSession ksession = sessionService.newKieSession(project, ksessionName);
-            final ScenarioRunnerWrapper runner = new ScenarioRunnerWrapper(testResultMessageEvent,
-                                                                           getMaxRuleFirings());
-
-            return runner.run(identity.getIdentifier(),
-                              scenario,
-                              ksession);
-
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
-        }
-    }
-
-    private int getMaxRuleFirings() {
-        for (ConfigGroup editorConfigGroup : configurationService.getConfiguration(ConfigType.EDITOR)) {
-            if (ScenarioTestEditorService.TEST_SCENARIO_EDITOR_SETTINGS.equals(editorConfigGroup.getName())) {
-                for (ConfigItem item : editorConfigGroup.getItems()) {
-                    String itemName = item.getName();
-                    if (itemName.equals(ScenarioTestEditorService.TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS)) {
-                        return (Integer) item.getValue();
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-    @Override
-    public void runAllTests(final Path testResourcePath) {
-        runAllTests(testResourcePath,
-                    testResultMessageEvent);
-    }
-
-    @Override
-    public void runAllTests(final Path testResourcePath,
-                            Event<TestResultMessage> customTestResultEvent) {
-        try {
-            final KieProject project = projectService.resolveProject(testResourcePath);
-            List<Path> scenarioPaths = loadScenarioPaths(testResourcePath);
-            List<Scenario> scenarios = new ArrayList<Scenario>();
-            for (Path path : scenarioPaths) {
-                Scenario s = load(path);
-                scenarios.add(s);
-            }
-
-            new ScenarioRunnerWrapper(testResultMessageEvent, getMaxRuleFirings()).run(
-                    identity.getIdentifier(),
-                    scenarios,
-                    sessionService.newKieSessionWithPseudoClock(project)
-                                                                                      );
-
-        } catch (Exception e) {
-            throw ExceptionUtilities.handleException(e);
-        }
-    }
-
-    public List<Path> loadScenarioPaths(final Path path) {
-        try {
-            // Check Path exists
-            final List<Path> items = new ArrayList<Path>();
-            if (!Files.exists(Paths.convert(path))) {
-                return items;
-            }
-
-            // Ensure Path represents a Folder
-            org.uberfire.java.nio.file.Path pPath = Paths.convert(path);
-            if (!Files.isDirectory(pPath)) {
-                pPath = pPath.getParent();
-            }
-
-            LinkedFilter filter = new LinkedDotFileFilter();
-            LinkedFilter metaInfFolderFilter = new LinkedMetaInfFolderFilter();
-            filter.setNextFilter(metaInfFolderFilter);
-            FileExtensionFilter fileExtensionFilter = new FileExtensionFilter(".scenario");
-
-            // Get list of immediate children
-            final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(pPath);
-            for (final org.uberfire.java.nio.file.Path p : directoryStream) {
-                if (filter.accept(p) && fileExtensionFilter.accept(p)) {
-                    if (Files.isRegularFile(p)) {
-                        items.add(Paths.convert(p));
-                    } else if (Files.isDirectory(p)) {
-                        items.add(Paths.convert(p));
-                    }
-                }
-            }
-
-            // Add ability to move up one level in the hierarchy
-            //items.add(new ParentPackageItem(Paths.convert(pPath.getParent()), ".."));
-
-            return items;
+            return scenarioRunner.run(
+                    scenario,
+                    projectService.resolveProject(path));
 
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);

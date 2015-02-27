@@ -43,8 +43,7 @@ public interface ScenarioTestEditorService
         SupportsUpdate<Scenario>,
         SupportsDelete,
         SupportsCopy,
-        SupportsRename,
-        TestService {
+        SupportsRename {
 
     public static final String TEST_SCENARIO_EDITOR_SETTINGS = "test-scenario-editor-settings";
     public static final String TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS = "max-rule-firings";
@@ -54,7 +53,4 @@ public interface ScenarioTestEditorService
     TestScenarioResult runScenario(Path path,
                                    Scenario scenario);
 
-    void runAllTests(Path path);
-    
-    void runAllTests(Path path, Event<TestResultMessage> customTestResultEvent);
 }

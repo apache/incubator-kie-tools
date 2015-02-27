@@ -23,11 +23,15 @@
 
   <ui:with field='images' type='org.kie.workbench.common.widgets.client.resources.CommonImages'/>
 
+  <gwt:VerticalPanel>
   <gwt:HorizontalPanel>
     <gwt:Label text="KBase:"/>
     <bootstrap:ListBox ui:field="kbases"/>
     <gwt:Label text="KSession:"/>
     <bootstrap:ListBox ui:field="ksessions"/>
   </gwt:HorizontalPanel>
-
+    <bootstrap:Label ui:field="warning" text='{i18n.WarningTheSelectedKSessionDoesNotExist}' visible="false"/>
+  </gwt:VerticalPanel>
 </ui:UiBinder>
+
+

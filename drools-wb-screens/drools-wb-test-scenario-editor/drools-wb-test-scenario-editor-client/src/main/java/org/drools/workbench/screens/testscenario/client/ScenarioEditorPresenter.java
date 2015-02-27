@@ -16,7 +16,6 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -27,6 +26,7 @@ import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourc
 import org.drools.workbench.screens.testscenario.model.TestScenarioModelContent;
 import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
+import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -38,7 +38,6 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
@@ -57,6 +56,7 @@ public class ScenarioEditorPresenter
     private final TestScenarioResourceType           type;
     private final ScenarioEditorView                 view;
     private final Caller<ScenarioTestEditorService>  service;
+    private final Caller<TestService> testService;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
 
     private Scenario                    scenario;
@@ -65,11 +65,13 @@ public class ScenarioEditorPresenter
     @Inject
     public ScenarioEditorPresenter(final ScenarioEditorView view,
                                    final Caller<ScenarioTestEditorService> service,
+                                   final Caller<TestService> testService,
                                    final TestScenarioResourceType type,
                                    final AsyncPackageDataModelOracleFactory oracleFactory) {
         super(view);
         this.view = view;
         this.service = service;
+        this.testService = testService;
         this.type = type;
         this.oracleFactory = oracleFactory;
 
@@ -148,13 +150,13 @@ public class ScenarioEditorPresenter
     @Override
     public void onRunAllScenarios() {
         baseView.showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
-        service.call(new RemoteCallback<Void>() {
+        testService.call(new RemoteCallback<Void>() {
                          @Override
                          public void callback(Void v) {
                              view.hideBusyIndicator();
                          }
                      },
-                     new HasBusyIndicatorDefaultErrorCallback(view)
+                     new TestRunFailedErrorCallback(view)
                     ).runAllTests(versionRecordManager.getCurrentPath());
     }
 

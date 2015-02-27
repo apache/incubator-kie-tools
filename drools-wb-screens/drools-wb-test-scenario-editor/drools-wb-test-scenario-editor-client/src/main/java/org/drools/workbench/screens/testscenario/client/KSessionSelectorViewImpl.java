@@ -18,6 +18,7 @@ package org.drools.workbench.screens.testscenario.client;
 
 import java.util.List;
 
+import com.github.gwtbootstrap.client.ui.Label;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -47,6 +48,9 @@ public class KSessionSelectorViewImpl
     @UiField
     ListBox ksessions;
 
+    @UiField
+    Label warning;
+
     public KSessionSelectorViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -73,6 +77,11 @@ public class KSessionSelectorViewImpl
         for (String ksession : ksessions) {
             this.ksessions.addItem(ksession);
         }
+    }
+
+    @Override
+    public void showWarningSelectedKSessionDoesNotExist() {
+        warning.setVisible(true);
     }
 
     @Override
