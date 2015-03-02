@@ -30,10 +30,13 @@ import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.ext.editor.commons.client.file.RestorePopup;
 import org.uberfire.ext.editor.commons.client.file.RestoreUtil;
 import org.uberfire.ext.editor.commons.client.history.event.VersionSelectedEvent;
+import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.version.VersionService;
+import org.uberfire.ext.editor.commons.version.events.RestoreEvent;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 
 public class VersionRecordManager {
@@ -214,6 +217,14 @@ public class VersionRecordManager {
 
     public void restoreToCurrentVersion() {
         restorePopup.show( getCurrentPath(), getCurrentVersionRecordUri() );
+    }
+
+    public void onRestore( @Observes RestoreEvent restore ) {
+        if ( getCurrentPath() != null &&
+                getCurrentPath().equals( restore.getPath() ) &&
+                saveButton != null ) {
+            saveButton.setTextToSave();
+        }
     }
 
     private void loadVersions( final ObservablePath path ) {
