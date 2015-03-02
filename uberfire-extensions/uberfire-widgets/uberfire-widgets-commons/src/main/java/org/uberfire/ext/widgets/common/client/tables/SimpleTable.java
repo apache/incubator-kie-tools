@@ -127,7 +127,7 @@ public class SimpleTable<T>
         setEmptyTableWidget();
 
         columnPicker = new ColumnPicker<T>( dataGrid, gridPreferencesStore );
-        
+
         columnPicker.addColumnChangedHandler( new ColumnChangedHandler() {
 
             @Override
@@ -141,14 +141,7 @@ public class SimpleTable<T>
                     for ( GridColumnPreference gcp : columnsState ) {
                             gridPreferencesStore.addGridColumnPreference( gcp );
                     }
-
-                    preferencesService.call( new RemoteCallback<Void>() {
-
-                        @Override
-                        public void callback( Void response ) {
-
-                        }
-                    } ).saveGridPreferences( gridPreferencesStore );     
+                    saveGridPreferences();
                 }
 
             }
@@ -349,13 +342,7 @@ public class SimpleTable<T>
                     for ( GridColumnPreference gcp : columnsState ) {
                             gridPreferencesStore.addGridColumnPreference( gcp );
                     }
-                    preferencesService.call( new RemoteCallback<Void>() {
-
-                        @Override
-                        public void callback( Void response ) {
-
-                        }
-                    } ).saveGridPreferences( gridPreferencesStore );
+                    saveGridPreferences();
                 }
             }
 
@@ -430,6 +417,20 @@ public class SimpleTable<T>
         //   if I would like to compare with the current state for changes
         this.gridPreferencesStore = gridPreferences;
         columnPicker.setGridPreferencesStore( gridPreferences );
+    }
+
+    public GridPreferencesStore getGridPreferencesStore() {
+        return this.gridPreferencesStore;
+    }
+
+    public void saveGridPreferences() {
+        if ( gridPreferencesStore != null && preferencesService != null ) {
+            preferencesService.call( new RemoteCallback<Void>() {
+                @Override
+                public void callback( Void response ) {
+                }
+            } ).saveGridPreferences( gridPreferencesStore );
+        }
     }
 
 }

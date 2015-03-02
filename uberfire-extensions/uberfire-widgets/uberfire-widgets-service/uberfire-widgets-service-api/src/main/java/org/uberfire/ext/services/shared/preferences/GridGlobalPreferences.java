@@ -21,11 +21,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class GridGlobalPreferences {
+  private static int DEFAULT_PAGE_SIZE=10;
 
   private String key;
   private List<String> initialColumns = new ArrayList<String>();
   private List<String> bannedColumns = new ArrayList<String>();
-  
+  private int pageSize =DEFAULT_PAGE_SIZE;
 
   public GridGlobalPreferences() {
   }
@@ -48,8 +49,12 @@ public class GridGlobalPreferences {
     return bannedColumns;
   }
 
-  
+  public void setPageSize( int pageSize ) {
+    this.pageSize = pageSize;
+  }
 
- 
+  public int getPageSize(){
+    return this.pageSize;
+  }
 
 }

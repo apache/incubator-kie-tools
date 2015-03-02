@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
+import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
 
@@ -61,15 +62,21 @@ public class PagedTable<T>
     private boolean showPageSizesSelector = false;
     private PopupPanel popup = new PopupPanel(true);
 
+    public PagedTable(){
+        super();
+    }
+
     public PagedTable( final int pageSize ) {
         super();
-        setPageSizeValue( pageSize );
+        this.pageSize=pageSize;
+        setPageSizeValue(  );
     }
 
     public PagedTable( final int pageSize,
                        final ProvidesKey<T> providesKey ) {
         super( providesKey );
-        setPageSizeValue( pageSize );
+        this.pageSize =pageSize;
+        setPageSizeValue(  );
     }
 
     public PagedTable( final int pageSize,
@@ -77,7 +84,8 @@ public class PagedTable<T>
                        final GridGlobalPreferences gridGlobalPreferences ) {
         super( providesKey, gridGlobalPreferences );
         pageSizesSelector.setVisible( false );
-        setPageSizeValue( pageSize );
+        this.pageSize=pageSize;
+        setPageSizeValue(  );
     }
 
     public PagedTable( final int pageSize,
@@ -87,9 +95,10 @@ public class PagedTable<T>
 
         super( providesKey, gridGlobalPreferences );
         this.showPageSizesSelector = showPageSizesSelector;
-        setPageSizeValue( pageSize );
+        this.pageSize=pageSize;
+        setPageSizeValue(  );
     }
-    
+
     protected Widget makeWidget() {
         pageSizesSelector = createPageSizesToggleButton();
         return uiBinder.createAndBindUi( this );
@@ -112,13 +121,13 @@ public class PagedTable<T>
         return this.pager.getPageStart();
     }
 
-    public final void setPageSizeValue( int pageSize ) {
-        this.pageSize = pageSize;
+    public final void setPageSizeValue(  ) {
+        pageSize = getPageSizeStored();
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
-        this.dataGrid.setHeight( ( pageSize * 41 )+ 42 + "px" );
-        pageSizesSelector.setVisible(this.showPageSizesSelector);
+        this.dataGrid.setHeight( ( pageSize * 41 ) + 42 + "px" );
+        pageSizesSelector.setVisible( this.showPageSizesSelector );
     }
 
     public Button createPageSizesToggleButton() {
@@ -163,7 +172,8 @@ public class PagedTable<T>
             rb.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
-                    setPageSizeValue( selectedPageSize );
+                    storePageSizeInGridPreferences( selectedPageSize );
+                    setPageSizeValue( );
                     popup.hide();
                     pageSizesSelector.setActive( false );
 
@@ -177,5 +187,21 @@ public class PagedTable<T>
         int finalLeft = left - popup.getOffsetWidth();
         popup.setPopupPosition(finalLeft, top);
 
+    }
+
+    private void storePageSizeInGridPreferences(int pageSize) {
+        GridPreferencesStore gridPreferencesStore =super.getGridPreferencesStore();
+        if ( gridPreferencesStore != null ) {
+            gridPreferencesStore.getGlobalPreferences().setPageSize( pageSize );;
+            super.saveGridPreferences();
+        }
+    }
+
+    private int getPageSizeStored(){
+        GridPreferencesStore gridPreferencesStore =super.getGridPreferencesStore();
+        if ( gridPreferencesStore != null ) {
+            return gridPreferencesStore.getGlobalPreferences().getPageSize();
+        }
+        return pageSize;
     }
 }
