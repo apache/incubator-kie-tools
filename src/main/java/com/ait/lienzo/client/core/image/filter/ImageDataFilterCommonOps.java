@@ -241,12 +241,25 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                 }
             }
         };
+        this.filterLuminosity = function(data, length) {
+            for (var j = 0; j < length; j += 4) {
+                var v = (((data[  j  ] * 0.21) + (data[j + 1] * 0.72) + (data[j + 2] * 0.07)) + 0.5) | 0;
+                data[  j  ] = v;
+                data[j + 1] = v;
+                data[j + 2] = v;
+            }
+        };
     }-*/;
 
     public final int getLength(ImageData source)
     {
         return ((source.getWidth() * source.getHeight()) * 4);
     }
+    
+    public final native void dofilterLuminosity(CanvasPixelArray data, int length)
+    /*-{
+        this.filterLuminosity(data, length);
+    }-*/;
 
     public final native void doFilterTable(CanvasPixelArray data, FilterTableArray table, int w, int h)
     /*-{

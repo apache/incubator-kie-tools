@@ -94,7 +94,7 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
     /*-{
     	for (var i = 0; i < length; i += 4) {
     		if (data[i + 3] > 0) {
-    			data[i + 0] = r;
+    			data[  i  ] = r;
     			data[i + 1] = g;
     			data[i + 2] = b;
     			data[i + 3] = 255;

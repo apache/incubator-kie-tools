@@ -63,12 +63,12 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
         {
             return source;
         }
-        filter_(data, FilterCommonOps.getLength(source), source.getWidth());
+        filter_(data, FilterCommonOps.getLength(source), source.getWidth(), FilterCommonOps);
 
         return source;
     }
 
-    private final native void filter_(JavaScriptObject data, int length, int width)
+    private final native void filter_(JavaScriptObject data, int length, int width, ImageDataFilterCommonOps fops)
     /*-{
         for(var i = 0; i < length; i++) {
             if(i < (length - width * 4)) {
@@ -87,11 +87,8 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
                     data[i] = data[i - width * 4];
                 }
             }
-            var v = (((data[  i  ] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) + 0.5) | 0;
-            data[  i  ] = v;
-            data[i + 1] = v;
-            data[i + 2] = v;
         }
+        fops.filterLuminosity(data, length);
     }-*/;
 
     @Override

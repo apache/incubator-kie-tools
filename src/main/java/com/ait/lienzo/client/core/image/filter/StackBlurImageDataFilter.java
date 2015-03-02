@@ -126,7 +126,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
         for (y = 0; y < height; y++) {
             r_in_sum = g_in_sum = b_in_sum = r_sum = g_sum = b_sum = 0;
 
-            r_out_sum = radiusPlus1 * (pr = data[yi]);
+            r_out_sum = radiusPlus1 * (pr = data[  yi  ]);
             g_out_sum = radiusPlus1 * (pg = data[yi + 1]);
             b_out_sum = radiusPlus1 * (pb = data[yi + 2]);
 
@@ -144,7 +144,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             }
             for (i = 1; i < radiusPlus1; i++) {
                 p = yi + ((widthMinus1 < i ? widthMinus1 : i) << 2);
-                r_sum += (stack.r = (pr = data[p])) * (rbs = radiusPlus1 - i);
+                r_sum += (stack.r = (pr = data[  p  ])) * (rbs = radiusPlus1 - i);
                 g_sum += (stack.g = (pg = data[p + 1])) * rbs;
                 b_sum += (stack.b = (pb = data[p + 2])) * rbs;
                 r_in_sum += pr;
@@ -155,7 +155,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             stackIn = stackStart;
             stackOut = stackEnd;
             for (x = 0; x < width; x++) {
-                data[yi] = (r_sum * mul_sum) >> shg_sum;
+                data[  yi  ] = (r_sum * mul_sum) >> shg_sum;
                 data[yi + 1] = (g_sum * mul_sum) >> shg_sum;
                 data[yi + 2] = (b_sum * mul_sum) >> shg_sum;
                 r_sum -= r_out_sum;
@@ -195,7 +195,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             g_in_sum = b_in_sum = r_in_sum = g_sum = b_sum = r_sum = 0;
 
             yi = x << 2;
-            r_out_sum = radiusPlus1 * (pr = data[yi]);
+            r_out_sum = radiusPlus1 * (pr = data[  yi  ]);
             g_out_sum = radiusPlus1 * (pg = data[yi + 1]);
             b_out_sum = radiusPlus1 * (pb = data[yi + 2]);
 
@@ -216,7 +216,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             for (i = 1; i <= radius; i++) {
                 yi = (yp + x) << 2;
 
-                r_sum += (stack.r = (pr = data[yi])) * (rbs = radiusPlus1 - i);
+                r_sum += (stack.r = (pr = data[  yi  ])) * (rbs = radiusPlus1 - i);
                 g_sum += (stack.g = (pg = data[yi + 1])) * rbs;
                 b_sum += (stack.b = (pb = data[yi + 2])) * rbs;
 
@@ -235,7 +235,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
             stackOut = stackEnd;
             for (y = 0; y < height; y++) {
                 p = yi << 2;
-                data[p] = (r_sum * mul_sum) >> shg_sum;
+                data[  p  ] = (r_sum * mul_sum) >> shg_sum;
                 data[p + 1] = (g_sum * mul_sum) >> shg_sum;
                 data[p + 2] = (b_sum * mul_sum) >> shg_sum;
 
@@ -249,7 +249,7 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
 
                 p = (x + (((p = y + radiusPlus1) < heightMinus1 ? p : heightMinus1) * width)) << 2;
 
-                r_sum += (r_in_sum += (stackIn.r = data[p]));
+                r_sum += (r_in_sum += (stackIn.r = data[  p  ]));
                 g_sum += (g_in_sum += (stackIn.g = data[p + 1]));
                 b_sum += (b_in_sum += (stackIn.b = data[p + 2]));
 

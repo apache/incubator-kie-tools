@@ -22,7 +22,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -60,20 +59,10 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
         {
             return source;
         }
-        filter_(data, FilterCommonOps.getLength(source));
+        FilterCommonOps.dofilterLuminosity(data, FilterCommonOps.getLength(source));
 
         return source;
     }
-
-    private final native void filter_(JavaScriptObject data, int length)
-    /*-{
-    	for (var i = 0; i < length; i += 4) {
-            var v = (((data[i + 0] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) + 0.5) | 0;
-    		data[i + 0] = v;
-    		data[i + 1] = v;
-    		data[i + 2] = v;
-    	}
-    }-*/;
 
     @Override
     public IFactory<LuminosityGrayScaleImageDataFilter> getFactory()
