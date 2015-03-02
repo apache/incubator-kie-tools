@@ -129,6 +129,12 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
