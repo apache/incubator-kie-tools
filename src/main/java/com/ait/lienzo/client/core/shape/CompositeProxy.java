@@ -18,18 +18,16 @@ package com.ait.lienzo.client.core.shape;
 
 import java.util.List;
 
-import com.ait.lienzo.client.core.animation.AnimationProperties;
-import com.ait.lienzo.client.core.animation.AnimationTweener;
-import com.ait.lienzo.client.core.animation.IAnimationCallback;
-import com.ait.lienzo.client.core.animation.IAnimationHandle;
-import com.ait.lienzo.client.core.animation.TweeningAnimation;
+import com.ait.lienzo.client.core.Attribute;
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
@@ -40,7 +38,7 @@ import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.ProxyType;
 import com.google.gwt.json.client.JSONObject;
 
-public class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C> implements IPrimitive<C>, IJSONSerializable<C>
+public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends Node<C> implements IPrimitive<C>, IJSONSerializable<C>
 {
     private ProxyType              m_type                   = null;
 
@@ -55,17 +53,14 @@ public class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive
         m_type = type;
     }
 
-    public CompositeProxy(final ProxyType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected CompositeProxy(final ProxyType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.PROXY, node, ctx);
 
         m_type = type;
     }
 
-    protected P getProxy()
-    {
-        return null;
-    }
+    protected abstract P getProxy();
 
     protected void setProxyType(final ProxyType type)
     {
@@ -75,6 +70,26 @@ public class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive
     public ProxyType getProxyType()
     {
         return m_type;
+    }
+    
+    @Override
+    public IFactory<?> getFactory()
+    {
+        return LienzoCore.get().getFactory(m_type);
+    }
+
+    @Override
+    public boolean isDrawInherited()
+    {
+        return getAttributes().isDrawInherited();
+    }
+
+    @Override
+    public C setDrawInherited(final boolean draw)
+    {
+        getAttributes().setDrawInherited(draw);
+
+        return cast();
     }
 
     /**
@@ -692,25 +707,6 @@ public class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive
     }
 
     @Override
-    public IFactory<C> getFactory()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, null).run();
-    }
-
-    @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, callback).run();
-    }
-
-    @Override
     public DragConstraintEnforcer getDragConstraints()
     {
         if (null == m_dragConstraintEnforcer)
@@ -734,26 +730,103 @@ public class CompositeProxy<C extends CompositeProxy<C, P>, P extends IPrimitive
     @Override
     public void attachToLayerColorMap()
     {
-        // TODO Auto-generated method stub
-
+        getProxy().attachToLayerColorMap();
     }
 
     @Override
     public void detachFromLayerColorMap()
     {
-        // TODO Auto-generated method stub
+        getProxy().detachFromLayerColorMap();
     }
 
     @Override
     public C refresh()
     {
-        return null;
+        getProxy().refresh();
+
+        return cast();
     }
 
     @Override
     public C copy()
     {
-        // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    protected void drawWithoutTransforms(final Context2D context, double alpha)
+    {
+        if ((context.isSelection()) && (false == isListening()))
+        {
+            return;
+        }
+        alpha = alpha * getAttributes().getAlpha();
+
+        if (alpha <= 0)
+        {
+            return;
+        }
+        getProxy().drawWithTransforms(context, alpha);
+    }
+
+    protected static abstract class CompositeProxyFactory<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends NodeFactory<C>
+    {
+        protected CompositeProxyFactory(final ProxyType type)
+        {
+            super(type.getValue());
+
+            addAttribute(Attribute.X);
+
+            addAttribute(Attribute.Y);
+
+            addAttribute(Attribute.ALPHA);
+
+            addAttribute(Attribute.FILL);
+
+            addAttribute(Attribute.FILL_ALPHA);
+
+            addAttribute(Attribute.STROKE);
+
+            addAttribute(Attribute.STROKE_WIDTH);
+
+            addAttribute(Attribute.STROKE_ALPHA);
+
+            addAttribute(Attribute.DRAGGABLE);
+
+            addAttribute(Attribute.EDITABLE);
+
+            addAttribute(Attribute.SCALE);
+
+            addAttribute(Attribute.SHEAR);
+
+            addAttribute(Attribute.ROTATION);
+
+            addAttribute(Attribute.OFFSET);
+
+            addAttribute(Attribute.SHADOW);
+
+            addAttribute(Attribute.LINE_CAP);
+
+            addAttribute(Attribute.LINE_JOIN);
+
+            addAttribute(Attribute.MITER_LIMIT);
+
+            addAttribute(Attribute.DRAG_CONSTRAINT);
+
+            addAttribute(Attribute.DRAG_BOUNDS);
+
+            addAttribute(Attribute.DRAG_MODE);
+
+            addAttribute(Attribute.DASH_ARRAY);
+
+            addAttribute(Attribute.DASH_OFFSET);
+
+            addAttribute(Attribute.DRAW_INHERITED);
+        }
+
+        protected void setProxyType(final ProxyType type)
+        {
+            setTypeName(type.getValue());
+        }
     }
 }

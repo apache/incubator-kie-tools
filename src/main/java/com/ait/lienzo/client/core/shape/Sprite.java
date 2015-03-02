@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.SpriteLoadedHandler;
 import com.ait.lienzo.client.core.image.SpriteOnRollHandler;
 import com.ait.lienzo.client.core.image.SpriteOnTickHandler;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -469,12 +468,6 @@ public class Sprite extends Shape<Sprite>
         object.put("attributes", attr);
 
         return object;
-    }
-
-    @Override
-    public IFactory<Sprite> getFactory()
-    {
-        return new SpriteFactory();
     }
 
     public static class SpriteFactory extends ShapeFactory<Sprite>

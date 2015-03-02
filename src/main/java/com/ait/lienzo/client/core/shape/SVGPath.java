@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -510,12 +509,6 @@ public class SVGPath extends Shape<SVGPath>
             parse(m_path = path);
         }
         return this;
-    }
-
-    @Override
-    public IFactory<SVGPath> getFactory()
-    {
-        return new SVGPathFactory();
     }
 
     public static class SVGPathFactory extends ShapeFactory<SVGPath>

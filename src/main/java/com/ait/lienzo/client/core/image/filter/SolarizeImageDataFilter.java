@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<SolarizeImageDataFilter>
@@ -59,7 +60,7 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
     {
         public SolarizeImageDataFilterFactory()
         {
-            super(SolarizeImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.SolarizeImageDataFilterType);
         }
 
         @Override

@@ -14,20 +14,8 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.config;
+package com.ait.lienzo.shared.java.util;
 
-import java.util.Collection;
-
-import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.shared.java.util.IStringValuedType;
-
-public interface ILienzoPlugin
+public interface IStringValuedType extends IValuedType<String>
 {
-    public String getNameSpace();
-    
-    public Collection<String> keys();
-
-    public IFactory<?> getFactory(String name);
-    
-    public IFactory<?> getFactory(IStringValuedType type);
 }

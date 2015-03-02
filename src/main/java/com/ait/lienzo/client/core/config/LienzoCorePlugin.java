@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 import com.ait.lienzo.client.core.image.filter.AlphaScaleColorImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.AverageGrayScaleImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.BrightnessImageDataFilter;
@@ -68,6 +64,7 @@ import com.ait.lienzo.client.core.shape.RegularPolygon;
 import com.ait.lienzo.client.core.shape.Ring;
 import com.ait.lienzo.client.core.shape.SVGPath;
 import com.ait.lienzo.client.core.shape.Scene;
+import com.ait.lienzo.client.core.shape.SimpleArrow;
 import com.ait.lienzo.client.core.shape.Slice;
 import com.ait.lienzo.client.core.shape.Spline;
 import com.ait.lienzo.client.core.shape.Sprite;
@@ -75,137 +72,480 @@ import com.ait.lienzo.client.core.shape.Star;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.shape.grid.Grid;
 import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.shared.core.types.GroupType;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
+import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.core.types.ProxyType;
+import com.ait.lienzo.shared.core.types.ShapeType;
+import com.ait.lienzo.shared.java.util.function.Supplier;
 
-public final class LienzoCorePlugin implements ILienzoPlugin
+public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
 {
-    private final ArrayList<IFactory<?>> m_factories = new ArrayList<IFactory<?>>();
-
     public LienzoCorePlugin()
     {
+        add(ShapeType.ARC, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Arc.ArcFactory();
+            }
+        });
+        add(ShapeType.ARROW, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Arrow.ArrowFactory();
+            }
+        });
+        add(ShapeType.BEZIER_CURVE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new BezierCurve.BezierCurveFactory();
+            }
+        });
+        add(ShapeType.CIRCLE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Circle.CircleFactory();
+            }
+        });
+        add(ShapeType.ELLIPSE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Ellipse.EllipseFactory();
+            }
+        });
+        add(ShapeType.LINE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Line.LineFactory();
+            }
+        });
+        add(ShapeType.MOVIE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Movie.MovieFactory();
+            }
+        });
+        add(ShapeType.PARALLELOGRAM, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Parallelogram.ParallelogramFactory();
+            }
+        });
+        add(ShapeType.PICTURE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Picture.PictureFactory();
+            }
+        });
+        add(ShapeType.POLYGON, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Polygon.PolygonFactory();
+            }
+        });
+        add(ShapeType.POLYLINE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new PolyLine.PolyLineFactory();
+            }
+        });
+        add(ShapeType.QUADRATIC_CURVE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new QuadraticCurve.QuadraticCurveFactory();
+            }
+        });
+        add(ShapeType.RECTANGLE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Rectangle.RectangleFactory();
+            }
+        });
+        add(ShapeType.REGULAR_POLYGON, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new RegularPolygon.RegularPolygonFactory();
+            }
+        });
+        add(ShapeType.SLICE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Slice.SliceFactory();
+            }
+        });
+        add(ShapeType.STAR, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Star.StarFactory();
+            }
+        });
+        add(ShapeType.TEXT, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Text.TextFactory();
+            }
+        });
+        add(ShapeType.TRIANGLE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Triangle.TriangleFactory();
+            }
+        });
+        add(ShapeType.SPLINE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Spline.SplineFactory();
+            }
+        });
+        add(ShapeType.BOW, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Bow.BowFactory();
+            }
+        });
+        add(ShapeType.RING, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Ring.RingFactory();
+            }
+        });
+        add(ShapeType.CHORD, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Chord.ChordFactory();
+            }
+        });
+        add(ShapeType.ISOSCELES_TRAPEZOID, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new IsoscelesTrapezoid.IsoscelesTrapezoidFactory();
+            }
+        });
+        add(ShapeType.SVG_PATH, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new SVGPath.SVGPathFactory();
+            }
+        });
+        add(ShapeType.SPRITE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Sprite.SpriteFactory();
+            }
+        });
+        add(ShapeType.ORTHOGONAL_POLYLINE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new OrthogonalPolyLine.OrthogonaPolylLineFactory();
+            }
+        });
+        add(ShapeType.MULTI_PATH, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new MultiPath.MultiPathFactory();
+            }
+        });
+        add(ShapeType.SIMPLE_ARROW, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new SimpleArrow.SimpleArrowFactory();
+            }
+        });
+        add(ProxyType.GRID, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Grid.GridFactory();
+            }
+        });
+        add(GroupType.GROUP, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Group.GroupFactory();
+            }
+        });
+        add(NodeType.LAYER, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Layer.LayerFactory();
+            }
+        });
+        add(NodeType.GRID_LAYER, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new GridLayer.GridLayerFactory();
+            }
+        });
+        add(NodeType.SCENE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Scene.SceneFactory();
+            }
+        });
+        add(NodeType.VIEWPORT, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Viewport.ViewportFactory();
+            }
+        });
+        add(ImageFilterType.AlphaScaleColorImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new AlphaScaleColorImageDataFilter.AlphaScaleColorImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.AverageGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new AverageGrayScaleImageDataFilter.AverageGrayScaleImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.BrightnessImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new BrightnessImageDataFilter.BrightnessImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.BumpImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new BumpImageDataFilter.BumpImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.ColorDeltaAlphaImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new ColorDeltaAlphaImageDataFilter.ColorDeltaAlphaImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.ColorLuminosityImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new ColorLuminosityImageDataFilter.ColorLuminosityImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.ContrastImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new ContrastImageDataFilter.ContrastImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.DiffusionImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new DiffusionImageDataFilter.DiffusionImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.EdgeDetectImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new EdgeDetectImageDataFilter.EdgeDetectImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.EmbossImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new EmbossImageDataFilter.EmbossImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.ExposureImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new ExposureImageDataFilter.ExposureImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.GainImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new GainImageDataFilter.GainImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.GammaImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new GammaImageDataFilter.GammaImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.HueImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new HueImageDataFilter.HueImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.ImageDataFilterChainType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new ImageDataFilterChain.ImageDataFilterChainFactory();
+            }
+        });
+        add(ImageFilterType.InvertColorImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new InvertColorImageDataFilter.InvertColorImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.LightnessGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new LightnessGrayScaleImageDataFilter.LightnessGrayScaleImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.LuminosityGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new LuminosityGrayScaleImageDataFilter.LuminosityGrayScaleImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.PosterizeImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new PosterizeImageDataFilter.PosterizeImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new RGBIgnoreAlphaImageDataFilter.RGBIgnoreAlphaImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.SharpenImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new SharpenImageDataFilter.SharpenImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.SolarizeImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new SolarizeImageDataFilter.SolarizeImageDataFilterFactory();
+            }
+        });
+        add(ImageFilterType.StackBlurImageDataFilterType, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new StackBlurImageDataFilter.StackBlurImageDataFilterFactory();
+            }
+        });
     }
 
     @Override
     public String getNameSpace()
     {
         return "LienzoCore";
-    }
-
-    @Override
-    public Collection<IFactory<?>> getFactories()
-    {
-        if (m_factories.isEmpty())
-        {
-            m_factories.add(new Arc.ArcFactory());
-
-            m_factories.add(new Arrow.ArrowFactory());
-
-            m_factories.add(new BezierCurve.BezierCurveFactory());
-
-            m_factories.add(new Circle.CircleFactory());
-
-            m_factories.add(new Ellipse.EllipseFactory());
-
-            m_factories.add(new Line.LineFactory());
-
-            m_factories.add(new Movie.MovieFactory());
-
-            m_factories.add(new Parallelogram.ParallelogramFactory());
-
-            m_factories.add(new Picture.PictureFactory());
-
-            m_factories.add(new Polygon.PolygonFactory());
-
-            m_factories.add(new PolyLine.PolyLineFactory());
-
-            m_factories.add(new QuadraticCurve.QuadraticCurveFactory());
-
-            m_factories.add(new Rectangle.RectangleFactory());
-
-            m_factories.add(new RegularPolygon.RegularPolygonFactory());
-
-            m_factories.add(new Slice.SliceFactory());
-
-            m_factories.add(new Star.StarFactory());
-
-            m_factories.add(new Text.TextFactory());
-
-            m_factories.add(new Triangle.TriangleFactory());
-
-            m_factories.add(new Spline.SplineFactory());
-
-            m_factories.add(new Bow.BowFactory());
-
-            m_factories.add(new Ring.RingFactory());
-
-            m_factories.add(new Chord.ChordFactory());
-
-            m_factories.add(new IsoscelesTrapezoid.IsoscelesTrapezoidFactory());
-
-            m_factories.add(new SVGPath.SVGPathFactory());
-
-            m_factories.add(new Sprite.SpriteFactory());
-
-            m_factories.add(new OrthogonalPolyLine.OrthogonaPolylLineFactory());
-            
-            m_factories.add(new MultiPath.MultiPathFactory());
-
-            m_factories.add(new Group.GroupFactory());
-
-            m_factories.add(new Layer.LayerFactory());
-
-            m_factories.add(new GridLayer.GridLayerFactory());
-
-            m_factories.add(new Scene.SceneFactory());
-
-            m_factories.add(new Viewport.ViewportFactory());
-
-            m_factories.add(new AlphaScaleColorImageDataFilter.AlphaScaleColorImageDataFilterFactory());
-
-            m_factories.add(new AverageGrayScaleImageDataFilter.AverageGrayScaleImageDataFilterFactory());
-
-            m_factories.add(new BrightnessImageDataFilter.BrightnessImageDataFilterFactory());
-
-            m_factories.add(new BumpImageDataFilter.BumpImageDataFilterFactory());
-
-            m_factories.add(new ColorDeltaAlphaImageDataFilter.ColorDeltaAlphaImageDataFilterFactory());
-
-            m_factories.add(new ColorLuminosityImageDataFilter.ColorLuminosityImageDataFilterFactory());
-
-            m_factories.add(new ContrastImageDataFilter.ContrastImageDataFilterFactory());
-
-            m_factories.add(new DiffusionImageDataFilter.DiffusionImageDataFilterFactory());
-
-            m_factories.add(new EdgeDetectImageDataFilter.EdgeDetectImageDataFilterFactory());
-
-            m_factories.add(new EmbossImageDataFilter.EmbossImageDataFilterFactory());
-
-            m_factories.add(new ExposureImageDataFilter.ExposureImageDataFilterFactory());
-
-            m_factories.add(new GainImageDataFilter.GainImageDataFilterFactory());
-
-            m_factories.add(new GammaImageDataFilter.GammaImageDataFilterFactory());
-
-            m_factories.add(new HueImageDataFilter.HueImageDataFilterFactory());
-
-            m_factories.add(new ImageDataFilterChain.ImageDataFilterChainFactory());
-
-            m_factories.add(new InvertColorImageDataFilter.InvertColorImageDataFilterFactory());
-
-            m_factories.add(new LightnessGrayScaleImageDataFilter.LightnessGrayScaleImageDataFilterFactory());
-
-            m_factories.add(new LuminosityGrayScaleImageDataFilter.LuminosityGrayScaleImageDataFilterFactory());
-
-            m_factories.add(new PosterizeImageDataFilter.PosterizeImageDataFilterFactory());
-
-            m_factories.add(new RGBIgnoreAlphaImageDataFilter.RGBIgnoreAlphaImageDataFilterFactory());
-
-            m_factories.add(new SharpenImageDataFilter.SharpenImageDataFilterFactory());
-
-            m_factories.add(new SolarizeImageDataFilter.SolarizeImageDataFilterFactory());
-
-            m_factories.add(new StackBlurImageDataFilter.StackBlurImageDataFilterFactory());
-        }
-        return Collections.unmodifiableCollection(m_factories);
     }
 }

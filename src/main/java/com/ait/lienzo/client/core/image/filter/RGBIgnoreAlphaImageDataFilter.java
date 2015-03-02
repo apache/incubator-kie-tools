@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -111,7 +112,7 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
     {
         public RGBIgnoreAlphaImageDataFilterFactory()
         {
-            super(RGBIgnoreAlphaImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType);
         }
 
         @Override

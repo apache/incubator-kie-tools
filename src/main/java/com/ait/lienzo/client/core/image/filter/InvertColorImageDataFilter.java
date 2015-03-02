@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -83,7 +84,7 @@ public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertCo
     {
         public InvertColorImageDataFilterFactory()
         {
-            super(InvertColorImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.InvertColorImageDataFilterType);
         }
 
         @Override

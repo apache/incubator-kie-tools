@@ -20,17 +20,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.animation.AnimationProperties;
-import com.ait.lienzo.client.core.animation.AnimationTweener;
-import com.ait.lienzo.client.core.animation.IAnimationCallback;
-import com.ait.lienzo.client.core.animation.IAnimationHandle;
-import com.ait.lienzo.client.core.animation.TweeningAnimation;
+import com.ait.lienzo.client.core.config.LienzoCore;
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -89,6 +86,26 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     public GroupType getGroupType()
     {
         return m_type;
+    }
+    
+    @Override
+    public IFactory<?> getFactory()
+    {
+        return LienzoCore.get().getFactory(m_type);
+    }
+
+    @Override
+    public boolean isDrawInherited()
+    {
+        return getAttributes().isDrawInherited();
+    }
+
+    @Override
+    public C setDrawInherited(final boolean draw)
+    {
+        getAttributes().setDrawInherited(draw);
+
+        return cast();
     }
 
     /**
@@ -903,18 +920,6 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, null).run();
-    }
-
-    @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, callback).run();
-    }
-
-    @Override
     public DragConstraintEnforcer getDragConstraints()
     {
         if (m_dragConstraintEnforcer == null)
@@ -987,7 +992,13 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
             addAttribute(Attribute.ALPHA);
 
+            addAttribute(Attribute.FILL);
+
             addAttribute(Attribute.FILL_ALPHA);
+
+            addAttribute(Attribute.STROKE);
+
+            addAttribute(Attribute.STROKE_WIDTH);
 
             addAttribute(Attribute.STROKE_ALPHA);
 
@@ -1003,11 +1014,25 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
 
             addAttribute(Attribute.OFFSET);
 
+            addAttribute(Attribute.SHADOW);
+
+            addAttribute(Attribute.LINE_CAP);
+
+            addAttribute(Attribute.LINE_JOIN);
+
+            addAttribute(Attribute.MITER_LIMIT);
+
             addAttribute(Attribute.DRAG_CONSTRAINT);
 
             addAttribute(Attribute.DRAG_BOUNDS);
 
             addAttribute(Attribute.DRAG_MODE);
+
+            addAttribute(Attribute.DASH_ARRAY);
+
+            addAttribute(Attribute.DASH_OFFSET);
+
+            addAttribute(Attribute.DRAW_INHERITED);
         }
 
         protected void setGroupType(final GroupType type)

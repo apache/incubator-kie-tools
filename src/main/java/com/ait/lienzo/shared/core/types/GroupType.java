@@ -16,16 +16,18 @@
 
 package com.ait.lienzo.shared.core.types;
 
+import com.ait.lienzo.shared.java.util.IStringValuedType;
+
 /**
  * GroupType is an extensible enumeration of all GroupOf types.
  */
-public class GroupType
+public class GroupType implements IStringValuedType
 {
     public static final GroupType GROUP = new GroupType("Group");
 
     private final String          m_value;
 
-    protected GroupType(String value)
+    protected GroupType(final String value)
     {
         m_value = value;
     }
@@ -36,13 +38,14 @@ public class GroupType
         return m_value;
     }
 
+    @Override
     public final String getValue()
     {
         return m_value;
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof GroupType)))
         {

@@ -29,7 +29,6 @@ import com.ait.lienzo.client.core.image.PictureLoadedHandler;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -1622,12 +1621,6 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
             }
         });
         return this;
-    }
-
-    @Override
-    public IFactory<Picture> getFactory()
-    {
-        return new PictureFactory();
     }
 
     @Override

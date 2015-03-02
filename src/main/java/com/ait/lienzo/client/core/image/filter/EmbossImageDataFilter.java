@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -73,7 +74,7 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
             if(i < (length - width * 4)) {
                 if(((i + 1) % 4) !== 0) {
                     if(((i + 4) % (width * 4)) == 0) {
-                        data[i + 0] = data[i - 4];
+                        data[  i  ] = data[i - 4];
                         data[i + 1] = data[i - 3];
                         data[i + 2] = data[i - 2];
                         data[i + 3] = data[i - 1];
@@ -86,12 +87,10 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
                     data[i] = data[i - width * 4];
                 }
             }
-        }
-        for (var j = 0; j < length; j += 4) {
-            var v = (((data[j + 0] * 0.21) + (data[j + 1] * 0.72) + (data[j + 2] * 0.07)) + 0.5) | 0;
-            data[j + 0] = v;
-            data[j + 1] = v;
-            data[j + 2] = v;
+            var v = (((data[  i  ] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) + 0.5) | 0;
+            data[  i  ] = v;
+            data[i + 1] = v;
+            data[i + 2] = v;
         }
     }-*/;
 
@@ -105,7 +104,7 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
     {
         public EmbossImageDataFilterFactory()
         {
-            super(EmbossImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.EmbossImageDataFilterType);
         }
 
         @Override

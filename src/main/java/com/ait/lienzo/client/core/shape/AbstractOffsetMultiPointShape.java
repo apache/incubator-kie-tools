@@ -68,20 +68,6 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
         return refresh();
     }
 
-    @Override
-    public double getCorrectionOffset()
-    {
-        return getAttributes().getCorrectionOffset();
-    }
-
-    @Override
-    public T setCorrectionOffset(final double offset)
-    {
-        getAttributes().setCorrectionOffset(offset);
-
-        return refresh();
-    }
-
     protected static abstract class AbstractOffsetMultiPointShapeFactory<T extends AbstractOffsetMultiPointShape<T>> extends ShapeFactory<T>
     {
         protected AbstractOffsetMultiPointShapeFactory(final ShapeType type)
@@ -91,8 +77,6 @@ public abstract class AbstractOffsetMultiPointShape<T extends AbstractOffsetMult
             addAttribute(Attribute.HEAD_OFFSET);
 
             addAttribute(Attribute.TAIL_OFFSET);
-
-            addAttribute(Attribute.CORRECTION_OFFSET);
         }
     }
 }

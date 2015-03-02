@@ -21,11 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.types.NFastStringMap;
+import com.ait.lienzo.shared.java.util.IStringValuedType;
 
-public interface EnumWithValue
+public interface EnumWithValue extends IStringValuedType
 {
-    public String getValue();
-
     public static final class Statics
     {
         public static final <T extends EnumWithValue> NFastStringMap<T> build(final T[] values)

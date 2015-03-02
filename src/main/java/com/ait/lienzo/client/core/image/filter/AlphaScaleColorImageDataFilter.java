@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -110,8 +111,8 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
     private final native void filter_(JavaScriptObject data, int length, int r, int g, int b, boolean invert)
     /*-{
         for (var i = 0; i < length; i += 4) {
-            var v = ((data[i + 0] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07));
-            data[i + 0] = r;
+            var v = ((data[  i  ] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07));
+            data[  i  ] = r;
             data[i + 1] = g;
             data[i + 2] = b;
             if (true == invert) {
@@ -132,7 +133,7 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
     {
         public AlphaScaleColorImageDataFilterFactory()
         {
-            super(AlphaScaleColorImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.AlphaScaleColorImageDataFilterType);
 
             addAttribute(Attribute.INVERTED);
         }

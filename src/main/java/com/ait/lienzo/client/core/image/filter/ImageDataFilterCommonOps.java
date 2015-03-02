@@ -117,7 +117,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         this.filterTable = function(data, table, w, h) {
             var length = w * h * 4;
             for(var i = 0; i < length; i += 4) {
-                data[i + 0] = table[data[i + 0]];
+                data[  i  ] = table[data[  i  ]];
                 data[i + 1] = table[data[i + 1]];
                 data[i + 2] = table[data[i + 2]];
             }
@@ -148,13 +148,13 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                                         ix = x;
                                 }
                                 var ipix = (ioff + ix) * 4;
-                                r += f * data[ipix + 0];
+                                r += f * data[ipix];
                                 g += f * data[ipix + 1];
                                 b += f * data[ipix + 2];
                             }
                         }
                     }
-                    buff[p + 0] = (r + 0.5) | 0;
+                    buff[  p  ] = (r + 0.5) | 0;
                     buff[p + 1] = (g + 0.5) | 0;
                     buff[p + 2] = (b + 0.5) | 0;
                     buff[p + 3] = data[p + 3];
@@ -208,7 +208,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                     data[((this.clamp(y, 0, h - 1) * w) + this.clamp(x, 0, w - 1)) * 4 + 3]
                 ];
             }
-            return [data[p + 0], data[p + 1], data[p + 2], data[p + 3]]
+            return [data[  p  ], data[p + 1], data[p + 2], data[p + 3]]
         };
         this.filterTransform = function(data, buff, transform, w, h) {
             var xfrm = [];
@@ -223,10 +223,10 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                     var nw, ne, sw, se;
                     if(srcx >= 0 && srcx < w - 1 && srcy >= 0 && srcy < h - 1) {
                         var i = (w * srcy + srcx) * 4;
-                        nw = [data[i + 0], data[i + 1], data[i + 2], data[i + 3]];
+                        nw = [data[  i  ], data[i + 1], data[i + 2], data[i + 3]];
                         ne = [data[i + 4], data[i + 5], data[i + 6], data[i + 7]];
                         sw = [data[i + w * 4], data[i + w * 4 + 1], data[i + w * 4 + 2],data[i + w * 4 + 3]];
-                        se = [data[i + (w + 1) *4], data[i + (w + 1) * 4 + 1], data[i + (w + 1) * 4 + 2], data[i + (w + 1) * 4 + 3]];
+                        se = [data[i + (w + 1) * 4], data[i + (w + 1) * 4 + 1], data[i + (w + 1) * 4 + 2], data[i + (w + 1) * 4 + 3]];
                     } else {
                         nw = this.getPixel(data, srcx + 0, srcy + 0, w, h);
                         ne = this.getPixel(data, srcx + 1, srcy + 0, w, h);
@@ -234,7 +234,7 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                         se = this.getPixel(data, srcx + 1, srcy + 1, w, h);
                     }
                     var rgba = this.bilinearInterpolate(xwht, ywht, nw, ne, sw, se);
-                    buff[p + 0] = rgba[0];
+                    buff[  p  ] = rgba[0];
                     buff[p + 1] = rgba[1];
                     buff[p + 2] = rgba[2];
                     buff[p + 3] = rgba[3];

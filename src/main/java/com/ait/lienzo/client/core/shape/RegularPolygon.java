@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -161,12 +160,6 @@ public class RegularPolygon extends Shape<RegularPolygon>
         getAttributes().setSides(sides);
 
         return this;
-    }
-
-    @Override
-    public IFactory<RegularPolygon> getFactory()
-    {
-        return new RegularPolygonFactory();
     }
 
     public static class RegularPolygonFactory extends ShapeFactory<RegularPolygon>

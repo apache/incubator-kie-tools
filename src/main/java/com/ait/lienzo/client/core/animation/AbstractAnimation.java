@@ -143,6 +143,12 @@ public class AbstractAnimation implements IAnimation, IAnimationHandle
     @Override
     public IAnimation doStart()
     {
+        final Node<?> node = getNode();
+
+        if (null != node)
+        {
+            node.incAnimating();
+        }
         if (null != m_callback)
         {
             m_callback.onStart(this, this);
@@ -163,6 +169,12 @@ public class AbstractAnimation implements IAnimation, IAnimationHandle
     @Override
     public IAnimation doClose()
     {
+        final Node<?> node = getNode();
+
+        if (null != node)
+        {
+            node.decAnimating();
+        }
         if (null != m_callback)
         {
             m_callback.onClose(this, this);

@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
@@ -198,9 +199,9 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
 
     protected static abstract class ImageDataFilterFactory<T extends ImageDataFilter<T>> extends AbstractFactory<T>
     {
-        protected ImageDataFilterFactory(String type)
+        protected ImageDataFilterFactory(ImageFilterType type)
         {
-            super(type);
+            super(type.getValue());
 
             addAttribute(Attribute.ACTIVE, true);
         }

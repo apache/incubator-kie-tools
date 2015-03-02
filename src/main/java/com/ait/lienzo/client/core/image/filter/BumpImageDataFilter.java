@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 /**
@@ -46,7 +47,7 @@ public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpIma
     {
         public BumpImageDataFilterFactory()
         {
-            super(BumpImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.BumpImageDataFilterType);
         }
 
         @Override

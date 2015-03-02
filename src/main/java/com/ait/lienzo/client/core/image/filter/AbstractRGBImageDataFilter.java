@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.json.client.JSONObject;
 
@@ -156,7 +157,7 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
 
     protected abstract static class RGBImageDataFilterFactory<T extends AbstractRGBImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected RGBImageDataFilterFactory(String type)
+        protected RGBImageDataFilterFactory(ImageFilterType type)
         {
             super(type);
 

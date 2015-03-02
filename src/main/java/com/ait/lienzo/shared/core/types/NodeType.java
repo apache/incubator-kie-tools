@@ -16,10 +16,12 @@
 
 package com.ait.lienzo.shared.core.types;
 
+import com.ait.lienzo.shared.java.util.IStringValuedType;
+
 /**
  * NodeType is an extensible enumeration of top-level node types used in the Lienzo toolkit.
  */
-public class NodeType
+public class NodeType implements IStringValuedType
 {
     public static final NodeType SCENE      = new NodeType("Scene");
 
@@ -35,26 +37,27 @@ public class NodeType
 
     public static final NodeType GRID_LAYER = new NodeType("GridLayer");
 
-    private final String         m_valu;
+    private final String         m_value;
 
-    protected NodeType(String valu)
+    protected NodeType(final String value)
     {
-        m_valu = valu;
+        m_value = value;
     }
 
+    @Override
     public final String getValue()
     {
-        return m_valu;
+        return m_value;
     }
 
     @Override
     public final String toString()
     {
-        return m_valu;
+        return m_value;
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof NodeType)))
         {

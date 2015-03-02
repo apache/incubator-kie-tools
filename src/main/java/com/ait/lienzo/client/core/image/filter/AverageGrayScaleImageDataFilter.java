@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -68,9 +69,9 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
     /*-{
     	for (var i = 0; i < length; i += 4) {
 
-    		var v = (((data[i + 0] + data[i + 1] + data[i + 2]) / 3.0) + 0.5) | 0;
+    		var v = (((data[  i  ] + data[i + 1] + data[i + 2]) / 3.0) + 0.5) | 0;
 
-    		data[i + 0] = v;
+    		data[  i  ] = v;
 
     		data[i + 1] = v;
 
@@ -88,7 +89,7 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
     {
         public AverageGrayScaleImageDataFilterFactory()
         {
-            super(AverageGrayScaleImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.AverageGrayScaleImageDataFilterType);
         }
 
         @Override

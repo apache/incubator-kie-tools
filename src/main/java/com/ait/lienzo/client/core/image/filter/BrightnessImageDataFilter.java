@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -90,10 +91,11 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
 
     private final native void filter_(JavaScriptObject data, int length, double value)
     /*-{
+        var v = (value * 255) + 0.5;
     	for (var i = 0; i < length; i += 4) {
-    		data[i + 0] = Math.max(Math.min((data[i + 0] + (value * 255) + 0.5), 255), 0) | 0;
-    		data[i + 1] = Math.max(Math.min((data[i + 1] + (value * 255) + 0.5), 255), 0) | 0;
-    		data[i + 2] = Math.max(Math.min((data[i + 2] + (value * 255) + 0.5), 255), 0) | 0;
+    		data[  i  ] = Math.max(Math.min((data[  i  ] + v, 255), 0) | 0;
+    		data[i + 1] = Math.max(Math.min((data[i + 1] + v, 255), 0) | 0;
+    		data[i + 2] = Math.max(Math.min((data[i + 2] + v, 255), 0) | 0;
     	}
     }-*/;
 
@@ -107,7 +109,7 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
     {
         public BrightnessImageDataFilterFactory()
         {
-            super(BrightnessImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.BrightnessImageDataFilterType);
         }
 
         @Override

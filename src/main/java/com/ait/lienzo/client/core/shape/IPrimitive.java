@@ -16,10 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import com.ait.lienzo.client.core.animation.AnimationProperties;
-import com.ait.lienzo.client.core.animation.AnimationTweener;
-import com.ait.lienzo.client.core.animation.IAnimationCallback;
-import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -350,37 +346,6 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
     public T setTransform(Transform transform);
 
     /**
-     * Animates this node using a tweening animation that runs for the specified duration.
-     * <p>
-     * Basically invokes {@link #animate(AnimationTweener, AnimationProperties, int, IAnimationCallback)} with a callback of <code>null</code>
-     * See that method for more details.
-     * 
-     * @param tweener {@link AnimationTweener} - determines how the attributes will be changed over time
-     * @param properties {@link AnimationProperties} - attributes that will be modified over time
-     * @param duration in milliseconds
-     * @return {@link IAnimationHandle}
-     */
-    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */);
-
-    /**
-     * Animates this node using a tweening animation that runs for the specified duration.
-     * The attributes of this node are gradually modified over time. 
-     * The tweener defines how the attributes are changed over time, e.g. LINEAR or not.
-     * See {@link AttributeTweener} for the various non-linear transitions. 
-     * <p>
-     * If a callback is specified, it is called whenever the animation starts, ends and once for every animation frame.
-     * 
-     * @param tweener {@link AnimationTweener} - determines how the attributes will be changed over time
-     * @param properties {@link AnimationProperties} - attributes that will be modified over time
-     * @param duration in milliseconds
-     * @param callback {@link IAnimationCallback}
-     * @return {@link IAnimationHandle}
-     * 
-     * @see {@link AnimationManager#add(IPrimitive, AnimationTweener, AnimationProperties, int, IAnimationCallback)}
-     */
-    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */, IAnimationCallback callback);
-
-    /**
      * Returns the parent Node.
      * 
      * @return Node
@@ -422,4 +387,8 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
     public T setControlHandleFactory(IControlHandleFactory factory);
 
     public T refresh();
+
+    public boolean isDrawInherited();
+
+    public T setDrawInherited(boolean draw);
 }

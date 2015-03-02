@@ -30,7 +30,6 @@ import com.ait.lienzo.client.core.image.ImageLoader;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterChain;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -693,16 +692,16 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
         {
             case MediaError.MEDIA_ERR_ABORTED:
                 m_error = MessageConstants.MESSAGES.moviePlaybackWasAborted();
-            break;
+                break;
             case MediaError.MEDIA_ERR_NETWORK:
                 m_error = MessageConstants.MESSAGES.movieNetworkError();
-            break;
+                break;
             case MediaError.MEDIA_ERR_DECODE:
                 m_error = MessageConstants.MESSAGES.movieErrorInDecoding();
-            break;
+                break;
             case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
                 m_error = MessageConstants.MESSAGES.movieFormatNotSupported();
-            break;
+                break;
         }
     }
 
@@ -802,12 +801,6 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
             object.put("filter", filter);
         }
         return object;
-    }
-
-    @Override
-    public IFactory<Movie> getFactory()
-    {
-        return new MovieFactory();
     }
 
     private static final class MovieAnimation extends IndefiniteAnimation

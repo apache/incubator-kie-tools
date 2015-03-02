@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<PosterizeImageDataFilter>
@@ -26,7 +27,7 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
     private double           m_value = Double.NaN;
 
     private FilterTableArray m_table = null;
-    
+
     public PosterizeImageDataFilter()
     {
         super(6);
@@ -89,7 +90,7 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
     {
         public PosterizeImageDataFilterFactory()
         {
-            super(PosterizeImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.PosterizeImageDataFilterType);
         }
 
         @Override

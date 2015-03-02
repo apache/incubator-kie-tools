@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
@@ -283,7 +284,7 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
     {
         public ImageDataFilterChainFactory()
         {
-            super(ImageDataFilterChain.class.getSimpleName());
+            super(ImageFilterType.ImageDataFilterChainType);
         }
 
         @Override

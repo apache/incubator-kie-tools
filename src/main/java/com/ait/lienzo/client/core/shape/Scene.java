@@ -20,7 +20,6 @@ import java.util.LinkedHashSet;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -828,12 +827,6 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
                 layer.find(predicate, buff);
             }
         }
-    }
-
-    @Override
-    public final IFactory<Scene> getFactory()
-    {
-        return new SceneFactory();
     }
 
     public static class SceneFactory extends ContainerNodeFactory<Scene>

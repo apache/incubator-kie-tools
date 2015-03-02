@@ -20,13 +20,9 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.animation.AnimationProperties;
-import com.ait.lienzo.client.core.animation.AnimationTweener;
-import com.ait.lienzo.client.core.animation.IAnimationCallback;
-import com.ait.lienzo.client.core.animation.IAnimationHandle;
-import com.ait.lienzo.client.core.animation.TweeningAnimation;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.ImageLoader;
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -129,6 +125,26 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     protected void setShapeType(final ShapeType type)
     {
         m_type = type;
+    }
+
+    @Override
+    public IFactory<?> getFactory()
+    {
+        return LienzoCore.get().getFactory(m_type);
+    }
+
+    @Override
+    public boolean isDrawInherited()
+    {
+        return getAttributes().isDrawInherited();
+    }
+
+    @Override
+    public T setDrawInherited(final boolean draw)
+    {
+        getAttributes().setDrawInherited(draw);
+
+        return cast();
     }
 
     @Override
@@ -1460,18 +1476,6 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
     }
 
     @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, null).run();
-    }
-
-    @Override
-    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
-    {
-        return new TweeningAnimation(this, tweener, properties, duration, callback).run();
-    }
-
-    @Override
     public DragConstraintEnforcer getDragConstraints()
     {
         if (m_dragConstraintEnforcer == null)
@@ -1492,7 +1496,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    public static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>
+    protected static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>
     {
         protected ShapeFactory(final ShapeType type)
         {
@@ -1545,6 +1549,8 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
             addAttribute(Attribute.DASH_OFFSET);
 
             addAttribute(Attribute.FILL_SHAPE_FOR_SELECTION);
+
+            addAttribute(Attribute.DRAW_INHERITED);
         }
 
         /**

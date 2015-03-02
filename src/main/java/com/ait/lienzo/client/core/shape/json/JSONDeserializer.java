@@ -224,7 +224,7 @@ public final class JSONDeserializer
 
                 if (null == m_registry)
                 {
-                    m_registry = FactoryRegistry.getInstance();
+                    m_registry = FactoryRegistry.get();
                 }
                 factory = m_registry.getFactory(type);
 

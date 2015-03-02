@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFilter<DiffusionImageDataFilter>
@@ -62,13 +63,13 @@ public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFil
         var stabl = [];
         var ctabl = [];
         for(var i = 0; i < 256; i++) {
-            var a = Math.PI *2 * i / 256;
+            var a = Math.PI * 2 * i / 256;
             stabl[i] = value * Math.sin(a);
             ctabl[i] = value * Math.cos(a);
         }
         return function(x, y, out) {
             var a = (Math.random() * 255) | 0;
-            var d = Math.random();
+            var d = (Math.random());
             out[0] = x + d * stabl[a];
             out[1] = y + d * ctabl[a];
         };
@@ -84,7 +85,7 @@ public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFil
     {
         public DiffusionImageDataFilterFactory()
         {
-            super(DiffusionImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.DiffusionImageDataFilterType);
         }
 
         @Override

@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -79,8 +80,8 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
     private final native void filter_(JavaScriptObject data, int length, int r, int g, int b)
     /*-{
     	for (var i = 0; i < length; i += 4) {
-            var v = (((data[i + 0] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) / 255.0);
-    		data[i + 0] = ((r * v) + 0.5) | 0;
+            var v = (((data[  i  ] * 0.21) + (data[i + 1] * 0.72) + (data[i + 2] * 0.07)) / 255.0);
+    		data[  i  ] = ((r * v) + 0.5) | 0;
     		data[i + 1] = ((g * v) + 0.5) | 0;
     		data[i + 2] = ((b * v) + 0.5) | 0;
     	}
@@ -96,7 +97,7 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
     {
         public ColorLuminosityImageDataFilterFactory()
         {
-            super(ColorLuminosityImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.ColorLuminosityImageDataFilterType);
         }
 
         @Override

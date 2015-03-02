@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageDataFilter>
@@ -134,7 +135,7 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
     {
         public GainImageDataFilterFactory()
         {
-            super(GainImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.GainImageDataFilterType);
 
             addAttribute(Attribute.GAIN, true);
 

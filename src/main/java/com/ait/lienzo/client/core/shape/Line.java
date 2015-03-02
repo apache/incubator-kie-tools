@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -274,12 +273,6 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
             dashIndex++;
         }
-    }
-
-    @Override
-    public IFactory<Line> getFactory()
-    {
-        return new LineFactory();
     }
 
     public static class LineFactory extends AbstractOffsetMultiPointShapeFactory<Line>

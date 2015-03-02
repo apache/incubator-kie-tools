@@ -16,6 +16,10 @@
 
 package com.ait.lienzo.client.core.types;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -78,6 +82,15 @@ public final class NFastStringMap<V>
         return m_jso.size();
     }
 
+    public final Collection<String> keys()
+    {
+        final ArrayList<String> list = new ArrayList<String>();
+
+        m_jso.fillKeysCollection(list);
+
+        return Collections.unmodifiableCollection(list);
+    }
+
     /**
      * Returns true if this map contains no key-value mappings
      */
@@ -99,36 +112,45 @@ public final class NFastStringMap<V>
 
         public final native void put(String key, V value)
         /*-{
-			this[key] = value;
+        	this[key] = value;
         }-*/;
 
         public final native V get(String key)
         /*-{
-			return this[key];
+        	return this[key];
         }-*/;
 
         public final native void remove(String key)
         /*-{
-			delete this[key];
+        	delete this[key];
         }-*/;
 
         public final native boolean containsKey(String key)
         /*-{
-			return this.hasOwnProperty(String(key));
+        	return this.hasOwnProperty(String(key));
         }-*/;
 
         public final native int size()
         /*-{
-			var i = 0;
+        	var i = 0;
 
-			var self = this;
+        	var self = this;
 
-			for ( var name in self) {
-				if (self.hasOwnProperty(String(name))) {
-					++i;
-				}
-			}
-			return i;
+        	for ( var name in self) {
+        		if (self.hasOwnProperty(String(name))) {
+        			++i;
+        		}
+        	}
+        	return i;
+        }-*/;
+
+        private final native void fillKeysCollection(Collection<String> keys)
+        /*-{
+            for ( var name in this) {
+                if (this.hasOwnProperty(String(name))) {
+                    keys.@java.util.Collection::add(Ljava/lang/Object;)(name);
+                }
+            }
         }-*/;
     }
 }

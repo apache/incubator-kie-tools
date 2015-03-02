@@ -69,6 +69,20 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
         return refresh();
     }
 
+    @Override
+    public double getCorrectionOffset()
+    {
+        return getAttributes().getCorrectionOffset();
+    }
+
+    @Override
+    public T setCorrectionOffset(final double offset)
+    {
+        getAttributes().setCorrectionOffset(offset);
+
+        return refresh();
+    }
+
     protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T>
     {
         protected AbstractDirectionalMultiPointShapeFactory(final ShapeType type)
@@ -78,6 +92,8 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
             addAttribute(Attribute.HEAD_DIRECTION);
 
             addAttribute(Attribute.TAIL_DIRECTION);
+
+            addAttribute(Attribute.CORRECTION_OFFSET);
         }
     }
 }

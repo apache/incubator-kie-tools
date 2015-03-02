@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageDataFilter<T>> extends AbstractImageDataFilter<T>
@@ -53,7 +54,7 @@ public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageD
 
     protected static abstract class ValueImageDataFilterFactory<T extends AbstractValueImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected ValueImageDataFilterFactory(String type)
+        protected ValueImageDataFilterFactory(ImageFilterType type)
         {
             super(type);
 

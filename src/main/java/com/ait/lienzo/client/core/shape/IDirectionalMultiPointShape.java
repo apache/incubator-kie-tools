@@ -27,4 +27,8 @@ public interface IDirectionalMultiPointShape<T extends Shape<T> & IDirectionalMu
     public T setHeadDirection(Direction direction);
 
     public Direction getHeadDirection();
+
+    public double getCorrectionOffset();
+
+    public T setCorrectionOffset(final double offset);
 }

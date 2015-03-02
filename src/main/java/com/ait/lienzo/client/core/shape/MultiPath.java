@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.NFastArrayList;
@@ -219,12 +218,6 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
             list.add(path);
         }
         return path;
-    }
-
-    @Override
-    public IFactory<MultiPath> getFactory()
-    {
-        return new MultiPathFactory();
     }
 
     public static class MultiPathFactory extends ShapeFactory<MultiPath>

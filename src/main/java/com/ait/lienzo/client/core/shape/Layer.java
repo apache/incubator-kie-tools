@@ -23,7 +23,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.NativeContext2D;
 import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
@@ -881,12 +880,6 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         {
             return "data:,";
         }
-    }
-
-    @Override
-    public IFactory<Layer> getFactory()
-    {
-        return new LayerFactory();
     }
 
     private static native final String toDataURL(CanvasElement element)

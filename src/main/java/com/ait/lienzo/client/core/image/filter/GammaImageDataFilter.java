@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<GammaImageDataFilter>
@@ -89,7 +90,7 @@ public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<Gamm
     {
         public GammaImageDataFilterFactory()
         {
-            super(GammaImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.GammaImageDataFilterType);
         }
 
         @Override

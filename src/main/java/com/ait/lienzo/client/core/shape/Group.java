@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.shared.core.types.GroupType;
@@ -32,12 +31,6 @@ public class Group extends GroupOf<IPrimitive<?>, Group>
     protected Group(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(GroupType.GROUP, node, ctx);
-    }
-
-    @Override
-    public IFactory<Group> getFactory()
-    {
-        return new GroupFactory();
     }
 
     public static class GroupFactory extends GroupOfFactory<IPrimitive<?>, Group>

@@ -32,5 +32,5 @@ public interface IJSONSerializable<T extends IJSONSerializable<T>>
 
     public JSONObject toJSONObject();
 
-    public IFactory<T> getFactory();
+    public IFactory<?> getFactory();
 }

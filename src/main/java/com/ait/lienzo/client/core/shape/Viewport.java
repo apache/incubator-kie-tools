@@ -36,7 +36,6 @@ import com.ait.lienzo.client.core.event.ViewportTransformChangedEvent;
 import com.ait.lienzo.client.core.event.ViewportTransformChangedHandler;
 import com.ait.lienzo.client.core.mediator.IMediator;
 import com.ait.lienzo.client.core.mediator.Mediators;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -657,12 +656,6 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     public HandlerRegistration addViewportTransformChangedHandler(final ViewportTransformChangedHandler handler)
     {
         return addEnsureHandler(ViewportTransformChangedEvent.getType(), handler);
-    }
-
-    @Override
-    public final IFactory<Viewport> getFactory()
-    {
-        return new ViewportFactory();
     }
 
     public static class ViewportFactory extends ContainerNodeFactory<Viewport>

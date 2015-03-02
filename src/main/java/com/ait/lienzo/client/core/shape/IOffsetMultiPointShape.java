@@ -31,8 +31,4 @@ public interface IOffsetMultiPointShape<T extends Shape<T> & IOffsetMultiPointSh
     public T setHeadOffset(double offset);
 
     Point2D getHeadOffsetPoint();
-    
-    public double getCorrectionOffset();
-    
-    public T setCorrectionOffset(final double offset);
 }

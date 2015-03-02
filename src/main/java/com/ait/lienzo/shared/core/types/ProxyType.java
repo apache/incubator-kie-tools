@@ -16,28 +16,33 @@
 
 package com.ait.lienzo.shared.core.types;
 
-public abstract class ProxyType
-{
-    private final String m_valu;
+import com.ait.lienzo.shared.java.util.IStringValuedType;
 
-    protected ProxyType(String valu)
+public class ProxyType implements IStringValuedType
+{
+    public static final ProxyType GRID = new ProxyType("Grid");
+
+    private final String          m_value;
+
+    protected ProxyType(final String value)
     {
-        m_valu = valu;
+        m_value = value;
     }
 
+    @Override
     public final String getValue()
     {
-        return m_valu;
+        return m_value;
     }
 
     @Override
     public final String toString()
     {
-        return m_valu;
+        return m_value;
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof ProxyType)))
         {

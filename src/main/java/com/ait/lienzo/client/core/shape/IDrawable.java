@@ -17,6 +17,10 @@
 package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimationCallback;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 
@@ -92,7 +96,7 @@ public interface IDrawable<T>
      * @return Scene
      */
     public Shape<?> asShape();
-    
+
     public IMultiPointShape<?> asMultiPointShape();
 
     /**
@@ -177,4 +181,35 @@ public interface IDrawable<T>
     public T moveToBottom();
 
     public boolean removeFromParent();
+
+    /**
+     * Animates this node using a tweening animation that runs for the specified duration.
+     * <p>
+     * Basically invokes {@link #animate(AnimationTweener, AnimationProperties, int, IAnimationCallback)} with a callback of <code>null</code>
+     * See that method for more details.
+     * 
+     * @param tweener {@link AnimationTweener} - determines how the attributes will be changed over time
+     * @param properties {@link AnimationProperties} - attributes that will be modified over time
+     * @param duration in milliseconds
+     * @return {@link IAnimationHandle}
+     */
+    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */);
+
+    /**
+     * Animates this node using a tweening animation that runs for the specified duration.
+     * The attributes of this node are gradually modified over time. 
+     * The tweener defines how the attributes are changed over time, e.g. LINEAR or not.
+     * See {@link AttributeTweener} for the various non-linear transitions. 
+     * <p>
+     * If a callback is specified, it is called whenever the animation starts, ends and once for every animation frame.
+     * 
+     * @param tweener {@link AnimationTweener} - determines how the attributes will be changed over time
+     * @param properties {@link AnimationProperties} - attributes that will be modified over time
+     * @param duration in milliseconds
+     * @param callback {@link IAnimationCallback}
+     * @return {@link IAnimationHandle}
+     * 
+     * @see {@link AnimationManager#add(IPrimitive, AnimationTweener, AnimationProperties, int, IAnimationCallback)}
+     */
+    public IAnimationHandle animate(AnimationTweener tweener, AnimationProperties properties, double duration /* milliseconds */, IAnimationCallback callback);
 }

@@ -24,7 +24,6 @@ import static com.ait.lienzo.shared.core.types.Direction.WEST;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -56,7 +55,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         setControlPoints(points);
     }
 
-    public OrthogonalPolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected OrthogonalPolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.ORTHOGONAL_POLYLINE, node, ctx);
     }
@@ -741,12 +740,6 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     public Point2D getHeadOffsetPoint()
     {
         return m_headOffsetPoint;
-    }
-
-    @Override
-    public IFactory<OrthogonalPolyLine> getFactory()
-    {
-        return new OrthogonaPolylLineFactory();
     }
 
     public static class OrthogonaPolylLineFactory extends AbstractDirectionalMultiPointShapeFactory<OrthogonalPolyLine>

@@ -20,6 +20,12 @@ import java.util.Collection;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimationCallback;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
+import com.ait.lienzo.client.core.animation.TweeningAnimation;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
@@ -64,6 +70,7 @@ import com.ait.lienzo.client.core.event.NodeTouchStartEvent;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.IContainerFactory;
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -102,6 +109,8 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     private final MetaData   m_meta;
 
     private NodeType         m_type;
+
+    private int              m_anim;
 
     private String           m_uuid;
 
@@ -205,6 +214,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             }
         }
     }
+    
+    @Override
+    public IFactory<?> getFactory()
+    {
+        return LienzoCore.get().getFactory(m_type);
+    }
 
     @Override
     public IMultiPointShape<?> asMultiPointShape()
@@ -291,6 +306,29 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     protected void setParent(final Node<?> parent)
     {
         m_parent = parent;
+    }
+
+    public boolean isAnimating()
+    {
+        return (m_anim > 0);
+    }
+
+    public void noAnimating()
+    {
+        m_anim = 0;
+    }
+
+    public void incAnimating()
+    {
+        m_anim++;
+    }
+
+    public void decAnimating()
+    {
+        if (isAnimating())
+        {
+            m_anim--;
+        }
     }
 
     public Node<?> getParent()
@@ -397,9 +435,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @param context
      */
-    protected void drawWithoutTransforms(Context2D context, double alpha)
-    {
-    }
+    abstract protected void drawWithoutTransforms(Context2D context, double alpha);
 
     public Point2D getAbsoluteLocation()
     {
@@ -847,6 +883,18 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     public HandlerRegistration addNodeDragStartHandler(final NodeDragStartHandler handler)
     {
         return addEnsureHandler(NodeDragStartEvent.getType(), handler);
+    }
+
+    @Override
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */)
+    {
+        return new TweeningAnimation(this, tweener, properties, duration, null).run();
+    }
+
+    @Override
+    public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
+    {
+        return new TweeningAnimation(this, tweener, properties, duration, callback).run();
     }
 
     @Override

@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -58,6 +57,8 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Arrow extends Shape<Arrow>
 {
+    public static final ShapeType TYPE = ShapeType.ARROW;
+
     private Point2DArray m_polygon;
 
     /**
@@ -509,12 +510,6 @@ public class Arrow extends Shape<Arrow>
             m_polygon = arr;
         }
         return m_polygon;
-    }
-
-    @Override
-    public IFactory<Arrow> getFactory()
-    {
-        return new ArrowFactory();
     }
 
     public static class ArrowFactory extends ShapeFactory<Arrow>

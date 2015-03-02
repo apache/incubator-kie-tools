@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
@@ -35,15 +36,10 @@ public final class NFastStringMapMixedJSO extends JavaScriptObject
         return JavaScriptObject.createObject().cast();
     };
 
-    public final native boolean isEmpty()
-    /*-{
-        var that = this;
-
-        for ( var i in that) {
-            return false;
-        }
-        return true;
-    }-*/;
+    public final boolean isEmpty()
+    {
+        return (0 == size());
+    }
 
     public final void put(String name, String value)
     {
@@ -96,22 +92,36 @@ public final class NFastStringMapMixedJSO extends JavaScriptObject
 
     public final Collection<String> keys()
     {
-        ArrayList<String> keys = new ArrayList<String>();
+        final ArrayList<String> keys = new ArrayList<String>();
 
-        fill(keys);
+        fillKeysCollection(keys);
 
-        return keys;
+        return Collections.unmodifiableCollection(keys);
     }
 
-    private final native void fill(Collection<String> keys)
+    private final native void fillKeysCollection(Collection<String> keys)
     /*-{
         var self = this;
 
         for ( var name in self) {
-            if ((self.hasOwnProperty(name)) && (self[name] !== undefined)) {
+            if ((self.hasOwnProperty(String(name))) && (self[name] !== undefined)) {
                 keys.@java.util.Collection::add(Ljava/lang/Object;)(name);
             }
         }
+    }-*/;
+
+    public final native int size()
+    /*-{
+        var i = 0;
+
+        var self = this;
+
+        for ( var name in self) {
+            if (self.hasOwnProperty(String(name))) {
+                ++i;
+            }
+        }
+        return i;
     }-*/;
 
     public final native boolean isDefined(String name)
@@ -237,7 +247,7 @@ public final class NFastStringMapMixedJSO extends JavaScriptObject
         }
         return null;
     }
-    
+
     public final String toJSONString()
     {
         return new JSONObject(this).toString();

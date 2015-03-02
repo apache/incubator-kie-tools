@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.json.client.JSONObject;
 
@@ -101,7 +102,7 @@ public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolve
 
     protected static abstract class ConvolveImageDataFilterFactory<T extends AbstractConvolveImageDataFilter<T>> extends ImageDataFilterFactory<T>
     {
-        protected ConvolveImageDataFilterFactory(String type)
+        protected ConvolveImageDataFilterFactory(ImageFilterType type)
         {
             super(type);
 

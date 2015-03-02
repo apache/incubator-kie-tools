@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -151,12 +150,6 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
     public boolean isControlPointShape()
     {
         return true;
-    }
-
-    @Override
-    public IFactory<QuadraticCurve> getFactory()
-    {
-        return new QuadraticCurveFactory();
     }
 
     public static class QuadraticCurveFactory extends ShapeFactory<QuadraticCurve>

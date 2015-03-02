@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -90,11 +91,13 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
                             ix = x;
                         }
                         ix *= 4;
-                        var r = data[ioff + ix + 0];
-                        var g = data[ioff + ix + 1];
-                        var b = data[ioff + ix + 2];
-                        var z = hmap[moff + icol];
-                        var v = vmap[moff + icol];
+                        var f = ioff + ix;
+                        var r = data[  f  ];
+                        var g = data[f + 1];
+                        var b = data[f + 2];
+                        var m = moff + icol;
+                        var z = hmap[m];
+                        var v = vmap[m];
                         rh += ((z * r) | 0);
                         bh += ((z * g) | 0);
                         gh += ((z * b) | 0);
@@ -103,7 +106,7 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
                         bv += ((v * b) | 0);
                     }
                 }
-                buff[p + 0] = ((Math.sqrt(rh * rh + rv * rv) / 1.8) | 0);
+                buff[  p  ] = ((Math.sqrt(rh * rh + rv * rv) / 1.8) | 0);
                 buff[p + 1] = ((Math.sqrt(gh * gh + gv * gv) / 1.8) | 0);
                 buff[p + 2] = ((Math.sqrt(bh * bh + bv * bv) / 1.8) | 0);
                 buff[p + 3] = data[p + 3];
@@ -121,7 +124,7 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
     {
         public EdgeDetectImageDataFilterFactory()
         {
-            super(EdgeDetectImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.EdgeDetectImageDataFilterType);
         }
 
         @Override

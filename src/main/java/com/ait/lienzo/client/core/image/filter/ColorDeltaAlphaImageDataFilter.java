@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -102,7 +103,7 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
         var bmin = Math.max(b - v,   0) | 0;
         var bmax = Math.min(b + v, 255) | 0;
     	for (var i = 0; i < length; i += 4) {
-            var rval = data[i + 0];
+            var rval = data[  i  ];
             var gval = data[i + 1];
             var bval = data[i + 2];
             if((rval <= rmax) && (rval >= rmin) && (gval <= gmax) && (gval >= gmin) && (bval <= bmax) && (bval >= bmin)) {
@@ -121,7 +122,7 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
     {
         public ColorDeltaAlphaImageDataFilterFactory()
         {
-            super(ColorDeltaAlphaImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.ColorDeltaAlphaImageDataFilterType);
 
             addAttribute(Attribute.VALUE, true);
         }

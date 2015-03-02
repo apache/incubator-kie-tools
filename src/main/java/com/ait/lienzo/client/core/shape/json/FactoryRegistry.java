@@ -16,9 +16,10 @@
 
 package com.ait.lienzo.client.core.shape.json;
 
+import java.util.HashSet;
+
 import com.ait.lienzo.client.core.config.ILienzoPlugin;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.types.NFastStringMap;
 
 /**
  * This class is a central repository for all {@link IJSONSerializable} factories.  
@@ -27,36 +28,10 @@ import com.ait.lienzo.client.core.types.NFastStringMap;
  */
 public final class FactoryRegistry
 {
-    private static FactoryRegistry            s_instance;
-
-    private final NFastStringMap<IFactory<?>> m_factories = new NFastStringMap<IFactory<?>>();
+    private static FactoryRegistry INSTANCE;
 
     private FactoryRegistry()
     {
-    }
-
-    /**
-     * Adds a {@link IFactory} to this registry.
-     * <p>
-     * Use this when you're creating your own class and you want to be able to deserialize
-     * your node from a JSON string via {@link JSONDeserializer#fromString(String)}.
-     * 
-     * @param factory IFactory
-     * @return this FactoryRegistry
-     */
-    public final FactoryRegistry registerFactory(IFactory<?> factory)
-    {
-        String type = factory.getTypeName();
-
-        if (null == m_factories.get(type))
-        {
-            m_factories.put(type, factory);
-        }
-        else
-        {
-            LienzoCore.get().log("WARNING: IFactory for " + type + " was already registered. Try prefixing your type names e.g. with 'foo_' to avoid conflicts with the built-in Lienzo nodes.");
-        }
-        return this;
     }
 
     /**
@@ -65,29 +40,47 @@ public final class FactoryRegistry
      * @param typeName
      * @return IFactory
      */
-    public final IFactory<?> getFactory(String typeName)
+    public final IFactory<?> getFactory(final String name)
     {
-        return m_factories.get(typeName);
+        for (ILienzoPlugin plugin : LienzoCore.get().getPlugins())
+        {
+            final IFactory<?> factory = plugin.getFactory(name);
+
+            if (null != factory)
+            {
+                return factory;
+            }
+        }
+        return null;
     }
 
     /**
      * Returns the singleton FactoryRegistry.
      * @return FactoryRegistry
      */
-    public static final FactoryRegistry getInstance()
+    public static final FactoryRegistry get()
     {
-        if (null == s_instance)
+        if (null == INSTANCE)
         {
-            s_instance = new FactoryRegistry();
+            INSTANCE = new FactoryRegistry();
+
+            final HashSet<String> seen = new HashSet<String>();
 
             for (ILienzoPlugin plugin : LienzoCore.get().getPlugins())
             {
-                for (IFactory<?> factory : plugin.getFactories())
+                for (String name : plugin.keys())
                 {
-                    s_instance.registerFactory(factory);
+                    if (seen.contains(name))
+                    {
+                        LienzoCore.get().error("Factory for type " + name + " in plugin " + plugin.getNameSpace() + " has already been defined.");
+                    }
+                    else
+                    {
+                        seen.add(name);
+                    }
                 }
             }
         }
-        return s_instance;
+        return INSTANCE;
     }
 }

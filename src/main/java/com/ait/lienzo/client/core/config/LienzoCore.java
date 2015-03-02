@@ -22,6 +22,8 @@ import java.util.Collections;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.shape.json.FactoryRegistry;
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
@@ -30,6 +32,7 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
+import com.ait.lienzo.shared.java.util.IStringValuedType;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -109,6 +112,16 @@ public final class LienzoCore
     public final Collection<ILienzoPlugin> getPlugins()
     {
         return Collections.unmodifiableCollection(m_plugins);
+    }
+
+    public final IFactory<?> getFactory(final IStringValuedType type)
+    {
+        return getFactory(type.getValue());
+    }
+
+    public final IFactory<?> getFactory(final String name)
+    {
+        return FactoryRegistry.get().getFactory(name);
     }
 
     public final native void log(String message)

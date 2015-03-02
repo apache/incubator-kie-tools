@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
@@ -205,12 +204,6 @@ public class Slice extends Shape<Slice>
         getAttributes().setCounterClockwise(counterclockwise);
 
         return this;
-    }
-
-    @Override
-    public IFactory<Slice> getFactory()
-    {
-        return new SliceFactory();
     }
 
     public static class SliceFactory extends ShapeFactory<Slice>

@@ -19,6 +19,7 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.json.client.JSONObject;
 
 public class ExposureImageDataFilter extends AbstractValueTableImageDataFilter<ExposureImageDataFilter>
@@ -89,7 +90,7 @@ public class ExposureImageDataFilter extends AbstractValueTableImageDataFilter<E
     {
         public ExposureImageDataFilterFactory()
         {
-            super(ExposureImageDataFilter.class.getSimpleName());
+            super(ImageFilterType.ExposureImageDataFilterType);
         }
 
         @Override

@@ -16,10 +16,12 @@
 
 package com.ait.lienzo.shared.core.types;
 
+import com.ait.lienzo.shared.java.util.IStringValuedType;
+
 /**
  * ShapeType is an extensible enumeration of all Shape types.
  */
-public class ShapeType
+public class ShapeType implements IStringValuedType
 {
     public static final ShapeType ARC                 = new ShapeType("Arc");
 
@@ -75,9 +77,11 @@ public class ShapeType
 
     public static final ShapeType SPRITE              = new ShapeType("Sprite");
 
+    public static final ShapeType SIMPLE_ARROW        = new ShapeType("SimpleArrow");
+
     private final String          m_value;
 
-    protected ShapeType(String value)
+    protected ShapeType(final String value)
     {
         m_value = value;
     }
@@ -88,13 +92,14 @@ public class ShapeType
         return m_value;
     }
 
+    @Override
     public final String getValue()
     {
         return m_value;
     }
 
     @Override
-    public boolean equals(Object other)
+    public boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof ShapeType)))
         {
