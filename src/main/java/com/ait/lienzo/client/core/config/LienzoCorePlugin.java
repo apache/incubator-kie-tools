@@ -85,7 +85,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
 {
     public LienzoCorePlugin()
     {
-        add(ShapeType.ARC, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.ARC, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -93,7 +93,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Arc.ArcFactory();
             }
         });
-        add(ShapeType.ARROW, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.ARROW, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -101,7 +101,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Arrow.ArrowFactory();
             }
         });
-        add(ShapeType.BEZIER_CURVE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.BEZIER_CURVE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -109,7 +109,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new BezierCurve.BezierCurveFactory();
             }
         });
-        add(ShapeType.CIRCLE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.CIRCLE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -117,7 +117,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Circle.CircleFactory();
             }
         });
-        add(ShapeType.ELLIPSE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.ELLIPSE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -125,7 +125,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Ellipse.EllipseFactory();
             }
         });
-        add(ShapeType.LINE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.LINE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -133,7 +133,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Line.LineFactory();
             }
         });
-        add(ShapeType.MOVIE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.MOVIE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -141,7 +141,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Movie.MovieFactory();
             }
         });
-        add(ShapeType.PARALLELOGRAM, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.PARALLELOGRAM, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -149,7 +149,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Parallelogram.ParallelogramFactory();
             }
         });
-        add(ShapeType.PICTURE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.PICTURE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -157,7 +157,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Picture.PictureFactory();
             }
         });
-        add(ShapeType.POLYGON, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.POLYGON, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -165,7 +165,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Polygon.PolygonFactory();
             }
         });
-        add(ShapeType.POLYLINE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.POLYLINE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -173,7 +173,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new PolyLine.PolyLineFactory();
             }
         });
-        add(ShapeType.QUADRATIC_CURVE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.QUADRATIC_CURVE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -181,7 +181,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new QuadraticCurve.QuadraticCurveFactory();
             }
         });
-        add(ShapeType.RECTANGLE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.RECTANGLE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -189,7 +189,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Rectangle.RectangleFactory();
             }
         });
-        add(ShapeType.REGULAR_POLYGON, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.REGULAR_POLYGON, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -197,7 +197,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new RegularPolygon.RegularPolygonFactory();
             }
         });
-        add(ShapeType.SLICE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.SLICE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -205,7 +205,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Slice.SliceFactory();
             }
         });
-        add(ShapeType.STAR, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.STAR, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -213,7 +213,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Star.StarFactory();
             }
         });
-        add(ShapeType.TEXT, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.TEXT, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -221,7 +221,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Text.TextFactory();
             }
         });
-        add(ShapeType.TRIANGLE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.TRIANGLE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -229,7 +229,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Triangle.TriangleFactory();
             }
         });
-        add(ShapeType.SPLINE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.SPLINE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -237,7 +237,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Spline.SplineFactory();
             }
         });
-        add(ShapeType.BOW, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.BOW, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -245,7 +245,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Bow.BowFactory();
             }
         });
-        add(ShapeType.RING, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.RING, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -253,7 +253,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Ring.RingFactory();
             }
         });
-        add(ShapeType.CHORD, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.CHORD, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -261,7 +261,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Chord.ChordFactory();
             }
         });
-        add(ShapeType.ISOSCELES_TRAPEZOID, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.ISOSCELES_TRAPEZOID, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -269,7 +269,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new IsoscelesTrapezoid.IsoscelesTrapezoidFactory();
             }
         });
-        add(ShapeType.SVG_PATH, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.SVG_PATH, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -277,7 +277,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new SVGPath.SVGPathFactory();
             }
         });
-        add(ShapeType.SPRITE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.SPRITE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -285,7 +285,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Sprite.SpriteFactory();
             }
         });
-        add(ShapeType.ORTHOGONAL_POLYLINE, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.ORTHOGONAL_POLYLINE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -293,7 +293,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new OrthogonalPolyLine.OrthogonaPolylLineFactory();
             }
         });
-        add(ShapeType.MULTI_PATH, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.MULTI_PATH, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -301,7 +301,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new MultiPath.MultiPathFactory();
             }
         });
-        add(ShapeType.SIMPLE_ARROW, new Supplier<IFactory<?>>()
+        addFactorySupplier(ShapeType.SIMPLE_ARROW, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -309,7 +309,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new SimpleArrow.SimpleArrowFactory();
             }
         });
-        add(ProxyType.GRID, new Supplier<IFactory<?>>()
+        addFactorySupplier(ProxyType.GRID, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -317,7 +317,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Grid.GridFactory();
             }
         });
-        add(GroupType.GROUP, new Supplier<IFactory<?>>()
+        addFactorySupplier(GroupType.GROUP, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -325,7 +325,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Group.GroupFactory();
             }
         });
-        add(NodeType.LAYER, new Supplier<IFactory<?>>()
+        addFactorySupplier(NodeType.LAYER, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -333,7 +333,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Layer.LayerFactory();
             }
         });
-        add(NodeType.GRID_LAYER, new Supplier<IFactory<?>>()
+        addFactorySupplier(NodeType.GRID_LAYER, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -341,7 +341,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new GridLayer.GridLayerFactory();
             }
         });
-        add(NodeType.SCENE, new Supplier<IFactory<?>>()
+        addFactorySupplier(NodeType.SCENE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -349,7 +349,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Scene.SceneFactory();
             }
         });
-        add(NodeType.VIEWPORT, new Supplier<IFactory<?>>()
+        addFactorySupplier(NodeType.VIEWPORT, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -357,7 +357,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Viewport.ViewportFactory();
             }
         });
-        add(ImageFilterType.AlphaScaleColorImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.AlphaScaleColorImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -365,7 +365,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new AlphaScaleColorImageDataFilter.AlphaScaleColorImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.AverageGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.AverageGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -373,7 +373,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new AverageGrayScaleImageDataFilter.AverageGrayScaleImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.BrightnessImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.BrightnessImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -381,7 +381,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new BrightnessImageDataFilter.BrightnessImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.BumpImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.BumpImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -389,7 +389,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new BumpImageDataFilter.BumpImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.ColorDeltaAlphaImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.ColorDeltaAlphaImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -397,7 +397,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new ColorDeltaAlphaImageDataFilter.ColorDeltaAlphaImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.ColorLuminosityImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.ColorLuminosityImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -405,7 +405,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new ColorLuminosityImageDataFilter.ColorLuminosityImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.ContrastImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.ContrastImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -413,7 +413,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new ContrastImageDataFilter.ContrastImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.DiffusionImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.DiffusionImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -421,7 +421,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new DiffusionImageDataFilter.DiffusionImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.EdgeDetectImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.EdgeDetectImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -429,7 +429,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new EdgeDetectImageDataFilter.EdgeDetectImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.EmbossImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.EmbossImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -437,7 +437,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new EmbossImageDataFilter.EmbossImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.ExposureImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.ExposureImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -445,7 +445,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new ExposureImageDataFilter.ExposureImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.GainImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.GainImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -453,7 +453,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new GainImageDataFilter.GainImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.GammaImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.GammaImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -461,7 +461,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new GammaImageDataFilter.GammaImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.HueImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.HueImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -469,7 +469,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new HueImageDataFilter.HueImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.ImageDataFilterChainType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.ImageDataFilterChainType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -477,7 +477,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new ImageDataFilterChain.ImageDataFilterChainFactory();
             }
         });
-        add(ImageFilterType.InvertColorImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.InvertColorImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -485,7 +485,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new InvertColorImageDataFilter.InvertColorImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.LightnessGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.LightnessGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -493,7 +493,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new LightnessGrayScaleImageDataFilter.LightnessGrayScaleImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.LuminosityGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.LuminosityGrayScaleImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -501,7 +501,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new LuminosityGrayScaleImageDataFilter.LuminosityGrayScaleImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.PosterizeImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.PosterizeImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -509,7 +509,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new PosterizeImageDataFilter.PosterizeImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -517,7 +517,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new RGBIgnoreAlphaImageDataFilter.RGBIgnoreAlphaImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.SharpenImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.SharpenImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -525,7 +525,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new SharpenImageDataFilter.SharpenImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.SolarizeImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.SolarizeImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -533,7 +533,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new SolarizeImageDataFilter.SolarizeImageDataFilterFactory();
             }
         });
-        add(ImageFilterType.StackBlurImageDataFilterType, new Supplier<IFactory<?>>()
+        addFactorySupplier(ImageFilterType.StackBlurImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
@@ -547,5 +547,11 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
     public String getNameSpace()
     {
         return "LienzoCore";
+    }
+    
+    @Override
+    public String getVersion()
+    {
+        return "2.0";
     }
 }

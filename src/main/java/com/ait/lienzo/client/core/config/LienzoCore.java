@@ -96,8 +96,12 @@ public final class LienzoCore
         return INSTANCE;
     }
 
-    public final void addPlugin(ILienzoPlugin plugin)
+    public final boolean addPlugin(final ILienzoPlugin plugin)
     {
+        if (null == plugin)
+        {
+            return false;
+        }
         if (GWT.isScript())
         {
             log("Lienzo adding plugin: " + plugin.getNameSpace());
@@ -106,7 +110,36 @@ public final class LienzoCore
         {
             GWT.log("Lienzo adding plugin: " + plugin.getNameSpace());
         }
+        if (m_plugins.contains(plugin))
+        {
+            error("Lienzo plugin " + plugin.getNameSpace() + " already added.");
+
+            return false;
+        }
+        for (ILienzoPlugin p : m_plugins)
+        {
+            if (plugin.getNameSpace().equals(p))
+            {
+                error("Lienzo plugin " + plugin.getNameSpace() + " with name name space already added.");
+
+                return false;
+            }
+        }
         m_plugins.add(plugin);
+
+        return true;
+    }
+
+    public final ILienzoPlugin getPlugin(final String name)
+    {
+        for (ILienzoPlugin p : m_plugins)
+        {
+            if (p.getNameSpace().equals(name))
+            {
+                return p;
+            }
+        }
+        return null;
     }
 
     public final Collection<ILienzoPlugin> getPlugins()

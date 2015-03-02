@@ -33,17 +33,38 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     {
     }
 
-    protected final void add(final IStringValuedType type, final Supplier<IFactory<?>> supplier)
+    @Override
+    public final boolean addFactorySupplier(final IStringValuedType type, final Supplier<IFactory<?>> supplier)
     {
-        final String name = type.getValue();
+        return addFactorySupplier(type.getValue(), supplier);
+    }
 
+    @Override
+    public final boolean addFactorySupplier(String name, final Supplier<IFactory<?>> supplier)
+    {
+        if (null == name)
+        {
+            return false;
+        }
+        if (null == supplier)
+        {
+            return false;
+        }
+        if ((name = name.trim()).isEmpty())
+        {
+            return false;
+        }
         if (null != m_suppliers.get(name))
         {
             LienzoCore.get().error("Supplier for type " + name + "  has already been defined.");
+
+            return false;
         }
         else
         {
             m_suppliers.put(name, supplier);
+
+            return true;
         }
     }
 
@@ -60,8 +81,16 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     }
 
     @Override
-    public IFactory<?> getFactory(final String name)
+    public IFactory<?> getFactory(String name)
     {
+        if (null == name)
+        {
+            return null;
+        }
+        if ((name = name.trim()).isEmpty())
+        {
+            return null;
+        }
         IFactory<?> factory = m_factories.get(name);
 
         if (null != factory)
