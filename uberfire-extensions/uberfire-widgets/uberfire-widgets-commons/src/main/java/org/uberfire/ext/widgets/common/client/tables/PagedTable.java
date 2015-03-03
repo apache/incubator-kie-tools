@@ -69,14 +69,16 @@ public class PagedTable<T>
     public PagedTable( final int pageSize ) {
         super();
         this.pageSize=pageSize;
-        setPageSizeValue(  );
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
     }
 
     public PagedTable( final int pageSize,
                        final ProvidesKey<T> providesKey ) {
         super( providesKey );
         this.pageSize =pageSize;
-        setPageSizeValue(  );
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
     }
 
     public PagedTable( final int pageSize,
@@ -85,7 +87,8 @@ public class PagedTable<T>
         super( providesKey, gridGlobalPreferences );
         pageSizesSelector.setVisible( false );
         this.pageSize=pageSize;
-        setPageSizeValue(  );
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
     }
 
     public PagedTable( final int pageSize,
@@ -96,7 +99,9 @@ public class PagedTable<T>
         super( providesKey, gridGlobalPreferences );
         this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize=pageSize;
-        setPageSizeValue(  );
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
+
     }
 
     protected Widget makeWidget() {
@@ -124,7 +129,6 @@ public class PagedTable<T>
     public final void setPageSizeValue(  ) {
         pageSize = getPageSizeStored();
         this.dataGrid.setPageSize( pageSize );
-        this.pager.setDisplay( dataGrid );
         this.pager.setPageSize( pageSize );
         this.dataGrid.setHeight( ( pageSize * 41 ) + 42 + "px" );
         pageSizesSelector.setVisible( this.showPageSizesSelector );
@@ -192,7 +196,7 @@ public class PagedTable<T>
     private void storePageSizeInGridPreferences(int pageSize) {
         GridPreferencesStore gridPreferencesStore =super.getGridPreferencesStore();
         if ( gridPreferencesStore != null ) {
-            gridPreferencesStore.getGlobalPreferences().setPageSize( pageSize );;
+            gridPreferencesStore.setPageSizePreferences( pageSize );
             super.saveGridPreferences();
         }
     }
@@ -200,7 +204,7 @@ public class PagedTable<T>
     private int getPageSizeStored(){
         GridPreferencesStore gridPreferencesStore =super.getGridPreferencesStore();
         if ( gridPreferencesStore != null ) {
-            return gridPreferencesStore.getGlobalPreferences().getPageSize();
+            return gridPreferencesStore.getPageSizePreferences();
         }
         return pageSize;
     }
