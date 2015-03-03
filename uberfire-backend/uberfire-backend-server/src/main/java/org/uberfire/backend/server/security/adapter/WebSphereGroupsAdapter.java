@@ -7,6 +7,7 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.security.auth.Subject;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
@@ -29,7 +30,7 @@ public class WebSphereGroupsAdapter implements GroupsAdapter {
     }
 
     @Override
-    public List<Group> getGroups( final String principal ) {
+    public List<Group> getGroups( final String principal, final Object subject ) {
         if ( registry == null ) {
             return Collections.emptyList();
         }

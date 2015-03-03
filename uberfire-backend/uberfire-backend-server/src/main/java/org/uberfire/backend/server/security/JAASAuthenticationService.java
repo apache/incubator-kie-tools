@@ -105,7 +105,7 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
                 }
             }
 
-            Set<Role> rolesFromAdapters = collectGroupsAsRoles(username);
+            Set<Role> rolesFromAdapters = collectGroupsAsRoles(username, subject);
             if (rolesFromAdapters != null && !rolesFromAdapters.isEmpty()) {
                 roles.addAll(rolesFromAdapters);
             }
