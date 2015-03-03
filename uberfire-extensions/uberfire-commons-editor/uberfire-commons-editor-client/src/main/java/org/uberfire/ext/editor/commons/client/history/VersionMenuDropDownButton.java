@@ -74,6 +74,7 @@ public class VersionMenuDropDownButton
 
         ArrayList<VersionRecord> reversedList = new ArrayList<VersionRecord>( versions );
         Collections.reverse( reversedList );
+        int versionsDisplayed = 0;
 
         for ( final VersionRecord versionRecord : reversedList ) {
 
@@ -91,15 +92,17 @@ public class VersionMenuDropDownButton
 
                 if ( !currentHasBeenAdded ) {
                     view.addLabel( getCurrentVersionRecord(), true, getCurrentVersionIndex() );
+                    versionsDisplayed++;
                 }
 
-                addShowMoreLabel( versionIndex );
+                addShowMoreLabel( versionsDisplayed );
 
                 break;
 
             }
 
             versionIndex--;
+            versionsDisplayed++;
         }
     }
 
