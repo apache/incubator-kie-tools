@@ -17,7 +17,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:bootstrap='urn:import:com.github.gwtbootstrap.client.ui'
              xmlns:kie='urn:import:org.drools.workbench.screens.testscenario.client'>
 
   <ui:with field="i18n" type="org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants"/>
@@ -33,7 +32,9 @@
 
   <gwt:VerticalPanel >
     <kie:AuditLog ui:field="auditLog" visible="false"/>
-    <kie:KSessionSelector ui:field="kSessionSelector" addStyleNames='{style.padding}'/>
+    <gwt:SimplePanel addStyleNames='{style.padding}'>
+      <kie:KSessionSelector ui:field="kSessionSelector"/>
+    </gwt:SimplePanel>
     <kie:FixtureLayout ui:field="fixtureLayout"/>
   </gwt:VerticalPanel>
 </ui:UiBinder>
