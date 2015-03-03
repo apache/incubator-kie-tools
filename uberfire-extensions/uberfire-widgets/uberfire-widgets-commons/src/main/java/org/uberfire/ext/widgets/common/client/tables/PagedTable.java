@@ -19,6 +19,7 @@ package org.uberfire.ext.widgets.common.client.tables;
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.RadioButton;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -185,6 +186,20 @@ public class PagedTable<T>
             } );
             popupContent.add(rb);
         }
+        Button resetButton = new Button( "Reset" );
+        resetButton.setSize( ButtonSize.MINI );
+        resetButton.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick( ClickEvent event ) {
+                resetPageSize();
+                popup.hide();
+                pageSizesSelector.setActive( false );
+            }
+        } );
+
+        popupContent.add( resetButton );
+
 
         popup.setWidget(popupContent);
         popup.show();
@@ -207,5 +222,15 @@ public class PagedTable<T>
             return gridPreferencesStore.getPageSizePreferences();
         }
         return pageSize;
+    }
+
+    private void resetPageSize() {
+        GridPreferencesStore gridPreferencesStore = super.getGridPreferencesStore();
+
+        if ( gridPreferencesStore != null ) {
+            gridPreferencesStore.resetPageSizePreferences();
+            storePageSizeInGridPreferences( gridPreferencesStore.getGlobalPreferences().getPageSize() );
+            setPageSizeValue();
+        }
     }
 }

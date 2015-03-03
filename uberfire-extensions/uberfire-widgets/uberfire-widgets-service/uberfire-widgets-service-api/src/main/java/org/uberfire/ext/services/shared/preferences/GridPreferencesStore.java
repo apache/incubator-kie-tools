@@ -51,6 +51,11 @@ public class GridPreferencesStore {
   public void resetGridColumnPreferences(){
     columnPreferences.clear();
   }
+  public void resetPageSizePreferences(){
+    if(globalPreferences!=null) {
+      this.pageSizePreferences= globalPreferences.getPageSize();
+    }
+  }
 
   public int getPageSizePreferences() {
     return pageSizePreferences;
