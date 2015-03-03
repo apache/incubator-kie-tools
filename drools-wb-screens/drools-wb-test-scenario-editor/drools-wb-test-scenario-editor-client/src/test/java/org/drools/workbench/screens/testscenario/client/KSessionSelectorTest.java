@@ -201,6 +201,21 @@ public class KSessionSelectorTest {
 
     }
 
+    @Test
+    public void testChangeSelection() throws Exception {
+
+        Scenario scenario = new Scenario();
+        scenario.getKSessions().add("ksessionThatHasBeenRemovedFromKModuleXML");
+        selector.init(path, scenario);
+
+        presenter.onKBaseSelected("kbase2");
+
+        // Model needs to be updated
+        assertEquals(1, scenario.getKSessions().size());
+        assertEquals("ksession1", scenario.getKSessions().iterator().next());
+
+    }
+
     private KBaseModel getKBase(final String kbaseName,
                                 final String... ksessionNames) {
         return new KBaseModel() {{

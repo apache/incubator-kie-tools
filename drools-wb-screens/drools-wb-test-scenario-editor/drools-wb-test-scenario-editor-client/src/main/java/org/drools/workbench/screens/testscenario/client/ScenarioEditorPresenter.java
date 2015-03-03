@@ -133,6 +133,9 @@ public class ScenarioEditorPresenter
 
                 scenario = result.getScenario();
 
+                view.initKSessionSelector(versionRecordManager.getCurrentPath(),
+                                          scenario);
+
                 view.showAuditView(result.getLog());
 
                 renderFixtures();

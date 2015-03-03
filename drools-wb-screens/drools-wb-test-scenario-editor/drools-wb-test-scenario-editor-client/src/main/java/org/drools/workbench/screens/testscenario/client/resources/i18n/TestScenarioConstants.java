@@ -269,4 +269,6 @@ public interface
 
     String XTestsRanInYMinutesZSeconds(int runCount, String minutes, String seconds);
 
+    String ErrorCannotFindADefaultKieBase();
+
 }

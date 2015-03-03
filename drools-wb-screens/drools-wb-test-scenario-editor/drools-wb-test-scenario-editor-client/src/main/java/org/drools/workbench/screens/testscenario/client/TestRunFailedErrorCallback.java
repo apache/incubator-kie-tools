@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -29,15 +30,16 @@ public class TestRunFailedErrorCallback
     }
 
     public boolean error(Message message, Throwable throwable) {
+
         this.view.hideBusyIndicator();
 
-        String message1 = throwable.getMessage();
-        if (message1.equals("Cannot find a default KieBase")) {
-            ErrorPopup.showMessage("Cannot find a default KieBase....................");
+        if (throwable.getMessage().equals("Cannot find a default KieBase")) {
+
+            ErrorPopup.showMessage(TestScenarioConstants.INSTANCE.ErrorCannotFindADefaultKieBase());
 
             return false;
+        } else {
+            return super.error(message, throwable);
         }
-
-        return super.error(message, throwable);
     }
 }

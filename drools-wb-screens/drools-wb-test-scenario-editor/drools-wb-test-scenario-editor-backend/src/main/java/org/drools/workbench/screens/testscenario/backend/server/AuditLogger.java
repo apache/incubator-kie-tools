@@ -52,14 +52,12 @@ public class AuditLogger {
         this.ksessions = ksessions;
 
         for (KieSession ksession : ksessions.values()) {
-
-            addRuleRuntimeEventListener(ksession);
-
-            addAgendaEventListener(ksession);
-
-            addProcessEventListener(ksession);
+            if (ksession != null) {
+                addRuleRuntimeEventListener(ksession);
+                addAgendaEventListener(ksession);
+                addProcessEventListener(ksession);
+            }
         }
-
     }
 
     public Set<String> getLog() {

@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import javax.enterprise.event.Event;
+
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
@@ -24,6 +26,7 @@ import org.drools.workbench.screens.testscenario.model.TestScenarioResult;
 import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.guvnor.common.services.shared.test.TestResultMessage;
 import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -66,7 +69,7 @@ public class ScenarioEditorPresenterTest {
         AsyncPackageDataModelOracleFactory modelOracleFactory = mock(AsyncPackageDataModelOracleFactory.class);
         editor = new ScenarioEditorPresenter(view,
                                              new ScenarioTestEditorServiceCallerMock(),
-                                             new TestServiceMock(),
+                                             new TestServiceCallerMock(),
                                              new TestScenarioResourceType(),
                                              modelOracleFactory) {
             {
@@ -111,6 +114,25 @@ public class ScenarioEditorPresenterTest {
 
     }
 
+    @Test
+    public void testRunScenario() throws Exception {
+        ObservablePath path = mock(ObservablePath.class);
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+
+        editor.onStartup(path, placeRequest);
+
+        verify(view).initKSessionSelector(eq(path), any(Scenario.class));
+
+        reset(view);
+
+        presenter.onRunScenario();
+
+        verify(view).initKSessionSelector(eq(path), any(Scenario.class));
+        verify(view).showAuditView(anySet());
+    }
+
     class ScenarioTestEditorServiceCallerMock
             implements Caller<ScenarioTestEditorService> {
 
@@ -140,6 +162,7 @@ public class ScenarioEditorPresenterTest {
             }
 
             @Override public TestScenarioResult runScenario(Path path, Scenario scenario) {
+                remoteCallback.callback(new TestScenarioResult());
                 return null;
             }
 
@@ -169,19 +192,34 @@ public class ScenarioEditorPresenterTest {
         }
     }
 
-    class TestServiceMock
+    class TestServiceCallerMock
             implements Caller<TestService> {
+
+        RemoteCallback remoteCallback;
+
+        TestServiceMock service = new TestServiceMock();
 
         @Override public TestService call() {
             return null;
         }
 
         @Override public TestService call(RemoteCallback<?> remoteCallback) {
-            return null;
+            return call(remoteCallback, null);
         }
 
         @Override public TestService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
-            return null;
+            this.remoteCallback = remoteCallback;
+            return service;
+        }
+
+        private class TestServiceMock implements TestService {
+
+            @Override public void runAllTests(Path path) {
+            }
+
+            @Override public void runAllTests(Path path, Event<TestResultMessage> customTestResultEvent) {
+
+            }
         }
     }
 }

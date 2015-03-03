@@ -161,13 +161,20 @@ public class ScenarioRunnerService
     }
 
     private KieSession loadKSession(KieProject project, String ksessionName) {
-        KieSession ksession;
-        if (ksessionName == null || ksessionName.equals("defaultKieSession")) {
-            ksession = sessionService.newDefaultKieSessionWithPseudoClock(project);
-        } else {
-            ksession = sessionService.newKieSession(project, ksessionName);
+        KieSession ksession = null;
+        try {
+            if (ksessionName == null || ksessionName.equals("defaultKieSession")) {
+                ksession = sessionService.newDefaultKieSessionWithPseudoClock(project);
+            } else {
+                ksession = sessionService.newKieSession(project, ksessionName);
+            }
+        } catch (Exception e) {
+            // If for one reason or another we can not load the ksession. Return null
+            return null;
         }
+
         return ksession;
+
     }
 
 }

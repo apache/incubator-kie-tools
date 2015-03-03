@@ -139,7 +139,10 @@ public class KSessionSelector
 
     @Override
     public void onKBaseSelected(String kbaseName) {
-        setKSessions(kmodule.getKBases().get(kbaseName).getKSessions());
+        List<KSessionModel> ksessions = kmodule.getKBases().get(kbaseName).getKSessions();
+        setKSessions(ksessions);
+
+        onKSessionSelected(ksessions.get(0).getName());
     }
 
     @Override
