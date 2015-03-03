@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import javax.security.auth.Subject;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
@@ -18,7 +20,7 @@ public class GroupAdapterAuthorizationSource {
 
         Set<Group> userGroups = new HashSet<Group>();
         for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
-            final List<Group> groupRoles = adapter.getGroups( name );
+            final List<Group> groupRoles = adapter.getGroups( name, null );
             if ( groupRoles != null ) {
                 userGroups.addAll( groupRoles );
             }
@@ -27,11 +29,11 @@ public class GroupAdapterAuthorizationSource {
         return userGroups;
     }
 
-    public Set<Role> collectGroupsAsRoles(String name) {
+    public Set<Role> collectGroupsAsRoles(String name, final Object subject) {
 
         Set<Role> userGroups = new HashSet<Role>();
         for ( final GroupsAdapter adapter : groupsAdapterServiceLoader ) {
-            final List<Group> groupRoles = adapter.getGroups( name );
+            final List<Group> groupRoles = adapter.getGroups( name, subject );
             if ( groupRoles != null ) {
                 for (Group group : groupRoles) {
                     userGroups.add(new RoleImpl(group.getName()));

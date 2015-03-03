@@ -28,7 +28,7 @@ public class WeblogicGroupsAdapter implements GroupsAdapter {
     }
 
     @Override
-    public List<Group> getGroups( final String principal ) {
+    public List<Group> getGroups( final String principal, final Object subject ) {
         if ( webLogicSecurity == null ) {
             return Collections.emptyList();
         }
@@ -36,8 +36,12 @@ public class WeblogicGroupsAdapter implements GroupsAdapter {
         final List<Group> groups = new ArrayList<Group>();
 
         try {
-            Method method = webLogicSecurity.getMethod( "getCurrentSubject", new Class[]{ } );
-            Subject wlsSubject = (Subject) method.invoke( null, new Object[]{ } );
+            Subject wlsSubject = (Subject) subject;
+            // if no subject given try to fetch it with WLS specific api
+            if (wlsSubject == null) {
+                Method method = webLogicSecurity.getMethod("getCurrentSubject", new Class[]{});
+                wlsSubject = (Subject) method.invoke(null, new Object[]{});
+            }
             if ( wlsSubject != null ) {
                 for ( java.security.Principal p : wlsSubject.getPrincipals() ) {
                     if ( p.getClass().getName().indexOf( "WLSGroup" ) != -1 ) {
