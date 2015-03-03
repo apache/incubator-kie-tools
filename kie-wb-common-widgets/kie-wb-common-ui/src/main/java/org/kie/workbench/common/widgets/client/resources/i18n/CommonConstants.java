@@ -272,4 +272,8 @@ public interface CommonConstants
 
     String WarningTheSelectedKSessionDoesNotExist();
 
+    String KBase();
+
+    String KSession();
+
 }

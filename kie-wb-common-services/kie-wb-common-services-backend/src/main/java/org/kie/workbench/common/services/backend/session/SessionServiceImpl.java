@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
-import org.guvnor.common.services.shared.exceptions.GenericPortableException;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.workbench.common.services.backend.builder.Builder;
@@ -45,19 +44,15 @@ public class SessionServiceImpl
 
         final Builder builder = cache.assertBuilder(project);
 
-        try {
-            KieContainer kieContainer = builder.getKieContainer();
+        KieContainer kieContainer = builder.getKieContainer();
 
-            //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
-            if (kieContainer == null) {
-                return null;
-            }
-
-            return kieContainer.newKieSession(ksessionName);
-
-        } catch (RuntimeException e) {
-            throw new GenericPortableException(e.getMessage());
+        //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
+        if (kieContainer == null) {
+            return null;
         }
+
+        return kieContainer.newKieSession(ksessionName);
+
     }
 
     @Override
@@ -65,23 +60,18 @@ public class SessionServiceImpl
 
         final Builder builder = cache.assertBuilder(project);
 
-        try {
-            KieContainer kieContainer = builder.getKieContainer();
+        KieContainer kieContainer = builder.getKieContainer();
 
-            //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
-            if (kieContainer == null) {
-                return null;
-            }
-
-            //We always need a pseudo clock
-            final SessionConfiguration conf = new SessionConfiguration();
-            conf.setClockType(ClockType.PSEUDO_CLOCK);
-
-            return kieContainer.getKieBase().newKieSession(conf, null);
-
-        } catch (RuntimeException e) {
-            throw new GenericPortableException(e.getMessage());
+        //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
+        if (kieContainer == null) {
+            return null;
         }
+
+        //We always need a pseudo clock
+        final SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType(ClockType.PSEUDO_CLOCK);
+
+        return kieContainer.getKieBase().newKieSession(conf, null);
 
     }
 
