@@ -14,44 +14,41 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.image.filter;
+package com.ait.lienzo.client.core.palette;
 
-import com.ait.lienzo.client.core.Attribute;
-import com.ait.lienzo.client.core.event.AttributesChangedHandler;
-import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
+import com.ait.lienzo.client.core.shape.json.IFactory;
+import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
-import com.ait.lienzo.shared.core.types.ImageFilterType;
+import com.ait.lienzo.shared.core.types.PaletteType;
 import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
-public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<T>> implements ImageDataFilter<T>
+public abstract class AbstractPaletteBase<T extends AbstractPaletteBase<T>> implements IJSONSerializable<T>
 {
-    private final MetaData        m_meta;
+    private final MetaData    m_meta;
 
-    private final Attributes      m_attr;
+    private final Attributes  m_attr;
 
-    private final ImageFilterType m_type;
+    private final PaletteType m_type;
 
-    protected AbstractImageDataFilter(final ImageFilterType type)
+    protected AbstractPaletteBase(final PaletteType type)
     {
         m_type = type;
 
-        m_attr = new Attributes(this);
-
         m_meta = new MetaData();
 
-        setActive(true);
+        m_attr = new Attributes(this);
     }
 
-    protected AbstractImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractPaletteBase(final PaletteType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         m_type = type;
 
@@ -123,36 +120,6 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         }
     }
 
-    @Override
-    public boolean isTransforming()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isActive()
-    {
-        return getAttributes().isActive();
-    }
-
-    @Override
-    public void setActive(boolean active)
-    {
-        getAttributes().setActive(active);
-    }
-
-    @Override
-    public final ImageFilterType getType()
-    {
-        return m_type;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected final T cast()
-    {
-        return (T) this;
-    }
-
     public final MetaData getMetaData()
     {
         return m_meta;
@@ -164,7 +131,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
     }
 
     @Override
-    public String toJSONString()
+    public final String toJSONString()
     {
         return toJSONObject().toString();
     }
@@ -174,7 +141,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
     {
         JSONObject object = new JSONObject();
 
-        object.put("type", new JSONString(getType().getValue()));
+        object.put("type", new JSONString(m_type.getValue()));
 
         if (false == getMetaData().isEmpty())
         {
@@ -185,25 +152,17 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
         return object;
     }
 
-    public final T setAttributesChangedBatcher(final IAttributesChangedBatcher batcher)
+    @Override
+    public IFactory<?> getFactory()
     {
-        m_attr.setAttributesChangedBatcher(batcher);
-
-        return cast();
+        return LienzoCore.get().getFactory(m_type);
     }
 
-    public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
+    protected abstract static class AbstractPalettebaseFactory<T extends AbstractPaletteBase<T>> extends AbstractFactory<T>
     {
-        return m_attr.addAttributesChangedHandler(attribute, handler);
-    }
-
-    protected static abstract class ImageDataFilterFactory<T extends ImageDataFilter<T>> extends AbstractFactory<T>
-    {
-        protected ImageDataFilterFactory(ImageFilterType type)
+        protected AbstractPalettebaseFactory(final PaletteType type)
         {
             super(type.getValue());
-
-            addAttribute(Attribute.ACTIVE, true);
         }
     }
 }

@@ -23,6 +23,8 @@ import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.AttributeType;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
+import com.ait.lienzo.client.core.palette.Palette;
+import com.ait.lienzo.client.core.palette.PaletteItem;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -456,6 +458,63 @@ public final class JSONDeserializer
                 ctx.pop(); // index
             }
             filterable.setFilters(list);
+        }
+        ctx.pop(); // children
+    }
+
+    public final void deserializePaletteItems(Palette palette, JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        JSONValue jsonvalu = node.get("items");
+
+        if (null == jsonvalu)
+        {
+            return; // OK - 'children' is optional
+        }
+        ctx.push("items");
+
+        JSONArray array = jsonvalu.isArray();
+
+        if (null == array)
+        {
+            ctx.addBadTypeError("Array");
+        }
+        else
+        {
+            final int size = array.size();
+
+            ArrayList<PaletteItem> list = new ArrayList<PaletteItem>(size);
+
+            for (int i = 0; i < size; i++)
+            {
+                ctx.pushIndex(i);
+
+                jsonvalu = array.get(i);
+
+                JSONObject object = jsonvalu.isObject();
+
+                if (null == object)
+                {
+                    ctx.addBadTypeError("Object");
+                }
+                else
+                {
+                    IJSONSerializable<?> serial = fromJSON(object, ctx);
+
+                    if (null != serial)
+                    {
+                        if (serial instanceof PaletteItem)
+                        {
+                            list.add((PaletteItem) serial);
+                        }
+                        else
+                        {
+                            ctx.addBadTypeError("PaletteItem");
+                        }
+                    }
+                }
+                ctx.pop(); // index
+            }
+            palette.setPaletteItems(list);
         }
         ctx.pop(); // children
     }

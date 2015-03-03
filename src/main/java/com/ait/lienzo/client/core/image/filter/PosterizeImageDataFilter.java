@@ -30,12 +30,17 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
 
     public PosterizeImageDataFilter()
     {
-        super(6);
+        super(ImageFilterType.PosterizeImageDataFilterType, 6);
     }
 
     public PosterizeImageDataFilter(double value)
     {
-        super(value);
+        super(ImageFilterType.PosterizeImageDataFilterType, value);
+    }
+
+    protected PosterizeImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    {
+        super(ImageFilterType.PosterizeImageDataFilterType, node, ctx);
     }
 
     @Override
@@ -54,11 +59,6 @@ public class PosterizeImageDataFilter extends AbstractValueTableImageDataFilter<
     public double getRefValue()
     {
         return 6;
-    }
-
-    protected PosterizeImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
-    {
-        super(node, ctx);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
 
     public SharpenImageDataFilter(double... matrix)
     {
-        super(matrix);
+        super(ImageFilterType.SharpenImageDataFilterType, matrix);
     }
 
     public SharpenImageDataFilter(SharpenType matrix)
@@ -44,7 +44,7 @@ public class SharpenImageDataFilter extends AbstractConvolveImageDataFilter<Shar
 
     protected SharpenImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.SharpenImageDataFilterType, node, ctx);
     }
 
     public static enum SharpenType

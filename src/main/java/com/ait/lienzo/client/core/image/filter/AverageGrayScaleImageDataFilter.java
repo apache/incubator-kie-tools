@@ -32,11 +32,12 @@ public class AverageGrayScaleImageDataFilter extends AbstractImageDataFilter<Ave
 {
     public AverageGrayScaleImageDataFilter()
     {
+        super(ImageFilterType.AverageGrayScaleImageDataFilterType);
     }
 
     protected AverageGrayScaleImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.AverageGrayScaleImageDataFilterType, node, ctx);
     }
 
     @Override

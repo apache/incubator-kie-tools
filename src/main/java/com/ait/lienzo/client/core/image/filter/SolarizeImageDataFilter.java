@@ -37,11 +37,12 @@ public class SolarizeImageDataFilter extends AbstractTableImageDataFilter<Solari
 
     public SolarizeImageDataFilter()
     {
+        super(ImageFilterType.SolarizeImageDataFilterType);
     }
 
     protected SolarizeImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.SolarizeImageDataFilterType, node, ctx);
     }
 
     @Override

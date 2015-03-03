@@ -32,8 +32,10 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
 
     private int m_b;
 
-    public AbstractRGBImageDataFilter()
+    public AbstractRGBImageDataFilter(final ImageFilterType type)
     {
+        super(type);
+
         m_r = 0;
 
         m_g = 0;
@@ -43,8 +45,10 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         doUpdateColorFromRGB();
     }
 
-    public AbstractRGBImageDataFilter(int r, int g, int b)
+    public AbstractRGBImageDataFilter(final ImageFilterType type, int r, int g, int b)
     {
+        super(type);
+
         m_r = fixc(r);
 
         m_g = fixc(g);
@@ -54,21 +58,21 @@ public abstract class AbstractRGBImageDataFilter<T extends AbstractRGBImageDataF
         doUpdateColorFromRGB();
     }
 
-    protected AbstractRGBImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractRGBImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(type, node, ctx);
 
         doUpdateRGBFromColor();
     }
 
-    public AbstractRGBImageDataFilter(IColor color)
+    public AbstractRGBImageDataFilter(final ImageFilterType type, IColor color)
     {
-        this(color.getR(), color.getG(), color.getB());
+        this(type, color.getR(), color.getG(), color.getB());
     }
 
-    public AbstractRGBImageDataFilter(String color)
+    public AbstractRGBImageDataFilter(final ImageFilterType type, String color)
     {
-        this(Color.fromColorString(color));
+        this(type, Color.fromColorString(color));
     }
 
     public final int getR()

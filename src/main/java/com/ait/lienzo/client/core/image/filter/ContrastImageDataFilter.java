@@ -30,17 +30,17 @@ public class ContrastImageDataFilter extends AbstractValueTableImageDataFilter<C
 
     public ContrastImageDataFilter()
     {
-        super(1);
+        super(ImageFilterType.ContrastImageDataFilterType, 1);
     }
 
     public ContrastImageDataFilter(double value)
     {
-        super(value);
+        super(ImageFilterType.ContrastImageDataFilterType, value);
     }
 
     protected ContrastImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.ContrastImageDataFilterType, node, ctx);
     }
 
     @Override

@@ -32,17 +32,17 @@ public class BrightnessImageDataFilter extends AbstractValueImageDataFilter<Brig
 {
     public BrightnessImageDataFilter()
     {
-        super(0);
+        super(ImageFilterType.BrightnessImageDataFilterType, 0);
     }
 
     public BrightnessImageDataFilter(double value)
     {
-        super(value);
+        super(ImageFilterType.BrightnessImageDataFilterType, value);
     }
 
     protected BrightnessImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.BrightnessImageDataFilterType, node, ctx);
     }
 
     @Override

@@ -32,17 +32,17 @@ public class HueImageDataFilter extends AbstractValueImageDataFilter<HueImageDat
 {
     public HueImageDataFilter()
     {
-        super(0);
+        super(ImageFilterType.HueImageDataFilterType, 0);
     }
 
     public HueImageDataFilter(double value)
     {
-        super(value);
+        super(ImageFilterType.HueImageDataFilterType, value);
     }
 
     protected HueImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.HueImageDataFilterType, node, ctx);
     }
 
     @Override

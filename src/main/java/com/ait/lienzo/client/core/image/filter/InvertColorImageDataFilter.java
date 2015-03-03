@@ -32,11 +32,12 @@ public class InvertColorImageDataFilter extends AbstractImageDataFilter<InvertCo
 {
     public InvertColorImageDataFilter()
     {
+        super(ImageFilterType.InvertColorImageDataFilterType);
     }
 
     protected InvertColorImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.InvertColorImageDataFilterType, node, ctx);
     }
 
     @Override

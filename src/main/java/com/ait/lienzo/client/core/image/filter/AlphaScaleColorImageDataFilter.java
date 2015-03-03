@@ -31,43 +31,43 @@ public class AlphaScaleColorImageDataFilter extends AbstractRGBImageDataFilter<A
 {
     public AlphaScaleColorImageDataFilter(int r, int g, int b)
     {
-        super(r, g, b);
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, r, g, b);
     }
 
     public AlphaScaleColorImageDataFilter(int r, int g, int b, boolean invert)
     {
-        super(r, g, b);
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, r, g, b);
 
         setInverted(invert);
     }
 
     public AlphaScaleColorImageDataFilter(IColor color)
     {
-        super(color);
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
     }
 
     public AlphaScaleColorImageDataFilter(IColor color, boolean invert)
     {
-        super(color);
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
 
         setInverted(invert);
     }
 
     public AlphaScaleColorImageDataFilter(String color)
     {
-        super(color);
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
     }
 
     public AlphaScaleColorImageDataFilter(String color, boolean invert)
     {
-        super(color);
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, color);
 
         setInverted(invert);
     }
 
     protected AlphaScaleColorImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.AlphaScaleColorImageDataFilterType, node, ctx);
     }
 
     public AlphaScaleColorImageDataFilter setInverted(boolean inverted)

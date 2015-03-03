@@ -29,17 +29,17 @@ public class StackBlurImageDataFilter extends AbstractValueImageDataFilter<Stack
 {
     public StackBlurImageDataFilter(int value)
     {
-        super(value);
+        super(ImageFilterType.StackBlurImageDataFilterType, value);
     }
 
     public StackBlurImageDataFilter()
     {
-        super(1);
+        super(ImageFilterType.StackBlurImageDataFilterType, 1);
     }
 
     protected StackBlurImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.StackBlurImageDataFilterType, node, ctx);
     }
 
     @Override

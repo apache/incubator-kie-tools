@@ -26,14 +26,14 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractValueTransformImageDataFilter<T extends AbstractValueTransformImageDataFilter<T>> extends AbstractValueImageDataFilter<T>
 {
-    protected AbstractValueTransformImageDataFilter(double value)
+    protected AbstractValueTransformImageDataFilter(final ImageFilterType type, double value)
     {
-        super(value);
+        super(type, value);
     }
 
-    protected AbstractValueTransformImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractValueTransformImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(type, node, ctx);
     }
 
     @Override

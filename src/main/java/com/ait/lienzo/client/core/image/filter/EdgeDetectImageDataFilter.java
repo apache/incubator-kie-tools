@@ -32,11 +32,12 @@ public class EdgeDetectImageDataFilter extends AbstractImageDataFilter<EdgeDetec
 {
     public EdgeDetectImageDataFilter()
     {
+        super(ImageFilterType.EdgeDetectImageDataFilterType);
     }
 
     protected EdgeDetectImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.EdgeDetectImageDataFilterType, node, ctx);
     }
 
     @Override

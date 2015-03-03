@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -48,7 +49,7 @@ public interface ImageDataFilter<T extends ImageDataFilter<T>> extends IJSONSeri
 
     public void setActive(boolean active);
 
-    public String getType();
+    public ImageFilterType getType();
 
     public static final class FilterTableArray extends JavaScriptObject
     {

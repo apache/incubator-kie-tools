@@ -26,29 +26,33 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractConvolveImageDataFilter<T extends AbstractConvolveImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
-    protected AbstractConvolveImageDataFilter(double... matrix)
+    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final double... matrix)
     {
+        super(type);
+
         setMatrix(matrix);
     }
 
-    protected AbstractConvolveImageDataFilter(FilterConvolveMatrix matrix)
+    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final FilterConvolveMatrix matrix)
     {
+        super(type);
+
         setMatrix(matrix);
     }
 
-    protected AbstractConvolveImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractConvolveImageDataFilter(final ImageFilterType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(type, node, ctx);
     }
 
-    public final T setMatrix(double... matrix)
+    public final T setMatrix(final double... matrix)
     {
         getAttributes().setMatrix(matrix);
 
         return cast();
     }
 
-    public final T setMatrix(FilterConvolveMatrix matrix)
+    public final T setMatrix(final FilterConvolveMatrix matrix)
     {
         getAttributes().setMatrix(matrix);
 

@@ -35,16 +35,19 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
 
     public ImageDataFilterChain()
     {
+        super(ImageFilterType.ImageDataFilterChainType);
     }
 
     public ImageDataFilterChain(ImageDataFilter<?> filter, ImageDataFilter<?>... filters)
     {
+        super(ImageFilterType.ImageDataFilterChainType);
+
         addFilters(filter, filters);
     }
 
     protected ImageDataFilterChain(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.ImageDataFilterChainType, node, ctx);
     }
 
     @Override

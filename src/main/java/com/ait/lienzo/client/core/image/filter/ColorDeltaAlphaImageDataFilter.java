@@ -34,26 +34,26 @@ public class ColorDeltaAlphaImageDataFilter extends AbstractRGBImageDataFilter<C
 {
     public ColorDeltaAlphaImageDataFilter(int r, int g, int b, int value)
     {
-        super(r, g, b);
+        super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, r, g, b);
 
         setValue(value);
     }
 
     public ColorDeltaAlphaImageDataFilter(IColor color, int value)
     {
-        super(color);
+        super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, color);
     }
 
     public ColorDeltaAlphaImageDataFilter(String color, int value)
     {
-        super(color);
+        super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, color);
 
         setValue(value);
     }
 
     protected ColorDeltaAlphaImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.ColorDeltaAlphaImageDataFilterType, node, ctx);
     }
 
     public final ColorDeltaAlphaImageDataFilter setValue(double value)

@@ -39,26 +39,27 @@ public class RGBIgnoreAlphaImageDataFilter extends AbstractRGBImageDataFilter<RG
 {
     public RGBIgnoreAlphaImageDataFilter()
     {
+        super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType);
     }
 
     public RGBIgnoreAlphaImageDataFilter(int r, int g, int b)
     {
-        super(r, g, b);
+        super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, r, g, b);
     }
 
     public RGBIgnoreAlphaImageDataFilter(IColor color)
     {
-        super(color);
+        super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, color);
     }
 
     public RGBIgnoreAlphaImageDataFilter(String color)
     {
-        super(color);
+        super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, color);
     }
 
     protected RGBIgnoreAlphaImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.RGBIgnoreAlphaImageDataFilterType, node, ctx);
     }
 
     /**

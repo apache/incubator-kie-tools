@@ -33,22 +33,22 @@ public class ColorLuminosityImageDataFilter extends AbstractRGBImageDataFilter<C
 {
     public ColorLuminosityImageDataFilter(int r, int g, int b)
     {
-        super(r, g, b);
+        super(ImageFilterType.ColorLuminosityImageDataFilterType, r, g, b);
     }
 
     public ColorLuminosityImageDataFilter(IColor color)
     {
-        super(color);
+        super(ImageFilterType.ColorLuminosityImageDataFilterType, color);
     }
 
     public ColorLuminosityImageDataFilter(String color)
     {
-        super(color);
+        super(ImageFilterType.ColorLuminosityImageDataFilterType, color);
     }
 
     protected ColorLuminosityImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.ColorLuminosityImageDataFilterType, node, ctx);
     }
 
     @Override

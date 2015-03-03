@@ -24,14 +24,16 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
-    public AbstractValueImageDataFilter(double value)
+    public AbstractValueImageDataFilter(final ImageFilterType type, double value)
     {
+        super(type);
+
         setValue(value);
     }
 
-    protected AbstractValueImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractValueImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(type, node, ctx);
     }
 
     public final double getValue()
@@ -49,7 +51,7 @@ public abstract class AbstractValueImageDataFilter<T extends AbstractValueImageD
     public abstract double getMinValue();
 
     public abstract double getMaxValue();
-    
+
     public abstract double getRefValue();
 
     protected static abstract class ValueImageDataFilterFactory<T extends AbstractValueImageDataFilter<T>> extends ImageDataFilterFactory<T>

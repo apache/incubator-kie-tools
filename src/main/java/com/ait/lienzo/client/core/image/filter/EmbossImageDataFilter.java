@@ -29,11 +29,12 @@ public class EmbossImageDataFilter extends AbstractImageDataFilter<EmbossImageDa
 {
     public EmbossImageDataFilter()
     {
+        super(ImageFilterType.EmbossImageDataFilterType);
     }
 
     protected EmbossImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.EmbossImageDataFilterType, node, ctx);
     }
 
     @Override

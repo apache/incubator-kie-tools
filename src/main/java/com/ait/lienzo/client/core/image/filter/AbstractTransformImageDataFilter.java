@@ -19,18 +19,20 @@ package com.ait.lienzo.client.core.image.filter;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractTransformImageDataFilter<T extends AbstractTransformImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
-    protected AbstractTransformImageDataFilter()
+    protected AbstractTransformImageDataFilter(final ImageFilterType type)
     {
+        super(type);
     }
 
-    protected AbstractTransformImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractTransformImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(type, node, ctx);
     }
 
     @Override
@@ -61,7 +63,7 @@ public abstract class AbstractTransformImageDataFilter<T extends AbstractTransfo
             return source;
         }
         ImageData result = source.create();
-        
+
         FilterCommonOps.doFilterTransform(data, result.getData(), transform, source.getWidth(), source.getHeight());
 
         return result;

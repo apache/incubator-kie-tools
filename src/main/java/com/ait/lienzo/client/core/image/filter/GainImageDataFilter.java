@@ -38,6 +38,8 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
 
     public GainImageDataFilter(double gain, double bias)
     {
+        super(ImageFilterType.GainImageDataFilterType);
+
         setGain(gain);
 
         setBias(bias);
@@ -45,7 +47,7 @@ public class GainImageDataFilter extends AbstractTableImageDataFilter<GainImageD
 
     protected GainImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.GainImageDataFilterType, node, ctx);
     }
 
     public final GainImageDataFilter setGain(double gain)

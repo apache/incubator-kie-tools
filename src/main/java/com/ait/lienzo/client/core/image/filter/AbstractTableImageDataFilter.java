@@ -25,13 +25,14 @@ import com.google.gwt.json.client.JSONObject;
 
 public abstract class AbstractTableImageDataFilter<T extends AbstractTableImageDataFilter<T>> extends AbstractImageDataFilter<T>
 {
-    protected AbstractTableImageDataFilter()
+    protected AbstractTableImageDataFilter(final ImageFilterType type)
     {
+        super(type);
     }
 
-    protected AbstractTableImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
+    protected AbstractTableImageDataFilter(final ImageFilterType type, JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(type, node, ctx);
     }
 
     @Override

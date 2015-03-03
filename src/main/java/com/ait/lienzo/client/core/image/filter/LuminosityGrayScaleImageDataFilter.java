@@ -31,11 +31,12 @@ public class LuminosityGrayScaleImageDataFilter extends AbstractImageDataFilter<
 {
     public LuminosityGrayScaleImageDataFilter()
     {
+        super(ImageFilterType.LuminosityGrayScaleImageDataFilterType);
     }
 
     protected LuminosityGrayScaleImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.LuminosityGrayScaleImageDataFilterType, node, ctx);
     }
 
     @Override

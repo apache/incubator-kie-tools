@@ -26,17 +26,17 @@ public class DiffusionImageDataFilter extends AbstractValueTransformImageDataFil
 {
     public DiffusionImageDataFilter()
     {
-        super(4);
+        super(ImageFilterType.DiffusionImageDataFilterType, 4);
     }
 
     public DiffusionImageDataFilter(double value)
     {
-        super(value);
+        super(ImageFilterType.DiffusionImageDataFilterType, value);
     }
 
     protected DiffusionImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.DiffusionImageDataFilterType, node, ctx);
     }
 
     @Override

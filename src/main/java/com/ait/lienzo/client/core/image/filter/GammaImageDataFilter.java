@@ -30,17 +30,17 @@ public class GammaImageDataFilter extends AbstractValueTableImageDataFilter<Gamm
 
     public GammaImageDataFilter()
     {
-        super(1);
+        super(ImageFilterType.GammaImageDataFilterType, 1);
     }
 
     public GammaImageDataFilter(double value)
     {
-        super(value);
+        super(ImageFilterType.GammaImageDataFilterType, value);
     }
 
     protected GammaImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.GammaImageDataFilterType, node, ctx);
     }
 
     @Override

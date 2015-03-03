@@ -32,11 +32,12 @@ public class LightnessGrayScaleImageDataFilter extends AbstractImageDataFilter<L
 {
     public LightnessGrayScaleImageDataFilter()
     {
+        super(ImageFilterType.LightnessGrayScaleImageDataFilterType);
     }
 
     protected LightnessGrayScaleImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.LightnessGrayScaleImageDataFilterType, node, ctx);
     }
 
     @Override

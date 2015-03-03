@@ -39,6 +39,8 @@ import com.ait.lienzo.client.core.image.filter.RGBIgnoreAlphaImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.SharpenImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.SolarizeImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.StackBlurImageDataFilter;
+import com.ait.lienzo.client.core.palette.Palette;
+import com.ait.lienzo.client.core.palette.PaletteItem;
 import com.ait.lienzo.client.core.shape.Arc;
 import com.ait.lienzo.client.core.shape.Arrow;
 import com.ait.lienzo.client.core.shape.BezierCurve;
@@ -77,6 +79,7 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.lienzo.shared.core.types.PaletteType;
 import com.ait.lienzo.shared.core.types.ProxyType;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.java.util.function.Supplier;
@@ -357,6 +360,22 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new Viewport.ViewportFactory();
             }
         });
+        addFactorySupplier(PaletteType.PALETTE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new Palette.PaletteFactory();
+            }
+        });
+        addFactorySupplier(PaletteType.PALETTE_ITEM, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new PaletteItem.PaletteItemFactory();
+            }
+        });
         addFactorySupplier(ImageFilterType.AlphaScaleColorImageDataFilterType, new Supplier<IFactory<?>>()
         {
             @Override
@@ -548,7 +567,7 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
     {
         return "LienzoCore";
     }
-    
+
     @Override
     public String getVersion()
     {

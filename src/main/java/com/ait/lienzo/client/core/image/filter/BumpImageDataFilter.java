@@ -29,12 +29,12 @@ public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpIma
 {
     public BumpImageDataFilter()
     {
-        super(-1, -1, 0, -1, 1, 1, 0, 1, 1);
+        super(ImageFilterType.BumpImageDataFilterType, -1, -1, 0, -1, 1, 1, 0, 1, 1);
     }
 
     protected BumpImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.BumpImageDataFilterType, node, ctx);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class BumpImageDataFilter extends AbstractConvolveImageDataFilter<BumpIma
     {
         return new BumpImageDataFilterFactory();
     }
-    
+
     public static class BumpImageDataFilterFactory extends ConvolveImageDataFilterFactory<BumpImageDataFilter>
     {
         public BumpImageDataFilterFactory()

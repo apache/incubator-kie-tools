@@ -30,17 +30,17 @@ public class ExposureImageDataFilter extends AbstractValueTableImageDataFilter<E
 
     public ExposureImageDataFilter()
     {
-        super(1);
+        super(ImageFilterType.ExposureImageDataFilterType, 1);
     }
 
     public ExposureImageDataFilter(double value)
     {
-        super(value);
+        super(ImageFilterType.ExposureImageDataFilterType, value);
     }
 
     protected ExposureImageDataFilter(JSONObject node, ValidationContext ctx) throws ValidationException
     {
-        super(node, ctx);
+        super(ImageFilterType.ExposureImageDataFilterType, node, ctx);
     }
 
     @Override
