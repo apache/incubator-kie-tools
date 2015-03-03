@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2014,2015 Ahome' Innovation Technologies. All rights reserved.
+   Copyright (c) 2014 Ahome' Innovation Technologies. All rights reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -41,16 +41,16 @@ public class URLValidator implements IAttributeTypeValidator
 
             return;
         }
-        String url = str.toString();
+        String url = str.stringValue();
 
-        if (url.startsWith("data:"))
-        {
-            return;
-        }
         if ((null == url) || ((url = url.trim()).isEmpty()) || (url.startsWith("#")))
         {
             ctx.addBadTypeError("URL");
 
+            return;
+        }
+        if (url.startsWith("data:"))
+        {
             return;
         }
         url = UriUtils.fromString(url).asString();
