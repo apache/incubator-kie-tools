@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.event.AttributesChangedEvent;
@@ -74,7 +77,7 @@ public class Attributes
 
     private HandlerManager               m_man;
 
-    private IAttributesChangedBatcher    m_bat;
+    private IAttributesChangedBatcher    m_bat = new ImmediateAttributesChangedBatcher();
 
     public Attributes(final IJSONSerializable<?> ser)
     {
@@ -110,18 +113,18 @@ public class Attributes
         }
         if (null != m_ser)
         {
-            final String name = attribute.getProperty();
-
             if (null == m_set)
             {
                 m_set = new NFastStringCountingSet();
             }
-            m_set.inc(name);
-
             if (null == m_man)
             {
                 m_man = new HandlerManager(m_ser);
             }
+            final String name = attribute.getProperty();
+
+            m_set.inc(name);
+
             final HandlerRegistration proxy = m_man.addHandler(AttributesChangedEvent.getType(), handler);
 
             return new HandlerRegistration()
@@ -145,6 +148,69 @@ public class Attributes
         return null;
     }
 
+    public final HandlerRegistration addAttributesChangedHandler(final List<Attribute> attributes, final AttributesChangedHandler handler)
+    {
+        if ((null == attributes) || (null == handler))
+        {
+            return null;
+        }
+        if (attributes.isEmpty())
+        {
+            return null;
+        }
+        if (null != m_ser)
+        {
+            if (null == m_set)
+            {
+                m_set = new NFastStringCountingSet();
+            }
+            if (null == m_man)
+            {
+                m_man = new HandlerManager(m_ser);
+            }
+            final LinkedHashSet<String> seen = new LinkedHashSet<String>();
+
+            for (Attribute attr : attributes)
+            {
+                seen.add(attr.getProperty());
+            }
+            for (String name : seen)
+            {
+                m_set.inc(name);
+            }
+            final HandlerRegistration proxy = m_man.addHandler(AttributesChangedEvent.getType(), handler);
+
+            return new HandlerRegistration()
+            {
+                @Override
+                public void removeHandler()
+                {
+                    if (null != m_set)
+                    {
+                        for (String name : seen)
+                        {
+                            m_set.dec(name);
+                        }
+                        if (m_set.isEmpty())
+                        {
+                            m_set = null;
+                        }
+                    }
+                    proxy.removeHandler();
+                }
+            };
+        }
+        return null;
+    }
+
+    public final void cancelAttributesChangedBatcher()
+    {
+        if (null != m_bat)
+        {
+            m_bat.cancelAttributesChangedBatcher();
+        }
+    }
+
     private final void checkDispatchAttributesChanged(final String name)
     {
         if ((null != m_set) && (null != m_ser))
@@ -154,19 +220,6 @@ public class Attributes
                 if (null != m_bat)
                 {
                     m_bat.bufferAttributeWithManager(name, m_man);
-                }
-                else
-                {
-                    final IAttributesChangedBatcher bat = LienzoCore.get().getAttributesChangedBatcher();
-
-                    if (null != bat)
-                    {
-                        bat.bufferAttributeWithManager(name, m_man);
-                    }
-                    else
-                    {
-                        ImmediateAttributesChangedBatcher.INSTANCE.bufferAttributeWithManager(name, m_man);
-                    }
                 }
             }
         }
@@ -180,7 +233,7 @@ public class Attributes
         }
         else
         {
-            m_bat = null;
+            m_bat = new ImmediateAttributesChangedBatcher();
         }
     }
 

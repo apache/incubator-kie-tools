@@ -25,4 +25,6 @@ public interface IAttributesChangedBatcher
     public IAttributesChangedBatcher copy();
     
     public String getName();
+    
+    public void cancelAttributesChangedBatcher();
 }

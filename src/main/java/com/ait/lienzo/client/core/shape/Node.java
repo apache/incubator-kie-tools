@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -214,7 +215,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             }
         }
     }
-    
+
     @Override
     public IFactory<?> getFactory()
     {
@@ -783,6 +784,18 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
         return m_attr.addAttributesChangedHandler(attribute, handler);
+    }
+
+    public HandlerRegistration addAttributesChangedHandler(final List<Attribute> attributes, final AttributesChangedHandler handler)
+    {
+        return m_attr.addAttributesChangedHandler(attributes, handler);
+    }
+
+    public final T cancelAttributesChangedBatcher()
+    {
+        m_attr.cancelAttributesChangedBatcher();
+
+        return cast();
     }
 
     public HandlerRegistration addNodeMouseClickHandler(final NodeMouseClickHandler handler)

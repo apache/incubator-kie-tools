@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.shape.json.FactoryRegistry;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.DashArray;
@@ -43,49 +42,47 @@ import com.google.gwt.user.client.Window;
  */
 public final class LienzoCore
 {
-    private static final LienzoCore   INSTANCE                 = new LienzoCore();
+    private static final LienzoCore  INSTANCE                 = new LienzoCore();
 
-    public static final double        DEFAULT_FONT_SIZE        = 48;
+    public static final double       DEFAULT_FONT_SIZE        = 48;
 
-    public static final double        DEFAULT_CONNECTOR_OFFSET = 10;
+    public static final double       DEFAULT_CONNECTOR_OFFSET = 10;
 
-    public static final String        DEFAULT_FONT_STYLE       = "normal";
+    public static final String       DEFAULT_FONT_STYLE       = "normal";
 
-    public static final String        DEFAULT_FONT_FAMILY      = "Helvetica";
+    public static final String       DEFAULT_FONT_FAMILY      = "Helvetica";
 
-    private double                    m_strokeWidth            = 1;
+    private double                   m_strokeWidth            = 1;
 
-    private double                    m_backingStorePixelRatio = 0;
+    private double                   m_backingStorePixelRatio = 0;
 
-    private double                    m_defaultConnectorOffset = DEFAULT_CONNECTOR_OFFSET;
+    private double                   m_defaultConnectorOffset = DEFAULT_CONNECTOR_OFFSET;
 
-    private String                    m_strokeColor            = "black";
+    private String                   m_strokeColor            = "black";
 
-    private boolean                   m_fillShapeForSelection  = true;
+    private boolean                  m_fillShapeForSelection  = true;
 
-    private boolean                   m_globalLineDashSupport  = true;
+    private boolean                  m_globalLineDashSupport  = true;
 
-    private boolean                   m_scaledCanvasForRetina  = true;
+    private boolean                  m_scaledCanvasForRetina  = true;
 
-    private boolean                   m_nativeLineDashSupport  = false;
+    private boolean                  m_nativeLineDashSupport  = false;
 
-    private boolean                   m_enableBlobIfSupported  = true;
+    private boolean                  m_enableBlobIfSupported  = true;
 
-    private boolean                   m_nativeLineDashExamine  = false;
+    private boolean                  m_nativeLineDashExamine  = false;
 
-    private Cursor                    m_normal_cursor          = Cursor.DEFAULT;
+    private Cursor                   m_normal_cursor          = Cursor.DEFAULT;
 
-    private Cursor                    m_select_cursor          = Cursor.CROSSHAIR;
+    private Cursor                   m_select_cursor          = Cursor.CROSSHAIR;
 
-    private final boolean             m_canvasSupported        = Canvas.isSupported();
+    private final boolean            m_canvasSupported        = Canvas.isSupported();
 
-    private LayerClearMode            m_layerClearMode         = LayerClearMode.CLEAR;
+    private LayerClearMode           m_layerClearMode         = LayerClearMode.CLEAR;
 
-    private ImageSelectionMode        m_imageSelectionMode     = ImageSelectionMode.SELECT_NON_TRANSPARENT;
+    private ImageSelectionMode       m_imageSelectionMode     = ImageSelectionMode.SELECT_NON_TRANSPARENT;
 
-    private IAttributesChangedBatcher m_batcher;
-
-    private ArrayList<ILienzoPlugin>  m_plugins                = new ArrayList<ILienzoPlugin>();
+    private ArrayList<ILienzoPlugin> m_plugins                = new ArrayList<ILienzoPlugin>();
 
     private LienzoCore()
     {
@@ -210,31 +207,6 @@ public final class LienzoCore
         m_enableBlobIfSupported = enabled;
 
         return this;
-    }
-
-    public final LienzoCore setAttributesChangedBatcher(final IAttributesChangedBatcher batcher)
-    {
-        if (null != batcher)
-        {
-            m_batcher = batcher;
-        }
-        else
-        {
-            m_batcher = null;
-        }
-        return this;
-    }
-
-    public final IAttributesChangedBatcher getAttributesChangedBatcher()
-    {
-        if (null != m_batcher)
-        {
-            return m_batcher.copy();
-        }
-        else
-        {
-            return null;
-        }
     }
 
     public final LienzoCore setScaledCanvasForRetina(boolean enabled)

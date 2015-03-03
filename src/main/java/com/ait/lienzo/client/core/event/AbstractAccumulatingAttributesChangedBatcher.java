@@ -39,9 +39,15 @@ public abstract class AbstractAccumulatingAttributesChangedBatcher implements IA
         tick();
     }
 
+    @Override
+    public final void cancelAttributesChangedBatcher()
+    {
+        m_manager = null;
+    }
+
     protected final void tock()
     {
-        if (false == m_changed.isEmpty())
+        if ((null != m_manager) && (false == m_changed.isEmpty()))
         {
             tick();
         }

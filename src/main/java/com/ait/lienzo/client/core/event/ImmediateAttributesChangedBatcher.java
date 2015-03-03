@@ -44,6 +44,11 @@ public final class ImmediateAttributesChangedBatcher implements IAttributesChang
     }
 
     @Override
+    public final void cancelAttributesChangedBatcher()
+    {
+    }
+
+    @Override
     public final IAttributesChangedBatcher copy()
     {
         return new ImmediateAttributesChangedBatcher();
