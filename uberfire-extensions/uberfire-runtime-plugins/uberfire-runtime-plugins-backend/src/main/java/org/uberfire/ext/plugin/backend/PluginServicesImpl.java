@@ -316,8 +316,10 @@ public class PluginServicesImpl implements PluginServices {
     }
 
     private void clearDirectory(Path directory) {
-        for (Path path : ioService.newDirectoryStream(directory)) {
-            boolean b = ioService.deleteIfExists(path);
+        if (ioService.exists(directory)) {
+            for (Path path : ioService.newDirectoryStream(directory)) {
+                boolean b = ioService.deleteIfExists(path);
+            }
         }
     }
 
