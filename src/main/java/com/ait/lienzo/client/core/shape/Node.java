@@ -243,7 +243,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
     protected Node<?> copyUnchecked()
     {
-        return (Node<?>) JSONDeserializer.getInstance().fromString(toJSONString(), false); // don't validate
+        return (Node<?>) JSONDeserializer.get().fromString(toJSONString(), false); // don't validate
     }
 
     public String uuid()
@@ -988,7 +988,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         {
             final C container = container(node, ctx);
 
-            JSONDeserializer.getInstance().deserializeChildren(container, node, this, ctx);
+            JSONDeserializer.get().deserializeChildren(container, node, this, ctx);
 
             return container;
         }

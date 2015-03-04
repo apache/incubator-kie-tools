@@ -107,7 +107,7 @@ public final class ScratchCanvas
         }
     }
 
-    public final String toDataURL(DataURLType mimetype)
+    public final String toDataURL(DataURLType mimetype, double quality)
     {
         if (null != m_element)
         {
@@ -115,7 +115,7 @@ public final class ScratchCanvas
             {
                 mimetype = DataURLType.PNG;
             }
-            return toDataURL(m_element, mimetype.getValue());
+            return toDataURL(m_element, mimetype.getValue(), quality);
         }
         else
         {
@@ -123,12 +123,12 @@ public final class ScratchCanvas
         }
     }
 
-    public static final String toDataURL(ImageElement element)
+    public static final String toDataURL(ImageElement element, double quality)
     {
-        return toDataURL(element, DataURLType.PNG);
+        return toDataURL(element, DataURLType.PNG, quality);
     }
 
-    public static final String toDataURL(ImageElement element, DataURLType mimetype)
+    public static final String toDataURL(ImageElement element, DataURLType mimetype, double quality)
     {
         if (null == mimetype)
         {
@@ -138,7 +138,16 @@ public final class ScratchCanvas
 
         canvas.getContext().drawImage(element, 0, 0, element.getWidth(), element.getHeight());
 
-        return canvas.toDataURL(mimetype);
+        return canvas.toDataURL(mimetype, quality);
+    }
+    
+    public static final String toDataURL(final ImageElement element)
+    {
+        final ScratchCanvas canvas = new ScratchCanvas(element.getWidth(), element.getHeight());
+
+        canvas.getContext().drawImage(element, 0, 0);
+
+        return canvas.toDataURL();
     }
 
     private static native final String toDataURL(CanvasElement element)
@@ -148,9 +157,9 @@ public final class ScratchCanvas
 
     // TODO other arguments, e.g. for image/jpeg The second argument, if it is a number in the range 0.0 to 1.0 inclusive, must be treated as the desired quality level. If it is not a number or is outside that range, the user agent must use its default value, as if the argument had been omitted.
 
-    private static native final String toDataURL(CanvasElement element, String mimetype)
+    private static native final String toDataURL(CanvasElement element, String mimetype, double quality)
     /*-{
-    	return element.toDataURL(mimetype);
+    	return element.toDataURL(mimetype, quality);
     }-*/;
 
     private static final native NativeContext2D getNativeContext2D(CanvasElement element)

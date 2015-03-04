@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.AttributeType;
+import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilterable;
 import com.ait.lienzo.client.core.palette.Palette;
@@ -43,13 +44,11 @@ import com.google.gwt.json.client.JSONValue;
  */
 public final class JSONDeserializer
 {
-    private FactoryRegistry               m_registry;
+    private static final JSONDeserializer INSTANCE = new JSONDeserializer();
 
-    private static final JSONDeserializer s_instance = new JSONDeserializer();
-
-    public static final JSONDeserializer getInstance() // questionable? do we allow sub-classing? this is always a problem with singletons. Should the class be final?
+    public static final JSONDeserializer get() // questionable? do we allow sub-classing? this is always a problem with singletons. Should the class be final?
     {
-        return s_instance;
+        return INSTANCE;
     }
 
     private JSONDeserializer()
@@ -224,11 +223,7 @@ public final class JSONDeserializer
             {
                 type = styp.stringValue();
 
-                if (null == m_registry)
-                {
-                    m_registry = FactoryRegistry.get();
-                }
-                factory = m_registry.getFactory(type);
+                factory = LienzoCore.get().getFactory(type);
 
                 if (null == factory)
                 {

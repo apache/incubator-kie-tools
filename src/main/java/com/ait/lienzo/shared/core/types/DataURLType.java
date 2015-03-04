@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.types.NFastStringMap;
  */
 public enum DataURLType implements EnumWithValue
 {
-    PNG("image/png;"), JPG("image/jpg;");
+    PNG("image/png"), JPG("image/jpeg");
 
     private final String                             m_value;
 

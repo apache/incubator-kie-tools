@@ -33,7 +33,6 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -1327,9 +1326,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     {
         JSONObject attr = new JSONObject(getAttributes().getJSO());
 
-        ImageSerializationMode mode = getImageSerializationMode();
-
-        if (mode == ImageSerializationMode.DATA_URL)
+        if (getImageSerializationMode() == ImageSerializationMode.DATA_URL)
         {
             String url = getImageProxy().getImageElementURL();
 
@@ -1343,7 +1340,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
             }
             else
             {
-                attr.put("url", new JSONString(toDataURL(DataURLType.PNG, false)));
+                attr.put("url", new JSONString(toDataURL(false)));
             }
         }
         JSONObject object = new JSONObject();
@@ -1667,7 +1664,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
 
                 if (null != object)
                 {
-                    JSONDeserializer.getInstance().deserializeFilters(picture, object, ctx);
+                    JSONDeserializer.get().deserializeFilters(picture, object, ctx);
 
                     jval = object.get("active");
 
@@ -1700,7 +1697,7 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
             if (false == self.isLoaded())
             {
                 self.getImageProxy().load(self.getURL());
-                
+
                 self.onLoaded(new PictureLoadedHandler()
                 {
                     @Override

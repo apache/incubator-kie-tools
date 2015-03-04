@@ -23,7 +23,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -152,9 +151,9 @@ public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extend
         return m_proxy.getImageData();
     }
 
-    public String toDataURL(final DataURLType mimeType, final boolean filtered)
+    public String toDataURL(final boolean filtered)
     {
-        return m_proxy.toDataURL(mimeType, filtered);
+        return m_proxy.toDataURL(filtered);
     }
 
     protected void setImageShapeLoadedHandler(final ImageShapeLoadedHandler<T> handler)

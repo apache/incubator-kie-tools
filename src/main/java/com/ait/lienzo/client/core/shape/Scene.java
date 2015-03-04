@@ -757,7 +757,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
                     }
                 }
             }
-            return scratch.toDataURL(mimetype);
+            return scratch.toDataURL(mimetype, 1.0);
         }
         else
         {
@@ -795,7 +795,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
                     }
                 }
             }
-            return scratch.toDataURL(mimetype);
+            return scratch.toDataURL(mimetype, 1.0);
         }
         else
         {

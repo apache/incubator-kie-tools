@@ -295,7 +295,7 @@ public class ImageDataFilterChain extends AbstractImageDataFilter<ImageDataFilte
         {
             ImageDataFilterChain chain = new ImageDataFilterChain(node, ctx);
 
-            JSONDeserializer.getInstance().deserializeFilters(chain, node, ctx);
+            JSONDeserializer.get().deserializeFilters(chain, node, ctx);
 
             return chain;
         }

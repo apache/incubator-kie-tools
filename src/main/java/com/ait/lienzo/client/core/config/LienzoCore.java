@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.json.FactoryRegistry;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.ImageData;
@@ -151,7 +150,16 @@ public final class LienzoCore
 
     public final IFactory<?> getFactory(final String name)
     {
-        return FactoryRegistry.get().getFactory(name);
+        for (ILienzoPlugin p : m_plugins)
+        {
+            final IFactory<?> factory = p.getFactory(name);
+
+            if (null != factory)
+            {
+                return factory;
+            }
+        }
+        return null;
     }
 
     public final native void log(String message)

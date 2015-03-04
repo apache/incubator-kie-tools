@@ -113,7 +113,7 @@ public final class Palette extends AbstractPaletteBase<Palette>
         {
             Palette palette = new Palette(node, ctx);
 
-            JSONDeserializer.getInstance().deserializePaletteItems(palette, node, ctx);
+            JSONDeserializer.get().deserializePaletteItems(palette, node, ctx);
 
             return palette;
         }

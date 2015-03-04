@@ -249,6 +249,14 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
                 data[j + 2] = v;
             }
         };
+        this.hasAlphaChannel = function(data, length) {
+            for (var j = 0; j < length; j += 4) {
+                if (data[j+3] < 255) {
+                    return true;
+                }
+            }
+            return false;
+        };
     }-*/;
 
     public final int getLength(ImageData source)
@@ -256,6 +264,11 @@ public class ImageDataFilterCommonOps extends JavaScriptObject
         return ((source.getWidth() * source.getHeight()) * 4);
     }
     
+    public final native boolean hasAlphaChannel(CanvasPixelArray data, int length)
+    /*-{
+        this.hasAlphaChannel(data, length);
+    }-*/;
+
     public final native void dofilterLuminosity(CanvasPixelArray data, int length)
     /*-{
         this.filterLuminosity(data, length);

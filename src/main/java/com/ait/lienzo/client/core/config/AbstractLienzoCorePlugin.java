@@ -33,14 +33,12 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     {
     }
 
-    @Override
-    public final boolean addFactorySupplier(final IStringValuedType type, final Supplier<IFactory<?>> supplier)
+    protected final boolean addFactorySupplier(final IStringValuedType type, final Supplier<IFactory<?>> supplier)
     {
         return addFactorySupplier(type.getValue(), supplier);
     }
 
-    @Override
-    public final boolean addFactorySupplier(String name, final Supplier<IFactory<?>> supplier)
+    protected final boolean addFactorySupplier(String name, final Supplier<IFactory<?>> supplier)
     {
         if (null == name)
         {
@@ -69,19 +67,19 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     }
 
     @Override
-    public Collection<String> keys()
+    public final Collection<String> keys()
     {
         return m_suppliers.keys();
     }
 
     @Override
-    public IFactory<?> getFactory(final IStringValuedType type)
+    public final IFactory<?> getFactory(final IStringValuedType type)
     {
         return getFactory(type.getValue());
     }
 
     @Override
-    public IFactory<?> getFactory(String name)
+    public final IFactory<?> getFactory(String name)
     {
         if (null == name)
         {

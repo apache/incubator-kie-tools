@@ -357,7 +357,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
                     m_xorig = true;
 
-                    LienzoCore.get().log("ERROR: In Movie filtering " + m_video.getSrc() + " " + e.getMessage());
+                    LienzoCore.get().error("ERROR: In Movie filtering " + m_video.getSrc() + " " + e.getMessage());
                 }
             }
             else
@@ -739,7 +739,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
                             @Override
                             public void onError(String message)
                             {
-                                LienzoCore.get().log("ERROR: Getting video poster url[" + url + "] " + message);
+                                LienzoCore.get().error("ERROR: Getting video poster url[" + url + "] " + message);
                             }
                         };
                     }
@@ -944,7 +944,7 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
 
                 if (null != object)
                 {
-                    JSONDeserializer.getInstance().deserializeFilters(movie, object, ctx);
+                    JSONDeserializer.get().deserializeFilters(movie, object, ctx);
 
                     jval = object.get("active");
 

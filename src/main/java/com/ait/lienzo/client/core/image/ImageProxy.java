@@ -28,7 +28,6 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.Color;
-import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.resources.client.ImageResource;
@@ -579,29 +578,24 @@ public class ImageProxy<T extends AbstractImageShape<T>> implements ImageDataFil
      * @param mimeType If null, defaults to DataURLType.PNG
      * @return String
      */
-    public String toDataURL(DataURLType mimeType, boolean filtered)
+    public String toDataURL(boolean filtered)
     {
         if (false == isLoaded())
         {
             return null;
         }
-        if (mimeType == null)
-        {
-            mimeType = DataURLType.PNG;
-        }
         if ((m_fastout) || (false == filtered))
         {
-            ScratchCanvas temp = new ScratchCanvas(m_dest_wide, m_dest_high);
+            final ScratchCanvas temp = new ScratchCanvas(m_jsimg.getWidth(), m_jsimg.getHeight());
 
-            temp.getContext().drawImage(m_jsimg, m_clip_xpos, m_clip_ypos, m_clip_wide, m_clip_high, 0, 0, m_dest_wide, m_dest_high);
+            temp.getContext().drawImage(m_jsimg, 0, 0);
 
-            return temp.toDataURL(mimeType);
+            return temp.toDataURL();
         }
         else
         {
-            return m_filterImage.toDataURL(mimeType);
+            return m_filterImage.toDataURL();
         }
-
     }
 
     protected void doneLoading(boolean loaded, String message)

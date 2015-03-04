@@ -109,7 +109,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
                         @Override
                         public void onError(String message)
                         {
-                            LienzoCore.get().log(message);
+                            LienzoCore.get().error(message);
                         }
                     };
                 }

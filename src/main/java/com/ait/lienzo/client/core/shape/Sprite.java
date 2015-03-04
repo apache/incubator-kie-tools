@@ -30,7 +30,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
-import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.dom.client.ImageElement;
@@ -81,7 +80,7 @@ public class Sprite extends Shape<Sprite>
             @Override
             public void onError(String message)
             {
-                LienzoCore.get().log("Sprite could not load URL " + url + " " + message);
+                LienzoCore.get().error("Sprite could not load URL " + url + " " + message);
             }
         };
     }
@@ -108,7 +107,7 @@ public class Sprite extends Shape<Sprite>
             @Override
             public void onError(String message)
             {
-                LienzoCore.get().log("Sprite could not load resource " + resource.getName() + " " + message);
+                LienzoCore.get().error("Sprite could not load resource " + resource.getName() + " " + message);
             }
         };
     }
@@ -161,7 +160,7 @@ public class Sprite extends Shape<Sprite>
                 @Override
                 public void onError(String message)
                 {
-                    LienzoCore.get().log("Sprite could not load URL " + url + " " + message);
+                    LienzoCore.get().error("Sprite could not load URL " + url + " " + message);
                 }
             };
         }
@@ -442,19 +441,13 @@ public class Sprite extends Shape<Sprite>
     {
         JSONObject attr = new JSONObject(getAttributes().getJSO());
 
-        ImageSerializationMode mode = getSerializationMode();
-
-        if (mode == ImageSerializationMode.DATA_URL)
+        if (getSerializationMode() == ImageSerializationMode.DATA_URL)
         {
             String url = getURL();
 
             if (false == url.startsWith("data:"))
             {
-                ScratchCanvas temp = new ScratchCanvas(m_sprite.getWidth(), m_sprite.getHeight());
-
-                temp.getContext().drawImage(m_sprite, 0, 0);
-
-                attr.put("url", new JSONString(temp.toDataURL(DataURLType.PNG)));
+                attr.put("url", new JSONString(ScratchCanvas.toDataURL(m_sprite)));
             }
         }
         JSONObject object = new JSONObject();

@@ -84,9 +84,9 @@ import com.ait.lienzo.shared.core.types.ProxyType;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.java.util.function.Supplier;
 
-public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
+final class LienzoCorePlugin extends AbstractLienzoCorePlugin
 {
-    public LienzoCorePlugin()
+    LienzoCorePlugin()
     {
         addFactorySupplier(ShapeType.ARC, new Supplier<IFactory<?>>()
         {
@@ -563,13 +563,13 @@ public final class LienzoCorePlugin extends AbstractLienzoCorePlugin
     }
 
     @Override
-    public String getNameSpace()
+    public final String getNameSpace()
     {
         return "LienzoCore";
     }
 
     @Override
-    public String getVersion()
+    public final String getVersion()
     {
         return "2.0";
     }

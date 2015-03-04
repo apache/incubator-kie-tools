@@ -548,7 +548,7 @@ public class GridLayer extends Layer
 
                             if (jobj != null)
                             {
-                                Line line = (Line) JSONDeserializer.getInstance().fromJSON(jobj, ctx);
+                                Line line = (Line) JSONDeserializer.get().fromJSON(jobj, ctx);
 
                                 lines[i] = line;
                             }

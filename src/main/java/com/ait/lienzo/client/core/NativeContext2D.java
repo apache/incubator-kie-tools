@@ -419,18 +419,19 @@ public final class NativeContext2D extends JavaScriptObject
 
     public final native void drawImage(Element image, double x, double y)
     /*-{
+        this.imageSmoothingEnabled = false;
     	this.drawImage(image, x, y);
     }-*/;
 
     public final native void drawImage(Element image, double x, double y, double w, double h)
     /*-{
+        this.imageSmoothingEnabled = false;
     	this.drawImage(image, x, y, w, h);
     }-*/;
 
     public final native void drawImage(Element image, double sx, double sy, double sw, double sh, double x, double y, double w, double h)
     /*-{
-    	this.imageSmoothingEnabled = true;
-
+    	this.imageSmoothingEnabled = false;
     	this.drawImage(image, sx, sy, sw, sh, x, y, w, h);
     }-*/;
 
