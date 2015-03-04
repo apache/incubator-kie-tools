@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.Collection;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
@@ -30,11 +29,10 @@ import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContext;
-import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
+import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
-import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryRemovedEvent;
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -68,6 +66,7 @@ import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
+import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
@@ -93,8 +92,6 @@ public class ProjectScreenPresenter
 
     private ProjectNameValidator projectNameValidator;
 
-    private Repository repository;
-    private String branch = "master";
     private Project project;
     private ObservablePath pathToPomXML;
 
@@ -120,25 +117,28 @@ public class ProjectScreenPresenter
 
     private DropdownButton buildOptions;
 
+    private ProjectContext             workbenchContext;
+    private ProjectContextChangeHandle projectContextChangeHandle;
+
     public ProjectScreenPresenter() {
     }
 
     @Inject
-    public ProjectScreenPresenter( final ProjectScreenView view,
-                                   final ProjectContext workbenchContext,
-                                   final Caller<ProjectScreenService> projectScreenService,
-                                   final Caller<BuildService> buildServiceCaller,
-                                   final Event<BuildResults> buildResultsEvent,
-                                   final Event<NotificationEvent> notificationEvent,
-                                   final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
-                                   final ProjectNameValidator projectNameValidator,
-                                   final PlaceManager placeManager,
-                                   final BusyIndicatorView busyIndicatorView,
-                                   final KieWorkbenchACL kieACL,
-                                   final Caller<AssetManagementService> assetManagementServices ) {
+    public ProjectScreenPresenter(final ProjectScreenView view,
+                                  final ProjectContext workbenchContext,
+                                  final Caller<ProjectScreenService> projectScreenService,
+                                  final Caller<BuildService> buildServiceCaller,
+                                  final Event<BuildResults> buildResultsEvent,
+                                  final Event<NotificationEvent> notificationEvent,
+                                  final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
+                                  final ProjectNameValidator projectNameValidator,
+                                  final PlaceManager placeManager,
+                                  final BusyIndicatorView busyIndicatorView,
+                                  final KieWorkbenchACL kieACL,
+                                  final Caller<AssetManagementService> assetManagementServices) {
         this.view = view;
-        view.setPresenter( this );
-        view.setDeployToRuntimeSetting( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) );
+        view.setPresenter(this);
+        view.setDeployToRuntimeSetting(ApplicationPreferences.getBooleanPref("support.runtime.deploy"));
 
         this.projectScreenService = projectScreenService;
         this.buildServiceCaller = buildServiceCaller;
@@ -151,78 +151,69 @@ public class ProjectScreenPresenter
 
         this.busyIndicatorView = busyIndicatorView;
         this.kieACL = kieACL;
-        this.repository = workbenchContext.getActiveRepository();
+        this.workbenchContext = workbenchContext;
+        projectContextChangeHandle = workbenchContext.addChangeHandler(new ProjectContextChangeHandler() {
+            @Override
+            public void onChange() {
+                update();
+            }
+        });
         this.buildOptions = view.getBuildOptionsButton();
 
-        showCurrentProjectInfoIfAny( workbenchContext.getActiveProject() );
+        showCurrentProjectInfoIfAny(workbenchContext.getActiveProject());
 
         makeMenuBar();
         adjustBuildOptions();
     }
 
-    private boolean isRepositoryManaged( Repository repository ) {
+    private boolean isRepositoryManaged() {
         Boolean isRepositoryManaged = Boolean.FALSE;
 
-        if ( repository != null && repository.getEnvironment().containsKey( "managed" ) ) {
-            isRepositoryManaged = (Boolean) repository.getEnvironment().get( "managed" );
+        if (workbenchContext.getActiveRepository() != null && workbenchContext.getActiveRepository().getEnvironment().containsKey("managed")) {
+            isRepositoryManaged = (Boolean) workbenchContext.getActiveRepository().getEnvironment().get("managed");
         }
 
         return isRepositoryManaged;
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
     }
 
     @OnMayClose
     public boolean onMayClose() {
-        if ( isDirty() ) {
+        if (isDirty()) {
             return view.confirmClose();
         }
         return true;
     }
 
-    public void selectedPathChanged( @Observes final ProjectContextChangeEvent event ) {
-        showCurrentProjectInfoIfAny( event.getProject() );
-        this.repository = event.getRepository();
-        if ( event.getBranch() != null ) {
-            this.branch = event.getBranch();
-        } else {
-            this.branch = repository.getCurrentBranch();
-        }
+    @OnClose
+    public void onClose() {
+        workbenchContext.removeChangeHandler(projectContextChangeHandle);
+    }
+
+    private void update() {
+        showCurrentProjectInfoIfAny(workbenchContext.getActiveProject());
         adjustBuildOptions();
     }
 
-    public void onRepositoryRemoved( final @Observes RepositoryRemovedEvent event ) {
-        if ( event.getRepository() == null ) {
-            return;
-        }
-        if ( this.repository == null ) {
-            return;
-        }
-        if ( event.getRepository().equals( this.repository ) ) {
-            for ( MenuItem mi : menus.getItemsMap().values() ) {
-                mi.setEnabled( false );
-            }
-        }
-    }
-
     private void adjustBuildOptions() {
-        boolean supportsRuntimeDeploy = ApplicationPreferences.getBooleanPref( "support.runtime.deploy" );
-        if ( isRepositoryManaged( repository ) ) {
-            enableBuild( true, false );
-            enableBuildAndInstall( true, !supportsRuntimeDeploy );
-            enableBuildAndDeploy( true );
+        boolean supportsRuntimeDeploy = ApplicationPreferences.getBooleanPref("support.runtime.deploy");
+        if (isRepositoryManaged()) {
+            enableBuild(true, false);
+            enableBuildAndInstall(true, !supportsRuntimeDeploy);
+            enableBuildAndDeploy(true);
         } else {
-            enableBuild( true, true );
-            enableBuildAndInstall( false, !supportsRuntimeDeploy );
-            enableBuildAndDeploy( false );
+            enableBuild(true, true);
+            enableBuildAndInstall(false, !supportsRuntimeDeploy);
+            enableBuildAndDeploy(false);
         }
     }
 
-    private void showCurrentProjectInfoIfAny( final Project project ) {
-        if ( project != null && !project.equals( this.project ) ) {
+    private void showCurrentProjectInfoIfAny(final Project project) {
+        if (project != null && !project.equals(this.project)) {
             this.project = project;
             setupPathToPomXML();
             init();
@@ -230,15 +221,15 @@ public class ProjectScreenPresenter
     }
 
     private void init() {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         projectScreenService.call(
                 new RemoteCallback<ProjectScreenModel>() {
                     @Override
-                    public void callback( ProjectScreenModel model ) {
+                    public void callback(ProjectScreenModel model) {
                         concurrentUpdateSessionInfo = null;
                         ProjectScreenPresenter.this.model = model;
 
-                        view.setPOM( model.getPOM() );
+                        view.setPOM(model.getPOM());
 
                         validateGroupID( model.getPOM().getGav().getGroupId() );
                         validateArtifactID( model.getPOM().getGav().getArtifactId() );
@@ -519,7 +510,7 @@ public class ProjectScreenPresenter
             @Override
             public void execute() {
                 view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                if ( isRepositoryManaged( repository ) ) {
+                if (isRepositoryManaged()) {
                     buildOnly();
                 } else {
                     build();
@@ -550,7 +541,9 @@ public class ProjectScreenPresenter
                                                       return true;
                                                   }
                                               }
-                                            ).buildProject( repository.getAlias(), branch, project.getProjectName(), null, null, null, false );
+                                            ).buildProject(workbenchContext.getActiveRepository().getAlias(),
+                                                           workbenchContext.getActiveRepository().getCurrentBranch(),
+                                                           project.getProjectName(), null, null, null, false);
 
             }
         };
@@ -580,7 +573,13 @@ public class ProjectScreenPresenter
                                                       return true;
                                                   }
                                               }
-                                            ).buildProject( repository.getAlias(), branch, project.getProjectName(), username, password, serverURL, true );
+                                            ).buildProject(workbenchContext.getActiveRepository().getAlias(),
+                                                           workbenchContext.getActiveRepository().getCurrentBranch(),
+                                                           project.getProjectName(),
+                                                           username,
+                                                           password,
+                                                           serverURL,
+                                                           true);
 
             }
         };

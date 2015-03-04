@@ -249,7 +249,10 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                 businessViewPresenter.branchChanged( branch );
                 technicalViewPresenter.branchChanged( branch );
 
-                ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(), context.getActiveRepository(), context.getActiveProject(), branch );
+                ProjectContextChangeEvent event = new ProjectContextChangeEvent( context.getActiveOrganizationalUnit(),
+                                                                                 context.getActiveRepository(),
+                                                                                 context.getActiveProject(),
+                                                                                 branch );
 
                 contextChangedEvent.fire( event );
             }
