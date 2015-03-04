@@ -122,7 +122,7 @@ public class BoxPresenter {
         }
 
         if ( container.getReleasedId() != null ) {
-            if ( container.getReleasedId().equals( container.getResolvedReleasedId() ) ) {
+            if ( container.getResolvedReleasedId() == null || container.getReleasedId().equals( container.getResolvedReleasedId() ) ) {
                 this.description = container.getReleasedId().getGroupId() + ":" + container.getReleasedId().getArtifactId() + "-" + container.getReleasedId().getVersion();
             } else {
                 this.description = container.getResolvedReleasedId().getGroupId() + ":" + container.getResolvedReleasedId().getArtifactId() + "-" + container.getResolvedReleasedId().getVersion() + "(" + container.getReleasedId().getGroupId() + ":" + container.getReleasedId().getArtifactId() + "-" + container.getReleasedId().getVersion() + ")";

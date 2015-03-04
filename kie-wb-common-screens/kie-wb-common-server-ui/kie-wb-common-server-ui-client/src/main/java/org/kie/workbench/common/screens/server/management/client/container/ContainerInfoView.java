@@ -181,9 +181,11 @@ public class ContainerInfoView
         if ( response.getPollInterval() != null ) {
             interval.setText( String.valueOf( response.getPollInterval().longValue() ) );
         }
-        groupId.setText( response.getReleasedId().getGroupId() );
-        artifactId.setText( response.getReleasedId().getArtifactId() );
-        version.setText( response.getReleasedId().getVersion() );
+        if ( response.getReleasedId() != null ) {
+            groupId.setText( response.getReleasedId().getGroupId() );
+            artifactId.setText( response.getReleasedId().getArtifactId() );
+            version.setText( response.getReleasedId().getVersion() );
+        }
         setResolvedReleasedId( response.getResolvedReleasedId() );
         endpoint.setText( response.getServerId() + "/containers/" + response.getId() );
     }

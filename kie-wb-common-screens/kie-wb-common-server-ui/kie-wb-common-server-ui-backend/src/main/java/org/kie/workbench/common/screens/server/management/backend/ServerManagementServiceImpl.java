@@ -30,6 +30,7 @@ import org.kie.workbench.common.screens.server.management.model.impl.ServerRefIm
 import org.kie.workbench.common.screens.server.management.service.ContainerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.ServerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.commons.data.Pair;
 
 import static org.kie.workbench.common.screens.server.management.model.ConnectionType.*;
@@ -74,17 +75,22 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         final Collection<ServerRef> result = storage.listRegisteredServers();
 
         for ( final ServerRef serverRef : result ) {
-            try {
-                final Server server = remoteAccess.toServer( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), serverRef.getConnectionType(), serverRef.getContainersRef() );
-                if ( server == null ) {
-                    serverOnErrorEvent.fire( new ServerOnError( toError( serverRef ), "" ) );
-                } else {
-                    storage.forceRegister( server );
-                    serverConnectedEvent.fire( new ServerConnected( server ) );
+            SimpleAsyncExecutorService.getDefaultInstance().execute( new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final Server server = remoteAccess.toServer( serverRef );
+                        if ( server == null ) {
+                            serverOnErrorEvent.fire( new ServerOnError( toError( serverRef ), "" ) );
+                        } else {
+                            storage.forceRegister( server );
+                            serverConnectedEvent.fire( new ServerConnected( server ) );
+                        }
+                    } catch ( final Exception ex ) {
+                        serverOnErrorEvent.fire( new ServerOnError( toError( serverRef ), "" ) );
+                    }
                 }
-            } catch ( final Exception ex ) {
-                serverOnErrorEvent.fire( new ServerOnError( toError( serverRef ), "" ) );
-            }
+            } );
         }
 
         return result;
@@ -212,9 +218,9 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     @Override
-    public ScannerOperationResult startScanner( String serverId,
-                                                String containerId,
-                                                long interval ) {
+    public ScannerOperationResult startScanner( final String serverId,
+                                                final String containerId,
+                                                final long interval ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
         storage.updateContainer( serverId, containerId, interval );

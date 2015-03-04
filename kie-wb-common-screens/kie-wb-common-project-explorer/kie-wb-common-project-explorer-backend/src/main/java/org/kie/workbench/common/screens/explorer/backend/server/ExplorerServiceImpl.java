@@ -55,6 +55,8 @@ import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.ext.editor.commons.service.DeleteService;
@@ -223,16 +225,26 @@ public class ExplorerServiceImpl
             final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
             final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
 
-            try {
-                Package pkg = null;
-                if ( item.getItem() instanceof Package ) {
-                    pkg = (Package) item.getItem();
+            SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+                @Override
+                public String getDescription() {
+                    return "Serialize Navigation State";
                 }
-                helper.store( userNavPath, lastUserNavPath, organizationalUnit,
-                              repository, project, pkg, item, options );
-            } catch ( final Exception e ) {
-                LOGGER.error( "Can't serialize user's state navigation", e );
-            }
+
+                @Override
+                public void run() {
+                    try {
+                        Package pkg = null;
+                        if ( item.getItem() instanceof Package ) {
+                            pkg = (Package) item.getItem();
+                        }
+                        helper.store( userNavPath, lastUserNavPath, organizationalUnit,
+                                      repository, project, pkg, item, options );
+                    } catch ( final Exception e ) {
+                        LOGGER.error( "Can't serialize user's state navigation", e );
+                    }
+                }
+            } );
         }
 
         return result;

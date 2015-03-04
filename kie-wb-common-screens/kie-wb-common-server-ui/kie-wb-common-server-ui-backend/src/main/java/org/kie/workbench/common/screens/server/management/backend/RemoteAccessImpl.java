@@ -3,6 +3,7 @@ package org.kie.workbench.common.screens.server.management.backend;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.common.services.project.model.GAV;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.screens.server.management.service.ContainerAlrea
 import org.kie.workbench.common.screens.server.management.service.RemoteOperationFailedException;
 import org.uberfire.commons.data.Pair;
 
+import static org.kie.workbench.common.screens.server.management.model.ConnectionType.*;
 import static org.kie.workbench.common.screens.server.management.model.ContainerStatus.*;
 
 @ApplicationScoped
@@ -103,6 +105,32 @@ public class RemoteAccessImpl {
         }
     }
 
+    public Server toServer( final ServerRef serverRef ) {
+        try {
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
+            final Collection<Container> containers = new ArrayList<Container>();
+
+            final ServiceResponse<KieContainerResourceList> containerResourcesResponse = client.listContainers();
+            if ( containerResourcesResponse.getType().equals( ServiceResponse.ResponseType.SUCCESS ) &&
+                    containerResourcesResponse.getResult().getContainers() != null ) {
+                for ( final KieContainerResource kieContainerResource : containerResourcesResponse.getResult().getContainers() ) {
+                    final Container container = toContainer( serverRef.getId(), kieContainerResource );
+                    if ( container.getReleasedId() != null && !container.getStatus().equals( ERROR ) ) {
+                        containers.add( container );
+                    } else {
+                        final ContainerRef containerRef = serverRef.getContainerRef( kieContainerResource.getContainerId() );
+                        containers.add( new ContainerImpl( containerRef.getServerId(), containerRef.getId(), ERROR, containerRef.getReleasedId(), ScannerStatus.ERROR, null, null ) );
+                    }
+                }
+            }
+
+            return new ServerImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), STARTED, REMOTE, containers, serverRef.getProperties(), serverRef.getContainersRef() );
+
+        } catch ( final Exception ex ) {
+            return null;
+        }
+    }
+
     public Container install( final String serverId,
                               final String containerId,
                               final String username,
@@ -141,10 +169,13 @@ public class RemoteAccessImpl {
 
     private Container toContainer( final String serverId,
                                    final KieContainerResource kieContainerResource ) {
-        return new ContainerImpl( serverId, kieContainerResource.getContainerId(), toStatus( kieContainerResource.getStatus() ), toGAV( kieContainerResource.getReleaseId() ), toStatus( kieContainerResource.getScanner() ), kieContainerResource.getScanner() == null ? null : kieContainerResource.getScanner().getPollInterval(), toGAV( kieContainerResource.getResolvedReleaseId() ) );
+        return new ContainerImpl( serverId, kieContainerResource.getContainerId(), toStatus( kieContainerResource.getStatus() ), toGAV( kieContainerResource.getReleaseId() ), toStatus( kieContainerResource.getScanner() ), kieContainerResource.getScanner() == null ? null : toSeconds( kieContainerResource.getScanner().getPollInterval() ), toGAV( kieContainerResource.getResolvedReleaseId() ) );
     }
 
     private GAV toGAV( final ReleaseId releaseId ) {
+        if ( releaseId == null || releaseId.getGroupId() == null ) {
+            return null;
+        }
         return new GAV( releaseId.getGroupId(), releaseId.getArtifactId(), releaseId.getVersion() );
     }
 
@@ -229,7 +260,7 @@ public class RemoteAccessImpl {
             } else {
                 return Pair.newPair( true, null );
             }
-        } catch ( final Exception ex ) {
+        } catch ( final Exception ignored ) {
         }
 
         return Pair.newPair( false, null );
@@ -269,7 +300,7 @@ public class RemoteAccessImpl {
             if ( interval == null ) {
                 resource = new KieScannerResource( status );
             } else {
-                resource = new KieScannerResource( status, interval );
+                resource = new KieScannerResource( status, toMillis( interval ) );
             }
             final ServiceResponse<KieScannerResource> response = client.updateScanner( containerId, resource );
 
@@ -301,6 +332,19 @@ public class RemoteAccessImpl {
             }
             throw new RuntimeException( ex.getMessage() );
         }
+    }
 
+    private long toMillis( final Long duration ) {
+        if ( duration == null ) {
+            return 0;
+        }
+        return TimeUnit.SECONDS.toMillis( duration );
+    }
+
+    private long toSeconds( final Long duration ) {
+        if ( duration == null ) {
+            return 0;
+        }
+        return TimeUnit.MILLISECONDS.toSeconds( duration );
     }
 }

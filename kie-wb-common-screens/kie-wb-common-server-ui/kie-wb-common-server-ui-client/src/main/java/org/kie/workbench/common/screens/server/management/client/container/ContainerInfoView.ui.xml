@@ -34,7 +34,9 @@
           <b:Column size="2">
             <b:ControlGroup ui:field="intervalGroup">
               <b:Controls>
-                <u:NumericTextBox size="12" ui:field="interval" b:id="interval" placeholder="Interval"/>
+                <b:Tooltip text='Time unit is second' placement="BOTTOM">
+                  <u:NumericTextBox size="12" ui:field="interval" b:id="interval" placeholder="Interval"/>
+                </b:Tooltip>
               </b:Controls>
             </b:ControlGroup>
           </b:Column>

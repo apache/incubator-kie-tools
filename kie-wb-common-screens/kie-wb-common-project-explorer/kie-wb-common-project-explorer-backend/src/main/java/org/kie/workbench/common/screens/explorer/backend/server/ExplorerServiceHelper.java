@@ -43,6 +43,8 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.UserServicesImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.async.DescriptiveRunnable;
+import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
@@ -227,12 +229,12 @@ public class ExplorerServiceHelper {
         return folderItems;
     }
 
-    public synchronized void store( final OrganizationalUnit selectedOrganizationalUnit,
-                                    final Repository selectedRepository,
-                                    final Project selectedProject,
-                                    final FolderListing folderListing,
-                                    final Package selectedPackage,
-                                    final Set<Option> options ) {
+    public void store( final OrganizationalUnit selectedOrganizationalUnit,
+                       final Repository selectedRepository,
+                       final Project selectedProject,
+                       final FolderListing folderListing,
+                       final Package selectedPackage,
+                       final Set<Option> options ) {
 
         final org.uberfire.java.nio.file.Path userNavPath = userServices.buildPath( "explorer", "user.nav" );
         final org.uberfire.java.nio.file.Path lastUserNavPath = userServices.buildPath( "explorer", "last.user.nav" );
@@ -250,23 +252,33 @@ public class ExplorerServiceHelper {
             _selectedPackage = null;
         }
 
-        try {
-            store( userNavPath, lastUserNavPath, _selectedOrganizationalUnit,
-                   _selectedRepository, _selectedProject,
-                   _selectedPackage, _selectedItem, options );
-        } catch ( final Exception e ) {
-            LOGGER.error( "Can't serialize user's state navigation", e );
-        }
+        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+            @Override
+            public String getDescription() {
+                return "Serialize Navigation State";
+            }
+
+            @Override
+            public void run() {
+                try {
+                    store( userNavPath, lastUserNavPath, _selectedOrganizationalUnit,
+                           _selectedRepository, _selectedProject,
+                           _selectedPackage, _selectedItem, options );
+                } catch ( final Exception e ) {
+                    LOGGER.error( "Can't serialize user's state navigation", e );
+                }
+            }
+        } );
     }
 
-    public synchronized void store( final org.uberfire.java.nio.file.Path userNav,
-                                    final org.uberfire.java.nio.file.Path lastUserNav,
-                                    final OrganizationalUnit organizationalUnit,
-                                    final Repository repository,
-                                    final Project project,
-                                    final Package pkg,
-                                    final FolderItem item,
-                                    final Set<Option> options ) {
+    public void store( final org.uberfire.java.nio.file.Path userNav,
+                       final org.uberfire.java.nio.file.Path lastUserNav,
+                       final OrganizationalUnit organizationalUnit,
+                       final Repository repository,
+                       final Project project,
+                       final Package pkg,
+                       final FolderItem item,
+                       final Set<Option> options ) {
         final UserExplorerData content;
         final UserExplorerData _content = loadUserContent( userNav );
         if ( _content == null ) {
@@ -314,7 +326,7 @@ public class ExplorerServiceHelper {
                 final String xml = ioServiceConfig.readAllString( path );
                 return (UserExplorerData) xs.fromXML( xml );
             }
-        } catch ( final Exception e ) {
+        } catch ( final Exception ignored ) {
         }
         return null;
     }
@@ -333,7 +345,7 @@ public class ExplorerServiceHelper {
             if ( lastData != null ) {
                 return lastData;
             }
-        } catch ( final Exception e ) {
+        } catch ( final Exception ignored ) {
         }
         return new UserExplorerLastData();
     }
@@ -344,7 +356,7 @@ public class ExplorerServiceHelper {
                 final String xml = ioServiceConfig.readAllString( path );
                 return (UserExplorerLastData) xs.fromXML( xml );
             }
-        } catch ( final Exception e ) {
+        } catch ( final Exception ignored ) {
         }
         return null;
     }
