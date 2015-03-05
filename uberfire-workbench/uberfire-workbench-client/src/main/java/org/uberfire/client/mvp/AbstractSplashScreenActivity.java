@@ -18,6 +18,8 @@ package org.uberfire.client.mvp;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
@@ -48,6 +50,17 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     @PostConstruct
     private void initialize() {
         this.splashFilter = getFilter();
+        splash.addCloseHandler( new CloseHandler<SplashView>() {
+            @Override
+            public void onClose( final CloseEvent<SplashView> event ) {
+                AbstractSplashScreenActivity.this.onClose();
+            }
+        } );
+    }
+
+    @Override
+    public void onOpen() {
+        super.onOpen();
     }
 
     @Override
@@ -83,6 +96,14 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     @Override
     public IsWidget getTitleDecoration() {
         return null;
+    }
+
+    @Override
+    public void closeIfOpen() {
+        if ( splash.isAttached() ) {
+            splash.hide();
+            onClose();
+        }
     }
 
     @Override

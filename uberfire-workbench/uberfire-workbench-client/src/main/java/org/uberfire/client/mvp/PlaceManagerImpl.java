@@ -507,7 +507,7 @@ public class PlaceManagerImpl
         SplashScreenActivity splashScreenActivity = availableSplashScreens.remove( place.getIdentifier() );
         if ( splashScreenActivity != null ) {
             try {
-                splashScreenActivity.onClose();
+                splashScreenActivity.closeIfOpen();
             } catch ( Exception ex ) {
                 lifecycleErrorHandler.handle( splashScreenActivity, LifecyclePhase.CLOSE, ex );
             }

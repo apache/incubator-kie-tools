@@ -41,6 +41,13 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
         this.nativeSplashScreen = nativeSplashScreen;
         this.isEnabled = nativeSplashScreen.isEnabled();
         this.splashFilter = nativeSplashScreen.buildFilter();
+
+        splash.addCloseHandler( new CloseHandler<SplashView>() {
+            @Override
+            public void onClose( final CloseEvent<SplashView> event ) {
+                JSSplashScreenActivity.this.onClose();
+            }
+        } );
     }
 
     @Override
@@ -103,18 +110,20 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     }
 
     @Override
+    public void closeIfOpen() {
+        if ( splash.isAttached() ) {
+            splash.hide();
+            onClose();
+        }
+    }
+
+    @Override
     public void forceShow() {
         final IsWidget widget = getWidget();
 
         splash.setContent( widget, getBodyHeight() );
         splash.setTitle( getTitle() );
         splash.show();
-        splash.addCloseHandler( new CloseHandler<SplashView>() {
-            @Override
-            public void onClose( final CloseEvent<SplashView> event ) {
-                JSSplashScreenActivity.this.onClose();
-            }
-        } );
     }
 
     @Override

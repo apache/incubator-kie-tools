@@ -470,8 +470,8 @@ public class PlaceManagerTest {
         placeManager.goTo( otherPerspectivePlace );
 
         assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
-        verify( splashScreenActivity1).onClose();
-        verify( splashScreenActivity2).onClose();
+        verify( splashScreenActivity1).closeIfOpen();
+        verify( splashScreenActivity2).closeIfOpen();
 
         // splash screens are Application Scoped, but we still "destroy" them (activity manager will call their onShutdown)
         verify( activityManager ).destroyActivity( splashScreenActivity1 );
@@ -510,7 +510,7 @@ public class PlaceManagerTest {
         placeManager.closePlace( oz );
 
         assertTrue( placeManager.getActiveSplashScreens().isEmpty() );
-        verify( lollipopGuildActivity).onClose();
+        verify( lollipopGuildActivity).closeIfOpen();
 
         // splash screens are Application Scoped, but we still "destroy" them (activity manager will call their onShutdown)
         verify( activityManager ).destroyActivity( lollipopGuildActivity );

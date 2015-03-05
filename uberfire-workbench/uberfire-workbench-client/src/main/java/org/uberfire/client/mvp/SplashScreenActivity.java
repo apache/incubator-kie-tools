@@ -21,6 +21,8 @@ import org.uberfire.workbench.model.SplashScreenFilter;
 
 public interface SplashScreenActivity extends Activity {
 
+    void closeIfOpen();
+
     void forceShow();
 
     String getTitle();
