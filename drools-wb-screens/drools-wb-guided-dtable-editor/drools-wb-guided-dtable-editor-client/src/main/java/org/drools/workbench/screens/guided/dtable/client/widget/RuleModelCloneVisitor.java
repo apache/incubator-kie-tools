@@ -46,7 +46,7 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 
 /**
- * A Rule Model Visitor to create a clone TODO Clone LHS of model...
+ * A Rule Model Visitor to create a clone
  */
 public class RuleModelCloneVisitor {
 
@@ -189,6 +189,7 @@ public class RuleModelCloneVisitor {
     private DSLSentence visitDSLSentence( final DSLSentence sentence ) {
         DSLSentence clone = new DSLSentence();
         clone.setDefinition( sentence.getDefinition() );
+        clone.setDrl( sentence.getDrl() );
         for ( DSLVariableValue value : sentence.getValues() ) {
             clone.getValues().add( (DSLVariableValue) visit( value ) );
         }
