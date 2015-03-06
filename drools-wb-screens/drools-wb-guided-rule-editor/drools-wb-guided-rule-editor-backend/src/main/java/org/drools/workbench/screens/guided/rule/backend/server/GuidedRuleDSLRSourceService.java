@@ -36,8 +36,8 @@ import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeD
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.source.BaseSourceService;
-import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
+import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -74,16 +74,16 @@ public class GuidedRuleDSLRSourceService
     }
 
     @Override
-    public String getSource(final Path path,
-                            final RuleModel model) throws SourceGenerationFailedException {
+    public String getSource( final Path path,
+                             final RuleModel model ) throws SourceGenerationFailedException {
         try {
-
-            final String dslr = RuleModelDRLPersistenceImpl.getInstance().marshal(model);
-            final Expander expander = getDSLExpander(path);
-            final String drl = expander.expand(dslr);
+            final String dslr = RuleModelDRLPersistenceImpl.getInstance().marshal( model );
+            final Expander expander = getDSLExpander( path );
+            final String drl = expander.expand( dslr );
             return drl;
-        } catch (Exception e) {
-            throw new SourceGenerationFailedException(e.getMessage());
+
+        } catch ( Exception e ) {
+            throw new SourceGenerationFailedException( e.getMessage() );
         }
     }
 
