@@ -371,6 +371,10 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
         return result;
     }
 
+    public MetaIndexEngine getIndexEngine() {
+        return indexEngine;
+    }
+
     /**
      * A "No Operation" Observer, used by default
      */
