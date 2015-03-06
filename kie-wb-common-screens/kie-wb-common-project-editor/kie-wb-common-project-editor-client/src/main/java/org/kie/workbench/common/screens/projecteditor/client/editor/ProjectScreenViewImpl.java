@@ -21,6 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.github.gwtbootstrap.client.ui.FluidContainer;
 import com.github.gwtbootstrap.client.ui.NavHeader;
 import com.github.gwtbootstrap.client.ui.NavLink;
 import com.google.gwt.core.client.GWT;
@@ -33,6 +34,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
 import org.guvnor.common.services.project.client.GroupIdChangeHandler;
@@ -47,6 +50,7 @@ import org.kie.workbench.common.screens.projecteditor.client.forms.KModuleEditor
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.kie.workbench.common.widgets.client.widget.InfoWidget;
 import org.kie.workbench.common.widgets.configresource.client.widget.unbound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.widget.MetadataWidget;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -58,12 +62,12 @@ import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
 @ApplicationScoped
 public class ProjectScreenViewImpl
         extends Composite
-        implements ProjectScreenView {
+        implements ProjectScreenView, RequiresResize {
 
-    private static final int GAV_PANEL_INDEX = 0;
+    private static final int GAV_PANEL_INDEX     = 0;
     private static final int DEPENDENCY_PANEL_INDEX = 1;
     private static final int GAV_METADATA_PANEL_INDEX = 2;
-    private static final int KBASE_PANEL_INDEX = 3;
+    private static final int KBASE_PANEL_INDEX   = 3;
     private static final int KBASE_METADATA_PANEL_INDEX = 4;
     private static final int IMPORTS_PANEL_INDEX = 5;
     private static final int IMPORTS_METADATA_PANEL_INDEX = 6;
@@ -78,6 +82,8 @@ public class ProjectScreenViewImpl
     private MetadataWidget importsPageMetadata;
     private DependencyGrid dependencyGrid;
     private Boolean supportDeployToRuntime = Boolean.TRUE;
+    private Widget      projectScreen;
+    private SimplePanel layout;
 
     interface ProjectScreenViewImplBinder
             extends
@@ -85,7 +91,7 @@ public class ProjectScreenViewImpl
 
     }
 
-    private static ProjectScreenViewImplBinder uiBinder = GWT.create( ProjectScreenViewImplBinder.class );
+    private static ProjectScreenViewImplBinder uiBinder = GWT.create(ProjectScreenViewImplBinder.class);
 
     @UiField
     DropdownButton dropDownButton;
@@ -99,6 +105,9 @@ public class ProjectScreenViewImpl
     @UiField
     NavLink deploymentDescriptorButton;
 
+    @UiField
+    FluidContainer container;
+
     @Inject
     BusyIndicatorView busyIndicatorView;
 
@@ -109,124 +118,128 @@ public class ProjectScreenViewImpl
     }
 
     @Inject
-    public ProjectScreenViewImpl( POMEditorPanel pomEditorPanel,
-                                  KModuleEditorPanel kModuleEditorPanel,
-                                  ImportsWidgetPresenter importsWidgetPresenter,
-                                  DependencyGrid dependencyGrid ) {
+    public ProjectScreenViewImpl(POMEditorPanel pomEditorPanel,
+                                 KModuleEditorPanel kModuleEditorPanel,
+                                 ImportsWidgetPresenter importsWidgetPresenter,
+                                 DependencyGrid dependencyGrid) {
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        projectScreen = uiBinder.createAndBindUi(this);
+
+        layout = new SimplePanel();
+        layout.setWidget(projectScreen);
+        initWidget(this.layout);
 
         this.pomEditorPanel = pomEditorPanel;
         this.kModuleEditorPanel = kModuleEditorPanel;
         this.importsWidgetPresenter = importsWidgetPresenter;
         this.dependencyGrid = dependencyGrid;
 
-        deckPanel.add( pomEditorPanel );
+        deckPanel.add(pomEditorPanel);
 
-        deckPanel.add( dependencyGrid );
+        deckPanel.add(dependencyGrid);
 
-        this.pomMetadataWidget = new MetadataWidget( busyIndicatorView );
-        deckPanel.add( pomMetadataWidget );
+        this.pomMetadataWidget = new MetadataWidget(busyIndicatorView);
+        deckPanel.add(pomMetadataWidget);
 
-        deckPanel.add( kModuleEditorPanel );
+        deckPanel.add(kModuleEditorPanel);
 
-        this.kModuleMetaDataPanel = new MetadataWidget( busyIndicatorView );
-        deckPanel.add( kModuleMetaDataPanel );
+        this.kModuleMetaDataPanel = new MetadataWidget(busyIndicatorView);
+        deckPanel.add(kModuleMetaDataPanel);
 
-        deckPanel.add( importsWidgetPresenter );
+        deckPanel.add(importsWidgetPresenter);
 
-        this.importsPageMetadata = new MetadataWidget( busyIndicatorView );
-        deckPanel.add( importsPageMetadata );
+        this.importsPageMetadata = new MetadataWidget(busyIndicatorView);
+        deckPanel.add(importsPageMetadata);
 
         addPOMEditorChangeHandlers();
     }
 
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void showGAVPanel() {
-        deckPanel.showWidget( GAV_PANEL_INDEX );
-        setGAVDropboxTitle( ProjectEditorResources.CONSTANTS.ProjectGeneralSettings() );
+        deckPanel.showWidget(GAV_PANEL_INDEX);
+        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.ProjectGeneralSettings());
     }
 
     @Override
     public void showGAVMetadataPanel() {
-        deckPanel.showWidget( GAV_METADATA_PANEL_INDEX );
-        setGAVDropboxTitle( ProjectEditorResources.CONSTANTS.Metadata() );
+        deckPanel.showWidget(GAV_METADATA_PANEL_INDEX);
+        setGAVDropboxTitle(ProjectEditorResources.CONSTANTS.Metadata());
     }
 
     @UiHandler(value = "generalSettingsButton")
-    public void onGeneralSettingsButtonClick( ClickEvent clickEvent ) {
+    public void onGeneralSettingsButtonClick(ClickEvent clickEvent) {
         presenter.onGAVPanelSelected();
     }
 
     @UiHandler(value = "gavMetadataButton")
-    public void onGAVMetadataButtonClick( ClickEvent clickEvent ) {
+    public void onGAVMetadataButtonClick(ClickEvent clickEvent) {
         presenter.onGAVMetadataPanelSelected();
     }
 
-    private void setGAVDropboxTitle( String subItem ) {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem );
+    private void setGAVDropboxTitle(String subItem) {
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem);
     }
 
     @UiHandler(value = "dependenciesButton")
-    public void onDependenciesButtonClick( ClickEvent clickEvent ) {
+    public void onDependenciesButtonClick(ClickEvent clickEvent) {
         presenter.onDependenciesSelected();
     }
 
     @UiHandler(value = "kbaseButton")
-    public void onKbaseButtonClick( ClickEvent clickEvent ) {
+    public void onKbaseButtonClick(ClickEvent clickEvent) {
         presenter.onKBasePanelSelected();
     }
 
     @UiHandler(value = "kbaseMetadataButton")
-    public void onKbaseMetadataButtonClick( ClickEvent clickEvent ) {
+    public void onKbaseMetadataButtonClick(ClickEvent clickEvent) {
         presenter.onKBaseMetadataPanelSelected();
     }
 
     @Override
     public void showKBasePanel() {
-        deckPanel.showWidget( KBASE_PANEL_INDEX );
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.KnowledgeBasesAndSessions() );
+        deckPanel.showWidget(KBASE_PANEL_INDEX);
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.KnowledgeBasesAndSessions());
         kModuleEditorPanel.refresh();
     }
 
     @Override
     public void showKBaseMetadataPanel() {
-        deckPanel.showWidget( KBASE_METADATA_PANEL_INDEX );
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata() );
+        deckPanel.showWidget(KBASE_METADATA_PANEL_INDEX);
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
     }
 
     @UiHandler(value = "importsButton")
-    public void onImportsButtonClick( ClickEvent clickEvent ) {
+    public void onImportsButtonClick(ClickEvent clickEvent) {
         presenter.onImportsPanelSelected();
     }
 
     @UiHandler(value = "importsMetadataButton")
-    public void onImportsMetadataButtonClick( ClickEvent clickEvent ) {
+    public void onImportsMetadataButtonClick(ClickEvent clickEvent) {
         presenter.onImportsMetadataPanelSelected();
     }
 
     @UiHandler(value = "deploymentDescriptorButton")
-    public void onDeploymentDescriptorButtonClick( ClickEvent clickEvent ) {
+    public void onDeploymentDescriptorButtonClick(ClickEvent clickEvent) {
         presenter.onDeploymentDescriptorSelected();
     }
 
     @Override
-    public void setImports( ProjectImports projectImports ) {
-        importsWidgetPresenter.setContent( projectImports, false );
+    public void setImports(ProjectImports projectImports) {
+        importsWidgetPresenter.setContent(projectImports, false);
     }
 
     @Override
-    public void setImportsMetadata( Metadata projectImportsMetadata ) {
-        importsPageMetadata.setContent( projectImportsMetadata, false );
+    public void setImportsMetadata(Metadata projectImportsMetadata) {
+        importsPageMetadata.setContent(projectImportsMetadata, false);
     }
 
     @Override
     public void showDependenciesPanel() {
-        dropDownButton.setText( ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList() );
+        dropDownButton.setText(ProjectEditorResources.CONSTANTS.Dependencies() + ": " + ProjectEditorResources.CONSTANTS.DependenciesList() );
         deckPanel.showWidget( DEPENDENCY_PANEL_INDEX );
         dependencyGrid.redraw();
     }
@@ -281,6 +294,20 @@ public class ProjectScreenViewImpl
     @Override
     public void setKModuleMetadata( Metadata kModuleMetaData ) {
         kModuleMetaDataPanel.setContent( kModuleMetaData, false );
+    }
+
+    @Override
+    public void showNoProjectSelected() {
+        layout.clear();
+        InfoWidget infoWidget = new InfoWidget();
+        infoWidget.setText(ProjectEditorResources.CONSTANTS.NoProjectSelected());
+        layout.setWidget(infoWidget);
+    }
+
+    @Override
+    public void showProjectEditor() {
+        layout.clear();
+        layout.setWidget(projectScreen);
     }
 
     @Override
@@ -384,4 +411,15 @@ public class ProjectScreenViewImpl
         pomEditorPanel.setValidVersion( isValid );
     }
 
+    @Override
+    public void onResize() {
+
+        if (getParent() == null) {
+            return;
+        }
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        container.setPixelSize(width,
+                               height);
+    }
 }

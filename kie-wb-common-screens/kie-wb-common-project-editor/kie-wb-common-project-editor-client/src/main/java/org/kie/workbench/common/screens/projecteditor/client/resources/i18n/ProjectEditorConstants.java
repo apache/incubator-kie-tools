@@ -282,4 +282,6 @@ public interface ProjectEditorConstants
 
     String Deployments();
 
+    String NoProjectSelected();
+
 }

@@ -95,6 +95,10 @@ public interface ProjectScreenView
 
     void setDeployToRuntimeSetting( Boolean supports );
 
+    void showNoProjectSelected();
+
+    void showProjectEditor();
+
     boolean confirmClose();
 
     void setValidGroupID( boolean isValid );

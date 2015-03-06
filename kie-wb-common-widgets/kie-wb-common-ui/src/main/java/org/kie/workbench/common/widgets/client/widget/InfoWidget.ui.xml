@@ -18,12 +18,11 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
-  <ui:with field="i18n" type="org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants"/>
   <ui:with field="resources" type="org.kie.workbench.common.widgets.client.resources.CommonsResources"/>
 
-  <gwt:HTMLPanel ui:field="container" styleName="{resources.css.noSuchFileContainer}">
-    <gwt:HTMLPanel styleName="{resources.css.noSuchFileContent}">
-      <gwt:Label text="{i18n.NoSuchFileMessage}"/>
+  <gwt:HTMLPanel ui:field="container" styleName="{resources.css.infoContainer}">
+    <gwt:HTMLPanel styleName="{resources.css.infoContent}">
+      <gwt:Label ui:field="info"/>
     </gwt:HTMLPanel>
   </gwt:HTMLPanel>
 

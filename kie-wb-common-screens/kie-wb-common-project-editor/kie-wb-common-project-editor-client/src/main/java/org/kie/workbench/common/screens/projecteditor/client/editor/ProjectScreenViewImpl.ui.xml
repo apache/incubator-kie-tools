@@ -24,7 +24,7 @@
   <ui:with field="resources"
            type="org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources"/>
 
-  <bootstrap:FluidContainer width="90%">
+  <bootstrap:FluidContainer width="90%" ui:field="container">
     <bootstrap:FluidRow addStyleNames="well">
       <bootstrap:DropdownButton text="{i18n.ProjectSettings}" ui:field="dropDownButton">
 

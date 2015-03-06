@@ -15,39 +15,14 @@
  */
 package org.kie.workbench.common.widgets.client.widget;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 
-public class NoSuchFileWidget extends Composite implements RequiresResize {
-
-    interface NoSuchFileWidgetBinder
-            extends
-            UiBinder<Widget, NoSuchFileWidget> {
-
-    }
-
-    private static NoSuchFileWidgetBinder uiBinder = GWT.create( NoSuchFileWidgetBinder.class );
-
-    @UiField
-    HTMLPanel container;
+public class NoSuchFileWidget
+        extends InfoWidget {
 
     public NoSuchFileWidget() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        super();
+        setText(CommonConstants.INSTANCE.NoSuchFileMessage());
     }
 
-    @Override
-    public void onResize() {
-        if ( getParent() == null ) {
-            return;
-        }
-        int height = getParent().getOffsetHeight();
-        int width = getParent().getOffsetWidth();
-        container.setPixelSize( width,
-                                height );
-    }
 }

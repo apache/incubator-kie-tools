@@ -60,7 +60,6 @@ import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopup;
 import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
-import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
@@ -160,10 +159,7 @@ public class ProjectScreenPresenter
         });
         this.buildOptions = view.getBuildOptionsButton();
 
-        showCurrentProjectInfoIfAny(workbenchContext.getActiveProject());
-
         makeMenuBar();
-        adjustBuildOptions();
     }
 
     private boolean isRepositoryManaged() {
@@ -179,6 +175,7 @@ public class ProjectScreenPresenter
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
+        update();
     }
 
     @OnMayClose
@@ -195,8 +192,15 @@ public class ProjectScreenPresenter
     }
 
     private void update() {
-        showCurrentProjectInfoIfAny(workbenchContext.getActiveProject());
-        adjustBuildOptions();
+        if (workbenchContext.getActiveProject() == null) {
+            disableMenus();
+            view.showNoProjectSelected();
+            view.hideBusyIndicator();
+        } else {
+            view.showProjectEditor();
+            showCurrentProjectInfoIfAny(workbenchContext.getActiveProject());
+            adjustBuildOptions();
+        }
     }
 
     private void adjustBuildOptions() {
@@ -333,10 +337,9 @@ public class ProjectScreenPresenter
     }
 
     private void disableMenus() {
-        menus.getItemsMap().get( MenuItems.COPY ).setEnabled( false );
-        menus.getItemsMap().get( MenuItems.RENAME ).setEnabled( false );
-        menus.getItemsMap().get( MenuItems.DELETE ).setEnabled( false );
-        menus.getItemsMap().get( MenuItems.VALIDATE ).setEnabled( false );
+        for (MenuItem mi : menus.getItemsMap().values()) {
+            mi.setEnabled(false);
+        }
     }
 
     private void reload() {
