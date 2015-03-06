@@ -20,6 +20,7 @@ import org.kie.workbench.common.screens.server.management.client.box.BoxPresente
 import org.kie.workbench.common.screens.server.management.client.box.BoxType;
 import org.kie.workbench.common.screens.server.management.client.header.HeaderPresenter;
 import org.kie.workbench.common.screens.server.management.client.registry.ServerRegistryEndpointForm;
+import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
 import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
 import org.kie.workbench.common.screens.server.management.events.ContainerStarted;
@@ -290,7 +291,7 @@ public class ServerManagementBrowserPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Server Management Browser";
+        return Constants.INSTANCE.title();
     }
 
     @WorkbenchPartView
@@ -302,7 +303,7 @@ public class ServerManagementBrowserPresenter {
                                  final Map<String, List<String>> container2delete ) {
         final StringBuilder sb = new StringBuilder();
         if ( !serverNames.isEmpty() ) {
-            sb.append( "Are you sure you want delete the following server(s):<br/>" );
+            sb.append( Constants.INSTANCE.confirm_delete_servers() ).append( "<br/>" );
             for ( final String s : serverNames.values() ) {
                 sb.append( s ).append( ", " );
             }
@@ -311,9 +312,9 @@ public class ServerManagementBrowserPresenter {
         }
         if ( !container2delete.isEmpty() ) {
             if ( serverNames.isEmpty() ) {
-                sb.append( "Are you sure you want delete the following container(s):<br/>" );
+                sb.append( Constants.INSTANCE.confirm_delete_containers() ).append( "<br/>" );
             } else {
-                sb.append( "<br/>And the following container(s):<br/>" );
+                sb.append( "<br/>").append( Constants.INSTANCE.and_containers() ).append( "<br/>" );
             }
             for ( final Map.Entry<String, List<String>> entry : container2delete.entrySet() ) {
                 for ( String s : entry.getValue() ) {
