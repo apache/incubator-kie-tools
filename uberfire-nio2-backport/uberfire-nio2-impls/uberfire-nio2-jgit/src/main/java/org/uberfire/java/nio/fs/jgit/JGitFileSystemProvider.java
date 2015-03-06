@@ -209,7 +209,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
     private FileSystemAuthenticator authenticator;
     private FileSystemAuthorizer fileSystemAuthorizer;
 
-    private void loadConfig( ConfigProperties config ) {
+    private void loadConfig( final ConfigProperties config ) {
         LOG.debug( "Configuring from properties:" );
 
         final String currentDirectory = System.getProperty( "user.dir" );
@@ -381,16 +381,20 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         if ( repos != null ) {
             for ( final String repo : repos ) {
                 final File repoDir = new File( gitReposParentDir, repo );
-                if ( repoDir.isDirectory() ) {
-                    final String name = repoDir.getName().substring( 0, repoDir.getName().indexOf( DOT_GIT_EXT ) );
-                    final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, newRepository( repoDir, true ), name, ALL, buildCredential( null ) );
-                    LOG.debug( "Registering existing GIT filesystem '" + name + "' at " + repoDir );
-                    fileSystems.put( name, fs );
-                    repoIndex.put( fs.gitRepo().getRepository(), fs );
-                    LOG.debug( "Running GIT GC on '" + name + "'" );
-                    JGitUtil.gc( fs.gitRepo() );
-                } else {
-                    LOG.debug( "Not registering " + repoDir + " as a GIT filesystem because it is not a directory" );
+                try {
+                    if ( repoDir.isDirectory() ) {
+                        final String name = repoDir.getName().substring( 0, repoDir.getName().indexOf( DOT_GIT_EXT ) );
+                        final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, newRepository( repoDir, true ), name, ALL, buildCredential( null ) );
+                        LOG.debug( "Running GIT GC on '" + name + "'" );
+                        JGitUtil.gc( fs.gitRepo() );
+                        LOG.debug( "Registering existing GIT filesystem '" + name + "' at " + repoDir );
+                        fileSystems.put( name, fs );
+                        repoIndex.put( fs.gitRepo().getRepository(), fs );
+                    } else {
+                        LOG.debug( "Not registering " + repoDir + " as a GIT filesystem because it is not a directory" );
+                    }
+                } catch ( final Exception ex ) {
+                    LOG.error( "Not registering " + repoDir + " as a GIT filesystem failed", ex );
                 }
             }
         }
