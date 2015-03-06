@@ -109,7 +109,7 @@ public class NotificationPopupView extends DecoratedPopupPanel {
         };
         final Sequencer s = new Sequencer();
         s.add( fadeInAnimation, 250 );
-        s.add( pauseAnimation, 2000 );
+        s.add( pauseAnimation, 5000 );
         s.run();
     }
 
