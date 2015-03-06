@@ -69,6 +69,11 @@ public class ShowcaseEntryPoint {
             public void execute() {
                 placeManager.goTo( new DefaultPlaceRequest( "WiresTreesPerspective" ) );
             }
+        } ).endMenu().newTopLevelMenu( "Wires BPMN" ).respondsWith( new Command() {
+            @Override
+            public void execute() {
+                placeManager.goTo( new DefaultPlaceRequest( "BpmnPerspective" ) );
+            }
         } ).endMenu().newTopLevelMenu( "Bayesian Networks" ).respondsWith( new Command() {
             @Override
             public void execute() {
