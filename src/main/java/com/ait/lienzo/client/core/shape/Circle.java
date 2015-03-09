@@ -18,9 +18,12 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.AttributesChangedEvent;
+import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.util.AlignAndDistribute;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -119,6 +122,25 @@ public class Circle extends Shape<Circle>
         public Circle create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             return new Circle(node, ctx);
+        }
+    }
+
+    @Override
+    public AlignAndDistribute.AlignAndDistributeHandler getAlignAndDistributeHandler(AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback)
+    {
+        return new CircleAlignAndDistributeHandler(this, alignAndDistribute, alignAndDistributeMatchesCallback);
+    }
+
+    public static class CircleAlignAndDistributeHandler extends AlignAndDistribute.AlignAndDistributeHandler
+    {
+        public CircleAlignAndDistributeHandler(Circle circle, AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback)
+        {
+            super(circle, alignAndDistribute, alignAndDistributeMatchesCallback, Attribute.X, Attribute.Y, Attribute.RADIUS);
+        }
+
+        public boolean attributesChanged(AttributesChangedEvent event)
+        {
+            return  ( event.any( Attribute.X, Attribute.Y, Attribute.RADIUS));
         }
     }
 }

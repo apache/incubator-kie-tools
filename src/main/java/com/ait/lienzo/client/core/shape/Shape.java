@@ -39,6 +39,7 @@ import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
+import com.ait.lienzo.client.core.util.AlignAndDistribute;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.Color;
@@ -52,6 +53,7 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.ait.lienzo.client.core.util.AlignAndDistribute.AlignAndDistributeHandler;
 
 /**
  * Shapes are objects that can be drawn on a canvas.
@@ -1494,6 +1496,10 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         m_dragConstraintEnforcer = enforcer;
 
         return cast();
+    }
+
+    public AlignAndDistributeHandler getAlignAndDistributeHandler(AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback) {
+        throw new UnsupportedOperationException();
     }
 
     protected static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>
