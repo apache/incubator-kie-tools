@@ -31,6 +31,7 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
+import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -53,23 +54,26 @@ public class ScenarioEditorPresenter
         extends KieEditor
         implements ScenarioEditorView.Presenter {
 
-    private final TestScenarioResourceType           type;
-    private final ScenarioEditorView                 view;
-    private final Caller<ScenarioTestEditorService>  service;
-    private final Caller<TestService> testService;
+    private final TestScenarioResourceType type;
+    private final ScenarioEditorView       view;
+    private final Caller<ScenarioTestEditorService> service;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
+    private final Caller<TestService>                testService;
+    private final ImportsWidgetPresenter             importsWidget;
 
     private Scenario                    scenario;
     private AsyncPackageDataModelOracle dmo;
 
     @Inject
     public ScenarioEditorPresenter(final ScenarioEditorView view,
+                                   final ImportsWidgetPresenter importsWidget,
                                    final Caller<ScenarioTestEditorService> service,
                                    final Caller<TestService> testService,
                                    final TestScenarioResourceType type,
                                    final AsyncPackageDataModelOracleFactory oracleFactory) {
         super(view);
         this.view = view;
+        this.importsWidget = importsWidget;
         this.service = service;
         this.testService = testService;
         this.type = type;
@@ -115,10 +119,9 @@ public class ScenarioEditorPresenter
                                                                     content.getDataModel());
                 resetEditorPages(content.getOverview());
 
-                renderFixtures();
+                addImportsTab(importsWidget);
 
-                view.initKSessionSelector(versionRecordManager.getCurrentPath(),
-                                          scenario);
+                redraw();
 
                 view.hideBusyIndicator();
             }
@@ -133,15 +136,22 @@ public class ScenarioEditorPresenter
 
                 scenario = result.getScenario();
 
-                view.initKSessionSelector(versionRecordManager.getCurrentPath(),
-                                          scenario);
+                redraw();
 
                 view.showAuditView(result.getLog());
 
-                renderFixtures();
             }
         }, new HasBusyIndicatorDefaultErrorCallback(view)).runScenario(versionRecordManager.getCurrentPath(),
                                                                        scenario);
+    }
+
+    private void redraw() {
+        renderFixtures();
+        view.initKSessionSelector(versionRecordManager.getCurrentPath(),
+                                  scenario);
+        importsWidget.setContent(dmo,
+                                 scenario.getImports(),
+                                 isReadOnly);
     }
 
     private void renderFixtures() {
@@ -168,20 +178,13 @@ public class ScenarioEditorPresenter
         view.renderFixtures(versionRecordManager.getCurrentPath(), dmo, scenario);
     }
 
-    protected void save() {
-        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
-                                        new ParameterizedCommand<String>() {
-                                            @Override
-                                            public void execute(final String commitMessage) {
-                                                view.showSaving();
-                                                service.call(getSaveSuccessCallback(scenario.hashCode()),
-                                                             new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                                                  scenario,
-                                                                                                                  metadata,
-                                                                                                                  commitMessage);
-                                            }
-                                        });
-        concurrentUpdateSessionInfo = null;
+    @Override
+    protected void save(String commitMessage) {
+        service.call(getSaveSuccessCallback(scenario.hashCode()),
+                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                          scenario,
+                                                                          metadata,
+                                                                          commitMessage);
     }
 
     @WorkbenchPartTitle

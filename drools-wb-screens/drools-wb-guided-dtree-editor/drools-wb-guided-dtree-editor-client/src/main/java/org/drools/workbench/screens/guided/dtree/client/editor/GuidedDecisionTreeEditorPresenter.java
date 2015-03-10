@@ -202,21 +202,13 @@ public class GuidedDecisionTreeEditorPresenter
         };
     }
 
-    protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 view.showSaving();
-                                                 service.call( getSaveSuccessCallback(model.hashCode()),
-                                                               new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                                                    model,
-                                                                                                                    metadata,
-                                                                                                                    comment );
-                                             }
-                                         }
-                                       );
-        concurrentUpdateSessionInfo = null;
+    @Override
+    protected void save(String commitMessage) {
+        service.call(getSaveSuccessCallback(model.hashCode()),
+                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                          model,
+                                                                          metadata,
+                                                                          commitMessage);
     }
 
     @WorkbenchPartView

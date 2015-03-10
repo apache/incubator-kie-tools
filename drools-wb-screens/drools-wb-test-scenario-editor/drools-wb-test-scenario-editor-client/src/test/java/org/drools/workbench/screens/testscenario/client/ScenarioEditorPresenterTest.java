@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.util.HashSet;
 import javax.enterprise.event.Event;
 
 import org.drools.workbench.models.datamodel.imports.HasImports;
@@ -37,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
+import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
 import org.mockito.Mock;
@@ -47,6 +49,7 @@ import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
 import org.uberfire.ext.widgets.common.client.common.MultiPageEditor;
 import org.uberfire.mvp.PlaceRequest;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,18 +60,25 @@ public class ScenarioEditorPresenterTest {
     @Mock private VersionRecordManager    versionRecordManager;
     @Mock private OverviewWidgetPresenter overviewWidget;
     @Mock private MultiPageEditor         multiPage;
+    @Mock private ImportsWidgetPresenter importsWidget;
+
+    private ScenarioTestEditorServiceCallerMock service;
 
     private ScenarioEditorPresenter      editor;
     private ScenarioEditorView.Presenter presenter;
     private Scenario                     scenario;
-    private Overview                     overview;
+
+    private Overview overview;
+    private Scenario scenarioRunResult = null;
 
     @Before
     public void setUp() throws Exception {
 
         AsyncPackageDataModelOracleFactory modelOracleFactory = mock(AsyncPackageDataModelOracleFactory.class);
+        service = new ScenarioTestEditorServiceCallerMock();
         editor = new ScenarioEditorPresenter(view,
-                                             new ScenarioTestEditorServiceCallerMock(),
+                                             importsWidget,
+                                             service,
                                              new TestServiceCallerMock(),
                                              new TestScenarioResourceType(),
                                              modelOracleFactory) {
@@ -77,6 +87,7 @@ public class ScenarioEditorPresenterTest {
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
                 overviewWidget = ScenarioEditorPresenterTest.this.overviewWidget;
                 multiPage = ScenarioEditorPresenterTest.this.multiPage;
+
             }
 
             protected void makeMenuBar() {
@@ -85,6 +96,7 @@ public class ScenarioEditorPresenterTest {
         };
         presenter = editor;
 
+        scenarioRunResult = new Scenario();
         scenario = new Scenario();
         overview = new Overview();
 
@@ -98,6 +110,33 @@ public class ScenarioEditorPresenterTest {
     @Test
     public void testSimple() throws Exception {
         verify(view).setPresenter(presenter);
+    }
+
+    @Test
+    public void testRunScenarioAndSave() throws Exception {
+        ObservablePath path = mock(ObservablePath.class);
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+
+        when(versionRecordManager.getCurrentPath()).thenReturn(path);
+
+        editor.onStartup(path, placeRequest);
+
+        reset(view);
+        reset(importsWidget);
+
+        presenter.onRunScenario();
+
+        // Make sure imports are updated
+        verify(view).initKSessionSelector(path,
+                                          scenarioRunResult);
+        verify(importsWidget).setContent(any(AsyncPackageDataModelOracle.class),
+                                         eq(scenarioRunResult.getImports()),
+                                         anyBoolean());
+
+        editor.save("Commit message");
+
+        assertEquals(scenarioRunResult, service.savedScenario);
+
     }
 
     @Test
@@ -140,6 +179,8 @@ public class ScenarioEditorPresenterTest {
 
         ScenarioTestEditorService service = new ScenarioTestEditorServiceMock();
 
+        Scenario savedScenario = null;
+
         @Override public ScenarioTestEditorService call() {
             return service;
         }
@@ -162,7 +203,10 @@ public class ScenarioEditorPresenterTest {
             }
 
             @Override public TestScenarioResult runScenario(Path path, Scenario scenario) {
-                remoteCallback.callback(new TestScenarioResult());
+                TestScenarioResult result = new TestScenarioResult("user",
+                                                                   scenarioRunResult,
+                                                                   new HashSet<String>());
+                remoteCallback.callback(result);
                 return null;
             }
 
@@ -187,6 +231,9 @@ public class ScenarioEditorPresenterTest {
             }
 
             @Override public Path save(Path path, Scenario content, Metadata metadata, String comment) {
+
+                savedScenario = content;
+
                 return null;
             }
         }

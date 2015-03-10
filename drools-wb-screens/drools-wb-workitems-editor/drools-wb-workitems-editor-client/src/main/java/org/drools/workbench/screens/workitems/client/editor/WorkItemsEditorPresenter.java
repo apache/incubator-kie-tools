@@ -147,21 +147,13 @@ public class WorkItemsEditorPresenter
         };
     }
 
-    protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 view.showSaving();
-                                                 workItemsService.call( getSaveSuccessCallback(view.getContent().hashCode()),
-                                                                        new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                                                             view.getContent(),
-                                                                                                                             metadata,
-                                                                                                                             commitMessage );
-                                             }
-                                         }
-                                       );
-        concurrentUpdateSessionInfo = null;
+    @Override
+    protected void save(String commitMessage) {
+        workItemsService.call(getSaveSuccessCallback(view.getContent().hashCode()),
+                              new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                   view.getContent(),
+                                                                                   metadata,
+                                                                                   commitMessage);
     }
 
     @OnClose

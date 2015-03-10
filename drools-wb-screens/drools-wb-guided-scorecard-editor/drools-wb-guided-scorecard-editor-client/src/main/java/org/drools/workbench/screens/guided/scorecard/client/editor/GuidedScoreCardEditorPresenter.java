@@ -169,21 +169,13 @@ public class GuidedScoreCardEditorPresenter
         };
     }
 
-    protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 view.showSaving();
-                                                 scoreCardEditorService.call( getSaveSuccessCallback( view.getModel().hashCode() ),
-                                                                              new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                                       view.getModel(),
-                                                                                                                                       metadata,
-                                                                                                                                       comment );
-                                             }
-                                         }
-                                       );
-        concurrentUpdateSessionInfo = null;
+    @Override
+    protected void save(String commitMessage) {
+        scoreCardEditorService.call(getSaveSuccessCallback(view.getModel().hashCode()),
+                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                                         view.getModel(),
+                                                                                         metadata,
+                                                                                         commitMessage);
     }
 
     @Override

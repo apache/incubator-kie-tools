@@ -180,21 +180,13 @@ public class GuidedDecisionTableEditorPresenter
         };
     }
 
-    protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 view.showSaving();
-                                                 service.call( getSaveSuccessCallback(model.hashCode()),
-                                                               new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                        model,
-                                                                                                                        metadata,
-                                                                                                                        commitMessage );
-                                             }
-                                         }
-                                       );
-        concurrentUpdateSessionInfo = null;
+    @Override
+    protected void save(String commitMessage) {
+        service.call(getSaveSuccessCallback(model.hashCode()),
+                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                          model,
+                                                                          metadata,
+                                                                          commitMessage);
     }
 
     @Override

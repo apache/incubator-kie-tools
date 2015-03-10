@@ -205,27 +205,31 @@ public class GuidedRuleEditorPresenter
 
     protected void save() {
         GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator(model,
-                GuidedRuleEditorResources.CONSTANTS);
+                                                                            GuidedRuleEditorResources.CONSTANTS);
 
         if (validator.isValid()) {
-            new SaveOperationService().save(versionRecordManager.getPathToLatest(),
-                    new ParameterizedCommand<String>() {
-                        @Override
-                        public void execute(final String commitMessage) {
-                            view.showSaving();
-                            service.call(getSaveSuccessCallback(model.hashCode()),
-                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
-                                                                                         view.getContent(),
-                                                                                         metadata,
-                                                                                         commitMessage);
-
-                        }
-                    });
+            saveOperationService.save(versionRecordManager.getPathToLatest(),
+                                      new ParameterizedCommand<String>() {
+                                          @Override
+                                          public void execute(final String commitMessage) {
+                                              view.showSaving();
+                                              save(commitMessage);
+                                          }
+                                      });
 
             concurrentUpdateSessionInfo = null;
         } else {
             ErrorPopup.showMessage(validator.getErrors().get(0));
         }
+    }
+
+    @Override
+    protected void save(String commitMessage) {
+        service.call(getSaveSuccessCallback(model.hashCode()),
+                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                          view.getContent(),
+                                                                          metadata,
+                                                                          commitMessage);
     }
 
     @OnClose
