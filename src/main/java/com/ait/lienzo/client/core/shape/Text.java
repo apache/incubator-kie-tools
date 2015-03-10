@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
@@ -629,6 +632,12 @@ public class Text extends Shape<Text>
         getAttributes().setTextBaseLine(baseline);
 
         return this;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.TEXT, Attribute.FONT_SIZE, Attribute.FONT_STYLE, Attribute.FONT_FAMILY, Attribute.TEXT_UNIT, Attribute.TEXT_ALIGN, Attribute.TEXT_BASELINE);
     }
 
     public static class TextFactory extends ShapeFactory<Text>

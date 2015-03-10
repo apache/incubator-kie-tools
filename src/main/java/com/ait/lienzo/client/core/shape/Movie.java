@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -801,6 +803,12 @@ public class Movie extends Shape<Movie> implements ImageDataFilterable<Movie>
             object.put("filter", filter);
         }
         return object;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.WIDTH, Attribute.HEIGHT);
     }
 
     private static final class MovieAnimation extends IndefiniteAnimation

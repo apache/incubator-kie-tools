@@ -16,6 +16,10 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -81,6 +85,16 @@ public abstract class AbstractDirectionalMultiPointShape<T extends AbstractDirec
         getAttributes().setCorrectionOffset(offset);
 
         return refresh();
+    }
+
+    @Override
+    protected List<Attribute> getBoundingBoxAttributesComposed(final List<Attribute> attributes)
+    {
+        final ArrayList<Attribute> list = new ArrayList<Attribute>(super.getBoundingBoxAttributesComposed(attributes));
+
+        list.addAll(Arrays.asList(Attribute.HEAD_DIRECTION, Attribute.TAIL_DIRECTION));
+
+        return list;
     }
 
     protected static abstract class AbstractDirectionalMultiPointShapeFactory<T extends AbstractDirectionalMultiPointShape<T>> extends AbstractOffsetMultiPointShapeFactory<T>

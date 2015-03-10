@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -57,8 +60,6 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Arrow extends Shape<Arrow>
 {
-    public static final ShapeType TYPE = ShapeType.ARROW;
-
     private Point2DArray m_polygon;
 
     /**
@@ -510,6 +511,12 @@ public class Arrow extends Shape<Arrow>
             m_polygon = arr;
         }
         return m_polygon;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.POINTS, Attribute.BASE_WIDTH, Attribute.HEAD_WIDTH, Attribute.ARROW_ANGLE, Attribute.BASE_ANGLE, Attribute.ARROW_TYPE);
     }
 
     public static class ArrowFactory extends ShapeFactory<Arrow>

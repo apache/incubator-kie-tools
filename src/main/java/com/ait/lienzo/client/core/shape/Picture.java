@@ -16,7 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -1624,6 +1626,12 @@ public class Picture extends AbstractImageShape<Picture> implements ImageDataFil
     public ImageClipBounds getImageClipBounds()
     {
         return new ImageClipBounds(getClippedImageStartX(), getClippedImageStartY(), getClippedImageWidth(), getClippedImageHeight(), getClippedImageDestinationWidth(), getClippedImageDestinationHeight());
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.URL, Attribute.CLIPPED_IMAGE_START_X, Attribute.CLIPPED_IMAGE_START_Y, Attribute.CLIPPED_IMAGE_WIDTH, Attribute.CLIPPED_IMAGE_HEIGHT, Attribute.CLIPPED_IMAGE_DESTINATION_WIDTH, Attribute.CLIPPED_IMAGE_DESTINATION_HEIGHT);
     }
 
     public static class PictureFactory extends ShapeFactory<Picture>

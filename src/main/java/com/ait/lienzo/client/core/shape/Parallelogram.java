@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -171,6 +174,12 @@ public class Parallelogram extends Shape<Parallelogram>
         getAttributes().setSkew(skew);
 
         return this;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.WIDTH, Attribute.HEIGHT, Attribute.SKEW);
     }
 
     public static class ParallelogramFactory extends ShapeFactory<Parallelogram>

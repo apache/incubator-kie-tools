@@ -16,6 +16,10 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
@@ -218,6 +222,12 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
             list.add(path);
         }
         return path;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return new ArrayList<Attribute>(0);
     }
 
     public static class MultiPathFactory extends ShapeFactory<MultiPath>

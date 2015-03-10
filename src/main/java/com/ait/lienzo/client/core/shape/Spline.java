@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -367,6 +370,12 @@ public class Spline extends AbstractMultiPointShape<Spline>
         m_list.clear();
 
         return this;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.CONTROL_POINTS, Attribute.CURVE_FACTOR, Attribute.ANGLE_FACTOR, Attribute.LINE_FLATTEN);
     }
 
     public static class SplineFactory extends ShapeFactory<Spline>

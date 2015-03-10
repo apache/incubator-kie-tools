@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.config.LienzoCore;
@@ -273,6 +276,12 @@ public class Line extends AbstractOffsetMultiPointShape<Line>
 
             dashIndex++;
         }
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return getBoundingBoxAttributesComposed(Arrays.asList(Attribute.POINTS));
     }
 
     public static class LineFactory extends AbstractOffsetMultiPointShapeFactory<Line>

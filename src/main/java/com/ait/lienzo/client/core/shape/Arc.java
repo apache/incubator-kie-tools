@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -185,6 +188,12 @@ public class Arc extends Shape<Arc>
         getAttributes().setCounterClockwise(counterClockwise);
 
         return this;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.RADIUS);
     }
 
     public static class ArcFactory extends ShapeFactory<Arc>

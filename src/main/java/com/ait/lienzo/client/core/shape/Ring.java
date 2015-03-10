@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -186,6 +189,12 @@ public class Ring extends Shape<Ring>
         getAttributes().setOuterRadius(radius);
 
         return this;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.INNER_RADIUS, Attribute.OUTER_RADIUS);
     }
 
     public static class RingFactory extends ShapeFactory<Ring>

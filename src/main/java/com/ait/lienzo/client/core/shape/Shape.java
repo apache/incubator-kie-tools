@@ -26,9 +26,9 @@ import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
 import com.ait.lienzo.client.core.types.DashArray;
@@ -39,7 +39,6 @@ import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.Shadow;
-import com.ait.lienzo.client.core.util.AlignAndDistribute;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.Color;
@@ -53,7 +52,6 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
-import com.ait.lienzo.client.core.util.AlignAndDistribute.AlignAndDistributeHandler;
 
 /**
  * Shapes are objects that can be drawn on a canvas.
@@ -1498,9 +1496,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
         return cast();
     }
 
-    public AlignAndDistributeHandler getAlignAndDistributeHandler(AlignAndDistribute alignAndDistribute, AlignAndDistribute.AlignAndDistributeMatchesCallback alignAndDistributeMatchesCallback) {
-        throw new UnsupportedOperationException();
-    }
+    public abstract List<Attribute> getBoundingBoxAttributes();
 
     protected static abstract class ShapeFactory<S extends Shape<S>> extends NodeFactory<S>
     {

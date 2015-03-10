@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -126,6 +129,12 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
     public Point2DArray getPoint2DArray()
     {
         return getPoints();
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.POINTS);
     }
 
     public static class PolygonFactory extends ShapeFactory<Polygon>

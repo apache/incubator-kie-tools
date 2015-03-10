@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -164,6 +167,12 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     public Point2D getHeadOffsetPoint()
     {
         return m_headOffsetPoint;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return getBoundingBoxAttributesComposed(Arrays.asList(Attribute.POINTS));
     }
 
     public static class PolyLineFactory extends AbstractOffsetMultiPointShapeFactory<PolyLine>

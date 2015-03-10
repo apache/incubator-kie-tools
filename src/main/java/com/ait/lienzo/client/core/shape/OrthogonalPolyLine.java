@@ -22,6 +22,9 @@ import static com.ait.lienzo.shared.core.types.Direction.NORTH;
 import static com.ait.lienzo.shared.core.types.Direction.SOUTH;
 import static com.ait.lienzo.shared.core.types.Direction.WEST;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -740,6 +743,12 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     public Point2D getHeadOffsetPoint()
     {
         return m_headOffsetPoint;
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return getBoundingBoxAttributesComposed(Arrays.asList(Attribute.CONTROL_POINTS));
     }
 
     public static class OrthogonaPolylLineFactory extends AbstractDirectionalMultiPointShapeFactory<OrthogonalPolyLine>

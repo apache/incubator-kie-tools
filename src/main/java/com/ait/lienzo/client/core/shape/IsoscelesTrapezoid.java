@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
@@ -127,6 +130,12 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     public double getHeight()
     {
         return getAttributes().getHeight();
+    }
+
+    @Override
+    public List<Attribute> getBoundingBoxAttributes()
+    {
+        return Arrays.asList(Attribute.TOP_WIDTH, Attribute.BOTTOM_WIDTH, Attribute.HEIGHT);
     }
 
     public static class IsoscelesTrapezoidFactory extends ShapeFactory<IsoscelesTrapezoid>
