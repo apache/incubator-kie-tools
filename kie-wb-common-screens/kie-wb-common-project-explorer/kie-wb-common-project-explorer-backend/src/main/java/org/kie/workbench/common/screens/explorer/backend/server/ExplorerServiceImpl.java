@@ -449,7 +449,7 @@ public class ExplorerServiceImpl
         cleanup( event.getProject() );
     }
 
-    private synchronized void cleanup( final Project project ) {
+    private void cleanup( final Project project ) {
         final Collection<org.uberfire.java.nio.file.Path> lastNavs = userServicesBackend.getAllUsersData( "explorer", "last.user.nav" );
         final Collection<org.uberfire.java.nio.file.Path> userNavs = userServicesBackend.getAllUsersData( "explorer", "user.nav" );
 
