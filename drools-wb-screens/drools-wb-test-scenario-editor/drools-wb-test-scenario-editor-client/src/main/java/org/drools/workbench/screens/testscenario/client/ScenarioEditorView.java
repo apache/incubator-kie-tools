@@ -35,6 +35,8 @@ public interface ScenarioEditorView
 
     void showAuditView(Set<String> log);
 
+    void showResults();
+
     void renderFixtures(Path path, AsyncPackageDataModelOracle oracle, Scenario scenario);
 
 }

@@ -185,4 +185,8 @@ public class FixtureLayout
                                                                    previousExecutionTrace)
                  );
     }
+
+    public void showResults() {
+        scenarioWidgetComponentCreator.setShowResults(true);
+    }
 }

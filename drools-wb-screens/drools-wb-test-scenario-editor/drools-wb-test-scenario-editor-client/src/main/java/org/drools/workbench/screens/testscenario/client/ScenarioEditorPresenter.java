@@ -138,6 +138,8 @@ public class ScenarioEditorPresenter
 
                 redraw();
 
+                view.showResults();
+
                 view.showAuditView(result.getLog());
 
             }

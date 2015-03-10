@@ -131,6 +131,11 @@ public class ScenarioEditorViewImpl
     }
 
     @Override
+    public void showResults() {
+        fixtureLayout.showResults();
+    }
+
+    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
