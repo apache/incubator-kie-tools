@@ -16,20 +16,19 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import static org.fest.assertions.api.Assertions.*;
-import static org.uberfire.java.nio.file.StandardDeleteOption.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
@@ -56,7 +55,11 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
-import org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType;
+import org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+
+import static org.fest.assertions.api.Assertions.*;
+import static org.uberfire.java.nio.file.StandardDeleteOption.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
@@ -211,7 +214,6 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
     }
 
     @Test
-    @Ignore(value = "Can't push to git using git protocol, just ssh")
     public void testNewFileSystemCloneAndPush() throws IOException {
 
         final URI originRepo = URI.create( "git://my-simple-test-origin-repo" );
@@ -243,22 +245,6 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
             put( "fileXXXXX.txt", tempFile( "temp" ) );
         }} );
 
-        provider.getFileSystem( URI.create( "git://my-repo?push=git://localhost:9418/my-simple-test-origin-repo&force" ) );
-
-        assertThat( fs ).isNotNull();
-
-        assertThat( fs.getRootDirectories() ).hasSize( 2 );
-
-        for ( final Path root : fs.getRootDirectories() ) {
-            if ( root.toAbsolutePath().toUri().toString().contains( "upstream" ) ) {
-                assertThat( provider.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
-            } else if ( root.toAbsolutePath().toUri().toString().contains( "origin" ) ) {
-                assertThat( provider.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 1 );
-            } else {
-                assertThat( provider.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
-            }
-        }
-
         final URI newRepo2 = URI.create( "git://my-repo2" );
 
         final Map<String, Object> env2 = new HashMap<String, Object>() {{
@@ -268,19 +254,56 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
         final FileSystem fs2 = provider.newFileSystem( newRepo2, env2 );
 
-        provider.getFileSystem( URI.create( "git://my-repo?sync=git://localhost:9418/my-simple-test-origin-repo&force" ) );
+        commit( origin.gitRepo(), "user-branch", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
+            put( "file1UserBranch.txt", tempFile( "tempX" ) );
+        }} );
 
-        assertThat( fs2.getRootDirectories() ).hasSize( 2 );
+        provider.getFileSystem( URI.create( "git://my-repo2?sync=git://localhost:9418/my-simple-test-origin-repo&force" ) );
+
+        assertThat( fs2.getRootDirectories() ).hasSize( 5 );
+
+        final List<String> rootURIs1 = new ArrayList<String>() {{
+            add( "git://master@my-repo2/" );
+            add( "git://user-branch@my-repo2/" );
+            add( "git://origin/master@my-repo2/" );
+            add( "git://upstream/master@my-repo2/" );
+            add( "git://upstream/user-branch@my-repo2/" );
+        }};
+
+        final List<String> rootURIs2 = new ArrayList<String>() {{
+            add( "git://master@my-repo2/" );
+            add( "git://user-branch@my-repo2/" );
+            add( "git://user-branch-2@my-repo2/" );
+            add( "git://origin/master@my-repo2/" );
+            add( "git://upstream/master@my-repo2/" );
+            add( "git://upstream/user-branch@my-repo2/" );
+            add( "git://upstream/user-branch-2@my-repo2/" );
+        }};
+
+        final Set<String> rootURIs = new HashSet<String>();
+        for ( final Path root : fs2.getRootDirectories() ) {
+            rootURIs.add( root.toUri().toString() );
+        }
+
+        rootURIs.removeAll( rootURIs1 );
+
+        assertThat( rootURIs ).isEmpty();
+
+        commit( origin.gitRepo(), "user-branch-2", "user1", "user1@example.com", "commitx", null, null, false, new HashMap<String, File>() {{
+            put( "file2UserBranch.txt", tempFile( "tempX" ) );
+        }} );
+
+        provider.getFileSystem( URI.create( "git://my-repo2?sync=git://localhost:9418/my-simple-test-origin-repo&force" ) );
+
+        assertThat( fs2.getRootDirectories() ).hasSize( 7 );
 
         for ( final Path root : fs2.getRootDirectories() ) {
-            if ( root.toAbsolutePath().toUri().toString().contains( "upstream" ) ) {
-                assertThat( provider.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
-            } else if ( root.toAbsolutePath().toUri().toString().contains( "origin" ) ) {
-                assertThat( provider.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
-            } else {
-                assertThat( provider.newDirectoryStream( root, null ) ).isNotEmpty().hasSize( 2 );
-            }
+            rootURIs.add( root.toUri().toString() );
         }
+
+        rootURIs.removeAll( rootURIs2 );
+
+        assertThat( rootURIs ).isEmpty();
     }
 
     @Test

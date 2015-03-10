@@ -270,7 +270,7 @@ public final class JGitUtil {
             specs.add( new RefSpec( "+refs/notes/*:refs/notes/*" ) );
 
             try {
-                final FetchResult result = git.fetch()
+                git.fetch()
                         .setCredentialsProvider( credentialsProvider )
                         .setRefSpecs( specs )
                         .setRemote( origin )
@@ -278,12 +278,36 @@ public final class JGitUtil {
 
                 final List<Ref> branches = git.branchList().setListMode( ListBranchCommand.ListMode.ALL ).call();
 
+                final Set<String> remoteBranches = new HashSet<String>();
+                final Set<String> localBranches = new HashSet<String>();
+
                 for ( final Ref branch : branches ) {
                     final String branchName = branch.getName().substring( branch.getName().lastIndexOf( "/" ) + 1 );
+                    if ( branch.getName().startsWith( "refs/remotes" ) ) {
+                        remoteBranches.add( branchName );
+                    } else {
+                        localBranches.add( branchName );
+                    }
+                }
+
+                for ( final String localBranch : localBranches ) {
+                    if ( remoteBranches.contains( localBranch ) ) {
+                        git.branchCreate()
+                                .setName( localBranch )
+                                .setUpstreamMode( CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM )
+                                .setStartPoint( "upstream/" + localBranch )
+                                .setForce( true )
+                                .call();
+                    }
+                }
+
+                remoteBranches.removeAll( localBranches );
+
+                for ( final String branch : remoteBranches ) {
                     git.branchCreate()
-                            .setName( branchName )
+                            .setName( branch )
                             .setUpstreamMode( CreateBranchCommand.SetupUpstreamMode.SET_UPSTREAM )
-                            .setStartPoint( "upstream/" + branchName )
+                            .setStartPoint( "upstream/" + branch )
                             .setForce( true )
                             .call();
                 }
