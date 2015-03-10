@@ -30,6 +30,8 @@ Messages {
 
     String maximizePanel();
 
+    String minimizePanel();
+
     String expandToolbar();
 
     String collapseToolbar();

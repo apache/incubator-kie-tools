@@ -1,5 +1,6 @@
 package org.uberfire.client.workbench.widgets.panel;
 
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.mvp.Command;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -28,6 +29,7 @@ public class MaximizeToggleButton extends Button {
         setIcon( IconType.CHEVRON_UP );
         setIconSize( IconSize.SMALL );
         setSize( ButtonSize.MINI );
+        setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
         addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
@@ -45,10 +47,12 @@ public class MaximizeToggleButton extends Button {
         if ( wasMaximized ) {
             if ( unmaximizeCommand != null ) {
                 unmaximizeCommand.execute();
+                setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
             }
         } else {
             if ( maximizeCommand != null ) {
                 maximizeCommand.execute();
+                setTitle( WorkbenchConstants.INSTANCE.minimizePanel() );
             }
         }
     }
@@ -100,8 +104,10 @@ public class MaximizeToggleButton extends Button {
         this.maximized = maximized;
         if ( maximized ) {
             setIcon( IconType.CHEVRON_DOWN );
+            setTitle( WorkbenchConstants.INSTANCE.minimizePanel() );
         } else {
             setIcon( IconType.CHEVRON_UP );
+            setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
         }
     }
 }
