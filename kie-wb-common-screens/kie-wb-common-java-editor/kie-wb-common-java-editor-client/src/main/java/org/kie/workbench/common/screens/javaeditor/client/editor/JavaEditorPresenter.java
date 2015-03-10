@@ -88,11 +88,6 @@ public class JavaEditorPresenter
                 .build();
     }
 
-    @Override
-    protected void save() {
-
-    }
-
     @WorkbenchPartView
     public IsWidget getWidget() {
         return super.getWidget();

@@ -138,22 +138,19 @@ public class KieTextEditorPresenter
     }
 
     @Override
-    protected void save() {
-        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 defaultEditorService.call( getSaveSuccessCallback( view.getContent().hashCode() ),
-                                                                            new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).save( versionRecordManager.getCurrentPath(),
-                                                                                                                                                  view.getContent(),
-                                                                                                                                                  metadata,
-                                                                                                                                                  commitMessage );
+    protected void save(String commitMessage) {
+        saveOperationService.save(versionRecordManager.getCurrentPath(),
+                                  new ParameterizedCommand<String>() {
+                                      @Override
+                                      public void execute(final String commitMessage) {
+                                          defaultEditorService.call(getSaveSuccessCallback(view.getContent().hashCode()),
+                                                                    new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).save(versionRecordManager.getCurrentPath(),
+                                                                                                                                      view.getContent(),
+                                                                                                                                      metadata,
+                                                                                                                                      commitMessage);
 
-                                             }
-                                         }
-                                       );
-
+                                      }
+                                  });
     }
 
     @WorkbenchMenu

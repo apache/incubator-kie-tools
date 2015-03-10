@@ -35,9 +35,11 @@ import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPre
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
+import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.editor.commons.client.menu.MenuItems;
 import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -64,6 +66,8 @@ public abstract class KieEditor
 
     @Inject
     protected ProjectContext workbenchContext;
+
+    protected SaveOperationService saveOperationService = new SaveOperationService();
 
     protected Metadata metadata;
 
@@ -301,6 +305,24 @@ public abstract class KieEditor
         } else {
             return true;
         }
+    }
+
+    @Override
+    protected void save() {
+        saveOperationService.save(versionRecordManager.getCurrentPath(),
+                                  new ParameterizedCommand<String>() {
+                                      @Override
+                                      public void execute(final String commitMessage) {
+                                          baseView.showSaving();
+                                          save(commitMessage);
+                                          concurrentUpdateSessionInfo = null;
+                                      }
+                                  });
+        concurrentUpdateSessionInfo = null;
+    }
+
+    protected void save(final String commitMessage) {
+
     }
 
     public void onOverviewSelected() {

@@ -123,7 +123,7 @@ public class ProjectImportsScreenPresenter
     }
 
     protected void save() {
-        new SaveOperationService().save(versionRecordManager.getCurrentPath(),
+        saveOperationService.save(versionRecordManager.getCurrentPath(),
                                         new ParameterizedCommand<String>() {
                                             @Override
                                             public void execute(final String commitMessage) {

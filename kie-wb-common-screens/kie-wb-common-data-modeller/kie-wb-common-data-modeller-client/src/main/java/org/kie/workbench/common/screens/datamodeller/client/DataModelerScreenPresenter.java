@@ -465,7 +465,7 @@ public class DataModelerScreenPresenter
             if ( context.isEditorChanged() ) {
                 newTypeInfo.setPackageName( context.getDataObject().getPackageName() );
                 newTypeInfo.setName( context.getDataObject().getName() );
-                save( newTypeInfo );
+                saveFile( newTypeInfo );
             } else {
                 view.showLoading();
                 modelerService.call( new RemoteCallback<TypeInfoResult>() {
@@ -476,16 +476,16 @@ public class DataModelerScreenPresenter
                             newTypeInfo.setPackageName( typeInfoResult.getJavaTypeInfo().getPackageName() );
                             newTypeInfo.setName( typeInfoResult.getJavaTypeInfo().getName() );
                         }
-                        save( newTypeInfo );
+                        saveFile( newTypeInfo );
                     }
                 } ).loadJavaTypeInfo( getSource() );
             }
         } else {
-            save( null );
+            saveFile( null );
         }
     }
 
-    private void save( final JavaTypeInfoTO newTypeInfo ) {
+    private void saveFile( final JavaTypeInfoTO newTypeInfo ) {
 
         String currentFileName = DataModelerUtils.extractSimpleFileName( versionRecordManager.getPathToLatest() );
 
@@ -496,7 +496,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( newTypeInfo, versionRecordManager.getPathToLatest() ) );
+                                                                                              saveOperationService.save(versionRecordManager.getPathToLatest(), getSaveCommand(newTypeInfo, versionRecordManager.getPathToLatest()));
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_yes_refactor_directory(),
@@ -504,7 +504,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
+                                                                                              saveOperationService.save(versionRecordManager.getPathToLatest(), getSaveCommand(null, versionRecordManager.getPathToLatest()));
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_directory(),
@@ -529,7 +529,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( newTypeInfo, versionRecordManager.getPathToLatest() ) );
+                                                                                              saveOperationService.save(versionRecordManager.getPathToLatest(), getSaveCommand(newTypeInfo, versionRecordManager.getPathToLatest()));
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_yes_refactor_file_name(),
@@ -537,7 +537,7 @@ public class DataModelerScreenPresenter
                                                                                       new Command() {
                                                                                           @Override
                                                                                           public void execute() {
-                                                                                              new SaveOperationService().save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
+                                                                                              saveOperationService.save( versionRecordManager.getPathToLatest(), getSaveCommand( null, versionRecordManager.getPathToLatest() ) );
                                                                                           }
                                                                                       },
                                                                                       Constants.INSTANCE.modelEditor_action_no_dont_refactor_file_name(),
