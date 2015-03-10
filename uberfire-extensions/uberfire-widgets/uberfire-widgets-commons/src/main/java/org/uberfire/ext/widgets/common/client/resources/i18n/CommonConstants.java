@@ -101,4 +101,6 @@ public interface CommonConstants
     String Items();
 
     String ColorPickerTitle();
+
+    String Refresh();
 }
