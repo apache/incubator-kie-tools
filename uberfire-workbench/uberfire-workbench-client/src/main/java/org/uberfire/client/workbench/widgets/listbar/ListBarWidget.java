@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
@@ -187,6 +188,7 @@ extends ResizeComposite implements MultiPartWidget {
         this.menuArea.setVisible( false );
 
         if ( isMultiPart ) {
+            closeButton.setTitle( WorkbenchConstants.INSTANCE.closePanel() );
             closeButton.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {

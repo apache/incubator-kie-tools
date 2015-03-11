@@ -32,6 +32,10 @@ Messages {
 
     String minimizePanel();
 
+    String closePanel();
+
+    String selectView();
+
     String expandToolbar();
 
     String collapseToolbar();

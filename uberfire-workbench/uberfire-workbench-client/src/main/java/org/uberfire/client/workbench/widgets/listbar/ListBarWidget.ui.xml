@@ -22,6 +22,7 @@
              xmlns:ufp="urn:import:org.uberfire.client.workbench.widgets.panel">
 
   <ui:with field="res" type="org.uberfire.client.resources.WorkbenchResources"/>
+  <ui:with field="i18n" type="org.uberfire.client.resources.i18n.WorkbenchConstants"/>
 
   <ui:style>
     .title {
@@ -59,7 +60,9 @@
             <tb:Button ui:field="closeButton" size="MINI" icon="REMOVE"/>
           </tb:ButtonGroup>
           <tb:ButtonGroup ui:field="dropdownCaretContainer">
-            <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
+            <tb:Tooltip trigger="HOVER" placement="BOTTOM" text="{i18n.selectView}">
+              <tb:DropdownButton ui:field="dropdownCaret" size="MINI"/>
+            </tb:Tooltip>
           </tb:ButtonGroup>
           <tb:ButtonGroup>
             <ufp:MaximizeToggleButton ui:field="maximizeButton"/>
