@@ -146,9 +146,22 @@ public class NFastStringSet implements Iterable<String>
 
     public final String toJSONString()
     {
-        JSONObject object = new JSONObject(m_jso);
+        return new JSONObject(m_jso).toString();
+    }
 
-        return object.toString();
+    public final boolean any(final NFastStringSet look)
+    {
+        return m_jso.any(look.m_jso);
+    }
+
+    public final boolean none(final NFastStringSet look)
+    {
+        return m_jso.none(look.m_jso);
+    }
+
+    public final boolean all(final NFastStringSet look)
+    {
+        return m_jso.all(look.m_jso);
     }
 
     private static final class FastStringSetJSO extends JavaScriptObject
@@ -216,7 +229,6 @@ public class NFastStringSet implements Iterable<String>
         private final native int size()
         /*-{
         	var i = 0;
-
         	for ( var name in this) {
         		if (this.hasOwnProperty(String(name))) {
         		    if (this[name] == true) {
@@ -246,6 +258,59 @@ public class NFastStringSet implements Iterable<String>
                 }
             }
             return true;
+        }-*/;
+
+        private final native boolean any(FastStringSetJSO look)
+        /*-{
+            for ( var name in look) {
+                if (look.hasOwnProperty(String(name))) {
+                    if (look[name] == true) {
+                        if (this.hasOwnProperty(String(name))) {
+                            if (this[name] == true) {
+                                return true;
+                            }
+                        }                   
+                    }
+                }
+            }
+            return false;
+        }-*/;
+
+        private final native boolean none(FastStringSetJSO look)
+        /*-{
+            for ( var name in look) {
+                if (look.hasOwnProperty(String(name))) {
+                    if (look[name] == true) {
+                        if (this.hasOwnProperty(String(name))) {
+                            if (this[name] == true) {
+                                return false;
+                            }
+                        }                   
+                    }
+                }
+            }
+            return true;
+        }-*/;
+
+        private final native boolean all(FastStringSetJSO look)
+        /*-{
+            var seen = false;
+            for ( var name in look) {
+                if (look.hasOwnProperty(String(name))) {
+                    if (look[name] == true) {
+                        if (this.hasOwnProperty(String(name))) {
+                            if (this[name] == true) {
+                                seen = true;
+                            } else {
+                                return false;
+                            }
+                        } else {
+                            return false;
+                        }                   
+                    }
+                }
+            }
+            return seen;
         }-*/;
     }
 }

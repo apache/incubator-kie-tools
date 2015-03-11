@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.NFastStringMap;
@@ -572,7 +573,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                         context.transform(transform);
                     }
-                    drawWithTransforms(context, 1);
+                    drawWithTransforms(context, 1, ClipRegion.WORLD);
 
                     if (transform != null)
                     {
@@ -598,7 +599,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                                 context.transform(transform);
                             }
-                            drawWithTransforms(context, 1);
+                            drawWithTransforms(context, 1, ClipRegion.WORLD);
 
                             if (transform != null)
                             {

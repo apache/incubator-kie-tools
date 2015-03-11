@@ -31,6 +31,7 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.BoundingPoints;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.FillGradient;
@@ -210,7 +211,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
      * and draw the Shape's details (such as the the actual lines and fills.)
      */
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, ClipRegion bounds)
     {
         final Attributes attr = getAttributes();
 

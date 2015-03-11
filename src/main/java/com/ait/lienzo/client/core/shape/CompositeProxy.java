@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
@@ -71,7 +72,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
     {
         return m_type;
     }
-    
+
     @Override
     public IFactory<?> getFactory()
     {
@@ -754,7 +755,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
     }
 
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, final ClipRegion bounds)
     {
         if ((context.isSelection()) && (false == isListening()))
         {
@@ -766,7 +767,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
         {
             return;
         }
-        getProxy().drawWithTransforms(context, alpha);
+        getProxy().drawWithTransforms(context, alpha, bounds);
     }
 
     protected static abstract class CompositeProxyFactory<C extends CompositeProxy<C, P>, P extends IPrimitive<?>> extends NodeFactory<C>

@@ -34,7 +34,7 @@ public final class AttributeOp
         boolean test();
     }
 
-    public static final boolean evaluate(NFastStringSet changed, BooleanOp op)
+    public static final boolean evaluate(final NFastStringSet changed, final BooleanOp op)
     {
         if ((null == changed) || (null == op))
         {
@@ -209,16 +209,7 @@ public final class AttributeOp
         @Override
         public final boolean test(final NFastStringSet attributes)
         {
-            final NFastStringSet changed = context();
-
-            for (String attribute : attributes)
-            {
-                if (changed.contains(attribute))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return context().any(attributes);
         }
     }
 
@@ -232,16 +223,7 @@ public final class AttributeOp
         @Override
         public final boolean test(final NFastStringSet attributes)
         {
-            final NFastStringSet changed = context();
-
-            for (String attribute : attributes)
-            {
-                if (changed.contains(attribute))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return context().none(attributes);
         }
     }
 
@@ -255,19 +237,7 @@ public final class AttributeOp
         @Override
         public final boolean test(final NFastStringSet attributes)
         {
-            boolean seen = false;
-
-            final NFastStringSet changed = context();
-
-            for (String attribute : attributes)
-            {
-                if (false == changed.contains(attribute))
-                {
-                    return false;
-                }
-                seen = true;
-            }
-            return seen;
+            return context().all(attributes);
         }
     }
 

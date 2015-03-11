@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -331,7 +332,7 @@ public class GridLayer extends Layer
     }
 
     @Override
-    protected void drawWithoutTransforms(Context2D context, double alpha)
+    protected void drawWithoutTransforms(Context2D context, double alpha, final ClipRegion bounds)
     {
         if (false == isVisible())
         {
@@ -474,7 +475,7 @@ public class GridLayer extends Layer
 
                         p2.setY(y);
                     }
-                    line.drawWithTransforms(context, alpha);
+                    line.drawWithTransforms(context, alpha, bounds);
                 }
                 line.setStrokeWidth(previousLineWidth); // restore stroke width
 
@@ -485,7 +486,7 @@ public class GridLayer extends Layer
             }
         }
         // Draw children (if any)
-        super.drawWithoutTransforms(context, alpha);
+        super.drawWithoutTransforms(context, alpha, bounds);
     }
 
     @Override

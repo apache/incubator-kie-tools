@@ -23,6 +23,7 @@ import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.DataURLType;
@@ -669,7 +670,9 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     {
         if (LienzoCore.get().isCanvasSupported())
         {
-            ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+
+            final Context2D context = scratch.getContext();
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
@@ -683,7 +686,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(scratch.getContext(), 1);
+                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
                     }
                 }
             }
@@ -701,7 +704,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     {
         if (LienzoCore.get().isCanvasSupported())
         {
-            ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
 
             final Context2D context = scratch.getContext();
 
@@ -713,7 +716,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(context, 1);
+                    background.drawWithTransforms(context, 1, ClipRegion.WORLD);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -721,7 +724,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1);
+                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
                     }
                 }
             }
@@ -737,7 +740,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     {
         if (LienzoCore.get().isCanvasSupported())
         {
-            ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
 
             final Context2D context = scratch.getContext();
 
@@ -753,7 +756,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1);
+                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
                     }
                 }
             }
@@ -771,7 +774,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     {
         if (LienzoCore.get().isCanvasSupported())
         {
-            ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
+            final ScratchCanvas scratch = new ScratchCanvas(m_wide, m_high);
 
             final Context2D context = scratch.getContext();
 
@@ -783,7 +786,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(context, 1);
+                    background.drawWithTransforms(context, 1, ClipRegion.WORLD);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -791,7 +794,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1);
+                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
                     }
                 }
             }

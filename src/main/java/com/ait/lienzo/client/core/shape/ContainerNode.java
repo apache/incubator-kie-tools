@@ -24,6 +24,7 @@ import java.util.NoSuchElementException;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.java.util.function.Predicate;
@@ -145,7 +146,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Groups should draw their children in the current context.
      */
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, final ClipRegion bounds)
     {
         if ((context.isSelection()) && (false == isListening()))
         {
@@ -161,7 +162,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         for (int i = 0; i < size; i++)
         {
-            m_list.get(i).drawWithTransforms(context, alpha);
+            m_list.get(i).drawWithTransforms(context, alpha, bounds);
         }
     }
 

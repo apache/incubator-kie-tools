@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.shared.core.types.ShapeType;
@@ -75,7 +76,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         return cast();
     }
-    
+
     protected final void add(PathPartList list)
     {
         m_list.add(list);
@@ -87,10 +88,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     }
 
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, ClipRegion bounds)
     {
         final Attributes attr = getAttributes();
-        
+
         if ((context.isSelection()) && (false == attr.isListening()))
         {
             return;
