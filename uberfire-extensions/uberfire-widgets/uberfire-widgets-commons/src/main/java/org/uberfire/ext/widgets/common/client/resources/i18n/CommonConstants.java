@@ -103,4 +103,6 @@ public interface CommonConstants
     String ColorPickerTitle();
 
     String Refresh();
+
+    String columnPickerButtonTooltip();
 }

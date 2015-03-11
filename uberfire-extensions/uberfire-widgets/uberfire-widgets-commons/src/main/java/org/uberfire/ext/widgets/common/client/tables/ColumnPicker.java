@@ -39,7 +39,7 @@ import java.util.Map;
 
 import org.uberfire.ext.services.shared.preferences.GridColumnPreference;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
-
+import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
 public class ColumnPicker<T> {
 
@@ -132,6 +132,7 @@ public class ColumnPicker<T> {
         final Button button = new Button();
         button.setToggle(true);
         button.setIcon(IconType.LIST_UL);
+        button.setTitle( CommonConstants.INSTANCE.columnPickerButtonTooltip() );
 
         popup.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
         popup.addAutoHidePartner(button.getElement());
