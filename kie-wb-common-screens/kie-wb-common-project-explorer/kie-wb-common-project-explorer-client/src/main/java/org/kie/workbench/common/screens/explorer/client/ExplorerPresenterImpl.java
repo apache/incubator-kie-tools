@@ -348,10 +348,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                             public Widget build() {
                                 return new ContextDropdownButton() {
                                     {
-                                        displayCaret( false );
                                         setRightDropdown( true );
-                                        setIcon( IconType.COG );
-                                        setSize( MINI );
 
                                         add( businessView );
                                         add( techView );
@@ -363,6 +360,16 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                         add( archiveRepository );
 //                                        add( new Divider() );
 //                                        add( hiddenFiles );
+                                    }
+
+                                    @Override
+                                    protected Button createTrigger() {
+                                        Button contextTrigger = new Button();
+                                        contextTrigger.setCaret( false );
+                                        contextTrigger.setIcon( IconType.COG );
+                                        contextTrigger.setSize( MINI );
+                                        contextTrigger.setTitle( ProjectExplorerConstants.INSTANCE.customizeView() );
+                                        return contextTrigger;
                                     }
                                 };
                             }
@@ -435,6 +442,7 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                     {
                                         setIcon( IconType.REFRESH );
                                         setSize( MINI );
+                                        setTitle( ProjectExplorerConstants.INSTANCE.refresh() );
                                         addClickHandler( new ClickHandler() {
                                             @Override
                                             public void onClick( ClickEvent event ) {

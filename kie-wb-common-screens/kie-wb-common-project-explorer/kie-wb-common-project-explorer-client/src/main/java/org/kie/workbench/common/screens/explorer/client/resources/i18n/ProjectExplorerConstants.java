@@ -54,6 +54,7 @@ public interface ProjectExplorerConstants
 
     public String files();
 
+    public String customizeView();
     public String refresh();
     public String projectView();
     public String repositoryView();
