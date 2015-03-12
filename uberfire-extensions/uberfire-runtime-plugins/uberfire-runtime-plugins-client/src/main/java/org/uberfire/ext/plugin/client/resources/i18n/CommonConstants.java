@@ -29,6 +29,10 @@ public interface CommonConstants
 
     String InvalidParameterName();
 
+    String InvalidActivityID();
+
+    String InvalidMenuLabel();
+
     String DuplicateParameterName();
 
     String LoadPerspective();

@@ -50,6 +50,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.plugin.client.validation.NameValidator;
 import org.uberfire.ext.plugin.client.widget.cell.IconCell;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
 
@@ -69,9 +70,12 @@ public class DynamicMenuEditorView
 
     }
 
-    final private Driver driver = GWT.create( Driver.class );
+    private final Driver driver = GWT.create( Driver.class );
 
-    final private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static final ViewBinder uiBinder = GWT.create( ViewBinder.class );
+
+    private static final NameValidator activityIdValidator = NameValidator.activityIdValidator();
+    private static final NameValidator menuLabelValidator = NameValidator.menuLabelValidator();
 
     @UiField
     TextBox activityId;
@@ -258,6 +262,12 @@ public class DynamicMenuEditorView
             activityIdControlGroup.setType( ControlGroupType.ERROR );
             activityIdHelpInline.setText( CommonConstants.INSTANCE.MenusActivityIDIsManatory() );
             hasError = true;
+
+        } else if ( !activityIdValidator.isValid( menuItem.getActivityId() ) ) {
+            activityIdControlGroup.setType( ControlGroupType.ERROR );
+            activityIdHelpInline.setText( activityIdValidator.getValidationError() );
+            hasError = true;
+
         } else {
             activityIdControlGroup.setType( ControlGroupType.NONE );
             activityIdHelpInline.setText( "" );
@@ -267,6 +277,12 @@ public class DynamicMenuEditorView
             menuLabelControlGroup.setType( ControlGroupType.ERROR );
             menuLabelHelpInline.setText( CommonConstants.INSTANCE.MenusLabelIsManatory() );
             hasError = true;
+
+        } else if ( !menuLabelValidator.isValid( menuItem.getMenuLabel() ) ) {
+            menuLabelControlGroup.setType( ControlGroupType.ERROR );
+            menuLabelHelpInline.setText( menuLabelValidator.getValidationError() );
+            hasError = true;
+            
         } else {
             menuLabelControlGroup.setType( ControlGroupType.NONE );
             menuLabelHelpInline.setText( "" );

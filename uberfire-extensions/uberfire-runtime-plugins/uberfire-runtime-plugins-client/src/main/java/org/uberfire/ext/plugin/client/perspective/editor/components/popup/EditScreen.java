@@ -39,6 +39,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.plugin.client.perspective.editor.structure.EditorWidget;
 import org.uberfire.ext.plugin.client.perspective.editor.structure.PerspectiveEditorUI;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.plugin.client.validation.NameValidator;
 import org.uberfire.ext.plugin.editor.ScreenEditor;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;

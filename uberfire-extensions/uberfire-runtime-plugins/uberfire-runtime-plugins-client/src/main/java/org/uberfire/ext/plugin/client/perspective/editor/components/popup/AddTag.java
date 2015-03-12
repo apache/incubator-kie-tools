@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
+import org.uberfire.ext.plugin.client.validation.NameValidator;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
