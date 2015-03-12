@@ -1005,6 +1005,8 @@ public final class JGitUtil {
             }
         }
 
+        Collections.reverse( records );
+
         Collections.sort( records, new Comparator<VersionRecord>() {
             @Override
             public int compare( final VersionRecord o1,
