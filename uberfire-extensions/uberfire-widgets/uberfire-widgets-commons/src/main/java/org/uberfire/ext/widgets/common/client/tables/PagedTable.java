@@ -125,6 +125,7 @@ public class PagedTable<T>
         final Button button = new Button();
         button.setToggle(true);
         button.setIcon( IconType.LIST_ALT);
+        button.setTitle( CommonConstants.INSTANCE.PageSizeSelectorTooltip() );
         popup = new PopupPanel(true);
 
         popup.getElement().getStyle().setZIndex(Integer.MAX_VALUE);

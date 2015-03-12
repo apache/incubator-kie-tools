@@ -132,7 +132,7 @@ public class ColumnPicker<T> {
         final Button button = new Button();
         button.setToggle(true);
         button.setIcon(IconType.LIST_UL);
-        button.setTitle( CommonConstants.INSTANCE.columnPickerButtonTooltip() );
+        button.setTitle( CommonConstants.INSTANCE.ColumnPickerButtonTooltip() );
 
         popup.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
         popup.addAutoHidePartner(button.getElement());
