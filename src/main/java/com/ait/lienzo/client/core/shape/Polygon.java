@@ -52,6 +52,11 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
         this(new Point2DArray(point, points));
     }
 
+    public Polygon(double... array)
+    {
+        this(Point2DArray.fromArrayOfDouble(array));
+    }
+
     protected Polygon(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYGON, node, ctx);

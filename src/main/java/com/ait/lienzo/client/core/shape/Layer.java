@@ -558,10 +558,10 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                     Transform transform = null;
 
+                    Viewport viewport = getViewport();
+
                     if (isTransformable())
                     {
-                        Viewport viewport = getViewport();
-
                         if (null != viewport)
                         {
                             transform = viewport.getTransform();
@@ -573,7 +573,13 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                         context.transform(transform);
                     }
-                    drawWithTransforms(context, 1, ClipRegion.WORLD);
+                    ClipRegion clip = getClipRegion();
+
+                    if ((null == clip) || (null != viewport))
+                    {
+                        clip = viewport.getClipRegion();
+                    }
+                    drawWithTransforms(context, 1, clip);
 
                     if (transform != null)
                     {
@@ -599,7 +605,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                                 context.transform(transform);
                             }
-                            drawWithTransforms(context, 1, ClipRegion.WORLD);
+                            drawWithTransforms(context, 1, clip);
 
                             if (transform != null)
                             {

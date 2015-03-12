@@ -60,6 +60,11 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
         this(new Point2DArray(point, points));
     }
 
+    public PolyLine(double... array)
+    {
+        this(Point2DArray.fromArrayOfDouble(array));
+    }
+
     protected PolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYLINE, node, ctx);

@@ -20,8 +20,6 @@ import com.ait.lienzo.shared.java.util.IStringValuedType;
 
 public class ProxyType implements IStringValuedType
 {
-    public static final ProxyType GRID = new ProxyType("Grid");
-
     private final String          m_value;
 
     protected ProxyType(final String value)

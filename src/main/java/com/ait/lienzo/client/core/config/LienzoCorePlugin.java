@@ -74,13 +74,11 @@ import com.ait.lienzo.client.core.shape.Star;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
 import com.ait.lienzo.client.core.shape.Viewport;
-import com.ait.lienzo.client.core.shape.grid.Grid;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.lienzo.shared.core.types.PaletteType;
-import com.ait.lienzo.shared.core.types.ProxyType;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.java.util.function.Supplier;
 
@@ -310,14 +308,6 @@ final class LienzoCorePlugin extends AbstractLienzoCorePlugin
             public IFactory<?> get()
             {
                 return new SimpleArrow.SimpleArrowFactory();
-            }
-        });
-        addFactorySupplier(ProxyType.GRID, new Supplier<IFactory<?>>()
-        {
-            @Override
-            public IFactory<?> get()
-            {
-                return new Grid.GridFactory();
             }
         });
         addFactorySupplier(GroupType.GROUP, new Supplier<IFactory<?>>()

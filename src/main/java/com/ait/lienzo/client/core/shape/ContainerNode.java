@@ -44,6 +44,8 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 {
     private final NFastArrayList<M> m_list = new NFastArrayList<M>();
 
+    private ClipRegion              m_clip;
+
     protected ContainerNode(final NodeType type)
     {
         super(type);
@@ -83,6 +85,18 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     public int length()
     {
         return m_list.size();
+    }
+
+    public ClipRegion getClipRegion()
+    {
+        return m_clip;
+    }
+
+    public T setClipRegion(final ClipRegion clip)
+    {
+        m_clip = clip;
+
+        return cast();
     }
 
     /**
@@ -160,9 +174,15 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         }
         final int size = m_list.size();
 
+        ClipRegion clip = getClipRegion();
+
+        if (null == clip)
+        {
+            clip = bounds;
+        }
         for (int i = 0; i < size; i++)
         {
-            m_list.get(i).drawWithTransforms(context, alpha, bounds);
+            m_list.get(i).drawWithTransforms(context, alpha, clip);
         }
     }
 

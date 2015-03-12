@@ -29,8 +29,6 @@ public final class ClipRegion
 
     private final double           m_maxy;
 
-    public final static ClipRegion WORLD = new ClipRegion(-Double.MAX_VALUE, -Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-
     public ClipRegion(final double minx, final double miny, final double maxx, final double maxy)
     {
         m_minx = minx;

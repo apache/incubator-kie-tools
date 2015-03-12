@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.event.INodeXYEvent;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -123,7 +122,7 @@ public class DragContext
 
         context.transform(m_ltog);
 
-        m_prim.drawWithTransforms(context, getNodeParentsAlpha(m_prim.asNode()), ClipRegion.WORLD);
+        m_prim.drawWithTransforms(context, getNodeParentsAlpha(m_prim.asNode()), null);
 
         context.restore();
     }

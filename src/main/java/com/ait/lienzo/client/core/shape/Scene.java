@@ -676,6 +676,17 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
+            ClipRegion clip = getClipRegion();
+
+            if (null == clip)
+            {
+                Viewport viewport = getViewport();
+
+                if (null != viewport)
+                {
+                    clip = viewport.getClipRegion();
+                }
+            }
             if (null != layers)
             {
                 final int size = layers.size();
@@ -686,7 +697,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
+                        layer.drawWithTransforms(context, 1, clip);
                     }
                 }
             }
@@ -710,13 +721,24 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
+            ClipRegion clip = getClipRegion();
+
+            if (null == clip)
+            {
+                Viewport viewport = getViewport();
+
+                if (null != viewport)
+                {
+                    clip = viewport.getClipRegion();
+                }
+            }
             if (null != layers)
             {
                 final int size = layers.size();
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(context, 1, ClipRegion.WORLD);
+                    background.drawWithTransforms(context, 1, clip);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -724,7 +746,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
+                        layer.drawWithTransforms(context, 1, clip);
                     }
                 }
             }
@@ -746,6 +768,17 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
+            ClipRegion clip = getClipRegion();
+
+            if (null == clip)
+            {
+                Viewport viewport = getViewport();
+
+                if (null != viewport)
+                {
+                    clip = viewport.getClipRegion();
+                }
+            }
             if (null != layers)
             {
                 final int size = layers.size();
@@ -756,7 +789,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
+                        layer.drawWithTransforms(context, 1, clip);
                     }
                 }
             }
@@ -780,13 +813,24 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
+            ClipRegion clip = getClipRegion();
+
+            if (null == clip)
+            {
+                Viewport viewport = getViewport();
+
+                if (null != viewport)
+                {
+                    clip = viewport.getClipRegion();
+                }
+            }
             if (null != layers)
             {
                 final int size = layers.size();
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(context, 1, ClipRegion.WORLD);
+                    background.drawWithTransforms(context, 1, clip);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -794,7 +838,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, ClipRegion.WORLD);
+                        layer.drawWithTransforms(context, 1, clip);
                     }
                 }
             }
