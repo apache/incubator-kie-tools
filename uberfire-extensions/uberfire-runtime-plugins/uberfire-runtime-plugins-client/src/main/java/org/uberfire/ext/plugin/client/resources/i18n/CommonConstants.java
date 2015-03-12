@@ -46,4 +46,23 @@ public interface CommonConstants
     String ParamValue();
 
     String InvalidGridConfiguration();
+
+    String MenusNoMenuItems();
+
+    String MenusMoveUpHint();
+
+    String MenusMoveDownHint();
+
+    String MenusActivityID();
+
+    String MenusLabel();
+
+    String MenusDeleteHint();
+
+    String MenusDelete();
+
+    String MenusActivityIDIsManatory();
+
+    String MenusLabelIsManatory();
+
 }

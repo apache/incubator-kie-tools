@@ -23,8 +23,6 @@ import com.google.gson.GsonBuilder;
 import org.apache.commons.io.IOUtils;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.ext.editor.commons.backend.validation.DefaultFileNameValidator;
 import org.uberfire.ext.plugin.editor.ColumnEditor;
 import org.uberfire.ext.plugin.editor.NewPerspectiveEditorEvent;
@@ -72,6 +70,8 @@ import static org.uberfire.java.nio.file.Files.*;
 @Service
 @ApplicationScoped
 public class PluginServicesImpl implements PluginServices {
+
+    private static final String MENU_ITEM_DELIMITER=" / ";
 
     @Inject
     @Named("ioStrategy")
@@ -668,7 +668,7 @@ public class PluginServicesImpl implements PluginServices {
             final Path menuItemsPath = getMenuItemsPath( getPluginPath( plugin.getName() ) );
             final StringBuilder sb = new StringBuilder();
             for ( DynamicMenuItem item : plugin.getMenuItems() ) {
-                sb.append( item.getActivityId() ).append( " / " ).append( item.getMenuLabel() ).append( "\n" );
+                sb.append( item.getActivityId() ).append( MENU_ITEM_DELIMITER ).append( item.getMenuLabel() ).append( "\n" );
             }
             ioService.write( menuItemsPath,
                              sb.toString() );
@@ -781,9 +781,10 @@ public class PluginServicesImpl implements PluginServices {
         if ( ioService.exists( menuItemsPath ) ) {
             final List<String> value = ioService.readAllLines( menuItemsPath );
             for ( final String s : value ) {
-                final String[] items = s.split( "/" );
+                final String[] items = s.split( MENU_ITEM_DELIMITER );
                 if ( items.length == 2 ) {
-                    result.add( new DynamicMenuItem( items[ 0 ].trim(), items[ 1 ].trim() ) );
+                    result.add( new DynamicMenuItem( items[ 0 ],
+                                                     items[ 1 ] ) );
                 }
             }
         }
