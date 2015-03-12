@@ -14,4 +14,5 @@ public interface Constants
 
     String Error_NoAccessRightsToOrganizationalUnits();
 
+    String Home();
 }

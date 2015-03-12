@@ -30,4 +30,5 @@ public interface Constants extends Messages {
 
     public String and_containers();
 
+    public String remove();
 }

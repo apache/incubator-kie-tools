@@ -72,4 +72,6 @@ public interface ProjectExplorerConstants
     String openProjectEditor();
 
     String sort();
+
+    String ClickToDisplay();
 }

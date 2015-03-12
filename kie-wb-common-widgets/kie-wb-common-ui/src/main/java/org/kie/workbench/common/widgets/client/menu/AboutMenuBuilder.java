@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.widgets.client.popups.about.AboutPopup;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
@@ -39,6 +40,7 @@ public class AboutMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
     public AboutMenuBuilder() {
         link.setIcon( IconType.INFO_SIGN );
+        link.setTitle( CommonConstants.INSTANCE.About() );
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {

@@ -25,6 +25,7 @@ import org.kie.uberfire.social.activities.service.SocialUserServiceAPI;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.LoadUserPageEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserEditedEvent;
 import org.kie.workbench.common.screens.social.hp.client.homepage.events.UserHomepageSelectedEvent;
+import org.kie.workbench.common.screens.social.hp.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.EditUserForm;
 import org.kie.workbench.common.screens.social.hp.client.userpage.side.SideUserInfoPresenter;
 import org.uberfire.client.annotations.WorkbenchMenu;
@@ -121,6 +122,7 @@ public class UserHomePageSidePresenter {
                                 return new Button() {
                                     {
                                         setIcon( IconType.HOME );
+                                        setTitle( Constants.INSTANCE.Home() );
                                         setSize( MINI );
                                         addClickHandler( new ClickHandler() {
                                             @Override

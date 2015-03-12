@@ -115,6 +115,7 @@ public abstract class AbstractPathPagedTable<T extends AbstractPathPageRow> exte
 
         final Button refreshButton = new Button();
         refreshButton.setIcon( IconType.REFRESH );
+        refreshButton.setTitle( CommonConstants.INSTANCE.Refresh() );
         refreshButton.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {

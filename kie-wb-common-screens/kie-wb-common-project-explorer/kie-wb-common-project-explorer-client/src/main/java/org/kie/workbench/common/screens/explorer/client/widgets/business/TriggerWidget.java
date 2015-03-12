@@ -20,6 +20,7 @@ import com.github.gwtbootstrap.client.ui.NavHeader;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.*;
 import org.kie.workbench.common.screens.explorer.client.resources.ProjectExplorerResources;
+import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 
 /**
  * Trigger Widget for ResourceType groups
@@ -33,7 +34,7 @@ public class TriggerWidget extends Composite {
         initWidget( resourceHeader );
         resourceHeader.setWidget( 0, 0, makeNavHeader( caption ) );
         resourceHeader.setHTML( 0, 1, "&nbsp;&nbsp;" );
-        resourceHeader.setWidget( 0, 2, new Icon( IconType.CARET_DOWN ) );
+        resourceHeader.setWidget( 0, 2, makeIcon( IconType.CARET_DOWN, ProjectExplorerConstants.INSTANCE.ClickToDisplay() ) );
     }
 
     public TriggerWidget( final IsWidget icon,
@@ -44,11 +45,18 @@ public class TriggerWidget extends Composite {
         resourceHeader.setHTML( 0, 1, "&nbsp;&nbsp;" );
         resourceHeader.setWidget( 0, 2, makeNavHeader(caption) );
         resourceHeader.setHTML( 0, 3, "&nbsp;&nbsp;" );
-        resourceHeader.setWidget( 0, 4, new Icon( IconType.CARET_DOWN ) );
+        resourceHeader.setWidget( 0, 4, makeIcon( IconType.CARET_DOWN, ProjectExplorerConstants.INSTANCE.ClickToDisplay() ) );
+    }
+
+    private Icon makeIcon( IconType iconType, String tooltip ) {
+        Icon icon = new Icon( iconType );
+        icon.setTitle( tooltip );
+        return icon;
     }
 
     private NavHeader makeNavHeader( final String caption ) {
         final NavHeader nh = new NavHeader( caption );
+        nh.setTitle( ProjectExplorerConstants.INSTANCE.ClickToDisplay() );
         nh.addStyleName( ProjectExplorerResources.INSTANCE.CSS().triggerCaption() );
         return nh;
     }

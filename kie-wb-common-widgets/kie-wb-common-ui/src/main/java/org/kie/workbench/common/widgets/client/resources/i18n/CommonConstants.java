@@ -268,6 +268,8 @@ public interface CommonConstants
     
     String English();
 
+    String ResetPerspectivesTooltip();
+
     String PromptResetPerspectives();
 
     String WarningTheSelectedKSessionDoesNotExist();

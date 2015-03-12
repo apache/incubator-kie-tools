@@ -30,6 +30,7 @@ import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.server.management.client.events.ContainerInfo;
+import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
 import org.kie.workbench.common.screens.server.management.events.ContainerStarted;
 import org.kie.workbench.common.screens.server.management.events.ContainerStopped;
@@ -268,6 +269,7 @@ public class ContainerInfoPresenter {
                                 return new Button() {
                                     {
                                         setIcon( IconType.REMOVE );
+                                        setTitle( Constants.INSTANCE.remove() );
                                         setSize( MINI );
                                         addClickHandler( new ClickHandler() {
                                             @Override

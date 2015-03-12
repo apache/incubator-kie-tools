@@ -52,6 +52,7 @@ public class ResetPerspectivesMenuBuilder implements MenuFactory.CustomMenuBuild
 
     public ResetPerspectivesMenuBuilder() {
         link.setIcon( IconType.MEDKIT );
+        link.setTitle( CommonConstants.INSTANCE.ResetPerspectivesTooltip() );
         link.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
