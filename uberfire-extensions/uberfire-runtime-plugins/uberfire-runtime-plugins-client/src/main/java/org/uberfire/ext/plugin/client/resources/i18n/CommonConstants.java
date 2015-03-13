@@ -69,4 +69,8 @@ public interface CommonConstants
 
     String MenusLabelIsManatory();
 
+    String DragAndDrop();
+
+    String ClickToDisplay();
+
 }

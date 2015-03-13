@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.plugin.client.perspective.editor.api.ExternalPerspectiveEditorComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.util.DragType;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.workbench.events.NotificationEvent;
 
 public class DragGridElement extends Composite {
@@ -63,6 +64,7 @@ public class DragGridElement extends Composite {
     }
 
     private void createMoveIcon( final DragType type ) {
+        move.setTitle( CommonConstants.INSTANCE.DragAndDrop() );
         move.addDomHandler( new DragStartHandler() {
             @Override
             public void onDragStart( DragStartEvent event ) {

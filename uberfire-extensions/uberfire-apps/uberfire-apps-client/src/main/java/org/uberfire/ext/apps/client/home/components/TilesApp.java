@@ -65,7 +65,7 @@ public class TilesApp extends Composite {
                       Directory currentDirectory ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         defineTileColor( type );
-        createIcon( type );
+        createIcon( type, CommonConstants.INSTANCE.CreateDir() );
         displayNoneOnLabel();
         addClickPopUpHandler( clickCommand, currentDirectory );
     }
@@ -81,7 +81,7 @@ public class TilesApp extends Composite {
                       final ParameterizedCommand<String> clickCommand ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         defineTileColor( type );
-        createIcon( type );
+        createIcon( type, CommonConstants.INSTANCE.GotoComponent() );
         createLabel( componentName );
         addClickCommandHandler( clickCommand, componentName );
     }
@@ -101,7 +101,7 @@ public class TilesApp extends Composite {
                       final ParameterizedCommand<String> deleteCommand ) {
         initWidget( uiBinder.createAndBindUi( this ) );
         defineTileColor( type );
-        createIcon( type );
+        createIcon( type, CommonConstants.INSTANCE.OpenDir() );
         createLabel( dirName );
         addClickCommandHandler( clickCommand, dirURI );
         createDeleteIcon( deleteCommand, dirURI );
@@ -111,6 +111,7 @@ public class TilesApp extends Composite {
                                    final String dirURI ) {
         deleteIcon = new Icon( IconType.REMOVE );
         deleteIcon.setIconSize( IconSize.LARGE );
+        deleteIcon.setTitle( CommonConstants.INSTANCE.DeleteDir() );
         deleteIcon.addStyleName( APP_CSS.CSS().deleteIcon() );
         deleteIcon.addDomHandler( new ClickHandler() {
             @Override
@@ -168,8 +169,9 @@ public class TilesApp extends Composite {
         label.setText( name );
     }
 
-    private void createIcon( TYPE type ) {
+    private void createIcon( TYPE type, String tooltip ) {
         icon.setIconSize( IconSize.LARGE );
+        icon.setTitle( tooltip );
         icon.setType( type.icon() );
     }
 

@@ -11,6 +11,10 @@ public interface CommonConstants
 
     String CreateDir();
 
+    String DeleteDir();
+
+    String OpenDir();
+
     String DirName();
 
     String DirNameHolder();
@@ -25,4 +29,5 @@ public interface CommonConstants
 
     String DeleteAppPrompt();
 
+    String GotoComponent();
 }

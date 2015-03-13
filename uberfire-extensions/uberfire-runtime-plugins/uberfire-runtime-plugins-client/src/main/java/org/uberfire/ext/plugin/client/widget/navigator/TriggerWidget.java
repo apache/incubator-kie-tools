@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
 /**
  * Trigger Widget for ResourceType groups
@@ -35,7 +36,7 @@ public class TriggerWidget extends Composite {
         initWidget( resourceHeader );
         resourceHeader.setWidget( 0, 0, makeNavHeader( caption ) );
         resourceHeader.setHTML( 0, 1, "&nbsp;&nbsp;" );
-        resourceHeader.setWidget( 0, 2, new Icon( IconType.CARET_DOWN ) );
+        resourceHeader.setWidget( 0, 2, makeIcon( IconType.CARET_DOWN, CommonConstants.INSTANCE.ClickToDisplay() ) );
     }
 
     public TriggerWidget( final IsWidget icon,
@@ -46,14 +47,21 @@ public class TriggerWidget extends Composite {
         resourceHeader.setHTML( 0, 1, "&nbsp;&nbsp;" );
         resourceHeader.setWidget( 0, 2, makeNavHeader( caption ) );
         resourceHeader.setHTML( 0, 3, "&nbsp;&nbsp;" );
-        resourceHeader.setWidget( 0, 4, new Icon( IconType.CARET_DOWN ) );
+        resourceHeader.setWidget( 0, 4, makeIcon( IconType.CARET_DOWN, CommonConstants.INSTANCE.ClickToDisplay() ) );
     }
 
     private NavHeader makeNavHeader( final String caption ) {
         final NavHeader nh = new NavHeader( caption );
+        nh.setTitle( CommonConstants.INSTANCE.ClickToDisplay() );
         nh.getElement().getStyle().setFontWeight( Style.FontWeight.BOLD );
         nh.getElement().getStyle().setColor( "#000000" );
         return nh;
+    }
+
+    private Icon makeIcon( IconType iconType, String tooltip ) {
+        Icon icon = new Icon( iconType );
+        icon.setTitle( tooltip );
+        return icon;
     }
 
 }
