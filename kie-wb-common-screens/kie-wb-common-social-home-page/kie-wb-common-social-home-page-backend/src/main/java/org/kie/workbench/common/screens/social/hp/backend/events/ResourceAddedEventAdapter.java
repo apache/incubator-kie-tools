@@ -42,6 +42,17 @@ public class ResourceAddedEventAdapter implements SocialAdapter<ResourceAddedEve
     @Override
     public boolean shouldInterceptThisEvent( Object event ) {
         if ( event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() ) ) {
+            if ( !isASystemEvent( event ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isASystemEvent( Object _event ) {
+        ResourceAddedEvent event = (ResourceAddedEvent) _event;
+        final String user = event.getSessionInfo().getIdentity().getIdentifier();
+        if ( user.equalsIgnoreCase( "system" ) || user.equalsIgnoreCase( "<system>" ) ) {
             return true;
         }
         return false;

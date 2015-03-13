@@ -15,6 +15,7 @@ import org.kie.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.kie.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.kie.workbench.common.screens.social.hp.model.HomePageTypes;
 import org.uberfire.ext.editor.commons.version.VersionService;
+import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 @ApplicationScoped
@@ -42,6 +43,17 @@ public class ResourceUpdatedEventAdapter implements SocialAdapter<ResourceUpdate
     @Override
     public boolean shouldInterceptThisEvent( Object event ) {
         if ( event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() ) ) {
+            if ( !isASystemEvent( event ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isASystemEvent( Object _event ) {
+        ResourceUpdatedEvent event = (ResourceUpdatedEvent) _event;
+        final String user = event.getSessionInfo().getIdentity().getIdentifier();
+        if ( user.equalsIgnoreCase( "system" ) || user.equalsIgnoreCase( "<system>" ) ) {
             return true;
         }
         return false;
