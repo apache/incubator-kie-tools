@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SplashScreenActivity;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 
 import com.github.gwtbootstrap.client.ui.Dropdown;
@@ -36,6 +37,7 @@ public class MenuSplashList extends Composite {
         dropdown.getTriggerWidget().setCaret( false );
         dropdown.setRightDropdown( true );
         dropdown.setIcon( IconType.QUESTION_SIGN );
+        dropdown.setTitle( WorkbenchConstants.INSTANCE.showSplashHelp() );
         dropdown.ensureDebugId( "MenuSplashList-dropdown" );
         initWidget( dropdown );
     }

@@ -40,4 +40,5 @@ Messages {
 
     String collapseToolbar();
 
+    String showSplashHelp();
 }
