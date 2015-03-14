@@ -107,7 +107,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, S extends IStorageEn
     @Override
     public T setStorageEngine(final S stor)
     {
-        if (null != stor)
+        if ((null != stor) && (null != m_stor))
         {
             stor.migrate(m_stor);
         }

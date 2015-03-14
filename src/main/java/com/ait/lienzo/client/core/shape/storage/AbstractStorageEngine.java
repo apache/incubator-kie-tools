@@ -109,13 +109,19 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
     @Override
     public void migrate(final IStorageEngine<M> storage)
     {
-        final NFastArrayList<M> list = storage.getChildren();
-
-        final int size = list.size();
-
-        for (int i = 0; i < size; i++)
+        if (null != storage)
         {
-            add(list.get(i));
+            final NFastArrayList<M> list = storage.getChildren();
+
+            if (null != list)
+            {
+                final int size = list.size();
+
+                for (int i = 0; i < size; i++)
+                {
+                    add(list.get(i));
+                }
+            }
         }
     }
 
