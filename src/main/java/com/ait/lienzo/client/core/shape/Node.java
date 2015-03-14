@@ -698,7 +698,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
-    public IContainer<?, ?> asContainer()
+    public IContainer<?, ?, ?> asContainer()
     {
         return null;
     }
@@ -728,7 +728,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
-    public GroupOf<IPrimitive<?>, ?> asGroup()
+    public GroupOf<IPrimitive<?>, ?, ?> asGroup()
     {
         return null;
     }
@@ -971,7 +971,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
     }
 
-    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?>> extends NodeFactory<C> implements IContainerFactory
+    public static abstract class ContainerNodeFactory<C extends IJSONSerializable<C> & IContainer<C, ?, ?>> extends NodeFactory<C> implements IContainerFactory
     {
         protected ContainerNodeFactory(final NodeType type)
         {

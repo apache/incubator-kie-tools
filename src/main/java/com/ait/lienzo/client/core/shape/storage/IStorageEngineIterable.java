@@ -14,7 +14,7 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.storage;
+package com.ait.lienzo.client.core.shape.storage;
 
 import java.util.Iterator;
 

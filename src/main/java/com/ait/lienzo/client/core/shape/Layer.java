@@ -25,6 +25,8 @@ import com.ait.lienzo.client.core.animation.LayerRedrawManager;
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
+import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.NFastArrayList;
@@ -53,7 +55,7 @@ import com.google.gwt.json.client.JSONString;
  *      <li>Layers may contain {@link IPrimitive} or {@link Group}.</li>
  * </ul> 
  */
-public class Layer extends ContainerNode<IPrimitive<?>, Layer>
+public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitive<?>>, Layer>
 {
     private int                            m_wide            = 0;
 
@@ -78,7 +80,12 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      */
     public Layer()
     {
-        super(NodeType.LAYER);
+        super(NodeType.LAYER, new PrimitiveFastArrayStorageEngine());
+    }
+
+    public Layer(IStorageEngine<IPrimitive<?>> storage)
+    {
+        super(NodeType.LAYER, storage);
     }
 
     /**
@@ -89,6 +96,12 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     protected Layer(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.LAYER, node, ctx);
+    }
+
+    @Override
+    public IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
+    {
+        return new PrimitiveFastArrayStorageEngine();
     }
 
     /**
@@ -476,7 +489,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
      * @return IContainer
      */
     @Override
-    public IContainer<Layer, IPrimitive<?>> asContainer()
+    public IContainer<Layer, ?, IPrimitive<?>> asContainer()
     {
         return this;
     }
@@ -728,7 +741,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         if (null != parent)
         {
-            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -751,7 +764,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         if (null != parent)
         {
-            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -774,7 +787,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         if (null != parent)
         {
-            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -797,7 +810,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
         if (null != parent)
         {
-            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
+            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -840,7 +853,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
                     {
                         buff.add(node);
                     }
-                    final IContainer<?, ?> cont = node.asContainer();
+                    final IContainer<?, ?, ?> cont = node.asContainer();
 
                     if (null != cont)
                     {
@@ -998,7 +1011,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
         }
 
         @Override
-        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             final IPrimitive<?> prim = node.asPrimitive();
 

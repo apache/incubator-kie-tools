@@ -88,7 +88,7 @@ public interface IDrawable<T>
      * 
      * @return Scene
      */
-    public GroupOf<IPrimitive<?>, ?> asGroup();
+    public GroupOf<IPrimitive<?>, ?, ?> asGroup();
 
     /**
      * Returns this object as a {@link Scene}
@@ -106,7 +106,7 @@ public interface IDrawable<T>
      * 
      * @return IContainer
      */
-    public IContainer<?, ?> asContainer();
+    public IContainer<?, ?, ?> asContainer();
 
     /**
      * Returns this object as an {@link IPrimitive}

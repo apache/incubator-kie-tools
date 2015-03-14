@@ -23,6 +23,8 @@ import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
+import com.ait.lienzo.client.core.shape.storage.LayerFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
@@ -47,7 +49,7 @@ import com.google.gwt.json.client.JSONString;
  * <li>A {@link Scene} can contain more than one {@link Layer}</li>
  * </ul> 
  */
-public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializable<Scene>
+public class Scene extends ContainerNode<Layer, IStorageEngine<Layer>, Scene> implements IJSONSerializable<Scene>
 {
     private int              m_wide    = 0;
 
@@ -62,12 +64,18 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
      */
     public Scene()
     {
-        super(NodeType.SCENE);
+        super(NodeType.SCENE, new LayerFastArrayStorageEngine());
     }
 
     protected Scene(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.SCENE, node, ctx);
+    }
+    
+    @Override
+    public IStorageEngine<Layer> getDefaultStorageEngine()
+    {
+        return new LayerFastArrayStorageEngine();
     }
 
     public final boolean adopt(final Viewport owns)
@@ -201,7 +209,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
      * @return Scene
      */
     @Override
-    public final IContainer<Scene, Layer> asContainer()
+    public final IContainer<Scene, ?, Layer> asContainer()
     {
         return this;
     }
@@ -890,7 +898,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
         }
 
         @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public final boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             if (node.getNodeType() == NodeType.LAYER)
             {

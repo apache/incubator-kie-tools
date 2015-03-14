@@ -58,6 +58,11 @@ public final class NFastArrayList<M>
             m_jso = jso;
         }
     }
+    
+    public final boolean isEmpty()
+    {
+        return m_jso.isEmpty();
+    }
 
     /**
      * Return the List's size.

@@ -17,13 +17,12 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.NoSuchElementException;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -40,15 +39,17 @@ import com.google.gwt.json.client.JSONObject;
  * 
  * @param <T>
  */
-public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T> implements IContainer<T, M>, IDrawable<T>, Iterable<M>
+public abstract class ContainerNode<M extends IDrawable<?>, S extends IStorageEngine<M>, T extends ContainerNode<M, S, T>> extends Node<T> implements IContainer<T, S, M>, IDrawable<T>
 {
-    private final NFastArrayList<M> m_list = new NFastArrayList<M>();
+    private ClipRegion m_clip;
 
-    private ClipRegion              m_clip;
+    private S          m_stor;
 
-    protected ContainerNode(final NodeType type)
+    protected ContainerNode(final NodeType type, final S stor)
     {
         super(type);
+
+        setStorageEngine(stor);
     }
 
     protected ContainerNode(final NodeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
@@ -78,13 +79,41 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public NFastArrayList<M> getChildNodes()
     {
-        return m_list;
+        return getStorageEngine().getChildren();
+    }
+
+    @Override
+    public NFastArrayList<M> getChildNodes(final ClipRegion clip)
+    {
+        return getStorageEngine().getChildren(clip);
     }
 
     @Override
     public int length()
     {
-        return m_list.size();
+        return getStorageEngine().size();
+    }
+
+    @Override
+    public S getStorageEngine()
+    {
+        if (null == m_stor)
+        {
+            m_stor = getDefaultStorageEngine();
+        }
+        return m_stor;
+    }
+
+    @Override
+    public T setStorageEngine(final S stor)
+    {
+        if (null != stor)
+        {
+            stor.migrate(m_stor);
+        }
+        m_stor = stor;
+
+        return cast();
     }
 
     public ClipRegion getClipRegion()
@@ -113,7 +142,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         node.setParent(this);
 
-        m_list.add(child);
+        getStorageEngine().add(child);
 
         return cast();
     }
@@ -132,7 +161,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         node.setParent(null);
 
-        m_list.remove(child);
+        getStorageEngine().remove(child);
 
         return cast();
     }
@@ -147,7 +176,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public T removeAll()
     {
-        m_list.clear();
+        getStorageEngine().clear();
 
         return cast();
     }
@@ -172,17 +201,19 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         {
             return;
         }
-        final int size = m_list.size();
-
         ClipRegion clip = getClipRegion();
 
         if (null == clip)
         {
             clip = bounds;
         }
+        final NFastArrayList<M> list = getChildNodes(clip);
+
+        final int size = list.size();
+
         for (int i = 0; i < size; i++)
         {
-            m_list.get(i).drawWithTransforms(context, alpha, clip);
+            list.get(i).drawWithTransforms(context, alpha, clip);
         }
     }
 
@@ -192,7 +223,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public T moveUp(final M node)
     {
-        getChildNodes().moveUp(node);
+        getStorageEngine().moveUp(node);
 
         return cast();
     }
@@ -203,7 +234,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public T moveDown(final M node)
     {
-        getChildNodes().moveDown(node);
+        getStorageEngine().moveDown(node);
 
         return cast();
     }
@@ -214,7 +245,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public T moveToTop(final M node)
     {
-        getChildNodes().moveToTop(node);
+        getStorageEngine().moveToTop(node);
 
         return cast();
     }
@@ -225,7 +256,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     @Override
     public T moveToBottom(final M node)
     {
-        getChildNodes().moveToBottom(node);
+        getStorageEngine().moveToBottom(node);
 
         return cast();
     }
@@ -267,60 +298,5 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         find(predicate, buff);
 
         return buff;
-    }
-
-    @Override
-    public Iterator<M> iterator()
-    {
-        return new ContainerNodeIterator();
-    }
-
-    private class ContainerNodeIterator implements Iterator<M>
-    {
-        private int m_indx = 0;
-
-        private int m_last = -1;
-
-        @Override
-        public boolean hasNext()
-        {
-            return (m_indx != length());
-        }
-
-        @Override
-        public M next()
-        {
-            if (m_indx >= length())
-            {
-                throw new NoSuchElementException();
-            }
-            M next = getChildNodes().get(m_indx);
-
-            m_last = m_indx++;
-
-            return next;
-        }
-
-        @Override
-        public void remove()
-        {
-            if (m_last == -1)
-            {
-                throw new IllegalStateException();
-            }
-            if (m_last >= length())
-            {
-                throw new NoSuchElementException();
-            }
-            M last = getChildNodes().get(m_last);
-
-            ContainerNode.this.remove(last);
-
-            if (m_last < m_indx)
-            {
-                m_indx--;
-            }
-            m_last = -1;
-        }
     }
 }

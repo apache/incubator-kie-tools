@@ -18,19 +18,32 @@ package com.ait.lienzo.client.core.shape;
 
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
+import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.google.gwt.json.client.JSONObject;
 
-public class Group extends GroupOf<IPrimitive<?>, Group>
+public class Group extends GroupOf<IPrimitive<?>, IStorageEngine<IPrimitive<?>>, Group>
 {
     public Group()
     {
-        super(GroupType.GROUP);
+        super(GroupType.GROUP, new PrimitiveFastArrayStorageEngine());
+    }
+    
+    public Group(IStorageEngine<IPrimitive<?>> storage)
+    {
+        super(GroupType.GROUP, storage);
     }
 
     protected Group(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(GroupType.GROUP, node, ctx);
+    }
+    
+    @Override
+    public IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
+    {
+        return new PrimitiveFastArrayStorageEngine();
     }
 
     public static class GroupFactory extends GroupOfFactory<IPrimitive<?>, Group>
@@ -41,7 +54,7 @@ public class Group extends GroupOf<IPrimitive<?>, Group>
         }
 
         @Override
-        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             final IPrimitive<?> prim = node.asPrimitive();
 

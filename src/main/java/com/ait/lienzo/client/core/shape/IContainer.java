@@ -18,13 +18,15 @@ package com.ait.lienzo.client.core.shape;
 
 import java.util.LinkedHashSet;
 
+import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
+import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.shared.java.util.function.Predicate;
 
 /**
  * Interface to be implemented by all primitive collections. 
  */
-public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
+public interface IContainer<T extends IContainer<T, S, M>, S extends IStorageEngine<M>, M>
 {
     /**
      * Gets all nodes in this container.
@@ -34,12 +36,25 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
     public NFastArrayList<M> getChildNodes();
 
     /**
+     * Gets all nodes in this container.
+     * 
+     * @return FastArrayList
+     */
+    public NFastArrayList<M> getChildNodes(ClipRegion bounds);
+
+    public T setStorageEngine(S stor);
+
+    public S getStorageEngine();
+    
+    public S getDefaultStorageEngine();
+
+    /**
      * Adds a node to this container
      * 
      * @param node
      */
     public T add(M node);
-    
+
     /**
      * Adds a node to this container
      * 
@@ -94,7 +109,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @return ArrayList
      */
     public Iterable<Node<?>> find(Predicate<Node<?>> predicate);
-    
+
     /**
      * Searches and returns all {@link Node} that match the {@link INodeFilter}
      * 
@@ -102,7 +117,7 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @return ArrayList
      */
     public void find(Predicate<Node<?>> predicate, LinkedHashSet<Node<?>> buff);
-    
+
     /**
      * Searches and returns all {@link Node} that have a matching ID {@link INodeFilter}
      * 
@@ -141,12 +156,12 @@ public interface IContainer<T extends IContainer<T, M>, M> extends Iterable<M>
      * @return Scene
      */
     public Layer asLayer();
-    
+
     /**
      * Returns this object as a {@link Scene}
      * or null if it not a Scene.
      * 
      * @return Scene
      */
-    public GroupOf<IPrimitive<?>, ?> asGroup();
+    public GroupOf<IPrimitive<?>, ?, ?> asGroup();
 }

@@ -14,17 +14,17 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.shared.core.types;
+package com.ait.lienzo.client.core.shape.storage;
 
 import com.ait.lienzo.shared.java.util.IStringValuedType;
 
 public class StorageEngineType implements IStringValuedType
 {
-    public static final StorageEngineType FAST_ARRAY_STORAGE_ENGINE      = new StorageEngineType("FastArrayStorageEngine");
+    public static final StorageEngineType SCENE_FAST_ARRAY_STORAGE_ENGINE     = new StorageEngineType("SceneFastArrayStorageEngine");
 
-    public static final StorageEngineType HV_SPATIAL_STORAGE_ENGINE      = new StorageEngineType("HVSpatialStorageEngine");
+    public static final StorageEngineType LAYER_FAST_ARRAY_STORAGE_ENGINE     = new StorageEngineType("LayerFastArrayStorageEngine");
 
-    public static final StorageEngineType TABULAR_SPATIAL_STORAGE_ENGINE = new StorageEngineType("TabularSpatialStorageEngine");
+    public static final StorageEngineType PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE = new StorageEngineType("PrimitiveFastArrayStorageEngine");
 
     private final String                  m_value;
 

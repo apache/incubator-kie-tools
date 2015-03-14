@@ -14,34 +14,39 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.storage;
+package com.ait.lienzo.client.core.shape.storage;
 
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.shared.core.types.StorageEngineType;
 import com.google.gwt.json.client.JSONObject;
 
-public abstract class AbstractFastArrayStorageEngine<M extends IJSONSerializable<M>> extends AbstractStorageEngine<M>
+public abstract class AbstractFastArrayStorageEngine<M> extends AbstractStorageEngine<M>
 {
     private final NFastArrayList<M> m_list = new NFastArrayList<M>();
 
-    protected AbstractFastArrayStorageEngine(final String type)
+    protected AbstractFastArrayStorageEngine(final StorageEngineType type)
     {
-        super(type, StorageEngineType.FAST_ARRAY_STORAGE_ENGINE);
+        super(type);
     }
 
-    protected AbstractFastArrayStorageEngine(final String type, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractFastArrayStorageEngine(final StorageEngineType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
-        super(type, StorageEngineType.FAST_ARRAY_STORAGE_ENGINE, node, ctx);
+        super(type, node, ctx);
     }
 
     @Override
     public int size()
     {
         return m_list.size();
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return m_list.isEmpty();
     }
 
     @Override
@@ -74,6 +79,11 @@ public abstract class AbstractFastArrayStorageEngine<M extends IJSONSerializable
     }
 
     @Override
+    public void refresh()
+    {
+    }
+
+    @Override
     public NFastArrayList<M> getChildren()
     {
         return m_list;
@@ -91,9 +101,33 @@ public abstract class AbstractFastArrayStorageEngine<M extends IJSONSerializable
         return false;
     }
 
+    @Override
+    public void moveUp(final M item)
+    {
+        m_list.moveUp(item);
+    }
+
+    @Override
+    public void moveDown(final M item)
+    {
+        m_list.moveDown(item);
+    }
+
+    @Override
+    public void moveToTop(final M item)
+    {
+        m_list.moveToTop(item);
+    }
+
+    @Override
+    public void moveToBottom(final M item)
+    {
+        m_list.moveToBottom(item);
+    }
+
     public abstract static class FastArrayStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractStorageEngineFactory<S>
     {
-        protected FastArrayStorageEngineFactory(final String type)
+        protected FastArrayStorageEngineFactory(final StorageEngineType type)
         {
             super(type);
         }

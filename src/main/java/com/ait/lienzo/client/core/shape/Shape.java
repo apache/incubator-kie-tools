@@ -625,7 +625,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
                 return true;
             }
-            final GroupOf<IPrimitive<?>, ?> group = parent.asGroup();
+            final GroupOf<IPrimitive<?>, ?, ?> group = parent.asGroup();
 
             if (null != group)
             {
@@ -650,7 +650,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         if (null != parent)
         {
-            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -673,7 +673,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         if (null != parent)
         {
-            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -696,7 +696,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         if (null != parent)
         {
-            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -719,7 +719,7 @@ public abstract class Shape<T extends Shape<T>> extends Node<T> implements IPrim
 
         if (null != parent)
         {
-            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {

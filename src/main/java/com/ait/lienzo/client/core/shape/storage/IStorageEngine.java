@@ -14,24 +14,27 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.storage;
+package com.ait.lienzo.client.core.shape.storage;
 
-import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.shared.core.types.StorageEngineType;
+import com.google.gwt.json.client.JSONObject;
 
-public interface IStorageEngine<M, S extends IStorageEngine<M, S>> extends IJSONSerializable<S>, IStorageEngineIterable<M>
+public interface IStorageEngine<M> extends IStorageEngineIterable<M>
 {
     public int size();
-    
+
     public void clear();
+
+    public boolean isEmpty();
 
     public void add(M item);
 
     public void remove(M item);
-    
+
+    public void refresh();
+
     public void refresh(M item);
 
     public boolean contains(M item);
@@ -44,7 +47,17 @@ public interface IStorageEngine<M, S extends IStorageEngine<M, S>> extends IJSON
 
     public MetaData getMetaData();
 
-    public String getType();
-
     public StorageEngineType getStorageEngineType();
+
+    public void moveUp(M item);
+
+    public void moveDown(M item);
+
+    public void moveToTop(M item);
+
+    public void moveToBottom(M item);
+    
+    public JSONObject toJSONObject();
+    
+    public void migrate(IStorageEngine<M> storage);
 }

@@ -16,9 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.NoSuchElementException;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -39,6 +37,8 @@ import com.ait.lienzo.client.core.mediator.Mediators;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
+import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
+import com.ait.lienzo.client.core.shape.storage.SceneFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * <li>The main {@link Scene} can contain multiple {@link Layer}.</li>
  * </ul> 
  */
-public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSerializable<Viewport>
+public class Viewport extends ContainerNode<Scene, IStorageEngine<Scene>, Viewport> implements IJSONSerializable<Viewport>
 {
     private int              m_wide    = 0;
 
@@ -91,7 +91,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
     public Viewport(final Scene main, final int wide, final int high)
     {
-        super(NodeType.VIEWPORT);
+        super(NodeType.VIEWPORT, new SceneFastArrayStorageEngine());
 
         m_wide = wide;
 
@@ -108,7 +108,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      */
     public Viewport(final int wide, final int high)
     {
-        super(NodeType.VIEWPORT);
+        super(NodeType.VIEWPORT, new SceneFastArrayStorageEngine());
 
         m_wide = wide;
 
@@ -120,6 +120,12 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     protected Viewport(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(NodeType.VIEWPORT, node, ctx);
+    }
+    
+    @Override
+    public IStorageEngine<Scene> getDefaultStorageEngine()
+    {
+        return new SceneFastArrayStorageEngine();
     }
 
     private final void setSceneAndState(final Scene main)
@@ -616,12 +622,6 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         m_main.find(predicate, buff);
     }
 
-    @Override
-    public final Iterator<Scene> iterator()
-    {
-        return new ViewportIterator();
-    }
-
     /**
      * Returns the {@link Mediators} for this viewport.
      * Mediators can be used to e.g. to add zoom operations.
@@ -677,7 +677,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         }
 
         @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public final boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             if (node.getNodeType() == NodeType.SCENE)
             {
@@ -708,35 +708,6 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
                 }
             }
             return false;
-        }
-    }
-
-    private class ViewportIterator implements Iterator<Scene>
-    {
-        private int m_indx = 0;
-
-        @Override
-        public final boolean hasNext()
-        {
-            return (m_indx != 1);
-        }
-
-        @Override
-        public final Scene next()
-        {
-            if (m_indx >= 1)
-            {
-                throw new NoSuchElementException();
-            }
-            m_indx++;
-
-            return m_main;
-        }
-
-        @Override
-        public final void remove()
-        {
-            throw new IllegalStateException();
         }
     }
 

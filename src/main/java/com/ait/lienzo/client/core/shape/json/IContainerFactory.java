@@ -34,5 +34,5 @@ public interface IContainerFactory
      * @param childNode IJSONSerializable
      */
 
-    public boolean addNodeForContainer(IContainer<?, ?> container, Node<?> node, ValidationContext ctx);
+    public boolean addNodeForContainer(IContainer<?, ?, ?> container, Node<?> node, ValidationContext ctx);
 }

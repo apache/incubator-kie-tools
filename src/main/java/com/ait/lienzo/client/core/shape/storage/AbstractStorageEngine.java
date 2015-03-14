@@ -14,7 +14,7 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.storage;
+package com.ait.lienzo.client.core.shape.storage;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -25,35 +25,29 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.MetaData;
+import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
-import com.ait.lienzo.shared.core.types.StorageEngineType;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 
-public abstract class AbstractStorageEngine<M extends IJSONSerializable<M>> implements IStorageEngine<M, AbstractStorageEngine<M>>
+public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
 {
-    private final String            m_type;
-
     private final MetaData          m_meta;
 
-    private final StorageEngineType m_stor;
+    private final StorageEngineType m_type;
 
-    protected AbstractStorageEngine(final String type, final StorageEngineType stor)
+    protected AbstractStorageEngine(final StorageEngineType type)
     {
         m_type = type;
-
-        m_stor = stor;
 
         m_meta = new MetaData();
     }
 
-    protected AbstractStorageEngine(final String type, final StorageEngineType stor, final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected AbstractStorageEngine(final StorageEngineType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         m_type = type;
-
-        m_stor = stor;
 
         JSONValue mval = node.get("meta");
 
@@ -93,7 +87,6 @@ public abstract class AbstractStorageEngine<M extends IJSONSerializable<M>> impl
         return m_meta;
     }
 
-    @Override
     public String toJSONString()
     {
         return toJSONObject().toString();
@@ -104,7 +97,7 @@ public abstract class AbstractStorageEngine<M extends IJSONSerializable<M>> impl
     {
         final JSONObject object = new JSONObject();
 
-        object.put("type", new JSONString(getType()));
+        object.put("type", new JSONString(getStorageEngineType().getValue()));
 
         if (false == getMetaData().isEmpty())
         {
@@ -114,15 +107,22 @@ public abstract class AbstractStorageEngine<M extends IJSONSerializable<M>> impl
     }
 
     @Override
-    public String getType()
+    public void migrate(final IStorageEngine<M> storage)
     {
-        return m_type;
+        final NFastArrayList<M> list = storage.getChildren();
+
+        final int size = list.size();
+
+        for (int i = 0; i < size; i++)
+        {
+            add(list.get(i));
+        }
     }
 
     @Override
     public StorageEngineType getStorageEngineType()
     {
-        return m_stor;
+        return m_type;
     }
 
     @Override
@@ -139,9 +139,9 @@ public abstract class AbstractStorageEngine<M extends IJSONSerializable<M>> impl
 
     protected static abstract class AbstractStorageEngineFactory<S extends IJSONSerializable<S>> extends AbstractFactory<S>
     {
-        protected AbstractStorageEngineFactory(final String type)
+        protected AbstractStorageEngineFactory(final StorageEngineType type)
         {
-            super(type);
+            super(type.getValue());
         }
     }
 }

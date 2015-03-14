@@ -343,7 +343,7 @@ public final class JSONDeserializer
      * @throws ValidationException
      */
 
-    public final void deserializeChildren(IContainer<?, ?> container, JSONObject node, IContainerFactory factory, ValidationContext ctx) throws ValidationException
+    public final void deserializeChildren(IContainer<?, ?, ?> container, JSONObject node, IContainerFactory factory, ValidationContext ctx) throws ValidationException
     {
         JSONValue jsonvalu = node.get("children");
 
