@@ -66,7 +66,7 @@ import com.google.gwt.user.client.ui.Widget;
  * <li>The main {@link Scene} can contain multiple {@link Layer}.</li>
  * </ul> 
  */
-public class Viewport extends ContainerNode<Scene, IStorageEngine<Scene>, Viewport> implements IJSONSerializable<Viewport>
+public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSerializable<Viewport>
 {
     private int              m_wide    = 0;
 
@@ -121,7 +121,7 @@ public class Viewport extends ContainerNode<Scene, IStorageEngine<Scene>, Viewpo
     {
         super(NodeType.VIEWPORT, node, ctx);
     }
-    
+
     @Override
     public IStorageEngine<Scene> getDefaultStorageEngine()
     {
@@ -547,6 +547,8 @@ public class Viewport extends ContainerNode<Scene, IStorageEngine<Scene>, Viewpo
 
         object.put("children", children);
 
+        object.put("storage", getStorageEngine().toJSONObject());
+
         return object;
     }
 
@@ -677,7 +679,7 @@ public class Viewport extends ContainerNode<Scene, IStorageEngine<Scene>, Viewpo
         }
 
         @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             if (node.getNodeType() == NodeType.SCENE)
             {

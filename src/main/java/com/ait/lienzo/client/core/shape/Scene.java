@@ -49,7 +49,7 @@ import com.google.gwt.json.client.JSONString;
  * <li>A {@link Scene} can contain more than one {@link Layer}</li>
  * </ul> 
  */
-public class Scene extends ContainerNode<Layer, IStorageEngine<Layer>, Scene> implements IJSONSerializable<Scene>
+public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializable<Scene>
 {
     private int              m_wide    = 0;
 
@@ -71,7 +71,7 @@ public class Scene extends ContainerNode<Layer, IStorageEngine<Layer>, Scene> im
     {
         super(NodeType.SCENE, node, ctx);
     }
-    
+
     @Override
     public IStorageEngine<Layer> getDefaultStorageEngine()
     {
@@ -209,7 +209,7 @@ public class Scene extends ContainerNode<Layer, IStorageEngine<Layer>, Scene> im
      * @return Scene
      */
     @Override
-    public final IContainer<Scene, ?, Layer> asContainer()
+    public final IContainer<Scene, Layer> asContainer()
     {
         return this;
     }
@@ -377,6 +377,8 @@ public class Scene extends ContainerNode<Layer, IStorageEngine<Layer>, Scene> im
             }
         }
         object.put("children", children);
+
+        object.put("storage", getStorageEngine().toJSONObject());
 
         return object;
     }
@@ -898,7 +900,7 @@ public class Scene extends ContainerNode<Layer, IStorageEngine<Layer>, Scene> im
         }
 
         @Override
-        public final boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             if (node.getNodeType() == NodeType.LAYER)
             {

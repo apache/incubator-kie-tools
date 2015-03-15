@@ -23,13 +23,13 @@ import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.shared.core.types.GroupType;
 import com.google.gwt.json.client.JSONObject;
 
-public class Group extends GroupOf<IPrimitive<?>, IStorageEngine<IPrimitive<?>>, Group>
+public class Group extends GroupOf<IPrimitive<?>, Group>
 {
     public Group()
     {
         super(GroupType.GROUP, new PrimitiveFastArrayStorageEngine());
     }
-    
+
     public Group(IStorageEngine<IPrimitive<?>> storage)
     {
         super(GroupType.GROUP, storage);
@@ -39,7 +39,7 @@ public class Group extends GroupOf<IPrimitive<?>, IStorageEngine<IPrimitive<?>>,
     {
         super(GroupType.GROUP, node, ctx);
     }
-    
+
     @Override
     public IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
     {
@@ -54,7 +54,7 @@ public class Group extends GroupOf<IPrimitive<?>, IStorageEngine<IPrimitive<?>>,
         }
 
         @Override
-        public boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             final IPrimitive<?> prim = node.asPrimitive();
 

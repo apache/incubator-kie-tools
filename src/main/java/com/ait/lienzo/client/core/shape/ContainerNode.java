@@ -39,17 +39,17 @@ import com.google.gwt.json.client.JSONObject;
  * 
  * @param <T>
  */
-public abstract class ContainerNode<M extends IDrawable<?>, S extends IStorageEngine<M>, T extends ContainerNode<M, S, T>> extends Node<T> implements IContainer<T, S, M>, IDrawable<T>
+public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T> implements IContainer<T, M>, IDrawable<T>
 {
-    private ClipRegion m_clip;
+    private ClipRegion        m_clip;
 
-    private S          m_stor;
+    private IStorageEngine<M> m_stor;
 
-    protected ContainerNode(final NodeType type, final S stor)
+    protected ContainerNode(final NodeType type, final IStorageEngine<M> storage)
     {
         super(type);
 
-        setStorageEngine(stor);
+        setStorageEngine(storage);
     }
 
     protected ContainerNode(final NodeType type, final JSONObject node, final ValidationContext ctx) throws ValidationException
@@ -95,7 +95,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, S extends IStorageEn
     }
 
     @Override
-    public S getStorageEngine()
+    public IStorageEngine<M> getStorageEngine()
     {
         if (null == m_stor)
         {
@@ -105,13 +105,13 @@ public abstract class ContainerNode<M extends IDrawable<?>, S extends IStorageEn
     }
 
     @Override
-    public T setStorageEngine(final S stor)
+    public T setStorageEngine(final IStorageEngine<M> storage)
     {
-        if ((null != stor) && (null != m_stor))
+        if ((null != storage) && (null != m_stor))
         {
-            stor.migrate(m_stor);
+            storage.migrate(m_stor);
         }
-        m_stor = stor;
+        m_stor = storage;
 
         return cast();
     }

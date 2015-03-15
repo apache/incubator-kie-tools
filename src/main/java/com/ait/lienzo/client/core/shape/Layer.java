@@ -55,7 +55,7 @@ import com.google.gwt.json.client.JSONString;
  *      <li>Layers may contain {@link IPrimitive} or {@link Group}.</li>
  * </ul> 
  */
-public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitive<?>>, Layer>
+public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 {
     private int                            m_wide            = 0;
 
@@ -346,6 +346,8 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
         }
         object.put("children", children);
 
+        object.put("storage", getStorageEngine().toJSONObject());
+
         return object;
     }
 
@@ -489,7 +491,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
      * @return IContainer
      */
     @Override
-    public IContainer<Layer, ?, IPrimitive<?>> asContainer()
+    public IContainer<Layer, IPrimitive<?>> asContainer()
     {
         return this;
     }
@@ -741,7 +743,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
 
         if (null != parent)
         {
-            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -764,7 +766,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
 
         if (null != parent)
         {
-            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -787,7 +789,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
 
         if (null != parent)
         {
-            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -810,7 +812,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
 
         if (null != parent)
         {
-            final IContainer<?, ?, Layer> container = (IContainer<?, ?, Layer>) parent.asContainer();
+            final IContainer<?, Layer> container = (IContainer<?, Layer>) parent.asContainer();
 
             if (null != container)
             {
@@ -853,7 +855,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
                     {
                         buff.add(node);
                     }
-                    final IContainer<?, ?, ?> cont = node.asContainer();
+                    final IContainer<?, ?> cont = node.asContainer();
 
                     if (null != cont)
                     {
@@ -1011,7 +1013,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, IStorageEngine<IPrimitiv
         }
 
         @Override
-        public boolean addNodeForContainer(final IContainer<?, ?, ?> container, final Node<?> node, final ValidationContext ctx)
+        public boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
             final IPrimitive<?> prim = node.asPrimitive();
 

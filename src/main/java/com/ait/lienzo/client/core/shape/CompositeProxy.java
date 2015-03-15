@@ -570,7 +570,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
                 return true;
             }
-            GroupOf<IPrimitive<?>, ?, ?> group = parent.asGroup();
+            GroupOf<IPrimitive<?>, ?> group = parent.asGroup();
 
             if (null != group)
             {
@@ -595,7 +595,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -618,7 +618,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -641,7 +641,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -664,7 +664,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {

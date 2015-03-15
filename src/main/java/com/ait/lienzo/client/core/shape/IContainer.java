@@ -26,7 +26,7 @@ import com.ait.lienzo.shared.java.util.function.Predicate;
 /**
  * Interface to be implemented by all primitive collections. 
  */
-public interface IContainer<T extends IContainer<T, S, M>, S extends IStorageEngine<M>, M>
+public interface IContainer<T extends IContainer<T, M>, M>
 {
     /**
      * Gets all nodes in this container.
@@ -42,11 +42,11 @@ public interface IContainer<T extends IContainer<T, S, M>, S extends IStorageEng
      */
     public NFastArrayList<M> getChildNodes(ClipRegion bounds);
 
-    public T setStorageEngine(S stor);
+    public T setStorageEngine(IStorageEngine<M> storage);
 
-    public S getStorageEngine();
-    
-    public S getDefaultStorageEngine();
+    public IStorageEngine<M> getStorageEngine();
+
+    public IStorageEngine<M> getDefaultStorageEngine();
 
     /**
      * Adds a node to this container
@@ -163,5 +163,5 @@ public interface IContainer<T extends IContainer<T, S, M>, S extends IStorageEng
      * 
      * @return Scene
      */
-    public GroupOf<IPrimitive<?>, ?, ?> asGroup();
+    public GroupOf<IPrimitive<?>, ?> asGroup();
 }

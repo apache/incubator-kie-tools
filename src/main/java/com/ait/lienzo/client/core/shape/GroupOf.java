@@ -46,7 +46,7 @@ import com.google.gwt.json.client.JSONString;
 /**
  * A Container capable of holding a collection of T objects
  */
-public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<T>, C extends GroupOf<T, S, C>> extends ContainerNode<T, S, C> implements IPrimitive<C>, IJSONSerializable<C>
+public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNode<T, C> implements IPrimitive<C>, IJSONSerializable<C>
 {
     private GroupType              m_type                   = null;
 
@@ -57,7 +57,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
     /**
      * Constructor. Creates an instance of a group.
      */
-    protected GroupOf(final GroupType type, final S stor)
+    protected GroupOf(final GroupType type, final IStorageEngine<T> stor)
     {
         super(NodeType.GROUP, stor);
 
@@ -588,16 +588,16 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
      * @return IContainer<IPrimitive>
      */
     @Override
-    public IContainer<C, S, T> asContainer()
+    public IContainer<C, T> asContainer()
     {
         return cast();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public GroupOf<IPrimitive<?>, ?, ?> asGroup()
+    public GroupOf<IPrimitive<?>, ?> asGroup()
     {
-        return (GroupOf<IPrimitive<?>, ?, ?>) this;
+        return (GroupOf<IPrimitive<?>, ?>) this;
     }
 
     /**
@@ -647,7 +647,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
 
                 return true;
             }
-            GroupOf<IPrimitive<?>, ?, ?> group = parent.asGroup();
+            GroupOf<IPrimitive<?>, ?> group = parent.asGroup();
 
             if (null != group)
             {
@@ -789,6 +789,8 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
         }
         object.put("children", children);
 
+        object.put("storage", getStorageEngine().toJSONObject());
+
         return object;
     }
 
@@ -805,7 +807,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -828,7 +830,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -851,7 +853,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -874,7 +876,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
 
         if (null != parent)
         {
-            final IContainer<?, ?, IPrimitive<?>> container = (IContainer<?, ?, IPrimitive<?>>) parent.asContainer();
+            final IContainer<?, IPrimitive<?>> container = (IContainer<?, IPrimitive<?>>) parent.asContainer();
 
             if (null != container)
             {
@@ -909,7 +911,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
                     {
                         buff.add(node);
                     }
-                    final IContainer<?, ?, ?> cont = node.asContainer();
+                    final IContainer<?, ?> cont = node.asContainer();
 
                     if (null != cont)
                     {
@@ -981,7 +983,7 @@ public abstract class GroupOf<T extends IPrimitive<?>, S extends IStorageEngine<
         return cast();
     }
 
-    protected static abstract class GroupOfFactory<T extends IPrimitive<?>, C extends GroupOf<T, ?, C>> extends ContainerNodeFactory<C>
+    protected static abstract class GroupOfFactory<T extends IPrimitive<?>, C extends GroupOf<T, C>> extends ContainerNodeFactory<C>
     {
         protected GroupOfFactory(final GroupType type)
         {
