@@ -39,6 +39,7 @@ import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
@@ -168,6 +169,26 @@ public class VFSServicesServerImpl implements VFSService {
                        final String content,
                        final Map<String, ?> attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return Paths.convert( ioService.write( Paths.convert( path ), content, attrs ) );
+    }
+
+    @Override
+    public boolean isRegularFile( final String uri ) {
+        return Files.isRegularFile( ioService.get( URI.create( uri ) ) );
+    }
+
+    @Override
+    public boolean isRegularFile( final Path path ) {
+        return Files.isRegularFile( Paths.convert( path ) );
+    }
+
+    @Override
+    public boolean isDirectory( final String uri ) {
+        return Files.isDirectory( ioService.get( URI.create( uri ) ) );
+    }
+
+    @Override
+    public boolean isDirectory( final Path path ) {
+        return Files.isDirectory( Paths.convert( path ) );
     }
 
     private DirectoryStream<Path> newDirectoryStream( final Iterator<org.uberfire.java.nio.file.Path> iterator ) {

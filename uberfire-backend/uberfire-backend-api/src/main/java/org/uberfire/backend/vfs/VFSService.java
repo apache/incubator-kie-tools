@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.jboss.errai.common.client.api.interceptor.InterceptedCall;
+import org.uberfire.backend.vfs.impl.VFSCacheInterceptor;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
 import org.uberfire.java.nio.file.DirectoryNotEmptyException;
@@ -28,7 +29,6 @@ import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.NotDirectoryException;
 import org.uberfire.java.nio.file.ProviderNotFoundException;
-import org.uberfire.backend.vfs.impl.VFSCacheInterceptor;
 
 @Remote
 public interface VFSService {
@@ -94,4 +94,12 @@ public interface VFSService {
                 final String content,
                 final Map<String, ?> attrs )
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
+
+    boolean isRegularFile( final String uri );
+
+    boolean isRegularFile( final Path path );
+
+    boolean isDirectory( final String uri );
+
+    boolean isDirectory( final Path path );
 }
