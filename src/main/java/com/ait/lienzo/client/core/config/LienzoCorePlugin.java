@@ -75,8 +75,8 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
 import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.shape.storage.LayerFastArrayStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.SceneFastArrayStorageEngine;
+import com.ait.lienzo.client.core.shape.storage.ViewportFastArrayStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.StorageEngineType;
 import com.ait.lienzo.shared.core.types.GroupType;
@@ -378,20 +378,20 @@ final class LienzoCorePlugin extends AbstractLienzoCorePlugin
                 return new PrimitiveFastArrayStorageEngine.PrimitiveFastArrayStorageEngineFactory();
             }
         });
-        addFactorySupplier(StorageEngineType.LAYER_FAST_ARRAY_STORAGE_ENGINE, new Supplier<IFactory<?>>()
-        {
-            @Override
-            public IFactory<?> get()
-            {
-                return new LayerFastArrayStorageEngine.LayerFastArrayStorageEngineFactory();
-            }
-        });
         addFactorySupplier(StorageEngineType.SCENE_FAST_ARRAY_STORAGE_ENGINE, new Supplier<IFactory<?>>()
         {
             @Override
             public IFactory<?> get()
             {
                 return new SceneFastArrayStorageEngine.SceneFastArrayStorageEngineFactory();
+            }
+        });
+        addFactorySupplier(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE, new Supplier<IFactory<?>>()
+        {
+            @Override
+            public IFactory<?> get()
+            {
+                return new ViewportFastArrayStorageEngine.ViewportFastArrayStorageEngineFactory();
             }
         });
         addFactorySupplier(ImageFilterType.AlphaScaleColorImageDataFilterType, new Supplier<IFactory<?>>()

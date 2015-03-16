@@ -17,23 +17,23 @@
 package com.ait.lienzo.client.core.shape.storage;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Scene;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class LayerFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Layer> implements IJSONSerializable<LayerFastArrayStorageEngine>
+public class ViewportFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene> implements IJSONSerializable<ViewportFastArrayStorageEngine>
 {
-    public LayerFastArrayStorageEngine()
+    public ViewportFastArrayStorageEngine()
     {
-        super(StorageEngineType.LAYER_FAST_ARRAY_STORAGE_ENGINE);
+        super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE);
     }
 
-    protected LayerFastArrayStorageEngine(final JSONObject node, final ValidationContext ctx) throws ValidationException
+    protected ViewportFastArrayStorageEngine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
-        super(StorageEngineType.LAYER_FAST_ARRAY_STORAGE_ENGINE, node, ctx);
+        super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE, node, ctx);
     }
 
     @Override
@@ -42,17 +42,17 @@ public class LayerFastArrayStorageEngine extends AbstractFastArrayStorageEngine<
         return LienzoCore.get().getFactory(getStorageEngineType());
     }
 
-    public static class LayerFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<LayerFastArrayStorageEngine>
+    public static class ViewportFastArrayStorageEngineFactory extends FastArrayStorageEngineFactory<ViewportFastArrayStorageEngine>
     {
-        public LayerFastArrayStorageEngineFactory()
+        public ViewportFastArrayStorageEngineFactory()
         {
-            super(StorageEngineType.SCENE_FAST_ARRAY_STORAGE_ENGINE);
+            super(StorageEngineType.VIEWPORT_FAST_ARRAY_STORAGE_ENGINE);
         }
 
         @Override
-        public LayerFastArrayStorageEngine create(final JSONObject node, final ValidationContext ctx) throws ValidationException
+        public ViewportFastArrayStorageEngine create(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
-            return new LayerFastArrayStorageEngine(node, ctx);
+            return new ViewportFastArrayStorageEngine(node, ctx);
         }
     }
 }

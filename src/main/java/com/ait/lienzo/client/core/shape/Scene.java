@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
-import com.ait.lienzo.client.core.shape.storage.LayerFastArrayStorageEngine;
+import com.ait.lienzo.client.core.shape.storage.SceneFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
@@ -64,7 +64,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
      */
     public Scene()
     {
-        super(NodeType.SCENE, new LayerFastArrayStorageEngine());
+        super(NodeType.SCENE, new SceneFastArrayStorageEngine());
     }
 
     protected Scene(final JSONObject node, final ValidationContext ctx) throws ValidationException
@@ -73,9 +73,9 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
     }
 
     @Override
-    public IStorageEngine<Layer> getDefaultStorageEngine()
+    public final IStorageEngine<Layer> getDefaultStorageEngine()
     {
-        return new LayerFastArrayStorageEngine();
+        return new SceneFastArrayStorageEngine();
     }
 
     public final boolean adopt(final Viewport owns)

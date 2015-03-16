@@ -38,7 +38,7 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
-import com.ait.lienzo.client.core.shape.storage.SceneFastArrayStorageEngine;
+import com.ait.lienzo.client.core.shape.storage.ViewportFastArrayStorageEngine;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
@@ -91,7 +91,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
     public Viewport(final Scene main, final int wide, final int high)
     {
-        super(NodeType.VIEWPORT, new SceneFastArrayStorageEngine());
+        super(NodeType.VIEWPORT, new ViewportFastArrayStorageEngine());
 
         m_wide = wide;
 
@@ -108,7 +108,7 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      */
     public Viewport(final int wide, final int high)
     {
-        super(NodeType.VIEWPORT, new SceneFastArrayStorageEngine());
+        super(NodeType.VIEWPORT, new ViewportFastArrayStorageEngine());
 
         m_wide = wide;
 
@@ -123,9 +123,9 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
     }
 
     @Override
-    public IStorageEngine<Scene> getDefaultStorageEngine()
+    public final IStorageEngine<Scene> getDefaultStorageEngine()
     {
-        return new SceneFastArrayStorageEngine();
+        return new ViewportFastArrayStorageEngine();
     }
 
     private final void setSceneAndState(final Scene main)

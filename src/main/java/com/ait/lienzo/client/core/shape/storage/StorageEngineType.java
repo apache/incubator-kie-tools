@@ -20,9 +20,9 @@ import com.ait.lienzo.shared.java.util.IStringValuedType;
 
 public class StorageEngineType implements IStringValuedType
 {
-    public static final StorageEngineType SCENE_FAST_ARRAY_STORAGE_ENGINE     = new StorageEngineType("SceneFastArrayStorageEngine");
+    public static final StorageEngineType VIEWPORT_FAST_ARRAY_STORAGE_ENGINE  = new StorageEngineType("ViewportFastArrayStorageEngine");
 
-    public static final StorageEngineType LAYER_FAST_ARRAY_STORAGE_ENGINE     = new StorageEngineType("LayerFastArrayStorageEngine");
+    public static final StorageEngineType SCENE_FAST_ARRAY_STORAGE_ENGINE     = new StorageEngineType("SceneFastArrayStorageEngine");
 
     public static final StorageEngineType PRIMITIVE_FAST_ARRAY_STORAGE_ENGINE = new StorageEngineType("PrimitiveFastArrayStorageEngine");
 

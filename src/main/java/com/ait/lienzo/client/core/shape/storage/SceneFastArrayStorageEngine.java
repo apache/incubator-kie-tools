@@ -17,14 +17,14 @@
 package com.ait.lienzo.client.core.shape.storage;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.shape.Scene;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.google.gwt.json.client.JSONObject;
 
-public class SceneFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Scene> implements IJSONSerializable<SceneFastArrayStorageEngine>
+public class SceneFastArrayStorageEngine extends AbstractFastArrayStorageEngine<Layer> implements IJSONSerializable<SceneFastArrayStorageEngine>
 {
     public SceneFastArrayStorageEngine()
     {

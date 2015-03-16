@@ -41,7 +41,7 @@ public class Group extends GroupOf<IPrimitive<?>, Group>
     }
 
     @Override
-    public IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
+    public final IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
     {
         return new PrimitiveFastArrayStorageEngine();
     }

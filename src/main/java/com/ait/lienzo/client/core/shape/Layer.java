@@ -99,7 +99,7 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
     }
 
     @Override
-    public IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
+    public final IStorageEngine<IPrimitive<?>> getDefaultStorageEngine()
     {
         return new PrimitiveFastArrayStorageEngine();
     }
