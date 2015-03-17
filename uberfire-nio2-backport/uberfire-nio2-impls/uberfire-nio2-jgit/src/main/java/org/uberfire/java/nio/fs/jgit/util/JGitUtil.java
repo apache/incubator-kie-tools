@@ -1005,13 +1005,7 @@ public final class JGitUtil {
             }
         }
 
-        Collections.sort( records, new Comparator<VersionRecord>() {
-            @Override
-            public int compare( final VersionRecord o1,
-                                final VersionRecord o2 ) {
-                return o1.date().compareTo( o2.date() );
-            }
-        } );
+        Collections.reverse( records );
 
         return new VersionAttributes() {
             @Override
