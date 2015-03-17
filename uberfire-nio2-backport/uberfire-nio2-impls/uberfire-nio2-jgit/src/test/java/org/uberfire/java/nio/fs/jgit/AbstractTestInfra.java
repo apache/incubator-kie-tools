@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,10 +35,14 @@ import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.util.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTestInfra {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractTestInfra.class);
 
     protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
 
@@ -47,7 +52,19 @@ public abstract class AbstractTestInfra {
 
     @Before
     public void createGitFsProvider() {
-        provider = new JGitFileSystemProvider( Collections.<String, String>emptyMap() );
+        provider = new JGitFileSystemProvider( getGitPreferences() );
+    }
+
+    /*
+     * Default Git preferences suitable for most of the tests. If specific test needs some custom configuration, it needs to
+     * override this method and provide own map of preferences.
+     */
+    public Map<String, String> getGitPreferences() {
+        Map<String, String> gitPrefs = new HashMap<String, String>();
+        // disable the daemons by default as they not needed in most of the cases
+        gitPrefs.put("org.uberfire.nio.git.daemon.enabled", "false");
+        gitPrefs.put("org.uberfire.nio.git.ssh.enabled", "false");
+        return gitPrefs;
     }
 
     @After
@@ -122,6 +139,20 @@ public abstract class AbstractTestInfra {
 
     public PersonIdent getAuthor() {
         return new PersonIdent( "user", "user@example.com" );
+    }
+
+    public static int findFreePort() {
+        int port = 0;
+        try {
+            ServerSocket server =
+                    new ServerSocket(0);
+            port = server.getLocalPort();
+            server.close();
+        } catch (IOException e) {
+            Assert.fail("Can't find free port!");
+        }
+        logger.debug("Found free port " + port);
+        return port;
     }
 
 }

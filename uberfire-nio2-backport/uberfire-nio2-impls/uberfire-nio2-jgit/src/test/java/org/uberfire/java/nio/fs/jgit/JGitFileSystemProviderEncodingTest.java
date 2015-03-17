@@ -30,6 +30,18 @@ import org.uberfire.java.nio.file.FileSystem;
 
 public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
 
+    private int gitDaemonPort;
+
+    @Override
+    public Map<String, String> getGitPreferences() {
+        Map<String, String> gitPrefs = super.getGitPreferences();
+        gitPrefs.put("org.uberfire.nio.git.daemon.enabled", "true");
+        // use different port for every test -> easy to run tests in parallel
+        gitDaemonPort = findFreePort();
+        gitPrefs.put("org.uberfire.nio.git.daemon.port", String.valueOf(gitDaemonPort));
+        return gitPrefs;
+    }
+
     @Test
     public void test() throws IOException {
         final URI originRepo = URI.create( "git://encoding-origin-name" );
@@ -53,7 +65,7 @@ public class JGitFileSystemProviderEncodingTest extends AbstractTestInfra {
         final URI newRepo = URI.create( "git://my-encoding-repo-name" );
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:9418/encoding-origin-name" );
+            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:" + gitDaemonPort + "/encoding-origin-name" );
             put( "listMode", "ALL" );
         }};
 

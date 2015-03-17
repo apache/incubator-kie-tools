@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -144,6 +145,12 @@ public class DotFileAttrViewTest {
                 created = true;
             }
         }
+    }
+
+    @After
+    public void tearDown() {
+        // dispose the IOService or it will badly influence the tests executed after
+        ioService.dispose();
     }
 
     @AfterClass

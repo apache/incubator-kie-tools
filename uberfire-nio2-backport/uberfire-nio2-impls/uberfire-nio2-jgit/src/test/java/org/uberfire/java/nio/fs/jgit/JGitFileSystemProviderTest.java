@@ -63,6 +63,17 @@ import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
 public class JGitFileSystemProviderTest extends AbstractTestInfra {
 
+    private int gitDaemonPort;
+
+    @Override
+    public Map<String, String> getGitPreferences() {
+        Map<String, String> gitPrefs = super.getGitPreferences();
+        gitPrefs.put("org.uberfire.nio.git.daemon.enabled", "true");
+        gitDaemonPort = findFreePort();
+        gitPrefs.put("org.uberfire.nio.git.daemon.port", String.valueOf(gitDaemonPort));
+        return gitPrefs;
+    }
+
     @Test
     @Ignore
     public void testDaemob() throws InterruptedException {
@@ -162,7 +173,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create( "git://my-repo-name" );
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:9418/my-simple-test-origin-name" );
+            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-name" );
             put( "listMode", "ALL" );
         }};
 
@@ -178,7 +189,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
             put( "fileXXXXX.txt", tempFile( "temp" ) );
         }} );
 
-        provider.getFileSystem( URI.create( "git://my-repo-name?sync=git://localhost:9418/my-simple-test-origin-name&force" ) );
+        provider.getFileSystem( URI.create( "git://my-repo-name?sync=git://localhost:" + gitDaemonPort + "/my-simple-test-origin-name&force" ) );
 
         assertThat( fs ).isNotNull();
 
@@ -198,7 +209,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
             put( "fileYYYY.txt", tempFile( "tempYYYY" ) );
         }} );
 
-        provider.getFileSystem( URI.create( "git://my-repo-name?sync=git://localhost:9418/my-simple-test-origin-name&force" ) );
+        provider.getFileSystem( URI.create( "git://my-repo-name?sync=git://localhost:" + gitDaemonPort + "/my-simple-test-origin-name&force" ) );
 
         assertThat( fs.getRootDirectories() ).hasSize( 3 );
 
@@ -229,7 +240,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo = URI.create( "git://my-repo" );
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:9418/my-simple-test-origin-repo" );
+            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo" );
             put( "listMode", "ALL" );
         }};
 
@@ -248,7 +259,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
         final URI newRepo2 = URI.create( "git://my-repo2" );
 
         final Map<String, Object> env2 = new HashMap<String, Object>() {{
-            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:9418/my-simple-test-origin-repo" );
+            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, "git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo" );
             put( "listMode", "ALL" );
         }};
 
@@ -258,7 +269,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
             put( "file1UserBranch.txt", tempFile( "tempX" ) );
         }} );
 
-        provider.getFileSystem( URI.create( "git://my-repo2?sync=git://localhost:9418/my-simple-test-origin-repo&force" ) );
+        provider.getFileSystem(URI.create( "git://my-repo2?sync=git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo&force" ) );
 
         assertThat( fs2.getRootDirectories() ).hasSize( 5 );
 
@@ -293,7 +304,7 @@ public class JGitFileSystemProviderTest extends AbstractTestInfra {
             put( "file2UserBranch.txt", tempFile( "tempX" ) );
         }} );
 
-        provider.getFileSystem( URI.create( "git://my-repo2?sync=git://localhost:9418/my-simple-test-origin-repo&force" ) );
+        provider.getFileSystem( URI.create( "git://my-repo2?sync=git://localhost:" + gitDaemonPort + "/my-simple-test-origin-repo&force" ) );
 
         assertThat( fs2.getRootDirectories() ).hasSize( 7 );
 
