@@ -107,4 +107,6 @@ public interface CommonConstants
     String ColumnPickerButtonTooltip();
 
     String PageSizeSelectorTooltip();
+    
+    String Reset();
 }

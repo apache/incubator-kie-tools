@@ -127,7 +127,7 @@ public class PagedTable<T>
         return this.pager.getPageStart();
     }
 
-    public final void setPageSizeValue(  ) {
+    public final void loadPageSizePreferences(  ) {
         pageSize = getPageSizeStored();
         this.dataGrid.setPageSize( pageSize );
         this.pager.setPageSize( pageSize );
@@ -174,11 +174,11 @@ public class PagedTable<T>
             rb.setText( String.valueOf( i ) + " " + CommonConstants.INSTANCE.Items() );
             if(i==pageSize) rb.setValue( true );
             final int selectedPageSize =i;
-            rb.addClickHandler( new ClickHandler() {
+            rb.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
                     storePageSizeInGridPreferences( selectedPageSize );
-                    setPageSizeValue( );
+                    loadPageSizePreferences( );
                     popup.hide();
                     pageSizesSelector.setActive( false );
 
@@ -186,7 +186,7 @@ public class PagedTable<T>
             } );
             popupContent.add(rb);
         }
-        Button resetButton = new Button( "Reset" );
+        Button resetButton = new Button( CommonConstants.INSTANCE.Reset() );
         resetButton.setSize( ButtonSize.MINI );
         resetButton.addClickHandler( new ClickHandler() {
 
@@ -230,7 +230,7 @@ public class PagedTable<T>
         if ( gridPreferencesStore != null ) {
             gridPreferencesStore.resetPageSizePreferences();
             storePageSizeInGridPreferences( gridPreferencesStore.getGlobalPreferences().getPageSize() );
-            setPageSizeValue();
+            loadPageSizePreferences();
         }
     }
 }
