@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.screens.dtablexls.backend.server.conversion.builders;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +65,7 @@ public class ParameterUtilities {
 
     public Set<String> extractTemplateKeys(String template) {
         //Extract Template Keys
-        Set<String> result = new HashSet<String>();
+        Set<String> result = new LinkedHashSet<String>();
         final Matcher matcherTemplateKey = patternTemplateKey.matcher( template );
         while ( matcherTemplateKey.find() ) {
             String fullKey = matcherTemplateKey.group();
