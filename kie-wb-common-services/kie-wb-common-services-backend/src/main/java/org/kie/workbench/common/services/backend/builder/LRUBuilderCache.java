@@ -29,13 +29,9 @@ import javax.inject.Named;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
-import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.service.POMService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
-import org.uberfire.backend.server.util.Paths;
-import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.io.IOService;
 
@@ -46,7 +42,8 @@ import org.uberfire.io.IOService;
 public class LRUBuilderCache extends LRUCache<Project, Builder> {
 
     @Inject
-    private POMService pomService;
+    @Named("ioStrategy")
+    private IOService ioService;
 
     @Inject
     private KieProjectService projectService;
@@ -55,20 +52,19 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
     private ProjectImportsService importsService;
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    @Any
+    private Instance<BuildValidationHelper> buildValidationHelperBeans;
 
     @Inject
-    @Any
-    private Instance<BuildValidationHelper> anyValidators;
+    private PackageNameWhiteList packageNameWhiteList;
 
-    private final List<BuildValidationHelper> validators = new ArrayList<BuildValidationHelper>();
+    private final List<BuildValidationHelper> buildValidationHelpers = new ArrayList<BuildValidationHelper>();
 
     @PostConstruct
     public void setupValidators() {
-        final Iterator<BuildValidationHelper> itr = anyValidators.iterator();
+        final Iterator<BuildValidationHelper> itr = buildValidationHelperBeans.iterator();
         while ( itr.hasNext() ) {
-            validators.add( itr.next() );
+            buildValidationHelpers.add( itr.next() );
         }
     }
 
@@ -86,14 +82,12 @@ public class LRUBuilderCache extends LRUCache<Project, Builder> {
     public synchronized Builder assertBuilder( final Project project ) {
         Builder builder = getEntry( project );
         if ( builder == null ) {
-            final Path pathToPom = project.getPomXMLPath();
-            final POM pom = pomService.load( pathToPom );
-            builder = new Builder( Paths.convert( project.getRootPath() ),
-                                   pom.getGav(),
+            builder = new Builder( project,
                                    ioService,
                                    projectService,
                                    importsService,
-                                   validators );
+                                   buildValidationHelpers,
+                                   packageNameWhiteList );
 
             setEntry( project,
                       builder );

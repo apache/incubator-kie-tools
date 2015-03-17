@@ -63,7 +63,6 @@ public class ProjectServiceImpl
     private static final String PACKAGE_NAME_WHITE_LIST = "package-names-white-list";
     private static final String KMODULE_PATH = "src/main/resources/META-INF/kmodule.xml";
 
-    @Inject
     private KModuleService kModuleService;
 
     public ProjectServiceImpl() {
@@ -72,6 +71,7 @@ public class ProjectServiceImpl
     @Inject
     public ProjectServiceImpl( @Named("ioStrategy") IOService ioService,
                                POMService pomService,
+                               KModuleService kModuleService,
                                ProjectConfigurationContentHandler projectConfigurationContentHandler,
                                ConfigurationService configurationService,
                                ConfigurationFactory configurationFactory,
@@ -82,9 +82,19 @@ public class ProjectServiceImpl
                                Event<InvalidateDMOProjectCacheEvent> invalidateDMOCache,
                                User identity,
                                SessionInfo sessionInfo ) {
-        super( ioService, pomService, projectConfigurationContentHandler, configurationService,
-               configurationFactory, newProjectEvent, newPackageEvent, renameProjectEvent, deleteProjectEvent,
-               invalidateDMOCache, identity, sessionInfo );
+        super( ioService,
+               pomService,
+               projectConfigurationContentHandler,
+               configurationService,
+               configurationFactory,
+               newProjectEvent,
+               newPackageEvent,
+               renameProjectEvent,
+               deleteProjectEvent,
+               invalidateDMOCache,
+               identity,
+               sessionInfo );
+        this.kModuleService = kModuleService;
     }
 
     @Override
@@ -132,16 +142,11 @@ public class ProjectServiceImpl
             ioService.write( Paths.convert( projectImportsConfigPath ),
                              projectConfigurationContentHandler.toString( createProjectImports() ) );
 
-            //Create Project configuration - project package names White List
-            final Path projectPackageNamesConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PACKAGE_NAME_WHITE_LIST ) );
-            if ( ioService.exists( Paths.convert( projectPackageNamesConfigPath ) ) ) {
-                throw new FileAlreadyExistsException( projectPackageNamesConfigPath.toString() );
-            }
-            ioService.createFile( Paths.convert( projectPackageNamesConfigPath ) );
-
             //Raise an event for the new project
             final KieProject project = resolveProject( projectRootPath );
-            newProjectEvent.fire( new NewProjectEvent( project, getSessionId(), getIdentityName() ) );
+            newProjectEvent.fire( new NewProjectEvent( project,
+                                                       getSessionId(),
+                                                       getIdentityName() ) );
 
             //Create a default workspace based on the GAV
             final String legalJavaGroupId[] = IdentifierUtils.convertMavenIdentifierToJavaIdentifier( pom.getGav().getGroupId().split( "\\.",
@@ -160,6 +165,14 @@ public class ProjectServiceImpl
             //Raise an event for the new project's default workspace
             newPackageEvent.fire( new NewPackageEvent( defaultWorkspacePackage ) );
 
+            //Create Project configuration - project package names White List
+            final Path projectPackageNamesConfigPath = Paths.convert( Paths.convert( projectRootPath ).resolve( PACKAGE_NAME_WHITE_LIST ) );
+            if ( ioService.exists( Paths.convert( projectPackageNamesConfigPath ) ) ) {
+                throw new FileAlreadyExistsException( projectPackageNamesConfigPath.toString() );
+            }
+            ioService.write( Paths.convert( projectPackageNamesConfigPath ),
+                             createProjectPackageNameWhiteList( defaultWorkspacePackage ) );
+
             //Return new project
             return project;
 
@@ -173,13 +186,15 @@ public class ProjectServiceImpl
     @Override
     public KieProject simpleProjectInstance( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
         final Path projectRootPath = Paths.convert( nioProjectRootPath );
-
-        return new KieProject( projectRootPath,
-                               Paths.convert( nioProjectRootPath.resolve( POM_PATH ) ),
-                               Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) ),
-                               Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) ),
-                               Paths.convert( nioProjectRootPath.resolve( PACKAGE_NAME_WHITE_LIST ) ),
-                               projectRootPath.getFileName() );
+        final KieProject project = new KieProject( projectRootPath,
+                                                   Paths.convert( nioProjectRootPath.resolve( POM_PATH ) ),
+                                                   Paths.convert( nioProjectRootPath.resolve( KMODULE_PATH ) ),
+                                                   Paths.convert( nioProjectRootPath.resolve( PROJECT_IMPORTS_PATH ) ),
+                                                   Paths.convert( nioProjectRootPath.resolve( PACKAGE_NAME_WHITE_LIST ) ),
+                                                   projectRootPath.getFileName() );
+        final POM pom = pomService.load( project.getPomXMLPath() );
+        project.setPom( pom );
+        return project;
     }
 
     @Override
@@ -323,4 +338,11 @@ public class ProjectServiceImpl
         imports.getImports().addImport( new Import( "java.lang.Number" ) );
         return imports;
     }
+
+    private String createProjectPackageNameWhiteList( final Package pkg ) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append( pkg.getPackageName() ).append( ".**" );
+        return sb.toString();
+    }
+
 }

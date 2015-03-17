@@ -87,6 +87,7 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>repository/**</include>
+                <include>.niogit/**</include>
               </includes>
             </fileset>
           </filesets>
