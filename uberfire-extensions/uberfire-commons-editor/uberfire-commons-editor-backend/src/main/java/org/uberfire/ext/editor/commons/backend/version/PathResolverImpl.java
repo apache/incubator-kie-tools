@@ -61,10 +61,6 @@ public class PathResolverImpl
                 }
         }
 
-        public Path resolveDotFilePath(Path convert) {
-                return null;
-        }
-
         private Path getMainPath(Path path) {
                 return path.resolveSibling(util.getFileName(path).substring(1));
         }
