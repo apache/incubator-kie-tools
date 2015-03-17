@@ -45,9 +45,6 @@ public class VersionRecordManager {
     private RestoreUtil restoreUtil;
     private Caller<VersionService> versionService;
 
-    @Inject
-    private BusyIndicatorView busyIndicatorView;
-
     private Callback<VersionRecord> selectionCallback;
     private List<VersionRecord> versions;
     private ObservablePath pathToLatest;
