@@ -16,8 +16,6 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import static org.fest.assertions.api.Assertions.*;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -30,6 +28,8 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
+
+import static org.fest.assertions.api.Assertions.*;
 
 public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
 
@@ -481,7 +481,7 @@ public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
             final VersionAttributes versionAttributes = provider.readAttributes( path, VersionAttributes.class );
 
             assertThat( versionAttributes.history().records() ).isNotNull().hasSize( 2 );
-            commit2CherryPick = versionAttributes.history().records().get( 0 ).id();
+            commit2CherryPick = versionAttributes.history().records().get( versionAttributes.history().records().size() - 1 ).id();
 
             final OutputStream outStream2 = provider.newOutputStream( path );
             outStream2.write( "my 3rd cool content".getBytes() );
@@ -504,7 +504,7 @@ public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
 
             final VersionAttributes versionAttributes = provider.readAttributes( path, VersionAttributes.class );
 
-            commit2CherryPick2 = versionAttributes.history().records().get( 0 ).id();
+            commit2CherryPick2 = versionAttributes.history().records().get( versionAttributes.history().records().size() - 1 ).id();
         }
 
         final Path target2 = provider.getPath( URI.create( "git://other_branch2@cherrypick-test-repo" ) );
