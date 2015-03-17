@@ -23,7 +23,6 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
-import org.guvnor.common.services.backend.version.PathResolver;
 import org.guvnor.common.services.shared.metadata.model.DiscussionRecord;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.metadata.model.Overview;
@@ -37,12 +36,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.editor.commons.backend.version.PathResolver;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 
 public abstract class KieService<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(KieService.class);
+    protected static Logger logger = LoggerFactory.getLogger(KieService.class);
 
     @Inject
     protected MetadataServerSideService metadataService;
@@ -63,14 +63,17 @@ public abstract class KieService<T> {
     protected SessionInfo sessionInfo;
 
     @Inject
-    private PathResolver pathResolver;
+    protected PathResolver pathResolver;
 
     public T loadContent(Path path) {
         try {
             if (pathResolver.isDotFile(Paths.convert(path))) {
-                return constructContent(Paths.convert(pathResolver.resolveMainFilePath(Paths.convert(path))), loadOverview(path));
+                Path mainFilePath = Paths.convert(pathResolver.resolveMainFilePath(Paths.convert(path)));
+                return constructContent(mainFilePath,
+                                        loadOverview(mainFilePath));
             } else {
-                return constructContent(path, loadOverview(path));
+                return constructContent(path,
+                                        loadOverview(path));
             }
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
