@@ -6,7 +6,6 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 public final class TypeConverterUtil {
 
-    private static final PerspectivePluginResourceTypeDefinition perspectiveDefinition = new PerspectivePluginResourceTypeDefinition();
     private static final ScreenPluginResourceTypeDefinition screenDefinition = new ScreenPluginResourceTypeDefinition();
     private static final EditorPluginResourceTypeDefinition editorDefinition = new EditorPluginResourceTypeDefinition();
     private static final SplashPluginResourceTypeDefinition splashDefinition = new SplashPluginResourceTypeDefinition();
@@ -14,9 +13,6 @@ public final class TypeConverterUtil {
     private static final PerspectiveLayoutPluginResourceTypeDefinition perspectiveLayoutPluginResourceTypeDefinition = new PerspectiveLayoutPluginResourceTypeDefinition();
 
     public static PluginType fromPath( final Path path ) {
-        if ( perspectiveDefinition.accept( path ) ) {
-            return PluginType.PERSPECTIVE;
-        }
         if ( screenDefinition.accept( path ) ) {
             return PluginType.SCREEN;
         }
@@ -41,9 +37,6 @@ public final class TypeConverterUtil {
     }
 
     public static PluginType fromResourceType( final ResourceTypeDefinition resource ) {
-        if ( resource instanceof PerspectivePluginResourceTypeDefinition ) {
-            return PluginType.PERSPECTIVE;
-        }
         if ( resource instanceof PerspectiveLayoutPluginResourceTypeDefinition ) {
             return PluginType.PERSPECTIVE_LAYOUT;
         }

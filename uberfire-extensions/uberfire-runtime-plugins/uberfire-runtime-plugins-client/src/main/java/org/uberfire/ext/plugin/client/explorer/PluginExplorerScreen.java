@@ -116,14 +116,6 @@ public class PluginExplorerScreen
         return new DropdownButton( "New..." ) {{
             setSize( MINI );
             setRightDropdown( true );
-            add( new NavLink( "New Perspective" ) {{
-                addClickHandler( new ClickHandler() {
-                    @Override
-                    public void onClick( ClickEvent event ) {
-                        newPluginPopUp.show( PluginType.PERSPECTIVE );
-                    }
-                } );
-            }} );
             add( new NavLink( "New Perspective Layout" ) {{
                 addClickHandler( new ClickHandler() {
                     @Override

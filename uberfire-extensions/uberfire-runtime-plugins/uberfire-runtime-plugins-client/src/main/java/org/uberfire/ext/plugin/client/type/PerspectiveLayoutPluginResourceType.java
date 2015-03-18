@@ -6,7 +6,6 @@ import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.ext.plugin.type.PerspectiveLayoutPluginResourceTypeDefinition;
-import org.uberfire.ext.plugin.type.PerspectivePluginResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
 @ApplicationScoped
