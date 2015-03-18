@@ -26,12 +26,13 @@ import org.drools.core.rule.TypeMetaInfo;
 import org.guvnor.common.services.project.builder.model.BuildMessage;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
-import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
@@ -39,7 +40,6 @@ import static org.junit.Assert.*;
 
 public class BuildServiceImplTest
         extends BuilderTestBase {
-
 
     @Before
     public void setUp() throws Exception {
@@ -57,12 +57,14 @@ public class BuildServiceImplTest
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        final Builder builder = new Builder( path,
-                                             new GAV(),
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
+
+        final Builder builder = new Builder( project,
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>() );
+                                             new ArrayList<BuildValidationHelper>(),
+                                             new PackageNameWhiteList( ioService ) );
 
         final BuildResults results = builder.build();
 
@@ -79,12 +81,14 @@ public class BuildServiceImplTest
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        final Builder builder = new Builder( path,
-                                             new GAV(),
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
+
+        final Builder builder = new Builder( project,
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>() );
+                                             new ArrayList<BuildValidationHelper>(),
+                                             new PackageNameWhiteList( ioService ) );
 
         final BuildResults results = builder.build();
 
@@ -108,12 +112,14 @@ public class BuildServiceImplTest
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        final Builder builder = new Builder( path,
-                                             new GAV(),
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
+
+        final Builder builder = new Builder( project,
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>() );
+                                             new ArrayList<BuildValidationHelper>(),
+                                             new PackageNameWhiteList( ioService ) );
 
         final BuildResults results = builder.build();
 
@@ -137,12 +143,14 @@ public class BuildServiceImplTest
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        final Builder builder = new Builder( path,
-                                             new GAV(),
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
+
+        final Builder builder = new Builder( project,
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>() );
+                                             new ArrayList<BuildValidationHelper>(),
+                                             new PackageNameWhiteList( ioService ) );
 
         final BuildResults results = builder.build();
 
@@ -194,12 +202,14 @@ public class BuildServiceImplTest
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
         org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        final Builder builder = new Builder( path,
-                                             new GAV(),
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
+
+        final Builder builder = new Builder( project,
                                              ioService,
                                              projectService,
                                              importsService,
-                                             new ArrayList<BuildValidationHelper>() );
+                                             new ArrayList<BuildValidationHelper>(),
+                                             new PackageNameWhiteList( ioService ) );
 
         final BuildResults results = builder.build();
 

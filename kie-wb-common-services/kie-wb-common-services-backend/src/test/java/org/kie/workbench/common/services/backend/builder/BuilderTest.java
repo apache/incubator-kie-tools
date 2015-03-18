@@ -21,11 +21,12 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
-import org.guvnor.common.services.project.model.GAV;
+import org.guvnor.common.services.project.model.Project;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
+import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
@@ -42,51 +43,55 @@ public class BuilderTest
 
     @Test
     public void testBuilderSimpleKProject() throws Exception {
-        IOService ioService = getReference(IOService.class);
-        KieProjectService projectService = getReference(KieProjectService.class);
-        ProjectImportsService importsService = getReference(ProjectImportsService.class);
+        IOService ioService = getReference( IOService.class );
+        KieProjectService projectService = getReference( KieProjectService.class );
+        ProjectImportsService importsService = getReference( ProjectImportsService.class );
 
-        URL url = this.getClass().getResource("/GuvnorM2RepoDependencyExample1");
+        URL url = this.getClass().getResource( "/GuvnorM2RepoDependencyExample1" );
         SimpleFileSystemProvider p = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = p.getPath(url.toURI());
+        org.uberfire.java.nio.file.Path path = p.getPath( url.toURI() );
 
-        final Builder builder = new Builder(path,
-                                            new GAV(),
-                                            ioService,
-                                            projectService,
-                                            importsService,
-                                            new ArrayList<BuildValidationHelper>());
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
 
-        assertNotNull(builder.getKieContainer());
+        final Builder builder = new Builder( project,
+                                             ioService,
+                                             projectService,
+                                             importsService,
+                                             new ArrayList<BuildValidationHelper>(),
+                                             new PackageNameWhiteList( ioService ) );
+
+        assertNotNull( builder.getKieContainer() );
     }
 
     @Test
     public void testBuilderFixForBrokenKProject() throws Exception {
 
-        IOService ioService = getReference(IOService.class);
-        KieProjectService projectService = getReference(KieProjectService.class);
-        ProjectImportsService importsService = getReference(ProjectImportsService.class);
+        IOService ioService = getReference( IOService.class );
+        KieProjectService projectService = getReference( KieProjectService.class );
+        ProjectImportsService importsService = getReference( ProjectImportsService.class );
 
         SimpleFileSystemProvider provider = new SimpleFileSystemProvider();
-        org.uberfire.java.nio.file.Path path = provider.getPath(this.getClass().getResource("/BuilderExampleBrokenSyntax").toURI());
+        org.uberfire.java.nio.file.Path path = provider.getPath( this.getClass().getResource( "/BuilderExampleBrokenSyntax" ).toURI() );
 
-        final Builder builder = new Builder(path,
-                                            new GAV(),
-                                            ioService,
-                                            projectService,
-                                            importsService,
-                                            new ArrayList<BuildValidationHelper>());
+        final Project project = projectService.resolveProject( Paths.convert( path ) );
 
-        assertNull(builder.getKieContainer());
+        final Builder builder = new Builder( project,
+                                             ioService,
+                                             projectService,
+                                             importsService,
+                                             new ArrayList<BuildValidationHelper>(),
+                                             new PackageNameWhiteList( ioService ) );
 
-        builder.deleteResource(provider.getPath(this.getClass().getResource(File.separatorChar + "BuilderExampleBrokenSyntax" +
-                                                                            File.separatorChar + "src" +
-                                                                            File.separatorChar + "main" +
-                                                                            File.separatorChar + "resources" +
-                                                                            File.separatorChar + "rule1.drl"
-                                                                           ).toURI()));
+        assertNull( builder.getKieContainer() );
 
-        assertNotNull(builder.getKieContainer());
+        builder.deleteResource( provider.getPath( this.getClass().getResource( File.separatorChar + "BuilderExampleBrokenSyntax" +
+                                                                                       File.separatorChar + "src" +
+                                                                                       File.separatorChar + "main" +
+                                                                                       File.separatorChar + "resources" +
+                                                                                       File.separatorChar + "rule1.drl"
+                                                                             ).toURI() ) );
+
+        assertNotNull( builder.getKieContainer() );
     }
 
 }
