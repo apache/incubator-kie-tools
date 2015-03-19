@@ -10,12 +10,12 @@ public class PerspectiveLayoutPluginResourceTypeDefinition extends BasePluginRes
 
     @Override
     public String getShortName() {
-        return "perspective layout plugin";
+        return "perspective plugin";
     }
 
     @Override
     public String getDescription() {
-        return "Perspective Layout plugin";
+        return "Perspective plugin";
     }
 
     @Override

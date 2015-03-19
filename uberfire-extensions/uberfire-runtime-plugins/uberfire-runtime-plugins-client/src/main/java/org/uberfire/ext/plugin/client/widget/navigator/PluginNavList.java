@@ -147,6 +147,11 @@ public class PluginNavList extends Composite {
             classified.get( screenPluginResourceType ).add( new Activity( getName( beanDef ), PluginType.SCREEN ) );
         }
 
+        final Collection<IOCBeanDef<PerspectiveActivity>> perspectives = IOC.getBeanManager().lookupBeans( PerspectiveActivity.class );
+        for ( final IOCBeanDef<PerspectiveActivity> beanDef : perspectives ) {
+            classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( getName( beanDef ), PluginType.PERSPECTIVE ) );
+        }
+
         final Collection<IOCBeanDef<WorkbenchEditorActivity>> editors = IOC.getBeanManager().lookupBeans( WorkbenchEditorActivity.class );
         for ( final IOCBeanDef<WorkbenchEditorActivity> beanDef : editors ) {
             classified.get( editorPluginResourceType ).add( new Activity( getName( beanDef ), PluginType.EDITOR ) );
@@ -167,6 +172,11 @@ public class PluginNavList extends Composite {
         final Collection<IOCBeanDef<JSWorkbenchScreenActivity>> jsscreens = IOC.getBeanManager().lookupBeans( JSWorkbenchScreenActivity.class );
         for ( final IOCBeanDef<JSWorkbenchScreenActivity> beanDef : jsscreens ) {
             classified.get( screenPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SCREEN ) );
+        }
+
+        final Collection<IOCBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = IOC.getBeanManager().lookupBeans( JSWorkbenchPerspectiveActivity.class );
+        for ( final IOCBeanDef<JSWorkbenchPerspectiveActivity> beanDef : jsperspectives ) {
+            classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.PERSPECTIVE ) );
         }
 
         final Collection<IOCBeanDef<JSEditorActivity>> jseditors = IOC.getBeanManager().lookupBeans( JSEditorActivity.class );
