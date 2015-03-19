@@ -21,8 +21,6 @@ import static org.uberfire.security.authz.AuthorizationResult.*;
 
 import java.util.Iterator;
 
-import org.jboss.errai.security.shared.api.Group;
-import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationResult;
@@ -52,10 +50,6 @@ public class DefaultRoleDecisionManager implements RoleDecisionManager {
                     public AuthorizationResult next() {
                         final Role role = iterator.next();
                         if ( user.getRoles().contains( role ) ) {
-                            return ACCESS_GRANTED;
-                        }
-                        Group group = new GroupImpl( role.getName() );
-                        if ( user.getGroups().contains( group ) ) {
                             return ACCESS_GRANTED;
                         }
                         return ACCESS_ABSTAIN;
