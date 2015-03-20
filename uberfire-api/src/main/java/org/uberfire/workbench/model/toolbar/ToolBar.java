@@ -17,13 +17,13 @@ package org.uberfire.workbench.model.toolbar;
 
 import java.util.List;
 
-import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 
 /**
  * Meta-data for a Workbench Tool Bar including permissions
  */
 public interface ToolBar
-        extends RuntimeResource {
+        extends RuntimeFeatureResource {
 
     String getId();
 

@@ -65,7 +65,7 @@ public class PicketLinkDefaultUsers {
         identityManager.add( admin );
         identityManager.add( nonAdmin );
         identityManager.updateCredential( admin, new Password( "admin" ) );
-        identityManager.updateCredential( nonAdmin, new Password( "123" ) );
+        identityManager.updateCredential( nonAdmin, new Password( "joe" ) );
 
         Role roleSimple = new Role( "simple" );
         Role roleAdmin = new Role( "admin" );
@@ -75,6 +75,8 @@ public class PicketLinkDefaultUsers {
 
         relationshipManager.add( new Grant( admin, roleSimple ) );
         relationshipManager.add( new Grant( admin, roleAdmin ) );
+
+        relationshipManager.add( new Grant( nonAdmin, roleSimple ) );
     }
 
 }

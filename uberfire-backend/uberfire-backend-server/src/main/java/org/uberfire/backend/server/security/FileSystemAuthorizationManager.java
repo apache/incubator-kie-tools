@@ -27,8 +27,8 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
-import org.uberfire.security.authz.RoleDecisionManager;
-import org.uberfire.security.impl.authz.DefaultRoleDecisionManager;
+import org.uberfire.security.authz.ProfileDecisionManager;
+import org.uberfire.security.impl.authz.DefaultProfileDecisionManager;
 import org.uberfire.security.impl.authz.RuntimeResourceDecisionManager;
 import org.uberfire.security.impl.authz.RuntimeResourceManager;
 
@@ -36,7 +36,7 @@ import org.uberfire.security.impl.authz.RuntimeResourceManager;
 public class FileSystemAuthorizationManager implements AuthorizationManager {
 
     private final RuntimeResourceDecisionManager decisionManager = new RuntimeResourceDecisionManager( new RuntimeResourceManager() );
-    private final RoleDecisionManager roleDecisionManager = new DefaultRoleDecisionManager();
+    private final ProfileDecisionManager profileDecisionManager = new DefaultProfileDecisionManager();
 
     @Override
     public boolean supports( final Resource resource ) {
@@ -55,7 +55,7 @@ public class FileSystemAuthorizationManager implements AuthorizationManager {
             fileSystemResource = (FileSystemResourceAdaptor) resource;
         }
 
-        final AuthorizationResult finalResult = decisionManager.decide( fileSystemResource, subject, roleDecisionManager );
+        final AuthorizationResult finalResult = decisionManager.decide( fileSystemResource, subject, profileDecisionManager );
 
         return finalResult.equals( ACCESS_ABSTAIN ) || finalResult.equals( ACCESS_GRANTED );
     }

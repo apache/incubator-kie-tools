@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
-package org.uberfire.security.impl.authz;
+package org.uberfire.security.authz;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import org.jboss.errai.security.shared.api.Role;
-import org.uberfire.security.authz.RolesResource;
+import org.jboss.errai.security.shared.api.Group;
 
-public class RolesResourceImpl implements RolesResource {
+public interface GroupsResource extends ProfilesResource {
 
-    private final List<Role> roles;
-
-    public RolesResourceImpl(final Collection<? extends Role> roles) {
-        this.roles = new ArrayList<Role>(roles);
-    }
-
-    @Override
-    public Collection<Role> getRoles() {
-        return roles;
-    }
-
-    @Override
-    public String toString() {
-        return "RolesResourceImpl [roles=" + roles + "]";
-    }
-
+    Collection<Group> getGroups();
 }

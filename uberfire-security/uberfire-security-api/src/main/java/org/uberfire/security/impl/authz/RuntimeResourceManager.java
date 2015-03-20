@@ -16,20 +16,24 @@
 
 package org.uberfire.security.impl.authz;
 
-import static java.util.Collections.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jboss.errai.security.shared.api.Group;
+import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
 import org.uberfire.commons.data.Cacheable;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceManager;
+import org.uberfire.security.authz.RuntimeContentResource;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 import org.uberfire.security.authz.RuntimeResource;
+
+import static java.util.Collections.*;
 
 public class RuntimeResourceManager implements ResourceManager {
 
@@ -37,7 +41,13 @@ public class RuntimeResourceManager implements ResourceManager {
 
     private RuntimeRestriction addResource( final RuntimeResource resource ) {
 
-        final RuntimeRestriction runtimeRestriction = new RuntimeRestriction( resource.getRoles(), resource.getTraits() );
+        RuntimeRestriction runtimeRestriction = null;
+        if ( resource instanceof RuntimeFeatureResource ) {
+            runtimeRestriction = new FeatureRestriction( ( (RuntimeFeatureResource) resource ).getRoles(), resource.getTraits() );
+        } else if ( resource instanceof RuntimeContentResource ) {
+            runtimeRestriction = new ContentRestriction( ( (RuntimeContentResource) resource ).getGroups(), resource.getTraits() );
+        }
+
         restrictions.put( resource.getSignatureId(), runtimeRestriction );
 
         return runtimeRestriction;
@@ -62,8 +72,8 @@ public class RuntimeResourceManager implements ResourceManager {
         }
 
         boolean refreshCache = false;
-        if (resource instanceof Cacheable) {
-            refreshCache = ((Cacheable) resource).requiresRefresh();
+        if ( resource instanceof Cacheable ) {
+            refreshCache = ( (Cacheable) resource ).requiresRefresh();
         }
 
         final RuntimeResource runtimeResource = (RuntimeResource) resource;
@@ -81,13 +91,34 @@ public class RuntimeResourceManager implements ResourceManager {
         return true;
     }
 
-    public static class RuntimeRestriction {
+    public static abstract class RuntimeRestriction {
 
-        final Collection<Role> roles;
         final Collection<String> traits;
 
-        public RuntimeRestriction( final Collection<String> roles,
+        public RuntimeRestriction( final Collection<String> traits ) {
+            if ( traits != null ) {
+                this.traits = traits;
+            } else {
+                this.traits = emptyList();
+            }
+        }
+
+        public Collection<String> getTraits() {
+            return traits;
+        }
+
+        public boolean isEmpty() {
+            return traits.isEmpty();
+        }
+    }
+
+    public static class FeatureRestriction extends RuntimeRestriction {
+
+        final Collection<Role> roles;
+
+        public FeatureRestriction( final Collection<String> roles,
                                    final Collection<String> traits ) {
+            super( traits );
             if ( roles != null ) {
                 final List<Role> tempRoles = new ArrayList<Role>( roles.size() );
                 for ( final String tempRole : roles ) {
@@ -98,24 +129,42 @@ public class RuntimeResourceManager implements ResourceManager {
             } else {
                 this.roles = emptyList();
             }
-
-            if ( traits != null ) {
-                this.traits = traits;
-            } else {
-                this.traits = emptyList();
-            }
         }
 
         public Collection<Role> getRoles() {
             return roles;
         }
 
-        public Collection<String> getTraits() {
-            return traits;
+        public boolean isEmpty() {
+            return roles.isEmpty() && super.isEmpty();
+        }
+    }
+
+    public static class ContentRestriction extends RuntimeRestriction {
+
+        final Collection<Group> groups;
+
+        public ContentRestriction( final Collection<String> groups,
+                                   final Collection<String> traits ) {
+            super( traits );
+            if ( groups != null ) {
+                final List<Group> tempGroups = new ArrayList<Group>( groups.size() );
+                for ( final String tempGroup : groups ) {
+                    tempGroups.add( new GroupImpl( tempGroup ) );
+                }
+
+                this.groups = unmodifiableList( tempGroups );
+            } else {
+                this.groups = emptyList();
+            }
+        }
+
+        public Collection<Group> getGroups() {
+            return groups;
         }
 
         public boolean isEmpty() {
-            return roles.isEmpty() && traits.isEmpty();
+            return groups.isEmpty() && super.isEmpty();
         }
     }
 }

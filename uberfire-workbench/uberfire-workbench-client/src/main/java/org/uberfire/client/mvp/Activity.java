@@ -19,6 +19,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 import org.uberfire.security.authz.RuntimeResource;
 
 /**
@@ -58,7 +59,7 @@ import org.uberfire.security.authz.RuntimeResource;
  * @see PlaceManager
  * @see ActivityManager
  */
-public interface Activity extends RuntimeResource {
+public interface Activity extends RuntimeFeatureResource {
 
     /**
      * Called by the framework to notify this activity that it is now associated with the given PlaceRequest.

@@ -18,11 +18,7 @@ package org.uberfire.security.authz;
 
 import java.util.Collection;
 
-import org.uberfire.security.Resource;
+public interface RuntimeFeatureResource extends RuntimeResource {
 
-public interface RuntimeResource extends Resource {
-
-    String getSignatureId();
-
-    Collection<String> getTraits();
+    Collection<String> getRoles();
 }

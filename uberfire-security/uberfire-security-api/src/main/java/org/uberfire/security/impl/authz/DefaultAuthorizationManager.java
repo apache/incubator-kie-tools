@@ -29,7 +29,7 @@ import org.uberfire.security.ResourceManager;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.ResourceDecisionManager;
-import org.uberfire.security.authz.RoleDecisionManager;
+import org.uberfire.security.authz.ProfileDecisionManager;
 import org.uberfire.security.authz.VotingStrategy;
 
 public class DefaultAuthorizationManager implements AuthorizationManager {
@@ -37,13 +37,13 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
     private final Collection<ResourceDecisionManager> decisionManagers;
     private final ResourceManager resourceManager;
     private final VotingStrategy votingStrategy;
-    private final RoleDecisionManager roleDecisionManager;
+    private final ProfileDecisionManager profileDecisionManager;
 
     public DefaultAuthorizationManager(final Collection<ResourceDecisionManager> decisionManagers,
                                        final ResourceManager resourceManager, final VotingStrategy votingStrategy,
-                                       final RoleDecisionManager roleDecisionManager) {
+                                       final ProfileDecisionManager profileDecisionManager ) {
         this.votingStrategy = checkNotNull("votingStrategy", votingStrategy);
-        this.roleDecisionManager = roleDecisionManager;
+        this.profileDecisionManager = profileDecisionManager;
         this.decisionManagers = checkNotNull("decisionManagers", decisionManagers);
         this.resourceManager = checkNotNull("resourceManagers", resourceManager);
     }
@@ -78,7 +78,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
                     @Override
                     public AuthorizationResult next() {
                         ResourceDecisionManager resourceDecisionManager = decisionManagerIterator.next();
-                        return resourceDecisionManager.decide(resource, user, roleDecisionManager);
+                        return resourceDecisionManager.decide(resource, user, profileDecisionManager );
                     }
 
                     @Override
@@ -101,7 +101,7 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
     @Override
     public String toString() {
         return "DefaultAuthorizationManager [decisionManagers=" + decisionManagers + ", resourceManager="
-                + resourceManager + ", votingStrategy=" + votingStrategy + ", roleDecisionManager=" + roleDecisionManager
+                + resourceManager + ", votingStrategy=" + votingStrategy + ", profileDecisionManager=" + profileDecisionManager
                 + "]";
     }
 }

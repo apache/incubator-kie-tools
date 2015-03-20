@@ -15,14 +15,14 @@
  */
 package org.uberfire.workbench.model.menu;
 
-import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 
 /**
  * Meta-data for a Workbench MenuItem including permissions. The default is that
  * all users have permission to access a MenuItem and that it is enabled.
  */
 public interface MenuItem
-        extends RuntimeResource,
+        extends RuntimeFeatureResource,
                 HasEnabledStateChangeListeners {
 
     boolean isEnabled();

@@ -19,10 +19,8 @@ package org.uberfire.security.authz;
 import java.util.Collection;
 
 import org.jboss.errai.security.shared.api.Role;
-import org.uberfire.security.Resource;
 
-public interface RolesResource extends Resource {
+public interface RolesResource extends ProfilesResource {
 
     Collection<Role> getRoles();
-
 }

@@ -23,5 +23,5 @@ public interface ResourceDecisionManager {
 
     boolean supports(final Resource resource);
 
-    AuthorizationResult decide(final Resource resource, final User user, final RoleDecisionManager roleDecisionManager);
+    AuthorizationResult decide(final Resource resource, final User user, final ProfileDecisionManager profileDecisionManager );
 }

@@ -27,7 +27,7 @@ import org.jboss.errai.security.shared.exception.UnauthorizedException;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.AuthorizationResult;
-import org.uberfire.security.authz.RoleDecisionManager;
+import org.uberfire.security.authz.ProfileDecisionManager;
 
 @ApplicationScoped
 @Alternative
@@ -35,7 +35,7 @@ public class RuntimeAuthorizationManager implements AuthorizationManager {
 
     private final RuntimeResourceManager resourceManager = new RuntimeResourceManager();
     private final RuntimeResourceDecisionManager decisionManager = new RuntimeResourceDecisionManager( resourceManager );
-    private final RoleDecisionManager roleDecisionManager = new DefaultRoleDecisionManager();
+    private final ProfileDecisionManager profileDecisionManager = new DefaultProfileDecisionManager();
 
     @Override
     public boolean supports( final Resource resource ) {
@@ -52,7 +52,7 @@ public class RuntimeAuthorizationManager implements AuthorizationManager {
 
         checkNotNull( "subject", user );
 
-        final AuthorizationResult finalResult = decisionManager.decide( resource, user, roleDecisionManager );
+        final AuthorizationResult finalResult = decisionManager.decide( resource, user, profileDecisionManager );
 
         if ( finalResult.equals( ACCESS_ABSTAIN ) || finalResult.equals( ACCESS_GRANTED ) ) {
             return true;
@@ -64,7 +64,7 @@ public class RuntimeAuthorizationManager implements AuthorizationManager {
     @Override
     public String toString() {
       return "RuntimeAuthorizationManager [resourceManager=" + resourceManager + ", decisionManager=" + decisionManager
-              + ", roleDecisionManager=" + roleDecisionManager + "]";
+              + ", profileDecisionManager=" + profileDecisionManager + "]";
     }
 
 }

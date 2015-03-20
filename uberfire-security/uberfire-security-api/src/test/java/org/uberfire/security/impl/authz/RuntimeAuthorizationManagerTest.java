@@ -12,6 +12,7 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Test;
 import org.uberfire.commons.data.Cacheable;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 import org.uberfire.security.authz.RuntimeResource;
 
 import com.google.common.collect.ImmutableSet;
@@ -108,7 +109,7 @@ public class RuntimeAuthorizationManagerTest {
     }
 
 
-    private class TestRuntimeResource implements RuntimeResource, Cacheable {
+    private class TestRuntimeResource implements RuntimeFeatureResource, Cacheable {
 
         private final String signatureId;
         private List<String> roles;

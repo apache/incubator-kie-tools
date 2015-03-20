@@ -16,10 +16,9 @@
 
 package org.uberfire.security.authz;
 
-import org.jboss.errai.security.shared.api.identity.User;
+import java.util.Collection;
 
-public interface RoleDecisionManager {
+public interface RuntimeContentResource extends RuntimeResource {
 
-    Iterable<AuthorizationResult> decide(final RolesResource resource, final User user);
-
+    Collection<String> getGroups();
 }

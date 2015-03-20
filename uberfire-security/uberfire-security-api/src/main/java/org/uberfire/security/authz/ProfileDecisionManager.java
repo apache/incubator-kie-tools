@@ -16,13 +16,10 @@
 
 package org.uberfire.security.authz;
 
-import java.util.Collection;
+import org.jboss.errai.security.shared.api.identity.User;
 
-import org.uberfire.security.Resource;
+public interface ProfileDecisionManager {
 
-public interface RuntimeResource extends Resource {
+    Iterable<AuthorizationResult> decide(final ProfilesResource resource, final User user);
 
-    String getSignatureId();
-
-    Collection<String> getTraits();
 }

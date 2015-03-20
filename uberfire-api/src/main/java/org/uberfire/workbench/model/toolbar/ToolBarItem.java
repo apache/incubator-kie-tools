@@ -16,6 +16,7 @@
 package org.uberfire.workbench.model.toolbar;
 
 import org.uberfire.mvp.Command;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 import org.uberfire.security.authz.RuntimeResource;
 
 /**
@@ -24,7 +25,7 @@ import org.uberfire.security.authz.RuntimeResource;
  * enabled.
  */
 public interface ToolBarItem
-        extends RuntimeResource {
+        extends RuntimeFeatureResource {
 
     /**
      * @return the caption
