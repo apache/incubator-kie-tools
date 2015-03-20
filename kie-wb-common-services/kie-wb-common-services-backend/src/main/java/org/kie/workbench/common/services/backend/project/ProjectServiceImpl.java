@@ -296,7 +296,7 @@ public class ProjectServiceImpl
     protected KieProject makeProject( final org.uberfire.java.nio.file.Path nioProjectRootPath ) {
         final KieProject project = simpleProjectInstance( nioProjectRootPath );
 
-        addSecurityRoles( project );
+        addSecurityGroups( project );
 
         return project;
     }

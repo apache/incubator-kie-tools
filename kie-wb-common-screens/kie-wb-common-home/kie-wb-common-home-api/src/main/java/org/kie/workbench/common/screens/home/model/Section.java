@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 import org.uberfire.security.authz.RuntimeResource;
 
 import static java.util.Collections.*;
@@ -13,7 +14,7 @@ import static java.util.Collections.*;
 /**
  * A Section on the Home Page
  */
-public class Section implements RuntimeResource {
+public class Section implements RuntimeFeatureResource {
 
     private final String heading;
     private final List<SectionEntry> entries = new ArrayList<SectionEntry>();

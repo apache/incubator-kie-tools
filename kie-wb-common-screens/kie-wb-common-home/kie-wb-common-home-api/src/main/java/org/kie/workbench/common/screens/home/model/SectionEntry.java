@@ -5,14 +5,14 @@ import java.util.Collection;
 
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
-import org.uberfire.security.authz.RuntimeResource;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.*;
 
 /**
  * A Section Entry within a Section on the Home Page
  */
-public class SectionEntry implements RuntimeResource {
+public class SectionEntry implements RuntimeFeatureResource {
 
     private final String caption;
     private final Command onClickCommand;
@@ -34,8 +34,8 @@ public class SectionEntry implements RuntimeResource {
         return onClickCommand;
     }
 
-    public void setRoles(Collection<String> roles) {
-        this.roles = PortablePreconditions.checkNotNull("roles", roles);
+    public void setRoles( Collection<String> roles ) {
+        this.roles = PortablePreconditions.checkNotNull( "roles", roles );
     }
 
     @Override
@@ -47,6 +47,7 @@ public class SectionEntry implements RuntimeResource {
     public Collection<String> getRoles() {
         return roles;
     }
+
     @Override
     public Collection<String> getTraits() {
         return emptyList();
