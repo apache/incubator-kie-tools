@@ -19,7 +19,7 @@
   </description>
 
   <properties>
-    <version.org.jboss.integration-platform>6.0.0.CR22</version.org.jboss.integration-platform>
+    <version.org.jboss.integration-platform>6.0.0.CR26</version.org.jboss.integration-platform>
     <version.org.uberfire>0.7.0-SNAPSHOT</version.org.uberfire>
     <version.org.jboss.errai>3.0.4.Final</version.org.jboss.errai>
     <version.org.jboss.logging.jboss-logging>3.1.4.GA</version.org.jboss.logging.jboss-logging>
