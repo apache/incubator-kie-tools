@@ -32,35 +32,36 @@ import org.uberfire.ext.widgets.common.client.common.ResizableTextArea;
  * A Text editor
  */
 public class TextEditorView extends Composite
-    implements
-    RequiresResize,
-    TextEditorPresenter.View {
+        implements
+        RequiresResize,
+        TextEditorPresenter.View {
 
     interface TextEditorViewBinder
-        extends
-        UiBinder<ResizeLayoutPanel, TextEditorView> {
+            extends
+            UiBinder<ResizeLayoutPanel, TextEditorView> {
+
     }
 
     private static TextEditorViewBinder uiBinder = GWT.create( TextEditorViewBinder.class );
 
     @UiField
-    public ResizableTextArea            fileContent;
+    public ResizableTextArea fileContent;
 
-    private boolean                     isDirty  = false;
+    private boolean isDirty = false;
 
     @PostConstruct
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
 
         fileContent.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 isDirty = true;
             }
         } );
 
     }
 
-    public void setContent(final String content) {
+    public void setContent( final String content ) {
         fileContent.setText( content );
     }
 
@@ -79,12 +80,12 @@ public class TextEditorView extends Composite
     }
 
     @Override
-    public void makeReadOnly() {
-        fileContent.setEnabled(false);
+    public void setReadOnly( final boolean isReadOnly ) {
+        fileContent.setEnabled( !isReadOnly );
     }
 
     @Override
-    public void setDirty(boolean dirty) {
+    public void setDirty( boolean dirty ) {
         isDirty = dirty;
     }
 

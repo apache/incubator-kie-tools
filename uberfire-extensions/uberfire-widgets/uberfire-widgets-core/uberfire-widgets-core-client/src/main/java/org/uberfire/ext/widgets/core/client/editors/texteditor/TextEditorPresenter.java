@@ -44,7 +44,7 @@ public abstract class TextEditorPresenter {
 
         boolean isDirty();
 
-        void makeReadOnly();
+        void setReadOnly( boolean isReadOnly );
     }
 
     @Inject
