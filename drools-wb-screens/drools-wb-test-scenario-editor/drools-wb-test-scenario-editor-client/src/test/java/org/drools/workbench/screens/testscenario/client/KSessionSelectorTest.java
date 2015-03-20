@@ -304,11 +304,11 @@ public class KSessionSelectorTest {
                 return null;
             }
 
-            @Override public void addRole(Project project, String role) {
+            @Override public void addGroup(Project project, String group) {
 
             }
 
-            @Override public void removeRole(Project project, String role) {
+            @Override public void removeGroup(Project project, String group) {
 
             }
 
