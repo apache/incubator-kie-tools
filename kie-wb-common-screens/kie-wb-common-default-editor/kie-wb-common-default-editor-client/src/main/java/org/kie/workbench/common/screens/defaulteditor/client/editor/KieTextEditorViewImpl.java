@@ -83,8 +83,8 @@ public class KieTextEditorViewImpl
     }
 
     @Override
-    public void makeReadOnly() {
-        super.view.makeReadOnly();
+    public void setReadOnly( final boolean isReadOnly ) {
+        super.view.setReadOnly( isReadOnly );
     }
 
     @Override

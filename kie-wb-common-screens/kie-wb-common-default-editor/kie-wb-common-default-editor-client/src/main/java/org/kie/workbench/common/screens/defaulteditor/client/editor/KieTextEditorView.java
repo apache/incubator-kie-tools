@@ -25,7 +25,7 @@ public interface KieTextEditorView
 
     void onStartup( final ObservablePath path );
 
-    void makeReadOnly();
+    void setReadOnly( final boolean isReadOnly );
 
     String getContent();
 
