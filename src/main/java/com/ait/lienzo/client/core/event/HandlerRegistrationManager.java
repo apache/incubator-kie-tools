@@ -19,12 +19,22 @@ package com.ait.lienzo.client.core.event;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public final class HandlerRegistrationManager
+public final class HandlerRegistrationManager implements HandlerRegistration
 {
     private final NFastArrayList<HandlerRegistration> m_list = new NFastArrayList<HandlerRegistration>();
 
     public HandlerRegistrationManager()
     {
+    }
+
+    public HandlerRegistrationManager(HandlerRegistration handler, HandlerRegistration... handlers)
+    {
+        register(handler);
+
+        for (HandlerRegistration h : handlers)
+        {
+            register(h);
+        }
     }
 
     public final int size()
@@ -83,25 +93,16 @@ public final class HandlerRegistrationManager
         return this;
     }
 
-    public final HandlerRegistrationManager deregister(final HandlerRegistrationManager manager)
-    {
-        if ((null != manager) && (manager != this))
-        {
-            final int size = manager.size();
-
-            for (int i = 0; i < size; i++)
-            {
-                deregister(manager.get(i));
-            }
-            manager.clear();
-        }
-        return this;
-    }
-
     public final HandlerRegistrationManager clear()
     {
         m_list.clear();
 
         return this;
+    }
+
+    @Override
+    public final void removeHandler()
+    {
+        destroy();
     }
 }
