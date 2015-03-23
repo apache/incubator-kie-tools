@@ -16,13 +16,10 @@
 
 package com.ait.lienzo.client.core.shape;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.config.LienzoCore;
-import com.ait.lienzo.client.core.event.AttributesChangedEvent;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
+import com.ait.lienzo.client.core.event.AttributesChangedManager;
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
 import com.ait.lienzo.client.core.event.ImmediateAttributesChangedBatcher;
 import com.ait.lienzo.client.core.image.filter.ImageDataFilter.FilterConvolveMatrix;
@@ -34,7 +31,6 @@ import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
-import com.ait.lienzo.client.core.types.NFastStringCountingSet;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
@@ -64,7 +60,6 @@ import com.ait.lienzo.shared.core.types.TextUnit;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
-import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
@@ -73,11 +68,9 @@ public class Attributes
 
     private final NFastStringMapMixedJSO m_jso;
 
-    private NFastStringCountingSet       m_set;
+    private AttributesChangedManager     m_man;
 
-    private HandlerManager               m_man;
-
-    private IAttributesChangedBatcher    m_bat = new ImmediateAttributesChangedBatcher();
+    private IAttributesChangedBatcher    m_bat;
 
     public Attributes(final IJSONSerializable<?> ser)
     {
@@ -113,92 +106,15 @@ public class Attributes
         }
         if (null != m_ser)
         {
-            if (null == m_set)
-            {
-                m_set = new NFastStringCountingSet();
-            }
             if (null == m_man)
             {
-                m_man = new HandlerManager(m_ser);
+                m_man = new AttributesChangedManager(m_ser);
             }
-            final String name = attribute.getProperty();
-
-            m_set.inc(name);
-
-            final HandlerRegistration proxy = m_man.addHandler(AttributesChangedEvent.getType(), handler);
-
-            return new HandlerRegistration()
+            if(null == m_bat)
             {
-                @Override
-                public void removeHandler()
-                {
-                    if (null != m_set)
-                    {
-                        m_set.dec(name);
-
-                        if (m_set.isEmpty())
-                        {
-                            m_set = null;
-                        }
-                    }
-                    proxy.removeHandler();
-                }
-            };
-        }
-        return null;
-    }
-
-    public final HandlerRegistration addAttributesChangedHandler(final List<Attribute> attributes, final AttributesChangedHandler handler)
-    {
-        if ((null == attributes) || (null == handler))
-        {
-            return null;
-        }
-        if (attributes.isEmpty())
-        {
-            return null;
-        }
-        if (null != m_ser)
-        {
-            if (null == m_set)
-            {
-                m_set = new NFastStringCountingSet();
+                m_bat = new ImmediateAttributesChangedBatcher();
             }
-            if (null == m_man)
-            {
-                m_man = new HandlerManager(m_ser);
-            }
-            final LinkedHashSet<String> seen = new LinkedHashSet<String>();
-
-            for (Attribute attr : attributes)
-            {
-                seen.add(attr.getProperty());
-            }
-            for (String name : seen)
-            {
-                m_set.inc(name);
-            }
-            final HandlerRegistration proxy = m_man.addHandler(AttributesChangedEvent.getType(), handler);
-
-            return new HandlerRegistration()
-            {
-                @Override
-                public void removeHandler()
-                {
-                    if (null != m_set)
-                    {
-                        for (String name : seen)
-                        {
-                            m_set.dec(name);
-                        }
-                        if (m_set.isEmpty())
-                        {
-                            m_set = null;
-                        }
-                    }
-                    proxy.removeHandler();
-                }
-            };
+            return m_man.addAttributesChangedHandler(attribute, handler);
         }
         return null;
     }
@@ -213,14 +129,11 @@ public class Attributes
 
     private final void checkDispatchAttributesChanged(final String name)
     {
-        if ((null != m_set) && (null != m_ser))
+        if ((null != m_man) && (null != m_ser) && (null != m_bat))
         {
-            if (m_set.contains(name))
+            if (m_man.canDispatchAttributesChanged(name))
             {
-                if (null != m_bat)
-                {
-                    m_bat.bufferAttributeWithManager(name, m_man);
-                }
+                m_bat.bufferAttributeWithManager(name, m_man);
             }
         }
     }
@@ -1681,7 +1594,7 @@ public class Attributes
 
     private static final native boolean hasAnyTransformAttributes(NFastStringMapMixedJSO jso)
     /*-{
-        return ((jso.x !== undefined) || (jso.y !== undefined) || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined) || (jso.transform !== undefined));
+        return ((jso.x !== undefined) || (jso.y !== undefined) || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
     private static final native boolean hasComplexTransformAttributes(NFastStringMapMixedJSO jso)

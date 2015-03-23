@@ -128,6 +128,11 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         return new ViewportFastArrayStorageEngine();
     }
 
+    public Transform getTransform()
+    {
+        return getAttributes().getTransform();
+    }
+
     private final void setSceneAndState(final Scene main)
     {
         add(m_back, m_main = main, m_drag);
@@ -513,10 +518,10 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * @param transform Transform
      * @return this Viewport
      */
-    @Override
+
     public final Viewport setTransform(final Transform transform)
     {
-        super.setTransform(transform);
+        getAttributes().setTransform(transform);
 
         super.fireEvent(new ViewportTransformChangedEvent(this));
 

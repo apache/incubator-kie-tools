@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.client.core.event;
 
+import com.ait.lienzo.client.core.types.NFastStringSet;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
-import com.google.gwt.event.shared.HandlerManager;
 
 public final class ImmediateAttributesChangedBatcher implements IAttributesChangedBatcher
 {
@@ -29,14 +29,14 @@ public final class ImmediateAttributesChangedBatcher implements IAttributesChang
     }
 
     @Override
-    public void bufferAttributeWithManager(final String name, final HandlerManager manager)
+    public void bufferAttributeWithManager(final String name, final AttributesChangedManager manager)
     {
         Scheduler.get().scheduleFixedDelay(new RepeatingCommand()
         {
             @Override
             public boolean execute()
             {
-                manager.fireEvent(new AttributesChangedEvent(name));
+                manager.fireChanged(new NFastStringSet(name));
 
                 return false;
             }

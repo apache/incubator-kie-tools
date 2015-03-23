@@ -22,30 +22,30 @@ import java.util.Collection;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
-public final class NFastStringCountingSet
+public final class NFastStringCounter
 {
-    private final FastStringCountingSetJSO m_jso = FastStringCountingSetJSO.make();
+    private final NFastStringCounterJSO m_jso = NFastStringCounterJSO.make();
 
-    public NFastStringCountingSet()
+    public NFastStringCounter()
     {
     }
 
-    public NFastStringCountingSet(final String key)
+    public NFastStringCounter(final String key)
     {
         inc(key);
     }
 
-    public NFastStringCountingSet(final String key, final String... keys)
+    public NFastStringCounter(final String key, final String... keys)
     {
         inc(key, keys);
     }
 
-    public NFastStringCountingSet(final Iterable<String> keys)
+    public NFastStringCounter(final Iterable<String> keys)
     {
         inc(keys);
     }
 
-    public final NFastStringCountingSet inc(final String key)
+    public final NFastStringCounter inc(final String key)
     {
         if (null != key)
         {
@@ -54,7 +54,7 @@ public final class NFastStringCountingSet
         return this;
     }
 
-    public final NFastStringCountingSet inc(final String key, final String... keys)
+    public final NFastStringCounter inc(final String key, final String... keys)
     {
         inc(key);
 
@@ -65,7 +65,7 @@ public final class NFastStringCountingSet
         return this;
     }
 
-    public final NFastStringCountingSet inc(final Iterable<String> keys)
+    public final NFastStringCounter inc(final Iterable<String> keys)
     {
         for (String k : keys)
         {
@@ -74,7 +74,7 @@ public final class NFastStringCountingSet
         return this;
     }
 
-    public final NFastStringCountingSet dec(final String key)
+    public final NFastStringCounter dec(final String key)
     {
         if (null != key)
         {
@@ -83,7 +83,7 @@ public final class NFastStringCountingSet
         return this;
     }
 
-    public final NFastStringCountingSet dec(final String key, final String... keys)
+    public final NFastStringCounter dec(final String key, final String... keys)
     {
         dec(key);
 
@@ -94,7 +94,7 @@ public final class NFastStringCountingSet
         return this;
     }
 
-    public final NFastStringCountingSet dec(final Iterable<String> keys)
+    public final NFastStringCounter dec(final Iterable<String> keys)
     {
         for (String k : keys)
         {
@@ -140,7 +140,7 @@ public final class NFastStringCountingSet
         return m_jso.size();
     }
 
-    public final NFastStringCountingSet clear()
+    public final NFastStringCounter clear()
     {
         m_jso.clear();
 
@@ -163,13 +163,13 @@ public final class NFastStringCountingSet
         return toJSONString();
     }
 
-    private static final class FastStringCountingSetJSO extends JavaScriptObject
+    private static final class NFastStringCounterJSO extends JavaScriptObject
     {
-        protected FastStringCountingSetJSO()
+        protected NFastStringCounterJSO()
         {
         }
 
-        static final FastStringCountingSetJSO make()
+        static final NFastStringCounterJSO make()
         {
             return JavaScriptObject.createObject().cast();
         }

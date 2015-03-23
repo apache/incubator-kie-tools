@@ -26,6 +26,8 @@ import com.google.gwt.json.client.JSONObject;
 
 public class NFastStringSet implements Iterable<String>
 {
+    private static final String[] ARRAY = new String[0];
+    
     private final FastStringSetJSO m_jso;
 
     public NFastStringSet(final FastStringSetJSO jso)
@@ -114,11 +116,20 @@ public class NFastStringSet implements Iterable<String>
 
     public final Collection<String> keys()
     {
-        ArrayList<String> keys = new ArrayList<String>();
+        final ArrayList<String> keys = new ArrayList<String>();
 
         m_jso.fillKeys(keys);
 
         return Collections.unmodifiableCollection(keys);
+    }
+    
+    public final String[] toArray()
+    {
+        final ArrayList<String> keys = new ArrayList<String>();
+
+        m_jso.fillKeys(keys);
+        
+        return keys.toArray(ARRAY);
     }
 
     public final int size()

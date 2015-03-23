@@ -449,6 +449,11 @@ public final class Transform
         return toJSONString().hashCode();
     }
 
+    public static final Transform fromXY(double x, double y)
+    {
+        return new Transform(TransformJSO.make(x, y));
+    }
+
     /**
      * Creates a Transform for a viewport. The visible area is defined by the rectangle
      * [x, y, width, height] and the viewport's width and height.
@@ -520,6 +525,11 @@ public final class Transform
         public static final native TransformJSO make()
         /*-{
         	return [ 1, 0, 0, 1, 0, 0 ];
+        }-*/;
+
+        public static final native TransformJSO make(double x, double y)
+        /*-{
+            return [ 1, 0, 0, 1, x, y ];
         }-*/;
 
         public static final native TransformJSO make(double m00, double m10, double m01, double m11, double m02, double m12)

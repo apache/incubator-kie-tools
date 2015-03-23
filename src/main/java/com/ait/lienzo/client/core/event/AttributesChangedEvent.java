@@ -46,6 +46,11 @@ public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
         m_changed = changed;
     }
 
+    final NFastStringSet changed()
+    {
+        return m_changed;
+    }
+
     @SuppressWarnings("unchecked")
     public final <T> T getTarget()
     {

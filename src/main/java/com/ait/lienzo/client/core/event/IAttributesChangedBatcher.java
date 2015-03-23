@@ -16,15 +16,13 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.google.gwt.event.shared.HandlerManager;
-
 public interface IAttributesChangedBatcher
 {
-    public void bufferAttributeWithManager(String name, HandlerManager manager);
-    
+    public void bufferAttributeWithManager(String name, AttributesChangedManager manager);
+
     public IAttributesChangedBatcher copy();
-    
+
     public String getName();
-    
+
     public void cancelAttributesChangedBatcher();
 }

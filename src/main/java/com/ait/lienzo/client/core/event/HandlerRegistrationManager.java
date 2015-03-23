@@ -27,7 +27,7 @@ public final class HandlerRegistrationManager implements HandlerRegistration
     {
     }
 
-    public HandlerRegistrationManager(HandlerRegistration handler, HandlerRegistration... handlers)
+    public HandlerRegistrationManager(final HandlerRegistration handler, final HandlerRegistration... handlers)
     {
         register(handler);
 
@@ -47,18 +47,13 @@ public final class HandlerRegistrationManager implements HandlerRegistration
         return (0 == size());
     }
 
-    public final HandlerRegistration get(final int i)
-    {
-        return m_list.get(i);
-    }
-
     public final HandlerRegistrationManager destroy()
     {
         final int size = size();
 
         for (int i = 0; i < size; i++)
         {
-            get(i).removeHandler();
+            m_list.get(i).removeHandler();
         }
         return clear();
     }
@@ -101,7 +96,7 @@ public final class HandlerRegistrationManager implements HandlerRegistration
     }
 
     @Override
-    public final void removeHandler()
+    public void removeHandler()
     {
         destroy();
     }

@@ -16,8 +16,6 @@
 
 package com.ait.lienzo.client.core.image.filter;
 
-import java.util.List;
-
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.event.AttributesChangedHandler;
 import com.ait.lienzo.client.core.event.IAttributesChangedBatcher;
@@ -197,11 +195,6 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
     public HandlerRegistration addAttributesChangedHandler(final Attribute attribute, final AttributesChangedHandler handler)
     {
         return m_attr.addAttributesChangedHandler(attribute, handler);
-    }
-
-    public HandlerRegistration addAttributesChangedHandler(final List<Attribute> attributes, final AttributesChangedHandler handler)
-    {
-        return m_attr.addAttributesChangedHandler(attributes, handler);
     }
 
     public final T cancelAttributesChangedBatcher()

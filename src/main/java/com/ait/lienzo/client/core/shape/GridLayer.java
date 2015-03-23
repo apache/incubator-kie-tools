@@ -350,7 +350,7 @@ public class GridLayer extends Layer
 
         double scaleX = 1, scaleY = 1;
 
-        Transform t = isTransformable() ? vp.getTransform() : getTransform();
+        Transform t = isTransformable() ? vp.getTransform() : null;
 
         if (t != null)
         {

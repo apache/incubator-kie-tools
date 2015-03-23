@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.shape;
 
 import java.util.Collection;
-import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.Context2D;
@@ -486,27 +485,8 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         {
             return null;
         }
-        final Transform xfrm = new Transform();
+        final Transform xfrm = Transform.fromXY(m_attr.getX(), m_attr.getY());
 
-        final double x = m_attr.getX();
-
-        final double y = m_attr.getY();
-
-        if ((x != 0) || (y != 0))
-        {
-            xfrm.translate(x, y);
-        }
-        if (m_attr.isDefined(Attribute.TRANSFORM))
-        {
-            final Transform tran = m_attr.getTransform();
-
-            if (null != tran)
-            {
-                xfrm.multiply(tran);
-
-                return xfrm;
-            }
-        }
         if (false == m_attr.hasComplexTransformAttributes())
         {
             return xfrm;
@@ -591,18 +571,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             return xfrm;
         }
         return new Transform();
-    }
-
-    public T setTransform(final Transform transform)
-    {
-        m_attr.setTransform(transform);
-
-        return cast();
-    }
-
-    public Transform getTransform()
-    {
-        return m_attr.getTransform();
     }
 
     /**
@@ -788,11 +756,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         return m_attr.addAttributesChangedHandler(attribute, handler);
     }
 
-    public HandlerRegistration addAttributesChangedHandler(final List<Attribute> attributes, final AttributesChangedHandler handler)
-    {
-        return m_attr.addAttributesChangedHandler(attributes, handler);
-    }
-
     public final T cancelAttributesChangedBatcher()
     {
         m_attr.cancelAttributesChangedBatcher();
@@ -956,8 +919,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             addAttribute(Attribute.VISIBLE);
 
             addAttribute(Attribute.LISTENING);
-
-            addAttribute(Attribute.TRANSFORM);
         }
 
         /**

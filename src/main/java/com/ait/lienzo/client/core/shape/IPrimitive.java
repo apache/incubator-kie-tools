@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.shared.core.types.DragConstraint;
 import com.ait.lienzo.shared.core.types.DragMode;
@@ -329,21 +328,6 @@ public interface IPrimitive<T extends Node<T>> extends IDrawable<T>, IControlHan
      * @return this IPrimitive
      */
     public T setFillAlpha(double alpha);
-
-    /**
-     * Gets the transform for this node.
-     * 
-     * @return Transform
-     */
-    public Transform getTransform();
-
-    /**
-     * Sets the Transform for this node.
-     * 
-     * @param transform
-     * @return this IPrimitive
-     */
-    public T setTransform(Transform transform);
 
     /**
      * Returns the parent Node.

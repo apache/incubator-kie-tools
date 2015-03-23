@@ -75,6 +75,15 @@ public final class NFastStringMap<V>
     }
 
     /**
+     * Returns true if the map has a value for the specified key
+     * @param key
+     */
+    public final boolean isDefined(String key)
+    {
+        return m_jso.isDefined(key);
+    }
+
+    /**
      * Returns the number of key-value mappings in this map
      */
     public final int size()
@@ -128,6 +137,16 @@ public final class NFastStringMap<V>
         public final native boolean containsKey(String key)
         /*-{
         	return this.hasOwnProperty(String(key));
+        }-*/;
+
+        public final native boolean isDefined(String key)
+        /*-{
+            if (this.hasOwnProperty(String(key))) {
+                if (this[key] !== undefined) {
+                    return true;
+                }
+            }
+            return false;
         }-*/;
 
         public final native int size()

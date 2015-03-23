@@ -17,20 +17,19 @@
 package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.types.NFastStringSet;
-import com.google.gwt.event.shared.HandlerManager;
 
 public abstract class AbstractAccumulatingAttributesChangedBatcher implements IAttributesChangedBatcher
 {
-    private HandlerManager m_manager = null;
+    private AttributesChangedManager m_manager = null;
 
-    private NFastStringSet m_changed = new NFastStringSet();
+    private NFastStringSet           m_changed = new NFastStringSet();
 
     protected AbstractAccumulatingAttributesChangedBatcher()
     {
     }
 
     @Override
-    public final void bufferAttributeWithManager(final String name, final HandlerManager manager)
+    public final void bufferAttributeWithManager(final String name, final AttributesChangedManager manager)
     {
         m_manager = manager;
 
@@ -61,11 +60,11 @@ public abstract class AbstractAccumulatingAttributesChangedBatcher implements IA
 
             m_changed = new NFastStringSet();
 
-            final HandlerManager manager = m_manager;
+            final AttributesChangedManager manager = m_manager;
 
             m_manager = null;
 
-            manager.fireEvent(new AttributesChangedEvent(changed));
+            manager.fireChanged(changed);
         }
     }
 
