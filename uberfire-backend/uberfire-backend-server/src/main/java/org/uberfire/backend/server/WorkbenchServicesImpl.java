@@ -16,7 +16,9 @@
 package org.uberfire.backend.server;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,18 +26,27 @@ import javax.inject.Named;
 import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.io.IOService;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.FileVisitResult;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.SimpleFileVisitor;
 import org.uberfire.java.nio.file.StandardDeleteOption;
+import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.services.WorkbenchServices;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.java.nio.file.Files.*;
 
 @Service
 @ApplicationScoped
 public class WorkbenchServicesImpl
         implements
         WorkbenchServices {
+
+    public static final String PERSPECTIVE_EXTENSION = ".perspective";
 
     @Inject
     @Named("configIO")
@@ -51,7 +62,7 @@ public class WorkbenchServicesImpl
                       final PerspectiveDefinition perspective ) {
         final String xml = xs.toXML( perspective );
         final Path perspectivePath = userServices.buildPath( "perspectives",
-                                                             perspectiveId + ".perspective" );
+                                                             perspectiveId + PERSPECTIVE_EXTENSION );
         try {
             ioService.startBatch( perspectivePath.getFileSystem() );
             ioService.write( perspectivePath, xml );
@@ -76,13 +87,51 @@ public class WorkbenchServicesImpl
     @Override
     public PerspectiveDefinition loadPerspective( final String perspectiveName ) {
         final Path perspectivePath = userServices.buildPath( "perspectives",
-                                                             perspectiveName + ".perspective" );
+                                                             perspectiveName + PERSPECTIVE_EXTENSION );
         if ( ioService.exists( perspectivePath ) ) {
             final String xml = ioService.readAllString( perspectivePath );
             return (PerspectiveDefinition) xs.fromXML( xml );
         }
 
         return null;
+    }
+
+    @Override
+    public Set<PerspectiveDefinition> loadPerspectives() {
+        final Set<PerspectiveDefinition> result = new HashSet<PerspectiveDefinition>();
+        final Path perspectivesPath = userServices.buildPath( "perspectives" );
+        if ( ioService.exists( perspectivesPath ) ) {
+
+            walkFileTree( perspectivesPath, new SimpleFileVisitor<Path>() {
+                public FileVisitResult visitFile( final Path file,
+                                                  final BasicFileAttributes attrs ) throws IOException {
+                    try {
+                        checkNotNull( "file", file );
+                        checkNotNull( "attrs", attrs );
+                        String fileName = file.getFileName().toString();
+                        if ( fileName.endsWith( PERSPECTIVE_EXTENSION ) && attrs.isRegularFile() ) {
+                            String perspectiveName = fileName.substring( 0, fileName.indexOf( PERSPECTIVE_EXTENSION ) );
+                            PerspectiveDefinition def = loadPerspective( perspectiveName );
+                            if ( def != null ) {
+                                result.add( def );
+                            }
+                        }
+                    } catch ( final Exception ex ) {
+                        return FileVisitResult.TERMINATE;
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            } );
+        }
+        return result;
+    }
+
+    @Override
+    public void removePerspectiveState( final String perspectiveId ) {
+        final Path perspectivePath = userServices.buildPath( "perspectives", perspectiveId + ".perspective" );
+        if ( ioService.exists( perspectivePath ) ) {
+            ioService.delete( perspectivePath );
+        }
     }
 
     @Override

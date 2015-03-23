@@ -67,6 +67,9 @@ public class ListBarWidgetTest {
             return false;
         }
 
+        public void destroy( final ListbarPreferences listbarPreferences ) {
+
+        }
     };
 
     @Mock

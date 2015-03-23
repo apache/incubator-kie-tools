@@ -20,7 +20,6 @@
 <module>
 
   <inherits name='org.jboss.errai.ioc.Container'/>
-  <inherits name='org.jboss.errai.security.Security'/>
 
   <source path='backend'/>
   <source path='debug'/>

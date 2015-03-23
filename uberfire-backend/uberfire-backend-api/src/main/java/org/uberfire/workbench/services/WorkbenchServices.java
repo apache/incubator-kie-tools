@@ -16,6 +16,7 @@
 package org.uberfire.workbench.services;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -32,7 +33,11 @@ public interface WorkbenchServices {
 
     public void save( final SplashScreenFilter splashFilter );
 
+    public Set<PerspectiveDefinition> loadPerspectives();
+
     public PerspectiveDefinition loadPerspective( final String perspectiveId );
+
+    public void removePerspectiveState( final String perspectiveId );
 
     public void removePerspectiveStates();
 

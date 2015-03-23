@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -38,7 +37,7 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
     private static final Logger LOG = LoggerFactory.getLogger( AbstractIOWatchService.class );
 
-    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.watcher.quitetimeout", "3"));
+    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt( System.getProperty( "org.uberfire.watcher.quitetimeout", "3" ) );
 
     private final ExecutorService executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
 

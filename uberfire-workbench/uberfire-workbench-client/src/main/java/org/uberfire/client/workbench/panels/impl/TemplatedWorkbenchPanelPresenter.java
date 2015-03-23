@@ -7,7 +7,6 @@ import javax.inject.Named;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.TemplatedActivity;
-import org.uberfire.client.workbench.events.MaximizePlaceEvent;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 
 @Dependent

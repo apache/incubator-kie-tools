@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;
+import org.uberfire.workbench.model.menu.MenuVisitor;
 
 public abstract class BaseMenuCustom<T> implements MenuCustom<T> {
 
@@ -88,6 +89,11 @@ public abstract class BaseMenuCustom<T> implements MenuCustom<T> {
     @Override
     public int getOrder() {
         return 0;
+    }
+
+    @Override
+    public void accept( final MenuVisitor visitor ) {
+        visitor.visit( this );
     }
 
     @Override

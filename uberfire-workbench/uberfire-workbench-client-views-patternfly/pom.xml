@@ -51,9 +51,44 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ui</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+      <classifier>sources</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <classifier>sources</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-client-api</artifactId>
+      <classifier>sources</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-workbench-client</artifactId>
+      <classifier>sources</classifier>
       <scope>test</scope>
     </dependency>
 
@@ -61,21 +96,6 @@
 
 
   <build>
-    <resources>
-      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <!-- Include module descriptors from src/main/resources in order not to
-        break the Intellij GWT plug-in -->
-      <resource>
-        <directory>src/main/resources</directory>
-        <excludes>
-          <exclude>**/*.less</exclude>
-        </excludes>
-      </resource>
-    </resources>
-    
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -83,6 +103,8 @@
         <configuration>
           <additionalClasspathElements>
             <additionalClasspathElement>${basedir}/${profile.testOutputDirectory}/</additionalClasspathElement>
+            <additionalClasspathElement>${basedir}/src/main/java/</additionalClasspathElement>
+            <additionalClasspathElement>${basedir}/src/main/resources/</additionalClasspathElement>
             <additionalClasspathElement>${basedir}/src/test/java/</additionalClasspathElement>
           </additionalClasspathElements>
           <useManifestOnlyJar>false</useManifestOnlyJar>

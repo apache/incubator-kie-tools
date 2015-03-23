@@ -45,7 +45,6 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     private final WorkbenchPanelView<P> view;
     protected final PerspectiveManager perspectiveManager;
     private PanelDefinition definition;
-    private final Event<MaximizePlaceEvent> maximizePanelEvent;
     protected final Map<Position, WorkbenchPanelPresenter> childPanels = new LinkedHashMap<Position, WorkbenchPanelPresenter>();
 
     public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,

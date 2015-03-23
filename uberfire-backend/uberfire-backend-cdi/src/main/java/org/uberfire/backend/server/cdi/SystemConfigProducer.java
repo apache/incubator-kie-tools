@@ -24,6 +24,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.InjectionTarget;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+import javax.enterprise.inject.spi.ProcessProducer;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -62,6 +63,9 @@ public class SystemConfigProducer implements Extension {
     private final List<OrderedBean> startupEagerBeans = new LinkedList<OrderedBean>();
     private final List<OrderedBean> startupBootstrapBeans = new LinkedList<OrderedBean>();
 
+    private boolean systemFSNotExists = true;
+    private boolean ioStrategyBeanNotFound = true;
+
     private final Comparator<OrderedBean> priorityComparator = new Comparator<OrderedBean>() {
         @Override
         public int compare( final OrderedBean o1,
@@ -70,7 +74,24 @@ public class SystemConfigProducer implements Extension {
         }
     };
 
+    public void processSystemFSProducer( @Observes ProcessProducer<?, FileSystem> pp ) {
+        if ( pp.getAnnotatedMember().getJavaMember().getName().equals( "systemFS" ) ) {
+            ioStrategyBeanNotFound = false;
+        }
+    }
+
+    public void processIOServiceProducer( @Observes ProcessProducer<?, IOService> pp ) {
+        if ( pp.getAnnotatedMember().getJavaMember().getName().equals( "ioStrategy" ) ) {
+            ioStrategyBeanNotFound = false;
+        }
+    }
+
     public <X> void processBean( @Observes final ProcessBean<X> event ) {
+        if ( event.getBean().getName() != null && event.getBean().getName().equals( "systemFS" ) ) {
+            systemFSNotExists = false;
+        } else if ( event.getBean().getName() != null && event.getBean().getName().equals( "ioStrategy" ) ) {
+            ioStrategyBeanNotFound = false;
+        }
         if ( event.getAnnotated().isAnnotationPresent( Startup.class ) && ( event.getAnnotated().isAnnotationPresent( ApplicationScoped.class )
                 || event.getAnnotated().isAnnotationPresent( Singleton.class ) ) ) {
             final Startup startupAnnotation = event.getAnnotated().getAnnotation( Startup.class );
@@ -91,7 +112,7 @@ public class SystemConfigProducer implements Extension {
                 || event.getAnnotated().isAnnotationPresent( Singleton.class ) ) ) {
             final Named namedAnnotation = event.getAnnotated().getAnnotation( Named.class );
 
-            if (namedAnnotation.value().endsWith("-startable")) {
+            if ( namedAnnotation.value().endsWith( "-startable" ) ) {
                 final Bean<?> bean = event.getBean();
                 startupBootstrapBeans.add( new OrderedBean( bean, 10 ) );
             }
@@ -100,14 +121,14 @@ public class SystemConfigProducer implements Extension {
 
     public void afterDeploymentValidation( final @Observes AfterDeploymentValidation event,
                                            final BeanManager manager ) {
-        if (CDI_METHOD.equalsIgnoreCase(START_METHOD)) {
+        if ( CDI_METHOD.equalsIgnoreCase( START_METHOD ) ) {
             //Force execution of Bootstrap bean's @PostConstruct methods first
             runPostConstruct( manager,
                               startupBootstrapBeans );
 
             //Followed by execution of remaining Eager bean's @PostConstruct methods
             runPostConstruct( manager,
-                          startupEagerBeans );
+                              startupEagerBeans );
         }
     }
 
@@ -146,22 +167,16 @@ public class SystemConfigProducer implements Extension {
     void afterBeanDiscovery( @Observes final AfterBeanDiscovery abd,
                              final BeanManager bm ) {
 
-        // FIXME (UF-133) This is not CDI 1.1 compatible, and only works in CDI 1.0 containers or in
-        // Weld >= 2.0.2 with non-portable mode enabled by Java system property org.jboss.weld.nonPortableMode=true
-        final boolean systemFSNotExists = bm.getBeans( "systemFS" ).isEmpty();
-
         if ( systemFSNotExists ) {
             buildSystemFS( abd, bm );
         }
-
-        final boolean ioStrategyBeanNotFound = bm.getBeans( "ioStrategy" ).isEmpty();
 
         if ( ioStrategyBeanNotFound ) {
             buildIOStrategy( abd, bm );
         }
 
-        if (!CDI_METHOD.equalsIgnoreCase(START_METHOD)) {
-            buildStartableBean(abd, bm);
+        if ( !CDI_METHOD.equalsIgnoreCase( START_METHOD ) ) {
+            buildStartableBean( abd, bm );
         }
     }
 
@@ -348,7 +363,7 @@ public class SystemConfigProducer implements Extension {
     }
 
     private void buildStartableBean( final AfterBeanDiscovery abd,
-            final BeanManager bm ) {
+                                     final BeanManager bm ) {
 
         abd.addBean( new Bean<Startable>() {
 
@@ -409,7 +424,6 @@ public class SystemConfigProducer implements Extension {
             @Override
             public Startable create( CreationalContext<Startable> ctx ) {
 
-
                 return new Startable() {
                     @Override
                     public int hashCode() {
@@ -420,18 +434,18 @@ public class SystemConfigProducer implements Extension {
                     public void start() {
                         //Force execution of Bootstrap bean's @PostConstruct methods first
                         runPostConstruct( bm,
-                                startupBootstrapBeans );
+                                          startupBootstrapBeans );
 
                         //Followed by execution of remaining Eager bean's @PostConstruct methods
                         runPostConstruct( bm,
-                                startupEagerBeans );
+                                          startupEagerBeans );
                     }
                 };
             }
 
             @Override
             public void destroy( final Startable instance,
-                    final CreationalContext<Startable> ctx ) {
+                                 final CreationalContext<Startable> ctx ) {
 
                 ctx.release();
             }

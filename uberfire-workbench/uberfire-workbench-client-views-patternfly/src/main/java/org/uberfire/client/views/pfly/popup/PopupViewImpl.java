@@ -16,12 +16,6 @@
 package org.uberfire.client.views.pfly.popup;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import org.uberfire.client.views.pfly.modal.Bs3Modal;
-import org.uberfire.client.workbench.widgets.popup.PopupView;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.Commands;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -29,22 +23,29 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
+import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalBody;
+import org.uberfire.client.workbench.widgets.popup.PopupView;
 
 @Dependent
 public class PopupViewImpl extends Composite implements PopupView {
 
-    @Inject
-    private Bs3Modal modal;
+    final Modal modal = new Modal();
 
     public PopupViewImpl() {
         final SimplePanel panel = new SimplePanel( modal );
-
         initWidget( panel );
     }
 
     @Override
     public void setContent( final IsWidget widget ) {
-        modal.setContent( widget );
+        ModalBody body = new ModalBody();
+        body.add( widget );
+        modal.add( body );
     }
 
     @Override
@@ -54,13 +55,21 @@ public class PopupViewImpl extends Composite implements PopupView {
 
     @Override
     public void show() {
-        modal.show( Commands.DO_NOTHING,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            CloseEvent.fire( PopupViewImpl.this, PopupViewImpl.this, false );
-                        }
-                    } );
+        modal.show();
+
+        modal.addHiddenHandler( new ModalHiddenHandler() {
+            @Override
+            public void onHidden( final ModalHiddenEvent hiddenEvent ) {
+                CloseEvent.fire( PopupViewImpl.this, PopupViewImpl.this, false );
+            }
+        } );
+
+        modal.addHideHandler(new ModalHideHandler() {
+            @Override
+            public void onHide( ModalHideEvent evt ) {
+                CloseEvent.fire( PopupViewImpl.this, PopupViewImpl.this, false );
+            }
+        });
     }
 
     @Override

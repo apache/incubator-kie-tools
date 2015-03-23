@@ -28,6 +28,7 @@ import org.jboss.errai.ioc.client.api.ActivatedBy;
 
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.AbstractSplashScreenActivity;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
 import javax.inject.Named;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.SplashScreenFilter;
@@ -54,8 +55,8 @@ public class WorkbenchSplashScreenTest9Activity extends AbstractSplashScreenActi
 
     @Inject
     //Constructor injection for testing
-    public WorkbenchSplashScreenTest9Activity(final PlaceManager placeManager) {
-        super( placeManager );
+    public WorkbenchSplashScreenTest9Activity( final PlaceManager placeManager, final SplashView view ) {
+        super( placeManager, view );
     }
 
     @Override

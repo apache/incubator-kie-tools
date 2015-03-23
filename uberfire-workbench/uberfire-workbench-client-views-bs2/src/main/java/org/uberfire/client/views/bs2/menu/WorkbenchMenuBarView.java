@@ -17,19 +17,7 @@ package org.uberfire.client.views.bs2.menu;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
-import org.uberfire.workbench.model.menu.MenuGroup;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemCommand;
-import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.Menus;
 
 import com.github.gwtbootstrap.client.ui.Dropdown;
 import com.github.gwtbootstrap.client.ui.Nav;
@@ -43,8 +31,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBarPresenter;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
@@ -109,6 +97,7 @@ public class WorkbenchMenuBarView extends Composite
             }
         }
     }
+
     Widget makeItem( final MenuItem item ) {
         if ( notHavePermissionToMakeThis( item ) ) {
             return null;
@@ -147,11 +136,10 @@ public class WorkbenchMenuBarView extends Composite
     Widget makeMenuCustom( MenuCustom item ) {
         final MenuCustom custom = item;
 
-        return (Widget) custom.build();
+        return ( (IsWidget) item.build() ).asWidget();
     }
 
-    Widget makeMenuGroup( MenuGroup item ) {
-        final MenuGroup groups = item;
+    Widget makeMenuGroup( final MenuGroup groups ) {
         final List<Widget> widgetList = new ArrayList<Widget>();
         for ( final MenuItem _item : groups.getItems() ) {
             final Widget result = makeItem( _item );

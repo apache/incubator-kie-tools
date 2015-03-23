@@ -18,8 +18,10 @@ package org.uberfire.client.views.pfly.notfound;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.widgets.notfound.ActivityNotFoundPresenter;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -30,12 +32,16 @@ import com.google.gwt.user.client.ui.Label;
  * Gets shown inside a popup activity when the PlaceManager can't find a particular place.
  */
 @Dependent
+@Templated
 public class ActivityNotFoundView extends Composite implements ActivityNotFoundPresenter.View {
 
     private ActivityNotFoundPresenter presenter;
 
     @Inject @DataField
     private Label requestedPlaceIdentifier;
+
+    @Inject @DataField
+    private Button okButton;
 
     @Override
     public void init( final ActivityNotFoundPresenter presenter ) {
