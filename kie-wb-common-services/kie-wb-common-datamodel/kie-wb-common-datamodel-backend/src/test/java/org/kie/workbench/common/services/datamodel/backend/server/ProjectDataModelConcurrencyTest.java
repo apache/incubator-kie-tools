@@ -66,6 +66,7 @@ public class ProjectDataModelConcurrencyTest {
                 .addPackage( "org.guvnor.structure.organizationalunit" )
                 .addPackage( "org.guvnor.structure.organizationalunit.impl" )
                 .addPackage( "org.guvnor.structure.backend.organizationalunit" )
+                .addPackage( "org.guvnor.structure.backend.backcompat" )
                 .addPackage( "org.uberfire.commons.cluster" )
                 .addPackage( "org.uberfire.backend.server.util" )
                 .addPackage( "org.uberfire.backend.server.config" )
