@@ -575,6 +575,9 @@ public final class NativeContext2D extends JavaScriptObject
                     this.closePath();
                     fill = true;
                     break;
+                case 7:
+                    this.arcTo(p[0], p[1], p[2], p[3],p[4]);
+                    break;
             }
         }
         return fill;

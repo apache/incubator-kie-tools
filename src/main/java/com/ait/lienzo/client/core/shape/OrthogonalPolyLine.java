@@ -46,6 +46,8 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
     private Point2D            m_headOffsetPoint;
 
+    private double             m_cornerSize = 5;
+
     public OrthogonalPolyLine(final Point2D start, final Point2D... points)
     {
         this(new Point2DArray(start, points));
@@ -673,7 +675,14 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 {
                     m_list.M(p1.getX(), p1.getY());
 
-                    addLinePoints(linept);
+                    if ( m_cornerSize > 0 )
+                    {
+                        addLinePoints(linept, p1);
+                    }
+                    else
+                    {
+                        addLinePoints(linept);
+                    }
 
                     return true;
                 }
@@ -690,6 +699,104 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         {
             m_list.L(points.get(i), points.get(i + 1));
         }
+    }
+
+    private final void addLinePoints(final NFastDoubleArrayJSO points, Point2D p0)
+    {
+        final int size = points.size();
+
+        Point2D p1 = new Point2D(points.get(0), points.get(1));
+        Point2D p2 = new Point2D(p1);
+
+        Point2D dv0 = p1.sub(p0);
+        Point2D dx0 = dv0.unit(); // unit vector in the direction of p2
+        p1 =  p1.sub(dx0.mul(m_cornerSize));
+        m_list.L(p1.getX(), p1.getY());
+
+        for (int i = 2; i < size; i += 2)
+        {
+            Point2D p4 = new Point2D(points.get(i), points.get(i+1));
+            drawLines(m_list, p0, p2, p4, m_cornerSize, points, i+2);
+            p0 = p2;
+            p2 = p4;
+        }
+    }
+
+    public static void drawLines( PathPartList list, Point2D p0, Point2D p2, Point2D p4,
+                                  double cornerSize, NFastDoubleArrayJSO points, int index) {
+        Point2D dv1 = p2.sub(p4);
+        Point2D dx1 = dv1.unit(); // unit vector in the direction of p2
+        Point2D p3 =  p2.sub(dx1.mul(cornerSize));
+
+        double a1 = angleBetweenTwoLines(p0, p2, p2, p4);
+        double a2 = Math.toRadians(90) - (a1 / 2);
+        double radius = getLengthFromASA(Math.toRadians(90), cornerSize, a2);
+
+        if ( index < points.size() )
+        {
+            // p4 always nees to stop short, unless we are at the last point
+            p4 = p4.add(dx1.mul(cornerSize));
+        }
+
+        drawLine(list, p2, p3, p4,radius);
+    }
+
+    private static void drawLine(PathPartList list, Point2D p2, Point2D p3, Point2D p4, double radius)
+    {
+        list.A(p2.getX(), p2.getY(), p3.getX(), p3.getY(), radius);
+        list.L(p4.getX(), p4.getY());
+    }
+
+    public static double angleBetweenTwoLines(Point2D s0, Point2D e0, Point2D s1, Point2D e1) {
+        // s == start, e == end, l == length
+        double l0 = distance(s0, e0);
+        double l1 = distance(s1, e1);
+        double l2 = distance( s0, e1 ); // length between l0 and l1
+
+        double angle = getAngleFromSSS(l0, l1, l2);
+        return angle;
+    }
+
+    public static double distance(Point2D p1, Point2D p2) {
+        return distance( p1.getX(), p1.getY(), p2.getX(), p2.getY() );
+    }
+
+    public static double distance(double x1, double y1, double x2, double y2) {
+        // http://www.regentsprep.org/regents/math/geometry/gcg3/ldistance.htm
+        double v1 = Math.pow(x2 - x1, 2);
+        double v2 = Math.pow(y2 - y1, 2);
+        return Math.sqrt(v1 + v2);
+    }
+
+    /**
+     * Returns the angle between length0 and length1
+     * http://www.mathsisfun.com/algebra/trig-solving-sss-triangles.html
+     * cos C = (a2 + b2 − c2) / 2ab   // C is top angle and length1
+     * @param length0
+     * @param length1
+     * @param length2
+     * @return
+     */
+    public static double getAngleFromSSS(double length0, double length1, double length2) {
+        double v1 = Math.pow(length0, 2) + Math.pow(length1, 2) - Math.pow(length2, 2);
+        double v2 = v1 / ( 2 * length0 * length1 );
+        double c = Math.acos(v2);
+        return c;
+    }
+
+    /**
+     * Returns the length that forms angle1 with length1. ASA triangle
+     * http://www.mathsisfun.com/algebra/trig-solving-asa-triangles.html
+     * b/sinB = c/sin C
+     * @param angle1
+     * @param length1
+     * @param angle2
+     * @return
+     */
+    public static double getLengthFromASA(double angle1, double length1, double angle2) {
+        double angle3 = Math.toRadians(180) - angle1 - angle2;
+        double v1 = (length1 * Math.sin( angle2 ))/ Math.sin(angle3);
+        return v1;
     }
 
     /**
@@ -713,6 +820,16 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         getAttributes().setControlPoints(points);
 
         return refresh();
+    }
+
+    public double getCornerSize()
+    {
+        return m_cornerSize;
+    }
+
+    public void setCornerSize(double cornerSize)
+    {
+        this.m_cornerSize = cornerSize;
     }
 
     @Override
