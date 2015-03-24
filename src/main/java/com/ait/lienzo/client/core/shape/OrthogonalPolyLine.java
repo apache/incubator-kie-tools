@@ -46,7 +46,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
     private Point2D            m_headOffsetPoint;
 
-    private double             m_cornerSize = 5;
+    private double             m_cornerSize = 0;
 
     public OrthogonalPolyLine(final Point2D start, final Point2D... points)
     {
