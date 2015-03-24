@@ -406,7 +406,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 }
                 break;
             case NONE:
-                if ( p0x == p1x || p0y == p1y)
+                if (p0x == p1x || p0y == p1y)
                 {
                     // on same axis, so just draw straight line.
                     addPoint(buffer, p1x, p1y);
@@ -561,7 +561,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
         if ((next_direction == SOUTH) || (next_direction == NORTH))
         {
-            if ( p1x != p2x )
+            if (p1x != p2x)
             {
                 buffer.push(p1x, p2y, p2x, p2y);
             }
@@ -586,7 +586,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
         else
         {
-            if ( p1y != p2y )
+            if (p1y != p2y)
             {
                 buffer.push(p2x, p1y, p2x, p2y);
             }
@@ -869,7 +869,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return getAttributes().getCornerRadius();
     }
 
-    public OrthogonalPolyLine setCornerSize(final double radius)
+    public OrthogonalPolyLine setCornerRadius(final double radius)
     {
         getAttributes().setCornerRadius(radius);
 
