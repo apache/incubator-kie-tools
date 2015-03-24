@@ -774,7 +774,6 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     /**
      * Returns the angle between length0 and length1
      * http://www.mathsisfun.com/algebra/trig-solving-sss-triangles.html
-     * cos C = (a2 + b2 − c2) / 2ab   // C is top angle and length1
      * @param length0
      * @param length1
      * @param length2
