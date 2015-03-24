@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -110,8 +109,6 @@ public class PespectiveContextMenusView
             }
         } );
 
-        gwtItem.addStyleName( WorkbenchResources.INSTANCE.CSS().perspectiveContextMenus() );
-
         return gwtItem;
     }
 
@@ -129,13 +126,11 @@ public class PespectiveContextMenusView
             return null;
         }
 
-        Dropdown dropdown = new Dropdown( groups.getCaption() ) {{
+        return new Dropdown( groups.getCaption() ) {{
             for ( final Widget widget : widgetList ) {
                 add( widget );
             }
         }};
-        dropdown.addStyleName( WorkbenchResources.INSTANCE.CSS().perspectiveContextMenus() );
-        return dropdown;
     }
 
     boolean notHavePermissionToMakeThis( MenuItem item ) {
