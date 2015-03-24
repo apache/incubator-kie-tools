@@ -16,226 +16,224 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
+import com.google.gwt.event.shared.EventBus;
 import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionDetectorKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.InsertFactActionDetectorKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.SetFieldColActionDetectorKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.UnrecognizedActionDetectorKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.BooleanConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.DateConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.EnumConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericBigDecimalConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericBigIntegerConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericByteConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericDoubleConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericFloatConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericIntegerConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericLongConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericShortConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.StringConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.UnrecognizedConditionDetector;
-import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnInserted;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 
-public class DecisionTableAnalyzer {
+public class DecisionTableAnalyzer
+        implements ValidateEvent.Handler,
+                   DeleteRowEvent.Handler,
+                   AfterColumnDeleted.Handler,
+                   UpdateColumnDataEvent.Handler,
+                   AppendRowEvent.Handler,
+                   InsertRowEvent.Handler,
+                   AfterColumnInserted.Handler {
 
-    private final AsyncPackageDataModelOracle oracle;
+    private final RowInspectorCache cache;
+    private final GuidedDecisionTable52 model;
+    private final EventBus eventBus;
+    private final Checks checks = new Checks();
+    private final EvenManager eventManager = new EvenManager();
 
-    public DecisionTableAnalyzer( final AsyncPackageDataModelOracle oracle ) {
-        this.oracle = oracle;
+    public DecisionTableAnalyzer( AsyncPackageDataModelOracle oracle,
+                                  GuidedDecisionTable52 model,
+                                  EventBus eventBus ) {
+        this.model = model;
+        this.eventBus = eventBus;
+
+        cache = new RowInspectorCache( oracle,
+                                       model,
+                                       new UpdateHandler() {
+                                           @Override
+                                           public void updateRow( RowInspector oldRowInspector,
+                                                                  RowInspector newRowInspector ) {
+                                               checks.update( oldRowInspector, newRowInspector );
+                                           }
+                                       } );
+
+        eventBus.addHandler( ValidateEvent.TYPE,
+                             this );
+        eventBus.addHandler( DeleteRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( AfterColumnDeleted.TYPE,
+                             this );
+        eventBus.addHandler( UpdateColumnDataEvent.TYPE,
+                             this );
+        eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( AfterColumnInserted.TYPE,
+                             this );
     }
 
-    @SuppressWarnings("rawtypes")
-    public List<Analysis> analyze( final GuidedDecisionTable52 model ) {
-        final GuidedDecisionTableUtils utils = new GuidedDecisionTableUtils( model,
-                                                                             oracle );
-        final List<List<DTCellValue52>> data = model.getData();
-        final List<Analysis> analysisData = new ArrayList<Analysis>( data.size() );
-        final List<RowDetector> rowDetectorList = new ArrayList<RowDetector>( data.size() );
+    private void resetChecks() {
+        for ( RowInspector rowInspector : cache.all() ) {
+            checks.add( rowInspector );
+        }
+    }
 
-        for ( List<DTCellValue52> row : data ) {
-            final Integer rowNumber = ( (Integer) row.get( 0 ).getNumericValue() ) - 1;
-            RowDetector rowDetector = new RowDetector( rowNumber );
-            for ( Pattern52 pattern : model.getPatterns() ) {
-                for ( ConditionCol52 conditionCol : pattern.getChildColumns() ) {
-                    int columnIndex = model.getExpandedColumns().indexOf( conditionCol );
-                    if (columnIndex < 0) continue;
-                    DTCellValue52 visibleCellValue = row.get( columnIndex );
-                    DTCellValue52 realCellValue;
-                    boolean cellIsNotBlank;
-                    if ( conditionCol instanceof LimitedEntryCol ) {
-                        realCellValue = ( (LimitedEntryCol) conditionCol ).getValue();
-                        cellIsNotBlank = visibleCellValue.getBooleanValue();
-                    } else {
-                        realCellValue = visibleCellValue;
-                        cellIsNotBlank = visibleCellValue.hasValue();
-                    }
-                    // Blank cells are ignored
-                    if ( cellIsNotBlank ) {
-                        ConditionDetector conditionDetector = buildConditionDetector( utils,
-                                                                                      pattern,
-                                                                                      conditionCol,
-                                                                                      realCellValue );
-                        rowDetector.putOrMergeConditionDetector( conditionDetector );
-                    }
+    private List<Analysis> analyze() {
+
+        final List<Analysis> analysisData = new ArrayList<Analysis>();
+
+        this.checks.run();
+
+        for ( RowInspector rowInspector : cache.all() ) {
+            Analysis analysis = new Analysis();
+            for ( Check check : checks.get( rowInspector ) ) {
+                if ( check.hasIssues() ) {
+                    analysis.addRowMessage( check.getIssue() );
                 }
             }
-            for ( ActionCol52 actionCol : model.getActionCols() ) {
-                //BRLActionColumns cannot be analysed
-                if ( actionCol instanceof BRLActionColumn ) {
-                    continue;
-                }
-                int columnIndex = model.getExpandedColumns().indexOf( actionCol );
-                if (columnIndex < 0) continue;
-                DTCellValue52 visibleCellValue = row.get( columnIndex );
-                DTCellValue52 realCellValue;
-                boolean cellIsNotBlank;
-                if ( actionCol instanceof LimitedEntryCol ) {
-                    realCellValue = ( (LimitedEntryCol) actionCol ).getValue();
-                    cellIsNotBlank = visibleCellValue.getBooleanValue();
-                } else {
-                    realCellValue = visibleCellValue;
-                    cellIsNotBlank = visibleCellValue.hasValue();
-                }
-                // Blank cells are ignored
-                if ( cellIsNotBlank ) {
-                    ActionDetector actionDetector = buildActionDetector( model,
-                                                                         actionCol,
-                                                                         realCellValue );
-                    rowDetector.putOrMergeActionDetector( actionDetector );
-                }
-            }
-            rowDetectorList.add( rowDetector );
+            analysisData.add( analysis );
         }
-        for ( RowDetector rowDetector : rowDetectorList ) {
-            analysisData.add( rowDetector.buildAnalysis( rowDetectorList ) );
-        }
+
         return analysisData;
     }
 
-    @SuppressWarnings("rawtypes")
-    private ConditionDetector buildConditionDetector( GuidedDecisionTableUtils utils,
-                                                      Pattern52 pattern,
-                                                      ConditionCol52 conditionCol,
-                                                      DTCellValue52 realCellValue ) {
-        String factField = conditionCol.getFactField();
-        String operator = conditionCol.getOperator();
-        String type = utils.getType( conditionCol );
-        // Retrieve "Guvnor" enums
-        String[] allValueList = utils.getValueList( conditionCol );
-        ConditionDetector newDetector;
-        if ( allValueList.length != 0 ) {
-            // Guvnor enum
-            newDetector = new EnumConditionDetector( pattern,
-                                                     factField,
-                                                     Arrays.asList( allValueList ),
-                                                     realCellValue.getStringValue(),
-                                                     operator );
-        } else if ( type == null ) {
-            // type null means the field is free-format
-            newDetector = new UnrecognizedConditionDetector( pattern,
-                                                             factField,
-                                                             operator );
-        } else if ( type.equals( DataType.TYPE_STRING ) ) {
-            newDetector = new StringConditionDetector( pattern,
-                                                       factField,
-                                                       realCellValue.getStringValue(),
-                                                       operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC ) ) {
-            newDetector = new NumericConditionDetector( pattern,
-                                                        factField,
-                                                        (BigDecimal) realCellValue.getNumericValue(),
-                                                        operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            newDetector = new NumericBigDecimalConditionDetector( pattern,
-                                                                  factField,
-                                                                  (BigDecimal) realCellValue.getNumericValue(),
-                                                                  operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
-            newDetector = new NumericBigIntegerConditionDetector( pattern,
-                                                                  factField,
-                                                                  (BigInteger) realCellValue.getNumericValue(),
-                                                                  operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
-            newDetector = new NumericByteConditionDetector( pattern,
-                                                            factField,
-                                                            (Byte) realCellValue.getNumericValue(),
-                                                            operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
-            newDetector = new NumericDoubleConditionDetector( pattern,
-                                                              factField,
-                                                              (Double) realCellValue.getNumericValue(),
-                                                              operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
-            newDetector = new NumericFloatConditionDetector( pattern,
-                                                             factField,
-                                                             (Float) realCellValue.getNumericValue(),
-                                                             operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
-            newDetector = new NumericIntegerConditionDetector( pattern,
-                                                               factField,
-                                                               (Integer) realCellValue.getNumericValue(),
-                                                               operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_LONG ) ) {
-            newDetector = new NumericLongConditionDetector( pattern,
-                                                            factField,
-                                                            (Long) realCellValue.getNumericValue(),
-                                                            operator );
-        } else if ( type.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
-            newDetector = new NumericShortConditionDetector( pattern,
-                                                             factField,
-                                                             (Short) realCellValue.getNumericValue(),
-                                                             operator );
-        } else if ( type.equals( DataType.TYPE_BOOLEAN ) ) {
-            newDetector = new BooleanConditionDetector( pattern,
-                                                        factField,
-                                                        realCellValue.getBooleanValue(),
-                                                        operator );
-        } else if ( type.equals( DataType.TYPE_DATE ) ) {
-            newDetector = new DateConditionDetector( pattern,
-                                                     factField,
-                                                     realCellValue.getDateValue(),
-                                                     operator );
-        } else {
-            newDetector = new UnrecognizedConditionDetector( pattern,
-                                                             factField,
-                                                             operator );
-        }
-        return newDetector;
+    private void updateAnalysisColumn() {
+        model.getAnalysisData().clear();
+        model.getAnalysisData().addAll( analyze() );
+
+        eventBus.fireEvent( new UpdateColumnDataEvent( getAnalysisColumnIndex(),
+                                                       getAnalysisColumnData() ) );
+
     }
 
-    private ActionDetector buildActionDetector( GuidedDecisionTable52 model,
-                                                ActionCol52 actionCol,
-                                                DTCellValue52 realCellValue ) {
-        ActionDetectorKey key;
-        if ( actionCol instanceof ActionSetFieldCol52 ) {
-            key = new SetFieldColActionDetectorKey( (ActionSetFieldCol52) actionCol );
-        } else if ( actionCol instanceof ActionInsertFactCol52 ) {
-            key = new InsertFactActionDetectorKey( (ActionInsertFactCol52) actionCol );
-        } else {
-            key = new UnrecognizedActionDetectorKey( actionCol );
+    // Retrieve the data for the analysis column
+    private List<CellValue<? extends Comparable<?>>> getAnalysisColumnData() {
+        List<CellValue<? extends Comparable<?>>> columnData = new ArrayList<CellValue<? extends Comparable<?>>>();
+        List<Analysis> analysisData = model.getAnalysisData();
+        for ( int i = 0; i < analysisData.size(); i++ ) {
+            Analysis analysis = analysisData.get( i );
+            CellValue<Analysis> cell = new CellValue<Analysis>( analysis );
+            columnData.add( cell );
         }
-        return new ActionDetector( key,
-                                   realCellValue );
+        return columnData;
     }
 
+    private int getAnalysisColumnIndex() {
+        return model.getExpandedColumns().indexOf( model.getAnalysisCol() );
+    }
+
+    @Override
+    public void onValidate( ValidateEvent event ) {
+
+        if ( event.getUpdates().isEmpty() || checks.isEmpty() ) {
+            resetChecks();
+        } else {
+            cache.updateRowInspectors( event.getUpdates().keySet(),
+                                       model.getData() );
+        }
+
+        updateAnalysisColumn();
+    }
+
+    @Override
+    public void onAfterDeletedColumn( AfterColumnDeleted event ) {
+
+        cache.reset();
+
+        resetChecks();
+
+        updateAnalysisColumn();
+    }
+
+    @Override
+    public void onAfterColumnInserted( AfterColumnInserted event ) {
+
+        cache.reset();
+
+        resetChecks();
+
+        updateAnalysisColumn();
+    }
+
+    @Override
+    public void onUpdateColumnData( UpdateColumnDataEvent event ) {
+
+        if ( hasTheRowCountIncreased( event ) ) {
+
+            addRow( eventManager.getNewIndex() );
+            updateAnalysisColumn();
+
+        } else if ( hasTheRowCountDecreased( event ) ) {
+
+            RowInspector removed = cache.removeRow( eventManager.rowDeleted );
+            checks.remove( removed );
+
+            updateAnalysisColumn();
+
+        }
+
+        eventManager.clear();
+    }
+
+    private boolean hasTheRowCountDecreased( UpdateColumnDataEvent event ) {
+        return cache.all().size() > event.getColumnData().size();
+    }
+
+    private boolean hasTheRowCountIncreased( UpdateColumnDataEvent event ) {
+        return cache.all().size() < event.getColumnData().size();
+    }
+
+    private void addRow( int index ) {
+        RowInspector rowInspector = cache.addRow( index,
+                                                  model.getData().get( index ) );
+        checks.add( rowInspector );
+    }
+
+    @Override
+    public void onDeleteRow( DeleteRowEvent event ) {
+        eventManager.rowDeleted = event.getIndex();
+    }
+
+    @Override
+    public void onAppendRow( AppendRowEvent event ) {
+        eventManager.rowAppended = true;
+    }
+
+    @Override
+    public void onInsertRow( InsertRowEvent event ) {
+        eventManager.rowInserted = event.getIndex();
+    }
+
+    class EvenManager {
+
+        boolean rowAppended = false;
+        Integer rowInserted = null;
+        Integer rowDeleted = null;
+
+        public void clear() {
+
+            rowAppended = false;
+            rowInserted = null;
+            rowDeleted = null;
+        }
+
+        int getNewIndex() {
+            if ( eventManager.rowAppended ) {
+                return model.getData().size() - 1;
+            } else if ( eventManager.rowInserted != null ) {
+                return eventManager.rowInserted;
+            }
+
+            throw new IllegalStateException( "There is no active updates" );
+        }
+    }
 }

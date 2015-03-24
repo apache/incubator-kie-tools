@@ -138,6 +138,12 @@
       <artifactId>uberfire-commons-editor-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Needed for DataModelOracle builder used in tests -->
     <dependency>
       <groupId>org.kie.workbench.services</groupId>

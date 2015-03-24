@@ -47,6 +47,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.DynamicColum
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.ResourcesProvider;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteColumnEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertColumnEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetModelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.InsertDecisionTableColumnEvent;
@@ -327,7 +328,6 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                   true,
                                                                                   false,
                                                                                   eventBus );
-        analysisColumn.setVisible( !analysisCol.isHideColumn() );
         analysisColumn.setWidth( 200 );
         columns.add( analysisColumn );
 
@@ -435,6 +435,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
 
             } );
         }
+        eventBus.fireEvent(new AfterColumnDeleted());
     }
 
 }

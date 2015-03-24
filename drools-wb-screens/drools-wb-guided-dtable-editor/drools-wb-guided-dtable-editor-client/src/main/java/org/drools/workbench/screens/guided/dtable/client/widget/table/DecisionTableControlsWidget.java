@@ -33,7 +33,6 @@ public class DecisionTableControlsWidget extends Composite {
 
     private Button addRowButton;
     private Button otherwiseButton;
-    private Button analyzeButton;
     private Button auditLogButton;
 
     public DecisionTableControlsWidget( final AbstractDecisionTableWidget dtable,
@@ -66,19 +65,7 @@ public class DecisionTableControlsWidget extends Composite {
                                       } );
         otherwiseButton.setEnabled( false );
         panel.add( otherwiseButton );
-
-        // Analyse button
-        analyzeButton = new Button( GuidedDecisionTableConstants.INSTANCE.Analyze(),
-                                    new ClickHandler() {
-                                        public void onClick( ClickEvent event ) {
-                                            if ( dtable != null ) {
-                                                dtable.analyze();
-                                            }
-                                        }
-                                    } );
-        analyzeButton.setEnabled( !isReadOnly );
-        panel.add( analyzeButton );
-
+        
         // Audit Log button
         auditLogButton = new Button( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog(),
                                      new ClickHandler() {
