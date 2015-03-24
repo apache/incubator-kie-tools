@@ -406,7 +406,15 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
                 }
                 break;
             case NONE:
-                getOrthogonalLinePointsAndDirection(buffer, lastDirection, p0x, p0y, p1x, p1y);
+                if ( p0x == p1x || p0y == p1y)
+                {
+                    // on same axis, so just draw straight line.
+                    addPoint(buffer, p1x, p1y);
+                }
+                else
+                {
+                    getOrthogonalLinePointsAndDirection(buffer, lastDirection, p0x, p0y, p1x, p1y);
+                }
                 return;
         }
         addPoint(buffer, p1x, p1y);
@@ -553,7 +561,15 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
         if ((next_direction == SOUTH) || (next_direction == NORTH))
         {
-            buffer.push(p1x, p2y, p2x, p2y);
+            if ( p1x != p2x )
+            {
+                buffer.push(p1x, p2y, p2x, p2y);
+            }
+            else
+            {
+                // points are already on a straight line, so don't try and apply an orthogonal line
+                buffer.push(p2x, p2y);
+            }
 
             if (p1x < p2x)
             {
@@ -570,7 +586,15 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
         else
         {
-            buffer.push(p2x, p1y, p2x, p2y);
+            if ( p1y != p2y )
+            {
+                buffer.push(p2x, p1y, p2x, p2y);
+            }
+            else
+            {
+                // points are already on a straight line, so don't try and apply an orthogonal line
+                buffer.push(p2x, p2y);
+            }
 
             if (p1y > p2y)
             {
@@ -704,7 +728,9 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     {
         final int size = points.size();
 
-        Point2D p1 = new Point2D(points.get(0), points.get(1));
+        int i = 0;
+
+        Point2D p1 = new Point2D(points.get(i++), points.get(i++));
 
         Point2D p2 = new Point2D(p1);
 
@@ -716,7 +742,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         m_list.L(p1.getX(), p1.getY());
 
-        for (int i = 2; i < size; i += 2)
+        for (; i < size; i += 2)
         {
             Point2D p4 = new Point2D(points.get(i), points.get(i + 1));
 
@@ -732,16 +758,8 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
     {
         Point2D dv1 = p2.sub(p4);
 
-        Point2D dx1;
+        Point2D dx1 = dv1.unit();
 
-        if (dv1.getLength() == 0)
-        {
-            dx1 = new Point2D(0, 0);
-        }
-        else
-        {
-            dx1 = dv1.unit();
-        }
         Point2D p3 = p2.sub(dx1.mul(cornerSize));
 
         double a1 = angleBetweenTwoLines(p0, p2, p2, p4);
@@ -752,7 +770,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
         if (index < points.size())
         {
-            // p4 always nees to stop short, unless we are at the last point
+            // p4 always needs to stop short, unless we are at the last point
             p4 = p4.add(dx1.mul(cornerSize));
         }
         drawLine(list, p2, p3, p4, radius);
