@@ -25,6 +25,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
+import com.ait.lienzo.client.core.util.XSS;
 import com.ait.lienzo.shared.core.types.PaletteType;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -133,7 +134,7 @@ public abstract class AbstractPaletteBase<T extends AbstractPaletteBase<T>> impl
     @Override
     public final String toJSONString()
     {
-        return toJSONObject().toString();
+        return XSS.clean(toJSONObject().toString());
     }
 
     @Override

@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
+import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -89,7 +90,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
 
     public String toJSONString()
     {
-        return toJSONObject().toString();
+        return XSS.clean(toJSONObject().toString());
     }
 
     @Override

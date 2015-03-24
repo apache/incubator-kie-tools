@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.types;
 
+import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 
@@ -72,7 +73,7 @@ public final class ClipRegion
 
         object.put("maxY", new JSONNumber(getMaxY()));
 
-        return object.toString();
+        return XSS.clean(object.toString());
     }
 
     @Override

@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.util.Curves;
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 
@@ -205,7 +206,7 @@ public final class PathPartList
 
     public final String toJSONString()
     {
-        return toJSONArray().toString();
+        return XSS.clean(toJSONArray().toString());
     }
 
     @Override

@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.util.GeometryException;
+import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
@@ -330,7 +331,7 @@ public final class Point2D
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return XSS.clean(new JSONObject(m_jso).toString());
     }
 
     @Override

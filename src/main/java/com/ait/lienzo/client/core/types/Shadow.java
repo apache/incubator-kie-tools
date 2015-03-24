@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
+import com.ait.lienzo.client.core.util.XSS;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
@@ -213,7 +214,7 @@ public final class Shadow
 
     public final String toJSONString()
     {
-        return new JSONObject(m_jso).toString();
+        return XSS.clean(new JSONObject(m_jso).toString());
     }
 
     @Override

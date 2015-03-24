@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.types;
 
+import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
@@ -48,7 +49,7 @@ public final class PathPartEntryJSO extends JavaScriptObject
 
     public final String toJSONString()
     {
-        return new JSONObject(this).toString();
+        return XSS.clean(new JSONObject(this).toString());
     }
 
     public final native int getCommand()

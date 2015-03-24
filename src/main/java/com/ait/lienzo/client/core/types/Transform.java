@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
 import com.ait.lienzo.client.core.util.GeometryException;
+import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONArray;
 
@@ -420,7 +421,7 @@ public final class Transform
 
     public final String toJSONString()
     {
-        return new JSONArray(m_jso).toString();
+        return XSS.clean(new JSONArray(m_jso).toString());
     }
 
     @Override
