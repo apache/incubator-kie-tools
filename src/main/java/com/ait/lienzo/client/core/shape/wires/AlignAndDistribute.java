@@ -174,9 +174,14 @@ public class AlignAndDistribute
 
     public void addShape(Shape<?> shape)
     {
-        AlignAndDistributeHandler handler = new AlignAndDistributeHandler(shape, this, m_alignmentCallback, shape.getBoundingBoxAttributes());
-
-        m_shapes.put(shape.uuid(), handler);
+        String uuid = shape.uuid();
+        AlignAndDistributeHandler handler = m_shapes.get(uuid);
+        if ( handler == null )
+        {
+            // only add if the shape has not already been added
+            handler = new AlignAndDistributeHandler(shape, this, m_alignmentCallback, shape.getBoundingBoxAttributes());
+            m_shapes.put(uuid, handler);
+        }
     }
 
     public void removeShape(Shape<?> shape)
