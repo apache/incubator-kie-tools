@@ -157,6 +157,13 @@ public final class PathPartList
         return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
     }
 
+    public PathPartList A(final double x0, final double y0, double x1, final double y1, double radius)
+    {
+        push(PathPartEntryJSO.make(PathPartEntryJSO.CARCTO_ABSOLUTE, NFastDoubleArrayJSO.make(x0, y0, m_cpx = x1, m_cpy = y1, radius)));
+
+        return this;
+    }
+
     public final PathPartList A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y)
     {
         final NFastDoubleArrayJSO points = PathPartList.convertEndpointToCenterParameterization(m_cpx, m_cpy, x, y, fa, fs, rx, ry, ps);

@@ -35,6 +35,8 @@ public final class PathPartEntryJSO extends JavaScriptObject
 
     public static final int CLOSE_PATH_PART            = 6;
 
+    public static final int CARCTO_ABSOLUTE            = 7;
+
     public static final native PathPartEntryJSO make(int c, NFastDoubleArrayJSO p)
     /*-{
         return {command: c, points: p};

@@ -135,6 +135,13 @@ public class MultiPath extends AbstractMultiPathPartShape<MultiPath>
         return C(c1.getX(), c1.getY(), c2.getX(), c2.getY(), ep.getX(), ep.getY());
     }
 
+    public MultiPath A(final double x0, final double y0, double x1, final double y1, double radius)
+    {
+        getOrIncrementList().A(x0, y0, x1, y1, radius);
+
+        return this;
+    }
+
     public MultiPath A(final double rx, final double ry, final double ps, final double fa, final double fs, final double x, final double y)
     {
         getOrIncrementList().A(rx, ry, ps, fa, fs, x, y);
