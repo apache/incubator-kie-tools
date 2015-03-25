@@ -132,7 +132,7 @@ public class Builder {
             kieBuilder = kieServices.newKieBuilder( kieFileSystem );
 
             //Record RTEs from KieBuilder - that can fail if a rule uses an inaccessible class
-            final BuildResults results = new BuildResults();
+            final BuildResults results = new BuildResults(projectGAV);
             try {
                 final Results kieResults = kieBuilder.buildAll().getResults();
                 results.addAllBuildMessages( convertMessages( kieResults.getMessages(), handles ) );
