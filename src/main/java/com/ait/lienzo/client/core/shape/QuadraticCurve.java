@@ -26,7 +26,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.lienzo.client.core.util.Curves;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -75,7 +75,7 @@ public class QuadraticCurve extends AbstractMultiPointShape<QuadraticCurve>
     @Override
     public BoundingBox getBoundingBox()
     {
-        final BoundingBox bbox = Curves.getBoundingBox(this);
+        final BoundingBox bbox = Geometry.getBoundingBox(this);
 
         if (null != bbox)
         {

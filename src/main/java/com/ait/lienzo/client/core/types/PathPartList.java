@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.Curves;
 import com.ait.lienzo.client.core.util.Geometry;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
@@ -321,10 +320,10 @@ public final class PathPartList
                     m_box.add(oldx = p.get(0), oldy = p.get(1));
                     break;
                 case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE:
-                    m_box.add(Curves.getBoundingBox(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(p.get(2), p.get(3)), new Point2D(oldx = p.get(4), oldy = p.get(5)))));
+                    m_box.add(Geometry.getBoundingBoxOfCurve(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(p.get(2), p.get(3)), new Point2D(oldx = p.get(4), oldy = p.get(5)))));
                     break;
                 case PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE:
-                    m_box.add(Curves.getBoundingBox(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(oldx = p.get(2), oldy = p.get(3)))));
+                    m_box.add(Geometry.getBoundingBoxOfCurve(new Point2DArray(new Point2D(oldx, oldy), new Point2D(p.get(0), p.get(1)), new Point2D(oldx = p.get(2), oldy = p.get(3)))));
                     break;
                 case PathPartEntryJSO.ARCTO_ABSOLUTE:
                     double cx = p.get(0);
