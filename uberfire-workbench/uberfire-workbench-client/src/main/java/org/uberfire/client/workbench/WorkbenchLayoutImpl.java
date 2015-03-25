@@ -112,7 +112,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     }
 
-    private static final int MAXIMIZED_PANEL_Z_INDEX = 100000;
+    private static final int MAXIMIZED_PANEL_Z_INDEX = 100;
 
     /**
      * Top-level widget of the whole workbench layout. This panel contains the nested container panels for headers,
