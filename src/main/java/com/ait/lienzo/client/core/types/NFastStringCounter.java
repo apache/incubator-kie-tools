@@ -19,7 +19,6 @@ package com.ait.lienzo.client.core.types;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
@@ -155,7 +154,7 @@ public final class NFastStringCounter
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONObject(m_jso).toString());
+        return new JSONObject(m_jso).toString();
     }
 
     @Override

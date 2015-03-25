@@ -81,7 +81,6 @@ import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.util.UUID;
-import com.ait.lienzo.client.core.util.XSS;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.EventHandler;
@@ -275,7 +274,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
 
         if (null != object)
         {
-            return XSS.clean(object.toString());
+            return object.toString();
         }
         return null;
     }

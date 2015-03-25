@@ -25,7 +25,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.MetaData;
 import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
-import com.ait.lienzo.client.core.util.XSS;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -167,7 +166,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
     @Override
     public String toJSONString()
     {
-        return XSS.clean(toJSONObject().toString());
+        return toJSONObject().toString();
     }
 
     @Override

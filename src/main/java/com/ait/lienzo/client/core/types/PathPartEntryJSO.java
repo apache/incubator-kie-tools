@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
@@ -36,7 +35,7 @@ public final class PathPartEntryJSO extends JavaScriptObject
 
     public static final int CLOSE_PATH_PART            = 6;
 
-    public static final int CARCTO_ABSOLUTE            = 7;
+    public static final int CANVAS_ARCTO_ABSOLUTE      = 7;
 
     public static final native PathPartEntryJSO make(int c, NFastDoubleArrayJSO p)
     /*-{
@@ -49,7 +48,7 @@ public final class PathPartEntryJSO extends JavaScriptObject
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONObject(this).toString());
+        return new JSONObject(this).toString();
     }
 
     public final native int getCommand()

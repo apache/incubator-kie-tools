@@ -30,7 +30,6 @@ import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
@@ -97,8 +96,6 @@ public final class JSONDeserializer
      */
     public final IJSONSerializable<?> fromString(String string, boolean validate)
     {
-        string = XSS.clean(string);
-        
         if ((null == string) || (string = string.trim()).isEmpty())
         {
             return null;
@@ -151,8 +148,6 @@ public final class JSONDeserializer
      */
     public final IJSONSerializable<?> fromString(String string, ValidationContext ctx)
     {
-        string = XSS.clean(string);
-
         try
         {
             ctx.push("fromString");

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
@@ -158,7 +157,7 @@ public class NFastStringSet implements Iterable<String>
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONObject(m_jso).toString());
+        return new JSONObject(m_jso).toString();
     }
 
     public final boolean any(final NFastStringSet look)

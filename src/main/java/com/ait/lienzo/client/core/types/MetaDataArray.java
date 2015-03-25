@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.json.client.JSONArray;
 
 public final class MetaDataArray
@@ -204,7 +203,7 @@ public final class MetaDataArray
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONArray(m_jso).toString());
+        return new JSONArray(m_jso).toString();
     }
 
     @Override

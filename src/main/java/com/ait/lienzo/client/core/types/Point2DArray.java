@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
@@ -277,7 +276,7 @@ public class Point2DArray implements Iterable<Point2D>
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONArray(m_jso).toString());
+        return new JSONArray(m_jso).toString();
     }
 
     @Override

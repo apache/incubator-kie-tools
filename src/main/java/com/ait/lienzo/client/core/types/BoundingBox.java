@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -182,7 +181,7 @@ public final class BoundingBox
 
         object.put("height", new JSONNumber(getHeight()));
 
-        return XSS.clean(object.toString());
+        return object.toString();
     }
 
     @Override

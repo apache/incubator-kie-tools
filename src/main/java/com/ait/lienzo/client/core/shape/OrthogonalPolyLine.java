@@ -34,6 +34,7 @@ import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
@@ -746,7 +747,7 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         {
             Point2D p4 = new Point2D(points.get(i), points.get(i + 1));
 
-            drawLines(m_list, p0, p2, p4, radius, points, i + 2);
+            drawLines(m_list, p0, p2, p4, radius, size, i + 2);
 
             p0 = p2;
 
@@ -754,24 +755,24 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         }
     }
 
-    private static void drawLines(PathPartList list, Point2D p0, Point2D p2, Point2D p4, double cornerSize, NFastDoubleArrayJSO points, int index)
+    private static void drawLines(PathPartList list, Point2D p0, Point2D p2, Point2D p4, double corner, final int size, int index)
     {
         Point2D dv1 = p2.sub(p4);
 
         Point2D dx1 = dv1.unit();
 
-        Point2D p3 = p2.sub(dx1.mul(cornerSize));
+        Point2D p3 = p2.sub(dx1.mul(corner));
 
-        double a1 = angleBetweenTwoLines(p0, p2, p2, p4);
+        double a1 = Geometry.getAngleBetweenTwoLines(p0, p2, p2, p4);
 
-        double a2 = Math.toRadians(90) - (a1 / 2);
+        double a2 = Geometry.RADIANS_90 - (a1 / 2);
 
-        double radius = getLengthFromASA(Math.toRadians(90), cornerSize, a2);
+        double radius = Geometry.getLengthFromASA(Geometry.RADIANS_90, corner, a2);
 
-        if (index < points.size())
+        if (index < size)
         {
             // p4 always needs to stop short, unless we are at the last point
-            p4 = p4.add(dx1.mul(cornerSize));
+            p4 = p4.add(dx1.mul(corner));
         }
         drawLine(list, p2, p3, p4, radius);
     }
@@ -781,64 +782,6 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         list.A(p2.getX(), p2.getY(), p3.getX(), p3.getY(), radius);
 
         list.L(p4.getX(), p4.getY());
-    }
-
-    private static double angleBetweenTwoLines(Point2D s0, Point2D e0, Point2D s1, Point2D e1)
-    {
-        // s == start, e == end, l == length
-        double l0 = distance(s0, e0);
-
-        double l1 = distance(s1, e1);
-
-        double l2 = distance(s0, e1); // length between l0 and l1
-
-        return getAngleFromSSS(l0, l1, l2);
-    }
-
-    private static double distance(Point2D p1, Point2D p2)
-    {
-        return distance(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-    }
-
-    private static double distance(double x1, double y1, double x2, double y2)
-    {
-        // http://www.regentsprep.org/regents/math/geometry/gcg3/ldistance.htm
-        double v1 = Math.pow(x2 - x1, 2);
-
-        double v2 = Math.pow(y2 - y1, 2);
-
-        return Math.sqrt(v1 + v2);
-    }
-
-    /**
-     * Returns the angle between length0 and length1
-     * http://www.mathsisfun.com/algebra/trig-solving-sss-triangles.html
-     * @param length0
-     * @param length1
-     * @param length2
-     * @return
-     */
-    private static double getAngleFromSSS(double length0, double length1, double length2)
-    {
-        double v1 = Math.pow(length0, 2) + Math.pow(length1, 2) - Math.pow(length2, 2);
-
-        double v2 = v1 / (2 * length0 * length1);
-
-        return Math.acos(v2);
-    }
-
-    /**
-     * Returns the length that forms angle1 with length1. ASA triangle
-     * http://www.mathsisfun.com/algebra/trig-solving-asa-triangles.html
-     * b/sinB = c/sin C
-     * @param angle1
-     * @param length1
-     * @param angle2
-     * @return
-     */
-    private static double getLengthFromASA(final double angle1, final double length1, final double angle2)
-    {
-        return (length1 * Math.sin(angle2)) / Math.sin(Math.toRadians(180) - angle1 - angle2);
     }
 
     /**

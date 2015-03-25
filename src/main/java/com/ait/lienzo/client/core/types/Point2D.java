@@ -17,7 +17,6 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.util.GeometryException;
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 
@@ -181,6 +180,16 @@ public final class Point2D
     {
         m_jso.offset(p.getJSO());
     }
+    
+    public final void minus(double x, double y)
+    {
+        m_jso.minus(x, y);
+    }
+
+    public final void minus(Point2D p)
+    {
+        m_jso.minus(p.getJSO());
+    }
 
     public final void normalize(double length)
     {
@@ -331,7 +340,7 @@ public final class Point2D
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONObject(m_jso).toString());
+        return new JSONObject(m_jso).toString();
     }
 
     @Override
@@ -507,6 +516,18 @@ public final class Point2D
         /*-{
             this.x += jso.x;
             this.y += jso.y;
+        }-*/;
+        
+        public final native void minus(double x, double y)
+        /*-{
+            this.x -= x;
+            this.y -= y;
+        }-*/;
+        
+        public final native void minus(Point2DJSO jso)
+        /*-{
+            this.x -= jso.x;
+            this.y -= jso.y;
         }-*/;
 
         public final native Point2DJSO sub(Point2DJSO jso)

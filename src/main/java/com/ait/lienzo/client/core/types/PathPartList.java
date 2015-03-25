@@ -18,16 +18,11 @@ package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.util.Curves;
 import com.ait.lienzo.client.core.util.Geometry;
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 
 public final class PathPartList
 {
-    private static final double   TWO_PI = (2.000 * Math.PI);
-
-    private static final double   PI_180 = (Math.PI / 180.0);
-
     private double                m_cpx;
 
     private double                m_cpy;
@@ -81,9 +76,9 @@ public final class PathPartList
     public final void clear()
     {
         m_box = null;
-        
+
         m_mov = false;
-        
+
         m_fin = false;
 
         m_jso.setLength(0);
@@ -160,7 +155,7 @@ public final class PathPartList
 
     public PathPartList A(final double x0, final double y0, double x1, final double y1, double radius)
     {
-        push(PathPartEntryJSO.make(PathPartEntryJSO.CARCTO_ABSOLUTE, NFastDoubleArrayJSO.make(x0, y0, m_cpx = x1, m_cpy = y1, radius)));
+        push(PathPartEntryJSO.make(PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE, NFastDoubleArrayJSO.make(x0, y0, m_cpx = x1, m_cpy = y1, radius)));
 
         return this;
     }
@@ -206,7 +201,7 @@ public final class PathPartList
 
     public final String toJSONString()
     {
-        return XSS.clean(toJSONArray().toString());
+        return toJSONArray().toString();
     }
 
     @Override
@@ -226,7 +221,7 @@ public final class PathPartList
 
     public final static void convertEndpointToCenterParameterization(final NFastDoubleArrayJSO points, final double x1, final double y1, final double x2, final double y2, final double fa, final double fs, double rx, double ry, final double pv)
     {
-        final double ps = pv * PI_180;
+        final double ps = pv * Geometry.PI_180;
 
         final double cp = Math.cos(ps);
 
@@ -282,11 +277,11 @@ public final class PathPartList
         }
         if (fs == 0 && dt > 0)
         {
-            dt -= TWO_PI;
+            dt -= Geometry.TWO_PI;
         }
         if (fs == 1 && dt < 0)
         {
-            dt += TWO_PI;
+            dt += Geometry.TWO_PI;
         }
         points.clear();
 
@@ -343,6 +338,18 @@ public final class PathPartList
                     oldx = p.get(8);
                     oldy = p.get(9);
                     break;
+            /*
+            case PathPartEntryJSO.CARCTO_ABSOLUTE:
+            double x0 = p.get(0);
+            double y0 = p.get(1);
+            double x1 = p.get(2);
+            double y1 = p.get(3);
+            double r1 = p.get(4);
+            
+            oldx = x1;
+            oldy = y1;
+            break;
+            */
             }
         }
         return m_box;

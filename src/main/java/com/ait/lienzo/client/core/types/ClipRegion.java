@@ -16,19 +16,18 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 
 public final class ClipRegion
 {
-    private final double           m_minx;
+    private final double m_minx;
 
-    private final double           m_miny;
+    private final double m_miny;
 
-    private final double           m_maxx;
+    private final double m_maxx;
 
-    private final double           m_maxy;
+    private final double m_maxy;
 
     public ClipRegion(final double minx, final double miny, final double maxx, final double maxy)
     {
@@ -73,7 +72,7 @@ public final class ClipRegion
 
         object.put("maxY", new JSONNumber(getMaxY()));
 
-        return XSS.clean(object.toString());
+        return object.toString();
     }
 
     @Override

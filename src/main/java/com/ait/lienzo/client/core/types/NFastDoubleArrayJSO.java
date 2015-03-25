@@ -16,7 +16,6 @@
 
 package com.ait.lienzo.client.core.types;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.json.client.JSONArray;
 
 public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO>
@@ -54,7 +53,7 @@ public class NFastDoubleArrayJSO extends NBaseNativeArrayJSO<NFastDoubleArrayJSO
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONArray(this).toString());
+        return new JSONArray(this).toString();
     }
 
     public final void push(double d, double... list)

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.ait.lienzo.client.core.util.XSS;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -251,6 +250,6 @@ public final class NFastStringMapMixedJSO extends JavaScriptObject
 
     public final String toJSONString()
     {
-        return XSS.clean(new JSONObject(this).toString());
+        return new JSONObject(this).toString();
     }
 }
