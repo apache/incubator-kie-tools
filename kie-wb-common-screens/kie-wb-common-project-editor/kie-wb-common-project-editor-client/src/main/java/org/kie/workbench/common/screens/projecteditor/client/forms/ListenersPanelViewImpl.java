@@ -42,7 +42,7 @@ public class ListenersPanelViewImpl
         extends Composite
         implements ListenersPanelView {
 
-    private static final String WORKING_MEMORY_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.WorkingMemoryEventListener();
+    private static final String RULE_RUNTIME_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.WorkingMemoryEventListener();
     private static final String AGENDA_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.AgendaEventListener();
     private static final String PROCESS_EVENT_LISTENER = ProjectEditorResources.CONSTANTS.ProcessEventListener();
 
@@ -120,15 +120,15 @@ public class ListenersPanelViewImpl
 
     private void addKindColumn() {
         ArrayList<String> options = new ArrayList<String>();
-        options.add( WORKING_MEMORY_EVENT_LISTENER );
+        options.add(RULE_RUNTIME_EVENT_LISTENER);
         options.add( AGENDA_EVENT_LISTENER );
         options.add( PROCESS_EVENT_LISTENER );
 
         Column<ListenerModel, String> column = new Column<ListenerModel, String>( new SelectionCell( options ) ) {
             @Override
             public String getValue( ListenerModel listenerModel ) {
-                if ( listenerModel.getKind() == null || listenerModel.getKind().equals( ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER ) ) {
-                    return WORKING_MEMORY_EVENT_LISTENER;
+                if ( listenerModel.getKind() == null || listenerModel.getKind().equals( ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER) ) {
+                    return RULE_RUNTIME_EVENT_LISTENER;
                 } else if ( listenerModel.getKind().equals( ListenerModel.Kind.PROCESS_EVENT_LISTENER ) ) {
                     return PROCESS_EVENT_LISTENER;
                 } else if ( listenerModel.getKind().equals( ListenerModel.Kind.AGENDA_EVENT_LISTENER ) ) {
@@ -144,8 +144,8 @@ public class ListenersPanelViewImpl
             public void update( int index,
                                 ListenerModel model,
                                 String value ) {
-                if ( value.equals( WORKING_MEMORY_EVENT_LISTENER ) ) {
-                    model.setKind( ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER );
+                if ( value.equals(RULE_RUNTIME_EVENT_LISTENER) ) {
+                    model.setKind( ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER);
                 } else if ( value.equals( PROCESS_EVENT_LISTENER ) ) {
                     model.setKind( ListenerModel.Kind.PROCESS_EVENT_LISTENER );
                 } else if ( value.equals( AGENDA_EVENT_LISTENER ) ) {

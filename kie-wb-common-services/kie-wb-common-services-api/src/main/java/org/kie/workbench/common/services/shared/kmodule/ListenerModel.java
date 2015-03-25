@@ -26,7 +26,7 @@ public class ListenerModel {
     @Portable
     public enum Kind {
         AGENDA_EVENT_LISTENER("agendaEventListener"),
-        WORKING_MEMORY_EVENT_LISTENER("workingMemoryEventListener"),
+        RULE_RUNTIME_EVENT_LISTENER("ruleRuntimeEventListener"),
         PROCESS_EVENT_LISTENER("processEventListener");
 
         private final String name;
@@ -51,7 +51,7 @@ public class ListenerModel {
 
     }
 
-    private Kind kind = Kind.WORKING_MEMORY_EVENT_LISTENER;
+    private Kind kind = Kind.RULE_RUNTIME_EVENT_LISTENER;
 
     private String type = "";
 
