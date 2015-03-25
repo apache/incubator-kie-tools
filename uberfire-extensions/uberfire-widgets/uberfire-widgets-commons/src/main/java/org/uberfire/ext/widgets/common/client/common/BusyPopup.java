@@ -118,6 +118,7 @@ public class BusyPopup extends DecoratedPopupPanel {
                 break;
             case PENDING:
                 deferredShowTimer.cancel();
+                state = MessageState.DORMANT;
                 break;
             case SHOWING:
                 fadeInAnimation.cancel();
