@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
+import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.POMService;
@@ -100,7 +101,7 @@ public class BuildServiceImpl
 
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
-            return buildExceptionResults( e );
+            return buildExceptionResults( e, project.getPom().getGav());
         }
     }
 
@@ -146,7 +147,7 @@ public class BuildServiceImpl
 
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
-            return buildExceptionResults( e );
+            return buildExceptionResults( e, project.getPom().getGav() );
         }
     }
 
@@ -154,10 +155,11 @@ public class BuildServiceImpl
      * When an exception is produced by the builder service, this method is uses to generate an instance of
      * <code>org.guvnor.common.services.project.builder.model.BuildResults</code> in generated with the exception details.
      * @param e The error exception.
+     * @param gav
      * @return An instance of BuildResults with the exception details.
      */
-    private BuildResults buildExceptionResults( Exception e ) {
-        BuildResults exceptionResults = new BuildResults();
+    private BuildResults buildExceptionResults(Exception e, GAV gav) {
+        BuildResults exceptionResults = new BuildResults(gav);
         BuildMessage exceptionMessage = new BuildMessage();
         exceptionMessage.setLevel( BuildMessage.Level.ERROR );
         exceptionMessage.setText( e.getMessage() );
