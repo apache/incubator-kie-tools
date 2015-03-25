@@ -131,7 +131,7 @@ public class NewContainerForm
         containerName.addKeyUpHandler( new KeyUpHandler() {
             @Override
             public void onKeyUp( KeyUpEvent event ) {
-                endpoint.setText( serverRef.getId() + "/containers/" + containerName.getText() );
+                endpoint.setText( serverRef.getUrl() + "/containers/" + containerName.getText() );
                 if ( !containerName.getText().trim().isEmpty() ) {
                     containerNameGroup.setType( ControlGroupType.NONE );
                 }

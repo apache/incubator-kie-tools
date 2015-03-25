@@ -70,6 +70,11 @@
       <artifactId>kie-server-client</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.remote</groupId>
+      <artifactId>kie-remote-common</artifactId>
+    </dependency>
+
     <!-- Errai Core -->
     <dependency>
       <groupId>org.jboss.errai</groupId>

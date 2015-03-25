@@ -87,7 +87,7 @@ public class ServerReferenceStorageImpl {
     private ServerRef restoreConfig( final Path registeredServer ) {
         try {
             final ServerRef serverRef = (ServerRef) xs.fromXML( ioService.readAllString( registeredServer ) );
-            return new ServerRefImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), ContainerStatus.LOADING, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
+            return new ServerRefImpl( serverRef.getId(), serverRef.getUrl(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), ContainerStatus.LOADING, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
         } catch ( Exception ex ) {
         }
         return null;
@@ -120,7 +120,20 @@ public class ServerReferenceStorageImpl {
     }
 
     public String toHex( final String arg ) {
+        if ( isHex(arg)) {
+            return arg;
+        }
         return String.format( "%x", new BigInteger( 1, arg.toLowerCase().getBytes( Charset.forName( "UTF-8" ) ) ) );
+    }
+
+    private boolean isHex(final String endpoint) {
+
+        try{
+            new BigInteger(endpoint, 16);
+            return true;
+        } catch(NumberFormatException ex) {
+            return false;
+        }
     }
 
     public void createContainer( final ContainerRef containerRef ) {

@@ -15,6 +15,7 @@ import org.kie.workbench.common.screens.server.management.service.ContainerAlrea
 public class ServerRefImpl implements ServerRef {
 
     private         String          id;
+    private         String          url;
     private         String          name;
     private         String          username;
     private         String          password;
@@ -28,6 +29,7 @@ public class ServerRefImpl implements ServerRef {
 
     public ServerRefImpl(
             final String id,
+            final String url,
             final String name,
             final String username,
             final String password,
@@ -36,6 +38,7 @@ public class ServerRefImpl implements ServerRef {
             final Map<String, String> properties,
             final Collection<ContainerRef> containerRefs) {
         this.id = id;
+        this.url = url;
         this.name = name;
         this.username = username;
         this.password = password;
@@ -55,6 +58,14 @@ public class ServerRefImpl implements ServerRef {
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String getUrl() {
+        if (url == null) {
+            return id;
+        }
+        return url;
     }
 
     @Override

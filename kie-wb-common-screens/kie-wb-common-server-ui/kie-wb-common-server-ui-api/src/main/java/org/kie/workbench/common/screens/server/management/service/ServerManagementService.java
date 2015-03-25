@@ -18,7 +18,8 @@ public interface ServerManagementService {
     public void registerServer( final String endpoint,
                                 final String name,
                                 final String username,
-                                final String password ) throws ServerAlreadyRegisteredException;
+                                final String password,
+                                final String controllerUrl) throws ServerAlreadyRegisteredException;
 
     void deleteOp( final Collection<String> servers,
                    final Map<String, List<String>> containers );

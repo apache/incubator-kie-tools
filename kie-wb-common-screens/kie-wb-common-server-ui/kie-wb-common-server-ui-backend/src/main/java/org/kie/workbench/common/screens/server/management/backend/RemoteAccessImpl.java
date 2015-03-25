@@ -1,5 +1,7 @@
 package org.kie.workbench.common.screens.server.management.backend;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,6 +14,8 @@ import org.kie.server.api.model.KieContainerResourceList;
 import org.kie.server.api.model.KieContainerStatus;
 import org.kie.server.api.model.KieScannerResource;
 import org.kie.server.api.model.KieScannerStatus;
+import org.kie.server.api.model.KieServerConfig;
+import org.kie.server.api.model.KieServerConfigItem;
 import org.kie.server.api.model.KieServerInfo;
 import org.kie.server.api.model.ReleaseId;
 import org.kie.server.api.model.ServiceResponse;
@@ -40,35 +44,105 @@ public class RemoteAccessImpl {
 
     private static final String BASE_URI = "/services/rest/server";
 
+    public Server registerServer( final String endpoint,
+            final String name,
+            final String username,
+            final String password,
+            final ConnectionType connectionType,
+            final String controllerUrl ) {
+
+        String _endpoint = cleanup( endpoint );
+
+        KieServerConfig kieServerConfig = new KieServerConfig();
+        kieServerConfig.addConfigItem(new KieServerConfigItem("executor.interval", "2", Integer.class.getName()));
+
+
+        KieServicesClient client = KieServicesFactory.newKieServicesRestClient( _endpoint, username, password );
+        String _version = null;
+        String _id = _endpoint;
+
+        try {
+
+            final ServiceResponse<KieServerInfo> response = client.register(encodeController(controllerUrl), kieServerConfig);
+            if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
+                _version = response.getResult().getVersion();
+                _id = response.getResult().getServerId();
+            }
+        } catch ( final Exception ex ) {
+            _endpoint = _endpoint.concat( BASE_URI );
+
+            client = KieServicesFactory.newKieServicesRestClient( _endpoint, username, password );
+            final ServiceResponse<KieServerInfo> response = client.register(encodeController(controllerUrl), kieServerConfig);
+            if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
+                _version = response.getResult().getVersion();
+                _id = response.getResult().getServerId();
+            }
+        }
+        final Collection<Container> containers = new ArrayList<Container>();
+
+        final ServiceResponse<KieContainerResourceList> containerResourcesResponse = client.listContainers();
+        if ( containerResourcesResponse.getType().equals( ServiceResponse.ResponseType.SUCCESS ) &&
+                containerResourcesResponse.getResult().getContainers() != null ) {
+            for ( final KieContainerResource kieContainerResource : containerResourcesResponse.getResult().getContainers() ) {
+                containers.add( toContainer( _id, kieContainerResource ) );
+            }
+        }
+        final String version = _version;
+
+        return new ServerImpl( _id, _endpoint, name, username, password, STARTED, connectionType, containers, new HashMap<String, String>() {{
+            put( "version", version );
+        }}, null );
+    }
+
     public ServerRef toServerRef( final String endpoint,
                                   final String name,
                                   final String username,
                                   final String password,
                                   final ConnectionType connectionType,
-                                  final Collection<ContainerRef> containerRefs ) {
+                                  final Collection<ContainerRef> containerRefs) {
 
         String _endpoint = cleanup( endpoint );
+
         KieServicesClient client = KieServicesFactory.newKieServicesRestClient( _endpoint, username, password );
         String _version = null;
+        String _id = _endpoint;
+
         try {
+
             final ServiceResponse<KieServerInfo> response = client.getServerInfo();
             if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
                 _version = response.getResult().getVersion();
+                _id = response.getResult().getServerId();
             }
         } catch ( final Exception ex ) {
             _endpoint = _endpoint.concat( BASE_URI );
+
             client = KieServicesFactory.newKieServicesRestClient( _endpoint, username, password );
             final ServiceResponse<KieServerInfo> response = client.getServerInfo();
             if ( response.getType().equals( ServiceResponse.ResponseType.SUCCESS ) ) {
                 _version = response.getResult().getVersion();
+                _id = response.getResult().getServerId();
             }
         }
 
         final String version = _version;
 
-        return new ServerRefImpl( _endpoint, name, username, password, ContainerStatus.LOADING, connectionType, new HashMap<String, String>() {{
+        return new ServerRefImpl( _id, _endpoint, name, username, password, ContainerStatus.LOADING, connectionType, new HashMap<String, String>() {{
             put( "version", version );
         }}, containerRefs );
+    }
+
+    private String encodeController(String controllerUrl) {
+        if (controllerUrl != null) {
+            try {
+                controllerUrl = URLEncoder.encode(controllerUrl, "UTF-8");
+
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return controllerUrl;
     }
 
     private String cleanup( final String endpoint ) {
@@ -87,7 +161,7 @@ public class RemoteAccessImpl {
 
         final ServerRef serverRef = toServerRef( endpoint, name, username, password, connectionType, containerRefs );
         try {
-            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverRef.getUrl(), serverRef.getUsername(), serverRef.getPassword() );
             final Collection<Container> containers = new ArrayList<Container>();
 
             final ServiceResponse<KieContainerResourceList> containerResourcesResponse = client.listContainers();
@@ -98,7 +172,7 @@ public class RemoteAccessImpl {
                 }
             }
 
-            return new ServerImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), STARTED, connectionType, containers, serverRef.getProperties(), serverRef.getContainersRef() );
+            return new ServerImpl( serverRef.getId(), serverRef.getUrl(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), STARTED, connectionType, containers, serverRef.getProperties(), serverRef.getContainersRef() );
 
         } catch ( final Exception ex ) {
             return null;
@@ -107,7 +181,7 @@ public class RemoteAccessImpl {
 
     public Server toServer( final ServerRef serverRef ) {
         try {
-            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
+            final KieServicesClient client = KieServicesFactory.newKieServicesRestClient( serverRef.getUrl(), serverRef.getUsername(), serverRef.getPassword() );
             final Collection<Container> containers = new ArrayList<Container>();
 
             final ServiceResponse<KieContainerResourceList> containerResourcesResponse = client.listContainers();
@@ -124,7 +198,7 @@ public class RemoteAccessImpl {
                 }
             }
 
-            return new ServerImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), STARTED, REMOTE, containers, serverRef.getProperties(), serverRef.getContainersRef() );
+            return new ServerImpl( serverRef.getId(), serverRef.getUrl(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), STARTED, REMOTE, containers, serverRef.getProperties(), serverRef.getContainersRef() );
 
         } catch ( final Exception ex ) {
             return null;
@@ -243,7 +317,7 @@ public class RemoteAccessImpl {
                             final String name,
                             final String username,
                             final String password,
-                            final ConnectionType remote ) {
+                            final ConnectionType remote) {
         return toServer( endpoint, name, username, password, remote, null );
     }
 

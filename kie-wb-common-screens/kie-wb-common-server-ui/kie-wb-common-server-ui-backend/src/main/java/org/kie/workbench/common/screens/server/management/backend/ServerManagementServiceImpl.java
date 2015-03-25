@@ -97,18 +97,20 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     private ServerRef toError( final ServerRef serverRef ) {
-        return new ServerRefImpl( serverRef.getId(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), ContainerStatus.ERROR, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
+        return new ServerRefImpl( serverRef.getId(), serverRef.getUrl(), serverRef.getName(), serverRef.getUsername(), serverRef.getPassword(), ContainerStatus.ERROR, serverRef.getConnectionType(), serverRef.getProperties(), serverRef.getContainersRef() );
     }
 
     @Override
     public void registerServer( final String endpoint,
                                 final String name,
                                 final String username,
-                                final String password ) throws ServerAlreadyRegisteredException {
+                                final String password,
+                                final String controllerUrl ) throws ServerAlreadyRegisteredException {
         checkNotEmpty( "endpoint", endpoint );
         checkNotEmpty( "name", name );
+        checkNotEmpty( "controllerUrl", controllerUrl );
 
-        final Server server = remoteAccess.toServer( endpoint, name, username, password, REMOTE );
+        final Server server = remoteAccess.registerServer(endpoint, name, username, password, REMOTE, controllerUrl);
 
         if ( storage.exists( server ) ) {
             throw new ServerAlreadyRegisteredException( "Server already registered." );
@@ -139,7 +141,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
             final ServerRef serverRef = storage.loadServerRef( entry.getKey() );
             for ( final String containerId : entry.getValue() ) {
                 final ContainerRef containerRef = serverRef.getContainerRef( containerId );
-                final Container container = remoteAccess.install( containerRef.getServerId(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword(), containerRef.getReleasedId() );
+                final Container container = remoteAccess.install( serverRef.getUrl(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword(), containerRef.getReleasedId() );
                 containerStartedEvent.fire( new ContainerStarted( container ) );
             }
         }
@@ -155,7 +157,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                 serverRef.deleteContainer( containerRef.getId() );
                 serverRef.addContainerRef( newContainerRef );
                 storage.forceRegister( serverRef );
-                remoteAccess.deleteContainer( containerRef.getServerId(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
+                remoteAccess.deleteContainer( serverRef.getUrl(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword() );
                 containerStoppedEvent.fire( new ContainerStopped( newContainerRef ) );
             }
         }
@@ -165,7 +167,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                   final String containerId ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
         storage.deleteContainer( serverId, containerId );
-        remoteAccess.deleteContainer( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
+        remoteAccess.deleteContainer( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
         containerDeletedEvent.fire( new ContainerDeleted( serverId, containerId ) );
     }
 
@@ -174,9 +176,14 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                  final String containerId,
                                  final GAV gav ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
-
-        if ( remoteAccess.containerExists( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() ) ) {
-            throw new ContainerAlreadyRegisteredException( containerId );
+        try {
+            if (remoteAccess.containerExists(serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword())) {
+                throw new ContainerAlreadyRegisteredException(containerId);
+            }
+        } catch (ContainerAlreadyRegisteredException e) {
+            throw e;
+        } catch (Exception e) {
+            // log only to support offline mode
         }
         final ContainerRef containerRef = new ContainerRefImpl( serverId, containerId, ContainerStatus.STOPPED, gav, null, null );
         storage.createContainer( containerRef );
@@ -193,7 +200,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                        final String container ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        final Pair<Boolean, Container> result = remoteAccess.getContainer( serverId, container, serverRef.getUsername(), serverRef.getPassword() );
+        final Pair<Boolean, Container> result = remoteAccess.getContainer( serverRef.getUrl(), container, serverRef.getUsername(), serverRef.getPassword() );
         if ( result.getK2() != null ) {
             return result.getK2();
         }
@@ -208,7 +215,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                            final String containerId ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        final ScannerOperationResult resource = remoteAccess.scanNow( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
+        final ScannerOperationResult resource = remoteAccess.scanNow( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
 
         if ( resource != null && resource.getScannerStatus().equals( ScannerStatus.SCANNING ) ) {
             refresh();
@@ -225,7 +232,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
         storage.updateContainer( serverId, containerId, interval );
 
-        return remoteAccess.startScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword(), interval );
+        return remoteAccess.startScanner( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword(), interval );
     }
 
     @Override
@@ -233,7 +240,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
                                                String containerId ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        return remoteAccess.stopScanner( serverId, containerId, serverRef.getUsername(), serverRef.getPassword() );
+        return remoteAccess.stopScanner( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
     }
 
     @Override
@@ -243,7 +250,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
 
         final ServerRef serverRef = storage.loadServerRef( serverId );
         try {
-            remoteAccess.upgradeContainer( serverId, containerId, serverRef.getUsername(), serverRef.getPassword(), releaseId );
+            remoteAccess.upgradeContainer( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword(), releaseId );
             storage.updateContainer( serverId, containerId, releaseId );
         } finally {
             containerUpdatedEvent.fire( new ContainerUpdated( getContainerInfo( serverId, containerId ) ) );
@@ -251,7 +258,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     private void unregisterServer( final String id ) {
-        storage.unregister( new ServerRefImpl( id, "--none--", null, null, null, null, null, null ) );
+        storage.unregister( new ServerRefImpl( id, "", "--none--", null, null, null, null, null, null ) );
         serverDeletedEvent.fire( new ServerDeleted( id ) );
     }
 }

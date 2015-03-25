@@ -7,6 +7,8 @@ public interface ServerRef {
 
     String getId();
 
+    String getUrl();
+
     String getName();
 
     String getUsername();
