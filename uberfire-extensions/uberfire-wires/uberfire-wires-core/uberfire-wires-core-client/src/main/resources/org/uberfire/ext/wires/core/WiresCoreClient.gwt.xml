@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <module>
   <inherits name='com.google.gwt.user.User'/>
@@ -9,5 +8,4 @@
   <inherits name="org.uberfire.ext.wires.core.WiresCoreApi"/>
   <inherits name="org.uberfire.ext.properties.editor.PropertiesEditorClient"/>
 
-  <source path="client"></source>
 </module>

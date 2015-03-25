@@ -1,5 +1,6 @@
 package org.uberfire.ext.editor.commons.backend.service;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -20,6 +21,7 @@ import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 
 @Service
+@ApplicationScoped
 public class CopyServiceImpl implements CopyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( CopyServiceImpl.class );

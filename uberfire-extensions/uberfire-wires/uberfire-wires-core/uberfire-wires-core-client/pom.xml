@@ -15,11 +15,6 @@
   <description>Wires Core Client</description>
 
   <dependencies>
-
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-ioc</artifactId>
@@ -73,31 +68,4 @@
 
   </dependencies>
 
-  <build>
-    <resources>
-      <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
-      <resource>
-        <directory>src/main/java</directory>
-      </resource>
-      <!-- Include module descriptors from src/main/resources in order not to
-      break the Intellij GWT plug-in -->
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

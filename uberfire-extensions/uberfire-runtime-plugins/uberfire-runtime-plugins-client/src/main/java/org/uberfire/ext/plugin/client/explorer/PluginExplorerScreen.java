@@ -44,6 +44,7 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
@@ -103,6 +104,11 @@ public class PluginExplorerScreen
                     @Override
                     public MenuItem build() {
                         return new BaseMenuCustom<IsWidget>() {
+                            @Override
+                            public void accept( MenuVisitor visitor ) {
+                                visitor.visit( this );
+                            }
+
                             @Override
                             public IsWidget build() {
                                 return getNewButton();

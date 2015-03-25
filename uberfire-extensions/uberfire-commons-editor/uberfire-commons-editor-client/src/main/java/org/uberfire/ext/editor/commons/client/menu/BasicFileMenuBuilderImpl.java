@@ -45,6 +45,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static org.uberfire.workbench.model.menu.MenuFactory.*;
@@ -349,6 +350,16 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
             @Override
             public Map<Object, MenuItem> getItemsMap() {
                 return menuItems;
+            }
+
+            @Override
+            public void accept( MenuVisitor visitor ) {
+                if ( visitor.visitEnter( this ) ) {
+                    for ( final MenuItem item : menuItems.values() ) {
+                        item.accept( visitor );
+                    }
+                    visitor.visitLeave( this );
+                }
             }
         };
     }

@@ -1,5 +1,6 @@
 package org.uberfire.ext.editor.commons.backend.service;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -15,6 +16,7 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.rpc.SessionInfo;
 
 @Service
+@ApplicationScoped
 public class DeleteServiceImpl implements DeleteService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( DeleteServiceImpl.class );

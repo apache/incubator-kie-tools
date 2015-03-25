@@ -27,6 +27,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;
+import org.uberfire.workbench.model.menu.MenuVisitor;
 
 public class TagButton
         implements MenuCustom<Widget> {
@@ -76,6 +77,11 @@ public class TagButton
     @Override
     public int getOrder() {
         return 0;
+    }
+
+    @Override
+    public void accept( MenuVisitor visitor ) {
+        visitor.visit( this );
     }
 
     @Override

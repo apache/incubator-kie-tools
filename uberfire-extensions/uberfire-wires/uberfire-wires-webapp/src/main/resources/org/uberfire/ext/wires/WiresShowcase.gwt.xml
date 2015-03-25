@@ -5,6 +5,7 @@
 
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
+  <inherits name="org.uberfire.client.views.Bootstrap2"/>
 
   <!-- Wires dependencies -->
   <inherits name="com.emitrom.lienzo.Lienzo"/>
@@ -27,16 +28,9 @@
   <!-- Specify the application specific style sheet. -->
   <set-property name="user.agent" value="safari"/>
   <stylesheet src='css/uberfire-showcase.css'/>
+
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
   <source path='shared'/>
-
-  <!-- SuperDevMode -->
-  <add-linker name="xsiframe"/>
-  <set-configuration-property name="devModeRedirectEnabled" value="true"/>
-  <set-property name="compiler.useSourceMaps" value="true"/>
-  <set-configuration-property name='xsiframe.failIfScriptTag' value='false'/>
-
-  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 
 </module>

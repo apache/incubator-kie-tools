@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
+  <scan>
+    <exclude name="org.uberfire.ext.wires.client.**"/>
+    <exclude name="org.uberfire.ext.wires.core.trees.client.**"/>
+    <exclude name="org.uberfire.ext.apps.client.**"/>
+    <exclude name="org.uberfire.ext.editor.commons.client.**"/>
+    <exclude name="org.uberfire.ext.plugin.client.**"/>
+    <exclude name="org.uberfire.ext.widgets.common.client.**"/>
+    <exclude name="org.uberfire.ext.wires.bayesian.network.client.**"/>
+    <exclude name="org.uberfire.ext.widgets.sandbox.client.**"/>
+    <exclude name="org.uberfire.ext.properties.editor.client.**"/>
+    <exclude name="org.uberfire.ext.widgets.core.client.**"/>
+    <exclude name="org.uberfire.ext.wires.core.scratchpad.client.**"/>
+    <exclude name="org.uberfire.ext.wires.core.client.**"/>
+    <exclude name="org.uberfire.ext.wires.core.api.**"/>
+    <exclude name="org.uberfire.ext.wires.bpmn.client.**"/>
+  </scan>
+</beans>

@@ -6,5 +6,5 @@
 
   <inherits name="com.emitrom.lienzo.Lienzo"/>
 
-	<source path="api"></source>
+	<source path="api"/>
 </module>

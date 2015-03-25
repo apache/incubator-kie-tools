@@ -20,14 +20,16 @@
 
   <properties>
     <version.org.jboss.integration-platform>6.0.0.CR26</version.org.jboss.integration-platform>
+    <version.org.jboss.xnio>3.2.0.Final</version.org.jboss.xnio>
+
     <version.org.uberfire>0.7.0-SNAPSHOT</version.org.uberfire>
-    <version.org.jboss.errai>3.0.4.Final</version.org.jboss.errai>
-    <version.org.jboss.logging.jboss-logging>3.1.4.GA</version.org.jboss.logging.jboss-logging>
+    <version.org.jboss.errai>3.2.0-SNAPSHOT</version.org.jboss.errai>
     <version.org.owasp.encoder>1.1</version.org.owasp.encoder>
     <version.org.apache.lucene>4.0.0</version.org.apache.lucene>
     <version.jakarta-regexp>1.4</version.jakarta-regexp>
     <version.com.rht-emitrom.lienzo-core>1.2.1-RELEASE</version.com.rht-emitrom.lienzo-core>
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
+    <version.com.google.gwt>2.7.0</version.com.google.gwt>
 
     <!-- temporary: makes the enforcerRule (illegal-transitive-dependency-check) not to break the build -->
     <illegaltransitivereportonly>true</illegaltransitivereportonly>
@@ -64,163 +66,29 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.errai.bom</groupId>
+        <artifactId>errai-internal-bom</artifactId>
+        <type>pom</type>
+        <version>${version.org.jboss.errai}</version>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.owasp.encoder</groupId>
         <artifactId>encoder</artifactId>
         <version>${version.org.owasp.encoder}</version>
       </dependency>
 
-      <!-- Errai -->
+      <!-- Override needed by Errai Embedded WildFly -->
       <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-config</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-jboss-as-support</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-marshalling</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-bus</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.errai.io.netty</groupId>
-            <artifactId>netty</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-ioc</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-common</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-ui</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-api</artifactId>
+        <version>${version.org.jboss.xnio}</version>
       </dependency>
       <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-data-binding</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-navigation</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-cdi-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-javax-enterprise</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-weld-integration</artifactId>
-        <version>${version.org.jboss.errai}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-security-server</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-security-client</artifactId>
-        <version>${version.org.jboss.errai}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.errai</groupId>
-        <artifactId>errai-security-picketlink</artifactId>
-        <version>${version.org.jboss.errai}</version>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-nio</artifactId>
+        <version>${version.org.jboss.xnio}</version>
       </dependency>
 
       <dependency>
@@ -235,16 +103,16 @@
         <version>${version.org.picketlink}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>${version.org.jboss.logging.jboss-logging}</version>
-      </dependency>
-
       <!-- GWT dev  -->
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
+        <version>${version.com.google.gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
         <version>${version.com.google.gwt}</version>
       </dependency>
 
