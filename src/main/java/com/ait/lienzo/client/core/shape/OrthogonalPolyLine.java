@@ -702,11 +702,11 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
 
                     if (radius > 0)
                     {
-                        addLinePoints(linept, p1, radius);
+                        Geometry.drawArcJoinedLines(m_list, Geometry.getPoints(linept, p1), radius);
                     }
                     else
                     {
-                        addLinePoints(linept);
+                        drawLines(linept);
                     }
                     return true;
                 }
@@ -715,7 +715,8 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return false;
     }
 
-    private final void addLinePoints(final NFastDoubleArrayJSO points)
+
+    private final void drawLines(final NFastDoubleArrayJSO points)
     {
         final int size = points.size();
 
@@ -723,65 +724,6 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         {
             m_list.L(points.get(i), points.get(i + 1));
         }
-    }
-
-    private final void addLinePoints(final NFastDoubleArrayJSO points, Point2D p0, final double radius)
-    {
-        final int size = points.size();
-
-        int i = 0;
-
-        Point2D p1 = new Point2D(points.get(i++), points.get(i++));
-
-        Point2D p2 = new Point2D(p1);
-
-        Point2D dv0 = p1.sub(p0);
-
-        Point2D dx0 = dv0.unit(); // unit vector in the direction of p2
-
-        p1 = p1.sub(dx0.mul(radius));
-
-        m_list.L(p1.getX(), p1.getY());
-
-        for (; i < size; i += 2)
-        {
-            Point2D p4 = new Point2D(points.get(i), points.get(i + 1));
-
-            drawLines(m_list, p0, p2, p4, radius, size, i + 2);
-
-            p0 = p2;
-
-            p2 = p4;
-        }
-    }
-
-    private static void drawLines(PathPartList list, Point2D p0, Point2D p2, Point2D p4, double corner, final int size, int index)
-    {
-        Point2D dv1 = p2.sub(p4);
-
-        Point2D dx1 = dv1.unit();
-
-        Point2D p3 = p2.sub(dx1.mul(corner));
-
-        double a1 = Geometry.getAngleBetweenTwoLines(p0, p2, p2, p4);
-
-        double a2 = Geometry.RADIANS_90 - (a1 / 2);
-
-        double radius = Geometry.getLengthFromASA(Geometry.RADIANS_90, corner, a2);
-
-        if (index < size)
-        {
-            // p4 always needs to stop short, unless we are at the last point
-            p4 = p4.add(dx1.mul(corner));
-        }
-        drawLine(list, p2, p3, p4, radius);
-    }
-
-    private static void drawLine(PathPartList list, Point2D p2, Point2D p3, Point2D p4, double radius)
-    {
-        list.A(p2.getX(), p2.getY(), p3.getX(), p3.getY(), radius);
-
-        list.L(p4.getX(), p4.getY());
     }
 
     /**
