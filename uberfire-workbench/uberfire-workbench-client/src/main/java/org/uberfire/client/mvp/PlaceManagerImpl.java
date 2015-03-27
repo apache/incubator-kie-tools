@@ -720,6 +720,7 @@ public class PlaceManagerImpl
                                               LifecyclePhase.OPEN,
                                               ex );
             }
+            existingWorkbenchActivities.remove( newPerspectiveActivity.getPlace() );
             activityManager.destroyActivity( newPerspectiveActivity );
         }
     }
