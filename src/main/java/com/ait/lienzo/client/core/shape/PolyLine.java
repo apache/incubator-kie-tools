@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -38,15 +37,15 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 {
-    private double  m_tailOffsetValue = 0;
+    private double             m_tailOffsetValue = 0;
 
-    private double  m_headOffsetValue = 0;
+    private double             m_headOffsetValue = 0;
 
-    private Point2D m_tailOffsetPoint = null;
+    private Point2D            m_tailOffsetPoint = null;
 
-    private Point2D m_headOffsetPoint = null;
+    private Point2D            m_headOffsetPoint = null;
 
-    private final PathPartList m_list = new PathPartList();
+    private final PathPartList m_list            = new PathPartList();
 
     /**
      * Constructor. Creates an instance of a polyline.
@@ -123,7 +122,7 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 
                 m_list.M(point.getX(), point.getY());
 
-                if ( getCornerRadius() == 0 )
+                if (getCornerRadius() == 0)
                 {
                     for (int i = 1; i < size; i++)
                     {
@@ -153,7 +152,6 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
         }
         return this;
     }
-
 
     @Override
     protected void fill(Context2D context, Attributes attr, double alpha)

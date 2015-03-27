@@ -715,7 +715,6 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         return false;
     }
 
-
     private final void drawLines(final NFastDoubleArrayJSO points)
     {
         final int size = points.size();
