@@ -24,8 +24,11 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -42,6 +45,8 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     private Point2D m_tailOffsetPoint = null;
 
     private Point2D m_headOffsetPoint = null;
+
+    private final PathPartList m_list = new PathPartList();
 
     /**
      * Constructor. Creates an instance of a polyline.
@@ -73,16 +78,6 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     }
 
     @Override
-    public PolyLine refresh()
-    {
-        if (m_tailOffsetValue != m_headOffsetValue)
-        {
-            return this;
-        }
-        return this;
-    }
-
-    @Override
     public BoundingBox getBoundingBox()
     {
         return new BoundingBox(getPoints());
@@ -96,6 +91,24 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
+        if (m_list.size() < 1)
+        {
+            if (false == parse(attr))
+            {
+                return false;
+            }
+        }
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+        context.path(m_list);
+
+        return true;
+    }
+
+    private boolean parse(Attributes attr)
+    {
         Point2DArray list = attr.getPoints();
 
         if (null != list)
@@ -108,21 +121,39 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
             {
                 Point2D point = list.get(0);
 
-                context.beginPath();
+                m_list.M(point.getX(), point.getY());
 
-                context.moveTo(point.getX(), point.getY());
-
-                for (int i = 1; i < size; i++)
+                if ( getCornerRadius() == 0 )
                 {
-                    point = list.get(i);
+                    for (int i = 1; i < size; i++)
+                    {
+                        point = list.get(i);
 
-                    context.lineTo(point.getX(), point.getY());
+                        m_list.L(point.getX(), point.getY());
+                    }
+                }
+                else
+                {
+                    Geometry.drawArcJoinedLines(m_list, list, getCornerRadius());
                 }
                 return true;
             }
         }
         return false;
     }
+
+    @Override
+    public PolyLine refresh()
+    {
+        m_list.clear();
+
+        if (m_tailOffsetValue != m_headOffsetValue)
+        {
+            return this;
+        }
+        return this;
+    }
+
 
     @Override
     protected void fill(Context2D context, Attributes attr, double alpha)
@@ -146,6 +177,18 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     public PolyLine setPoints(final Point2DArray points)
     {
         getAttributes().setPoints(points);
+
+        return refresh();
+    }
+
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public PolyLine setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
 
         return refresh();
     }
@@ -187,6 +230,8 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
             super(ShapeType.POLYLINE);
 
             addAttribute(Attribute.POINTS, true);
+
+            addAttribute(Attribute.CORNER_RADIUS);
         }
 
         @Override

@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 
@@ -433,8 +434,22 @@ public final class Geometry
         return (((u[0] * v[1]) < (u[1] * v[0])) ? -1 : 1) * Math.acos(getVectorRatio(u, v));
     }
 
+    public static Point2DArray getPoints(NFastDoubleArrayJSO doubles, Point2D p0)
+    {
+        Point2DArray array = new Point2DArray();
+        array.push( p0 );
+        final int size = doubles.size();
+
+        for (int i = 0; i < size; i += 2)
+        {
+            array.push(new Point2D(doubles.get(i), doubles.get(i + 1)));
+        }
+        return array;
+    }
+
     /**
-     * Returns the length that forms angle1 with length1. ASA triangle
+     /**
+     * Returns the length that is opposite a0
      * http://www.mathsisfun.com/algebra/trig-solving-asa-triangles.html
      * b/sinB = c/sin C
      * @param a0
@@ -444,7 +459,7 @@ public final class Geometry
      */
     public static final double getLengthFromASA(final double a0, final double s0, final double a1)
     {
-        return (s0 * Math.sin(a1)) / Math.sin(RADIANS_180 - a0 - a1);
+        return (s0 * Math.sin(a0)) / Math.sin(RADIANS_180 - a0 - a1);
     }
 
     /**
@@ -460,8 +475,179 @@ public final class Geometry
         return Math.acos(((s0 * s0) + (s1 * s1) - (s2 * s2)) / (2 * (s0 * s1)));
     }
 
-    public static final double getAngleBetweenTwoLines(final Point2D s0, final Point2D e0, final Point2D s1, final Point2D e1)
+    public static final double getAngleBetweenTwoLines(final Point2D p0, final Point2D p1, final Point2D p2)
     {
-        return getAngleFromSSS(s0.distance(e0), s1.distance(e1), s0.distance(e1));
+        return getAngleFromSSS(p0.distance(p1), p1.distance(p2), p0.distance(p2));
+    }
+
+    public static final boolean collinear(final Point2D p0, final Point2D p1, final Point2D p2)
+    {
+        if ( p0.equals(p1) || p1.equals(p2) )
+        {
+            return true;
+        }
+        Point2D u1 = p1.sub(p0).unit();
+        Point2D u2 = p2.sub(p1).unit();
+        return u1.equals(u2);
+    }
+
+    public static final boolean isOrthogonal(final Point2D p0, final Point2D p1, final Point2D p2)
+    {
+        if ( p0.getX() == p1.getX()  && p1.getY() == p2.getY()
+             ||
+             p0.getY() == p1.getY()  && p1.getX() == p2.getX())
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * This will build a PathPartList of lines and arcs from the Point2DArray.
+     * The radius is the size of the arc for the line joins.
+     * For each join the radius is capped at 1/2 the length of the smallest line in the three points
+     * Collinear points are detected and handled as a straight line
+     * If p0 and plast are the same it will close of the shape with an arc.
+     * If p0 and plast are not the same, they will be left as lines starting at p0
+     * and ending at plast.
+     * For convention p0,p2 and p4 are used for the three points in the line.
+     * p1 and p2 refer to the calculated arc offsets for the new start and end points of the two lines.
+     *
+     * For maths see Example 1 http://www.rasmus.is/uk/t/F/Su55k02.htm
+     * @param list
+     * @param points
+     * @param radius
+     */
+    public static final void drawArcJoinedLines(final PathPartList list, final Point2DArray points, final double radius)
+    {
+        final int size = points.size();
+
+        Point2D p0 = points.get(0);
+
+        Point2D p2 = points.get(1);
+
+        Point2D p0new = null;
+        Point2D plast = points.get(size - 1);
+        Point2D plastmin1 = points.get(size - 2);
+
+        double closingRadius = 0;
+
+        // check if start and finish have same point (i.e. is the line closed)
+        boolean closed =  p0.getX() == plast.getX() && p0.getY() == plast.getY();
+        if ( closed && ! Geometry.collinear(plastmin1, p0, p2))
+        {
+            p0new = new Point2D(0,0);
+            plast = new Point2D(0,0);
+            closingRadius = closingArc(list, plastmin1, p0, p2, plast, p0new, radius);
+        }
+
+
+        for (int i = 2; i < size; i++)
+        {
+            Point2D p4 = points.get(i);
+
+            if ( Geometry.collinear(p0, p2, p4))
+            {
+                list.L(p2.getX(), p2.getY());
+            }
+            else
+            {
+                drawLines(list, p0, p2, p4, radius);
+            }
+
+            p0 = p2;
+
+            p2 = p4;
+        }
+
+        list.L(plast.getX(), plast.getY());
+
+        if ( p0new != null)
+        {
+            p0 = points.get(0);
+            list.A(p0.getX(), p0.getY(), p0new.getX(), p0new.getY(), closingRadius);
+        }
+    }
+
+    private static double closingArc(final PathPartList list, Point2D p0, Point2D p2, Point2D p4, Point2D plast, Point2D p0new, double radius)
+    {
+        Point2D p1 = new Point2D();
+
+        Point2D p3 = new Point2D();
+
+        double closingRadius = adjustStartEndOffsets(p0, p2, p4, radius, p1, p3);
+
+        list.M(p3.getX(), p3.getY());
+
+        plast.setX(p1.getX());
+        plast.setY(p1.getY());
+
+        p0new.setX(p3.getX());
+        p0new.setY(p3.getY());
+
+        return closingRadius;
+    }
+
+    private static void drawLines(final PathPartList list, final Point2D p0, final Point2D p2, final Point2D p4, double radius)
+    {
+        Point2D p1 = new Point2D();
+
+        Point2D p3 = new Point2D();
+
+        radius = adjustStartEndOffsets(p0, p2, p4, radius, p1, p3);
+
+        list.L(p1.getX(), p1.getY());
+        list.A(p2.getX(), p2.getY(), p3.getX(), p3.getY(), radius);
+    }
+
+    private static double adjustStartEndOffsets(final Point2D p0, final Point2D p2, final Point2D p4, double radius, final Point2D p1, final Point2D p3)
+    {
+        Point2D dv0 = p2.sub(p0);
+        Point2D dx0 = dv0.unit();
+
+        Point2D dv1 = p2.sub(p4);
+        Point2D dx1 = dv1.unit();
+
+        double offset;
+        if (isOrthogonal(p0, p2, p4))
+        {
+            radius = getCappedOffset(p0, p2, p4, radius);
+            offset = radius;
+        }
+        else
+        {
+            // for maths see Example 1 http://www.rasmus.is/uk/t/F/Su55k02.htm
+            double a0 = getAngleBetweenTwoLines(p0, p2, p4)/2;
+            double a1 = RADIANS_180 - RADIANS_90 - a0;
+            offset =  getLengthFromASA(a1, radius, RADIANS_90);
+
+            double cappedOffset = getCappedOffset(p0, p2, p4, offset);
+            if ( cappedOffset < offset )
+            {
+                // offset is larger than capped size. Adjust offset and recalculate new radius
+                offset = cappedOffset;
+                radius =  getLengthFromASA(a0, offset, RADIANS_90);
+            }
+        }
+        Point2D t = p2.sub(dx0.mul(offset));
+        p1.setX(t.getX());
+        p1.setY(t.getY());
+
+        t = p2.sub(dx1.mul(offset));
+        p3.setX(t.getX());
+        p3.setY(t.getY());
+        return radius;
+    }
+
+    /** this will check if the radius needs capping, and return a smaller value if it does */
+    private static double getCappedOffset(final Point2D p0, final Point2D p2, final Point2D p4, double offset)
+    {
+        double l1 = p2.sub(p0).getLength();
+        double l2 = p2.sub(p4).getLength();
+        double smallest = (l1 < l2) ? l1 : l2;
+        double maxRadius = smallest/2; // it must be half, as there may be another radius on the other side, and they should not cross over.
+        offset = offset > maxRadius ? maxRadius : offset;
+        return offset;
     }
 }
