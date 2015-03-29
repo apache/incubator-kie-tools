@@ -378,7 +378,7 @@ public class LienzoPanel extends FocusPanel implements RequiresResize, ProvidesR
      */
     public Layer getDragLayer()
     {
-        return getViewport().getDraglayer();
+        return getViewport().getDragLayer();
     }
 
     /**

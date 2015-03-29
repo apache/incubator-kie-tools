@@ -139,6 +139,8 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
 
         m_drag.add(new DragLayer());
 
+        m_drag.add(new DragLayer());
+
         m_mediators = new Mediators(this);
 
         final Transform transform = getTransform();
@@ -376,9 +378,14 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
      * 
      * @return {@link Layer} 
      */
-    public final Layer getDraglayer()
+    public final Layer getDragLayer()
     {
         return m_drag.getChildNodes().get(0);
+    }
+    
+    public final Layer getOverLayer()
+    {
+        return m_drag.getChildNodes().get(1);
     }
 
     @Override

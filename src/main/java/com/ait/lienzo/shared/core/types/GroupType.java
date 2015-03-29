@@ -23,7 +23,9 @@ import com.ait.lienzo.shared.java.util.IStringValuedType;
  */
 public class GroupType implements IStringValuedType
 {
-    public static final GroupType GROUP = new GroupType("Group");
+    public static final GroupType GROUP   = new GroupType("Group");
+
+    public static final GroupType CALLOUT = new GroupType("Callout");
 
     private final String          m_value;
 

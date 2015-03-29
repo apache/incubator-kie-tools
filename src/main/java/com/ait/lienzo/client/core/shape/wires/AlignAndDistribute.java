@@ -1506,6 +1506,8 @@ public class AlignAndDistribute
 
         private Layer            m_layer;
 
+        private Layer            m_overs;
+
         private double           m_strokeWidth = 0.5;
 
         private String           m_strokeColor = "#000000";
@@ -1555,6 +1557,15 @@ public class AlignAndDistribute
             m_dashArray = dashArray;
         }
 
+        private final Layer getLinesLayer()
+        {
+            if (null == m_overs)
+            {
+                m_overs = m_layer.getViewport().getOverLayer();
+            }
+            return m_overs;
+        }
+
         @Override
         public void dragEnd()
         {
@@ -1562,12 +1573,12 @@ public class AlignAndDistribute
             {
                 if (m_lines[i] != null)
                 {
-                    m_layer.remove(m_lines[i]);
+                    getLinesLayer().remove(m_lines[i]);
+
                     m_lines[i] = null;
                 }
             }
-
-            m_layer.batch();
+            getLinesLayer().batch();
         }
 
         @Override
@@ -1606,12 +1617,12 @@ public class AlignAndDistribute
                 {
                     drawHorizontalLine(handler, pos, shapes, index);
                 }
-                m_layer.batch();
+                getLinesLayer().batch();
             }
             else if (m_lines[index] != null)
             {
                 removeLine(index, m_lines[index]);
-                m_layer.batch();
+                getLinesLayer().batch();
             }
         }
 
@@ -1742,19 +1753,19 @@ public class AlignAndDistribute
                         drawPolyLine(index + 1, right, x2, y2, x3, y3, true);
                     }
                 }
-                m_layer.batch();
+                getLinesLayer().batch();
             }
             else if (m_lines[index] != null)
             {
                 removeLine(index, m_lines[index]);
                 removeLine(index + 1, m_lines[index + 1]);
-                m_layer.batch();
+                getLinesLayer().batch();
             }
         }
 
         private void removeLine(int index, Shape<?> line)
         {
-            m_layer.remove(line);
+            getLinesLayer().remove(line);
             m_lines[index] = null;
         }
 
@@ -1778,7 +1789,7 @@ public class AlignAndDistribute
                 pline.setStrokeColor(m_strokeColor);
                 pline.setDashArray(m_dashArray);
                 m_lines[index] = pline;
-                m_layer.add(pline);
+                getLinesLayer().add(pline);
             }
             else
             {
@@ -1819,7 +1830,7 @@ public class AlignAndDistribute
                 line.setStrokeWidth(m_strokeWidth);
                 line.setStrokeColor(m_strokeColor);
                 line.setDashArray(m_dashArray);
-                m_layer.add(line);
+                getLinesLayer().add(line);
                 m_lines[index] = line;
             }
             else
@@ -1861,7 +1872,7 @@ public class AlignAndDistribute
                 line.setStrokeWidth(m_strokeWidth);
                 line.setStrokeColor(m_strokeColor);
                 line.setDashArray(m_dashArray);
-                m_layer.add(line);
+                getLinesLayer().add(line);
                 m_lines[index] = line;
             }
             else
