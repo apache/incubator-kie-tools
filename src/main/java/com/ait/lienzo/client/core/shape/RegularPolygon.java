@@ -119,7 +119,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
         return true;
     }
 
-    private boolean parse(Attributes attr)
+    private boolean parse(final Attributes attr)
     {
         final int sides = attr.getSides();
 
@@ -135,7 +135,9 @@ public class RegularPolygon extends Shape<RegularPolygon>
             {
                 for (int n = 1; n < sides; n++)
                 {
-                    m_list.L(radius * Math.sin(n * 2 * Math.PI / sides), -1 * radius * Math.cos(n * 2 * Math.PI / sides));
+                    final double theta = (n * 2 * Math.PI / sides);
+
+                    m_list.L(radius * Math.sin(theta), -1 * radius * Math.cos(theta));
                 }
                 m_list.Z();
             }
@@ -145,7 +147,9 @@ public class RegularPolygon extends Shape<RegularPolygon>
 
                 for (int n = 1; n < sides; n++)
                 {
-                    list.push(radius * Math.sin(n * 2 * Math.PI / sides), -1 * radius * Math.cos(n * 2 * Math.PI / sides));
+                    final double theta = (n * 2 * Math.PI / sides);
+
+                    list.push(radius * Math.sin(theta), -1 * radius * Math.cos(theta));
                 }
                 Geometry.drawArcJoinedLines(m_list, list.push(0, 0 - radius), corner);
             }

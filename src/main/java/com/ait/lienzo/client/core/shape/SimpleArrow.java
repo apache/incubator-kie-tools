@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -49,14 +50,7 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
     @Override
     public BoundingBox getBoundingBox()
     {
-        if (m_list.size() < 1)
-        {
-            if (false == parse(getAttributes()))
-            {
-                return new BoundingBox(0, 0, 0, 0);
-            }
-        }
-        return m_list.getBoundingBox();
+        return new BoundingBox(getPoints());
     }
 
     @Override
@@ -80,7 +74,7 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
 
     private final boolean parse(final Attributes attr)
     {
-        Point2DArray points = attr.getControlPoints();
+        Point2DArray points = attr.getPoints();
 
         if (null != points)
         {
@@ -98,12 +92,20 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
 
                 m_list.M(hp);
 
-                m_list.L(bp.add(dx));
+                final double corner = getCornerRadius();
 
-                m_list.L(bp.sub(dx));
+                if (corner <= 0)
+                {
+                    m_list.L(bp.add(dx));
 
-                m_list.Z();
+                    m_list.L(bp.sub(dx));
 
+                    m_list.Z();
+                }
+                else
+                {
+                    Geometry.drawArcJoinedLines(m_list, new Point2DArray(hp, bp.add(dx), bp.sub(dx), hp), corner);
+                }
                 return true;
             }
         }
@@ -152,6 +154,18 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
         return Arrays.asList(Attribute.POINTS);
     }
 
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public SimpleArrow setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
+    }
+
     public static class SimpleArrowFactory extends ShapeFactory<SimpleArrow>
     {
         public SimpleArrowFactory()
@@ -159,6 +173,8 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
             super(ShapeType.SIMPLE_ARROW);
 
             addAttribute(Attribute.POINTS, true);
+
+            addAttribute(Attribute.CORNER_RADIUS);
         }
 
         @Override

@@ -127,27 +127,31 @@ public class Star extends Shape<Star>
         return true;
     }
 
-    private boolean parse(Attributes attr)
+    private boolean parse(final Attributes attr)
     {
-        final int s = attr.getStarPoints();
+        final int sp = attr.getStarPoints();
 
         final double ir = attr.getInnerRadius();
 
         final double or = attr.getOuterRadius();
 
-        if ((s > 4) && (ir > 0) && (or > 0) && (or > ir))
+        if ((sp > 4) && (ir > 0) && (or > 0) && (or > ir))
         {
             m_list.M(0, 0 - or);
+
+            final int s2 = sp * 2;
 
             final double corner = getCornerRadius();
 
             if (corner <= 0)
             {
-                for (int n = 1; n < s * 2; n++)
+                for (int n = 1; n < s2; n++)
                 {
-                    final double radius = n % 2 == 0 ? or : ir;
+                    final double stheta = (n * Math.PI / sp);
 
-                    m_list.L(radius * Math.sin(n * Math.PI / s), -1 * radius * Math.cos(n * Math.PI / s));
+                    final double radius = (((n % 2) == 0) ? or : ir);
+
+                    m_list.L(radius * Math.sin(stheta), -1 * radius * Math.cos(stheta));
                 }
                 m_list.Z();
             }
@@ -155,11 +159,13 @@ public class Star extends Shape<Star>
             {
                 final Point2DArray list = new Point2DArray(0, 0 - or);
 
-                for (int n = 1; n < s * 2; n++)
+                for (int n = 1; n < s2; n++)
                 {
-                    final double radius = n % 2 == 0 ? or : ir;
+                    final double stheta = (n * Math.PI / sp);
 
-                    list.push(radius * Math.sin(n * Math.PI / s), -1 * radius * Math.cos(n * Math.PI / s));
+                    final double radius = (((n % 2) == 0) ? or : ir);
+
+                    list.push(radius * Math.sin(stheta), -1 * radius * Math.cos(stheta));
                 }
                 Geometry.drawArcJoinedLines(m_list, list.push(0, 0 - or), corner);
             }

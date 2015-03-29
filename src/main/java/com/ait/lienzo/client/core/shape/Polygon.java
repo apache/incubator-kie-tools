@@ -84,25 +84,23 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
 
             if (size > 1)
             {
-                Point2D point = list.get(0);
+                final Point2D point = list.get(0);
 
-                m_list.M(point.getX(), point.getY());
+                m_list.M(point);
 
-                final double r = getCornerRadius();
+                final double corner = getCornerRadius();
 
-                if (r <= 0)
+                if (corner <= 0)
                 {
                     for (int i = 1; i < size; i++)
                     {
-                        point = list.get(i);
-
-                        m_list.L(point.getX(), point.getY());
+                        m_list.L(list.get(i));
                     }
                     m_list.Z();
                 }
                 else
                 {                    
-                    Geometry.drawArcJoinedLines(m_list, list.push(list.get(0)), r);
+                    Geometry.drawArcJoinedLines(m_list, list.push(point), corner);
                 }
                 return true;
             }

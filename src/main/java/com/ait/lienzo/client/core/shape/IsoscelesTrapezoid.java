@@ -24,11 +24,17 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
 public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 {
+    private final PathPartList m_list = new PathPartList();
+
     public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height)
     {
         super(ShapeType.ISOSCELES_TRAPEZOID);
@@ -44,6 +50,24 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
+        if (m_list.size() < 1)
+        {
+            if (false == parse(attr))
+            {
+                return false;
+            }
+        }
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+        context.path(m_list);
+
+        return true;
+    }
+
+    private boolean parse(final Attributes attr)
+    {
         final double hig = attr.getHeight();
 
         final double top = attr.getTopWidth();
@@ -52,39 +76,63 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 
         if ((hig > 0) && (top > 0) && (bot > 0))
         {
-            context.beginPath();
-
             final double sub = Math.abs(top - bot);
+
+            final Point2DArray list = new Point2DArray();
 
             if (0 == sub)
             {
-                context.rect(0, 0, top, hig);
+                list.push(0, 0);
+
+                list.push(top, 0);
+
+                list.push(top, hig);
+
+                list.push(0, hig);
             }
             else
             {
                 if (top > bot)
                 {
-                    context.moveTo(0, 0);
+                    list.push(0, 0);
 
-                    context.lineTo(top, 0);
+                    list.push(top, 0);
 
-                    context.lineTo((sub / 2.0) + bot, hig);
+                    list.push((sub / 2.0) + bot, hig);
 
-                    context.lineTo((sub / 2.0), hig);
+                    list.push((sub / 2.0), hig);
                 }
                 else
                 {
-                    context.moveTo((sub / 2.0), 0);
+                    list.push((sub / 2.0), 0);
 
-                    context.lineTo((sub / 2.0) + top, 0);
+                    list.push((sub / 2.0) + top, 0);
 
-                    context.lineTo(bot, hig);
+                    list.push(bot, hig);
 
-                    context.lineTo(0, hig);
+                    list.push(0, hig);
                 }
             }
-            context.closePath();
+            final Point2D p0 = list.get(0);
 
+            m_list.M(p0);
+
+            final double corner = getCornerRadius();
+
+            if (corner <= 0)
+            {
+                final int size = list.size();
+
+                for (int i = 1; i < size; i++)
+                {
+                    m_list.L(list.get(i));
+                }
+                m_list.Z();
+            }
+            else
+            {
+                Geometry.drawArcJoinedLines(m_list, list.push(p0), corner);
+            }
             return true;
         }
         return false;
@@ -96,11 +144,19 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return new BoundingBox(0, 0, Math.max(getTopWidth(), getBottomWidth()), getHeight());
     }
 
+    @Override
+    public IsoscelesTrapezoid refresh()
+    {
+        m_list.clear();
+
+        return this;
+    }
+
     public IsoscelesTrapezoid setTopWidth(final double topwidth)
     {
         getAttributes().setTopWidth(topwidth);
 
-        return this;
+        return refresh();
     }
 
     public double getTopWidth()
@@ -112,7 +168,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     {
         getAttributes().setBottomWidth(bottomwidth);
 
-        return this;
+        return refresh();
     }
 
     public double getBottomWidth()
@@ -124,7 +180,7 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
     {
         getAttributes().setHeight(height);
 
-        return this;
+        return refresh();
     }
 
     public double getHeight()
@@ -138,11 +194,25 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
         return Arrays.asList(Attribute.TOP_WIDTH, Attribute.BOTTOM_WIDTH, Attribute.HEIGHT);
     }
 
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public IsoscelesTrapezoid setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
+    }
+
     public static class IsoscelesTrapezoidFactory extends ShapeFactory<IsoscelesTrapezoid>
     {
         public IsoscelesTrapezoidFactory()
         {
             super(ShapeType.ISOSCELES_TRAPEZOID);
+
+            addAttribute(Attribute.CORNER_RADIUS);
 
             addAttribute(Attribute.TOP_WIDTH, true);
 

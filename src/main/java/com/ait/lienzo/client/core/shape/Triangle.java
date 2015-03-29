@@ -96,33 +96,29 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         return true;
     }
 
-    private boolean parse(Attributes attr)
+    private boolean parse(final Attributes attr)
     {
         final Point2DArray list = attr.getPoints().noAdjacentPoints();
 
         if ((null != list) && (list.size() > 2))
         {
-            final Point2D point0 = list.get(0);
+            final Point2D p0 = list.get(0);
 
-            final Point2D point1 = list.get(1);
-
-            final Point2D point2 = list.get(2);
-
-            m_list.M(point0);
+            m_list.M(p0);
 
             final double corner = getCornerRadius();
 
             if (corner <= 0)
             {
-                m_list.L(point1);
+                m_list.L(list.get(1));
 
-                m_list.L(point2);
+                m_list.L(list.get(2));
 
                 m_list.Z();
             }
             else
             {
-                Geometry.drawArcJoinedLines(m_list, list.push(point0), corner);
+                Geometry.drawArcJoinedLines(m_list, list.push(p0), corner);
             }
             return true;
         }

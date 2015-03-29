@@ -24,6 +24,10 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -33,6 +37,8 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Parallelogram extends Shape<Parallelogram>
 {
+    private final PathPartList m_list = new PathPartList();
+
     /**
      * Constructor. Creates an instance of a parallelogram.
      * 
@@ -60,6 +66,24 @@ public class Parallelogram extends Shape<Parallelogram>
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
+        if (m_list.size() < 1)
+        {
+            if (false == parse(attr))
+            {
+                return false;
+            }
+        }
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+        context.path(m_list);
+
+        return true;
+    }
+
+    private boolean parse(final Attributes attr)
+    {
         final double wide = attr.getWidth();
 
         final double high = attr.getHeight();
@@ -68,34 +92,48 @@ public class Parallelogram extends Shape<Parallelogram>
         {
             final double skew = attr.getSkew();
 
-            context.beginPath();
+            final Point2DArray list = new Point2DArray();
 
-            if (skew > 0)
+            if (skew >= 0)
             {
-                context.moveTo(skew, 0);
+                list.push(skew, 0);
 
-                context.lineTo(wide, 0);
+                list.push(wide, 0);
 
-                context.lineTo(wide - skew, high);
+                list.push(wide - skew, high);
 
-                context.lineTo(0, high);
-            }
-            else if (skew < 0)
-            {
-                context.moveTo(0, 0);
-
-                context.lineTo(wide - Math.abs(skew), 0);
-
-                context.lineTo(wide, high);
-
-                context.lineTo(Math.abs(skew), high);
+                list.push(0, high);
             }
             else
             {
-                context.rect(0, 0, wide, high);
-            }
-            context.closePath();
+                list.push(0, 0);
 
+                list.push(wide - Math.abs(skew), 0);
+
+                list.push(wide, high);
+
+                list.push(Math.abs(skew), high);
+            }
+            final Point2D p0 = list.get(0);
+
+            m_list.M(p0);
+
+            final double corner = getCornerRadius();
+
+            if (corner <= 0)
+            {
+                final int size = list.size();
+
+                for (int i = 1; i < size; i++)
+                {
+                    m_list.L(list.get(i));
+                }
+                m_list.Z();
+            }
+            else
+            {
+                Geometry.drawArcJoinedLines(m_list, list.push(p0), corner);
+            }
             return true;
         }
         return false;
@@ -105,6 +143,14 @@ public class Parallelogram extends Shape<Parallelogram>
     public BoundingBox getBoundingBox()
     {
         return new BoundingBox(0, 0, getWidth(), getHeight());
+    }
+
+    @Override
+    public Parallelogram refresh()
+    {
+        m_list.clear();
+
+        return this;
     }
 
     /**
@@ -127,7 +173,7 @@ public class Parallelogram extends Shape<Parallelogram>
     {
         getAttributes().setWidth(width);
 
-        return this;
+        return refresh();
     }
 
     /**
@@ -150,7 +196,7 @@ public class Parallelogram extends Shape<Parallelogram>
     {
         getAttributes().setHeight(height);
 
-        return this;
+        return refresh();
     }
 
     /**
@@ -173,7 +219,19 @@ public class Parallelogram extends Shape<Parallelogram>
     {
         getAttributes().setSkew(skew);
 
-        return this;
+        return refresh();
+    }
+
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public Parallelogram setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
     }
 
     @Override
@@ -193,6 +251,8 @@ public class Parallelogram extends Shape<Parallelogram>
             addAttribute(Attribute.HEIGHT, true);
 
             addAttribute(Attribute.SKEW, true);
+
+            addAttribute(Attribute.CORNER_RADIUS);
         }
 
         @Override

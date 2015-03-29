@@ -102,7 +102,7 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
         return true;
     }
 
-    private boolean parse(Attributes attr)
+    private boolean parse(final Attributes attr)
     {
         Point2DArray list = attr.getPoints();
 
@@ -114,9 +114,7 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 
             if (size > 1)
             {
-                Point2D point = list.get(0);
-
-                m_list.M(point.getX(), point.getY());
+                m_list.M(list.get(0));
 
                 final double corner = getCornerRadius();
 
@@ -124,9 +122,7 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
                 {
                     for (int i = 1; i < size; i++)
                     {
-                        point = list.get(i);
-
-                        m_list.L(point.getX(), point.getY());
+                        m_list.L(list.get(i));
                     }
                 }
                 else
