@@ -46,6 +46,7 @@ import com.ait.lienzo.client.core.types.SpriteBehaviorMap;
 import com.ait.lienzo.client.core.types.SpriteBehaviorMap.SpriteBehaviorMapJSO;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.core.types.Transform.TransformJSO;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ArrowType;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.shared.core.types.DragConstraint;
@@ -110,7 +111,7 @@ public class Attributes
             {
                 m_man = new AttributesChangedManager(m_ser);
             }
-            if(null == m_bat)
+            if (null == m_bat)
             {
                 m_bat = new ImmediateAttributesChangedBatcher();
             }
@@ -561,12 +562,12 @@ public class Attributes
 
     public final void setRotationDegrees(double degrees)
     {
-        put(Attribute.ROTATION.getProperty(), degrees * Math.PI / 180);
+        put(Attribute.ROTATION.getProperty(), Geometry.toRadians(degrees));
     }
 
     public final double getRotationDegrees()
     {
-        return getDouble(Attribute.ROTATION.getProperty()) * 180 / Math.PI;
+        return Geometry.toDegrees(getDouble(Attribute.ROTATION.getProperty()));
     }
 
     public final void setRadius(double radius)

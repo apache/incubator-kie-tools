@@ -24,8 +24,10 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -37,6 +39,8 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Triangle extends AbstractMultiPointShape<Triangle>
 {
+    private final PathPartList m_list = new PathPartList();
+
     /**
      * Constructor. Creates an instance of a triangle.
      * 
@@ -60,6 +64,14 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         return new BoundingBox(getPoints());
     }
 
+    @Override
+    public Triangle refresh()
+    {
+        m_list.clear();
+
+        return this;
+    }
+
     /**
      * Draws this polygon.
      * 
@@ -68,7 +80,25 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        final Point2DArray list = attr.getPoints();
+        if (m_list.size() < 1)
+        {
+            if (false == parse(attr))
+            {
+                return false;
+            }
+        }
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+        context.path(m_list);
+
+        return true;
+    }
+
+    private boolean parse(Attributes attr)
+    {
+        final Point2DArray list = attr.getPoints().noAdjacentPoints();
 
         if ((null != list) && (list.size() > 2))
         {
@@ -78,16 +108,22 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
 
             final Point2D point2 = list.get(2);
 
-            context.beginPath();
+            m_list.M(point0);
 
-            context.moveTo(point0.getX(), point0.getY());
+            final double corner = getCornerRadius();
 
-            context.lineTo(point1.getX(), point1.getY());
+            if (corner <= 0)
+            {
+                m_list.L(point1);
 
-            context.lineTo(point2.getX(), point2.getY());
+                m_list.L(point2);
 
-            context.closePath();
-
+                m_list.Z();
+            }
+            else
+            {
+                Geometry.drawArcJoinedLines(m_list, list.push(point0), corner);
+            }
             return true;
         }
         return false;
@@ -123,7 +159,7 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         }
         getAttributes().setPoints(points);
 
-        return this;
+        return refresh();
     }
 
     @Override
@@ -138,6 +174,18 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         return Arrays.asList(Attribute.POINTS);
     }
 
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public Triangle setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
+    }
+
     public static class TriangleFactory extends ShapeFactory<Triangle>
     {
         public TriangleFactory()
@@ -145,6 +193,8 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
             super(ShapeType.TRIANGLE);
 
             addAttribute(Attribute.POINTS, true);
+
+            addAttribute(Attribute.CORNER_RADIUS);
         }
 
         @Override

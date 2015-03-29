@@ -37,10 +37,6 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 {
-    private double             m_tailOffsetValue = 0;
-
-    private double             m_headOffsetValue = 0;
-
     private Point2D            m_tailOffsetPoint = null;
 
     private Point2D            m_headOffsetPoint = null;
@@ -122,7 +118,9 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 
                 m_list.M(point.getX(), point.getY());
 
-                if (getCornerRadius() == 0)
+                final double corner = getCornerRadius();
+
+                if (corner <= 0)
                 {
                     for (int i = 1; i < size; i++)
                     {
@@ -133,7 +131,7 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
                 }
                 else
                 {
-                    Geometry.drawArcJoinedLines(m_list, list, getCornerRadius());
+                    Geometry.drawArcJoinedLines(m_list, list, corner);
                 }
                 return true;
             }
@@ -146,10 +144,6 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     {
         m_list.clear();
 
-        if (m_tailOffsetValue != m_headOffsetValue)
-        {
-            return this;
-        }
         return this;
     }
 

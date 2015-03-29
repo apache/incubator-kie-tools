@@ -36,9 +36,9 @@ public final class Geometry
 
     public static final double  RADIANS_180    = toRadians(180);
 
-    public static final double  TWO_PI         = (2.000 * Math.PI);
+    public static final double  PI_180         = Math.PI / 180.0;
 
-    public static final double  PI_180         = (Math.PI / 180.0);
+    public static final double  TWO_PI         = 2.000 * Math.PI;
 
     private Geometry()
     {
@@ -390,7 +390,7 @@ public final class Geometry
      */
     public static final double toRadians(final double angdeg)
     {
-        return Math.toRadians(angdeg);
+        return (angdeg / 180.0 * Math.PI);
     }
 
     /**
@@ -402,7 +402,7 @@ public final class Geometry
      */
     public static final double toDegrees(final double angrad)
     {
-        return Math.toDegrees(angrad);
+        return (angrad * 180.0 / Math.PI);
     }
 
     public static final double slope(final Point2D a, final Point2D b)
@@ -437,9 +437,9 @@ public final class Geometry
     public static Point2DArray getPoints(NFastDoubleArrayJSO doubles, Point2D p0)
     {
         Point2DArray array = new Point2DArray();
-        
+
         array.push(p0);
-        
+
         final int size = doubles.size();
 
         for (int i = 0; i < size; i += 2)
@@ -489,9 +489,9 @@ public final class Geometry
             return true;
         }
         Point2D u1 = p1.sub(p0).unit();
-        
+
         Point2D u2 = p2.sub(p1).unit();
-        
+
         return u1.equals(u2);
     }
 
@@ -529,22 +529,27 @@ public final class Geometry
         Point2D p2 = points.get(1);
 
         Point2D p0new = null;
-        
+
         Point2D plast = points.get(size - 1);
-        
+
         Point2D plastmin1 = points.get(size - 2);
 
         double closingRadius = 0;
 
         // check if start and finish have same point (i.e. is the line closed)
-        boolean closed = p0.getX() == plast.getX() && p0.getY() == plast.getY();
-        
-        if (closed && !Geometry.collinear(plastmin1, p0, p2))
+
+        boolean closed = false;
+
+        if ((p0.getX() == plast.getX()) && (p0.getY() == plast.getY()))
+        {
+            closed = true;
+        }
+        if (closed && false == Geometry.collinear(plastmin1, p0, p2))
         {
             p0new = new Point2D(0, 0);
-            
+
             plast = new Point2D(0, 0);
-            
+
             closingRadius = closingArc(list, plastmin1, p0, p2, plast, p0new, radius);
         }
         for (int i = 2; i < size; i++)
@@ -568,8 +573,10 @@ public final class Geometry
         if (p0new != null)
         {
             p0 = points.get(0);
-            
+
             list.A(p0.getX(), p0.getY(), p0new.getX(), p0new.getY(), closingRadius);
+            
+            list.Z();
         }
     }
 
@@ -584,11 +591,11 @@ public final class Geometry
         list.M(p3.getX(), p3.getY());
 
         plast.setX(p1.getX());
-        
+
         plast.setY(p1.getY());
 
         p0new.setX(p3.getX());
-        
+
         p0new.setY(p3.getY());
 
         return closingRadius;
@@ -603,59 +610,57 @@ public final class Geometry
         radius = adjustStartEndOffsets(p0, p2, p4, radius, p1, p3);
 
         list.L(p1.getX(), p1.getY());
-        
+
         list.A(p2.getX(), p2.getY(), p3.getX(), p3.getY(), radius);
     }
 
     private static double adjustStartEndOffsets(final Point2D p0, final Point2D p2, final Point2D p4, double radius, final Point2D p1, final Point2D p3)
     {
         Point2D dv0 = p2.sub(p0);
-        
+
         Point2D dx0 = dv0.unit();
 
         Point2D dv1 = p2.sub(p4);
-        
+
         Point2D dx1 = dv1.unit();
 
         double offset;
-        
+
         if (isOrthogonal(p0, p2, p4))
         {
             radius = getCappedOffset(p0, p2, p4, radius);
-            
+
             offset = radius;
         }
         else
         {
             // for maths see Example 1 http://www.rasmus.is/uk/t/F/Su55k02.htm
             double a0 = getAngleBetweenTwoLines(p0, p2, p4) / 2;
-            
-            double a1 = RADIANS_180 - RADIANS_90 - a0;
-            
-            offset = getLengthFromASA(a1, radius, RADIANS_90);
+
+            offset = getLengthFromASA(RADIANS_90 - a0, radius, RADIANS_90);
 
             double cappedOffset = getCappedOffset(p0, p2, p4, offset);
-            
+
             if (cappedOffset < offset)
             {
                 // offset is larger than capped size. Adjust offset and recalculate new radius
                 offset = cappedOffset;
-                
+
                 radius = getLengthFromASA(a0, offset, RADIANS_90);
             }
         }
         Point2D t = p2.sub(dx0.mul(offset));
-        
+
         p1.setX(t.getX());
-        
+
         p1.setY(t.getY());
 
         t = p2.sub(dx1.mul(offset));
-        
+
         p3.setX(t.getX());
-        
+
         p3.setY(t.getY());
-        
+
         return radius;
     }
 
@@ -663,15 +668,15 @@ public final class Geometry
     private static double getCappedOffset(final Point2D p0, final Point2D p2, final Point2D p4, double offset)
     {
         double l1 = p2.sub(p0).getLength();
-        
+
         double l2 = p2.sub(p4).getLength();
-        
+
         double smallest = (l1 < l2) ? l1 : l2;
-        
+
         double maxRadius = smallest / 2; // it must be half, as there may be another radius on the other side, and they should not cross over.
-        
+
         offset = offset > maxRadius ? maxRadius : offset;
-        
+
         return offset;
     }
 }

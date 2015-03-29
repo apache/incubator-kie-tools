@@ -24,6 +24,9 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -33,6 +36,8 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Star extends Shape<Star>
 {
+    private final PathPartList m_list = new PathPartList();
+
     /**
      * Constructor. Creates an instance of a star.  Visually, there is an enclosing
      * circle which all the tips of the star touch, and an inner circle where all the
@@ -106,6 +111,24 @@ public class Star extends Shape<Star>
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
+        if (m_list.size() < 1)
+        {
+            if (false == parse(attr))
+            {
+                return false;
+            }
+        }
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+        context.path(m_list);
+
+        return true;
+    }
+
+    private boolean parse(Attributes attr)
+    {
         final int s = attr.getStarPoints();
 
         final double ir = attr.getInnerRadius();
@@ -114,21 +137,43 @@ public class Star extends Shape<Star>
 
         if ((s > 4) && (ir > 0) && (or > 0) && (or > ir))
         {
-            context.beginPath();
+            m_list.M(0, 0 - or);
 
-            context.moveTo(0, 0 - or);
+            final double corner = getCornerRadius();
 
-            for (int n = 1; n < s * 2; n++)
+            if (corner <= 0)
             {
-                double radius = n % 2 == 0 ? or : ir;
+                for (int n = 1; n < s * 2; n++)
+                {
+                    final double radius = n % 2 == 0 ? or : ir;
 
-                context.lineTo(radius * Math.sin(n * Math.PI / s), -1 * radius * Math.cos(n * Math.PI / s));
+                    m_list.L(radius * Math.sin(n * Math.PI / s), -1 * radius * Math.cos(n * Math.PI / s));
+                }
+                m_list.Z();
             }
-            context.closePath();
+            else
+            {
+                final Point2DArray list = new Point2DArray(0, 0 - or);
 
+                for (int n = 1; n < s * 2; n++)
+                {
+                    final double radius = n % 2 == 0 ? or : ir;
+
+                    list.push(radius * Math.sin(n * Math.PI / s), -1 * radius * Math.cos(n * Math.PI / s));
+                }
+                Geometry.drawArcJoinedLines(m_list, list.push(0, 0 - or), corner);
+            }
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Star refresh()
+    {
+        m_list.clear();
+
+        return this;
     }
 
     /**
@@ -153,7 +198,7 @@ public class Star extends Shape<Star>
     {
         getAttributes().setStarPoints(points);
 
-        return this;
+        return refresh();
     }
 
     /**
@@ -176,7 +221,7 @@ public class Star extends Shape<Star>
     {
         getAttributes().setInnerRadius(radius);
 
-        return this;
+        return refresh();
     }
 
     /**
@@ -199,7 +244,19 @@ public class Star extends Shape<Star>
     {
         getAttributes().setOuterRadius(radius);
 
-        return this;
+        return refresh();
+    }
+
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public Star setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
     }
 
     @Override
@@ -213,6 +270,8 @@ public class Star extends Shape<Star>
         public StarFactory()
         {
             super(ShapeType.STAR);
+
+            addAttribute(Attribute.CORNER_RADIUS);
 
             addAttribute(Attribute.STAR_POINTS, true);
 

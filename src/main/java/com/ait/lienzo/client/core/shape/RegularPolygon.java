@@ -24,6 +24,9 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -33,6 +36,8 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class RegularPolygon extends Shape<RegularPolygon>
 {
+    private final PathPartList m_list = new PathPartList();
+
     /**
      * Constructor. Creates an instance of a regular polygon.
      * 
@@ -98,25 +103,63 @@ public class RegularPolygon extends Shape<RegularPolygon>
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        final int s = attr.getSides();
-
-        final double r = attr.getRadius();
-
-        if ((s > 2) && (r > 0))
+        if (m_list.size() < 1)
         {
-            context.beginPath();
-
-            context.moveTo(0, 0 - r);
-
-            for (int n = 1; n < s; n++)
+            if (false == parse(attr))
             {
-                context.lineTo(r * Math.sin(n * 2 * Math.PI / s), -1 * r * Math.cos(n * 2 * Math.PI / s));
+                return false;
             }
-            context.closePath();
+        }
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+        context.path(m_list);
 
+        return true;
+    }
+
+    private boolean parse(Attributes attr)
+    {
+        final int sides = attr.getSides();
+
+        final double radius = attr.getRadius();
+
+        if ((sides > 2) && (radius > 0))
+        {
+            m_list.M(0, 0 - radius);
+
+            final double corner = getCornerRadius();
+
+            if (corner <= 0)
+            {
+                for (int n = 1; n < sides; n++)
+                {
+                    m_list.L(radius * Math.sin(n * 2 * Math.PI / sides), -1 * radius * Math.cos(n * 2 * Math.PI / sides));
+                }
+                m_list.Z();
+            }
+            else
+            {
+                final Point2DArray list = new Point2DArray(0, 0 - radius);
+
+                for (int n = 1; n < sides; n++)
+                {
+                    list.push(radius * Math.sin(n * 2 * Math.PI / sides), -1 * radius * Math.cos(n * 2 * Math.PI / sides));
+                }
+                Geometry.drawArcJoinedLines(m_list, list.push(0, 0 - radius), corner);
+            }
             return true;
         }
         return false;
+    }
+
+    @Override
+    public RegularPolygon refresh()
+    {
+        m_list.clear();
+
+        return this;
     }
 
     /**
@@ -139,7 +182,7 @@ public class RegularPolygon extends Shape<RegularPolygon>
     {
         getAttributes().setRadius(radius);
 
-        return this;
+        return refresh();
     }
 
     /**
@@ -162,7 +205,19 @@ public class RegularPolygon extends Shape<RegularPolygon>
     {
         getAttributes().setSides(sides);
 
-        return this;
+        return refresh();
+    }
+
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public RegularPolygon setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
     }
 
     @Override
@@ -180,6 +235,8 @@ public class RegularPolygon extends Shape<RegularPolygon>
             addAttribute(Attribute.RADIUS, true);
 
             addAttribute(Attribute.SIDES, true);
+
+            addAttribute(Attribute.CORNER_RADIUS);
         }
 
         @Override

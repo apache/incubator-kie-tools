@@ -24,8 +24,10 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.lienzo.shared.core.types.ShapeType;
 import com.google.gwt.json.client.JSONObject;
 
@@ -35,6 +37,8 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class Polygon extends AbstractMultiPointShape<Polygon>
 {
+    private final PathPartList m_list = new PathPartList();
+
     /**
      * Constructor. Creates an instance of a polygon.
      * 
@@ -68,6 +72,44 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
         return new BoundingBox(getPoints());
     }
 
+    private boolean parse(Attributes attr)
+    {
+        Point2DArray list = attr.getPoints();
+
+        if (null != list)
+        {
+            list = list.noAdjacentPoints();
+
+            final int size = list.size();
+
+            if (size > 1)
+            {
+                Point2D point = list.get(0);
+
+                m_list.M(point.getX(), point.getY());
+
+                final double r = getCornerRadius();
+
+                if (r <= 0)
+                {
+                    for (int i = 1; i < size; i++)
+                    {
+                        point = list.get(i);
+
+                        m_list.L(point.getX(), point.getY());
+                    }
+                    m_list.Z();
+                }
+                else
+                {                    
+                    Geometry.drawArcJoinedLines(m_list, list.push(list.get(0)), r);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Draws this polygon.
      * 
@@ -76,29 +118,40 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
     @Override
     protected boolean prepare(final Context2D context, final Attributes attr, final double alpha)
     {
-        final Point2DArray list = attr.getPoints();
-
-        if ((null != list) && (list.size() > 2))
+        if (m_list.size() < 1)
         {
-            Point2D point = list.get(0);
-
-            context.beginPath();
-
-            context.moveTo(point.getX(), point.getY());
-
-            final int size = list.size();
-
-            for (int i = 1; i < size; i++)
+            if (false == parse(attr))
             {
-                point = list.get(i);
-
-                context.lineTo(point.getX(), point.getY());
+                return false;
             }
-            context.closePath();
-
-            return true;
         }
-        return false;
+        if (m_list.size() < 1)
+        {
+            return false;
+        }
+        context.path(m_list);
+
+        return true;
+    }
+
+    public double getCornerRadius()
+    {
+        return getAttributes().getCornerRadius();
+    }
+
+    public Polygon setCornerRadius(final double radius)
+    {
+        getAttributes().setCornerRadius(radius);
+
+        return refresh();
+    }
+
+    @Override
+    public Polygon refresh()
+    {
+        m_list.clear();
+
+        return this;
     }
 
     /**
@@ -121,7 +174,7 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
     {
         getAttributes().setPoints(points);
 
-        return this;
+        return refresh();
     }
 
     @Override
@@ -149,6 +202,8 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
             super(ShapeType.POLYGON);
 
             addAttribute(Attribute.POINTS, true);
+
+            addAttribute(Attribute.CORNER_RADIUS);
         }
 
         @Override
