@@ -29,7 +29,7 @@
             <td>
               <b:Label text="{i18n.Version}:"/>
             </td>
-            <td>${project.version}</td>
+            <td>${version.org.kie.workbench.app}</td>
           </tr>
         </tbody>
       </table>
