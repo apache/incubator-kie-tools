@@ -16,11 +16,17 @@
 
 package org.drools.workbench.screens.dtablexls.client.editor;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessage;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
@@ -49,7 +55,10 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 @Dependent
 @WorkbenchEditor(identifier = "DecisionTableXLSEditor", supportedTypes = { DecisionTableXLSResourceType.class })
@@ -88,7 +97,12 @@ public class DecisionTableXLSEditorPresenter
 
     @Override
     protected void loadContent() {
-        decisionTableXLSService.call( new RemoteCallback<DecisionTableXLSContent>() {
+        decisionTableXLSService.call( getModelSuccessCallback(),
+                                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+    }
+
+    private RemoteCallback<DecisionTableXLSContent> getModelSuccessCallback() {
+        return new RemoteCallback<DecisionTableXLSContent>() {
             @Override
             public void callback( final DecisionTableXLSContent content ) {
                 resetEditorPages( content.getOverview() );
@@ -97,7 +111,7 @@ public class DecisionTableXLSEditorPresenter
                 view.setPath( versionRecordManager.getCurrentPath() );
                 view.setReadOnly( isReadOnly );
             }
-        } ).loadContent( versionRecordManager.getCurrentPath() );
+        };
     }
 
     @Override
@@ -105,12 +119,12 @@ public class DecisionTableXLSEditorPresenter
         decisionTableXLSService.call(
                 new RemoteCallback<String>() {
                     @Override
-                    public void callback(String source) {
-                        updateSource(source);
+                    public void callback( String source ) {
+                        updateSource( source );
                     }
                 },
                 getCouldNotGenerateSourceErrorCallback()
-        ).getSource(versionRecordManager.getCurrentPath());
+                                    ).getSource( versionRecordManager.getCurrentPath() );
     }
 
     @Override
@@ -143,15 +157,54 @@ public class DecisionTableXLSEditorPresenter
                             fileNameValidator )
                 .addDelete( versionRecordManager.getPathToLatest() )
                 .addValidate( onValidate() )
-                .addCommand( DecisionTableXLSEditorConstants.INSTANCE.Convert(),
-                             new Command() {
+                .addNewTopLevelMenu( new MenuFactory.CustomMenuBuilder() {
 
-                                 @Override
-                                 public void execute() {
-                                     convert();
-                                 }
-                             }
-                           )
+                    private Button button = new Button( DecisionTableXLSEditorConstants.INSTANCE.Convert() ) {{
+                        setSize( ButtonSize.MINI );
+                        addClickHandler( new ClickHandler() {
+                            @Override
+                            public void onClick( final ClickEvent event ) {
+                                convert();
+                            }
+                        } );
+                    }};
+
+                    @Override
+                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                        //Nothing to do. We don't support nested menus
+                    }
+
+                    @Override
+                    public MenuItem build() {
+                        return new BaseMenuCustom<IsWidget>() {
+                            @Override
+                            public IsWidget build() {
+                                return button;
+                            }
+
+                            @Override
+                            public boolean isEnabled() {
+                                return button.isEnabled();
+                            }
+
+                            @Override
+                            public void setEnabled( boolean enabled ) {
+                                button.setEnabled( enabled );
+                            }
+
+                            @Override
+                            public Collection<String> getRoles() {
+                                return Collections.EMPTY_SET;
+                            }
+
+                            @Override
+                            public String getSignatureId() {
+                                return "org.drools.workbench.screens.dtablexls.client.editor.DecisionTableXLSEditorPresenter#buildButton";
+                            }
+
+                        };
+                    }
+                }.build() )
                 .addNewTopLevelMenu( versionRecordManager.buildMenu() )
                 .build();
     }

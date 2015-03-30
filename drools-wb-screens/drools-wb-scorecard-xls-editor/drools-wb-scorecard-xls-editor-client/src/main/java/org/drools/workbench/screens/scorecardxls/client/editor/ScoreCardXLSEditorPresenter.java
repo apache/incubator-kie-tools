@@ -83,7 +83,12 @@ public class ScoreCardXLSEditorPresenter
 
     @Override
     protected void loadContent() {
-        scoreCardXLSService.call( new RemoteCallback<ScoreCardXLSContent>() {
+        scoreCardXLSService.call( getModelSuccessCallback(),
+                                  getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+    }
+
+    private RemoteCallback<ScoreCardXLSContent> getModelSuccessCallback() {
+        return new RemoteCallback<ScoreCardXLSContent>() {
             @Override
             public void callback( ScoreCardXLSContent content ) {
                 resetEditorPages( content.getOverview() );
@@ -91,7 +96,7 @@ public class ScoreCardXLSEditorPresenter
                 view.setPath( versionRecordManager.getCurrentPath() );
                 view.setReadOnly( isReadOnly );
             }
-        } ).loadContent( versionRecordManager.getCurrentPath() );
+        };
     }
 
     @Override
