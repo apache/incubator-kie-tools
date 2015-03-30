@@ -156,8 +156,6 @@ public class DynamicMenuEditorPresenter
 
     public void removeObject( DynamicMenuItem object ) {
         dataProvider.getList().remove( object );
-        dataProvider.flush();
-        dataProvider.refresh();
     }
 
     public void updateIndex( final DynamicMenuItem object,

@@ -44,6 +44,8 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
+import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -97,9 +99,19 @@ public class DynamicMenuEditorView
     @Ignore
     HelpInline menuLabelHelpInline;
 
+    //SelectionModel works better with a KeyProvider
+    private final ProvidesKey<DynamicMenuItem> keyProvider = new ProvidesKey<DynamicMenuItem>() {
+        @Override
+        public Object getKey( final DynamicMenuItem item ) {
+            return item.getActivityId() + item.getMenuLabel();
+        }
+    };
+    private final SingleSelectionModel<DynamicMenuItem> selectionModel = new SingleSelectionModel<DynamicMenuItem>( keyProvider );
+
     @UiField(provided = true)
     CellTable<DynamicMenuItem> menuItems = new CellTable<DynamicMenuItem>( 500,
-                                                                           GWT.<CellTable.SelectableResources>create( CellTable.SelectableResources.class ) );
+                                                                           GWT.<CellTable.SelectableResources>create( CellTable.SelectableResources.class ),
+                                                                           keyProvider );
 
     @UiField
     Button okButton;
@@ -127,6 +139,14 @@ public class DynamicMenuEditorView
 
     private void initTable( final AbstractCellTable<DynamicMenuItem> dynamicMenuTable ) {
         dynamicMenuTable.setEmptyTableWidget( new Label( CommonConstants.INSTANCE.MenusNoMenuItems() ) );
+
+        //We need to inform the SelectionModel that the ButtonCell (i.e. Delete) column is excluded from selecting a row
+        final DefaultSelectionEventManager<DynamicMenuItem> manager = DefaultSelectionEventManager.createBlacklistManager( 4 );
+        dynamicMenuTable.setSelectionModel( selectionModel,
+                                            manager );
+
+        //Furthermore we cannot have a KeyboardSelectionPolicy with a ButtonCell and a SelectionModel
+        dynamicMenuTable.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED );
 
         {
             final IconCell iCell = new IconCell( IconType.ARROW_UP );
@@ -226,6 +246,9 @@ public class DynamicMenuEditorView
                 public void update( final int index,
                                     final DynamicMenuItem object,
                                     final String value ) {
+                    if ( selectionModel.isSelected( object ) ) {
+                        selectionModel.clear();
+                    }
                     presenter.removeObject( object );
                 }
             } );
@@ -235,19 +258,18 @@ public class DynamicMenuEditorView
                                              "80px" );
         }
 
-        final SingleSelectionModel<DynamicMenuItem> selectionModel = new SingleSelectionModel<DynamicMenuItem>();
-
         selectionModel.addSelectionChangeHandler( new Handler() {
 
             @Override
             public void onSelectionChange( SelectionChangeEvent event ) {
-                driver.edit( selectionModel.getSelectedObject() );
+                //ListDataProvider raises this event with a null item when a item is removed
+                if ( selectionModel.getSelectedObject() == null ) {
+                    driver.edit( new DynamicMenuItem() );
+                } else {
+                    driver.edit( selectionModel.getSelectedObject() );
+                }
             }
         } );
-
-        dynamicMenuTable.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.BOUND_TO_SELECTION );
-
-        dynamicMenuTable.setSelectionModel( selectionModel );
 
         presenter.setDataDisplay( dynamicMenuTable );
     }
@@ -282,7 +304,7 @@ public class DynamicMenuEditorView
             menuLabelControlGroup.setType( ControlGroupType.ERROR );
             menuLabelHelpInline.setText( menuLabelValidator.getValidationError() );
             hasError = true;
-            
+
         } else {
             menuLabelControlGroup.setType( ControlGroupType.NONE );
             menuLabelHelpInline.setText( "" );
@@ -300,10 +322,6 @@ public class DynamicMenuEditorView
     @UiHandler("cancelButton")
     public void onCancel( ClickEvent e ) {
         setMenuItem( new DynamicMenuItem() );
-    }
-
-    public void setSelected( final DynamicMenuItem menuItem ) {
-        menuItems.getSelectionModel().setSelected( menuItem, false );
     }
 
     public void setMenuItem( final DynamicMenuItem menuItem ) {
