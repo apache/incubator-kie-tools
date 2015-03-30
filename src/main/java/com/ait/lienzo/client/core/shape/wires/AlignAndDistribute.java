@@ -1569,16 +1569,18 @@ public class AlignAndDistribute
         @Override
         public void dragEnd()
         {
+            final Layer layer = getLinesLayer();
+
             for (int i = 0; i < m_lines.length; i++)
             {
                 if (m_lines[i] != null)
                 {
-                    getLinesLayer().remove(m_lines[i]);
+                    layer.remove(m_lines[i]);
 
                     m_lines[i] = null;
                 }
             }
-            getLinesLayer().batch();
+            layer.draw();
         }
 
         @Override
@@ -1605,10 +1607,10 @@ public class AlignAndDistribute
 
         private void drawAlignIfMatches(AlignAndDistributeHandler handler, LinkedList<AlignAndDistributeHandler> shapes, double pos, int index, boolean vertical)
         {
+            final Layer layer = getLinesLayer();
 
             if (shapes != null)
             {
-
                 if (vertical)
                 {
                     drawVerticalLine(handler, pos, shapes, index);
@@ -1617,38 +1619,40 @@ public class AlignAndDistribute
                 {
                     drawHorizontalLine(handler, pos, shapes, index);
                 }
-                getLinesLayer().batch();
+                layer.draw();
             }
             else if (m_lines[index] != null)
             {
                 removeLine(index, m_lines[index]);
-                getLinesLayer().batch();
+
+                layer.draw();
             }
         }
 
         private void drawDistIfMatches(AlignAndDistributeHandler h, LinkedList<DistributionEntry> shapes, int index, boolean vertical)
         {
+            final Layer layer = getLinesLayer();
 
             if (shapes != null)
             {
                 for (DistributionEntry dist : shapes)
                 {
                     AlignAndDistributeHandler h1 = dist.getShape1();
+                    
                     AlignAndDistributeHandler h2 = dist.getShape2();
 
                     if (!vertical)
                     {
                         double bottom = h.getBottom();
+                        
                         if (h1.getBottom() > bottom)
                         {
                             bottom = h1.getBottom();
                         }
-
                         if (h2.getBottom() > bottom)
                         {
                             bottom = h2.getBottom();
                         }
-
                         bottom = bottom + 20;
 
                         double x0 = 0, y0 = 0, x1 = 0, y1 = 0;
@@ -1690,23 +1694,21 @@ public class AlignAndDistribute
                                 y3 = h.getBottom() + 5;
                                 break;
                         }
-
                         drawPolyLine(index, bottom, x0, y0, x1, y1, false);
                         drawPolyLine(index + 1, bottom, x2, y2, x3, y3, false);
                     }
                     else
                     {
                         double right = h.getRight();
+                        
                         if (h1.getRight() > right)
                         {
                             right = h1.getRight();
                         }
-
                         if (h2.getRight() > right)
                         {
                             right = h2.getRight();
                         }
-
                         right = right + 20;
 
                         double x0 = 0, y0 = 0, x1 = 0, y1 = 0;
@@ -1748,30 +1750,31 @@ public class AlignAndDistribute
                                 y3 = h.getTop();
                                 break;
                         }
-
                         drawPolyLine(index, right, x0, y0, x1, y1, true);
                         drawPolyLine(index + 1, right, x2, y2, x3, y3, true);
                     }
                 }
-                getLinesLayer().batch();
+                layer.draw();
             }
             else if (m_lines[index] != null)
             {
                 removeLine(index, m_lines[index]);
                 removeLine(index + 1, m_lines[index + 1]);
-                getLinesLayer().batch();
+                layer.draw();
             }
         }
 
         private void removeLine(int index, Shape<?> line)
         {
             getLinesLayer().remove(line);
+            
             m_lines[index] = null;
         }
 
         private void drawPolyLine(int index, double edge, double x0, double y0, double x1, double y1, boolean vertical)
         {
             Point2DArray points;
+            
             if (vertical)
             {
                 points = new Point2DArray(new Point2D(x0, y0), new Point2D(edge, y0), new Point2D(edge, y1), new Point2D(x1, y1));
@@ -1780,8 +1783,8 @@ public class AlignAndDistribute
             {
                 points = new Point2DArray(new Point2D(x0, y0), new Point2D(x0, edge), new Point2D(x1, edge), new Point2D(x1, y1));
             }
-
             PolyLine pline = (PolyLine) m_lines[index];
+            
             if (pline == null)
             {
                 pline = new PolyLine(points);
@@ -1817,7 +1820,6 @@ public class AlignAndDistribute
                     right = newRight;
                 }
             }
-
             drawHorizontalLine(pos, left, right, index);
         }
 
@@ -1859,7 +1861,6 @@ public class AlignAndDistribute
                     bottom = newBottom;
                 }
             }
-
             drawVerticalLine(pos, top, bottom, index);
         }
 
