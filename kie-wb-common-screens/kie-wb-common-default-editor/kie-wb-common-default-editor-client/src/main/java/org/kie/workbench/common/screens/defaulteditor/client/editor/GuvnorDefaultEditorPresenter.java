@@ -20,7 +20,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.service.DefaultEditorContent;
@@ -112,12 +111,17 @@ public class GuvnorDefaultEditorPresenter
 
     @Override
     protected void loadContent() {
-        defaultEditorService.call( new RemoteCallback<DefaultEditorContent>() {
+        defaultEditorService.call( getLoadSuccessCallback(),
+                                   getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+    }
+
+    private RemoteCallback<DefaultEditorContent> getLoadSuccessCallback() {
+        return new RemoteCallback<DefaultEditorContent>() {
             @Override
-            public void callback( DefaultEditorContent content) {
+            public void callback( final DefaultEditorContent content ) {
                 resetEditorPages( content.getOverview() );
             }
-        } ).loadContent(versionRecordManager.getCurrentPath());
+        };
     }
 
     @WorkbenchPartView

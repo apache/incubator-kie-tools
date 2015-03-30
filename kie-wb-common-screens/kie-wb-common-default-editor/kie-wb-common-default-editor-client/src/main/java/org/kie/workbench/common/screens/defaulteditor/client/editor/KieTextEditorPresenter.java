@@ -112,19 +112,20 @@ public class KieTextEditorPresenter
 
     @Override
     protected void loadContent() {
-        defaultEditorService.call( new RemoteCallback<DefaultEditorContent>() {
+        defaultEditorService.call( getLoadSuccessCallback(),
+                                   getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+    }
+
+    private RemoteCallback<DefaultEditorContent> getLoadSuccessCallback() {
+        return new RemoteCallback<DefaultEditorContent>() {
             @Override
-            public void callback( DefaultEditorContent content ) {
-
+            public void callback( final DefaultEditorContent content ) {
                 resetEditorPages( content.getOverview() );
-
                 metadata = content.getOverview().getMetadata();
-
                 view.onStartup( versionRecordManager.getCurrentPath() );
                 view.setReadOnly( isReadOnly );
-
             }
-        } ).loadContent( versionRecordManager.getCurrentPath() );
+        };
     }
 
     //This is called after the View's content has been loaded
