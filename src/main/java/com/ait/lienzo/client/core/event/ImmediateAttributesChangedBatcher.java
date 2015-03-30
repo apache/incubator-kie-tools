@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.ait.lienzo.client.core.types.NFastStringSet;
+import com.ait.tooling.nativetools.client.primitive.NFastStringSet;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 

@@ -19,9 +19,9 @@ package com.ait.lienzo.client.core.config;
 import java.util.Collection;
 
 import com.ait.lienzo.client.core.shape.json.IFactory;
-import com.ait.lienzo.client.core.types.NFastStringMap;
-import com.ait.lienzo.shared.java.util.IStringValuedType;
-import com.ait.lienzo.shared.java.util.function.Supplier;
+import com.ait.tooling.common.api.java.util.function.Supplier;
+import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
 
 public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
 {
@@ -33,7 +33,7 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     {
     }
 
-    protected final boolean addFactorySupplier(final IStringValuedType type, final Supplier<IFactory<?>> supplier)
+    protected final boolean addFactorySupplier(final IStringValued type, final Supplier<IFactory<?>> supplier)
     {
         return addFactorySupplier(type.getValue(), supplier);
     }
@@ -73,7 +73,7 @@ public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
     }
 
     @Override
-    public final IFactory<?> getFactory(final IStringValuedType type)
+    public final IFactory<?> getFactory(final IStringValued type)
     {
         return getFactory(type.getValue());
     }

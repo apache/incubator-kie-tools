@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.storage;
 
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 
-public class StorageEngineType implements IStringValuedType
+public class StorageEngineType implements IStringValued
 {
     public static final StorageEngineType VIEWPORT_FAST_ARRAY_STORAGE_ENGINE  = new StorageEngineType("ViewportFastArrayStorageEngine");
 

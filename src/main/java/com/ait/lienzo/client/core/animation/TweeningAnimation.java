@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.shape.Node;
-import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 
 public class TweeningAnimation extends TimedAnimation
 {
@@ -44,7 +44,7 @@ public class TweeningAnimation extends TimedAnimation
         if ((null != m_properties) && (m_properties.size() > 0))
         {
             m_workingset = new NFastArrayList<AnimationProperty>();
-            
+
             final Node<?> node = getNode();
 
             final int size = m_properties.size();

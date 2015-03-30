@@ -16,12 +16,12 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 
 /**
  * ShapeType is an extensible enumeration of all Shape types.
  */
-public class ShapeType implements IStringValuedType
+public class ShapeType implements IStringValued
 {
     public static final ShapeType ARC                 = new ShapeType("Arc");
 

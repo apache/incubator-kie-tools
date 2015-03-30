@@ -20,8 +20,8 @@ import java.util.LinkedHashSet;
 
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.ClipRegion;
-import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.shared.java.util.function.Predicate;
+import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 
 /**
  * Interface to be implemented by all primitive collections. 

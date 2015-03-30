@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 
@@ -25,7 +25,7 @@ public final class LayerRedrawManager
 {
     private static final LayerRedrawManager s_instance = new LayerRedrawManager();
 
-    private NFastArrayList<Layer>            m_layers   = new NFastArrayList<Layer>();
+    private NFastArrayList<Layer>           m_layers   = new NFastArrayList<Layer>();
 
     private AnimationCallback               m_redraw;
 

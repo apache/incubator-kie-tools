@@ -16,12 +16,12 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 
 /**
  * NodeType is an extensible enumeration of top-level node types used in the Lienzo toolkit.
  */
-public class NodeType implements IStringValuedType
+public class NodeType implements IStringValued
 {
     public static final NodeType SCENE      = new NodeType("Scene");
 

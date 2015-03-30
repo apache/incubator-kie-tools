@@ -14,9 +14,9 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.shared.java.util;
+package com.ait.lienzo.shared.core.types;
 
-public interface IValuedType<T>
+public interface DoublePowerFunction
 {
-    public T getValue();
+    public double apply(double value);
 }

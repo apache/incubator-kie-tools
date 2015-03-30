@@ -18,9 +18,9 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.lienzo.client.core.types.NFastStringCounter;
-import com.ait.lienzo.client.core.types.NFastStringMap;
-import com.ait.lienzo.client.core.types.NFastStringSet;
+import com.ait.tooling.nativetools.client.primitive.NFastStringCounter;
+import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
+import com.ait.tooling.nativetools.client.primitive.NFastStringSet;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
@@ -79,9 +79,7 @@ public final class AttributesChangedManager
         {
             final AttributesChangedEvent event = new AttributesChangedEvent(changed);
 
-            final String[] keys = changed.toArray();
-
-            for (String name : keys)
+            for (String name : changed)
             {
                 if (m_ctr.contains(name))
                 {

@@ -16,16 +16,16 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 
 /**
  * GroupType is an extensible enumeration of all GroupOf types.
  */
-public class GroupType implements IStringValuedType
+public class GroupType implements IStringValued
 {
     public static final GroupType GROUP   = new GroupType("Group");
 
-    public static final GroupType CALLOUT = new GroupType("Callout");
+    public static final GroupType TOOLTIP = new GroupType("ToolTip");
 
     private final String          m_value;
 

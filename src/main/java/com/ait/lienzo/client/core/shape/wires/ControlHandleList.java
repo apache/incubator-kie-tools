@@ -21,8 +21,8 @@ import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.shared.java.util.Activatible;
+import com.ait.tooling.common.api.types.Activatible;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 
 public final class ControlHandleList extends Activatible implements IControlHandleList
 {

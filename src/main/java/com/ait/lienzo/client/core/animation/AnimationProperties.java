@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.animation;
 
-import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 
 public class AnimationProperties
 {

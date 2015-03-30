@@ -29,7 +29,7 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 
-public class Callout extends GroupOf<IPrimitive<?>, Callout>
+public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>
 {
     public static final double  TRIANGLE_SIZE          = 10;
 
@@ -65,9 +65,9 @@ public class Callout extends GroupOf<IPrimitive<?>, Callout>
 
     private static final Shadow SHADOW                 = new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3);
 
-    public Callout()
+    public ToolTip()
     {
-        super(GroupType.CALLOUT, new PrimitiveFastArrayStorageEngine());
+        super(GroupType.TOOLTIP, new PrimitiveFastArrayStorageEngine());
 
         m_body = new Rectangle(1, 1).setFillColor(TOOLTIP_COLOR).setCornerRadius(5).setStrokeWidth(1).setShadow(SHADOW);
 
@@ -89,47 +89,69 @@ public class Callout extends GroupOf<IPrimitive<?>, Callout>
 
         add(m_labl);
 
-        m_text.moveToTop();
-
-        m_labl.moveToTop();
-
         setVisible(false);
 
         setListening(false);
     }
 
-    public Callout show(final double x, final double y)
+    public ToolTip show(final double x, final double y)
     {
         m_text.setText(m_textValue);
+
         BoundingBox bb = m_text.getBoundingBox();
+
         final double ctw = bb.getWidth();
+
         final double cth = bb.getHeight();
+
         m_labl.setText(m_lablValue);
+
         bb = m_labl.getBoundingBox();
+
         final double vtw = bb.getWidth();
+
         final double vth = bb.getHeight();
+
         final double rw = (ctw > vtw ? ctw : vtw) + TOOLTIP_PADDING_WIDTH;
-        final double rh = (cth + vth) + TOOLTIP_PADDING_HEIGHT;
+
+        final double rh = (cth + vth) + TOOLTIP_PADDING_HEIGHT + 2;
+
         m_body.setWidth(rw).setHeight(rh).setCornerRadius(5);
+
         final double rx = m_body.getX();
+
         final double ry = m_body.getY();
+
         m_tail.setPoints(new Point2D(rx + rw / 2 - TRIANGLE_SIZE, ry + rh), new Point2D(rx + rw / 2, rh + TRIANGLE_SIZE), new Point2D(rx + rw / 2 + TRIANGLE_SIZE, ry + rh));
+
         m_mask.setPoints(new Point2D(rx + rw / 2 - TRIANGLE_SIZE - 3, ry + rh - 3), new Point2D(rx + rw / 2, rh + TRIANGLE_SIZE - 3), new Point2D(rx + rw / 2 + TRIANGLE_SIZE + 3, ry + rh - 3));
+
         final double vtx = rw / 2 - vtw / 2;
+
         final double ctx = rw / 2 - ctw / 2;
+
         final double vty = rh / 2 - vth / 2;
-        final double cty = vty + cth + 1;
+
+        final double cty = vty + cth + 2;
+
         m_text.setX(ctx).setY(cty);
-        m_labl.setX(vtx).setY(vty);
+
+        m_labl.setX(vtx).setY(vty - 1);
+
         setX(x - rw / 2);
+
         setY(y - rh);
+
         moveToTop();
+
         setVisible(true);
+
         getLayer().batch();
+
         return this;
     }
 
-    public Callout hide()
+    public ToolTip hide()
     {
         setVisible(false);
 
@@ -138,7 +160,7 @@ public class Callout extends GroupOf<IPrimitive<?>, Callout>
         return this;
     }
 
-    public Callout setValues(final String text, final String labl)
+    public ToolTip setValues(final String text, final String labl)
     {
         if (null == text)
         {

@@ -18,7 +18,7 @@ apply plugin: 'maven'
 
 sourceCompatibility = 1.7
 
-version = '2.0.90-SNAPSHOT'
+version = '2.0.91-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -31,6 +31,7 @@ jar {
 
 repositories {
     mavenCentral()
+    maven { url "${sonatype_snapshotURL}" }
 }
 
 sourceSets {
@@ -43,6 +44,7 @@ sourceSets {
 
 dependencies {
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.6.1')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.11-SNAPSHOT')
 }
 
 uploadArchives {

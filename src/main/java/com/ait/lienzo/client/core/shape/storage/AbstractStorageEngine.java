@@ -24,9 +24,9 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ClipRegion;
-import com.ait.lienzo.client.core.types.MetaData;
-import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
+import com.ait.tooling.nativetools.client.NObjectJSO;
+import com.ait.tooling.nativetools.client.primitive.MetaData;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -73,7 +73,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
                 }
                 else
                 {
-                    NFastStringMapMixedJSO jso = mjso.cast();
+                    NObjectJSO jso = mjso.cast();
 
                     m_meta = new MetaData(jso);
                 }

@@ -18,8 +18,8 @@ package com.ait.lienzo.client.core;
 
 import java.util.List;
 
-import com.ait.lienzo.client.core.types.NFastStringSet;
-import com.ait.lienzo.shared.java.util.function.Predicate;
+import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.nativetools.client.primitive.NFastStringSet;
 
 public final class AttributeOp
 {

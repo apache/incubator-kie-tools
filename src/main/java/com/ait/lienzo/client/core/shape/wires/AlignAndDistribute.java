@@ -37,11 +37,11 @@ import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
-import com.ait.lienzo.client.core.types.NFastStringSet;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
+import com.ait.tooling.nativetools.client.primitive.NFastStringSet;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 import static com.ait.lienzo.client.core.AttributeOp.*;

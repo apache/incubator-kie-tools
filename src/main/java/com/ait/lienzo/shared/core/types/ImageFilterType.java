@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 
-public class ImageFilterType implements IStringValuedType
+public class ImageFilterType implements IStringValued
 {
     public static final ImageFilterType AlphaScaleColorImageDataFilterType     = new ImageFilterType("AlphaScaleColorImageDataFilter");
 
@@ -66,7 +66,7 @@ public class ImageFilterType implements IStringValuedType
 
     public static final ImageFilterType StackBlurImageDataFilterType           = new ImageFilterType("StackBlurImageDataFilter");
 
-    private final String           m_value;
+    private final String                m_value;
 
     protected ImageFilterType(final String value)
     {

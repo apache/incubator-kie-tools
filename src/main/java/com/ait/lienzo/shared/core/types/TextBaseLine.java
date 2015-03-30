@@ -18,7 +18,7 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.lienzo.client.core.types.NFastStringMap;
+import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
 
 /**
  * Enum to create a type safe set of values for {@link Text} Alignment. 

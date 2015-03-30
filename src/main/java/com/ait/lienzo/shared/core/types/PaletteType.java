@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 
-public class PaletteType implements IStringValuedType
+public class PaletteType implements IStringValued
 {
     public static final PaletteType PALETTE      = new PaletteType("Palette");
 

@@ -23,9 +23,9 @@ import com.ait.lienzo.client.core.shape.Attributes;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.MetaData;
-import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
+import com.ait.tooling.nativetools.client.NObjectJSO;
+import com.ait.tooling.nativetools.client.primitive.MetaData;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.json.client.JSONObject;
@@ -115,7 +115,7 @@ public abstract class AbstractImageDataFilter<T extends AbstractImageDataFilter<
                 }
                 else
                 {
-                    NFastStringMapMixedJSO jso = mjso.cast();
+                    NObjectJSO jso = mjso.cast();
 
                     m_meta = new MetaData(jso);
                 }

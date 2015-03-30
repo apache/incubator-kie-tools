@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.shared.core.types;
 
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 
-public class ProxyType implements IStringValuedType
+public class ProxyType implements IStringValued
 {
     private final String          m_value;
 

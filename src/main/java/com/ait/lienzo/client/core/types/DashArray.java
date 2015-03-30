@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.types;
 
+import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
 import com.google.gwt.json.client.JSONArray;
 
 /**

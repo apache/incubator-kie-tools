@@ -20,8 +20,8 @@ import com.ait.lienzo.client.core.shape.Movie;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.types.ImageData;
-import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
+import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JavaScriptObject;
 
 /**
@@ -67,11 +67,6 @@ public interface ImageDataFilter<T extends ImageDataFilter<T>> extends IJSONSeri
 
     public static final class FilterConvolveMatrix extends NFastDoubleArrayJSO
     {
-        public static final FilterConvolveMatrix make()
-        {
-            return NFastDoubleArrayJSO.make().cast();
-        }
-
         protected FilterConvolveMatrix()
         {
         }

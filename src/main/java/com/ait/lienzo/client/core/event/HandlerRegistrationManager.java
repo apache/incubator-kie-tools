@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.ait.lienzo.client.core.types.NFastArrayList;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 public final class HandlerRegistrationManager implements HandlerRegistration

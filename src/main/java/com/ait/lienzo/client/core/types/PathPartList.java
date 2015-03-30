@@ -17,6 +17,7 @@
 package com.ait.lienzo.client.core.types;
 
 import com.ait.lienzo.client.core.util.Geometry;
+import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 

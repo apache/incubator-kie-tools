@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.types.NFastArrayList;
-import com.ait.lienzo.shared.java.util.function.DoublePowerFunction;
+import com.ait.lienzo.shared.core.types.DoublePowerFunction;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 
 public class Magnet extends AbstractControlHandle implements Iterable<Handle>
 {

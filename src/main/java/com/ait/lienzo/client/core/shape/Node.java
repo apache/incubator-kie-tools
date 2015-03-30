@@ -76,12 +76,12 @@ import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.ClipRegion;
-import com.ait.lienzo.client.core.types.MetaData;
-import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
-import com.ait.lienzo.client.core.util.UUID;
 import com.ait.lienzo.shared.core.types.NodeType;
+import com.ait.tooling.common.api.java.util.UUID;
+import com.ait.tooling.nativetools.client.NObjectJSO;
+import com.ait.tooling.nativetools.client.primitive.MetaData;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -208,7 +208,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
                 }
                 else
                 {
-                    NFastStringMapMixedJSO jso = mjso.cast();
+                    NObjectJSO jso = mjso.cast();
 
                     m_meta = new MetaData(jso);
                 }

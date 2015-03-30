@@ -27,8 +27,6 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.FillGradient;
 import com.ait.lienzo.client.core.types.LinearGradient;
-import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
-import com.ait.lienzo.client.core.types.NFastStringMap;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.types.TextMetrics;
@@ -38,6 +36,8 @@ import com.ait.lienzo.shared.core.types.ShapeType;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
+import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
+import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
 import com.google.gwt.canvas.dom.client.CanvasPixelArray;
 import com.google.gwt.json.client.JSONObject;
 

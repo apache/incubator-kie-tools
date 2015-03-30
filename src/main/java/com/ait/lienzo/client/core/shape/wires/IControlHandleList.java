@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.lienzo.shared.java.util.IActivatable;
+import com.ait.tooling.common.api.types.IActivatable;
 
 public interface IControlHandleList extends IActivatable, Iterable<IControlHandle>
 {

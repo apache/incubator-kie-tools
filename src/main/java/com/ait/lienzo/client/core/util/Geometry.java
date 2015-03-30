@@ -19,10 +19,10 @@ package com.ait.lienzo.client.core.util;
 import com.ait.lienzo.client.core.shape.BezierCurve;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
 
 /**
  * Static utility methods related to geometry and other math.

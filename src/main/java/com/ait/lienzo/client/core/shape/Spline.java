@@ -24,11 +24,11 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 import com.google.gwt.json.client.JSONObject;
 
 public class Spline extends AbstractMultiPointShape<Spline>
@@ -218,11 +218,11 @@ public class Spline extends AbstractMultiPointShape<Spline>
 
             if (PathPoint.distance(cp2, p2) > PathPoint.distance(cp1, p2))
             {
-                carray.add(i, PathPoint.toArray(cp2, cp1));
+                carray.set(i, PathPoint.toArray(cp2, cp1));
             }
             else
             {
-                carray.add(i, PathPoint.toArray(cp1, cp2));
+                carray.set(i, PathPoint.toArray(cp1, cp2));
             }
         }
         final boolean lineFlatten = attr.getLineFlatten();
@@ -433,7 +433,7 @@ public class Spline extends AbstractMultiPointShape<Spline>
             y += dy;
         }
 
-        static final double distance(final PathPoint a, final PathPoint b)
+        protected static final double distance(final PathPoint a, final PathPoint b)
         {
             final double dx = b.x - a.x;
 

@@ -18,7 +18,7 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.lienzo.client.core.types.NFastStringMap;
+import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
 
 /**
  * ArrowType defines the style of the arrow heads for an 

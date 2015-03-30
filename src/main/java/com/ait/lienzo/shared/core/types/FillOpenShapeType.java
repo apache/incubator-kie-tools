@@ -21,17 +21,17 @@ import java.util.List;
 import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
 
 /**
- * Serialization mode of a Picture or Sprite.
+ * Enum to type safe the usage of Canvas Line Caps.
  */
-public enum ImageSerializationMode implements EnumWithValue
+public enum FillOpenShapeType implements EnumWithValue
 {
-    URL("url"), DATA_URL("data-url");
+    NONE("none"), CLOSE("close");
 
-    private final String                                        m_value;
+    private final String                                   m_value;
 
-    private static final NFastStringMap<ImageSerializationMode> LOOKUP_MAP = Statics.build(ImageSerializationMode.values());
+    private static final NFastStringMap<FillOpenShapeType> LOOKUP_MAP = Statics.build(FillOpenShapeType.values());
 
-    private ImageSerializationMode(String value)
+    private FillOpenShapeType(String value)
     {
         m_value = value;
     }
@@ -48,18 +48,18 @@ public enum ImageSerializationMode implements EnumWithValue
         return m_value;
     }
 
-    public static final ImageSerializationMode lookup(String key)
+    public static final FillOpenShapeType lookup(String key)
     {
-        return Statics.lookup(key, LOOKUP_MAP, URL);
+        return Statics.lookup(key, LOOKUP_MAP, NONE);
     }
 
     public static final List<String> getKeys()
     {
-        return Statics.getKeys(ImageSerializationMode.values());
+        return Statics.getKeys(FillOpenShapeType.values());
     }
 
-    public static final List<ImageSerializationMode> getValues()
+    public static final List<FillOpenShapeType> getValues()
     {
-        return Statics.getValues(ImageSerializationMode.values());
+        return Statics.getValues(FillOpenShapeType.values());
     }
 }

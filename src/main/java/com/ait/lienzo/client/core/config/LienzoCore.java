@@ -30,7 +30,7 @@ import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.LayerClearMode;
 import com.ait.lienzo.shared.core.types.LineCap;
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
@@ -143,7 +143,7 @@ public final class LienzoCore
         return Collections.unmodifiableCollection(m_plugins);
     }
 
-    public final IFactory<?> getFactory(final IStringValuedType type)
+    public final IFactory<?> getFactory(final IStringValued type)
     {
         return getFactory(type.getValue());
     }

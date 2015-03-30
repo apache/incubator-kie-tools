@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ait.lienzo.client.core.types.NFastStringMap;
-import com.ait.lienzo.shared.java.util.IStringValuedType;
+import com.ait.tooling.common.api.types.IStringValued;
+import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
 
-public interface EnumWithValue extends IStringValuedType
+public interface EnumWithValue extends IStringValued
 {
     public static final class Statics
     {

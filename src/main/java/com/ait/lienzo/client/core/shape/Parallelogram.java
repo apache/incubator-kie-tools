@@ -53,6 +53,13 @@ public class Parallelogram extends Shape<Parallelogram>
         setWidth(width).setHeight(height).setSkew(skew);
     }
 
+    public Parallelogram(final double width, final double height, final double skew, final double corner)
+    {
+        super(ShapeType.PARALLELOGRAM);
+
+        setWidth(width).setHeight(height).setSkew(skew).setCornerRadius(corner);
+    }
+
     protected Parallelogram(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.PARALLELOGRAM, node, ctx);

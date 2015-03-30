@@ -28,11 +28,9 @@ import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.DragBounds.DragBoundsJSO;
 import com.ait.lienzo.client.core.types.FillGradient;
+import com.ait.lienzo.client.core.types.FillGradient.GradientJSO;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.client.core.types.LinearGradient.LinearGradientJSO;
-import com.ait.lienzo.client.core.types.NFastDoubleArrayJSO;
-import com.ait.lienzo.client.core.types.NFastStringMapMixedJSO;
-import com.ait.lienzo.client.core.types.NativeInternalType;
 import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.PatternGradient.PatternGradientJSO;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -58,6 +56,10 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
+import com.ait.tooling.nativetools.client.NNativeType;
+import com.ait.tooling.nativetools.client.NObjectJSO;
+import com.ait.tooling.nativetools.client.NUtils.Native;
+import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayMixed;
@@ -65,36 +67,36 @@ import com.google.gwt.event.shared.HandlerRegistration;
 
 public class Attributes
 {
-    private final IJSONSerializable<?>   m_ser;
+    private final IJSONSerializable<?> m_ser;
 
-    private final NFastStringMapMixedJSO m_jso;
+    private final NObjectJSO           m_jso;
 
-    private AttributesChangedManager     m_man;
+    private AttributesChangedManager   m_man;
 
-    private IAttributesChangedBatcher    m_bat;
+    private IAttributesChangedBatcher  m_bat;
 
     public Attributes(final IJSONSerializable<?> ser)
     {
         m_ser = ser;
 
-        m_jso = NFastStringMapMixedJSO.make();
+        m_jso = NObjectJSO.make();
     }
 
     public Attributes(final JavaScriptObject jso, final IJSONSerializable<?> ser)
     {
         m_ser = ser;
 
-        if ((null != jso) && (NFastStringMapMixedJSO.typeOf(jso) == NativeInternalType.OBJECT))
+        if ((null != jso) && (Native.is(jso, NNativeType.OBJECT)))
         {
             m_jso = jso.cast();
         }
         else
         {
-            m_jso = NFastStringMapMixedJSO.make();
+            m_jso = NObjectJSO.make();
         }
     }
 
-    public final NFastStringMapMixedJSO getJSO()
+    public final NObjectJSO getJSO()
     {
         return m_jso;
     }
@@ -204,9 +206,9 @@ public class Attributes
 
     public final double getFillAlpha()
     {
-        if (typeOf(Attribute.FILL_ALPHA) == NativeInternalType.NUMBER)
+        if (is(Attribute.FILL_ALPHA.getProperty(), NNativeType.NUMBER))
         {
-            double alpha = m_jso.getDouble(Attribute.FILL_ALPHA.getProperty());
+            double alpha = m_jso.getAsDouble(Attribute.FILL_ALPHA.getProperty());
 
             if (alpha < 0)
             {
@@ -236,9 +238,9 @@ public class Attributes
 
     public final double getStrokeAlpha()
     {
-        if (typeOf(Attribute.STROKE_ALPHA) == NativeInternalType.NUMBER)
+        if (is(Attribute.STROKE_ALPHA.getProperty(), NNativeType.NUMBER))
         {
-            double alpha = m_jso.getDouble(Attribute.STROKE_ALPHA.getProperty());
+            double alpha = m_jso.getAsDouble(Attribute.STROKE_ALPHA.getProperty());
 
             if (alpha < 0)
             {
@@ -261,7 +263,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.FILL.getProperty());
+            remove(Attribute.FILL.getProperty());
         }
     }
 
@@ -278,7 +280,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.FILL.getProperty());
+            remove(Attribute.FILL.getProperty());
         }
     }
 
@@ -290,7 +292,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.FILL.getProperty());
+            remove(Attribute.FILL.getProperty());
         }
     }
 
@@ -302,19 +304,19 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.FILL.getProperty());
+            remove(Attribute.FILL.getProperty());
         }
     }
 
     public final FillGradient getFillGradient()
     {
-        JavaScriptObject fill = getObject(Attribute.FILL.getProperty());
+        final GradientJSO fill = getObject(Attribute.FILL.getProperty()).cast();
 
         if (null == fill)
         {
             return null;
         }
-        String type = m_jso.getString("type", fill);
+        final String type = fill.getType();
 
         if (LinearGradient.TYPE.equals(type))
         {
@@ -339,7 +341,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.STROKE.getProperty());
+            remove(Attribute.STROKE.getProperty());
         }
     }
 
@@ -356,7 +358,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.LINE_CAP.getProperty());
+            remove(Attribute.LINE_CAP.getProperty());
         }
     }
 
@@ -373,7 +375,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.LINE_JOIN.getProperty());
+            remove(Attribute.LINE_JOIN.getProperty());
         }
     }
 
@@ -482,7 +484,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.NAME.getProperty());
+            remove(Attribute.NAME.getProperty());
         }
     }
 
@@ -494,7 +496,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.DASH_ARRAY.getProperty());
+            remove(Attribute.DASH_ARRAY.getProperty());
         }
     }
 
@@ -519,7 +521,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.DRAG_CONSTRAINT.getProperty());
+            remove(Attribute.DRAG_CONSTRAINT.getProperty());
         }
     }
 
@@ -541,7 +543,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.ID.getProperty());
+            remove(Attribute.ID.getProperty());
         }
     }
 
@@ -601,7 +603,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.SCALE.getProperty());
+            remove(Attribute.SCALE.getProperty());
         }
     }
 
@@ -641,7 +643,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.SHEAR.getProperty());
+            remove(Attribute.SHEAR.getProperty());
         }
     }
 
@@ -666,7 +668,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.OFFSET.getProperty());
+            remove(Attribute.OFFSET.getProperty());
         }
     }
 
@@ -696,7 +698,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.TRANSFORM.getProperty());
+            remove(Attribute.TRANSFORM.getProperty());
         }
     }
 
@@ -731,7 +733,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.POINTS.getProperty());
+            remove(Attribute.POINTS.getProperty());
         }
     }
 
@@ -854,7 +856,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.TEXT_BASELINE.getProperty());
+            remove(Attribute.TEXT_BASELINE.getProperty());
         }
     }
 
@@ -866,7 +868,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.TEXT_UNIT.getProperty());
+            remove(Attribute.TEXT_UNIT.getProperty());
         }
     }
 
@@ -883,7 +885,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.TEXT_ALIGN.getProperty());
+            remove(Attribute.TEXT_ALIGN.getProperty());
         }
     }
 
@@ -905,7 +907,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.SHADOW.getProperty());
+            remove(Attribute.SHADOW.getProperty());
         }
     }
 
@@ -945,7 +947,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.CONTROL_POINTS.getProperty());
+            remove(Attribute.CONTROL_POINTS.getProperty());
         }
     }
 
@@ -1063,9 +1065,9 @@ public class Attributes
 
     public final double getAlpha()
     {
-        if (typeOf(Attribute.ALPHA) == NativeInternalType.NUMBER)
+        if (is(Attribute.ALPHA.getProperty(), NNativeType.NUMBER))
         {
-            double alpha = m_jso.getDouble(Attribute.ALPHA.getProperty());
+            double alpha = m_jso.getAsDouble(Attribute.ALPHA.getProperty());
 
             if (alpha < 0)
             {
@@ -1106,7 +1108,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.DRAG_BOUNDS.getProperty());
+            remove(Attribute.DRAG_BOUNDS.getProperty());
         }
     }
 
@@ -1123,7 +1125,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.DRAG_MODE.getProperty());
+            remove(Attribute.DRAG_MODE.getProperty());
         }
     }
 
@@ -1195,7 +1197,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.SERIALIZATION_MODE.getProperty());
+            remove(Attribute.SERIALIZATION_MODE.getProperty());
         }
     }
 
@@ -1212,7 +1214,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.IMAGE_SELECTION_MODE.getProperty());
+            remove(Attribute.IMAGE_SELECTION_MODE.getProperty());
         }
     }
 
@@ -1269,7 +1271,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.ARROW_TYPE.getProperty());
+            remove(Attribute.ARROW_TYPE.getProperty());
         }
     }
 
@@ -1286,7 +1288,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.URL.getProperty());
+            remove(Attribute.URL.getProperty());
         }
     }
 
@@ -1334,9 +1336,9 @@ public class Attributes
 
     public final double getVolume()
     {
-        if (typeOf(Attribute.VOLUME) == NativeInternalType.NUMBER)
+        if (is(Attribute.VOLUME.getProperty(), NNativeType.NUMBER))
         {
-            double volume = m_jso.getDouble(Attribute.VOLUME.getProperty());
+            double volume = m_jso.getAsDouble(Attribute.VOLUME.getProperty());
 
             if (volume < 0)
             {
@@ -1373,9 +1375,9 @@ public class Attributes
 
     public final double getCurveFactor()
     {
-        if (typeOf(Attribute.CURVE_FACTOR) == NativeInternalType.NUMBER)
+        if (is(Attribute.CURVE_FACTOR.getProperty(), NNativeType.NUMBER))
         {
-            double factor = m_jso.getDouble(Attribute.CURVE_FACTOR.getProperty());
+            double factor = m_jso.getAsDouble(Attribute.CURVE_FACTOR.getProperty());
 
             if (factor <= 0)
             {
@@ -1405,9 +1407,9 @@ public class Attributes
 
     public final double getAngleFactor()
     {
-        if (typeOf(Attribute.ANGLE_FACTOR) == NativeInternalType.NUMBER)
+        if (is(Attribute.ANGLE_FACTOR.getProperty(), NNativeType.NUMBER))
         {
-            double factor = m_jso.getDouble(Attribute.ANGLE_FACTOR.getProperty());
+            double factor = m_jso.getAsDouble(Attribute.ANGLE_FACTOR.getProperty());
 
             if (factor < 0)
             {
@@ -1486,9 +1488,9 @@ public class Attributes
 
     public final double getHeadOffset()
     {
-        if (typeOf(Attribute.HEAD_OFFSET) == NativeInternalType.NUMBER)
+        if (is(Attribute.HEAD_OFFSET.getProperty(), NNativeType.NUMBER))
         {
-            double offset = m_jso.getDouble(Attribute.HEAD_OFFSET.getProperty());
+            double offset = m_jso.getAsDouble(Attribute.HEAD_OFFSET.getProperty());
 
             if (offset >= 0)
             {
@@ -1506,7 +1508,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.HEAD_DIRECTION.getProperty());
+            remove(Attribute.HEAD_DIRECTION.getProperty());
         }
     }
 
@@ -1526,9 +1528,9 @@ public class Attributes
 
     public final double getTailOffset()
     {
-        if (typeOf(Attribute.TAIL_OFFSET) == NativeInternalType.NUMBER)
+        if (is(Attribute.TAIL_OFFSET.getProperty(), NNativeType.NUMBER))
         {
-            double offset = m_jso.getDouble(Attribute.TAIL_OFFSET.getProperty());
+            double offset = m_jso.getAsDouble(Attribute.TAIL_OFFSET.getProperty());
 
             if (offset >= 0)
             {
@@ -1546,7 +1548,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.TAIL_DIRECTION.getProperty());
+            remove(Attribute.TAIL_DIRECTION.getProperty());
         }
     }
 
@@ -1566,9 +1568,9 @@ public class Attributes
 
     public final double getCorrectionOffset()
     {
-        if (typeOf(Attribute.CORRECTION_OFFSET) == NativeInternalType.NUMBER)
+        if (is(Attribute.CORRECTION_OFFSET.getProperty(), NNativeType.NUMBER))
         {
-            double offset = m_jso.getDouble(Attribute.CORRECTION_OFFSET.getProperty());
+            double offset = m_jso.getAsDouble(Attribute.CORRECTION_OFFSET.getProperty());
 
             if (offset >= 0)
             {
@@ -1593,17 +1595,17 @@ public class Attributes
         return hasExtraStrokeAttributes(m_jso);
     }
 
-    private static final native boolean hasAnyTransformAttributes(NFastStringMapMixedJSO jso)
+    private static final native boolean hasAnyTransformAttributes(NObjectJSO jso)
     /*-{
         return ((jso.x !== undefined) || (jso.y !== undefined) || (jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
-    private static final native boolean hasComplexTransformAttributes(NFastStringMapMixedJSO jso)
+    private static final native boolean hasComplexTransformAttributes(NObjectJSO jso)
     /*-{
         return ((jso.rotation !== undefined) || (jso.scale !== undefined) || (jso.shear !== undefined));
     }-*/;
 
-    private static final native boolean hasExtraStrokeAttributes(NFastStringMapMixedJSO jso)
+    private static final native boolean hasExtraStrokeAttributes(NObjectJSO jso)
     /*-{
         return ((jso.dashArray !== undefined) || (jso.lineJoin !== undefined) || (jso.lineCap !== undefined) || (jso.miterLimit !== undefined));
     }-*/;
@@ -1638,7 +1640,9 @@ public class Attributes
 
     public final void put(final String name, final JavaScriptObject value)
     {
-        m_jso.put(name, value);
+        final NObjectJSO jso = value.cast();
+
+        m_jso.put(name, jso);
 
         checkDispatchAttributesChanged(name);
     }
@@ -1650,18 +1654,18 @@ public class Attributes
 
     public final int getInteger(String name)
     {
-        if (m_jso.typeOf(name) == NativeInternalType.NUMBER)
+        if (is(name, NNativeType.NUMBER))
         {
-            return m_jso.getInteger(name);
+            return m_jso.getAsInteger(name);
         }
         return 0;
     }
 
     public final double getDouble(String name)
     {
-        if (m_jso.typeOf(name) == NativeInternalType.NUMBER)
+        if (is(name, NNativeType.NUMBER))
         {
-            return m_jso.getDouble(name);
+            return m_jso.getAsDouble(name);
         }
         return 0;
     }
@@ -1687,7 +1691,7 @@ public class Attributes
         }
         else
         {
-            delete(Attribute.SCALE.getProperty());
+            remove(Attribute.SCALE.getProperty());
         }
     }
 
@@ -1695,7 +1699,7 @@ public class Attributes
     {
         if ((null == path) || (path = path.trim()).isEmpty())
         {
-            delete(Attribute.PATH.getProperty());
+            remove(Attribute.PATH.getProperty());
         }
         else
         {
@@ -1718,7 +1722,7 @@ public class Attributes
     {
         if (null == smap)
         {
-            delete(Attribute.SPRITE_BEHAVIOR_MAP.getProperty());
+            remove(Attribute.SPRITE_BEHAVIOR_MAP.getProperty());
         }
         else
         {
@@ -1743,7 +1747,7 @@ public class Attributes
     {
         if ((null == behavior) || (behavior = behavior.trim()).isEmpty())
         {
-            delete(Attribute.SPRITE_BEHAVIOR.getProperty());
+            remove(Attribute.SPRITE_BEHAVIOR.getProperty());
         }
         else
         {
@@ -1774,9 +1778,9 @@ public class Attributes
 
     public final String getString(String name)
     {
-        if (m_jso.typeOf(name) == NativeInternalType.STRING)
+        if (is(name, NNativeType.STRING))
         {
-            return m_jso.getString(name);
+            return m_jso.getAsString(name);
         }
         return null;
     }
@@ -1797,7 +1801,7 @@ public class Attributes
 
     public final void setMatrix(double... matrix)
     {
-        FilterConvolveMatrix mjso = FilterConvolveMatrix.make();
+        FilterConvolveMatrix mjso = FilterConvolveMatrix.make().cast();
 
         for (int i = 0; i < matrix.length; i++)
         {
@@ -1819,7 +1823,7 @@ public class Attributes
         {
             return mjso.cast();
         }
-        return FilterConvolveMatrix.make();
+        return FilterConvolveMatrix.make().cast();
     }
 
     public final double getValue()
@@ -1874,38 +1878,48 @@ public class Attributes
 
     public final boolean getBoolean(String name)
     {
-        if (m_jso.typeOf(name) == NativeInternalType.BOOLEAN)
+        if (is(name, NNativeType.BOOLEAN))
         {
-            return m_jso.getBoolean(name);
+            return m_jso.getAsBoolean(name);
         }
         return false;
     }
 
     public final JavaScriptObject getObject(String name)
     {
-        if (m_jso.typeOf(name) == NativeInternalType.OBJECT)
+        if (is(name, NNativeType.OBJECT))
         {
-            return m_jso.getObject(name);
+            return m_jso.getAsJSO(name);
         }
         return null;
     }
 
     public final JsArray<JavaScriptObject> getArrayOfJSO(String name)
     {
-        if (m_jso.typeOf(name) == NativeInternalType.ARRAY)
+        if (is(name, NNativeType.ARRAY))
         {
-            return m_jso.getArrayOfJSO(name);
+            return m_jso.getAsJSO(name).cast();
         }
         return null;
     }
 
     public final JsArrayMixed getArray(String name)
     {
-        if (m_jso.typeOf(name) == NativeInternalType.ARRAY)
+        if (is(name, NNativeType.ARRAY))
         {
-            return m_jso.getArray(name);
+            return m_jso.getAsJSO(name).cast();
         }
         return null;
+    }
+
+    public final boolean is(final String name, final NNativeType type)
+    {
+        return (type == getNativeTypeOf(name));
+    }
+
+    public final NNativeType getNativeTypeOf(final String name)
+    {
+        return Native.getNativeTypeOf(m_jso, name);
     }
 
     public final boolean isDefined(Attribute attr)
@@ -1913,15 +1927,10 @@ public class Attributes
         return m_jso.isDefined(attr.getProperty());
     }
 
-    public final void delete(String name)
+    public final void remove(String name)
     {
-        m_jso.delete(name);
+        m_jso.remove(name);
 
         checkDispatchAttributesChanged(name);
-    }
-
-    public final NativeInternalType typeOf(Attribute attr)
-    {
-        return m_jso.typeOf(attr.getProperty());
     }
 }

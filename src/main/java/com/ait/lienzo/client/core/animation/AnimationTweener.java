@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.animation;
 
-import com.ait.lienzo.shared.java.util.function.DoublePowerFunction;
+import com.ait.lienzo.shared.core.types.DoublePowerFunction;
 
 public interface AnimationTweener extends DoublePowerFunction
 {

@@ -24,9 +24,9 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.ClipRegion;
-import com.ait.lienzo.client.core.types.NFastArrayList;
 import com.ait.lienzo.shared.core.types.NodeType;
-import com.ait.lienzo.shared.java.util.function.Predicate;
+import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
 import com.google.gwt.json.client.JSONObject;
 
 /**
