@@ -131,6 +131,11 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>
         return this;
     }
 
+    public ToolTip show(final double x, final double y)
+    {
+        return show(x, y, false);
+    }
+
     public ToolTip show(final double x, final double y, final boolean force)
     {
         if (null == m_draw)
