@@ -2,7 +2,6 @@ package org.uberfire.backend.vfs.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
@@ -30,10 +29,10 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @Dependent
 @Alternative
 public class ObservablePathImpl implements ObservablePath,
-IsVersioned {
+                                           IsVersioned {
 
     private Path path;
-    private Path original;
+    private transient Path original;
 
     @Inject
     private transient SessionInfo sessionInfo;
@@ -61,9 +60,25 @@ IsVersioned {
         return this;
     }
 
+    // Lazy-population of "original" for ObservablePathImpl de-serialized from a serialized PerspectiveDefinition that circumvent the "wrap" feature.
+    // Renamed resources hold a reference to the old "original" Path which is needed to maintain an immutable hashCode used as part of the compound
+    // Key for Activity and Place Management). However re-hydration stores the PartDefinition in a HashSet using the incorrect hashCode. By not
+    // storing the "original" in the serialized form we can guarantee hashCodes in de-serialized PerspectiveDefinitions remain immutable.
+    // See https://bugzilla.redhat.com/show_bug.cgi?id=1200472 for the re-producer.
+    private Path getOriginal() {
+        if ( this.original == null ) {
+            wrap( this.path );
+        }
+        return this.original;
+    }
+
     @Override
     public String getFileName() {
         return path.getFileName();
+    }
+
+    public void sync() {
+        this.original = this.path;
     }
 
     public static String removeExtension( final String filename ) {
@@ -417,15 +432,15 @@ IsVersioned {
         }
 
         if ( o instanceof ObservablePathImpl ) {
-            return this.original.equals( ( (ObservablePathImpl) o ).original );
+            return this.getOriginal().equals( ( (ObservablePathImpl) o ).getOriginal() );
         }
 
-        return this.original.equals( o );
+        return this.getOriginal().equals( o );
     }
 
     @Override
     public int hashCode() {
-        return this.original.toURI().hashCode();
+        return this.getOriginal().toURI().hashCode();
     }
 
 }
