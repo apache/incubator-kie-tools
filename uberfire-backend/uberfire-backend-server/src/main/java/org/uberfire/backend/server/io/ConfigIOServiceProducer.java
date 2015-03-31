@@ -11,12 +11,13 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.backend.server.security.IOSecurityAuth;
 import org.uberfire.commons.cluster.ClusterServiceFactory;
 import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.commons.services.cdi.StartupType;
 import org.uberfire.io.IOService;
 import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 import org.uberfire.io.impl.cluster.IOServiceClusterImpl;
 
 @ApplicationScoped
-@Startup
+@Startup(StartupType.BOOTSTRAP)
 public class ConfigIOServiceProducer {
 
     @Inject

@@ -353,4 +353,9 @@ public class IOServiceDotFileImpl
         }
         return s;
     }
+
+    @Override
+    public int priority() {
+        return 10;
+    }
 }

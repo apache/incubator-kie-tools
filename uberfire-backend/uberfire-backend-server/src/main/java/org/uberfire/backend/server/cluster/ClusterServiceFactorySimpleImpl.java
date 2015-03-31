@@ -33,9 +33,6 @@ public class ClusterServiceFactorySimpleImpl implements ClusterServiceFactory {
     public ClusterService build( final MessageHandlerResolver resolver ) {
         if ( clusterService == null ) {
             clusterService = new ClusterServiceHelix( clusterName, zkAddress, localId, resourceName, resolver );
-            if ( autostart ) {
-                clusterService.start();
-            }
         } else {
             clusterService.addMessageHandlerResolver( resolver );
         }
@@ -47,9 +44,4 @@ public class ClusterServiceFactorySimpleImpl implements ClusterServiceFactory {
         return autostart;
     }
 
-    public void startClusterService() {
-        if ( clusterService != null ) {
-            clusterService.start();
-        }
-    }
 }

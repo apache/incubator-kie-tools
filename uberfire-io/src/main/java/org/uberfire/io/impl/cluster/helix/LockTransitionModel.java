@@ -10,24 +10,19 @@ import org.apache.helix.participant.statemachine.Transition;
 public class LockTransitionModel extends StateModel {
 
     private final String lockName;
-    private final SimpleLock lock;
 
-    public LockTransitionModel( final String lockName,
-                                final SimpleLock lock ) {
+    public LockTransitionModel( final String lockName ) {
         this.lockName = lockName;
-        this.lock = lock;
     }
 
     @Transition(from = "STANDBY", to = "LEADER")
     public void lock( final Message m,
                       final NotificationContext context ) {
-        lock.lock();
     }
 
     @Transition(from = "LEADER", to = "STANDBY")
     public void release( final Message m,
                          final NotificationContext context ) {
-        lock.unlock();
     }
 
     @Transition(from = "STANDBY", to = "OFFLINE")

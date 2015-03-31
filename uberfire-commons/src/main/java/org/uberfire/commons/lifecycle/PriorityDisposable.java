@@ -16,8 +16,8 @@
 
 package org.uberfire.commons.lifecycle;
 
-public interface Disposable {
+public interface PriorityDisposable extends Disposable {
 
-    void dispose();
+    int priority();
 
 }

@@ -49,7 +49,6 @@ import java.util.concurrent.ExecutorService;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.ListBranchCommand.ListMode;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.internal.storage.file.WindowCache;
@@ -77,6 +76,7 @@ import org.uberfire.commons.cluster.ClusterService;
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.commons.config.ConfigProperties.ConfigProperty;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.commons.message.MessageType;
 import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.IOException;
@@ -144,7 +144,8 @@ import static org.uberfire.java.nio.file.StandardOpenOption.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
 import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
 
-public class JGitFileSystemProvider implements SecuredFileSystemProvider {
+public class JGitFileSystemProvider implements SecuredFileSystemProvider,
+                                               Disposable {
 
     private static final Logger LOG = LoggerFactory.getLogger( JGitFileSystemProvider.class );
 
@@ -294,6 +295,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         }
     }
 
+    @Override
+    public void dispose() {
+        shutdown();
+    }
+
     public final class RepositoryResolverImpl<T> implements RepositoryResolver<T> {
 
         @Override
@@ -416,6 +422,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                         @Override
                         public void onPreReceive( final ReceivePack rp,
                                                   final Collection<ReceiveCommand> commands ) {
+                            fs.lock();
                             if ( clusterService != null ) {
                                 clusterService.lock();
                             }
@@ -431,6 +438,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                         @Override
                         public void onPostReceive( final ReceivePack rp,
                                                    final Collection<ReceiveCommand> commands ) {
+                            fs.unlock();
                             final String userName = req.getUser().getName();
                             for ( Map.Entry<String, RevCommit> oldTreeRef : oldTreeRefs.entrySet() ) {
                                 final List<RevCommit> commits = JGitUtil.getCommits( fs, oldTreeRef.getKey(), oldTreeRef.getValue(), JGitUtil.getLastCommit( fs.gitRepo(), oldTreeRef.getKey() ) );
@@ -653,7 +661,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
                 final String treeRef = "master";
                 final ObjectId oldHead = JGitUtil.getTreeRefObjectId( fileSystem.gitRepo().getRepository(), treeRef );
                 final Map<String, String> params = getQueryParams( uri );
-                syncRepository( fileSystem.gitRepo(), fileSystem.getCredential(), params.get( "sync" ), hasForceFlag( uri ) );
+                try {
+                    fileSystem.lock();
+                    syncRepository( fileSystem.gitRepo(), fileSystem.getCredential(), params.get( "sync" ), hasForceFlag( uri ) );
+                } finally {
+                    fileSystem.unlock();
+                }
                 final ObjectId newHead = JGitUtil.getTreeRefObjectId( fileSystem.gitRepo().getRepository(), treeRef );
                 notifyDiffs( fileSystem, treeRef, "<system>", "<system>", "", oldHead, newHead );
             } catch ( final Exception ex ) {
@@ -1093,7 +1106,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
             throw new NoSuchFileException( path.toString() );
         }
 
-        JGitUtil.deleteBranch( path.getFileSystem().gitRepo(), branch );
+        try {
+            path.getFileSystem().lock();
+            JGitUtil.deleteBranch( path.getFileSystem().gitRepo(), branch );
+        } finally {
+            path.getFileSystem().unlock();
+        }
     }
 
     @Override
@@ -1122,7 +1140,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
             return false;
         }
 
-        JGitUtil.deleteBranch( path.getFileSystem().gitRepo(), branch );
+        try {
+            path.getFileSystem().lock();
+            JGitUtil.deleteBranch( path.getFileSystem().gitRepo(), branch );
+        } finally {
+            path.getFileSystem().unlock();
+        }
+
         return true;
     }
 
@@ -1149,11 +1173,6 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
 
         deleteResource( path, options );
         return true;
-    }
-
-    private String deleteCommitMessage( final String path,
-                                        final DeleteOption... options ) {
-        return "delete {" + path + "}";
     }
 
     @Override
@@ -1196,7 +1215,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
     private void cherryPick( final JGitPathImpl source,
                              final JGitPathImpl target,
                              final String... commits ) {
-        JGitUtil.cherryPick( source.getFileSystem().gitRepo().getRepository(), target.getRefTree(), commits );
+        try {
+            target.getFileSystem().lock();
+            JGitUtil.cherryPick( source.getFileSystem().gitRepo().getRepository(), target.getRefTree(), commits );
+        } finally {
+            target.getFileSystem().unlock();
+        }
     }
 
     private void copyBranch( final JGitPathImpl source,
@@ -1367,7 +1391,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
 
     private void createBranch( final JGitPathImpl source,
                                final JGitPathImpl target ) {
-        JGitUtil.createBranch( source.getFileSystem().gitRepo(), source.getRefTree(), target.getRefTree() );
+        try {
+            target.getFileSystem().lock();
+            JGitUtil.createBranch( source.getFileSystem().gitRepo(), source.getRefTree(), target.getRefTree() );
+        } finally {
+            target.getFileSystem().unlock();
+        }
     }
 
     private boolean existsBranch( final JGitPathImpl path ) {
@@ -1839,12 +1868,15 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         }} ) );
     }
 
-    private synchronized void commit( final JGitPathImpl path,
-                                      final CommitInfo commitInfo,
-                                      final CommitContent commitContent ) {
-        final Git git = path.getFileSystem().gitRepo();
+    private void commit( final JGitPathImpl path,
+                         final CommitInfo commitInfo,
+                         final CommitContent commitContent ) {
+
+        final JGitFileSystem fileSystem = path.getFileSystem();
+        fileSystem.lock();
+
+        final Git git = fileSystem.gitRepo();
         final String branchName = path.getRefTree();
-        JGitFileSystem fileSystem = path.getFileSystem();
         final boolean batchState = fileSystem.isOnBatch();
         final boolean amend = batchState && fileSystem.isHadCommitOnBatchState();
 
@@ -1886,6 +1918,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider {
         if ( path.getFileSystem().isOnBatch() && !fileSystem.isHadCommitOnBatchState() ) {
             fileSystem.setHadCommitOnBatchState( hasCommit );
         }
+
+        fileSystem.unlock();
     }
 
     private void notifyAllDiffs() {

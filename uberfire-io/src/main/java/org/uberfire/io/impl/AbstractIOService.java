@@ -63,7 +63,8 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 
 import static org.uberfire.java.nio.file.StandardOpenOption.*;
 
-public abstract class AbstractIOService implements IOServiceIdentifiable {
+public abstract class AbstractIOService implements IOServiceIdentifiable,
+                                                   IOServiceLockable {
 
     private static final Logger logger = LoggerFactory.getLogger( AbstractIOService.class );
 
@@ -170,6 +171,11 @@ public abstract class AbstractIOService implements IOServiceIdentifiable {
         }
 
         batchLockControl.unlock();
+    }
+
+    @Override
+    public BatchLockControl getLockControl() {
+        return batchLockControl;
     }
 
     private void cleanupClosedFileSystems() {

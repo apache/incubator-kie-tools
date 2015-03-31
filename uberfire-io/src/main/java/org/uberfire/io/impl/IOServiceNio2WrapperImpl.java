@@ -159,4 +159,9 @@ public class IOServiceNio2WrapperImpl
             }
         }};
     }
+
+    @Override
+    public int priority() {
+        return 10;
+    }
 }

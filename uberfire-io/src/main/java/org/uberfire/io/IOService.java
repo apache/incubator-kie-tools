@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.uberfire.commons.lifecycle.Disposable;
+import org.uberfire.commons.lifecycle.PriorityDisposable;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 import org.uberfire.java.nio.file.AtomicMoveNotSupportedException;
@@ -51,11 +53,9 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 /**
  *
  */
-public interface IOService {
+public interface IOService extends PriorityDisposable {
 
     public static Set<OpenOption> EMPTY_OPTIONS = new HashSet<OpenOption>();
-
-    void dispose();
 
     void startBatch( final FileSystem fs );
 

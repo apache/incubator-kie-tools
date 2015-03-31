@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jgit.api.Git;
@@ -87,6 +88,8 @@ public class JGitFileSystem implements FileSystem,
     private FileSystemState state = FileSystemState.NORMAL;
     private CommitInfo batchCommitInfo = null;
     private boolean hadCommitOnBatchState = false;
+
+    private final Lock lock = new Lock();
 
     JGitFileSystem( final JGitFileSystemProvider provider,
                     final Map<String, String> fullHostNames,
@@ -458,7 +461,7 @@ public class JGitFileSystem implements FileSystem,
 
     @Override
     public void dispose() {
-        if (!isClosed){
+        if ( !isClosed ) {
             close();
         }
         provider.onDisposeFileSystem( this );
@@ -536,4 +539,32 @@ public class JGitFileSystem implements FileSystem,
     public FileSystemState getState() {
         return state;
     }
+
+    public void lock() {
+        try {
+            lock.lock();
+        } catch ( java.lang.InterruptedException e ) {
+        }
+    }
+
+    public void unlock() {
+        lock.unlock();
+    }
+
+    private static class Lock {
+
+        private final AtomicBoolean isLocked = new AtomicBoolean( false );
+
+        public synchronized void lock() throws java.lang.InterruptedException {
+            while ( !isLocked.compareAndSet( false, true ) ) {
+                wait();
+            }
+        }
+
+        public synchronized void unlock() {
+            isLocked.set( false );
+            notifyAll();
+        }
+    }
+
 }

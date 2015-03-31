@@ -1,10 +1,12 @@
 package org.uberfire.backend.vfs;
 
+import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.rpc.SessionInfo;
 
-public interface ObservablePath extends Path {
+public interface ObservablePath extends Path,
+                                        Disposable {
 
     void onRename( final Command command );
 
@@ -21,8 +23,6 @@ public interface ObservablePath extends Path {
     void onConcurrentUpdate( final ParameterizedCommand<OnConcurrentUpdateEvent> command );
 
     void onConcurrentCopy( final ParameterizedCommand<OnConcurrentCopyEvent> command );
-
-    void dispose();
 
     ObservablePath wrap( final Path path );
 

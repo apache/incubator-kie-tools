@@ -342,7 +342,6 @@ public class SystemConfigProducer implements Extension {
             @Override
             public void destroy( final IOService instance,
                                  final CreationalContext<IOService> ctx ) {
-                instance.dispose();
                 ctx.release();
             }
         } );

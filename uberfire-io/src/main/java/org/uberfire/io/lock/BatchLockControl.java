@@ -20,7 +20,7 @@ public class BatchLockControl {
         return lock.isLocked();
     }
 
-    public int getHoldCount(){
+    public int getHoldCount() {
         return lock.getHoldCount();
     }
 }

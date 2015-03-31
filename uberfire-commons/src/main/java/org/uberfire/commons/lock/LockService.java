@@ -1,10 +1,8 @@
 package org.uberfire.commons.lock;
 
-public abstract interface LockService {
+public interface LockService {
 
     void lock();
 
     void unlock();
-
-    boolean isLocked();
 }
