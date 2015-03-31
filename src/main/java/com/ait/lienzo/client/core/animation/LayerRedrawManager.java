@@ -17,7 +17,7 @@
 package com.ait.lienzo.client.core.animation;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.tooling.nativetools.client.primitive.NFastArrayList;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.animation.client.AnimationScheduler;
 import com.google.gwt.animation.client.AnimationScheduler.AnimationCallback;
 

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Iterator;
 
 import com.ait.lienzo.client.core.types.Point2D.Point2DJSO;
-import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
+import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;

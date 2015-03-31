@@ -22,7 +22,7 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
-import com.ait.tooling.nativetools.client.primitive.NFastDoubleArrayJSO;
+import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 
 /**
  * Static utility methods related to geometry and other math.

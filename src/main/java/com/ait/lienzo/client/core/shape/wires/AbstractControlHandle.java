@@ -16,9 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
-import com.ait.lienzo.client.core.event.HandlerRegistrationManager;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.tooling.common.api.types.Activatible;
+import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 public abstract class AbstractControlHandle extends Activatible implements IControlHandle

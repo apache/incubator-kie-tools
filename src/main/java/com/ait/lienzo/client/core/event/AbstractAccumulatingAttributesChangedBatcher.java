@@ -16,7 +16,7 @@
 
 package com.ait.lienzo.client.core.event;
 
-import com.ait.tooling.nativetools.client.primitive.NFastStringSet;
+import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 
 public abstract class AbstractAccumulatingAttributesChangedBatcher implements IAttributesChangedBatcher
 {

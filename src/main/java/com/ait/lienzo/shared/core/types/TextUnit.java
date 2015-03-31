@@ -18,7 +18,7 @@ package com.ait.lienzo.shared.core.types;
 
 import java.util.List;
 
-import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
+import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 /**
  * Enum to create a type safe set of values for {@link Text} Size Units. 

@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.ait.tooling.common.api.types.IStringValued;
-import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
+import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public interface EnumWithValue extends IStringValued
 {

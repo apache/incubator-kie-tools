@@ -21,7 +21,7 @@ import java.util.Collection;
 import com.ait.lienzo.client.core.shape.json.IFactory;
 import com.ait.tooling.common.api.java.util.function.Supplier;
 import com.ait.tooling.common.api.types.IStringValued;
-import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
+import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 
 public abstract class AbstractLienzoCorePlugin implements ILienzoPlugin
 {

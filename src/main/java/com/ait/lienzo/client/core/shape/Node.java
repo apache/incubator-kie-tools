@@ -81,7 +81,7 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.UUID;
 import com.ait.tooling.nativetools.client.NObjectJSO;
-import com.ait.tooling.nativetools.client.primitive.MetaData;
+import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;

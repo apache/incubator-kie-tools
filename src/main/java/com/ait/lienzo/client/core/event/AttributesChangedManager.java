@@ -18,9 +18,9 @@ package com.ait.lienzo.client.core.event;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
-import com.ait.tooling.nativetools.client.primitive.NFastStringCounter;
-import com.ait.tooling.nativetools.client.primitive.NFastStringMap;
-import com.ait.tooling.nativetools.client.primitive.NFastStringSet;
+import com.ait.tooling.nativetools.client.collection.NFastStringCounter;
+import com.ait.tooling.nativetools.client.collection.NFastStringMap;
+import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
