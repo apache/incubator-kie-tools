@@ -59,6 +59,14 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>
 
     private final Text          m_labl;
 
+    private Layer               m_draw;
+
+    private boolean             m_show;
+
+    private double              m_oldx;
+
+    private double              m_oldy;
+
     private String              m_textValue            = "";
 
     private String              m_lablValue            = "";
@@ -66,6 +74,11 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>
     private static final Shadow SHADOW                 = new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3);
 
     public ToolTip()
+    {
+        this(null);
+    }
+
+    public ToolTip(final Layer layer)
     {
         super(GroupType.TOOLTIP, new PrimitiveFastArrayStorageEngine());
 
@@ -89,13 +102,57 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>
 
         add(m_labl);
 
-        setVisible(false);
-
         setListening(false);
+
+        m_show = true;
+
+        setLayer(layer);
     }
 
-    public ToolTip show(final double x, final double y)
+    public ToolTip setLayer(final Layer layer)
     {
+        if (layer != m_draw)
+        {
+            if ((null != m_draw) && (false == m_show))
+            {
+                m_draw.remove(this);
+
+                m_draw.batch();
+            }
+            m_draw = layer;
+
+            if ((null != m_draw) && (false == m_show))
+            {
+                m_draw.add(this);
+
+                m_draw.batch();
+            }
+        }
+        return this;
+    }
+
+    public ToolTip show(final double x, final double y, final boolean force)
+    {
+        if (null == m_draw)
+        {
+            return this;
+        }
+        if ((false == force) && (false == m_show))
+        {
+            return this;
+        }
+        if (false == m_show)
+        {
+            m_draw.remove(this);
+
+            m_draw.batch();
+        }
+        m_oldx = x;
+
+        m_oldy = y;
+
+        m_show = false;
+
         m_text.setText(m_textValue);
 
         BoundingBox bb = m_text.getBoundingBox();
@@ -142,20 +199,26 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>
 
         setY(y - rh);
 
+        m_draw.add(this);
+
         moveToTop();
 
-        setVisible(true);
-
-        getLayer().batch();
+        m_draw.batch();
 
         return this;
     }
 
     public ToolTip hide()
     {
-        setVisible(false);
+        if ((null == m_draw) || (true == m_show))
+        {
+            return this;
+        }
+        m_show = true;
 
-        getLayer().batch();
+        m_draw.remove(this);
+
+        m_draw.batch();
 
         return this;
     }
@@ -177,6 +240,10 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip>
         else
         {
             m_lablValue = labl;
+        }
+        if (false == m_show)
+        {
+            show(m_oldx, m_oldy, true);
         }
         return this;
     }
