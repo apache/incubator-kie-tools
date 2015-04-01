@@ -77,10 +77,6 @@ public class ObservablePathImpl implements ObservablePath,
         return path.getFileName();
     }
 
-    public void sync() {
-        this.original = this.path;
-    }
-
     public static String removeExtension( final String filename ) {
         if ( filename == null ) {
             return null;
