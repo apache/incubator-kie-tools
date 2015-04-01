@@ -16,18 +16,18 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
-import org.uberfire.ext.services.shared.preferences.UserDataGridPreferencesService;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
+import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
+import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
 
 public class FilterSelectorDropdown<T> {
 
@@ -36,25 +36,25 @@ public class FilterSelectorDropdown<T> {
     private String selectedFilterKey = "NONE";
 
     @Inject
-    private Caller<UserDataGridPreferencesService> preferencesService;
+    private Caller<UserPreferencesService> preferencesService;
 
-    public FilterSelectorDropdown( GridPreferencesStore gridPreferences ) {
+    public FilterSelectorDropdown( final GridPreferencesStore gridPreferences ) {
         this.gridPreferenceStore = gridPreferences;
     }
 
-
-    public void setGridPreferencesStore( GridPreferencesStore gridPreferences ) {
+    public void setGridPreferencesStore( final GridPreferencesStore gridPreferences ) {
         this.gridPreferenceStore = gridPreferences;
     }
 
-    public void setPreferencesService( Caller<UserDataGridPreferencesService> preferencesService ) {
+    public void setPreferencesService( final Caller<UserPreferencesService> preferencesService ) {
         this.preferencesService = preferencesService;
     }
 
     public void createDropdownButton( final ListBox listbox ) {
         listbox.clear();
         for ( final DataGridFilter<T> dataGridFilter : dataGridFilterList ) {
-            listbox.addItem( dataGridFilter.getFilterName(), dataGridFilter.getKey() );
+            listbox.addItem( dataGridFilter.getFilterName(),
+                             dataGridFilter.getKey() );
         }
         if ( gridPreferenceStore != null && gridPreferenceStore.getSelectedFilterKey() != null && gridPreferenceStore.getSelectedFilterKey().trim().length() > 0 ) {
             listbox.setSelectedValue( gridPreferenceStore.getSelectedFilterKey() );
@@ -73,35 +73,36 @@ public class FilterSelectorDropdown<T> {
                 }
             }
         } );
-
     }
 
-    public void addFilter( DataGridFilter dataGridFilter ) {
+    public void addFilter( final DataGridFilter dataGridFilter ) {
         dataGridFilterList.add( dataGridFilter );
     }
 
-    public void clearFilters( ) {
+    public void clearFilters() {
         dataGridFilterList.clear();
     }
 
-    private DataGridFilter getFilterByKey( String key ) {
+    private DataGridFilter getFilterByKey( final String key ) {
         for ( final DataGridFilter<T> dataGridFilter : dataGridFilterList ) {
-            if ( dataGridFilter.getKey().equals( key ) ) return dataGridFilter;
+            if ( dataGridFilter.getKey().equals( key ) ) {
+                return dataGridFilter;
+            }
         }
         return null;
-
     }
 
-    public void storeFilterKey( String filterkey ) {
+    public void storeFilterKey( final String filterkey ) {
         if ( gridPreferenceStore != null && preferencesService != null ) {
             gridPreferenceStore.setSelectedFilterKey( filterkey );
+            gridPreferenceStore.setType( UserPreferencesType.GRIDPREFERENCES );
+            gridPreferenceStore.setPreferenceKey( gridPreferenceStore.getGlobalPreferences().getKey() );
             preferencesService.call( new RemoteCallback<Void>() {
                 @Override
                 public void callback( Void response ) {
                 }
-            } ).saveGridPreferences( gridPreferenceStore );
+            } ).saveUserPreferences( gridPreferenceStore );
         }
     }
-
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss by Red Hat.
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.uberfire.ext.services.shared.preferences;
 
 import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
-public interface UserDataGridPreferencesService {
-  void saveGridPreferences(GridPreferencesStore preferences);
-  GridPreferencesStore loadGridPreferences(String key);
+public interface UserPreferencesService {
+
+    void saveUserPreferences( final UserPreference preferences );
+
+    UserPreference loadUserPreferences( final String key,
+                                        final UserPreferencesType type );
+
+    UserPreference loadUserPreferences( final UserPreference preferences );
 }

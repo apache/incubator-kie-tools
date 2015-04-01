@@ -18,10 +18,11 @@ package org.uberfire.ext.services.shared.preferences;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class GridPreferencesStore {
+public class GridPreferencesStore extends UserPreference{
 
   private GridGlobalPreferences globalPreferences;
   private List<GridColumnPreference> columnPreferences = new ArrayList<GridColumnPreference>();
@@ -37,6 +38,8 @@ public class GridPreferencesStore {
     if(globalPreferences!=null) {
       this.pageSizePreferences= globalPreferences.getPageSize();
     }
+    super.type=UserPreferencesType.GRIDPREFERENCES;
+    super.preferenceKey = globalPreferences.getKey();
   }
 
   public GridGlobalPreferences getGlobalPreferences() {
