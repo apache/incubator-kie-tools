@@ -71,15 +71,6 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
-        <configuration>
-          <encoding>UTF-8</encoding>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.5.1</version>
         <configuration>
@@ -263,7 +254,12 @@
       <!-- in the resulting JAR for GWT to reference in child projects. Consequentially -->
       <!-- copy the source files to the target folder before packaging -->
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
         <executions>
           <execution>
             <id>copy-resources</id>
