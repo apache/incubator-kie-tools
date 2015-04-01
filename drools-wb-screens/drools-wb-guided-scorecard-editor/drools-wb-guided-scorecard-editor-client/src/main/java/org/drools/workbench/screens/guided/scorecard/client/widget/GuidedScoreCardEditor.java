@@ -144,6 +144,12 @@ public class GuidedScoreCardEditor extends Composite {
     }
 
     public ScoreCardModel getModel() {
+        //ScoreCardModel could be null if the ScoreCard failed to load (e.g. the file was not found in VFS)
+        if ( model == null ) {
+            return null;
+        }
+
+        //Otherwise populate model from UI...
         model.setBaselineScore( Double.parseDouble( tbBaselineScore.getValue() ) );
         model.setInitialScore( Double.parseDouble( tbInitialScore.getValue() ) );
         model.setUseReasonCodes( ddUseReasonCode.getSelectedIndex() == 1 );
