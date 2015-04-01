@@ -67,7 +67,11 @@ public class IOSecurityService implements IOService {
 
     @Override
     public void dispose() {
-        service.dispose();
+    }
+
+    @Override
+    public int priority() {
+        return service.priority() + 1;
     }
 
     @Override

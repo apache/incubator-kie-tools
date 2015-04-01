@@ -17,7 +17,6 @@
 package org.uberfire.ext.wires.backend.server.impl;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -60,11 +59,6 @@ public class ApplicationScopedProducer {
         } else {
             ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
         }
-    }
-
-    @PreDestroy
-    public void onShutdown() {
-        ioService.dispose();
     }
 
     @Produces

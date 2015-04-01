@@ -426,4 +426,9 @@ public class MockIOService implements IOService {
                        OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
+
+    @Override
+    public int priority() {
+        return 0;
+    }
 }

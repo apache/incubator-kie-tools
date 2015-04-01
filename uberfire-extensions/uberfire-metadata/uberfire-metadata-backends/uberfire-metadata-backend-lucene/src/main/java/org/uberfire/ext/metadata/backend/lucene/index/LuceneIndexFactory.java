@@ -18,16 +18,15 @@ package org.uberfire.ext.metadata.backend.lucene.index;
 
 import java.util.Map;
 
+import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.ext.metadata.model.KCluster;
 
-public interface LuceneIndexFactory {
+public interface LuceneIndexFactory extends Disposable {
 
     LuceneIndex newCluster( KCluster kcluster );
 
     void remove( KCluster cluster );
 
     Map<? extends KCluster, ? extends LuceneIndex> getIndexes();
-
-    void dispose();
 
 }

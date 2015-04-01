@@ -212,6 +212,11 @@ public class IOServiceIndexedImpl extends IOServiceDotFileImpl {
     }
 
     @Override
+    public int priority() {
+        return 60;
+    }
+
+    @Override
     public void dispose() {
         for ( final WatchService watchService : watchServices ) {
             watchService.close();

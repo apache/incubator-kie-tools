@@ -1,9 +1,10 @@
 package org.uberfire.ext.metadata.engine;
 
+import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObjectKey;
 
-public interface IndexManager {
+public interface IndexManager extends Disposable {
 
     boolean contains( final KCluster cluster );
 
@@ -12,8 +13,6 @@ public interface IndexManager {
     KCluster kcluster( final KObjectKey object );
 
     void delete( final KCluster cluster );
-
-    void dispose();
 
     Index get( final KCluster cluster );
 

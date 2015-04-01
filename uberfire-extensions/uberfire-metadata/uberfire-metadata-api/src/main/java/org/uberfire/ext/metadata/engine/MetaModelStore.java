@@ -16,18 +16,17 @@
 
 package org.uberfire.ext.metadata.engine;
 
+import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.ext.metadata.model.schema.MetaObject;
 
 /**
  *
  */
-public interface MetaModelStore {
+public interface MetaModelStore extends Disposable {
 
     void add( MetaObject metaObject );
 
     void update( final MetaObject metaObject );
 
     MetaObject getMetaObject( final String type );
-
-    void dispose();
 }

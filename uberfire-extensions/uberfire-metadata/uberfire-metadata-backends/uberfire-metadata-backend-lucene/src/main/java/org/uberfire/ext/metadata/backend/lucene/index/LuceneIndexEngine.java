@@ -228,6 +228,11 @@ public class LuceneIndexEngine implements MetaIndexEngine {
     }
 
     @Override
+    public int priority() {
+        return 50;
+    }
+
+    @Override
     public void beforeDispose( final Runnable callback ) {
         this.beforeDispose.add( checkNotNull( "callback", callback ) );
     }

@@ -16,11 +16,12 @@
 
 package org.uberfire.ext.metadata.engine;
 
+import org.uberfire.commons.lifecycle.PriorityDisposable;
 import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
 
-public interface MetaIndexEngine {
+public interface MetaIndexEngine extends PriorityDisposable {
 
     public static final String FULL_TEXT_FIELD = "fullText";
 
@@ -42,8 +43,6 @@ public interface MetaIndexEngine {
     void delete( final KObjectKey... objectsKey );
 
     void commit( final KCluster cluster );
-
-    void dispose();
 
     void beforeDispose( final Runnable callback );
 }

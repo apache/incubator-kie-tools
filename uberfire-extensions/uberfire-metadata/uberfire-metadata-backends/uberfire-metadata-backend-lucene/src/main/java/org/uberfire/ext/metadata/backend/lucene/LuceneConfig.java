@@ -80,4 +80,8 @@ public class LuceneConfig implements MetadataConfig {
         analyzer.close();
     }
 
+    @Override
+    public int priority() {
+        return -20;
+    }
 }
