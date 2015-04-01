@@ -29,7 +29,7 @@ SNAPSHOT:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.93-SNAPSHOT</version>
+  <version>2.0.94-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -46,13 +46,13 @@ As of 2.0.93-SNAPSHOT, Lienzo depends on 2 other small maven artifacts.
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>ahome-tooling-nativetools</artifactId>
-  <version>1.0.12-SNAPSHOT</version>
+  <version>1.0.14-SNAPSHOT</version>
 </dependency>
 
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>ahome-tooling-common</artifactId>
-  <version>1.0.4-SNAPSHOT</version>
+  <version>1.0.14-SNAPSHOT</version>
 </dependency>
 ```
 
