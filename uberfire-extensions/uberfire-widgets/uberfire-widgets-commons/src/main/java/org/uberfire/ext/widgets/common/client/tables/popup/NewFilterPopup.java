@@ -18,14 +18,11 @@ package org.uberfire.ext.widgets.common.client.tables.popup;
 
 import com.github.gwtbootstrap.client.ui.*;
 import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.github.gwtbootstrap.client.ui.TabPanel;
 import com.github.gwtbootstrap.client.ui.TextBox;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.ControlGroupType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.cell.client.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,30 +30,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.*;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.Range;
-import org.jboss.errai.bus.client.api.messaging.Message;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
 import org.uberfire.ext.widgets.common.client.resources.CommonImages;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.common.client.tables.ColumnMeta;
-import org.uberfire.ext.widgets.common.client.tables.DataGridFilter;
 import org.uberfire.ext.widgets.common.client.tables.PagedTable;
-import org.uberfire.ext.widgets.common.client.tables.SimpleTable;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-import org.uberfire.paging.PageResponse;
 import org.uberfire.workbench.events.NotificationEvent;
 
 import javax.enterprise.context.Dependent;
@@ -174,6 +159,7 @@ public class NewFilterPopup extends BaseModal {
         existingFiltersPanel.add( existingFiltersGrid );
         existingFiltersGrid.loadPageSizePreferences();
         existingFiltersGrid.setcolumnPickerButtonVisibe( false );
+        existingFiltersGrid.setEmptyTableCaption( CommonConstants.INSTANCE.NoCustomFilterAvailable() );
 
     }
 
@@ -350,6 +336,7 @@ public class NewFilterPopup extends BaseModal {
         columnMetas.add( new ColumnMeta<DataGridFilterSummary>( descriptionColumn, CommonConstants.INSTANCE.Filter_Name() ) );
         columnMetas.add( new ColumnMeta<DataGridFilterSummary>( actionsColumn, CommonConstants.INSTANCE.Actions() ) );
         existingFiltersGrid.addColumns( columnMetas );
+
     }
 
     private com.google.gwt.user.cellview.client.Column initDescriptionColumn() {
