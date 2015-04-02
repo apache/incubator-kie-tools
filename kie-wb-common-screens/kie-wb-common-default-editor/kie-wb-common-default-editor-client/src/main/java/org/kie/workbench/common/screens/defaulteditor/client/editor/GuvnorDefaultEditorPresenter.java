@@ -111,6 +111,7 @@ public class GuvnorDefaultEditorPresenter
 
     @Override
     protected void loadContent() {
+        view.showLoading();
         defaultEditorService.call( getLoadSuccessCallback(),
                                    getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
     }
@@ -120,6 +121,7 @@ public class GuvnorDefaultEditorPresenter
             @Override
             public void callback( final DefaultEditorContent content ) {
                 resetEditorPages( content.getOverview() );
+                view.hideBusyIndicator();
             }
         };
     }

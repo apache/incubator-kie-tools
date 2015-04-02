@@ -34,7 +34,6 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
@@ -45,7 +44,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = {ProjectImportsResourceType.class})
+@WorkbenchEditor(identifier = "projectConfigScreen", supportedTypes = { ProjectImportsResourceType.class })
 public class ProjectImportsScreenPresenter
         extends KieEditor {
 
@@ -59,20 +58,20 @@ public class ProjectImportsScreenPresenter
     }
 
     @Inject
-    public ProjectImportsScreenPresenter(final ProjectImportsScreenView view,
-                                         final Caller<ProjectImportsService> importsService) {
-        super(view);
+    public ProjectImportsScreenPresenter( final ProjectImportsScreenView view,
+                                          final Caller<ProjectImportsService> importsService ) {
+        super( view );
         this.view = view;
         this.importsService = importsService;
     }
 
     @OnStartup
-    public void init(final ObservablePath path,
-                     final PlaceRequest place) {
+    public void init( final ObservablePath path,
+                      final PlaceRequest place ) {
 
-        super.init(path,
-                   place,
-                   new ProjectImportsResourceType());
+        super.init( path,
+                    place,
+                    new ProjectImportsResourceType() );
 
     }
 
@@ -80,62 +79,63 @@ public class ProjectImportsScreenPresenter
         return new RemoteCallback<ProjectImportsContent>() {
 
             @Override
-            public void callback(final ProjectImportsContent content) {
+            public void callback( final ProjectImportsContent content ) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if (versionRecordManager.getCurrentPath() == null) {
+                if ( versionRecordManager.getCurrentPath() == null ) {
                     return;
                 }
 
                 model = content.getModel();
 
-                resetEditorPages(content.getOverview());
+                resetEditorPages( content.getOverview() );
 
-                view.setContent(model, isReadOnly);
+                view.setContent( model,
+                                 isReadOnly );
+                view.hideBusyIndicator();
 
-                createOriginalHash(content.getModel());
-
+                createOriginalHash( content.getModel() );
             }
         };
     }
 
     protected void makeMenuBar() {
         menus = menuBuilder
-                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
+                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
                     @Override
                     public void execute() {
                         onSave();
                     }
-                }))
-                .addCopy(versionRecordManager.getCurrentPath(),
-                         fileNameValidator)
-                .addRename(versionRecordManager.getPathToLatest(),
-                           fileNameValidator)
-                .addDelete(versionRecordManager.getPathToLatest())
-                .addNewTopLevelMenu(versionRecordManager.buildMenu())
+                } ) )
+                .addCopy( versionRecordManager.getCurrentPath(),
+                          fileNameValidator )
+                .addRename( versionRecordManager.getPathToLatest(),
+                            fileNameValidator )
+                .addDelete( versionRecordManager.getPathToLatest() )
+                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
                 .build();
     }
 
     @Override
     protected void loadContent() {
         view.showLoading();
-        importsService.call(getModelSuccessCallback(),
-                            new HasBusyIndicatorDefaultErrorCallback(view)).loadContent(versionRecordManager.getCurrentPath());
+        importsService.call( getModelSuccessCallback(),
+                             new HasBusyIndicatorDefaultErrorCallback( view ) ).loadContent( versionRecordManager.getCurrentPath() );
     }
 
     protected void save() {
-        saveOperationService.save(versionRecordManager.getCurrentPath(),
-                                        new ParameterizedCommand<String>() {
-                                            @Override
-                                            public void execute(final String commitMessage) {
-                                                view.showSaving();
-                                                importsService.call(getSaveSuccessCallback(),
-                                                                    new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+        saveOperationService.save( versionRecordManager.getCurrentPath(),
+                                   new ParameterizedCommand<String>() {
+                                       @Override
+                                       public void execute( final String commitMessage ) {
+                                           view.showSaving();
+                                           importsService.call( getSaveSuccessCallback(),
+                                                                new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
                                                                                                                          model,
                                                                                                                          metadata,
-                                                                                                                         commitMessage);
-                                            }
-                                        }
-                                       );
+                                                                                                                         commitMessage );
+                                       }
+                                   }
+                                 );
 
     }
 
@@ -143,10 +143,10 @@ public class ProjectImportsScreenPresenter
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback(final Path path) {
+            public void callback( final Path path ) {
                 view.hideBusyIndicator();
-                notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
-                createOriginalHash(model);
+                notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
+                createOriginalHash( model );
             }
         };
     }
@@ -173,7 +173,7 @@ public class ProjectImportsScreenPresenter
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose(model);
+        return super.mayClose( model );
     }
 
 }
