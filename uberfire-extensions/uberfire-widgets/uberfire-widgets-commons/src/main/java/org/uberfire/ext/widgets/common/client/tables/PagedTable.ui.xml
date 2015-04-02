@@ -20,47 +20,48 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
              xmlns:uf="urn:import:org.uberfire.ext.widgets.common.client.tables">
 
-  <ui:style>
-    .dataGridContainer {
-    margin: 10px;
-    }
+    <ui:style>
+        .dataGridContainer {
+            margin: 10px;
+        }
 
-    .horizontalContainer {
-    height: 32px;
-    }
-    .leftToolBar {
-      float: left;
-      text-align: left
-    }
-    .rightToolBar {
-      float: right;
-      text-align: right;
-    }
-    .centerToolBar {
-      
-      text-align: center
-    }
-  </ui:style>
+        .horizontalContainer {
+            height: 32px;
+        }
+        .leftToolBar {
+            float: left;
+            text-align: left
+        }
+        .rightToolBar {
+            float: right;
+            text-align: right;
+        }
+        .centerToolBar {
 
-  <g:FlowPanel addStyleNames="{style.dataGridContainer}">
-     <g:HorizontalPanel ui:field="toolbarContainer" width="100%" addStyleNames="{style.horizontalContainer}">
-      <g:cell width="33%">
-        <g:FlowPanel width="100%"  ui:field="leftToolbar" addStyleNames="{style.leftToolBar}"></g:FlowPanel> 
-      </g:cell>
-      <g:cell width="33%">
-        <g:FlowPanel width="100%"  ui:field="centerToolbar" addStyleNames="{style.centerToolBar}"></g:FlowPanel> 
-      </g:cell>
-      <g:cell width="33%">
-        <g:FlowPanel width="100%"  ui:field="rightToolbar" addStyleNames="{style.rightToolBar}">
-          <b:Button ui:field="columnPickerButton" toggle="true" icon="LIST_UL"/>
-          <b:Button ui:field="pageSizesSelector" toggle="true" icon="LIST_ALT" />
-        </g:FlowPanel>
-      </g:cell>
-    </g:HorizontalPanel>
-    <g:SimplePanel>
-      <b:DataGrid ui:field="dataGrid" addStyleNames="table table-bordered table-striped table-hover"/>
-    </g:SimplePanel>
-    <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.horizontalContainer}"/>
-  </g:FlowPanel>
+            text-align: center
+        }
+    </ui:style>
+
+    <g:FlowPanel addStyleNames="{style.dataGridContainer}">
+        <g:HorizontalPanel ui:field="toolbarContainer" width="100%" addStyleNames="{style.horizontalContainer}">
+            <g:cell width="33%">
+                <g:FlowPanel width="100%"  ui:field="leftToolbar" addStyleNames="{style.leftToolBar}"></g:FlowPanel>
+            </g:cell>
+            <g:cell width="33%">
+                <g:FlowPanel width="100%"  ui:field="centerToolbar" addStyleNames="{style.centerToolBar}"></g:FlowPanel>
+            </g:cell>
+            <g:cell width="33%">
+                <g:FlowPanel width="100%"  ui:field="rightToolbar" addStyleNames="{style.rightToolBar}">
+                    <b:ListBox ui:field="filterSelectorListBox"/>
+                    <b:Button ui:field="pageSizesSelector" toggle="true" icon="LIST_ALT" />
+                    <b:Button ui:field="columnPickerButton" toggle="true" icon="LIST_UL"/>
+                </g:FlowPanel>
+            </g:cell>
+        </g:HorizontalPanel>
+        <g:SimplePanel>
+            <b:DataGrid ui:field="dataGrid" addStyleNames="table table-bordered table-striped table-hover"/>
+        </g:SimplePanel>
+        <uf:UberfireSimplePager ui:field="pager" addStyleNames="pagination pagination-right pull-right {style.horizontalContainer}"/>
+    </g:FlowPanel>
 
 </ui:UiBinder>

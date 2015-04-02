@@ -16,12 +16,11 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
+import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.DataGrid;
-import com.github.gwtbootstrap.client.ui.Label;
+import com.github.gwtbootstrap.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -73,6 +72,9 @@ public class SimpleTable<T>
     public Button columnPickerButton;
 
     @UiField(provided = true)
+    public ListBox filterSelectorListBox;
+
+    @UiField(provided = true)
     public DataGrid<T> dataGrid;
 
     @UiField
@@ -88,6 +90,10 @@ public class SimpleTable<T>
 
     private ColumnPicker<T> columnPicker;
 
+    private FilterSelectorDropdown<T> filterSelectorDropdown;
+
+    private boolean showFilterSelector = false;
+
     private GridPreferencesStore gridPreferencesStore;
 
     @Inject
@@ -96,6 +102,8 @@ public class SimpleTable<T>
     @Inject
     private User identity;
 
+    private ProvidesKey<T> providersKey;
+
     public SimpleTable() {
         dataGrid = new DataGrid<T>();
         setupGridTable();
@@ -103,15 +111,17 @@ public class SimpleTable<T>
 
     public SimpleTable( final ProvidesKey<T> providesKey,
                         GridGlobalPreferences gridGlobalPreferences ) {
+
         dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
-                                    providesKey );
+                providesKey );
         this.gridPreferencesStore = new GridPreferencesStore( gridGlobalPreferences );
         setupGridTable();
     }
 
     public SimpleTable( final ProvidesKey<T> providesKey ) {
+
         dataGrid = new DataGrid<T>( Integer.MAX_VALUE,
-                                    providesKey );
+                providesKey );
         setupGridTable();
     }
 
@@ -139,13 +149,18 @@ public class SimpleTable<T>
                     List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
                     gridPreferencesStore.resetGridColumnPreferences();
                     for ( GridColumnPreference gcp : columnsState ) {
-                            gridPreferencesStore.addGridColumnPreference( gcp );
+                        gridPreferencesStore.addGridColumnPreference( gcp );
                     }
                     saveGridPreferences();
                 }
 
             }
         } );
+
+        filterSelectorDropdown = new FilterSelectorDropdown<T>( gridPreferencesStore );
+        filterSelectorListBox = new ListBox( );
+        filterSelectorListBox.setVisible( showFilterSelector );
+
         columnPickerButton = columnPicker.createToggleButton();
 
         initWidget( makeWidget() );
@@ -174,8 +189,9 @@ public class SimpleTable<T>
     }
 
     public void refresh() {
+
         dataGrid.setVisibleRangeAndClearData( dataGrid.getVisibleRange(),
-                                              true );
+                true );
     }
 
     @Override
@@ -229,14 +245,14 @@ public class SimpleTable<T>
     public void setRowCount( final int count,
                              final boolean isExact ) {
         dataGrid.setRowCount( count,
-                              isExact );
+                isExact );
     }
 
     @Override
     public void setVisibleRange( final int start,
                                  final int length ) {
         dataGrid.setVisibleRange( start,
-                                  length );
+                length );
     }
 
     @Override
@@ -246,6 +262,7 @@ public class SimpleTable<T>
 
     public void setPreferencesService( Caller<UserDataGridPreferencesService> preferencesService ) {
         this.preferencesService = preferencesService;
+        filterSelectorDropdown.setPreferencesService( preferencesService );
     }
 
     @Override
@@ -272,7 +289,7 @@ public class SimpleTable<T>
     public void setRowData( final int start,
                             final List<? extends T> values ) {
         dataGrid.setRowData( start,
-                             values );
+                values );
     }
 
     public void setRowData( final List<? extends T> values ) {
@@ -287,14 +304,14 @@ public class SimpleTable<T>
     public void setSelectionModel( final SelectionModel<? super T> selectionModel,
                                    final CellPreviewEvent.Handler<T> selectionEventManager ) {
         dataGrid.setSelectionModel( selectionModel,
-                                    selectionEventManager );
+                selectionEventManager );
     }
 
     @Override
     public void setVisibleRangeAndClearData( final Range range,
                                              final boolean forceRangeChangeEvent ) {
         dataGrid.setVisibleRangeAndClearData( range,
-                                              forceRangeChangeEvent );
+                forceRangeChangeEvent );
     }
 
     public void addColumns(List<ColumnMeta<T>> columnMetas) {
@@ -302,7 +319,7 @@ public class SimpleTable<T>
         for (ColumnMeta columnMeta : columnMetas) {
             if (columnMeta.getHeader() == null) columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(), columnMeta.getColumn()));
         }
-        columnPicker.addColumns(columnMetas);
+        columnPicker.addColumns( columnMetas );
     }
 
 
@@ -315,12 +332,12 @@ public class SimpleTable<T>
                            String caption,
                            boolean visible) {
         ColumnMeta<T> columnMeta = new ColumnMeta<T>(column, caption, visible);
-        addColumn(columnMeta);
+        addColumn( columnMeta );
     }
 
     protected void addColumn(ColumnMeta<T> columnMeta) {
         if (columnMeta.getHeader() == null) columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(), columnMeta.getColumn()));
-        columnPicker.addColumn(columnMeta);
+        columnPicker.addColumn( columnMeta );
     }
 
     protected ResizableMovableHeader<T> getColumnHeader(String caption, Column column) {
@@ -340,7 +357,7 @@ public class SimpleTable<T>
                     List<GridColumnPreference> columnsState = columnPicker.getColumnsState();
                     gridPreferencesStore.resetGridColumnPreferences();
                     for ( GridColumnPreference gcp : columnsState ) {
-                            gridPreferencesStore.addGridColumnPreference( gcp );
+                        gridPreferencesStore.addGridColumnPreference( gcp );
                     }
                     saveGridPreferences();
                 }
@@ -358,8 +375,8 @@ public class SimpleTable<T>
                                 final double width,
                                 final Style.Unit unit ) {
         dataGrid.setColumnWidth( column,
-                                 width,
-                                 unit );
+                width,
+                unit );
     }
 
     @Override
@@ -417,6 +434,7 @@ public class SimpleTable<T>
         //   if I would like to compare with the current state for changes
         this.gridPreferencesStore = gridPreferences;
         columnPicker.setGridPreferencesStore( gridPreferences );
+        filterSelectorDropdown.setGridPreferencesStore( gridPreferences );
     }
 
     public GridPreferencesStore getGridPreferencesStore() {
@@ -431,6 +449,40 @@ public class SimpleTable<T>
                 }
             } ).saveGridPreferences( gridPreferencesStore );
         }
+    }
+
+    public void addFilter(DataGridFilter<T> datagridFilter) {
+        filterSelectorDropdown.addFilter( datagridFilter );
+    }
+
+    public void clearFilters() {
+        filterSelectorDropdown.clearFilters();
+    }
+
+    public void refreshFilterDropdown() {
+        filterSelectorDropdown.createDropdownButton(filterSelectorListBox);
+    }
+
+    public boolean isShowFilterSelector() {
+        return showFilterSelector;
+    }
+
+    public void setShowFilterSelector( boolean showFilterSelector ) {
+        this.showFilterSelector = showFilterSelector;
+        if(filterSelectorListBox!=null)filterSelectorListBox.setVisible( showFilterSelector );
+    }
+
+    public HashMap<String,HashMap> getStoredCustomFilters(){
+        return this.gridPreferencesStore.getCustomFilters();
+    }
+
+    public void storeNewCustomFilter(String filterkey, HashMap filterParams){
+        this.gridPreferencesStore.addCustomFilter(filterkey,filterParams );
+        this.getGridPreferencesStore().setSelectedFilterKey( filterkey );
+        saveGridPreferences();
+    }
+    public void setcolumnPickerButtonVisibe(boolean show){
+        columnPickerButton.setVisible( show );
     }
 
 }

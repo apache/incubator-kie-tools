@@ -61,7 +61,8 @@ public class PagedTable<T>
     public Button pageSizesSelector;
 
     private boolean showPageSizesSelector = false;
-    private PopupPanel popup = new PopupPanel(true);
+
+    private PopupPanel pageSizePopup ;
 
     public PagedTable(){
         super();
@@ -102,10 +103,23 @@ public class PagedTable<T>
         this.pageSize=pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
+    }
+    public PagedTable( final int pageSize,
+                       final ProvidesKey<T> providesKey,
+                       final GridGlobalPreferences gridGlobalPreferences,
+                       final boolean showPageSizesSelector,
+                       final boolean showFilterSelector) {
 
+        super( providesKey, gridGlobalPreferences );
+        this.showPageSizesSelector = showPageSizesSelector;
+        this.pageSize=pageSize;
+        this.dataGrid.setPageSize( pageSize );
+        this.pager.setDisplay( dataGrid );
+        super.setShowFilterSelector( showFilterSelector );
     }
 
     protected Widget makeWidget() {
+        this.pageSizePopup = new PopupPanel(true);
         pageSizesSelector = createPageSizesToggleButton();
         return uiBinder.createAndBindUi( this );
     }
@@ -137,31 +151,27 @@ public class PagedTable<T>
 
     public Button createPageSizesToggleButton() {
         final Button button = new Button();
-        button.setToggle(true);
-        button.setIcon( IconType.LIST_ALT);
+        button.setToggle( true );
+        button.setIcon( IconType.LIST_ALT );
         button.setTitle( CommonConstants.INSTANCE.PageSizeSelectorTooltip() );
-        popup = new PopupPanel(true);
 
-        popup.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
-        popup.addAutoHidePartner(button.getElement());
-        popup.addCloseHandler(new CloseHandler<PopupPanel>() {
-            public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
-                if (popupPanelCloseEvent.isAutoClosed()) {
-                    button.setActive(false);
-                }
-            }
-        });
+        pageSizePopup.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        pageSizePopup.addAutoHidePartner( button.getElement() );
+        pageSizePopup.addCloseHandler( new CloseHandler<PopupPanel>() {
+            public void onClose( CloseEvent<PopupPanel> popupPanelCloseEvent ) {
+                button.setActive( false );
+            } });
 
-        button.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                if (!button.isActive()) {
+        button.addClickHandler( new ClickHandler() {
+            public void onClick( ClickEvent event ) {
+                if ( !button.isActive() ) {
                     showSelectPageSizePopup( button.getAbsoluteLeft() + button.getOffsetWidth(),
-                            button.getAbsoluteTop() + button.getOffsetHeight());
+                            button.getAbsoluteTop() + button.getOffsetHeight() );
                 } else {
-                    popup.hide(false);
+                    pageSizePopup.hide( );
                 }
             }
-        });
+        } );
         return button;
     }
 
@@ -174,14 +184,12 @@ public class PagedTable<T>
             rb.setText( String.valueOf( i ) + " " + CommonConstants.INSTANCE.Items() );
             if(i==pageSize) rb.setValue( true );
             final int selectedPageSize =i;
-            rb.addClickHandler(new ClickHandler() {
+            rb.addClickHandler( new ClickHandler() {
                 @Override
                 public void onClick( ClickEvent event ) {
                     storePageSizeInGridPreferences( selectedPageSize );
                     loadPageSizePreferences( );
-                    popup.hide();
-                    pageSizesSelector.setActive( false );
-
+                    pageSizePopup.hide();
                 }
             } );
             popupContent.add(rb);
@@ -193,18 +201,17 @@ public class PagedTable<T>
             @Override
             public void onClick( ClickEvent event ) {
                 resetPageSize();
-                popup.hide();
-                pageSizesSelector.setActive( false );
+                pageSizePopup.hide();
             }
         } );
 
         popupContent.add( resetButton );
 
 
-        popup.setWidget(popupContent);
-        popup.show();
-        int finalLeft = left - popup.getOffsetWidth();
-        popup.setPopupPosition(finalLeft, top);
+        pageSizePopup.setWidget( popupContent );
+        pageSizePopup.show();
+        int finalLeft = left - pageSizePopup.getOffsetWidth();
+        pageSizePopup.setPopupPosition( finalLeft, top );
 
     }
 

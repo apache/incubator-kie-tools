@@ -35,7 +35,7 @@
       text-align: right;
     }
     .centerToolBar {
-      
+
       text-align: center
     }
   </ui:style>
@@ -43,13 +43,14 @@
   <g:FlowPanel addStyleNames="{style.dataGridContainer}">
     <g:HorizontalPanel ui:field="toolbarContainer" width="100%" addStyleNames="{style.horizontalContainer}">
       <g:cell width="33%">
-        <g:FlowPanel width="100%"  ui:field="leftToolbar" addStyleNames="{style.leftToolBar}"></g:FlowPanel> 
+        <g:FlowPanel width="100%"  ui:field="leftToolbar" addStyleNames="{style.leftToolBar}"></g:FlowPanel>
       </g:cell>
       <g:cell width="33%">
-        <g:FlowPanel width="100%"  ui:field="centerToolbar" addStyleNames="{style.centerToolBar}"></g:FlowPanel> 
+        <g:FlowPanel width="100%"  ui:field="centerToolbar" addStyleNames="{style.centerToolBar}"></g:FlowPanel>
       </g:cell>
       <g:cell width="33%">
         <g:FlowPanel width="100%"  ui:field="rightToolbar" addStyleNames="{style.rightToolBar}">
+          <b:ListBox ui:field="filterSelectorListBox"/>
           <b:Button ui:field="columnPickerButton" toggle="true" icon="LIST_UL"/>
         </g:FlowPanel>
       </g:cell>

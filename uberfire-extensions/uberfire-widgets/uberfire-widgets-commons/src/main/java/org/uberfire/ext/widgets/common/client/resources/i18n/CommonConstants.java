@@ -92,9 +92,10 @@ public interface CommonConstants
     String ExceptionGeneric0( final String message );
 
     String ItemDeletedSuccessfully();
-    String DeletePopupTitle();
-    String DeletePopupDelete();
 
+    String DeletePopupTitle();
+
+    String DeletePopupDelete();
 
     String Version();
 
@@ -102,11 +103,28 @@ public interface CommonConstants
 
     String ColorPickerTitle();
 
+    String Add_New_Filter();
+
+    String Filter_Management();
+
+    String Filter_Name();
+
+    String Filter_Must_Have_A_Name();
+
+    String RemoveFilter();
+
+    String CustomFilters();
+
+    String NoCustomFilterAvailable();
+
     String Refresh();
 
     String ColumnPickerButtonTooltip();
 
     String PageSizeSelectorTooltip();
-    
+
     String Reset();
+
+    String Actions();
+
 }
