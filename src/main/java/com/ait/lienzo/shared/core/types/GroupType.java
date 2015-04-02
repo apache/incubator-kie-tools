@@ -25,8 +25,6 @@ public class GroupType implements IStringValued
 {
     public static final GroupType GROUP   = new GroupType("Group");
 
-    public static final GroupType TOOLTIP = new GroupType("ToolTip");
-
     private final String          m_value;
 
     protected GroupType(final String value)

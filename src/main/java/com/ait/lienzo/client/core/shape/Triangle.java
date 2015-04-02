@@ -53,6 +53,13 @@ public class Triangle extends AbstractMultiPointShape<Triangle>
         setPoints(a, b, c);
     }
 
+    public Triangle(final Point2D a, final Point2D b, final Point2D c, final double corner)
+    {
+        this(a, b, c);
+
+        setCornerRadius(corner);
+    }
+
     protected Triangle(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.TRIANGLE, node, ctx);

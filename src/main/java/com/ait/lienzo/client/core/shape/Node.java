@@ -68,6 +68,7 @@ import com.ait.lienzo.client.core.event.NodeTouchMoveEvent;
 import com.ait.lienzo.client.core.event.NodeTouchMoveHandler;
 import com.ait.lienzo.client.core.event.NodeTouchStartEvent;
 import com.ait.lienzo.client.core.event.NodeTouchStartHandler;
+import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.IContainerFactory;
 import com.ait.lienzo.client.core.shape.json.IFactory;
@@ -268,6 +269,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @return JSON string
      */
+    @Override
     public String toJSONString()
     {
         JSONObject object = toJSONObject();
@@ -277,6 +279,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
             return object.toString();
         }
         return null;
+    }
+
+    @Override
+    public String toString()
+    {
+        return toJSONString();
     }
 
     public final MetaData getMetaData()
@@ -678,6 +686,12 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     }
 
     @Override
+    public IGuidePrimitive<?> asGuide()
+    {
+        return null;
+    }
+
+    @Override
     public Scene asScene()
     {
         return null;
@@ -873,12 +887,6 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
     public IAnimationHandle animate(final AnimationTweener tweener, final AnimationProperties properties, final double duration /* milliseconds */, final IAnimationCallback callback)
     {
         return new TweeningAnimation(this, tweener, properties, duration, callback).run();
-    }
-
-    @Override
-    public String toString()
-    {
-        return toJSONString();
     }
 
     @Override

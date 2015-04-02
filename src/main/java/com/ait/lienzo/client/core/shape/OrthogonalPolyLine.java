@@ -59,6 +59,13 @@ public class OrthogonalPolyLine extends AbstractDirectionalMultiPointShape<Ortho
         setControlPoints(points);
     }
 
+    public OrthogonalPolyLine(final Point2DArray points, final double corner)
+    {
+        this(points);
+
+        setCornerRadius(corner);
+    }
+
     protected OrthogonalPolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.ORTHOGONAL_POLYLINE, node, ctx);

@@ -44,9 +44,9 @@ public class IsoscelesTrapezoid extends Shape<IsoscelesTrapezoid>
 
     public IsoscelesTrapezoid(final double topwidth, final double bottomwidth, final double height, final double corner)
     {
-        super(ShapeType.ISOSCELES_TRAPEZOID);
+        this(topwidth, bottomwidth, height);
 
-        setTopWidth(topwidth).setBottomWidth(bottomwidth).setHeight(height).setCornerRadius(corner);
+        setCornerRadius(corner);
     }
 
     protected IsoscelesTrapezoid(final JSONObject node, final ValidationContext ctx) throws ValidationException

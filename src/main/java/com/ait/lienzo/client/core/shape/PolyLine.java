@@ -54,6 +54,13 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
 
         setPoints(points);
     }
+    
+    public PolyLine(final Point2DArray points, final double corner)
+    {
+        this(points);
+        
+        setCornerRadius(corner);
+    }
 
     public PolyLine(final Point2D point, final Point2D... points)
     {
@@ -68,8 +75,6 @@ public class PolyLine extends AbstractOffsetMultiPointShape<PolyLine>
     protected PolyLine(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.POLYLINE, node, ctx);
-
-        refresh();
     }
 
     @Override

@@ -55,6 +55,13 @@ public class Star extends Shape<Star>
         setStarPoints(points).setInnerRadius(innerRadius).setOuterRadius(outerRadius);
     }
 
+    public Star(final int points, final double innerRadius, final double outerRadius, final double corner)
+    {
+        this(points, innerRadius, outerRadius);
+
+        setCornerRadius(corner);
+    }
+
     protected Star(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.STAR, node, ctx);

@@ -53,11 +53,11 @@ public class Rectangle extends Shape<Rectangle>
      * @param height
      * @param cornerRadius
      */
-    public Rectangle(final double width, final double height, final double cornerRadius)
+    public Rectangle(final double width, final double height, final double corner)
     {
-        super(ShapeType.RECTANGLE);
+        this(width, height);
 
-        setWidth(width).setHeight(height).setCornerRadius(cornerRadius);
+        setCornerRadius(corner);
     }
 
     protected Rectangle(final JSONObject node, final ValidationContext ctx) throws ValidationException

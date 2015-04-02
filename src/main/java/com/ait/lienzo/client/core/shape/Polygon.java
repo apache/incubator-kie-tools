@@ -51,6 +51,13 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
         setPoints(points);
     }
 
+    public Polygon(final Point2DArray points, final double corner)
+    {
+        this(points);
+
+        setCornerRadius(corner);
+    }
+
     public Polygon(final Point2D point, final Point2D... points)
     {
         this(new Point2DArray(point, points));
@@ -99,7 +106,7 @@ public class Polygon extends AbstractMultiPointShape<Polygon>
                     m_list.Z();
                 }
                 else
-                {                    
+                {
                     Geometry.drawArcJoinedLines(m_list, list.push(point), corner);
                 }
                 return true;

@@ -42,6 +42,13 @@ public class SimpleArrow extends AbstractMultiPointShape<SimpleArrow>
         setPoints(new Point2DArray(base, head));
     }
 
+    public SimpleArrow(final Point2D base, final Point2D head, final double corner)
+    {
+        this(base, head);
+        
+        setCornerRadius(corner);
+    }
+
     protected SimpleArrow(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.SIMPLE_ARROW, node, ctx);

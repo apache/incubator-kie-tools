@@ -51,6 +51,13 @@ public class RegularPolygon extends Shape<RegularPolygon>
         setRadius(radius).setSides(sides);
     }
 
+    public RegularPolygon(final int sides, final double radius, final double corner)
+    {
+        this(sides, radius);
+
+        setCornerRadius(corner);
+    }
+
     protected RegularPolygon(final JSONObject node, final ValidationContext ctx) throws ValidationException
     {
         super(ShapeType.REGULAR_POLYGON, node, ctx);

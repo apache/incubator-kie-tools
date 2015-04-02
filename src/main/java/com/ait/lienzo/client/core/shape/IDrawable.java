@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.animation.AnimationProperties;
 import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
+import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
 import com.ait.lienzo.client.core.types.ClipRegion;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
@@ -115,6 +116,8 @@ public interface IDrawable<T>
      * @return IPrimitive
      */
     public IPrimitive<?> asPrimitive();
+    
+    public IGuidePrimitive<?> asGuide();
 
     /**
      * Returns whether the object is visible.
