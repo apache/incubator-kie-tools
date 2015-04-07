@@ -16,18 +16,18 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor;
 
-import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.AccordionGroup;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -37,20 +37,18 @@ import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.BaseEditor;
 import org.uberfire.ext.editor.commons.client.BaseEditorView;
-import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.editor.commons.service.support.SupportsCopy;
 import org.uberfire.ext.editor.commons.service.support.SupportsDelete;
 import org.uberfire.ext.editor.commons.service.support.SupportsRename;
-import org.uberfire.ext.plugin.client.perspective.editor.api.ExternalPerspectiveEditorComponent;
+import org.uberfire.ext.layout.editor.client.LayoutEditorPluginAPI;
 import org.uberfire.ext.plugin.client.perspective.editor.components.popup.AddTag;
-import org.uberfire.ext.plugin.client.perspective.editor.dnd.DragGridElement;
-import org.uberfire.ext.plugin.client.perspective.editor.structure.PerspectiveEditorUI;
-import org.uberfire.ext.plugin.client.perspective.editor.util.DragType;
+import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent;
 import org.uberfire.ext.plugin.client.perspective.editor.util.TagButton;
 import org.uberfire.ext.plugin.client.type.PerspectiveLayoutPluginResourceType;
-import org.uberfire.ext.plugin.editor.PerspectiveEditor;
 import org.uberfire.ext.plugin.event.PluginRenamed;
-import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
+import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
@@ -73,12 +71,15 @@ public class PerspectiveEditorPresenter
 
     public interface View extends BaseEditorView {
 
-        void setupDndMenu( AccordionGroup... accordionsGroup );
+        void setupLayoutEditor( Widget widget );
 
-        PerspectiveEditor getModel();
-
-        void loadPerspective( PerspectiveEditor perspectiveEditorJSON );
     }
+
+    @Inject
+    private PerspectiveEditorGenerator perspectiveEditorGenerator;
+
+    @Inject
+    private LayoutEditorPluginAPI layoutEditorPluginAPI;
 
     @Inject
     private Event<NotificationEvent> ufNotification;
@@ -86,22 +87,23 @@ public class PerspectiveEditorPresenter
     @Inject
     private PerspectiveLayoutPluginResourceType resourceType;
 
-    @Inject
-    private PerspectiveEditorPresenterHelper helper;
-
     private Plugin plugin;
 
     @Inject
-    private PerspectiveEditorUI perspectiveEditor;
+    private Caller<PluginServices> pluginServices;
 
     @Inject
-    private Caller<PluginServices> pluginServices;
+    private ScreenLayoutDragComponent screenLayoutDragComponent;
+
+    @Inject
+    private HTMLLayoutDragComponent htmlLayoutDragComponent;
 
     @Inject
     public PerspectiveEditorPresenter( final View perspectiveEditorView ) {
 
         super( perspectiveEditorView );
         this.perspectiveEditorView = perspectiveEditorView;
+
     }
 
     @OnStartup
@@ -119,12 +121,15 @@ public class PerspectiveEditorPresenter
 
         // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
         // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
-        plugin = new Plugin( place.getParameter( "name",
-                                                 "" ),
+        final String name = place.getParameter( "name",
+                                                "" );
+        plugin = new Plugin( name,
                              PluginType.PERSPECTIVE_LAYOUT,
                              path );
 
-        setupDndWidget();
+        this.layoutEditorPluginAPI.init( PluginType.PERSPECTIVE_LAYOUT, name, screenLayoutDragComponent, htmlLayoutDragComponent );
+
+        this.perspectiveEditorView.setupLayoutEditor( layoutEditorPluginAPI.asWidget() );
     }
 
     @Override
@@ -141,52 +146,7 @@ public class PerspectiveEditorPresenter
 
     @OnMayClose
     public boolean onMayClose() {
-        return super.mayClose( getContent().hashCode() );
-    }
-
-    private void setupDndWidget() {
-        AccordionGroup gridSystem = generateGridSystem();
-        AccordionGroup components = generateComponent();
-        perspectiveEditorView.setupDndMenu( gridSystem, components );
-    }
-
-    private AccordionGroup generateGridSystem() {
-        AccordionGroup accordion = new AccordionGroup();
-        accordion.setHeading( "Grid System" );
-        accordion.setIcon( IconType.TH );
-        accordion.setDefaultOpen( true );
-        accordion.add( new DragGridElement( DragType.GRID,
-                                            "12",
-                                            ufNotification ) );
-        accordion.add( new DragGridElement( DragType.GRID,
-                                            "6 6",
-                                            ufNotification ) );
-        accordion.add( new DragGridElement( DragType.GRID,
-                                            "4 4 4",
-                                            ufNotification ) );
-        return accordion;
-    }
-
-    private AccordionGroup generateComponent() {
-        AccordionGroup accordion = new AccordionGroup();
-        accordion.setHeading( "Components" );
-        accordion.setIcon( IconType.FOLDER_OPEN );
-        accordion.add( new DragGridElement( DragType.SCREEN,
-                                            DragType.SCREEN.label(),
-                                            ufNotification ) );
-        accordion.add( new DragGridElement( DragType.HTML,
-                                            DragType.HTML.label(),
-                                            ufNotification ) );
-        generateExternalComponents( accordion );
-        return accordion;
-    }
-
-    private void generateExternalComponents( AccordionGroup accordion ) {
-        for ( ExternalPerspectiveEditorComponent externalPerspectiveEditorComponent : helper.lookupExternalComponents() ) {
-            accordion.add( new DragGridElement( DragType.EXTERNAL,
-                                                externalPerspectiveEditorComponent.getPlaceName(),
-                                                externalPerspectiveEditorComponent ) );
-        }
+        return super.mayClose( layoutEditorPluginAPI.getCurrentModelHash() );
     }
 
     @WorkbenchPartTitleDecoration
@@ -207,36 +167,30 @@ public class PerspectiveEditorPresenter
     @Override
     protected void loadContent() {
         baseView.hideBusyIndicator();
-        pluginServices.call( new RemoteCallback<PerspectiveEditorModel>() {
+        layoutEditorPluginAPI.load( PluginType.PERSPECTIVE_LAYOUT, versionRecordManager.getCurrentPath(), new ParameterizedCommand<LayoutEditorModel>() {
             @Override
-            public void callback( final PerspectiveEditorModel response ) {
-                if ( response.getPerspectiveModel() != null ) {
-                    perspectiveEditorView.loadPerspective( response.getPerspectiveModel() );
-                    plugin = response;
-                }
-                setOriginalHash( getContent().hashCode() );
+            public void execute( LayoutEditorModel layoutEditorModel ) {
+                setOriginalHash( layoutEditorPluginAPI.getCurrentModelHash() );
+                plugin = layoutEditorModel;
             }
-        } ).getPerspectiveEditor( versionRecordManager.getCurrentPath() );
+        } );
     }
 
     protected void save() {
-        new SaveOperationService().save( versionRecordManager.getCurrentPath(),
-                                         new ParameterizedCommand<String>() {
-                                             @Override
-                                             public void execute( final String commitMessage ) {
-                                                 pluginServices.call( getSaveSuccessCallback( getContent().hashCode() ) ).savePerspective( getContent(),
-                                                                                                                                           commitMessage );
-                                             }
-                                         }
-                                       );
+        layoutEditorPluginAPI.save( versionRecordManager.getCurrentPath(),
+                                    getSaveSuccessCallback( layoutEditorPluginAPI.getCurrentModelHash() ) );
         concurrentUpdateSessionInfo = null;
     }
 
-    public PerspectiveEditorModel getContent() {
-        return new PerspectiveEditorModel( plugin.getName(),
-                                           PluginType.PERSPECTIVE_LAYOUT,
-                                           versionRecordManager.getCurrentPath(),
-                                           perspectiveEditorView.getModel() );
+    protected RemoteCallback<Path> getSaveSuccessCallback( final int newHash ) {
+        return new RemoteCallback<Path>() {
+            @Override
+            public void callback( final Path path ) {
+                RemoteCallback<Path> saveSuccessCallback = PerspectiveEditorPresenter.super.getSaveSuccessCallback( layoutEditorPluginAPI.getCurrentModelHash() );
+                saveSuccessCallback.callback( path );
+                perspectiveEditorGenerator.generate( layoutEditorPluginAPI.getModel() );
+            }
+        };
     }
 
     @WorkbenchPartView
@@ -268,8 +222,13 @@ public class PerspectiveEditorPresenter
         return pluginServices;
     }
 
-    public List<String> getTags() {
-        return perspectiveEditorView.getModel().getTags();
+    public void saveProperty( String key,
+                              String value ) {
+        layoutEditorPluginAPI.addLayoutProperty( key, value );
+    }
+
+    public String getLayoutProperty( String key ) {
+        return layoutEditorPluginAPI.getLayoutProperty( key );
     }
 
 }

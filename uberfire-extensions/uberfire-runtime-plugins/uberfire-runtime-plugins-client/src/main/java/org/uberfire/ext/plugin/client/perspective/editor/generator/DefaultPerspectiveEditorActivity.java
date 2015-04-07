@@ -5,7 +5,7 @@ import java.util.Collections;
 
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
-import org.uberfire.ext.plugin.editor.PerspectiveEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -18,7 +18,7 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 
 public class DefaultPerspectiveEditorActivity implements PerspectiveActivity {
 
-    private PerspectiveEditor editor;
+    private LayoutEditor editor;
     private DefaultPerspectiveEditorScreenActivity screen;
     private PlaceRequest place;
 
@@ -26,13 +26,13 @@ public class DefaultPerspectiveEditorActivity implements PerspectiveActivity {
 
     private static final Collection<String> TRAITS = Collections.emptyList();
 
-    public DefaultPerspectiveEditorActivity( final PerspectiveEditor editor,
+    public DefaultPerspectiveEditorActivity( final LayoutEditor editor,
                                              DefaultPerspectiveEditorScreenActivity screen ) {
         this.editor = editor;
         this.screen = screen;
     }
 
-    public void update(final PerspectiveEditor editor,
+    public void update(final LayoutEditor editor,
                        DefaultPerspectiveEditorScreenActivity screen ){
         this.editor = editor;
         this.screen = screen;

@@ -29,7 +29,7 @@
     }
   </ui:style>
 
-  
+
   <ui:with field="i18n" type="org.uberfire.ext.plugin.client.resources.i18n.CommonConstants"/>
 
   <g:HTMLPanel>

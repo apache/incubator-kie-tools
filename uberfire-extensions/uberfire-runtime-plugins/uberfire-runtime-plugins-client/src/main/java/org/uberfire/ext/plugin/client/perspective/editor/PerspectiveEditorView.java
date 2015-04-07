@@ -29,11 +29,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.editor.commons.client.BaseEditorViewImpl;
-import org.uberfire.ext.plugin.client.perspective.editor.dnd.DropRowPanel;
-import org.uberfire.ext.plugin.client.perspective.editor.row.RowView;
-import org.uberfire.ext.plugin.client.perspective.editor.structure.PerspectiveEditorUI;
-import org.uberfire.ext.plugin.editor.PerspectiveEditor;
-import org.uberfire.ext.plugin.editor.RowEditor;
 
 @Dependent
 public class PerspectiveEditorView
@@ -47,24 +42,17 @@ public class PerspectiveEditorView
 
     }
 
-    @UiField
-    Accordion dndGrid;
-
     interface PerspectiveEditorViewBinder
             extends
             UiBinder<Widget, PerspectiveEditorView> {
-
     }
 
     private static PerspectiveEditorViewBinder uiBinder = GWT.create( PerspectiveEditorViewBinder.class );
 
-    private PerspectiveEditorPresenter presenter;
-
-    @Inject
-    private PerspectiveEditorUI perspectiveEditor;
-
     @UiField
-    FlowPanel container;
+    FlowPanel layoutEditor;
+
+    private PerspectiveEditorPresenter presenter;
 
     @PostConstruct
     public void setup() {
@@ -76,27 +64,9 @@ public class PerspectiveEditorView
         this.presenter = presenter;
     }
 
-    @Override
-    public void setupDndMenu( final AccordionGroup... accordionsGroup ) {
-        for ( AccordionGroup accordionGroup : accordionsGroup ) {
-            dndGrid.add( accordionGroup );
-        }
-    }
 
     @Override
-    public PerspectiveEditor getModel() {
-        return perspectiveEditor.toPerspectiveEditor();
-    }
-
-    @Override
-    public void loadPerspective( PerspectiveEditor perspectiveEditorJSON ) {
-        container.clear();
-        perspectiveEditor.setTags( perspectiveEditorJSON.getTags() );
-        perspectiveEditor.setup( container, perspectiveEditorJSON.getName() );
-        for ( RowEditor row : perspectiveEditorJSON.getRows() ) {
-            container.add( new RowView( perspectiveEditor, row ) );
-        }
-        container.add( new DropRowPanel( perspectiveEditor ) );
-
+    public void setupLayoutEditor( Widget widget ) {
+        this.layoutEditor.add( widget );
     }
 }

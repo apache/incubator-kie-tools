@@ -15,6 +15,9 @@
  */
 package org.uberfire.ext.plugin.client.validation;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
 public class NameValidator {
@@ -27,16 +30,8 @@ public class NameValidator {
         this.error = error;
     }
 
-    public static NameValidator perspectiveNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidPerspectiveName() );
-    }
-
     public static NameValidator tagNameValidator() {
         return new NameValidator( CommonConstants.INSTANCE.InvalidTagName() );
-    }
-
-    public static NameValidator parameterNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidParameterName() );
     }
 
     public static NameValidator activityIdValidator() {
@@ -45,6 +40,10 @@ public class NameValidator {
 
     public static NameValidator menuLabelValidator() {
         return new NameValidator( CommonConstants.INSTANCE.InvalidMenuLabel() );
+    }
+
+    public static NameValidator parameterNameValidator() {
+        return new NameValidator( CommonConstants.INSTANCE.InvalidParameterName() );
     }
 
     public String getValidationError() {

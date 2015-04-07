@@ -3,7 +3,6 @@ package org.uberfire.ext.plugin.client.perspective.editor.generator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -17,11 +16,12 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
-import org.uberfire.ext.plugin.editor.ColumnEditor;
-import org.uberfire.ext.plugin.editor.HTMLEditor;
-import org.uberfire.ext.plugin.editor.PerspectiveEditor;
-import org.uberfire.ext.plugin.editor.RowEditor;
-import org.uberfire.ext.plugin.editor.ScreenEditor;
+import org.uberfire.ext.layout.editor.api.editor.ColumnEditor;
+import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
+import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
+import org.uberfire.ext.layout.editor.api.editor.RowEditor;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent;
+import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.NamedPosition;
@@ -31,7 +31,7 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
 
 public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenActivity {
 
-    private PerspectiveEditor editor;
+    private LayoutEditor editor;
 
     private final PlaceManager placeManager;
 
@@ -45,13 +45,13 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
 
     private List<Target> screensToLoad = new ArrayList<Target>();
 
-    public DefaultPerspectiveEditorScreenActivity( PerspectiveEditor editor,
+    public DefaultPerspectiveEditorScreenActivity( LayoutEditor editor,
                                                    final PlaceManager placeManager ) {
         this.placeManager = placeManager;
         build( editor );
     }
 
-    public void build( PerspectiveEditor editor ) {
+    public void build( LayoutEditor editor ) {
         this.editor = editor;
         this.screensToLoad.clear();
         mainPanel = new FluidContainer();
@@ -69,8 +69,7 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
                 if ( columnHasNestedRows( columnEditor ) ) {
                     extractRows( columnEditor.getRows(), column );
                 } else {
-                    generateScreens( columnEditor, column );
-                    generateHTML( columnEditor, column );
+                    generateComponents( columnEditor, column );
                 }
                 row.add( column );
             }
@@ -78,28 +77,50 @@ public class DefaultPerspectiveEditorScreenActivity implements WorkbenchScreenAc
         }
     }
 
+    private void generateComponents( ColumnEditor columnEditor,
+                                     Column column ) {
+        for ( LayoutComponent layoutComponent : columnEditor.getLayoutComponents() ) {
+            if ( isAnHTMLComponent( layoutComponent ) ) {
+                generateHtmlComponent( column, layoutComponent );
+            } else if ( isAndScreenComponent( layoutComponent ) ) {
+                generateScreenComponent( column, layoutComponent );
+            }
+        }
+    }
+
+    private void generateScreenComponent( Column column,
+                                          LayoutComponent layoutComponent ) {
+        Random r = new Random();
+        Map<String, String> properties = layoutComponent.getProperties();
+        String placeName = properties.get( ScreenLayoutDragComponent.PLACE_NAME_PARAMETER );
+        if ( placeName != null ) {
+            FlowPanel panel = new FlowPanel();
+            panel.getElement().setId( placeName + r.nextInt() );
+            column.add( panel );
+            screensToLoad.add( new Target( placeName, column, panel, properties ) );
+        }
+    }
+
+    private void generateHtmlComponent( Column column,
+                                        LayoutComponent layoutComponent ) {
+        Map<String, String> properties = layoutComponent.getProperties();
+        String html = properties.get( HTMLLayoutDragComponent.HTML_CODE_PARAMETER );
+        if ( html != null ) {
+            HTMLPanel panel = new HTMLPanel( html );
+            column.add( panel );
+        }
+    }
+
+    private boolean isAndScreenComponent( LayoutComponent layoutComponent ) {
+        return layoutComponent.isFromMyDragTypeType( ScreenLayoutDragComponent.class );
+    }
+
+    private boolean isAnHTMLComponent( LayoutComponent layoutComponent ) {
+        return layoutComponent.isFromMyDragTypeType( HTMLLayoutDragComponent.class );
+    }
+
     private boolean columnHasNestedRows( ColumnEditor columnEditor ) {
         return columnEditor.getRows() != null && !columnEditor.getRows().isEmpty();
-    }
-
-    private void generateHTML( ColumnEditor columnEditor,
-                               Column column ) {
-        for ( HTMLEditor htmlEditor : columnEditor.getHtmls() ) {
-            HTMLPanel panel = new HTMLPanel( htmlEditor.getHtmlCode() );
-            column.add( panel );
-        }
-    }
-
-    private void generateScreens( ColumnEditor columnEditor,
-                                  Column column ) {
-        Random r = new Random();
-
-        for ( ScreenEditor screenEditor : columnEditor.getScreens() ) {
-            FlowPanel panel = new FlowPanel();
-            panel.getElement().setId( screenEditor.getPlaceName() + r.nextInt() );
-            column.add( panel );
-            screensToLoad.add( new Target( screenEditor.getPlaceName(), column, panel, screenEditor.getParameters() ) );
-        }
     }
 
     @Override

@@ -362,6 +362,8 @@ public abstract class BaseEditor {
         };
     }
 
+
+
     public void onRestore( @Observes RestoreEvent restore ) {
         if ( versionRecordManager.getCurrentPath() == null || restore == null || restore.getPath() == null ) {
             return;

@@ -14,9 +14,12 @@ import javax.inject.Named;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.ext.apps.api.AppsPersistenceAPI;
 import org.uberfire.ext.apps.api.Directory;
-import org.uberfire.ext.plugin.editor.PerspectiveEditor;
-import org.uberfire.ext.plugin.model.PerspectiveEditorModel;
+import org.uberfire.ext.layout.editor.api.LayoutServices;
+import org.uberfire.ext.layout.editor.api.editor.LayoutEditor;
+import org.uberfire.ext.plugin.model.LayoutEditorModel;
+import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
+import org.uberfire.ext.plugin.type.TagsConverterUtil;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystem;
@@ -38,7 +41,11 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     @Inject
     PluginServices pluginServices;
 
+    @Inject
+    LayoutServices layoutServices;
+
     private FileSystem fileSystem;
+
     private Path root;
 
     @PostConstruct
@@ -66,19 +73,18 @@ public class AppsPersistenceImpl implements AppsPersistenceAPI {
     }
 
     private Map<String, List<String>> generateTagMap() {
-
         Map<String, List<String>> tagsMap = new HashMap<String, List<String>>();
-        final Collection<PerspectiveEditorModel> perspectiveEditors = pluginServices.listPerspectiveEditor();
-        for ( PerspectiveEditorModel perspectiveEditorModel : perspectiveEditors ) {
-            final PerspectiveEditor perspectiveEditor = perspectiveEditorModel.getPerspectiveModel();
-            //PerspectiveEditor is null on legacy PerspectiveLayout definitions
-            if ( perspectiveEditor != null ) {
-                for ( String tag : perspectiveEditor.getTags() ) {
+        final Collection<LayoutEditorModel> layoutEditorModels = pluginServices.listLayoutEditor( PluginType.PERSPECTIVE_LAYOUT );
+        for ( LayoutEditorModel layoutEditorModel : layoutEditorModels ) {
+            LayoutEditor layoutEditor = layoutServices.convertLayoutFromString( layoutEditorModel.getLayoutEditorModel() );
+            if ( layoutEditor != null ) {
+                List<String> tags = TagsConverterUtil.extractTags( layoutEditor.getLayoutProperties() );
+                for ( String tag : tags ) {
                     List<String> perspectives = tagsMap.get( tag.toUpperCase() );
                     if ( perspectives == null ) {
                         perspectives = new ArrayList<String>();
                     }
-                    perspectives.add( perspectiveEditor.getName() );
+                    perspectives.add( layoutEditor.getName() );
                     tagsMap.put( tag.toUpperCase(), perspectives );
                 }
             }

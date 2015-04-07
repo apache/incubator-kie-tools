@@ -16,6 +16,7 @@
 package org.uberfire.ext.plugin.client.perspective.editor.components.popup;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -38,6 +39,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.plugin.client.perspective.editor.PerspectiveEditorPresenter;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.validation.NameValidator;
+import org.uberfire.ext.plugin.type.TagsConverterUtil;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
@@ -60,8 +62,6 @@ public class AddTag
 
     private List<String> tagsList = new ArrayList<String>();
 
-    private List<String> originalList = new ArrayList<String>();
-
     interface Binder
             extends
             UiBinder<Widget, AddTag> {
@@ -75,25 +75,25 @@ public class AddTag
         setTitle( CommonConstants.INSTANCE.AddTag() );
         add( uiBinder.createAndBindUi( this ) );
         add( new ModalFooterOKCancelButtons(
-                new Command() {
-                    @Override
-                    public void execute() {
-                        okButton();
-                    }
-                },
-                new Command() {
-                    @Override
-                    public void execute() {
-                        cancelButton();
-                    }
-                }
-        )
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             okButton();
+                         }
+                     },
+                     new Command() {
+                         @Override
+                         public void execute() {
+                             cancelButton();
+                         }
+                     }
+             )
            );
     }
 
     private void cancelButton() {
         this.tagsList.clear();
-        this.tagsList.addAll( originalList );
+//        this.tagsList.addAll( originalList );
         closePopup();
     }
 
@@ -108,13 +108,13 @@ public class AddTag
     }
 
     private void loadTags() {
-        tagsList = perspectivePresenter.getTags();
-        originalList.addAll( perspectivePresenter.getTags() );
+        String tagsString = perspectivePresenter.getLayoutProperty( TagsConverterUtil.LAYOUT_PROPERTY );
+        this.tagsList = TagsConverterUtil.convertTagStringToTag( tagsString );
         generateTags();
     }
 
     private void generateTags() {
-        tags.clear();
+        this.tags.clear();
         for ( String tag : tagsList ) {
             tags.add( new Label( tag ) );
             tags.add( generateRemoveIcon( tag ) );
@@ -122,6 +122,8 @@ public class AddTag
     }
 
     private void okButton() {
+        String tags = TagsConverterUtil.convertTagsToString( tagsList );
+        perspectivePresenter.saveProperty( TagsConverterUtil.LAYOUT_PROPERTY, tags );
         hide();
     }
 
@@ -140,7 +142,6 @@ public class AddTag
             tagControlGroup.setType( ControlGroupType.ERROR );
             tagInline.setText( validator.getValidationError() );
         }
-
     }
 
     private Icon generateRemoveIcon( final String value ) {

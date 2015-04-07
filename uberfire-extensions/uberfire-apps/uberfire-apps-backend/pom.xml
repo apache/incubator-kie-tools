@@ -33,6 +33,17 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-layout-editor-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-layout-editor-backend</artifactId>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-apps-api</artifactId>
     </dependency>
     <dependency>

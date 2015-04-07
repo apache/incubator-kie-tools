@@ -1,0 +1,55 @@
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+  <ui:with field="i18n" type="org.uberfire.ext.layout.editor.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .content {
+      margin: 20px 20px;
+    }
+    .container {
+      border-radius:4px;
+      border: 1px solid #DDDDDD;
+      margin: 5px;
+    }
+
+  </ui:style>
+
+  <g:HTMLPanel addStyleNames="{style.content}">
+    <b:FluidRow>
+      <b:Column size="9">
+        <g:FlowPanel styleName="{style.container}">
+          <b:Label text="Container"/>
+          <g:FlowPanel ui:field="container" />
+        </g:FlowPanel>
+      </b:Column>
+      <b:Column size="3">
+        <b:Accordion styleName="{style.container}">
+          <b:AccordionGroup ui:field="gridSystem" defaultOpen="true" heading="{i18n.GridSystem}" icon="TH"/>
+
+          <b:AccordionGroup ui:field="components" heading="{i18n.Components}" icon="FOLDER_OPEN"/>
+
+        </b:Accordion>
+      </b:Column>
+    </b:FluidRow>
+  </g:HTMLPanel>
+</ui:UiBinder>
+

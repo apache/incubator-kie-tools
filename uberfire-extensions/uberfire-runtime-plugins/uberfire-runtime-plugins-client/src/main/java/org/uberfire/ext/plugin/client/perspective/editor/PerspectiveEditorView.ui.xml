@@ -32,17 +32,7 @@
   </ui:style>
 
   <g:HTMLPanel addStyleNames="{style.content}">
-    <b:FluidRow>
-      <b:Column size="9">
-        <g:FlowPanel styleName="{style.container}">
-          <b:Label text="Container"/>
-          <g:FlowPanel ui:field="container" />
-        </g:FlowPanel>
-      </b:Column>
-      <b:Column size="3">
-        <b:Accordion ui:field="dndGrid" styleName="{style.container}"/>
-      </b:Column>
-    </b:FluidRow>
+    <g:FlowPanel ui:field="layoutEditor" />
   </g:HTMLPanel>
 </ui:UiBinder>
 

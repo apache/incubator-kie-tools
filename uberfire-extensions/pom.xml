@@ -45,6 +45,7 @@
     <module>uberfire-runtime-plugins</module>
     <module>uberfire-wires</module>
     <module>uberfire-apps</module>
+    <module>uberfire-layout-editor</module>
   </modules>
 
   <repositories>
