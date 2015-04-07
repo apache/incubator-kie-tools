@@ -132,7 +132,7 @@ public class Builder {
             kieBuilder = kieServices.newKieBuilder( kieFileSystem );
 
             //Record RTEs from KieBuilder - that can fail if a rule uses an inaccessible class
-            final BuildResults results = new BuildResults(projectGAV);
+            final BuildResults results = new BuildResults( projectGAV );
             try {
                 final Results kieResults = kieBuilder.buildAll().getResults();
                 results.addAllBuildMessages( convertMessages( kieResults.getMessages(), handles ) );
@@ -140,11 +140,13 @@ public class Builder {
             } catch ( LinkageError e ) {
                 final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                          e.getLocalizedMessage() );
-                logger.warn( msg, e );
+                logger.warn( msg );
                 results.addBuildMessage( makeWarningMessage( msg ) );
+
             } catch ( Throwable e ) {
                 final String msg = e.getLocalizedMessage();
-                logger.error( msg, e );
+                logger.error( msg,
+                              e );
                 results.addBuildMessage( makeErrorMessage( msg ) );
             }
 
@@ -167,8 +169,9 @@ public class Builder {
                     final String fullyQualifiedClassName = item.getType();
                     try {
                         Class clazz = this.getClass().getClassLoader().loadClass( item.getType() );
+
                     } catch ( ClassNotFoundException cnfe ) {
-                        logger.error( cnfe.getMessage(), cnfe );
+                        logger.warn( cnfe.getMessage() );
                         final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                                  fullyQualifiedClassName );
                         results.addBuildMessage( makeWarningMessage( msg ) );
@@ -200,10 +203,11 @@ public class Builder {
                                                                          fullyQualifiedClassName );
                                 logger.warn( msg );
                             }
+
                         } catch ( Throwable e ) {
                             final String msg = MessageFormat.format( ERROR_EXTERNAL_CLASS_VERIFICATON,
                                                                      fullyQualifiedClassName );
-                            logger.warn( msg, e );
+                            logger.warn( msg );
                             results.addBuildMessage( makeWarningMessage( msg ) );
                         }
                     }
@@ -260,7 +264,8 @@ public class Builder {
             handles.put( getBaseFileName( destinationPath ),
                          Paths.convert( resource ) );
 
-            buildIncrementally( results, destinationPath );
+            buildIncrementally( results,
+                                destinationPath );
 
             return results;
         }
@@ -287,7 +292,8 @@ public class Builder {
             kieFileSystem.delete( destinationPath );
             removeJavaClass( resource );
 
-            buildIncrementally( results, destinationPath );
+            buildIncrementally( results,
+                                destinationPath );
 
             return results;
         }
@@ -316,8 +322,10 @@ public class Builder {
                     final ResourceChangeType type = change.getType();
                     final Path resource = Paths.convert( pathCollectionEntry.getKey() );
 
-                    checkNotNull( "type", type );
-                    checkNotNull( "resource", resource );
+                    checkNotNull( "type",
+                                  type );
+                    checkNotNull( "resource",
+                                  resource );
 
                     final String destinationPath = resource.toUri().toString().substring( projectPrefix.length() + 1 );
                     changedFilesKieBuilderPaths.add( destinationPath );
@@ -346,7 +354,8 @@ public class Builder {
 
             //Perform the Incremental build and get messages from incremental build
             final IncrementalBuildResults results = new IncrementalBuildResults( projectGAV );
-            buildIncrementally( results, toArray( changedFilesKieBuilderPaths ) );
+            buildIncrementally( results,
+                                toArray( changedFilesKieBuilderPaths ) );
 
             //Copy in BuildMessages for non-KIE resources
             results.addAllAddedMessages( convertValidationMessages( nonKieResourceValidatorAddedMessages ) );
@@ -362,9 +371,9 @@ public class Builder {
         return stringArray;
     }
 
-    private void delete( List<ValidationMessage> nonKieResourceValidatorRemovedMessages,
-                         Path resource,
-                         String destinationPath ) {
+    private void delete( final List<ValidationMessage> nonKieResourceValidatorRemovedMessages,
+                         final Path resource,
+                         final String destinationPath ) {
         //Resource Type might have been validated "externally" (i.e. it's not covered by Kie). Clear any errors.
         nonKieResourceValidationHelpers.remove( resource );
         final List<ValidationMessage> removedValidationMessages = nonKieResourceValidationHelperMessages.remove( resource );
@@ -379,10 +388,10 @@ public class Builder {
         removeJavaClass( resource );
     }
 
-    private void update( List<ValidationMessage> nonKieResourceValidatorAddedMessages,
-                         List<ValidationMessage> nonKieResourceValidatorRemovedMessages,
-                         Path resource,
-                         String destinationPath ) {
+    private void update( final List<ValidationMessage> nonKieResourceValidatorAddedMessages,
+                         final List<ValidationMessage> nonKieResourceValidatorRemovedMessages,
+                         final Path resource,
+                         final String destinationPath ) {
         //Resource Type might require "external" validation (i.e. it's not covered by Kie)
         final BuildValidationHelper validator = getBuildValidationHelper( resource );
         if ( validator != null ) {
@@ -416,8 +425,8 @@ public class Builder {
                      Paths.convert( resource ) );
     }
 
-    private void buildIncrementally( IncrementalBuildResults results,
-                                     String... destinationPath ) {
+    private void buildIncrementally( final IncrementalBuildResults results,
+                                     final String... destinationPath ) {
         try {
             final IncrementalResults incrementalResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( destinationPath ).build();
             results.addAllAddedMessages( convertMessages( incrementalResults.getAddedMessages(), handles ) );
@@ -431,11 +440,13 @@ public class Builder {
         } catch ( LinkageError e ) {
             final String msg = MessageFormat.format( ERROR_CLASS_NOT_FOUND,
                                                      e.getLocalizedMessage() );
-            logger.warn( msg, e );
+            logger.warn( msg );
             results.addAddedMessage( makeWarningMessage( msg ) );
+
         } catch ( Throwable e ) {
             final String msg = e.getLocalizedMessage();
-            logger.error( msg, e );
+            logger.error( msg,
+                          e );
             results.addAddedMessage( makeErrorMessage( msg ) );
         }
     }

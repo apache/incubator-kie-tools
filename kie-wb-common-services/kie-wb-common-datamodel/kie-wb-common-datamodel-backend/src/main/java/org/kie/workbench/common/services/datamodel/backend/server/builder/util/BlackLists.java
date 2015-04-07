@@ -98,4 +98,22 @@ public class BlackLists {
                 || "putAll".equals( methodName ) );
     }
 
+    /**
+     * Not all data-types are supported; principally arrays.
+     * @param type
+     * @return
+     */
+    public static boolean isTypeBlackListed( final Class<?> type ) {
+        return type.isArray();
+    }
+
+    /**
+     * Not all return data-types are supported; principally arrays and primitives.
+     * @param type
+     * @return
+     */
+    public static boolean isReturnTypeBlackListed( final Class<?> type ) {
+        return type.isArray() || type.isPrimitive();
+    }
+
 }

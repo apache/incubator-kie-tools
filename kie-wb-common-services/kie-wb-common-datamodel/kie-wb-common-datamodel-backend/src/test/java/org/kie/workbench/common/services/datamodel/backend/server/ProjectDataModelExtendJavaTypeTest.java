@@ -59,18 +59,15 @@ public class ProjectDataModelExtendJavaTypeTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 3,
+        assertEquals( 2,
                       oracle.getProjectModelFields().size() );
         assertContains( "t4p1.Bean1",
                         oracle.getProjectModelFields().keySet() );
         assertContains( "java.lang.String",
                         oracle.getProjectModelFields().keySet() );
-        assertContains( "int",
-                        oracle.getProjectModelFields().keySet() );
 
         assertTrue( oracle.getProjectEventTypes().get( "t4p1.Bean1" ) );
         assertFalse( oracle.getProjectEventTypes().get( "java.lang.String" ) );
-        assertFalse( oracle.getProjectEventTypes().get( "int" ) );
     }
 
     @Test
@@ -89,18 +86,15 @@ public class ProjectDataModelExtendJavaTypeTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 3,
+        assertEquals( 2,
                       oracle.getProjectModelFields().size() );
         assertContains( "t5p1.Bean1",
                         oracle.getProjectModelFields().keySet() );
         assertContains( "java.lang.String",
                         oracle.getProjectModelFields().keySet() );
-        assertContains( "int",
-                        oracle.getProjectModelFields().keySet() );
 
         assertTrue( oracle.getProjectEventTypes().get( "t5p1.Bean1" ) );
         assertFalse( oracle.getProjectEventTypes().get( "java.lang.String" ) );
-        assertFalse( oracle.getProjectEventTypes().get( "int" ) );
     }
 
 }

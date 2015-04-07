@@ -170,7 +170,7 @@ public class PackageDataModelSuperTypesTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 6,
+        assertEquals( 5,
                       oracle.getAllFactTypes().length );
         assertContains( "t2p1.Bean1",
                         oracle.getAllFactTypes() );
@@ -181,8 +181,6 @@ public class PackageDataModelSuperTypesTest {
         assertContains( "t2p1.Bean4",
                         oracle.getAllFactTypes() );
         assertContains( "java.lang.String",
-                        oracle.getAllFactTypes() );
-        assertContains( "int",
                         oracle.getAllFactTypes() );
 
         oracle.getSuperType( "Bean1",

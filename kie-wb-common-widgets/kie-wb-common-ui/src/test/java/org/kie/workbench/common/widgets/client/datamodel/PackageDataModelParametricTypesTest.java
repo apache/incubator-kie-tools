@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.packages.PackageDataModelOracleBuilder;
+import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ClassFieldInspector;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.FactBuilder;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.projects.ProjectDataModelOracleBuilder;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -33,8 +33,8 @@ public class PackageDataModelParametricTypesTest {
     @Test
     public void testClassFieldInspector() throws Exception {
         final ClassFieldInspector cfi = new ClassFieldInspector( Purchase.class );
-        final Type t1 = cfi.getFieldTypesField().get( "customerName" ).getGenericType();
-        final Type t2 = cfi.getFieldTypesField().get( "items" ).getGenericType();
+        final Type t1 = cfi.getFieldTypesFieldInfo().get( "customerName" ).getGenericType();
+        final Type t2 = cfi.getFieldTypesFieldInfo().get( "items" ).getGenericType();
 
         assertNotNull( t1 );
         assertNotNull( t2 );

@@ -16,6 +16,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.*;
 
 /**
  * Tests for DataModelService
@@ -59,18 +60,16 @@ public class ProjectDataModelDeclaredTypesTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 5,
+        assertEquals( 4,
                       oracle.getProjectModelFields().size() );
-        ProjectDataModelOracleTestUtils.assertContains( "t1p1.Bean1",
-                                                        oracle.getProjectModelFields().keySet() );
-        ProjectDataModelOracleTestUtils.assertContains( "t1p1.DRLBean",
-                                                        oracle.getProjectModelFields().keySet() );
-        ProjectDataModelOracleTestUtils.assertContains( "t1p2.Bean2",
-                                                        oracle.getProjectModelFields().keySet() );
-        ProjectDataModelOracleTestUtils.assertContains( "java.lang.String",
-                                                        oracle.getProjectModelFields().keySet() );
-        ProjectDataModelOracleTestUtils.assertContains( "int",
-                                                        oracle.getProjectModelFields().keySet() );
+        assertContains( "t1p1.Bean1",
+                        oracle.getProjectModelFields().keySet() );
+        assertContains( "t1p1.DRLBean",
+                        oracle.getProjectModelFields().keySet() );
+        assertContains( "t1p2.Bean2",
+                        oracle.getProjectModelFields().keySet() );
+        assertContains( "java.lang.String",
+                        oracle.getProjectModelFields().keySet() );
 
         assertEquals( TypeSource.JAVA_PROJECT,
                       oracle.getProjectTypeSources().get( "t1p1.Bean1" ) );
@@ -80,8 +79,6 @@ public class ProjectDataModelDeclaredTypesTest {
                       oracle.getProjectTypeSources().get( "t1p2.Bean2" ) );
         assertEquals( TypeSource.JAVA_PROJECT,
                       oracle.getProjectTypeSources().get( "java.lang.String" ) );
-        assertEquals( TypeSource.JAVA_PROJECT,
-                      oracle.getProjectTypeSources().get( "int" ) );
     }
 
 }

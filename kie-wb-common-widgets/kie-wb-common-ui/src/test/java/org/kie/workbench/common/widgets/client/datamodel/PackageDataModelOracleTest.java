@@ -234,14 +234,18 @@ public class PackageDataModelOracleTest {
                                                           fields.length );
                                             for ( ModelField field : fields ) {
                                                 if ( "this".equals( field.getName() ) ) {
-                                                    assertEquals( ModelField.FIELD_ORIGIN.SELF, field.getOrigin() );
+                                                    assertEquals( ModelField.FIELD_ORIGIN.SELF,
+                                                                  field.getOrigin() );
                                                 } else if ( "field1".equals( field.getName() ) ) {
-                                                    assertEquals( ModelField.FIELD_ORIGIN.INHERITED, field.getOrigin() );
+                                                    assertEquals( ModelField.FIELD_ORIGIN.INHERITED,
+                                                                  field.getOrigin() );
                                                 } else if ( "field2".equals( field.getName() ) ) {
-                                                    assertEquals( ModelField.FIELD_ORIGIN.DECLARED, field.getOrigin() );
+                                                    assertEquals( ModelField.FIELD_ORIGIN.DECLARED,
+                                                                  field.getOrigin() );
+                                                } else if ( "list".equals( field.getName() ) ) {
+                                                    assertEquals( ModelField.FIELD_ORIGIN.DELEGATED,
+                                                                  field.getOrigin() );
                                                 }
-                                                // TODO this last case is arguable : should be inherited, but is qualified as delegated, probably needs to be looked at
-                                                // else if ("list".equals(field.getName())) assertEquals(ModelField.FIELD_ORIGIN.DELEGATED, field.getOrigin());
                                             }
                                         }
                                     } );

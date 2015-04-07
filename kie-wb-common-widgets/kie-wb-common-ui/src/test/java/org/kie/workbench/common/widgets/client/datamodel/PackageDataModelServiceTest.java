@@ -78,15 +78,13 @@ public class PackageDataModelServiceTest {
                                                                  dataModel );
 
         assertNotNull( oracle );
-        assertEquals( 4,
+        assertEquals( 3,
                       oracle.getAllFactTypes().length );
         assertContains( "t3p1.Bean1",
                         oracle.getAllFactTypes() );
         assertContains( "t3p2.Bean2",
                         oracle.getAllFactTypes() );
         assertContains( "java.lang.String",
-                        oracle.getAllFactTypes() );
-        assertContains( "int",
                         oracle.getAllFactTypes() );
 
         assertEquals( 1,
@@ -109,13 +107,11 @@ public class PackageDataModelServiceTest {
                                         }
                                     } );
 
-        assertEquals( 3,
+        assertEquals( 2,
                       oracle.getExternalFactTypes().length );
         assertContains( "t3p2.Bean2",
                         oracle.getExternalFactTypes() );
         assertContains( "java.lang.String",
-                        oracle.getExternalFactTypes() );
-        assertContains( "int",
                         oracle.getExternalFactTypes() );
     }
 
@@ -148,15 +144,13 @@ public class PackageDataModelServiceTest {
 
         assertNotNull( oracle );
 
-        assertEquals( 4,
+        assertEquals( 3,
                       oracle.getAllFactTypes().length );
         assertContains( "t3p1.Bean1",
                         oracle.getAllFactTypes() );
         assertContains( "t3p2.Bean2",
                         oracle.getAllFactTypes() );
         assertContains( "java.lang.String",
-                        oracle.getAllFactTypes() );
-        assertContains( "int",
                         oracle.getAllFactTypes() );
 
         oracle.getFieldCompletions( "t3p1.Bean1",

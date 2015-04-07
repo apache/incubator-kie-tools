@@ -118,7 +118,8 @@ public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, Project
                                             typeSource );
 
                     } catch ( Throwable e ) {
-                        log.error( e.getMessage() );
+                        //Class resolution would have happened in Builder and reported as warnings so log error here at debug level to avoid flooding logs
+                        log.debug( e.getMessage() );
                     }
                 }
             }
@@ -137,11 +138,13 @@ public class LRUProjectDataModelOracleCache extends LRUCache<KieProject, Project
                                         discoveredFieldFactBuilders,
                                         false,
                                         TypeSource.JAVA_DEPENDENCY );
+
                 } catch ( ClassNotFoundException cnfe ) {
-                    //This would have been raised to the user by Builder's validation but record the error here too
-                    log.error( cnfe.getMessage() );
+                    //Class resolution would have happened in Builder and reported as warnings so log error here at debug level to avoid flooding logs
+                    log.debug( cnfe.getMessage() );
+
                 } catch ( IOException ioe ) {
-                    log.error( ioe.getMessage() );
+                    log.debug( ioe.getMessage() );
                 }
             }
         }

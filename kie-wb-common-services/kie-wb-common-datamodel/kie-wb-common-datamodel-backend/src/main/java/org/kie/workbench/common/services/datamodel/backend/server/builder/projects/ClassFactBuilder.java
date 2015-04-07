@@ -1,26 +1,19 @@
 package org.kie.workbench.common.services.datamodel.backend.server.builder.projects;
 
-import java.beans.Introspector;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.workbench.models.commons.backend.oracle.ProjectDataModelOracleImpl;
 import org.drools.workbench.models.datamodel.oracle.Annotation;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.MethodInfo;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
@@ -146,91 +139,49 @@ public class ClassFactBuilder extends BaseFactBuilder {
         final String factType = getType();
 
         //Get all getters and setters for the class. This does not handle delegated properties
-        //- FIELDS need a getter ("getXXX", "isXXX") or setter ("setXXX")
+        //- FIELDS need a getter ("getXXX", "isXXX") or setter ("setXXX") or are public properties
         //- METHODS are any accessor that does not have a getter or setter
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-        final Set<String> fieldNamesSet = new TreeSet<String>( inspector.getFieldNames().keySet() );
-        final List<String> fieldNames = removeIrrelevantFields( clazz,
-                                                                inspector,
-                                                                fieldNamesSet );
+        final Set<String> fieldNames = inspector.getFieldNames();
 
-        //Consolidate methods into those with getters or setters
-        final Method[] methods = clazz.getMethods();
-        final Map<String, MethodSignature> methodSignatures = removeIrrelevantMethods( getMethodSignatures( factType,
-                                                                                                            methods ) );
-
-        //Add Fields from ClassFieldInspector which provides a list of "reasonable" methods
         for ( final String fieldName : fieldNames ) {
-            final String qualifiedName = factType + "." + fieldName;
-            final Field f = inspector.getFieldTypesField().get( fieldName );
-            if ( f == null ) {
+            final ClassFieldInspector.FieldInfo f = inspector.getFieldTypesFieldInfo().get( fieldName );
+            addParametricTypeForField( factType,
+                                       fieldName,
+                                       f.getGenericType() );
 
-                //If a Field cannot be found is is really a delegated property so use the Method return type
-                if ( methodSignatures.containsKey( qualifiedName ) ) {
-                    final MethodSignature m = methodSignatures.get( qualifiedName );
-                    addParametricTypeForField( factType,
-                                               fieldName,
-                                               m.genericType );
+            final Class<?> returnType = f.getReturnType();
+            final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
 
-                    final Class<?> returnType = m.returnType;
-                    final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
-                    final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
+            addField( new ModelField( fieldName,
+                                      returnType.getName(),
+                                      ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                      f.getOrigin(),
+                                      f.getAccessorAndMutator(),
+                                      genericReturnType ) );
 
-                    addField( new ModelField( fieldName,
-                                              returnType.getName(),
-                                              ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                              ModelField.FIELD_ORIGIN.DELEGATED,
-                                              accessorAndMutator,
-                                              genericReturnType ) );
+            addEnumsForField( factType,
+                              fieldName,
+                              returnType );
 
-                    addEnumsForField( factType,
-                                      fieldName,
-                                      returnType );
-
-                }
-            } else {
-
-                //Otherwise we can use the results of ClassFieldInspector
-                final Field field = inspector.getFieldTypesField().get( fieldName );
-                addParametricTypeForField( factType,
-                                           fieldName,
-                                           field.getGenericType() );
-
-                Field[] _declaredClassFields = clazz.getDeclaredFields();
-                Collection declaredClassFields = _declaredClassFields != null ? Arrays.asList( _declaredClassFields ) : Collections.EMPTY_LIST;
-
-                final Class<?> returnType = field.getType();
-                final String genericReturnType = typeSystemConverter.translateClassToGenericType( returnType );
-                final FieldAccessorsAndMutators accessorAndMutator = methodSignatures.containsKey( qualifiedName ) ? methodSignatures.get( qualifiedName ).accessorAndMutator : FieldAccessorsAndMutators.BOTH;
-
-                //To prevent recursion we keep track of all ClassFactBuilder's created and re-use where applicable
-                if ( !discoveredFieldFactBuilders.containsKey( genericReturnType ) ) {
-                    discoveredFieldFactBuilders.put( genericReturnType,
-                                                     null );
-                    discoveredFieldFactBuilders.put( genericReturnType,
-                                                     new ClassFactBuilder( builder,
-                                                                           discoveredFieldFactBuilders,
-                                                                           returnType,
-                                                                           false,
-                                                                           typeSource ) );
-                }
-                if ( discoveredFieldFactBuilders.get( genericReturnType ) != null ) {
-                    fieldFactBuilders.put( genericReturnType,
-                                           discoveredFieldFactBuilders.get( genericReturnType ) );
-                }
-
-                addField( new ModelField( fieldName,
-                                          returnType.getName(),
-                                          ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
-                                          declaredClassFields.contains( field ) ? ModelField.FIELD_ORIGIN.DECLARED : ModelField.FIELD_ORIGIN.INHERITED,
-                                          accessorAndMutator,
-                                          genericReturnType ) );
-
-                addEnumsForField( factType,
-                                  fieldName,
-                                  returnType );
+            //To prevent recursion we keep track of all ClassFactBuilder's created and re-use where applicable
+            if ( BlackLists.isReturnTypeBlackListed( returnType ) ) {
+                continue;
             }
-
+            if ( !discoveredFieldFactBuilders.containsKey( genericReturnType ) ) {
+                discoveredFieldFactBuilders.put( genericReturnType,
+                                                 null );
+                discoveredFieldFactBuilders.put( genericReturnType,
+                                                 new ClassFactBuilder( builder,
+                                                                       discoveredFieldFactBuilders,
+                                                                       returnType,
+                                                                       false,
+                                                                       typeSource ) );
+            }
+            if ( discoveredFieldFactBuilders.get( genericReturnType ) != null ) {
+                fieldFactBuilders.put( genericReturnType,
+                                       discoveredFieldFactBuilders.get( genericReturnType ) );
+            }
         }
 
         //Methods for use in Expressions and ActionCallMethod's
@@ -248,108 +199,6 @@ public class ClassFactBuilder extends BaseFactBuilder {
         }
         this.methodInformation.put( factType,
                                     methodInformation );
-    }
-
-    // Remove the unneeded "fields" that come from java.lang.Object
-    private List<String> removeIrrelevantFields( final Class<?> clazz,
-                                                 final ClassFieldInspector inspector,
-                                                 final Set<String> fieldNames ) {
-        final List<String> result = new ArrayList<String>();
-        for ( String fieldName : fieldNames ) {
-            if ( !inspector.isNonGetter( fieldName ) ) {
-                if ( !BlackLists.isClassMethodBlackListed( clazz,
-                                                           fieldName ) ) {
-                    result.add( fieldName );
-                }
-            }
-        }
-        return result;
-    }
-
-    // Remove the unneeded "methods" that come from java.lang.Object
-    private Map<String, MethodSignature> removeIrrelevantMethods( final Map<String, MethodSignature> methods ) {
-        final Map<String, MethodSignature> result = new HashMap<String, MethodSignature>();
-        for ( Map.Entry<String, MethodSignature> methodSignature : methods.entrySet() ) {
-            String methodName = methodSignature.getKey();
-            methodName = methodName.substring( methodName.lastIndexOf( "." ) + 1 );
-            if ( !methodName.equals( "class" ) ) {
-                result.put( methodSignature.getKey(),
-                            methodSignature.getValue() );
-            }
-        }
-        return result;
-    }
-
-    private Map<String, MethodSignature> getMethodSignatures( final String factType,
-                                                              final Method[] methods ) {
-
-        Map<String, MethodSignature> methodSignatures = new HashMap<String, MethodSignature>();
-
-        //Determine accessors for methods
-        for ( Method method : methods ) {
-            String name = method.getName();
-            if ( method.getParameterTypes().length > 0 ) {
-
-                //Strip bare mutator name
-                if ( name.startsWith( "set" ) ) {
-                    name = Introspector.decapitalize( name.substring( 3 ) );
-                } else {
-                    name = Introspector.decapitalize( name );
-                }
-
-                final String factField = factType + "." + name;
-                if ( !methodSignatures.containsKey( factField ) ) {
-                    methodSignatures.put( factField,
-                                          new MethodSignature( FieldAccessorsAndMutators.MUTATOR,
-                                                               void.class.getGenericSuperclass(),
-                                                               void.class ) );
-                } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR ) {
-                    MethodSignature signature = methodSignatures.get( factField );
-                    signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
-                }
-
-            } else if ( !method.getReturnType().getName().equals( "void" ) ) {
-
-                //Strip bare accessor name
-                if ( name.startsWith( "get" ) ) {
-                    name = Introspector.decapitalize( name.substring( 3 ) );
-                } else if ( name.startsWith( "is" ) ) {
-                    name = Introspector.decapitalize( name.substring( 2 ) );
-                } else {
-                    name = Introspector.decapitalize( name );
-                }
-
-                final String factField = factType + "." + name;
-                if ( !methodSignatures.containsKey( factField ) ) {
-                    methodSignatures.put( factField,
-                                          new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
-                                                               method.getGenericReturnType(),
-                                                               method.getReturnType() ) );
-                } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
-                    MethodSignature signature = methodSignatures.get( factField );
-                    signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
-                    signature.genericType = method.getGenericReturnType();
-                    signature.returnType = method.getReturnType();
-                }
-            }
-        }
-        return methodSignatures;
-    }
-
-    private static class MethodSignature {
-
-        private MethodSignature( final FieldAccessorsAndMutators accessorAndMutator,
-                                 final Type genericType,
-                                 final Class<?> returnType ) {
-            this.accessorAndMutator = accessorAndMutator;
-            this.genericType = genericType;
-            this.returnType = returnType;
-        }
-
-        private FieldAccessorsAndMutators accessorAndMutator;
-        private Type genericType;
-        private Class<?> returnType;
-
     }
 
     private void addEnumsForField( final String className,

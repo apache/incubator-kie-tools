@@ -94,13 +94,11 @@ public class PackageDataModelDeclaredTypesTest {
         PackageDataModelOracleTestUtils.assertContains( "DRLBean",
                                                         oracle.getFactTypes() );
 
-        assertEquals( 3,
+        assertEquals( 2,
                       oracle.getExternalFactTypes().length );
         PackageDataModelOracleTestUtils.assertContains( "t1p2.Bean2",
                                                         oracle.getExternalFactTypes() );
         PackageDataModelOracleTestUtils.assertContains( "java.lang.String",
-                                                        oracle.getExternalFactTypes() );
-        PackageDataModelOracleTestUtils.assertContains( "int",
                                                         oracle.getExternalFactTypes() );
 
         oracle.getTypeSource( "Bean1",
