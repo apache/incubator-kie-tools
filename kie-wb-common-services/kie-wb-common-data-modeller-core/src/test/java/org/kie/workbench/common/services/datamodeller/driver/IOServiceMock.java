@@ -441,4 +441,10 @@ public class IOServiceMock
                        OpenOption... openOptions ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
+
+    @Override
+    public int priority() {
+        return 0;
+    }
+
 }
