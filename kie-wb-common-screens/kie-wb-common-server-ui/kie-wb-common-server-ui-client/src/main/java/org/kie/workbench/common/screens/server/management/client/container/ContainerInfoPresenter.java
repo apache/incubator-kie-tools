@@ -63,6 +63,7 @@ import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
+import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
@@ -308,6 +309,11 @@ public class ContainerInfoPresenter {
                             @Override
                             public int getOrder() {
                                 return 0;
+                            }
+
+                            @Override
+                            public void accept( MenuVisitor visitor ) {
+                                visitor.visit( this );
                             }
 
                             @Override

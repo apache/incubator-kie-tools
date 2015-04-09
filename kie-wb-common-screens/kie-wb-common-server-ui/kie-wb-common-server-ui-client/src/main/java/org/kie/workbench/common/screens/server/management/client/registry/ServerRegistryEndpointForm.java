@@ -42,7 +42,7 @@ import org.kie.workbench.common.screens.server.management.model.Server;
 import org.kie.workbench.common.screens.server.management.service.ServerAlreadyRegisteredException;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.common.ErrorPopup;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.mvp.Command;
 import org.uberfire.util.URIUtil;
@@ -64,6 +64,9 @@ public class ServerRegistryEndpointForm
 
     @Inject
     private PlaceManager placeManager;
+
+    @Inject
+    private ErrorPopupPresenter errorPopup;
 
     @UiField
     Button connect;
@@ -150,7 +153,7 @@ public class ServerRegistryEndpointForm
                               if ( throwable instanceof ServerAlreadyRegisteredException ) {
                                   errorMessage = throwable.getMessage();
                               }
-                              ErrorPopup.showMessage( errorMessage, null, new Command() {
+                              errorPopup.showMessage( errorMessage, null, new Command() {
                                   @Override
                                   public void execute() {
                                       hide();

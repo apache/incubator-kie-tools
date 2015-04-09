@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -34,8 +35,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.guvnor.common.services.shared.metadata.CategoriesService;
 import org.guvnor.common.services.shared.metadata.model.Categories;
 import org.guvnor.common.services.shared.metadata.model.CategoryItem;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.bus.client.api.base.MessageBuilder;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
 import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
 import org.uberfire.backend.vfs.Path;
@@ -112,7 +113,12 @@ public class CategoryExplorerWidget
      * This will refresh the tree and restore it back to the original state
      */
     private void loadInitialTree() {
-        navTreeWidget.addItem( MetadataConstants.INSTANCE.PleaseWait() );
+        navTreeWidget.addItem( new SafeHtml() {
+            @Override
+            public String asString() {
+                return MetadataConstants.INSTANCE.PleaseWait();
+            }
+        } );
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred( new Command() {
             public void execute() {

@@ -51,8 +51,8 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.common.ContextDropdownButton;
 import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.views.bs2.context.ContextDropdownButton;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
@@ -62,6 +62,7 @@ import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
+import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
 import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
@@ -358,8 +359,6 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                                         add( new Divider() );
                                         add( archiveProject );
                                         add( archiveRepository );
-//                                        add( new Divider() );
-//                                        add( hiddenFiles );
                                     }
 
                                     @Override
@@ -402,6 +401,11 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                             @Override
                             public int getOrder() {
                                 return 0;
+                            }
+
+                            @Override
+                            public void accept( MenuVisitor visitor ) {
+                                visitor.visit( this );
                             }
 
                             @Override
@@ -481,6 +485,11 @@ public class ExplorerPresenterImpl implements ExplorerPresenter {
                             @Override
                             public int getOrder() {
                                 return 0;
+                            }
+
+                            @Override
+                            public void accept( final MenuVisitor visitor ) {
+                                visitor.visit( this );
                             }
 
                             @Override
