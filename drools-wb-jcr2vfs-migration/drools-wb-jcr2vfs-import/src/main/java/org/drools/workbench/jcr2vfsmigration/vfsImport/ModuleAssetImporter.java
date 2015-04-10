@@ -200,9 +200,10 @@ public class ModuleAssetImporter {
 
             for ( XmlAsset xmlAsset : xmlAssets.getAssets() ) {
                 if ( xmlAsset == null ) {
-                    System.out.println( "WARNING: skipping null asset in import" );
+                    System.out.println( "    WARNING: skipping null asset in import" );
                     continue;
                 }
+                System.out.printf( "    Importing asset '%s.%s'.\n", xmlAsset.getName(), xmlAsset.getAssetType() );
                 importAssetHistory( module, xmlAsset );
                 importAsset( module, xmlAsset, null );
             }

@@ -135,7 +135,7 @@ public class XmlAssetFormat extends AbstractXmlAssetFormat {
             case UNSUPPORTED:
 
             default: {
-                System.out.println( "Attempting to parse asset " + name + " into attachment asset" );
+                System.out.println( "    Attempting to parse asset " + name + " into attachment asset" );
                 return aaf.doParse( name, format, lastContributor, checkinComment, lastModified, assetNode );
             }
         }
