@@ -18,7 +18,6 @@ package com.ait.lienzo.client.core.shape.guides;
 
 import com.ait.lienzo.client.core.shape.GroupOf;
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
@@ -59,8 +58,6 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
     private final Text          m_labl;
 
-    private Layer               m_draw;
-
     private int                 m_wait;
 
     private boolean             m_show;
@@ -82,11 +79,6 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
     private static final Shadow SHADOW          = new Shadow(ColorName.BLACK.getColor().setA(0.80), 10, 3, 3);
 
     public ToolTip()
-    {
-        this(null);
-    }
-
-    public ToolTip(final Layer layer)
     {
         super(GroupType.GROUP, new PrimitiveFastArrayStorageEngine());
 
@@ -114,13 +106,13 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
         setTailValue(12);
 
+        setVisible(false);
+
         setListening(false);
 
         setFillColor(ColorName.WHITESMOKE);
 
         m_show = true;
-
-        setLayer(layer);
     }
 
     @Override
@@ -130,55 +122,22 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
     }
 
     @Override
-    public ToolTip setLayer(final Layer layer)
-    {
-        if (layer != m_draw)
-        {
-            if ((null != m_draw) && (false == m_show))
-            {
-                m_draw.remove(this);
-
-                m_draw.batch();
-            }
-            m_draw = layer;
-
-            if ((null != m_draw) && (false == m_show))
-            {
-                m_draw.add(this);
-
-                m_draw.batch();
-            }
-        }
-        return this;
-    }
-
-    @Override
-    public Layer getLayer()
-    {
-        return m_draw;
-    }
-
-    @Override
     public ToolTip show(final double x, final double y)
     {
         return show(x, y, false);
     }
 
-    private final ToolTip show(final double x, final double y, final boolean force)
+    private ToolTip show(final double x, final double y, final boolean force)
     {
         m_autoHider = null;
 
-        if (null == m_draw)
-        {
-            return this;
-        }
         if ((false == force) && (false == m_show))
         {
             return this;
         }
         if (false == m_show)
         {
-            m_draw.remove(this);
+            hide();
         }
         m_oldx = x;
 
@@ -284,8 +243,6 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
 
         setY(y - rh);
 
-        m_draw.add(this);
-
         if ((false == force) && (getAutoHideTime() > 0))
         {
             m_autoHider = new RepeatingCommand()
@@ -380,27 +337,25 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
     @Override
     public ToolTip draw()
     {
-        if (null != m_draw)
-        {
-            moveToTop();
+        moveToTop();
 
-            m_draw.batch();
-        }
+        getLayer().batch();
+
         return this;
     }
 
     @Override
     public ToolTip hide()
     {
-        if ((null == m_draw) || (true == m_show))
+        if (true == m_show)
         {
             return this;
         }
         m_show = true;
+        
+        setVisible(false);
 
-        m_draw.remove(this);
-
-        m_draw.batch();
+        getLayer().batch();
 
         return this;
     }

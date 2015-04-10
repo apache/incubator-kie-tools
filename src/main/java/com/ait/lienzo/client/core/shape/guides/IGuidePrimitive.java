@@ -35,6 +35,4 @@ public interface IGuidePrimitive<T extends Node<T>> extends IPrimitive<T>
     public T setAutoHideTime(int time);
 
     public Layer getLayer();
-
-    public T setLayer(Layer layer);
 }
