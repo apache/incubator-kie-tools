@@ -18,6 +18,7 @@ package com.ait.lienzo.client.core.shape.guides;
 
 import com.ait.lienzo.client.core.shape.GroupOf;
 import com.ait.lienzo.client.core.shape.IPrimitive;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.Triangle;
@@ -259,6 +260,8 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
             };
             Scheduler.get().scheduleFixedDelay(m_autoHider, getAutoHideTime());
         }
+        setVisible(true);
+
         return draw();
     }
 
@@ -337,10 +340,14 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
     @Override
     public ToolTip draw()
     {
-        moveToTop();
+        final Layer layer = getLayer();
 
-        getLayer().batch();
+        if (null != layer)
+        {
+            moveToTop();
 
+            layer.batch();
+        }
         return this;
     }
 
@@ -352,11 +359,15 @@ public class ToolTip extends GroupOf<IPrimitive<?>, ToolTip> implements IGuidePr
             return this;
         }
         m_show = true;
-        
+
         setVisible(false);
 
-        getLayer().batch();
+        final Layer layer = getLayer();
 
+        if (null != layer)
+        {
+            layer.batch();
+        }
         return this;
     }
 

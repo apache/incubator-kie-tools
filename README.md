@@ -29,11 +29,11 @@ SNAPSHOT:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.101-SNAPSHOT</version>
+  <version>2.0.103-SNAPSHOT</version>
 </dependency>
 ```
 
-As of 2.0.93-SNAPSHOT, Lienzo depends on 2 other small maven artifacts.
+As of 2.0.103-SNAPSHOT, Lienzo depends on 2 other small maven artifacts.
 
 ```xml
 <repositories>
