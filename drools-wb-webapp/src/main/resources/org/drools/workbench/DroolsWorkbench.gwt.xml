@@ -4,6 +4,7 @@
 <module>
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireClientAll"/>
+  <inherits name="org.uberfire.client.views.Bootstrap2"/>
 
   <!-- Uberfire Extensions - Runtime Plugin -->
   <inherits name="org.uberfire.ext.plugin.RuntimePluginClient"/>
@@ -31,7 +32,6 @@
   <inherits name="org.kie.workbench.common.screens.datamodeller.KieWorkbenchDatamodellerClient"/>
   <inherits name="org.kie.workbench.common.screens.javaeditor.KieWorkbenchCommonJavaEditorClient"/>
   <inherits name="org.kie.workbench.common.screens.server.management.ServerManagementClient"/>
-  <inherits name="org.kie.workbench.common.screens.contributors.KieWorkbenchContributorsClient"/>
 
   <!-- Common Services -->
   <inherits name='org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI'/>
@@ -83,16 +83,5 @@
   <extend-property name="locale" values="ja_JP"/>
   <extend-property name="locale" values="pt_BR"/>
   <extend-property name="locale" values="zh_CN"/>
-
-  <!-- SuperDevMode -->
-  <add-linker name="xsiframe"/>
-  <set-configuration-property name="devModeRedirectEnabled" value="true"/>
-  <set-property name="compiler.useSourceMaps" value="true"/>
-  <set-configuration-property name='xsiframe.failIfScriptTag' value='false'/>
-
-  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
-
-  <!-- We don't need to support IE8 or older -->
-  <set-property name="user.agent" value="gecko1_8,safari,opera,ie9"/>
 
 </module>
