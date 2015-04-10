@@ -20,6 +20,7 @@ public class MortgagesRepoImportTest {
         FileUtils.cleanDirectory(jcrExportDir);
         File jcrExportZip = new File(Class.class.getResource("/jcr-export-xml.zip").getFile());
         unzipFile(jcrExportZip, jcrExportDir);
+        System.setProperty("org.kie.uberfire.social.activities.enable", "false");
     }
 
     @Test
