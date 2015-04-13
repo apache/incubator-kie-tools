@@ -187,6 +187,16 @@
       <artifactId>jboss-logging</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>
+            uberfire-widgets-properties-editor-client
+        </artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-widgets-service-api</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

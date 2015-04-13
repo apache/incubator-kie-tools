@@ -249,23 +249,23 @@ public interface CommonConstants
     String FailedToGenerateSource();
 
     String About();
-    
+
     String Language();
-    
+
     String Language_Selector();
-    
+
     String German();
-    
+
     String French();
-    
+
     String Japanese();
-    
+
     String Chinese();
-    
+
     String Spanish();
-    
+
     String Portuguese();
-    
+
     String English();
 
     String ResetPerspectivesTooltip();
@@ -277,5 +277,13 @@ public interface CommonConstants
     String KBase();
 
     String KSession();
+
+    String Workbench_Settings();
+
+    String Advanced();
+
+    String Basic();
+
+    String View_Mode();
 
 }
