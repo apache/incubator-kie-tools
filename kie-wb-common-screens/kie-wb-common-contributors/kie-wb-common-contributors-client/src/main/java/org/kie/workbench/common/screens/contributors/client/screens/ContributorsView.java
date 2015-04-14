@@ -24,7 +24,7 @@ import org.dashbuilder.displayer.DisplayerSettingsFactory;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerCoordinator;
 import org.dashbuilder.displayer.client.DisplayerHelper;
-import org.dashbuilder.renderer.table.client.TableRenderer;
+import org.dashbuilder.renderer.client.DefaultRenderer;
 import org.kie.workbench.common.screens.contributors.client.resources.i18n.ContributorsConstants;
 
 import static org.dashbuilder.dataset.date.DayOfWeek.*;
@@ -81,9 +81,9 @@ public class ContributorsView extends Composite {
         areaChartByDate = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newAreaChartSettings()
                 .dataset(ALL)
-                .group(COLUMN_DATE).dynamic(80, MONTH)
+                .group(COLUMN_DATE).dynamic(80, MONTH, true)
                 .column(COLUMN_DATE, ContributorsConstants.INSTANCE.date())
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .title(ContributorsConstants.INSTANCE.numberOfCommitsEvolution())
                 .titleVisible(true)
                 .width(600).height(200)
@@ -96,10 +96,10 @@ public class ContributorsView extends Composite {
                 .dataset(ALL)
                 .group(COLUMN_ORG)
                 .column(COLUMN_ORG, ContributorsConstants.INSTANCE.organizationalUnit())
-                .column(COLUMN_REPO, DISTINCT, ContributorsConstants.INSTANCE.numberOfRepositories())
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COLUMN_REPO, DISTINCT).format(ContributorsConstants.INSTANCE.numberOfRepositories(), "#,##0")
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .column(COLUMN_ORG, ContributorsConstants.INSTANCE.organizationalUnit())
-                .column(COLUMN_AUTHOR, DISTINCT, ContributorsConstants.INSTANCE.numberOfContributors())
+                .column(COLUMN_AUTHOR, DISTINCT).format(ContributorsConstants.INSTANCE.numberOfContributors(), "#,##0")
                 .title(ContributorsConstants.INSTANCE.commitsPerOrganization())
                 .titleVisible(true)
                 .width(400).height(220)
@@ -110,9 +110,9 @@ public class ContributorsView extends Composite {
         pieChartYears = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newPieChartSettings()
                 .dataset(ALL)
-                .group(COLUMN_DATE).dynamic(YEAR)
+                .group(COLUMN_DATE).dynamic(YEAR, false)
                 .column(COLUMN_DATE)
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .sort(COLUMN_DATE, ASCENDING)
                 .title(ContributorsConstants.INSTANCE.years())
                 .titleVisible(false)
@@ -124,9 +124,9 @@ public class ContributorsView extends Composite {
         pieChartQuarters = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newPieChartSettings()
                 .dataset(ALL)
-                .group(COLUMN_DATE).fixed(QUARTER)
+                .group(COLUMN_DATE).fixed(QUARTER, false)
                 .column(COLUMN_DATE)
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .title(ContributorsConstants.INSTANCE.quarters())
                 .titleVisible(false)
                 .width(230).height(170)
@@ -137,9 +137,9 @@ public class ContributorsView extends Composite {
         barChartDayOfWeek = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newBarChartSettings()
                 .dataset(ALL)
-                .group(COLUMN_DATE).fixed(DAY_OF_WEEK).firstDay(SUNDAY)
+                .group(COLUMN_DATE).fixed(DAY_OF_WEEK, false).firstDay(SUNDAY)
                 .column(COLUMN_DATE)
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .title(ContributorsConstants.INSTANCE.dayOfWeek())
                 .titleVisible(false)
                 .width(230).height(170)
@@ -160,7 +160,7 @@ public class ContributorsView extends Composite {
                 .tablePageSize(5)
                 .tableWidth(1000)
                 .tableOrderEnabled(true)
-                .renderer(TableRenderer.UUID)
+                .renderer(DefaultRenderer.UUID)
                 .filterOn(true, true, true)
                 .buildSettings());
 
@@ -169,7 +169,7 @@ public class ContributorsView extends Composite {
                 .dataset(ALL)
                 .group(COLUMN_ORG)
                 .column(COLUMN_ORG, ContributorsConstants.INSTANCE.organizationalUnit())
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .title(ContributorsConstants.INSTANCE.organizationalUnit())
                 .sort(COLUMN_ORG, ASCENDING)
                 .filterOn(false, true, true)
@@ -180,7 +180,7 @@ public class ContributorsView extends Composite {
                 .dataset(ALL)
                 .group(COLUMN_REPO)
                 .column(COLUMN_REPO, ContributorsConstants.INSTANCE.repository())
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .sort(COLUMN_REPO, ASCENDING)
                 .title(ContributorsConstants.INSTANCE.repository())
                 .filterOn(false, true, true)
@@ -191,7 +191,7 @@ public class ContributorsView extends Composite {
                 .dataset(ALL)
                 .group(COLUMN_AUTHOR)
                 .column(COLUMN_AUTHOR, ContributorsConstants.INSTANCE.author())
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .sort(COLUMN_AUTHOR, ASCENDING)
                 .title(ContributorsConstants.INSTANCE.author())
                 .filterOn(false, true, true)
@@ -202,7 +202,7 @@ public class ContributorsView extends Composite {
                 .dataset(ALL)
                 .group(COLUMN_AUTHOR)
                 .column(COLUMN_AUTHOR, ContributorsConstants.INSTANCE.topContributor())
-                .column(COUNT, ContributorsConstants.INSTANCE.numberOfCommits())
+                .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
                 .sort(ContributorsConstants.INSTANCE.numberOfCommits(), DESCENDING)
                 .title(ContributorsConstants.INSTANCE.topContributor())
                 .filterOn(false, true, true)

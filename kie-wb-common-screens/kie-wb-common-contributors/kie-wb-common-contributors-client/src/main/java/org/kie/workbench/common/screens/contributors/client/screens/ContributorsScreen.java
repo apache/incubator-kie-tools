@@ -58,7 +58,7 @@ public class ContributorsScreen {
     private void onContributorsDataSetOutdated(@Observes DataSetModifiedEvent event) {
         checkNotNull("event", event);
 
-        String targetUUID = event.getDataSetUUID();
+        String targetUUID = event.getDataSetDef().getUUID();
         if (ContributorsDataSets.ALL.equals(targetUUID)) {
             workbenchNotification.fire(new NotificationEvent(ContributorsConstants.INSTANCE.contributorsDataSetOutdated(), INFO));
             contributorsView.redraw();
