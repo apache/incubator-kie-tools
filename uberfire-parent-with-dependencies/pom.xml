@@ -93,7 +93,7 @@
     <version.com.google.gwt.gwtmockito>1.1.4</version.com.google.gwt.gwtmockito>
   </properties>
 
-  <!-- IMPORTANT: Do not declare any build configuration here! Declare it in kie-parent-metadata. -->
+  <!-- IMPORTANT: Do not declare any build configuration here! Declare it in uberfire-parent-metadata. -->
   <build>
     <pluginManagement>
       <plugins>
