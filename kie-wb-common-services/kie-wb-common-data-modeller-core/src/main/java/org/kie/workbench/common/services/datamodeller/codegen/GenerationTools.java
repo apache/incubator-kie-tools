@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.services.datamodeller.codegen;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.services.datamodeller.core.*;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;

@@ -20,8 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import javax.lang.model.SourceVersion;
 
-import org.apache.commons.lang.CharUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.CharUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ValidationUtils {
 

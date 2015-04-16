@@ -9,7 +9,7 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.guvnor.common.services.builder.ResourceChangeIncrementalBuilder;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -39,7 +39,7 @@ public class ProjectDataModelConcurrencyTest {
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create( JavaArchive.class,
                                   "builder.jar" )
-                .addPackage("org.kie.commons.java.nio.fs.jgit")
+                .addPackage( "org.kie.commons.java.nio.fs.jgit" )
                 .addPackage( "org.kie.workbench.common.services.datamodel.backend.server" )
                 .addPackage( "org.kie.workbench.common.services.datamodel.backend.server.cache" )
                 .addPackage( "org.guvnor.m2repo.backend.server" )
@@ -153,7 +153,7 @@ public class ProjectDataModelConcurrencyTest {
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
-                                System.out.println( ExceptionUtils.getFullStackTrace( e ) );
+                                ExceptionUtils.printRootCauseStackTrace( e );
                             }
                         }
                     } );
@@ -171,7 +171,7 @@ public class ProjectDataModelConcurrencyTest {
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
-                                System.out.println( ExceptionUtils.getFullStackTrace( e ) );
+                                ExceptionUtils.printRootCauseStackTrace( e );
                             }
                         }
                     } );
@@ -187,7 +187,7 @@ public class ProjectDataModelConcurrencyTest {
                             } catch ( Throwable e ) {
                                 result.setFailed( true );
                                 result.setMessage( e.getMessage() );
-                                System.out.println( ExceptionUtils.getFullStackTrace( e ) );
+                                ExceptionUtils.printRootCauseStackTrace( e );
                             }
                         }
                     } );
