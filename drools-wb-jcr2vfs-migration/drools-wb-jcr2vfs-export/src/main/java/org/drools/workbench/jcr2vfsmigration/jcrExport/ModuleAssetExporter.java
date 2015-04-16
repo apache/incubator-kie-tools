@@ -25,7 +25,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
