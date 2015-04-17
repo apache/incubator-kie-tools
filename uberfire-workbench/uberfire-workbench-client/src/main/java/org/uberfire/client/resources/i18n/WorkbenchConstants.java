@@ -41,4 +41,8 @@ Messages {
     String collapseToolbar();
 
     String showSplashHelp();
+    
+    String lockHint();
+    
+    String lockedMessage(String lockedBy);
 }

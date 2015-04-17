@@ -15,16 +15,21 @@
  */
 package org.uberfire.client.mvp;
 
+import javax.inject.Inject;
+
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
 /**
- * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not written by
- * hand; rather, they are generated from classes annotated with {@link WorkbenchEditor}.
+ * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not
+ * written by hand; rather, they are generated from classes annotated with {@link WorkbenchEditor}.
  */
 public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity implements WorkbenchEditorActivity {
+
+    @Inject
+    private EditorLockManager lockManager;
 
     protected ObservablePath path;
 
@@ -39,7 +44,8 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public final void onStartup( PlaceRequest place ) {
         if ( place instanceof PathPlaceRequest ) {
-            onStartup( ((PathPlaceRequest) place).getPath(), place );
+            onStartup( ((PathPlaceRequest) place).getPath(),
+                       place );
         } else {
             // XXX should throw an exception here instead? can an editor be launched without a path?
             super.onStartup( place );
@@ -51,6 +57,15 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
                            final PlaceRequest place ) {
         super.onStartup( place );
         this.path = path;
+        lockManager.init( this );
+    }
+
+    @Override
+    public void onOpen() {
+        super.onOpen();
+        if ( path != null ) {
+            lockManager.acquireLockOnDemand();
+        }
     }
 
     @Override
@@ -61,6 +76,20 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public boolean isDirty() {
         return false;
+    }
+
+    @Override
+    public void onClose() {
+        lockManager.releaseLock();
+        super.onClose();
+    }
+
+    public ObservablePath getPath() {
+        return path;
+    }
+    
+    public boolean isOpen() {
+        return open;
     }
 
 }

@@ -49,5 +49,9 @@ public interface WorkbenchImages
     //CompassDropController Centre
     @Source("images/compass-centre.png")
     ImageResource compassCentre();
-
+    
+    //Lock indicator
+    @Source("images/lock.png")
+    ImageResource lock();
+    
 }

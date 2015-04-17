@@ -24,6 +24,7 @@ import org.uberfire.backend.vfs.FileSystem;
 import org.uberfire.backend.vfs.FileSystemFactory;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
+import org.uberfire.java.nio.file.Files;
 
 import static org.uberfire.backend.vfs.PathFactory.*;
 
@@ -65,6 +66,20 @@ public final class Paths {
         }
 
         return cache.get( fs );
+    }
+    
+    public static String readLockedBy(final Path path) {
+        org.uberfire.java.nio.file.Path lock = convert( PathFactory.newLock( path ) );
+        if (!Files.exists( lock )) {
+            return null;
+        }
+        else {
+            return new String( Files.readAllBytes( lock ));
+        }
+    }
+    
+    public static boolean isLock( final Path path ) {
+        return path.toURI().endsWith( PathFactory.LOCK_FILE_EXTENSION );
     }
 
 }

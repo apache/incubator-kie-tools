@@ -25,6 +25,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 public final class PathFactory {
 
+    public static final String LOCK_FILE_EXTENSION = ".ulock";
     public static String VERSION_PROPERTY = "hasVersionSupport";
 
     private PathFactory() {
@@ -45,6 +46,12 @@ public final class PathFactory {
                                 final String uri,
                                 final Map<String, Object> attrs ) {
         return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
+    }
+    
+    public static Path newLock(final Path path) {
+        checkNotNull( "path", path );
+        return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION, 
+                                    path.toURI() + LOCK_FILE_EXTENSION );
     }
 
     @Portable

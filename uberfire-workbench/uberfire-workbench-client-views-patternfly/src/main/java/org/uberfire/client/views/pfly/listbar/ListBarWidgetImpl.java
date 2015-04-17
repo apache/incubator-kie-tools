@@ -15,41 +15,20 @@
  */
 package org.uberfire.client.views.pfly.listbar;
 
+import static com.google.gwt.dom.client.Style.Display.BLOCK;
+import static com.google.gwt.dom.client.Style.Display.NONE;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -81,7 +60,32 @@ import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
 
-import static com.google.gwt.dom.client.Style.Display.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Position;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Implementation of ListBarWidget based on GWTBootstrap 2 components.
@@ -310,7 +314,7 @@ public class ListBarWidgetImpl
         // IMPORTANT! if you change what goes in this map, update the remove(PartDefinition) method
         partContentView.put( partDefinition, panel );
 
-        final Widget title = buildTitle( view.getPresenter().getTitle() );
+        final Widget title = buildTitle( view.getPresenter().getTitle(), view.getPresenter().getTitleDecoration() );
         partTitle.put( partDefinition, title );
         title.ensureDebugId( DEBUG_TITLE_PREFIX + view.getPresenter().getTitle() );
 
@@ -328,13 +332,14 @@ public class ListBarWidgetImpl
         this.title.add( title );
     }
 
-    private Widget buildTitle( final String title ) {
+    private Widget buildTitle( final String title , final IsWidget titleDecoration) {
         final SpanElement spanElement = Document.get().createSpanElement();
         spanElement.getStyle().setWhiteSpace( Style.WhiteSpace.NOWRAP );
         spanElement.getStyle().setOverflow( Style.Overflow.HIDDEN );
         spanElement.getStyle().setTextOverflow( Style.TextOverflow.ELLIPSIS );
         spanElement.getStyle().setDisplay( BLOCK );
-        spanElement.setInnerText( title.replaceAll( " ", "\u00a0" ) );
+        final String titleWidget = (titleDecoration instanceof Image) ? titleDecoration.toString() : "";
+        spanElement.setInnerHTML(titleWidget + " " + title.replaceAll( " ", "\u00a0" ) );
 
         return new DragArea() {{
             add( spanElement );
@@ -345,7 +350,7 @@ public class ListBarWidgetImpl
     public void changeTitle( final PartDefinition part,
                              final String title,
                              final IsWidget titleDecoration ) {
-        final Widget _title = buildTitle( title );
+        final Widget _title = buildTitle( title, titleDecoration );
         partTitle.put( part, _title );
         if ( isDndEnabled ) {
             dndManager.makeDraggable( partContentView.get( part ), _title );
