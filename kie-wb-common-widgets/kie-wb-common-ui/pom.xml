@@ -188,14 +188,20 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>
-            uberfire-widgets-properties-editor-client
-        </artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>
+        uberfire-widgets-properties-editor-client
+      </artifactId>
+    </dependency>
+
+    <!-- WorkbenchConfigurationPopup uses UserPreferencesService -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-service-api</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-service-api</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-service-backend</artifactId>
     </dependency>
   </dependencies>
 
