@@ -56,7 +56,7 @@ import com.ait.lienzo.shared.core.types.LineJoin;
 import com.ait.lienzo.shared.core.types.TextAlign;
 import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.ait.lienzo.shared.core.types.TextUnit;
-import com.ait.tooling.nativetools.client.NNativeType;
+import com.ait.tooling.common.api.json.JSONType;
 import com.ait.tooling.nativetools.client.NObjectJSO;
 import com.ait.tooling.nativetools.client.NUtils.Native;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
@@ -86,7 +86,7 @@ public class Attributes
     {
         m_ser = ser;
 
-        if ((null != jso) && (Native.is(jso, NNativeType.OBJECT)))
+        if ((null != jso) && (Native.is(jso, JSONType.OBJECT)))
         {
             m_jso = jso.cast();
         }
@@ -206,7 +206,7 @@ public class Attributes
 
     public final double getFillAlpha()
     {
-        if (is(Attribute.FILL_ALPHA.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.FILL_ALPHA.getProperty(), JSONType.NUMBER))
         {
             double alpha = m_jso.getAsDouble(Attribute.FILL_ALPHA.getProperty());
 
@@ -238,7 +238,7 @@ public class Attributes
 
     public final double getStrokeAlpha()
     {
-        if (is(Attribute.STROKE_ALPHA.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.STROKE_ALPHA.getProperty(), JSONType.NUMBER))
         {
             double alpha = m_jso.getAsDouble(Attribute.STROKE_ALPHA.getProperty());
 
@@ -1065,7 +1065,7 @@ public class Attributes
 
     public final double getAlpha()
     {
-        if (is(Attribute.ALPHA.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.ALPHA.getProperty(), JSONType.NUMBER))
         {
             double alpha = m_jso.getAsDouble(Attribute.ALPHA.getProperty());
 
@@ -1336,7 +1336,7 @@ public class Attributes
 
     public final double getVolume()
     {
-        if (is(Attribute.VOLUME.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.VOLUME.getProperty(), JSONType.NUMBER))
         {
             double volume = m_jso.getAsDouble(Attribute.VOLUME.getProperty());
 
@@ -1375,7 +1375,7 @@ public class Attributes
 
     public final double getCurveFactor()
     {
-        if (is(Attribute.CURVE_FACTOR.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.CURVE_FACTOR.getProperty(), JSONType.NUMBER))
         {
             double factor = m_jso.getAsDouble(Attribute.CURVE_FACTOR.getProperty());
 
@@ -1407,7 +1407,7 @@ public class Attributes
 
     public final double getAngleFactor()
     {
-        if (is(Attribute.ANGLE_FACTOR.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.ANGLE_FACTOR.getProperty(), JSONType.NUMBER))
         {
             double factor = m_jso.getAsDouble(Attribute.ANGLE_FACTOR.getProperty());
 
@@ -1488,7 +1488,7 @@ public class Attributes
 
     public final double getHeadOffset()
     {
-        if (is(Attribute.HEAD_OFFSET.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.HEAD_OFFSET.getProperty(), JSONType.NUMBER))
         {
             double offset = m_jso.getAsDouble(Attribute.HEAD_OFFSET.getProperty());
 
@@ -1528,7 +1528,7 @@ public class Attributes
 
     public final double getTailOffset()
     {
-        if (is(Attribute.TAIL_OFFSET.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.TAIL_OFFSET.getProperty(), JSONType.NUMBER))
         {
             double offset = m_jso.getAsDouble(Attribute.TAIL_OFFSET.getProperty());
 
@@ -1568,7 +1568,7 @@ public class Attributes
 
     public final double getCorrectionOffset()
     {
-        if (is(Attribute.CORRECTION_OFFSET.getProperty(), NNativeType.NUMBER))
+        if (is(Attribute.CORRECTION_OFFSET.getProperty(), JSONType.NUMBER))
         {
             double offset = m_jso.getAsDouble(Attribute.CORRECTION_OFFSET.getProperty());
 
@@ -1654,7 +1654,7 @@ public class Attributes
 
     public final int getInteger(String name)
     {
-        if (is(name, NNativeType.NUMBER))
+        if (is(name, JSONType.NUMBER))
         {
             return m_jso.getAsInteger(name);
         }
@@ -1663,7 +1663,7 @@ public class Attributes
 
     public final double getDouble(String name)
     {
-        if (is(name, NNativeType.NUMBER))
+        if (is(name, JSONType.NUMBER))
         {
             return m_jso.getAsDouble(name);
         }
@@ -1778,7 +1778,7 @@ public class Attributes
 
     public final String getString(String name)
     {
-        if (is(name, NNativeType.STRING))
+        if (is(name, JSONType.STRING))
         {
             return m_jso.getAsString(name);
         }
@@ -1878,7 +1878,7 @@ public class Attributes
 
     public final boolean getBoolean(String name)
     {
-        if (is(name, NNativeType.BOOLEAN))
+        if (is(name, JSONType.BOOLEAN))
         {
             return m_jso.getAsBoolean(name);
         }
@@ -1887,7 +1887,7 @@ public class Attributes
 
     public final JavaScriptObject getObject(String name)
     {
-        if (is(name, NNativeType.OBJECT))
+        if (is(name, JSONType.OBJECT))
         {
             return m_jso.getAsJSO(name);
         }
@@ -1896,7 +1896,7 @@ public class Attributes
 
     public final JsArray<JavaScriptObject> getArrayOfJSO(String name)
     {
-        if (is(name, NNativeType.ARRAY))
+        if (is(name, JSONType.ARRAY))
         {
             return m_jso.getAsJSO(name).cast();
         }
@@ -1905,19 +1905,19 @@ public class Attributes
 
     public final JsArrayMixed getArray(String name)
     {
-        if (is(name, NNativeType.ARRAY))
+        if (is(name, JSONType.ARRAY))
         {
             return m_jso.getAsJSO(name).cast();
         }
         return null;
     }
 
-    public final boolean is(final String name, final NNativeType type)
+    public final boolean is(final String name, final JSONType type)
     {
         return (type == getNativeTypeOf(name));
     }
 
-    public final NNativeType getNativeTypeOf(final String name)
+    public final JSONType getNativeTypeOf(final String name)
     {
         return Native.getNativeTypeOf(m_jso, name);
     }
