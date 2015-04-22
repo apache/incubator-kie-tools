@@ -144,7 +144,6 @@ public class ContributorsView extends Composite {
                 .titleVisible(false)
                 .width(230).height(170)
                 .margins(0, 10, 70, 0)
-                .horizontal()
                 .filterOn(false, true, true)
                 .buildSettings());
 
