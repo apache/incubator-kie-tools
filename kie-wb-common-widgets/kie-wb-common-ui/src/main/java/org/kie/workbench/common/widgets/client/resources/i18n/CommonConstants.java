@@ -252,8 +252,6 @@ public interface CommonConstants
 
     String Language();
 
-    String Language_Selector();
-
     String German();
 
     String French();
