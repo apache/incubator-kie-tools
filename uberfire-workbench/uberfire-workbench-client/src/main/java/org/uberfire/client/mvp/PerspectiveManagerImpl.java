@@ -1,5 +1,6 @@
 package org.uberfire.client.mvp;
 
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -63,6 +64,16 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         } else {
             doWhenFinished.execute();
         }
+    }
+
+    @Override
+    public void loadPerspectiveStates( final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished ) {
+        wbServices.loadPerspectives( doWhenFinished );
+    }
+
+    @Override
+    public void removePerspectiveState( String perspectiveId, final Command doWhenFinished ) {
+        wbServices.removePerspectiveState(perspectiveId, doWhenFinished);
     }
 
     @Override

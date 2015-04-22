@@ -318,6 +318,16 @@ public class PanelManagerImpl implements PanelManager {
         }
     }
 
+    @Override
+    public PanelDefinition getPanelForPlace( final PlaceRequest place ) {
+        for ( PartDefinition part : mapPartDefinitionToPresenter.keySet() ) {
+            if ( part.getPlace().equals( place ) ) {
+                return part.getParentPanel();
+            }
+        }
+        return null;
+    }
+
     /**
      * Returns the first live (associated with an active presenter) PartDefinition whose place matches the given one.
      *

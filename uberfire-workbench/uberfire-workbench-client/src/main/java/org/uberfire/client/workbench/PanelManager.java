@@ -173,4 +173,10 @@ public interface PanelManager {
      */
     void setRoot( PerspectiveActivity activity, PanelDefinition root );
 
+    /**
+     * Returns the first PanelDefinition whose place matches the given one.
+     *
+     * @return the definition for the panel servicing the given place, or null if no such part can be found.
+     */
+    PanelDefinition getPanelForPlace( PlaceRequest place );
 }

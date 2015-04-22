@@ -1,7 +1,9 @@
 package org.uberfire.wbtest.client.config;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
@@ -50,6 +52,31 @@ public class WorkbenchServicesProxySessionImpl implements WorkbenchServicesProxy
             @Override
             public void execute() {
                 parameterizedCommand.execute( storedPerspectives.get( name ) );
+            }
+        } );
+    }
+
+    @Override
+    public void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand ) {
+        // scheduling as a deferred action to better simulate a real async request to the server
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                parameterizedCommand.execute( new HashSet<PerspectiveDefinition>(storedPerspectives.values()) );
+            }
+        });
+    }
+
+    @Override
+    public void removePerspectiveState( final String perspectiveId,
+            final Command callback ) {
+        storedPerspectives.remove( perspectiveId );
+
+        // scheduling as a deferred action to better simulate a real async request to the server
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            @Override
+            public void execute() {
+                callback.execute();
             }
         } );
     }

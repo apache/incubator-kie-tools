@@ -1,5 +1,6 @@
 package org.uberfire.client;
 
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
@@ -40,7 +41,28 @@ public class WorkbenchServicesProxyBackendImpl implements WorkbenchServicesProxy
             public void callback( final PerspectiveDefinition result ) {
                 parameterizedCommand.execute( result );
             }
-        } ).loadPerspective( name );
+        } ).loadPerspective(name);
+    }
+
+    @Override
+    public void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand ) {
+        workbenchServices.call( new RemoteCallback<Set<PerspectiveDefinition>>() {
+            @Override
+            public void callback( final Set<PerspectiveDefinition> result ) {
+                parameterizedCommand.execute( result );
+            }
+        } ).loadPerspectives();
+    }
+
+    @Override
+    public void removePerspectiveState( final String perspectiveId,
+            final Command callback ) {
+        workbenchServices.call( new RemoteCallback<Void>() {
+            @Override
+            public void callback( Void o ) {
+                callback.execute();
+            }
+        } ).removePerspectiveState(perspectiveId);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.uberfire.client.workbench;
 
+import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Alternative;
 
@@ -23,6 +24,17 @@ public class WorkbenchServicesProxyClientImpl implements WorkbenchServicesProxy 
     public void loadPerspective( final String name,
                                  final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand ) {
         parameterizedCommand.execute( null );
+    }
+
+    @Override
+    public void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand ) {
+        parameterizedCommand.execute( null );
+    }
+
+    @Override
+    public void removePerspectiveState( final String perspectiveId,
+            final Command callback ) {
+        callback.execute();
     }
 
     @Override

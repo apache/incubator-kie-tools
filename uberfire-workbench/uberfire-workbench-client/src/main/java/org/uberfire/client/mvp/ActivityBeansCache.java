@@ -134,6 +134,10 @@ public class ActivityBeansCache {
         return false;
     }
 
+    public void removeActivity( String id ) {
+        activitiesById.remove(id);
+    }
+
     /** Used for runtime plugins. */
     public void addNewScreenActivity( final IOCBeanDef<Activity> activityBean ) {
         final String id = activityBean.getName();

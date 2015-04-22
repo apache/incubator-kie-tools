@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench;
 
+import java.util.Set;
+
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.PerspectiveDefinition;
@@ -29,6 +31,11 @@ public interface WorkbenchServicesProxy {
 
     void loadPerspective( final String name,
                           final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand );
+
+    public void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand );
+
+    void removePerspectiveState( final String perspectiveId,
+            final Command callback );
 
     void removePerspectiveStates( final Command doWhenFinished );
 

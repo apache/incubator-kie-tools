@@ -1,5 +1,7 @@
 package org.uberfire.client.mvp;
 
+import java.util.Set;
+
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
@@ -58,6 +60,19 @@ public interface PerspectiveManager {
      */
     void switchToPerspective( final PerspectiveActivity perspective,
                               final ParameterizedCommand<PerspectiveDefinition> doWhenFinished );
+
+    /**
+     * Retrieves the definitions of all the persisted perspectives.
+     * @param doWhenFinished The command to execute once the perspective definitions are retrieved.
+     */
+    void loadPerspectiveStates( final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished );
+
+    /**
+     * This method removes any persisted definition for the given perspective. Subsequent requests for a previously
+     * persisted perspective should load the Perspective definition from the applicable object.
+     * @param doWhenFinished The command to execute once the perspective state have been removed. Must not be null.
+     */
+    void removePerspectiveState( String perspectiveId, final Command doWhenFinished );
 
     /**
      * This method removes all persisted Perspective definitions. Subsequent requests for previously persisted
