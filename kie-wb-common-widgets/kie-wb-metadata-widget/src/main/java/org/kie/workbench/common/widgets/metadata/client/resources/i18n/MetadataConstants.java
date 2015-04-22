@@ -104,4 +104,12 @@ public interface MetadataConstants extends
 
     String Preview();
     
+    String LockMetaData();
+    
+    String LockedByHint();
+    
+    String UnlockedHint();
+    
+    String ForceUnlockCaption();
+    
 }

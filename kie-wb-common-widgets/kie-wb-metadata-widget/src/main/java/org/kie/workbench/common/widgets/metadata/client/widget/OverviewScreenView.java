@@ -65,5 +65,7 @@ public interface OverviewScreenView
     void showLoadingIndicator();
 
     void showSavingIndicator();
+    
+    void setForceUnlockHandler(Runnable handler);
 
 }

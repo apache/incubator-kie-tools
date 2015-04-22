@@ -15,9 +15,10 @@
  */
 package org.kie.workbench.common.screens.explorer.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * An item in a package
@@ -28,18 +29,32 @@ public class FolderItem {
     private Object item;
     private String itemName;
     private FolderItemType type;
-    private String age;
+    private String lockedBy;
+    private Boolean lockOwned;
 
-    public FolderItem() {
-        //For Errai-marshalling
+    public FolderItem( @MapsTo("item") final Object item,
+                       @MapsTo("itemName") final String itemName,
+                       @MapsTo("type") final FolderItemType type,
+                       @MapsTo("lockedBy") final String lockedBy,
+                       @MapsTo("lockedOwned") final Boolean lockOwned ) {
+
+        this( item,
+              itemName,
+              type );
+        this.lockedBy = lockedBy;
+        this.lockOwned = lockOwned;
     }
 
     public FolderItem( final Object item,
                        final String itemName,
                        final FolderItemType type ) {
-        this.item = checkNotNull( "item", item );
-        this.itemName = checkNotNull( "itemName", itemName );
-        this.type = checkNotNull( "type", type );
+
+        this.item = checkNotNull( "item",
+                                  item );
+        this.itemName = checkNotNull( "itemName",
+                                      itemName );
+        this.type = checkNotNull( "type",
+                                  type );
     }
 
     public Object getItem() {
@@ -54,37 +69,58 @@ public class FolderItem {
         return type;
     }
 
-    @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( !( o instanceof FolderItem ) ) {
-            return false;
-        }
+    public String getLockedBy() {
+        return lockedBy;
+    }
 
-        FolderItem folderItem = (FolderItem) o;
-
-        if ( !item.equals( folderItem.item ) ) {
-            return false;
-        }
-
-        if ( !itemName.equals( folderItem.itemName ) ) {
-            return false;
-        }
-
-        return type.equals( folderItem.type );
+    public boolean isLockOwned() {
+        return lockOwned;
     }
 
     @Override
     public int hashCode() {
-        int result = item.hashCode();
-        result = ~~result;
-        result = 31 * result + itemName.hashCode();
-        result = ~~result;
-        result = 31 * result + type.hashCode();
-        result = ~~result;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((item == null) ? 0 : item.hashCode());
+        result = prime * result + ((itemName == null) ? 0 : itemName.hashCode());
+        result = prime * result + ((lockOwned == null) ? 0 : lockOwned.hashCode());
+        result = prime * result + ((lockedBy == null) ? 0 : lockedBy.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj )
+            return true;
+        if ( obj == null )
+            return false;
+        if ( getClass() != obj.getClass() )
+            return false;
+        FolderItem other = (FolderItem) obj;
+        if ( item == null ) {
+            if ( other.item != null )
+                return false;
+        } else if ( !item.equals( other.item ) )
+            return false;
+        if ( itemName == null ) {
+            if ( other.itemName != null )
+                return false;
+        } else if ( !itemName.equals( other.itemName ) )
+            return false;
+        if ( lockOwned == null ) {
+            if ( other.lockOwned != null )
+                return false;
+        } else if ( !lockOwned.equals( other.lockOwned ) )
+            return false;
+        if ( lockedBy == null ) {
+            if ( other.lockedBy != null )
+                return false;
+        } else if ( !lockedBy.equals( other.lockedBy ) )
+            return false;
+        if ( type != other.type )
+            return false;
+        return true;
     }
 
 }

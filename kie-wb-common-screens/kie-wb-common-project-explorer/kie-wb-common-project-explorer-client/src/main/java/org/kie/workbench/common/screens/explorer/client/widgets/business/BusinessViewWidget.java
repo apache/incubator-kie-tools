@@ -16,38 +16,25 @@
 package org.kie.workbench.common.screens.explorer.client.widgets.business;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.Button;
-import com.github.gwtbootstrap.client.ui.Collapse;
-import com.github.gwtbootstrap.client.ui.CollapseTrigger;
-import com.github.gwtbootstrap.client.ui.Divider;
-import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.NavList;
-import com.github.gwtbootstrap.client.ui.WellNavList;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
+import org.kie.workbench.common.screens.explorer.client.resources.images.ProjectExplorerImageResources;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.screens.explorer.client.widgets.BranchChangeHandler;
@@ -66,6 +53,24 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.AnyResourceType;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+
+import com.github.gwtbootstrap.client.ui.Button;
+import com.github.gwtbootstrap.client.ui.Collapse;
+import com.github.gwtbootstrap.client.ui.CollapseTrigger;
+import com.github.gwtbootstrap.client.ui.Divider;
+import com.github.gwtbootstrap.client.ui.Label;
+import com.github.gwtbootstrap.client.ui.NavLink;
+import com.github.gwtbootstrap.client.ui.NavList;
+import com.github.gwtbootstrap.client.ui.WellNavList;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Business View implementation
@@ -101,7 +106,7 @@ public class BusinessViewWidget extends Composite implements View {
 
     @Inject
     PlaceManager placeManager;
-
+    
     //TreeSet sorts members upon insertion
     private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>( Sorters.ITEM_SORTER );
 
@@ -115,6 +120,8 @@ public class BusinessViewWidget extends Composite implements View {
         showItemLastUpdater( false );
     }};
 
+    private Map<String, Collapse> collapses = new HashMap<String, Collapse>();
+    
     private ViewPresenter presenter;
 
     @PostConstruct
@@ -183,11 +190,13 @@ public class BusinessViewWidget extends Composite implements View {
             while ( itr.hasNext() ) {
                 final Map.Entry<ClientResourceType, Collection<FolderItem>> e = itr.next();
 
-                final CollapseTrigger collapseTrigger = makeTriggerWidget( e.getKey() );
+                final CollapseTrigger collapseTrigger = makeTriggerWidget( e.getKey() );     
 
                 final Collapse collapse = new Collapse();
                 collapse.setExistTrigger( true );
-                collapse.setId( getCollapseId( e.getKey() ) );
+                final String collapseId = getCollapseId( e.getKey() );
+                collapse.setId( collapseId );
+                
                 final NavList itemsNavList = new NavList();
                 collapse.add( itemsNavList );
                 for ( FolderItem folderItem : e.getValue() ) {
@@ -195,7 +204,14 @@ public class BusinessViewWidget extends Composite implements View {
                                                        folderItem ) );
                 }
                 collapse.setDefaultOpen( false );
-
+                
+                Collapse oldCollapse = collapses.get( collapseId );
+                if (oldCollapse != null) {
+                    final String classAttr = oldCollapse.getWidget().getElement().getAttribute( "class" );
+                    collapse.getWidget().getElement().setAttribute( "class", classAttr );
+                }
+                collapses.put( collapseId, collapse );
+                
                 itemsContainer.add( collapseTrigger );
                 itemsContainer.add( collapse );
                 if ( itr.hasNext() ) {
@@ -260,6 +276,24 @@ public class BusinessViewWidget extends Composite implements View {
                 presenter.itemSelected( folderItem );
             }
         } );
+        
+        Image lockImage;
+        if ( folderItem.getLockedBy() == null ) {
+            lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockEmpty() );
+        }
+        else if ( folderItem.isLockOwned() ) {
+            lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockOwned() );
+            lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockOwnedHint());
+        }
+        else {
+            lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lock() );
+            lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockHint() + " " + folderItem.getLockedBy() );
+        }
+        
+        navLink.getWidget( 0 )
+        .getElement()
+        .setInnerHTML( "<span>" + lockImage.toString() + " " + fileName + "</span>" );
+
         return navLink;
     }
 

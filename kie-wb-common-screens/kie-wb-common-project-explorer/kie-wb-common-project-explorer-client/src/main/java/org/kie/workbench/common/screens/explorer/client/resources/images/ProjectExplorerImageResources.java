@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.explorer.client.resources.images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface ProjectExplorerImageResources
         extends
@@ -25,4 +26,12 @@ public interface ProjectExplorerImageResources
 
     public static final ProjectExplorerImageResources INSTANCE = GWT.create( ProjectExplorerImageResources.class );
 
+    @Source("lock.png")
+    ImageResource lock();
+    
+    @Source("lockowned.png")
+    ImageResource lockOwned();
+    
+    @Source("lockempty.png")
+    ImageResource lockEmpty();
 }

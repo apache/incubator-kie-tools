@@ -17,13 +17,19 @@
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+
+import org.guvnor.common.services.shared.metadata.model.Overview;
+import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.ForceUnlockEvent;
+import org.uberfire.backend.vfs.impl.LockInfo;
+import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.client.workbench.type.ClientTypeRegistry;
 
 @Dependent
 public class OverviewWidgetPresenter
@@ -36,6 +42,9 @@ public class OverviewWidgetPresenter
 
     private OverviewScreenView view;
     private int                originalHash;
+    
+    @Inject
+    private Event<ForceUnlockEvent> lockReleaseEvent;
 
     public OverviewWidgetPresenter() {
     }
@@ -47,7 +56,7 @@ public class OverviewWidgetPresenter
         this.view = view;
 
         view.setPresenter(this);
-
+        
         this.clientTypeRegistry = clientTypeRegistry;
     }
 
@@ -69,6 +78,16 @@ public class OverviewWidgetPresenter
         view.setCreated(overview.getMetadata().getCreator(), overview.getMetadata().getDateCreated());
 
         view.hideBusyIndicator();
+        
+        view.setForceUnlockHandler( new Runnable() {
+
+            @Override
+            public void run() {
+                lockReleaseEvent.fire( new ForceUnlockEvent( overview.getMetadata().getPath() ) );
+            }
+            
+        });
+
 
     }
 
@@ -103,4 +122,18 @@ public class OverviewWidgetPresenter
             originalHash = overview.hashCode();
         }
     }
+    
+    public void onForceLockRelease(final Path path) {
+        lockReleaseEvent.fire( new ForceUnlockEvent(path) );
+    }
+    
+    @SuppressWarnings("unused")
+    private void onLockChange( @Observes LockInfo lockInfo ) {
+        if ( lockInfo.getFile().equals( overview.getMetadata().getPath() ) ) {
+            overview.getMetadata().setLockInfo( lockInfo );
+            view.setMetadata( overview.getMetadata(),
+                              isReadOnly );
+        }
+    }
+    
 }

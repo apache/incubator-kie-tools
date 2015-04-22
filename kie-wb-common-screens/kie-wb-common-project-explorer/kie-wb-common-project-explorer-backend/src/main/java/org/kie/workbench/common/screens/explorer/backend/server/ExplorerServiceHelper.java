@@ -16,16 +16,17 @@
 
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.common.collect.Lists;
-import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.file.LinkedDotFileFilter;
 import org.guvnor.common.services.backend.file.LinkedRegularFileFilter;
 import org.guvnor.common.services.project.model.Package;
@@ -48,8 +49,10 @@ import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
+import org.uberfire.rpc.SessionInfo;
 
-import static java.util.Collections.*;
+import com.google.common.collect.Lists;
+import com.thoughtworks.xstream.XStream;
 
 public class ExplorerServiceHelper {
 
@@ -75,6 +78,9 @@ public class ExplorerServiceHelper {
 
     @Inject
     private UserServicesImpl userServices;
+    
+    @Inject
+    private SessionInfo sessionInfo;
 
     public static FolderItem toFolderItem( final org.guvnor.common.services.project.model.Package pkg ) {
         if ( pkg == null ) {
@@ -88,7 +94,9 @@ public class ExplorerServiceHelper {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
                                    p.getFileName(),
-                                   FolderItemType.FILE );
+                                   FolderItemType.FILE,
+                                   Paths.readLockedBy( p ),
+                                   false);
         } else if ( Files.isDirectory( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
@@ -154,9 +162,12 @@ public class ExplorerServiceHelper {
         for ( org.uberfire.java.nio.file.Path np : nioPaths ) {
             if ( Files.isRegularFile( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
+                final String lockedBy = Paths.readLockedBy( p );
                 final FolderItem folderItem = new FolderItem( p,
                                                               p.getFileName(),
-                                                              FolderItemType.FILE );
+                                                              FolderItemType.FILE,
+                                                              lockedBy,
+                                                              sessionInfo.getIdentity().getIdentifier().equals( lockedBy ));
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
@@ -219,9 +230,15 @@ public class ExplorerServiceHelper {
                                                                                                             regularFileFilter );
             for ( org.uberfire.java.nio.file.Path nioPath : nioPaths ) {
                 final org.uberfire.backend.vfs.Path path = Paths.convert( nioPath );
+                if ( Paths.isLock( path ) )
+                    continue;
+    
+                final String lockedBy = Paths.readLockedBy( path );
                 final FolderItem folderItem = new FolderItem( path,
                                                               path.getFileName(),
-                                                              FolderItemType.FILE );
+                                                              FolderItemType.FILE,
+                                                              lockedBy,
+                                                              sessionInfo.getIdentity().getIdentifier().equals( lockedBy ));
                 folderItems.add( folderItem );
             }
         }

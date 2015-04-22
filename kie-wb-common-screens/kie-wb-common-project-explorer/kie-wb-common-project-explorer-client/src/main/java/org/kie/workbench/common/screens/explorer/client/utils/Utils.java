@@ -130,7 +130,7 @@ public class Utils {
     public static FolderItem makeFileItem( final Path path ) {
         return new FolderItem( path,
                                path.getFileName(),
-                               FolderItemType.FILE );
+                               FolderItemType.FILE);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Utils {
     public static FolderItem makeFolderItem( final Path path ) {
         return new FolderItem( path,
                                path.getFileName(),
-                               FolderItemType.FOLDER );
+                               FolderItemType.FOLDER);
     }
 
     /**

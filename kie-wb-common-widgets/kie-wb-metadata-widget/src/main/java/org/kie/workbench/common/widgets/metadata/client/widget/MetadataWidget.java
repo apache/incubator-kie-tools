@@ -16,20 +16,29 @@
 
 package org.kie.workbench.common.widgets.metadata.client.widget;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
+import org.guvnor.common.services.shared.metadata.model.Metadata;
+import org.kie.workbench.common.widgets.metadata.client.resources.ImageResources;
+import org.kie.workbench.common.widgets.metadata.client.resources.i18n.MetadataConstants;
+import org.uberfire.backend.vfs.impl.LockInfo;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.shared.metadata.model.Metadata;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures
@@ -49,6 +58,7 @@ public class MetadataWidget
 
     private Metadata metadata = null;
     private boolean readOnly;
+    private Runnable forceUnlockHandler;
 
     //    @UiField Label title;
     @UiField
@@ -65,6 +75,10 @@ public class MetadataWidget
     TextBox external;
     @UiField
     TextBox source;
+    @UiField
+    InlineLabel lockedBy;
+    @UiField
+    PushButton unlock;
 
     private BusyIndicatorView busyIndicatorView;
 
@@ -80,6 +94,10 @@ public class MetadataWidget
 
         loadData();
     }
+    
+    public void setForceUnlockHandler(final Runnable forceUnlockHandler) {
+        this.forceUnlockHandler = forceUnlockHandler;
+    }
 
     private void loadData() {
 
@@ -87,7 +105,7 @@ public class MetadataWidget
 
         note.setText( metadata.getCheckinComment() );
 
-        uri.setText( metadata.getPath().toURI() );
+        uri.setText( metadata.getRealPath().toURI() );
 
         subject.setText( metadata.getSubject() );
         subject.addKeyUpHandler( new KeyUpHandler() {
@@ -120,7 +138,23 @@ public class MetadataWidget
                 metadata.setExternalSource( source.getText() );
             }
         } );
-
+        
+        setLockStatus();
+    }
+    
+    private void setLockStatus() {
+        final LockInfo lockInfo = metadata.getLockInfo();
+        
+        if (lockInfo.isLocked()) {
+            lockedBy.setText( MetadataConstants.INSTANCE.LockedByHint() + " " + lockInfo.lockedBy() );
+        }
+        else {
+            lockedBy.setText( MetadataConstants.INSTANCE.UnlockedHint() );
+        }
+        Image unlockImage = new Image( ImageResources.INSTANCE.unlock() );
+        unlock.setHTML( "<span>" + unlockImage.toString() + " " + unlock.getText() + "</span>" );
+        unlock.setEnabled( lockInfo.isLocked() );
+        unlock.setVisible( metadata.isUnlockAllowed() );
     }
 
     @Deprecated
@@ -140,6 +174,12 @@ public class MetadataWidget
 
     public void setNote( String text ) {
         note.setText( text );
+    }
+    
+    @UiHandler("unlock")
+    public void onForceUnlock(ClickEvent e) {
+        forceUnlockHandler.run();
+        unlock.setEnabled( false );
     }
 }
 

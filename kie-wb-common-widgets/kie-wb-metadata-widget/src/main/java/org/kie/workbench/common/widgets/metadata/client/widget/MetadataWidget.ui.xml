@@ -29,6 +29,10 @@
       float: left;
       width: 120px;
     }
+
+	.forceUnlock {
+	  display:inline-block;
+	}
   </ui:style>
 
   <gwt:HTMLPanel>
@@ -95,6 +99,15 @@
         </div>
         <div style="float:left;">
           <gwt:TextBox ui:field="source" title='{i18n.SourceMetaDataTip}'/>
+        </div>
+      </div>
+      <div style="clear:both;">
+        <div class='{style.firstColumn}'>
+          <gwt:Label text='{i18n.LockMetaData}'/>
+        </div>
+        <div style="float:left;">
+          <gwt:InlineLabel ui:field="lockedBy" text='{i18n.LockedByHint}'/>
+          <gwt:PushButton addStyleNames="{style.forceUnlock}" ui:field="unlock" text='{i18n.ForceUnlockCaption}'/>
         </div>
       </div>
       <div style="clear:both;" />

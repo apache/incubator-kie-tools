@@ -44,6 +44,7 @@ public class RuleSelector
         panel.add( ruleSelectorDropdown );
 
         initWidget( panel );
+        getElement().setAttribute( "data-uf-lock", "true" );
     }
 
     public void setRuleNames( final Collection<String> ruleNames,

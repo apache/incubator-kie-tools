@@ -74,4 +74,8 @@ public interface ProjectExplorerConstants
     String sort();
 
     String ClickToDisplay();
+    
+    String lockHint();
+    
+    String lockOwnedHint();
 }

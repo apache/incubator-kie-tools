@@ -45,4 +45,7 @@ public interface ImageResources
 
     @Source("images/refresh.gif")
     ImageResource refresh();
+    
+    @Source("images/unlock.png")
+    ImageResource unlock();
 }
