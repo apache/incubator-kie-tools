@@ -457,6 +457,12 @@
       </exclusions>
     </dependency>
 
+    <!-- Uberfire Widget Backend needed -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-service-backend</artifactId>
+    </dependency>
+
     <!-- Uberfire Apps -->
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -736,6 +742,13 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+
+    <!-- hack to disable sisu annotation processing (that scans client side types) -->
+    <dependency>
+      <groupId>org.eclipse.sisu</groupId>
+      <artifactId>org.eclipse.sisu.inject</artifactId>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
 
