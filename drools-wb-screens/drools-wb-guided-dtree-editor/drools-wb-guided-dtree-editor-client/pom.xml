@@ -133,7 +133,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.rht-emitrom</groupId>
+      <groupId>com.ahome-it</groupId>
       <artifactId>lienzo-core</artifactId>
     </dependency>
 

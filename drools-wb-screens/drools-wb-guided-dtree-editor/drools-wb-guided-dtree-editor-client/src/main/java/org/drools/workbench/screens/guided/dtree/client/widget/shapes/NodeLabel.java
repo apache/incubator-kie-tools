@@ -15,16 +15,16 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.client.core.types.TextMetrics;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
-import com.emitrom.lienzo.shared.core.types.Color;
-import com.emitrom.lienzo.shared.core.types.TextAlign;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.TextMetrics;
+import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 

@@ -18,18 +18,17 @@ package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.emitrom.lienzo.client.core.event.NodeMouseClickEvent;
-import com.emitrom.lienzo.client.core.event.NodeMouseClickHandler;
-import com.emitrom.lienzo.client.core.image.PictureLoadedHandler;
-import com.emitrom.lienzo.client.core.shape.Circle;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Picture;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.client.core.types.Point2D;
-import com.emitrom.lienzo.shared.core.types.Color;
-import com.emitrom.lienzo.shared.core.types.TextAlign;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.event.NodeMouseClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseClickHandler;
+import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Picture;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.resources.client.ImageResource;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.screens.guided.dtree.client.editor.GuidedDecisionTreeEditorPresenter;
@@ -172,31 +171,28 @@ public abstract class BaseGuidedDecisionTreeShape<T extends Node> extends WiresB
     protected Group setupControl( final ImageResource resource,
                                   final Command command ) {
         final Group controlGroup = new Group();
-        final Picture control = new Picture( resource,
+        final Picture picture = new Picture( resource,
                                              false );
+
         //This is a hack for Lienzo 1.2 (and possibly 2.x?). There is a bug in Picture when
         //we want to add it to Lienzo's SelectionLayer. We work around it here by adding
         //the Picture to a Group containing a "near invisible" Rectangle that we use to
         //capture the NodeMouseClickEvents.
-        control.onLoad( new PictureLoadedHandler() {
-            @Override
-            public void onPictureLoaded( final Picture picture ) {
-                final double offsetX = -picture.getImageData().getWidth() / 2;
-                final double offsetY = -picture.getImageData().getHeight() / 2;
-                final Rectangle selector = new Rectangle( picture.getImageData().getWidth(),
-                                                          picture.getImageData().getHeight() );
-                selector.setFillColor( Color.rgbToBrowserHexColor( 255,
-                                                                   255,
-                                                                   255 ) );
-                selector.setAlpha( 0.01 );
-                selector.setOffset( offsetX,
-                                    offsetY );
-                picture.setOffset( offsetX,
-                                   offsetY );
-                controlGroup.add( picture );
-                controlGroup.add( selector );
-            }
-        } );
+        final double offsetX = -picture.getImageData().getWidth() / 2;
+        final double offsetY = -picture.getImageData().getHeight() / 2;
+        final Rectangle selector = new Rectangle( picture.getImageData().getWidth(),
+                                                  picture.getImageData().getHeight() );
+        selector.setFillColor( Color.rgbToBrowserHexColor( 255,
+                                                           255,
+                                                           255 ) );
+        selector.setAlpha( 0.01 );
+        selector.setOffset( offsetX,
+                            offsetY );
+        picture.setOffset( offsetX,
+                           offsetY );
+        controlGroup.add( picture );
+        controlGroup.add( selector );
+
         controlGroup.addNodeMouseClickHandler( new NodeMouseClickHandler() {
             @Override
             public void onNodeMouseClick( final NodeMouseClickEvent nodeMouseClickEvent ) {

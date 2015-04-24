@@ -22,17 +22,17 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.emitrom.lienzo.client.core.animation.AnimationProperties;
-import com.emitrom.lienzo.client.core.animation.AnimationTweener;
-import com.emitrom.lienzo.client.core.animation.IAnimation;
-import com.emitrom.lienzo.client.core.animation.IAnimationCallback;
-import com.emitrom.lienzo.client.core.animation.IAnimationHandle;
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.client.core.types.Point2D;
-import com.emitrom.lienzo.shared.core.types.TextAlign;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
+import com.ait.lienzo.client.core.animation.IAnimation;
+import com.ait.lienzo.client.core.animation.IAnimationCallback;
+import com.ait.lienzo.client.core.animation.IAnimationHandle;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.shared.core.types.TextAlign;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import com.google.gwt.user.client.Window;
 import org.drools.workbench.models.guided.dtree.shared.model.GuidedDecisionTree;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionInsertNode;
@@ -158,8 +158,8 @@ public class GuidedDecisionTreeWidget extends WiresCanvas implements UberView<Gu
                 canvasLayer.add( connector );
                 connector.moveToBottom();
             }
-            connector.getPoints().getPoint( 0 ).set( uiProspectiveParent.getLocation() );
-            connector.getPoints().getPoint( 1 ).set( new Point2D( cx,
+            connector.getPoints().get( 0 ).set( uiProspectiveParent.getLocation() );
+            connector.getPoints().get( 1 ).set( new Point2D( cx,
                                                                   cy ) );
         } else if ( connector != null ) {
             canvasLayer.remove( connector );

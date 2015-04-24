@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.widget.palette;
 
-import com.emitrom.lienzo.client.core.shape.Layer;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.ShapeFactory;

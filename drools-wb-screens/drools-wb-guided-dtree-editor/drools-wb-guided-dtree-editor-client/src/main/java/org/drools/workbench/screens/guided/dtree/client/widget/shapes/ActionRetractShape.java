@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.widget.shapes;
 
-import com.emitrom.lienzo.client.core.shape.Circle;
-import com.emitrom.lienzo.shared.core.types.Color;
+import com.ait.lienzo.client.core.shape.Circle;
+import com.ait.lienzo.shared.core.types.Color;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.ActionRetractNode;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.Node;
 import org.drools.workbench.models.guided.dtree.shared.model.nodes.TypeNode;

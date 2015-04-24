@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.screens.guided.dtree.client.widget.palette;
 
-import com.emitrom.lienzo.client.core.shape.Group;
-import com.emitrom.lienzo.client.core.shape.Rectangle;
-import com.emitrom.lienzo.client.core.shape.Text;
-import com.emitrom.lienzo.client.widget.LienzoPanel;
-import com.emitrom.lienzo.shared.core.types.Color;
-import com.emitrom.lienzo.shared.core.types.TextBaseLine;
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Rectangle;
+import com.ait.lienzo.client.core.shape.Text;
+import com.ait.lienzo.client.widget.LienzoPanel;
+import com.ait.lienzo.shared.core.types.Color;
+import com.ait.lienzo.shared.core.types.TextBaseLine;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.ConstraintFactoryHelper;
 import org.drools.workbench.screens.guided.dtree.client.widget.factories.TypeFactoryHelper;
 import org.uberfire.ext.wires.core.api.factories.FactoryHelper;
