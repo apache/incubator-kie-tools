@@ -29,30 +29,7 @@ SNAPSHOT:
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.106-SNAPSHOT</version>
-</dependency>
-```
-
-As of 2.0.106-SNAPSHOT, Lienzo depends on 2 other small maven artifacts.
-
-```xml
-<repositories>
-  <repository>
-  <id>sonatype</id>
-  <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-  </repository>
-</repositories>
-
-<dependency>
-  <groupId>com.ahome-it</groupId>
-  <artifactId>ahome-tooling-nativetools</artifactId>
-  <version>1.0.26-SNAPSHOT</version>
-</dependency>
-
-<dependency>
-  <groupId>com.ahome-it</groupId>
-  <artifactId>ahome-tooling-common</artifactId>
-  <version>1.0.26-SNAPSHOT</version>
+  <version>2.0.107-SNAPSHOT</version>
 </dependency>
 ```
 
