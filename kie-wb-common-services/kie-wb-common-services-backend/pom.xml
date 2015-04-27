@@ -36,6 +36,12 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-client-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.guvnor</groupId>
@@ -113,6 +119,12 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-client-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

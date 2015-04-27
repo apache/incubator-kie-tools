@@ -2,5 +2,6 @@
   <alternatives>
     <class>org.kie.workbench.common.services.datamodel.backend.server.TestAppSetup</class>
     <class>org.kie.workbench.common.services.datamodel.backend.server.TestIdentityFactory</class>
+    <class>org.kie.workbench.common.services.datamodel.backend.server.TestIdentityManagementConfigurationFactory</class>
   </alternatives>
 </beans>

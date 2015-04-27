@@ -132,6 +132,16 @@
       <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-properties-editor-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-service-api</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -187,22 +197,7 @@
       <artifactId>jboss-logging</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>
-        uberfire-widgets-properties-editor-client
-      </artifactId>
-    </dependency>
 
-    <!-- WorkbenchConfigurationPopup uses UserPreferencesService -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-service-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-service-backend</artifactId>
-    </dependency>
   </dependencies>
 
   <build>

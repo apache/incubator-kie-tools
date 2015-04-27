@@ -23,6 +23,12 @@
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.uberfire</groupId>
+          <artifactId>uberfire-client-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
