@@ -15,18 +15,18 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import org.kie.workbench.common.widgets.decoratedgrid.client.resources.i18n.Constants;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.PasteRowsEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.CopyRowsEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.MoveColumnsEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.RowGroupingChangeEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteColumnEvent;
-
-import java.util.SortedSet;
-import java.util.TreeSet;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.MoveColumnsEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.PasteRowsEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.RowGroupingChangeEvent;
 
 /**
  * A context menu for the copying\pasting rows

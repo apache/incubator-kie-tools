@@ -15,6 +15,10 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Overflow;
@@ -43,16 +47,14 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnInserted;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteColumnEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertInternalColumnEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.MoveColumnsEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetColumnVisibilityEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDefinitionEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertInternalColumnEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.MoveColumnsEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteColumnEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
 
 /**
  * An abstract "Header" widget to decorate a <code>DecoratedGridWidget</code>
@@ -172,76 +174,76 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
         addDomHandler( new MouseMoveHandler() {
 
-            public void onMouseMove( MouseMoveEvent event ) {
-                int mx = event.getClientX();
-                if ( resizerInfo.isResizing ) {
-                    if ( mx - resizerInfo.resizeColumnLeft < MIN_COLUMN_WIDTH ) {
-                        event.preventDefault();
-                        return;
-                    }
-                    setResizerDimensions( event.getX() );
-                    resizerInfo.resizeColumnWidth = mx - resizerInfo.resizeColumnLeft;
-                    resizeColumn( resizerInfo.resizeColumn,
-                                  resizerInfo.resizeColumnWidth );
+                           public void onMouseMove( MouseMoveEvent event ) {
+                               int mx = event.getClientX();
+                               if ( resizerInfo.isResizing ) {
+                                   if ( mx - resizerInfo.resizeColumnLeft < MIN_COLUMN_WIDTH ) {
+                                       event.preventDefault();
+                                       return;
+                                   }
+                                   setResizerDimensions( event.getX() );
+                                   resizerInfo.resizeColumnWidth = mx - resizerInfo.resizeColumnLeft;
+                                   resizeColumn( resizerInfo.resizeColumn,
+                                                 resizerInfo.resizeColumnWidth );
 
-                    // Second call to set dimensions as a column resize can add (or remove) a scroll bar
-                    // to (or from) the Decision Table and our resizer needs to be redrawn accordingly.
-                    // Just having the call to set dimensions after the column has been resized added
-                    // excess flicker to movement of the resizer.
-                    setResizerDimensions( event.getX() );
-                    event.preventDefault();
-                } else {
-                    resizerInfo = getResizerInformation( mx );
-                }
-            }
+                                   // Second call to set dimensions as a column resize can add (or remove) a scroll bar
+                                   // to (or from) the Decision Table and our resizer needs to be redrawn accordingly.
+                                   // Just having the call to set dimensions after the column has been resized added
+                                   // excess flicker to movement of the resizer.
+                                   setResizerDimensions( event.getX() );
+                                   event.preventDefault();
+                               } else {
+                                   resizerInfo = getResizerInformation( mx );
+                               }
+                           }
 
-        },
+                       },
                        MouseMoveEvent.getType() );
 
         addDomHandler( new MouseDownHandler() {
 
-            public void onMouseDown( MouseDownEvent event ) {
-                if ( !resizerInfo.isResizePrimed ) {
-                    return;
-                }
-                int mx = event.getX();
-                resizerInfo.isResizing = true;
-                setResizerDimensions( mx );
-                resizer.getStyle().setVisibility( Visibility.VISIBLE );
-                event.preventDefault();
-            }
+                           public void onMouseDown( MouseDownEvent event ) {
+                               if ( !resizerInfo.isResizePrimed ) {
+                                   return;
+                               }
+                               int mx = event.getX();
+                               resizerInfo.isResizing = true;
+                               setResizerDimensions( mx );
+                               resizer.getStyle().setVisibility( Visibility.VISIBLE );
+                               event.preventDefault();
+                           }
 
-        },
+                       },
                        MouseDownEvent.getType() );
 
         addDomHandler( new MouseUpHandler() {
 
-            public void onMouseUp( MouseUpEvent event ) {
-                if ( !resizerInfo.isResizing ) {
-                    return;
-                }
-                resizerInfo.isResizing = false;
-                resizerInfo.isResizePrimed = false;
-                resizer.getStyle().setVisibility( Visibility.HIDDEN );
-                event.preventDefault();
-            }
+                           public void onMouseUp( MouseUpEvent event ) {
+                               if ( !resizerInfo.isResizing ) {
+                                   return;
+                               }
+                               resizerInfo.isResizing = false;
+                               resizerInfo.isResizePrimed = false;
+                               resizer.getStyle().setVisibility( Visibility.HIDDEN );
+                               event.preventDefault();
+                           }
 
-        },
+                       },
                        MouseUpEvent.getType() );
 
         addDomHandler( new MouseOutHandler() {
 
-            public void onMouseOut( MouseOutEvent event ) {
-                if ( !resizerInfo.isResizing ) {
-                    return;
-                }
-                resizerInfo.isResizing = false;
-                resizerInfo.isResizePrimed = false;
-                resizer.getStyle().setVisibility( Visibility.HIDDEN );
-                event.preventDefault();
-            }
+                           public void onMouseOut( MouseOutEvent event ) {
+                               if ( !resizerInfo.isResizing ) {
+                                   return;
+                               }
+                               resizerInfo.isResizing = false;
+                               resizerInfo.isResizePrimed = false;
+                               resizer.getStyle().setVisibility( Visibility.HIDDEN );
+                               event.preventDefault();
+                           }
 
-        },
+                       },
                        MouseOutEvent.getType() );
 
         //Wire-up other event handlers
@@ -421,6 +423,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
             public void execute() {
                 redraw();
+                eventBus.fireEvent( new AfterColumnDeleted() );
             }
 
         } );
@@ -436,6 +439,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
             public void execute() {
                 redraw();
+                eventBus.fireEvent( new AfterColumnInserted() );
             }
 
         } );

@@ -15,6 +15,15 @@
  */
 package org.kie.workbench.common.widgets.decoratedgrid.client.widget;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -28,16 +37,21 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicDataRow;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.GroupedDynamicDataRow;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.RowMapper;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.CellStateChangedEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.CopyRowsEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteColumnEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.DeleteRowEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertInternalColumnEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.InsertRowEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.MoveColumnsEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.PasteRowsEvent;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.RowGroupingChangeEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SelectedCellChangeEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetColumnVisibilityEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SetInternalModelEvent;
@@ -45,22 +59,8 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.SortD
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.ToggleMergingEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDefinitionEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateSelectedCellsEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.DynamicData;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.MoveColumnsEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.RowGroupingChangeEvent;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateModelEvent;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.GroupedDynamicDataRow;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.ColumnResizeEvent;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateSelectedCellsEvent;
 
 /**
  * An abstract grid of data. Implementations can choose the orientation to
