@@ -74,20 +74,6 @@
         <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
-    <repository>
-      <id>sonatype</id>
-      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>jboss-maven2-release-repository</id>
-      <url>https://repository.jboss.org/nexus/content/groups/m2-proxy/</url>
-    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -101,14 +87,6 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>codehaus-public-repository</id>
-      <name>Codehaus Public Repository</name>
-      <url>https://nexus.codehaus.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
     </pluginRepository>
   </pluginRepositories>
 
