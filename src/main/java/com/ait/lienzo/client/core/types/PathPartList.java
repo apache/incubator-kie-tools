@@ -338,18 +338,26 @@ public final class PathPartList
                     oldx = p.get(8);
                     oldy = p.get(9);
                     break;
-            /*
-            case PathPartEntryJSO.CARCTO_ABSOLUTE:
-            double x0 = p.get(0);
-            double y0 = p.get(1);
-            double x1 = p.get(2);
-            double y1 = p.get(3);
-            double r1 = p.get(4);
-            
-            oldx = x1;
-            oldy = y1;
-            break;
-            */
+                case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE:
+                    double x0 = p.get(0);
+                    double y0 = p.get(1);
+                    double x1 = p.get(2);
+                    double y1 = p.get(3);
+                    double r = p.get(4);
+
+                    Point2D p0 = new Point2D(oldx, oldy);
+                    Point2DArray arcPoints = Geometry.getCanvasArcToPoints(p0, new Point2D(x0, y0), new Point2D(x1, y1), r);
+
+                    BoundingBox box = Geometry.getBoundingBoxOfArc(arcPoints.get(0), arcPoints.get(1), arcPoints.get(2), r);
+                    if ( !arcPoints.get(0).equals(p0) )
+                    {
+                        box.add(p0); //p0 is always the start point of the path, but not necessary of the arc - depending on the radius
+                    }
+
+                    Point2D ep = arcPoints.get(2); // this is always the end point of the path
+                    oldx = ep.getX();
+                    oldy = ep.getY();
+                    break;
             }
         }
         return m_box;
