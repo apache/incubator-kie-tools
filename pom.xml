@@ -140,6 +140,18 @@
                 <goal>parse-version</goal>
               </goals>
             </execution>
+            <execution>
+              <id>add-source</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>add-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>target/generated-sources/annotations</source>
+                </sources>
+              </configuration>
+            </execution>
           </executions>
         </plugin>
         <plugin>
@@ -475,6 +487,7 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
+                <include>src/main/webapp/WEB-INF/classes/</include>
                 <include>src/main/webapp/WEB-INF/lib/</include>
                 <include>**/gwt-unitCache/**</include>
                 <include>.errai/</include>
