@@ -474,6 +474,12 @@
       <artifactId>uberfire-apps-backend</artifactId>
     </dependency>
 
+    <!-- Uberfire Layout Editor API -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-layout-editor-api</artifactId>
+    </dependency>
+
     <!-- Drools Workbench Screens -->
     <dependency>
       <groupId>org.drools</groupId>
