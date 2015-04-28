@@ -20,7 +20,7 @@ import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.drools.workbench.jcr2vfsmigration.config.VfrImportConfig;
+import org.drools.workbench.jcr2vfsmigration.config.VfsImportConfig;
 import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.common.FileManager;
 import org.drools.workbench.jcr2vfsmigration.vfsImport.CategoryImporter;
@@ -32,7 +32,7 @@ import org.jboss.weld.context.bound.BoundSessionContext;
 public class VfsImporter {
 
     @Inject
-    protected VfrImportConfig vfsImportConfig;
+    protected VfsImportConfig vfsImportConfig;
 
     @Inject
     FileManager fileManager;

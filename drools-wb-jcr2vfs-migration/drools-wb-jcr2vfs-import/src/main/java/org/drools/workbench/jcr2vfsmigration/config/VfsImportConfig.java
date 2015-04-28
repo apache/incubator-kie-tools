@@ -27,7 +27,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 
 @ApplicationScoped
-public class VfrImportConfig {
+public class VfsImportConfig {
 
     private static String DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
 
