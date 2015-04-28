@@ -34,16 +34,18 @@
       <unpack>false</unpack>
       <outputDirectory>lib</outputDirectory>
       <includes>
-        <!-- UberFire Libraries -->
-        <include>org.uberfire:uberfire-security-api</include>
-        <include>org.uberfire:uberfire-security-client</include>
-        <include>org.uberfire:uberfire-security-server</include>
-        <include>org.uberfire:uberfire-server</include>
-        <include>org.uberfire:uberfire-api</include>
-        <include>org.uberfire:uberfire-client-api</include>
-        <include>org.uberfire:uberfire-backend-api</include>
-        <include>org.uberfire:uberfire-workbench</include>
-        <include>org.uberfire:uberfire-backend-server</include>
+        <include>org.uberfire:*:jar</include>
+      </includes>
+      <excludes>
+        <exclude>org.uberfire:*:jar:sources</exclude>
+      </excludes>
+    </dependencySet>
+    <!-- source -->
+    <dependencySet>
+      <unpack>false</unpack>
+      <outputDirectory>source</outputDirectory>
+      <includes>
+        <include>org.uberfire:*:jar:sources</include>
       </includes>
     </dependencySet>
     <dependencySet>
@@ -58,6 +60,14 @@
     <dependencySet>
       <includes>
         <include>org.uberfire:showcase-distribution-wars:war</include>
+      </includes>
+      <outputDirectory>showcase</outputDirectory>
+      <outputFileNameMapping>showcase-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.uberfire:showcase-distribution-wars-cdi1.0:war</include>
       </includes>
       <outputDirectory>showcase</outputDirectory>
       <outputFileNameMapping>showcase-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>

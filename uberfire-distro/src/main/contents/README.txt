@@ -11,6 +11,7 @@ just CDI in a server, but thanks to Errai, CDI in the browser.
     |-deps
     |---lib     (third party libs)
     |-lib       (uberfire libs)
+    |-source    (uberfire libs sources)
     |-showcase  (showcase app)
 
 [Troubleshooting]

@@ -37,9 +37,12 @@
     <!-- ################################################################################ -->
     <!-- External dependency versions -->
     <!-- ################################################################################ -->
+
+    <version.de.benediktmeurer.gwt-slf4j>0.0.2</version.de.benediktmeurer.gwt-slf4j>
     <version.ch.qos.logback>1.0.9</version.ch.qos.logback>
     <version.org.slf4j>1.7.2</version.org.slf4j>
 
+    <version.javax.activation>1.1</version.javax.activation>
     <version.javax.inject>1</version.javax.inject>
     <version.javax.enterprise.cdi>1.1</version.javax.enterprise.cdi>
 
@@ -49,6 +52,10 @@
 
     <version.org.picketlink>2.6.0.CR2</version.org.picketlink>
     <version.org.jboss.logging>3.1.1.GA</version.org.jboss.logging>
+    <version.org.jboss.resteasy>2.3.10.Final</version.org.jboss.resteasy>
+    <version.org.jboss.weld.weld>2.0.5.Final</version.org.jboss.weld.weld>
+    <version.org.jboss.weld.weld-api>2.0.SP1</version.org.jboss.weld.weld-api>
+    <version.org.jboss.classfilewriter.jboss-classfilewriter>1.0.4.Final</version.org.jboss.classfilewriter.jboss-classfilewriter>
 
     <version.commons-io>2.1</version.commons-io>
     <version.commons-fileupload>1.2.2</version.commons-fileupload>
@@ -64,9 +71,12 @@
     <version.org.gwtbootstrap3>0.8.1</version.org.gwtbootstrap3>
     <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.com.google.guava>17.0</version.com.google.guava>
+    <version.com.sun.xml.bind>2.2.5</version.com.sun.xml.bind>
 
+    <version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api>1.0.1.Final</version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api>
     <version.org.jasypt>1.9.0</version.org.jasypt>
     <version.org.javassist>3.15.0-GA</version.org.javassist>
+    <version.org.scannotation>1.0.3</version.org.scannotation>
 
     <version.junit>4.11</version.junit>
     <version.org.mockito>1.9.0</version.org.mockito>
@@ -83,7 +93,9 @@
 
     <version.javax.servlet.servlet-api>3.0.1</version.javax.servlet.servlet-api>
     <version.javax.servlet.jsp-api>2.0</version.javax.servlet.jsp-api>
+    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>1.0.0.Alpha1</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>
     <version.org.jboss.spec.javax.ejb.3.1>1.0.2.Final</version.org.jboss.spec.javax.ejb.3.1>
+    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_1.1_spec>1.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_1.1_spec>
 
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <version.com.google.gwt.gwtmockito>1.1.4</version.com.google.gwt.gwtmockito>
@@ -522,6 +534,60 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>jaxrs-api</artifactId>
+        <version>${version.org.jboss.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-cdi</artifactId>
+        <version>${version.org.jboss.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxrs</artifactId>
+        <version>${version.org.jboss.resteasy}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-api</artifactId>
+        <version>${version.org.jboss.weld.weld-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-core</artifactId>
+        <version>${version.org.jboss.weld.weld}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld.se</groupId>
+        <artifactId>weld-se-core</artifactId>
+        <version>${version.org.jboss.weld.weld}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-core-impl</artifactId>
+        <version>${version.org.jboss.weld.weld}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld.servlet</groupId>
+        <artifactId>weld-servlet-core</artifactId>
+        <version>${version.org.jboss.weld.weld}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.weld</groupId>
+        <artifactId>weld-spi</artifactId>
+        <version>${version.org.jboss.weld.weld-api}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.classfilewriter</groupId>
+        <artifactId>jboss-classfilewriter</artifactId>
+        <version>${version.org.jboss.classfilewriter.jboss-classfilewriter}</version>
+      </dependency>
+
+      <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
         <version>${version.javax.enterprise.cdi}</version>
@@ -571,9 +637,26 @@
       </dependency>
 
       <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>${version.javax.activation}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.spec.javax.annotation</groupId>
+        <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.jboss.spec.javax.ejb</groupId>
         <artifactId>jboss-ejb-api_3.1_spec</artifactId>
         <version>${version.org.jboss.spec.javax.ejb.3.1}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.ws.rs</groupId>
+        <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_1.1_spec}</version>
       </dependency>
 
       <!-- Bootstrap 2 (NOTE: you can't use this and Bootstrap 3 at the same time!) -->
@@ -604,6 +687,12 @@
       </dependency>
 
       <dependency>
+        <groupId>de.benediktmeurer.gwt-slf4j</groupId>
+        <artifactId>gwt-slf4j</artifactId>
+        <version>${version.de.benediktmeurer.gwt-slf4j}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.allen-sauer.gwt.dnd</groupId>
         <artifactId>gwt-dnd</artifactId>
         <version>${version.com.allen-sauer.gwt.dnd}</version>
@@ -616,15 +705,20 @@
       </dependency>
 
       <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava-gwt</artifactId>
-        <version>${version.com.google.guava}</version>
-      </dependency>
-
-      <dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
         <version>${version.xml-apis}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>${version.com.sun.xml.bind}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-xjc</artifactId>
+        <version>${version.com.sun.xml.bind}</version>
       </dependency>
 
       <dependency>
@@ -632,6 +726,13 @@
         <artifactId>javassist</artifactId>
         <version>${version.org.javassist}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.scannotation</groupId>
+        <artifactId>scannotation</artifactId>
+        <version>${version.org.scannotation}</version>
+      </dependency>
+
 
       <dependency>
         <groupId>org.mockito</groupId>
@@ -673,6 +774,18 @@
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-impl</artifactId>
         <version>${version.org.picketlink}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-tomcat7-single</artifactId>
+        <version>${version.org.picketlink}</version>
+      </dependency>
+
+      <dependency><!-- JPA 2 implementation agnostic jar -->
+        <groupId>org.hibernate.javax.persistence</groupId>
+        <artifactId>hibernate-jpa-2.0-api</artifactId>
+        <version>${version.org.hibernate.javax.persistence.hibernate-jpa-2.0-api}</version>
       </dependency>
 
       <dependency>

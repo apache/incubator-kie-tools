@@ -5,7 +5,9 @@
 		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-  <distributable/>
+  <listener>
+    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
+  </listener>
 
   <filter>
     <filter-name>Security Filter</filter-name>
@@ -67,9 +69,27 @@
     <url-pattern>*.erraiBus</url-pattern>
   </servlet-mapping>
 
-  <listener>
-    <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
-  </listener>
+  <servlet>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/defaulteditor/upload/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <servlet-class>org.uberfire.server.FileDownloadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>FileDownloadServlet</servlet-name>
+    <url-pattern>/org.uberfire.UberfireShowcase/defaulteditor/download/*</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+  </welcome-file-list>
 
   <resource-env-ref>
     <description>Object factory for the CDI Bean Manager</description>
@@ -83,7 +103,4 @@
     <resource-env-ref-type>org.jboss.errai.bus.server.service.ErraiService</resource-env-ref-type>
   </resource-env-ref>
 
-  <welcome-file-list>
-    <welcome-file>login.jsp</welcome-file>
-  </welcome-file-list>
 </web-app>
