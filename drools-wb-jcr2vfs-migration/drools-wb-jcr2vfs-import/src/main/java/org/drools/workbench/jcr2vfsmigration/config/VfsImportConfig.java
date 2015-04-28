@@ -29,14 +29,13 @@ import org.apache.commons.io.FileUtils;
 @ApplicationScoped
 public class VfsImportConfig {
 
-    private static String DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
+    private static final String DEFAULT_MIGRATION_FILE_SYSTEM = "guvnor-jcr2vfs-migration";
 
-    public static final String formatstr = "runMigration  [options...]";
+    public static final String FORMAT_STR = "runMigration  [options...]";
 
     private File importTempDir;
     private File outputVfsRepository;
 
-    private boolean forceOverwriteOutputVfsRepository;
     private String outputRepoName;
 
     public File getImportTempDir() {
@@ -68,12 +67,12 @@ public class VfsImportConfig {
         try {
             commandLine = new BasicParser().parse( options, args );
         } catch ( ParseException e ) {
-            formatter.printHelp( formatstr, options );
+            formatter.printHelp( FORMAT_STR, options );
             return false;
         }
 
         if ( commandLine.hasOption( "h" ) ) {
-            formatter.printHelp( formatstr, options );
+            formatter.printHelp( FORMAT_STR, options );
             return false;
         }
 
@@ -97,7 +96,7 @@ public class VfsImportConfig {
     private boolean parseArgOutputVfsRepository( CommandLine commandLine ) {
         outputRepoName = commandLine.getOptionValue( "r", DEFAULT_MIGRATION_FILE_SYSTEM );
         outputVfsRepository = new File( commandLine.getOptionValue( "o", "outputVfs" ) );
-        forceOverwriteOutputVfsRepository = commandLine.hasOption( "f" );
+        boolean forceOverwriteOutputVfsRepository = commandLine.hasOption( "f" );
         if ( outputVfsRepository.exists() ) {
             if ( forceOverwriteOutputVfsRepository ) {
                 try {
