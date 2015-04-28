@@ -1,20 +1,16 @@
 package org.kie.workbench.common.widgets.client.datamodel;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.TypeSource;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
@@ -31,7 +27,6 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for DataModelService
  */
-@Ignore("{manstis} Needs to be re-written following refactoring for dev-runtime to support GWT2.7")
 public class PackageDataModelExtendJavaTypeTest {
 
     private final SimpleFileSystemProvider fs = new SimpleFileSystemProvider();

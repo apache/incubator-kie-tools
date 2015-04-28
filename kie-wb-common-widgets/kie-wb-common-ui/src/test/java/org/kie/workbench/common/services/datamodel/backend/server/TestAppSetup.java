@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package org.kie.workbench.common.widgets.client.datamodel;
+package org.kie.workbench.common.services.datamodel.backend.server;
 
 import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
