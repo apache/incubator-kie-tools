@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import static com.ait.lienzo.client.core.AttributeOp.any;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -40,11 +42,10 @@ import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
+import com.ait.tooling.common.api.flow.Flows.BooleanOp;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-
-import static com.ait.lienzo.client.core.AttributeOp.*;
 
 /**
  * This class indexes related classes for alignment and distribution.

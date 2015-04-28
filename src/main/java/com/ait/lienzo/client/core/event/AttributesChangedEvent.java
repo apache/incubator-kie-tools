@@ -20,10 +20,10 @@ import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
 import com.ait.lienzo.client.core.AttributeOp;
-import com.ait.lienzo.client.core.AttributeOp.BooleanOp;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.GwtEvent;
+import com.ait.tooling.common.api.flow.Flows.BooleanOp;
 
 public class AttributesChangedEvent extends GwtEvent<AttributesChangedHandler>
 {

@@ -18,8 +18,10 @@ package com.ait.lienzo.client.core;
 
 import java.util.List;
 
-import com.ait.tooling.common.api.java.util.function.Predicate;
+import com.ait.tooling.common.api.flow.Flows.BooleanOp;
+import com.ait.tooling.common.api.flow.Flows.PredicateBooleanOp;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
+
 
 public final class AttributeOp
 {
@@ -27,11 +29,6 @@ public final class AttributeOp
 
     private AttributeOp()
     {
-    }
-
-    public static interface BooleanOp
-    {
-        boolean test();
     }
 
     public static final boolean evaluate(final NFastStringSet changed, final BooleanOp op)
@@ -125,77 +122,11 @@ public final class AttributeOp
         return new OneStringSetOp(toSet(attributes));
     }
 
-    public static final BooleanOp or(final BooleanOp op, final BooleanOp... ops)
+    private static abstract class AbstractStringSetOp extends PredicateBooleanOp<NFastStringSet>
     {
-        return new BooleanOp()
-        {
-            @Override
-            public final boolean test()
-            {
-                if (op.test())
-                {
-                    return true;
-                }
-                for (BooleanOp or : ops)
-                {
-                    if (or.test())
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        };
-    }
-
-    public static final BooleanOp and(final BooleanOp op, final BooleanOp... ops)
-    {
-        return new BooleanOp()
-        {
-            @Override
-            public final boolean test()
-            {
-                if (false == op.test())
-                {
-                    return false;
-                }
-                for (BooleanOp or : ops)
-                {
-                    if (false == or.test())
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        };
-    }
-
-    public static final BooleanOp not(final BooleanOp op)
-    {
-        return new BooleanOp()
-        {
-            @Override
-            public final boolean test()
-            {
-                return (false == op.test());
-            }
-        };
-    }
-
-    private static abstract class AbstractStringSetOp implements Predicate<NFastStringSet>, BooleanOp
-    {
-        private final NFastStringSet m_attributes;
-
         protected AbstractStringSetOp(final NFastStringSet attributes)
         {
-            m_attributes = attributes;
-        }
-
-        @Override
-        public final boolean test()
-        {
-            return test(m_attributes);
+            super(attributes);
         }
     }
 

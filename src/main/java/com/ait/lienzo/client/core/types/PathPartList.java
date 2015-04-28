@@ -343,18 +343,16 @@ public final class PathPartList
                     double y0 = p.get(1);
                     double x1 = p.get(2);
                     double y1 = p.get(3);
-                    double r = p.get(4);
-
+                    double ra = p.get(4);
                     Point2D p0 = new Point2D(oldx, oldy);
-                    Point2DArray arcPoints = Geometry.getCanvasArcToPoints(p0, new Point2D(x0, y0), new Point2D(x1, y1), r);
-
-                    BoundingBox box = Geometry.getBoundingBoxOfArc(arcPoints.get(0), arcPoints.get(1), arcPoints.get(2), r);
-                    if ( !arcPoints.get(0).equals(p0) )
+                    Point2DArray pa = Geometry.getCanvasArcToPoints(p0, new Point2D(x0, y0), new Point2D(x1, y1), ra);
+                    BoundingBox bb = Geometry.getBoundingBoxOfArc(pa.get(0), pa.get(1), pa.get(2), ra);
+                    if (false == pa.get(0).equals(p0))
                     {
-                        box.add(p0); //p0 is always the start point of the path, but not necessary of the arc - depending on the radius
+                        bb.add(p0); //p0 is always the start point of the path, but not necessary of the arc - depending on the radius
                     }
-
-                    Point2D ep = arcPoints.get(2); // this is always the end point of the path
+                    m_box.add(bb);
+                    Point2D ep = pa.get(2); // this is always the end point of the path
                     oldx = ep.getX();
                     oldy = ep.getY();
                     break;
