@@ -15,11 +15,7 @@
     <!-- Binaries -->
     <dependencySet>
       <excludes>
-        <exclude>*:sources</exclude>
         <!-- keep the alphabetical order! -->
-        <exclude>com.allen-sauer.gwt.dnd:gwt-dnd</exclude>
-        <exclude>com.github.gwtbootstrap:gwt-bootstrap</exclude>
-        <exclude>com.google.gwt:gwt-user</exclude>
         <!-- org.javassist:javassist is included -->
         <exclude>javassist:javassist</exclude>
         <exclude>org.jboss.resteasy:*</exclude>

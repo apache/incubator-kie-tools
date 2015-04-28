@@ -15,10 +15,8 @@
     <!-- Binaries -->
     <dependencySet>
       <excludes>
-        <exclude>*:sources</exclude>
         <!-- keep the alphabetical order! -->
         <exclude>com.allen-sauer.gwt.dnd:gwt-dnd</exclude>
-        <exclude>com.google.gwt:gwt-user</exclude>
         <exclude>com.sun.xml.bind:jaxb-xjc</exclude>
         <exclude>edu.ucar:netcdf</exclude>
         <!-- org.javassist:javassist is included -->
@@ -26,7 +24,6 @@
         <exclude>org.apache.poi:poi-ooxml</exclude>
         <exclude>org.apache.poi:poi-ooxml-schemas</exclude>
         <exclude>org.apache.xmlbeans:xmlbeans</exclude>
-        <exclude>org.hamcrest:hamcrest-core</exclude>
         <exclude>org.hibernate:hibernate-validator</exclude>
         <exclude>org.jboss.resteasy:*</exclude>
         <exclude>org.jboss.seam.conversation:seam-conversation-spi</exclude>
