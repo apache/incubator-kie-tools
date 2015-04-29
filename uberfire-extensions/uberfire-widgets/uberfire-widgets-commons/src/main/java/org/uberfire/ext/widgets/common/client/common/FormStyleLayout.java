@@ -73,6 +73,7 @@ public class FormStyleLayout extends Composite implements HasWidgets {
     /**
      * Clears the layout table.
      */
+    @Override
     public void clear() {
         numInLayout = 0;
         this.layout.clear();

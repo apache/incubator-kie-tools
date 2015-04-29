@@ -36,18 +36,22 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Base class for modal popup implementations. Setting the following properties by default:
- * - setMaxHeight( ( Window.getClientHeight() * 0.75 ) + "px" );
- * - setBackdrop( BackdropType.STATIC );
- * - setKeyboard( true );
- * - setAnimation( true );
- * - setDynamicSafe( true );
- * - setHideOthers( false );
+ * <ul>
+ * <li>setMaxHeight( ( Window.getClientHeight() * 0.75 ) + "px" );</li>
+ * <li>setBackdrop( {@link BackdropType#STATIC} );</li>
+ * <li>setKeyboard( true );</li>
+ * <li>setAnimation( true );</li>
+ * <li>setDynamicSafe( true );</li>
+ * <li>setHideOthers( false );</li>
+ * </ul>
  * <p/>
  * Furthermore this Modal provides:
- * - Automatic focus to the first Focusable widget in the body
- * - Automatic invocation of the first Button's ClickHandler where ButtonType==PRIMARY when <enter> is pressed
+ * <ul>
+ * <li>Automatic focus to the first Focusable widget in the body</li>
+ * <li>Automatic invocation of the first Button's ClickHandler where {@link ButtonType}==PRIMARY when &lt;enter&gt; is
+ * pressed</li>
+ * </ul>
  */
-
 public class BaseModal extends Modal {
 
     public BaseModal() {

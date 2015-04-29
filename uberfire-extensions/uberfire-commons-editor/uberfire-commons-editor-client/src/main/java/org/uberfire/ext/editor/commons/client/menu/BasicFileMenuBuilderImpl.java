@@ -34,6 +34,7 @@ import org.uberfire.client.mvp.UpdatedLockStatusEvent;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
+import org.uberfire.ext.editor.commons.client.file.CopyPopupViewImpl;
 import org.uberfire.ext.editor.commons.client.file.DeletePopup;
 import org.uberfire.ext.editor.commons.client.file.FileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.RenamePopup;
@@ -214,7 +215,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                                                                                                                                                       details.getNewFileName(),
                                                                                                                                                       details.getCommitMessage() );
                                                            }
-                                                       } );
+                                                       }, new CopyPopupViewImpl() );
                 popup.show();
             }
         } );
@@ -238,7 +239,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
                                                                                                                                                       details.getNewFileName(),
                                                                                                                                                       details.getCommitMessage() );
                                                            }
-                                                       } );
+                                                       }, new CopyPopupViewImpl() );
                 popup.show();
             }
         } );

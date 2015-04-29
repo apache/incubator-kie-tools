@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.uberfire.ext.editor.commons.client.file;
 
-import com.github.gwtbootstrap.client.ui.TextBox;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.user.client.Window;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.ext.editor.commons.client.resources.CommonImages;
-import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
-import org.uberfire.ext.widgets.common.client.common.popups.FormStylePopup;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.GenericModalFooter;
-import org.uberfire.mvp.Command;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-public class CopyPopup extends FormStylePopup {
+public class CopyPopup implements CopyPopupView.Presenter {
 
-    final private TextBox nameTextBox = new TextBox();
-    final private TextBox checkInCommentTextBox = new TextBox();
+    private final CopyPopupView view;
+    private final Path path;
+    private final Validator validator;
+    private final CommandWithFileNameAndCommitMessage command;
 
-    public CopyPopup( final Path path,
-                      final CommandWithFileNameAndCommitMessage command ) {
+    public CopyPopup( Path path, CommandWithFileNameAndCommitMessage command, CopyPopupView view ) {
         this( path,
               new Validator() {
                   @Override
@@ -46,72 +37,54 @@ public class CopyPopup extends FormStylePopup {
                       callback.onSuccess();
                   }
               },
-              command );
+              command, view );
     }
 
-    public CopyPopup( final Path path,
-                      final Validator validator,
-                      final CommandWithFileNameAndCommitMessage command ) {
-        super( CommonImages.INSTANCE.edit(),
-               CommonConstants.INSTANCE.CopyPopupTitle() );
-
-        checkNotNull( "validator",
-                      validator );
-        checkNotNull( "path",
-                      path );
-        checkNotNull( "command",
-                      command );
-
-        //Make sure it appears on top of other popups
-        getElement().getStyle().setZIndex( Integer.MAX_VALUE );
-
-        nameTextBox.setTitle( CommonConstants.INSTANCE.NewName() );
-        nameTextBox.setWidth( "200px" );
-        addAttribute( CommonConstants.INSTANCE.NewNameColon(),
-                      nameTextBox );
-
-        checkInCommentTextBox.setTitle( CommonConstants.INSTANCE.CheckInComment() );
-        checkInCommentTextBox.setWidth( "200px" );
-        addAttribute( CommonConstants.INSTANCE.CheckInCommentColon(),
-                      checkInCommentTextBox );
-
-        final GenericModalFooter footer = new GenericModalFooter();
-        footer.addButton( CommonConstants.INSTANCE.CopyPopupCreateACopy(),
-                          new Command() {
-                              @Override
-                              public void execute() {
-                                  final String baseFileName = nameTextBox.getText();
-                                  final String originalFileName = path.getFileName();
-                                  final String extension = ( originalFileName.lastIndexOf( "." ) > 0 ? originalFileName.substring( originalFileName.lastIndexOf( "." ) ) : "" );
-                                  final String fileName = baseFileName + extension;
-
-                                  validator.validate( fileName,
-                                                      new ValidatorCallback() {
-                                                          @Override
-                                                          public void onSuccess() {
-                                                              hide();
-                                                              command.execute( new FileNameAndCommitMessage( baseFileName,
-                                                                                                             checkInCommentTextBox.getText() ) );
-                                                          }
-
-                                                          @Override
-                                                          public void onFailure() {
-                                                              Window.alert( CommonConstants.INSTANCE.InvalidFileName0( baseFileName ) );
-                                                          }
-                                                      } );
-                              }
-                          },
-                          IconType.SAVE,
-                          ButtonType.PRIMARY );
-        footer.addButton( CommonConstants.INSTANCE.Cancel(),
-                          new Command() {
-                              @Override
-                              public void execute() {
-                                  hide();
-                              }
-                          },
-                          ButtonType.DEFAULT );
-        add( footer );
+    public CopyPopup( Path path, Validator validator, CommandWithFileNameAndCommitMessage command, CopyPopupView view ) {
+        this.validator = checkNotNull( "validator",
+                                       validator );
+        this.path = checkNotNull( "path",
+                                  path );
+        this.command = checkNotNull( "command",
+                                     command );
+        this.view = checkNotNull( "view",
+                                  view );
     }
 
+    public void show() {
+        view.show();
+    }
+
+    private void hide() {
+        view.hide();
+    }
+
+    @Override
+    public void onCancel() {
+        hide();
+    }
+
+    @Override
+    public void onCopy() {
+        final String baseFileName = view.getNewName();
+        final String originalFileName = path.getFileName();
+        final String extension = ( originalFileName.lastIndexOf( "." ) > 0
+                ? originalFileName.substring( originalFileName.lastIndexOf( "." ) ) : "" );
+        final String fileName = baseFileName + extension;
+
+        validator.validate( fileName,
+                            new ValidatorCallback() {
+                                @Override
+                                public void onSuccess() {
+                                    hide();
+                                    command.execute( new FileNameAndCommitMessage( baseFileName,
+                                                                                   view.getCheckInComment() ) );
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    view.handleInvalidFileName( baseFileName );
+                                }
+                            } );
+    }
 }
