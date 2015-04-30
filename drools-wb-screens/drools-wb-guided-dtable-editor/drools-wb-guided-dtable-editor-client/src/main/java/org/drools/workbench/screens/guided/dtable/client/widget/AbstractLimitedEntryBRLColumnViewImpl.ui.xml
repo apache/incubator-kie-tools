@@ -21,7 +21,6 @@
              xmlns:b='urn:import:com.github.gwtbootstrap.client.ui'>
 
   <ui:with field="i18n" type="org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants"/>
-  <ui:with field="images" type="org.drools.workbench.screens.globals.client.resources.images.GlobalsEditorImageResources"/>
   <ui:with field="wizardResources" type="org.uberfire.ext.widgets.core.client.resources.WizardResources"/>
 
   <gwt:VerticalPanel width="100%">
