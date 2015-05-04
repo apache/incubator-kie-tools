@@ -24,7 +24,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.drools.workbench.jcr2vfsmigration.xml.format.XmlAssetFormat.*;
+import static org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils.*;
 
 public class DataModelAssetFormat extends XmlAssetFormat {
 
@@ -64,8 +64,8 @@ public class DataModelAssetFormat extends XmlAssetFormat {
                 DataModelAsset.DataObjectAnnotation ann = annIt.next();
                 sb.append( LT ).append( MODEL_OBJ_ANN )
                         .append( " " ).append( MODEL_OBJ_ANN_NAME ).append( "=\"" ).append( ann.getName() ).append( "\"" )
-                        .append( " " ).append( MODEL_OBJ_ANN_KEY ).append( "=\"" ).append( ann.getKey() ).append( "\"" )
-                        .append( " " ).append( MODEL_OBJ_ANN_VALUE ).append( "=\"" ).append( ann.getValue() ).append( "\"" )
+                        .append( " " ).append( MODEL_OBJ_ANN_KEY ).append( "=\"" ).append( escapeXml( ann.getKey() ) ).append( "\"" )
+                        .append( " " ).append( MODEL_OBJ_ANN_VALUE ).append( "=\"" ).append( escapeXml( ann.getValue() ) ).append( "\"" )
                         .append( SLASH_GT );
             }
 
@@ -104,8 +104,8 @@ public class DataModelAssetFormat extends XmlAssetFormat {
 
                     } else if ( MODEL_OBJ_ANN.equalsIgnoreCase( objChildNode.getNodeName() ) ) {
                         obj.addObjectAnnotation( childNodeAttribs.getNamedItem( MODEL_OBJ_ANN_NAME).getNodeValue(),
-                                                 childNodeAttribs.getNamedItem( MODEL_OBJ_ANN_KEY ).getNodeValue(),
-                                                 childNodeAttribs.getNamedItem( MODEL_OBJ_ANN_VALUE ).getNodeValue() );
+                                                 unEscapeXml( childNodeAttribs.getNamedItem( MODEL_OBJ_ANN_KEY ).getNodeValue() ),
+                                                 unEscapeXml( childNodeAttribs.getNamedItem( MODEL_OBJ_ANN_VALUE ).getNodeValue() ) );
                     }
                 }
             }
