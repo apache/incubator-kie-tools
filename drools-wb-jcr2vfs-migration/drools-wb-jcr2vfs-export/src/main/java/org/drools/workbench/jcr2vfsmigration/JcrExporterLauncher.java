@@ -58,6 +58,9 @@ public class JcrExporterLauncher {
     }
 
     public void startUp() {
+        // As per BRDRLPersistence.marshalRHS()
+        String dateFormatProperty = System.getProperty( "drools.dateformat" );
+        if (dateFormatProperty == null || dateFormatProperty.length() == 0) System.setProperty( "drools.dateformat", "dd-MM-yyyy" );
         weld = new Weld();
         weldContainer = weld.initialize();
         exporter = weldContainer.instance().select( JcrExporter.class ).get();
