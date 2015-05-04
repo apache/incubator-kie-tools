@@ -16,14 +16,9 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import java.util.HashMap;
-import java.util.List;
-import javax.inject.Inject;
-
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.DataGrid;
 import com.github.gwtbootstrap.client.ui.Label;
-import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -33,28 +28,17 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.cellview.client.ColumnSortList;
 import com.google.gwt.user.cellview.client.RowStyles;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.CellPreviewEvent;
+import com.google.gwt.user.client.ui.*;
+import com.google.gwt.view.client.*;
 import com.google.gwt.view.client.CellPreviewEvent.Handler;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.Range;
-import com.google.gwt.view.client.RangeChangeEvent;
-import com.google.gwt.view.client.RowCountChangeEvent;
-import com.google.gwt.view.client.SelectionModel;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.ext.services.shared.preferences.GridColumnPreference;
-import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
-import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
-import org.uberfire.ext.services.shared.preferences.UserPreferencesService;
-import org.uberfire.ext.services.shared.preferences.UserPreferencesType;
+import org.uberfire.ext.services.shared.preferences.*;
 import org.uberfire.ext.widgets.common.client.resources.CommonResources;
+
+import javax.inject.Inject;
+import java.util.List;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -76,9 +60,6 @@ public class SimpleTable<T>
     public Button columnPickerButton;
 
     @UiField(provided = true)
-    public ListBox filterSelectorListBox;
-
-    @UiField(provided = true)
     public DataGrid<T> dataGrid;
 
     @UiField
@@ -97,7 +78,6 @@ public class SimpleTable<T>
 
     private ColumnPicker<T> columnPicker;
 
-    private FilterSelectorDropdown<T> filterSelectorDropdown;
 
     private boolean showFilterSelector = false;
 
@@ -165,9 +145,6 @@ public class SimpleTable<T>
             }
         } );
 
-        filterSelectorDropdown = new FilterSelectorDropdown<T>( gridPreferencesStore );
-        filterSelectorListBox = new ListBox();
-        filterSelectorListBox.setVisible( showFilterSelector );
 
         columnPickerButton = columnPicker.createToggleButton();
 
@@ -268,7 +245,6 @@ public class SimpleTable<T>
 
     public void setPreferencesService( final Caller<UserPreferencesService> preferencesService ) {
         this.preferencesService = preferencesService;
-        filterSelectorDropdown.setPreferencesService( preferencesService );
     }
 
     @Override
@@ -451,7 +427,6 @@ public class SimpleTable<T>
         //   if I would like to compare with the current state for changes
         this.gridPreferencesStore = gridPreferences;
         columnPicker.setGridPreferencesStore( gridPreferences );
-        filterSelectorDropdown.setGridPreferencesStore( gridPreferences );
     }
 
     public GridPreferencesStore getGridPreferencesStore() {
@@ -471,40 +446,6 @@ public class SimpleTable<T>
         }
     }
 
-    public void addFilter( final DataGridFilter<T> datagridFilter ) {
-        filterSelectorDropdown.addFilter( datagridFilter );
-    }
-
-    public void clearFilters() {
-        filterSelectorDropdown.clearFilters();
-    }
-
-    public void refreshFilterDropdown() {
-        filterSelectorDropdown.createDropdownButton( filterSelectorListBox );
-    }
-
-    public boolean isShowFilterSelector() {
-        return showFilterSelector;
-    }
-
-    public void setShowFilterSelector( final boolean showFilterSelector ) {
-        this.showFilterSelector = showFilterSelector;
-        if ( filterSelectorListBox != null ) {
-            filterSelectorListBox.setVisible( showFilterSelector );
-        }
-    }
-
-    public HashMap<String, HashMap> getStoredCustomFilters() {
-        return this.gridPreferencesStore.getCustomFilters();
-    }
-
-    public void storeNewCustomFilter( final String filterkey,
-                                      final HashMap filterParams ) {
-        this.gridPreferencesStore.addCustomFilter( filterkey,
-                                                   filterParams );
-        this.getGridPreferencesStore().setSelectedFilterKey( filterkey );
-        saveGridPreferences();
-    }
 
     public void setcolumnPickerButtonVisibe( final boolean show ) {
         columnPickerButton.setVisible( show );

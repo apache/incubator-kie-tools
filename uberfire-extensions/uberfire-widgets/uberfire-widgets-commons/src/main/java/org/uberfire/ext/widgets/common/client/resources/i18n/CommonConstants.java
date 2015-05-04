@@ -105,6 +105,8 @@ public interface CommonConstants
 
     String Add_New_Filter();
 
+    String Filter_parameters();
+
     String Filter_Management();
 
     String Filter_Name();
@@ -126,5 +128,7 @@ public interface CommonConstants
     String Reset();
 
     String Actions();
+
+    String Basic_Properties();
 
 }

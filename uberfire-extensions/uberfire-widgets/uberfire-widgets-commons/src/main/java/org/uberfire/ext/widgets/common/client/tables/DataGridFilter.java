@@ -19,25 +19,19 @@ import org.uberfire.mvp.Command;
 
 public class DataGridFilter<T> implements Comparable {
     private String key;
-    private String filterName;
     private Command filterCommand;
-    private boolean visible = true;
-    private boolean selected = false;
+
 
     public DataGridFilter( String key,
-                           String filterName,
-                           Command filterClickHandler ) {
+                           Command filterCommand ) {
         this.key=key;
-        this.filterName = filterName;
-        this.filterCommand = filterClickHandler;
+        this.filterCommand = filterCommand;
     }
 
-    public DataGridFilter( String key,
-                           String filterName,
-                           Command filterCommand,
-                           boolean visible ) {
-        this( key, filterName, filterCommand );
-        this.visible = visible;
+    public DataGridFilter( String key,String filterName,
+                           Command filterCommand ) {
+        this.key=key;
+        this.filterCommand = filterCommand;
     }
 
     public String getKey() {
@@ -48,13 +42,6 @@ public class DataGridFilter<T> implements Comparable {
         this.key = key;
     }
 
-    public String getFilterName() {
-        return filterName;
-    }
-
-    public void setFilterName( String filterName ) {
-        this.filterName = filterName;
-    }
 
     public Command getFilterCommand() {
         return filterCommand;
@@ -64,21 +51,6 @@ public class DataGridFilter<T> implements Comparable {
         this.filterCommand = filterCommand;
     }
 
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected( boolean selected ) {
-        this.selected = selected;
-    }
 
     @Override
     public int compareTo(Object o) {
@@ -86,7 +58,7 @@ public class DataGridFilter<T> implements Comparable {
             return 0;
         }
         DataGridFilter otherFilter = (DataGridFilter ) o;
-        if( filterName!=null && filterName.trim().equals( otherFilter.getFilterName() ) )
+        if( key!=null && key.trim().equals( otherFilter.getKey() ) )
             return 0;
         else
             return -1;
