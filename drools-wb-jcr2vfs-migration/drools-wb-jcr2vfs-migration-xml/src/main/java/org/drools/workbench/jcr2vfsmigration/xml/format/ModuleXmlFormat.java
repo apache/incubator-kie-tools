@@ -19,11 +19,12 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.ModuleType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import static org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils.*;
 
 public class ModuleXmlFormat implements XmlFormat<Module> {
 
@@ -50,7 +51,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
                 .append( MODULE_UUID ).append( GT );
         sb.append( LT ).append( MODULE_TYPE ).append( GT ).append( module.getType() ).append( LT_SLASH )
                 .append( MODULE_TYPE ).append( GT );
-        sb.append( LT ).append( MODULE_NAME ).append( GT ).append( module.getName() ).append( LT_SLASH )
+        sb.append( LT ).append( MODULE_NAME ).append( GT ).append( escapeXml( module.getName() ) ).append( LT_SLASH )
                 .append( MODULE_NAME ).append( GT );
 
         String lastContributor = StringUtils.isNotBlank( module.getLastContributor() ) ? module.getLastContributor() : "--";
@@ -103,7 +104,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
             Node propertyNode = moduleProps.item( i );
             String nodeContent = propertyNode.getTextContent();
             if ( MODULE_NAME.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
-                name = nodeContent;
+                name = unEscapeXml( nodeContent );
             } else if ( MODULE_LAST_CONTRIBUTOR.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
                  lastContributor = nodeContent;
             } else if ( MODULE_CHECKIN_COMMENT.equalsIgnoreCase( propertyNode.getNodeName() ) ) {
@@ -143,7 +144,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         StringBuilder sbCheckinComment = new StringBuilder( LT );
         sbCheckinComment.append( MODULE_CHECKIN_COMMENT ).append( GT );
         if ( StringUtils.isNotBlank( checkinComment ) ) {
-            sbCheckinComment.append( ExportXmlUtils.formatCdataSection( checkinComment ) );
+            sbCheckinComment.append( formatCdataSection( checkinComment ) );
         }
         sbCheckinComment.append( LT_SLASH ).append( MODULE_CHECKIN_COMMENT ).append( GT );
         return sbCheckinComment.toString();
@@ -152,14 +153,14 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     private String parseCheckinComment( Node checkinCommentNode ) {
         if ( !MODULE_CHECKIN_COMMENT.equalsIgnoreCase( checkinCommentNode.getNodeName() ) )
             throw new IllegalArgumentException( "Wrong xml format: " + MODULE_CHECKIN_COMMENT );
-        return ExportXmlUtils.parseCdataSection( checkinCommentNode ); // Need the CData parent-node
+        return parseCdataSection( checkinCommentNode ); // Need the CData parent-node
     }
 
     private String formatCatRules( Module module ) {
         StringBuilder sbCatRules = new StringBuilder( LT ).append( MODULE_CATRULES ).append( GT );
         Map<String, String> mapCatRules = module.getCatRules();
         if ( mapCatRules.size() > 0 ) {
-            sbCatRules.append( ExportXmlUtils.formatMap( mapCatRules ) );
+            sbCatRules.append( formatMap( mapCatRules ) );
         }
         sbCatRules.append( LT_SLASH ).append( MODULE_CATRULES ).append( GT );
         return sbCatRules.toString();
@@ -169,7 +170,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         Map<String, String> catRules;
         NodeList catRulesNodeChildren = catRulesNode.getChildNodes();
         if ( catRulesNodeChildren.getLength() > 1 ) throw new IllegalArgumentException( "Wrong xml format: " + MODULE_CATRULES );
-        catRules = ExportXmlUtils.parseMap( catRulesNodeChildren.item( 0 ) );
+        catRules = parseMap( catRulesNodeChildren.item( 0 ) );
         return catRules;
     }
 
@@ -177,7 +178,7 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
         StringBuilder sbPackageHeader = new StringBuilder( LT );
         sbPackageHeader.append( MODULE_PACKAGEHEADER ).append( GT );
         if ( StringUtils.isNotBlank( packageHeaderInfo ) ) {
-            sbPackageHeader.append( ExportXmlUtils.formatCdataSection( packageHeaderInfo ) );
+            sbPackageHeader.append( formatCdataSection( packageHeaderInfo ) );
         }
         sbPackageHeader.append( LT_SLASH ).append( MODULE_PACKAGEHEADER ).append( GT );
         return sbPackageHeader.toString();
@@ -186,14 +187,14 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     private String parsePackageHeaderInfo( Node headerInfoNode ) {
         if ( !MODULE_PACKAGEHEADER.equalsIgnoreCase( headerInfoNode.getNodeName() ) )
             throw new IllegalArgumentException( "Wrong xml format: " + MODULE_PACKAGEHEADER );
-        return ExportXmlUtils.parseCdataSection( headerInfoNode ); // Need the CData parent-node
+        return parseCdataSection( headerInfoNode ); // Need the CData parent-node
     }
 
     private String formatGlobals( String globals ) {
         StringBuilder sbGlobals = new StringBuilder( LT );
         sbGlobals.append( MODULE_GLOBALS ).append( GT );
         if ( StringUtils.isNotBlank( globals ) ) {
-            sbGlobals.append( ExportXmlUtils.formatCdataSection( globals ) );
+            sbGlobals.append( formatCdataSection( globals ) );
         }
         sbGlobals.append( LT_SLASH ).append( MODULE_GLOBALS ).append( GT );
         return sbGlobals.toString();
@@ -202,6 +203,6 @@ public class ModuleXmlFormat implements XmlFormat<Module> {
     private String parseGlobals( Node globalsNode ) {
         if ( !MODULE_GLOBALS.equalsIgnoreCase( globalsNode.getNodeName() ) )
             throw new IllegalArgumentException( "Wrong xml format: " + MODULE_GLOBALS );
-        return ExportXmlUtils.parseCdataSection( globalsNode ); // Need the CData parent-node
+        return parseCdataSection( globalsNode ); // Need the CData parent-node
     }
 }

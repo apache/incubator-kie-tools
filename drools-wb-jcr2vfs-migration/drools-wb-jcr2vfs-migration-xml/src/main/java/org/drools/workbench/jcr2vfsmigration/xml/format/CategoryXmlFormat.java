@@ -21,6 +21,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import static org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils.*;
+
 public class CategoryXmlFormat implements XmlFormat<Category> {
 
     public static final String CATEGORY = "category";
@@ -36,7 +38,7 @@ public class CategoryXmlFormat implements XmlFormat<Category> {
         if ( sb == null || category == null ) throw new IllegalArgumentException( "No output or Category specified" );
 
         initialize();
-        sb.append( LT ).append( CATEGORY ).append( " " ).append( CATEGORY_NAME ).append( "=\"" ).append( category.getName() ).append( "\"" ).append( GT );
+        sb.append( LT ).append( CATEGORY ).append( " " ).append( CATEGORY_NAME ).append( "=\"" ).append( escapeXml( category.getName() ) ).append( "\"" ).append( GT );
         if ( category.getCategories() != null ) {
             categoriesXmlFormat.format( sb, category.getCategories() );
         }
@@ -54,7 +56,7 @@ public class CategoryXmlFormat implements XmlFormat<Category> {
 
         NamedNodeMap attrs = categoryNode.getAttributes();
         if ( attrs != null ) {
-            name = attrs.getNamedItem( CATEGORY_NAME ).getNodeValue();
+            name = unEscapeXml( attrs.getNamedItem( CATEGORY_NAME ).getNodeValue() );
         }
 
         NodeList subCategories = categoryNode.getChildNodes();

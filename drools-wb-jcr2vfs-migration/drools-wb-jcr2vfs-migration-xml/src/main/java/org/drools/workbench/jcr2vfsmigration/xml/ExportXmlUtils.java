@@ -41,8 +41,8 @@ public class ExportXmlUtils {
             for ( Iterator<Map.Entry<String, String>> mapEntryIt = map.entrySet().iterator(); mapEntryIt.hasNext(); ) {
                 sb.append( "<entry>" );
                 Map.Entry<String, String> entry = mapEntryIt.next();
-                sb.append( "<key>" ).append( entry.getKey() ).append( "</key>" );
-                sb.append( "<value>" ).append( entry.getValue() ).append( "</value>" );
+                sb.append( "<key>" ).append( escapeXml( entry.getKey() ) ).append( "</key>" );
+                sb.append( "<value>" ).append( escapeXml( entry.getValue() ) ).append( "</value>" );
                 sb.append( "</entry>" );
             }
         }
@@ -77,15 +77,23 @@ public class ExportXmlUtils {
                 for ( int j = 0; j < entry.getLength(); j++ ) {
                     Node keyValueNode = entry.item( j );
                     if ( "key".equals( keyValueNode.getNodeName() ) ) {
-                        key = keyValueNode.getTextContent();
+                        key = unEscapeXml( keyValueNode.getTextContent() );
                     } else if ( "value".equals( keyValueNode.getNodeName() ) ) {
-                        value = keyValueNode.getTextContent();
+                        value = unEscapeXml( keyValueNode.getTextContent() );
                     }
                 }
                 map.put( key, value );
             }
         }
         return map;
+    }
+
+    public static String escapeXml( String s ) {
+        return org.apache.commons.lang3.StringEscapeUtils.escapeXml( s );
+    }
+
+    public static String unEscapeXml( String s ) {
+        return org.apache.commons.lang3.StringEscapeUtils.unescapeXml( s );
     }
 
     // Transforms possible nested CData sections in successive ones, by replacing the "]]>" end sequence with "]]]]><![CDATA[>",

@@ -18,13 +18,14 @@ package org.drools.workbench.jcr2vfsmigration.xml.format;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.AssetType;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAsset;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.XmlAssets;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import static org.drools.workbench.jcr2vfsmigration.xml.ExportXmlUtils.*;
 
 public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
 
@@ -92,7 +93,7 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
         String lastContributor = StringUtils.isNotBlank( xmlAsset.getLastContributor() ) ? xmlAsset.getLastContributor() : "--";
         Date lastModified = xmlAsset.getLastModified() != null ? xmlAsset.getLastModified() : new Date();
         sb.append( LT ).append( ASSET )
-                .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( xmlAsset.getName() ).append( "\"" )
+                .append( " " ).append( ASSET_NAME ).append( "=\"" ).append( escapeXml( xmlAsset.getName() ) ).append( "\"" )
                 .append( " " ).append( ASSET_TYPE ).append( "=\"" ).append( xmlAsset.getAssetType().toString() ).append( "\"" )
                 .append( " " ).append( ASSET_LAST_CONTRIBUTOR ).append( "=\"" ).append( lastContributor ).append( "\"" )
                 .append( " " ).append( ASSET_LAST_MODIFIED ).append( "=\"" ).append( lastModified.getTime() ).append( "\"" )
@@ -100,7 +101,7 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
 
         // format comment as a CData section, in case it contains any funny characters
         sb.append( LT ).append( ASSET_CHECKIN_COMMENT ).append( GT )
-                .append( ExportXmlUtils.formatCdataSection( xmlAsset.getCheckinComment() ) )
+                .append( formatCdataSection( xmlAsset.getCheckinComment() ) )
                 .append( LT_SLASH ).append( ASSET_CHECKIN_COMMENT ).append( GT );
     }
 
@@ -120,10 +121,10 @@ public abstract class AbstractXmlAssetFormat implements XmlFormat<XmlAsset> {
         NamedNodeMap assetAttribs = assetNode.getAttributes();
 
         Node commentNode = assetNode.getFirstChild();
-        String checkinComment = ExportXmlUtils.parseCdataSection( commentNode ); // Need the CData parent-node
+        String checkinComment = parseCdataSection( commentNode ); // Need the CData parent-node
 
-        return new XmlGenericAttributes( assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue(),
-                                          assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue(),
+        return new XmlGenericAttributes( unEscapeXml( assetAttribs.getNamedItem( ASSET_NAME ).getNodeValue() ),
+                                         assetAttribs.getNamedItem( ASSET_TYPE ).getNodeValue(),
                                          assetAttribs.getNamedItem( ASSET_LAST_CONTRIBUTOR ).getNodeValue(),
                                          checkinComment,
                                          new Date( Long.parseLong( assetAttribs.getNamedItem( ASSET_LAST_MODIFIED ).getNodeValue(), 10 ) )
