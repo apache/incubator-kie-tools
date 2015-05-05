@@ -225,20 +225,26 @@ public class ModuleAssetExporter {
                 response = jcrRepositoryAssetService.findAssetPage(request);
                 for (AssetPageRow row : response.getPageRowList()) {
                     AssetItem assetItemJCR = rulesRepository.loadAssetByUUID( row.getUuid() );
-                    assetName =assetItemJCR.getName();
-                    System.out.format("    Asset [%s] with format [%s] is being migrated... %n",
-                            assetItemJCR.getName(), assetItemJCR.getFormat());
-                    //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
-                    //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
+                    assetName = assetItemJCR.getName();
+                    boolean isDisabled = assetItemJCR.getDisabled();
+                    if ( isDisabled ) {
+                        System.out.format("    Asset [%s] with format [%s] is disabled and will be skipped... %n",
+                                assetItemJCR.getName(), assetItemJCR.getFormat());
+                    } else {
+                        System.out.format("    Asset [%s] with format [%s] is being migrated... %n",
+                                assetItemJCR.getName(), assetItemJCR.getFormat());
+                        //TODO: Git wont check in a version if the file is not changed in this version. Eg, the version 3 of "testFunction.function"
+                        //We need to find a way to force a git check in. Otherwise migrated version history is not consistent with the version history in old Guvnor.
 
-                    //Still need to migrate the "current version" even though in most cases the "current version" (actually it is not a version in version
-                    //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
-                    //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
-                    XmlAsset xmlAsset = export( ExportContext.getInstance( jcrModule, assetItemJCR, assetFileName ) );
-                    xmlAsset.setAssetHistory( exportAssetHistory( ExportContext.getInstance( jcrModule, row.getUuid(), assetFileName ) ) );
-                    assets.add( xmlAsset );
+                        //Still need to migrate the "current version" even though in most cases the "current version" (actually it is not a version in version
+                        //control, its just the current content on jcr node) is equal to the latest version that had been checked in.
+                        //Eg, when we import mortgage example, we just dump the mortgage package to a jcr node, no version check in.
+                        XmlAsset xmlAsset = export( ExportContext.getInstance( jcrModule, assetItemJCR, assetFileName ) );
+                        xmlAsset.setAssetHistory( exportAssetHistory( ExportContext.getInstance( jcrModule, row.getUuid(), assetFileName ) ) );
+                        assets.add( xmlAsset );
 
-                    System.out.format("    Done.%n");
+                        System.out.format("    Done.%n");
+                    }
                 }
             } catch (SerializationException e) {
                 System.out.println("SerializationException exporting asset: " + assetName +" from module: " + jcrModule.getName());
@@ -354,7 +360,7 @@ public class ModuleAssetExporter {
                                                                                         historicalAssetExportFileName );
                 xmlAssets.addAsset( export( historicalAssetExportContext ) );
 
-                System.out.format( "    Asset (%s) with format (%s) migrated: version [%s], comment[%s], lastModified[%s]",
+                System.out.format( "    Asset (%s) with format (%s) migrated: version [%s], comment[%s], lastModified[%s] %n",
                         historicalAssetJCR.getName(), historicalAssetJCR.getFormat(), historicalAssetJCR.getVersionNumber(), historicalAssetJCR.getCheckinComment(), historicalAssetJCR.getLastModified().getTime() );
             }
         } catch ( RuntimeException e ){
