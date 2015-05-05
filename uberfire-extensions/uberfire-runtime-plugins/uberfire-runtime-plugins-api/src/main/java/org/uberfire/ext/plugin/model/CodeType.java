@@ -12,5 +12,6 @@ public enum CodeType {
     RESOURCE_TYPE,
     PRIORITY,
     BODY_HEIGHT, INTERCEPTION_POINTS,
-    PANEL_TYPE
+    PANEL_TYPE;
+
 }

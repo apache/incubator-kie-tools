@@ -1,0 +1,1 @@
+alert('main');$registerSplashScreen({id:"Splash",on_close: function (){alert('main');;},on_concurrent_copy: function (){alert('main');;},title: function (){return "Title";},template: "\u003ch1\u003eSplash Screen\u003c/h1\u003e"});
