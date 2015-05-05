@@ -49,13 +49,17 @@ public class UserWorkbenchPreferences extends UserPreference {
         return language;
     }
 
+    public void setLanguage( final String language ) {
+        this.language = language;
+    }
+
     public String getViewMode( final String perspective ) {
         return perspectiveViewMode.get( perspective );
     }
 
     public void setViewMode( final String perspective,
-                             final String ViewMode ) {
+                             final String viewMode ) {
         perspectiveViewMode.put( perspective,
-                                 ViewMode );
+                                 viewMode);
     }
 }
