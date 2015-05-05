@@ -78,9 +78,6 @@ public class SimpleTable<T>
 
     private ColumnPicker<T> columnPicker;
 
-
-    private boolean showFilterSelector = false;
-
     private GridPreferencesStore gridPreferencesStore;
 
     @Inject

@@ -52,7 +52,6 @@
             </g:cell>
             <g:cell width="33%">
                 <g:FlowPanel width="100%" ui:field="rightToolbar" addStyleNames="{style.rightToolBar}">
-                    <b:Button ui:field="pageSizesSelector" toggle="true" icon="LIST_ALT"/>
                     <b:Button ui:field="columnPickerButton" toggle="true" icon="LIST_UL"/>
                 </g:FlowPanel>
             </g:cell>
@@ -60,8 +59,15 @@
         <g:SimplePanel>
             <b:DataGrid ui:field="dataGrid" addStyleNames="table table-bordered table-striped table-hover"/>
         </g:SimplePanel>
-        <uf:UberfireSimplePager ui:field="pager"
-                                addStyleNames="pagination pagination-right pull-right {style.horizontalContainer}"/>
+        <g:HorizontalPanel width="100%" addStyleNames="{style.horizontalContainer}">
+            <g:cell width="50%" horizontalAlignment="left">
+                <b:ListBox ui:field="pageSizesListBox" width="100px" />
+            </g:cell>
+            <g:cell width="50%" horizontalAlignment="right">
+                <uf:UberfireSimplePager ui:field="pager"
+                                        addStyleNames="pagination pagination-right pull-right {style.horizontalContainer}"/>
+            </g:cell>
+        </g:HorizontalPanel>
     </g:FlowPanel>
 
 </ui:UiBinder>
