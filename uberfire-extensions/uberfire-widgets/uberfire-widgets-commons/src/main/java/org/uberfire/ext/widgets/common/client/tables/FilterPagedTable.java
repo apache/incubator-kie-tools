@@ -117,7 +117,7 @@ public class FilterPagedTable<T>
 
         String gridHeader = multiGridPreferencesStore.getGridSettingParam( key, NewTabFilterPopup.FILTER_TAB_NAME_PARAM );
         String gridTitle = multiGridPreferencesStore.getGridSettingParam( key, NewTabFilterPopup.FILTER_TAB_DESC_PARAM );
-
+        grid.addTableTitle( gridTitle );
 
         HorizontalPanel panel = new HorizontalPanel();
         panel.setStyleName( "tabHeader" );
@@ -148,7 +148,6 @@ public class FilterPagedTable<T>
         panel.setHeight( "25px" );
 
         VerticalPanel tableWithTitle = new VerticalPanel();
-        tableWithTitle.add( new HTML( "<h2>" + gridTitle + "</h2>" ) );
         tableWithTitle.add( grid );
 
         tabPanel.add( tableWithTitle, panel );

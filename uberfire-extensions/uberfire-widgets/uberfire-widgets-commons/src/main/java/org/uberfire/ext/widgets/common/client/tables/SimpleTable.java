@@ -66,7 +66,11 @@ public class SimpleTable<T>
     public HorizontalPanel toolbarContainer;
 
     @UiField
-    public FlowPanel rightToolbar;
+    public HorizontalPanel rightToolbar;
+
+    @UiField
+    public FlowPanel rightActionsToolbar;
+
 
     @UiField
     public FlowPanel leftToolbar;
@@ -407,6 +411,10 @@ public class SimpleTable<T>
         return rightToolbar;
     }
 
+    public HasWidgets getRightActionsToolbar() {
+        return rightActionsToolbar;
+    }
+
     public HasWidgets getLeftToolbar() {
         return leftToolbar;
     }
@@ -443,6 +451,9 @@ public class SimpleTable<T>
         }
     }
 
+    public void addTableTitle(String tableTitle){
+        getLeftToolbar().add( new HTML( "<h4>" + tableTitle + "</h4>" ) );
+    }
 
     public void setcolumnPickerButtonVisibe( final boolean show ) {
         columnPickerButton.setVisible( show );

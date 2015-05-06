@@ -50,10 +50,11 @@
             <g:cell width="33%">
                 <g:FlowPanel width="100%" ui:field="centerToolbar" addStyleNames="{style.centerToolBar}"></g:FlowPanel>
             </g:cell>
-            <g:cell width="33%">
-                <g:FlowPanel width="100%" ui:field="rightToolbar" addStyleNames="{style.rightToolBar}">
+            <g:cell width="33%" horizontalAlignment="right" >
+                <g:HorizontalPanel ui:field="rightToolbar">
+                    <g:FlowPanel width="100%"  ui:field="rightActionsToolbar" addStyleNames="{style.rightToolBar}"/>
                     <b:Button ui:field="columnPickerButton" toggle="true" icon="LIST_UL"/>
-                </g:FlowPanel>
+                </g:HorizontalPanel>
             </g:cell>
         </g:HorizontalPanel>
         <g:SimplePanel>
