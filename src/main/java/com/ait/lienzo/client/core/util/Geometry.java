@@ -224,7 +224,8 @@ public final class Geometry
         {
               return true;
         }
-        else if ( s < RADIANS_270 && e > RADIANS_270 )
+        else if ( s >= RADIANS_180 && s < RADIANS_360 &&
+                  e >= RADIANS_0 && e < RADIANS_180 )
         {
             return true;
         }
@@ -884,30 +885,6 @@ public final class Geometry
         Point2D pc = arcPoints.get(1);
         Point2D pe = arcPoints.get(2);
 
-        Point2D px = new Point2D(ps.getX() > pe.getX() ? ps.getX() : pe.getX(), pc.getY()); // the length doesn't matter, just take largest x
-
-        double as = Geometry.getAngleBetweenTwoLines(ps, pc, px);
-        if ( ps.getY() < pc.getY() )
-        {
-            // deduct from 360, if angle is above
-            as = Geometry.RADIANS_360 - as;
-        }
-
-        double ae = Geometry.getAngleBetweenTwoLines(pe, pc, px);
-        if ( pe.getY() < pc.getY() )
-        {
-            // deduct from 360, if angle is above
-            ae = Geometry.RADIANS_360 - ae;
-        }
-
-        if ( !clockwise(as, ae)  )
-        {
-            // reverse to make clockwise
-            Point2D t = pe;
-            pe = ps;
-            ps = pe;
-        }
-
         if (!ps.equals(p0))
         {
             // canvas draws a line form p0 to p1, this is a new potential intersection point
@@ -918,16 +895,25 @@ public final class Geometry
             }
         }
 
+        if ((pe.sub(pc)).crossScalar((ps.sub(pc)) ) < 0 )
+        {
+            // reverse to make counterclockwise
+            Point2D t = pe;
+            pe = ps;
+            ps = t;
+        }
+
         // As the intersect is on the circle, rather than the arc, it can return back two points.
         // However we know only one of those points is both on the arc and on the line.
         // This means a simple bounding box check on the intersect points and the line can be used.
         if (circleIntersectPoints.size() > 0)
         {
             Point2D t = circleIntersectPoints.get(0);
+
             boolean within = intersectLineBounding(t, a0, a1);
 
             // check which points are on the arc. page 4 http://www.geometrictools.com/Documentation/IntersectionLine2Circle2.pdf
-            if ( within && t.sub( pe ).dot(ps.sub(pe).perpendicular() ) >= 0 )
+            if ( within && t.sub( ps ).dot(pe.sub(ps).perpendicular() ) >= 0 )
             {
                 arcIntersectPoints.push(t);
             }
@@ -936,10 +922,11 @@ public final class Geometry
         if (circleIntersectPoints.size() == 2)
         {
             Point2D t = circleIntersectPoints.get(1);
+
             boolean within = intersectLineBounding(t, a0, a1);
 
             // check which points are on the arc. page 4 http://www.geometrictools.com/Documentation/IntersectionLine2Circle2.pdf
-            if ( within && t.sub(pe).dot(ps.sub(pe).perpendicular() ) >= 0 )
+            if ( within && t.sub( ps ).dot(pe.sub(ps).perpendicular() ) >= 0 )
             {
                 arcIntersectPoints.push(t);
             }
@@ -990,9 +977,9 @@ public final class Geometry
 
         Point2D d = p2.sub(p1);
 
-        double det = (p1.getX() * p2.getY()) - (p2.getX() * p1.getY());
+        double det = p1.crossScalar(p2);
 
-        double dSq = (d.getX() * d.getX()) + (d.getY() * d.getY());
+        double dSq = d.dot(d);
 
         double discrimant = r * r * dSq - det * det;
 
@@ -1006,7 +993,9 @@ public final class Geometry
         {
             // line only intersects once, so the start or end is inside of the circle
             Point2DArray t = new Point2DArray();
-            Point2D t0 = new Point2D(det * d.getY() / dSq + pc.getX(), -det * d.getX() / dSq + pc.getY());
+            double x = det * d.getY() / dSq + pc.getX();
+            double y = -det * d.getX() / dSq + pc.getY();
+            Point2D t0 = new Point2D(Math.round(x), Math.round(y));
             t.push(t0);
             return t;
         }
@@ -1020,8 +1009,13 @@ public final class Geometry
         }
 
         Point2DArray t = new Point2DArray();
-        Point2D t0 = new Point2D((det * d.getY() + sgn * d.getX() * discSqrt) / dSq + pc.getX(), (-det * d.getX() + Math.abs(d.getY()) * discSqrt) / dSq + pc.getY());
-        Point2D t1 = new Point2D((det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX(), (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY());
+        double x = (det * d.getY() + sgn * d.getX() * discSqrt) / dSq + pc.getX();
+        double y = (-det * d.getX() + Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
+        Point2D t0 = new Point2D(Math.round(x), Math.round(y));
+
+        x = (det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX();
+        y = (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
+        Point2D t1 = new Point2D(Math.round(x), Math.round(y));
 
         t.push(t0);
         t.push(t1);
@@ -1049,16 +1043,16 @@ public final class Geometry
 
         Point2D dv = p1.sub(p0);
         Point2D dx = dv.unit();
-        Point2D dl = dx.mul(l);
+        Point2D dl = dx.mul(Math.round(l));
         Point2D ps = p1.sub(dl); // ps is arc start point
 
         dv = p1.sub(p2);
         dx = dv.unit();
-        dl = dx.mul(l);
+        dl = dx.mul(Math.round(l));
         Point2D pe = p1.sub(dl); // ep is arc end point
 
         // this gets the direction as a unit, from p1 to the center
-        Point2D midPoint = new Point2D( (ps.getX() + pe.getX())/2, (ps.getY() + pe.getY())/2);
+        Point2D midPoint = new Point2D( Math.round((ps.getX() + pe.getX())/2),  Math.round((ps.getY() + pe.getY())/2));
         dx = midPoint.sub(p1).unit();
 
         // now determine the length

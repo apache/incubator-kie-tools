@@ -376,6 +376,11 @@ public final class Point2D
         return m_jso.dot(p.getJSO());
     }
 
+    public final double crossScalar(Point2D p)
+    {
+        return m_jso.crossScalar(p.getJSO());
+    }
+
     /**
      * Returns whether the 3 points are colinear, i.e. whether they lie on a single straight line.
      * 
@@ -567,6 +572,11 @@ public final class Point2D
         public final native double dot(Point2DJSO p)
         /*-{
             return this.x * p.x + this.y * p.y;
+        }-*/;
+
+        public final native double crossScalar(Point2DJSO p)
+        /*-{
+            return this.x * p.y - this.y * p.x;
         }-*/;
 
         public final native boolean isNullVector()
