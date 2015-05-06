@@ -212,8 +212,10 @@ public class PluginNavList extends Composite {
             //Sort Activities by Name. A TreeMap supports sorting on insertion by natural ordering of its keys
             final Map<String, Activity> activities = new TreeMap<String, Activity>( PLUGIN_NAME_COMPARATOR );
             for ( final Activity item : e.getValue() ) {
-                activities.put( item.getName(),
-                                item );
+                if ( !thereIsAlreadyAPluginWithSameName( item, activities ) ) {
+                    activities.put( item.getName(),
+                                    item );
+                }
             }
             for ( final Activity item : activities.values() ) {
                 itemsNavList.add( makeItemNavLink( item ) );
@@ -226,6 +228,15 @@ public class PluginNavList extends Composite {
                 pluginsList.add( new Divider() );
             }
         }
+    }
+
+    private boolean thereIsAlreadyAPluginWithSameName( Activity item,
+                                                       Map<String, Activity> activities ) {
+        Activity activity = activities.get( item.getName() );
+        if ( activity != null && activity instanceof Plugin ) {
+            return true;
+        }
+        return false;
     }
 
     private String getName( final IOCBeanDef<?> beanDef ) {
