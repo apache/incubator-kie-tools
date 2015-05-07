@@ -56,7 +56,7 @@ public final class Point2D
     {
         this(Point2DJSO.make(x, y));
     }
-    
+
     public Point2D(Point2D p)
     {
         this(Point2DJSO.make(p.getX(), p.getY()));
@@ -180,7 +180,7 @@ public final class Point2D
     {
         m_jso.offset(p.getJSO());
     }
-    
+
     public final void minus(double x, double y)
     {
         m_jso.minus(x, y);
@@ -207,7 +207,7 @@ public final class Point2D
 
         setY(Math.sin(angle) * length);
     }
-    
+
     /**
      * Returns a new point by subtracting the coordinates of this point and point P,
      * i.e. (this.x - p.x, this.y - p.y)
@@ -522,13 +522,13 @@ public final class Point2D
             this.x += jso.x;
             this.y += jso.y;
         }-*/;
-        
+
         public final native void minus(double x, double y)
         /*-{
             this.x -= x;
             this.y -= y;
         }-*/;
-        
+
         public final native void minus(Point2DJSO jso)
         /*-{
             this.x -= jso.x;

@@ -220,12 +220,11 @@ public final class Geometry
 
     public static boolean clockwise(double s, double e)
     {
-        if ( s < e )
+        if (s < e)
         {
-              return true;
+            return true;
         }
-        else if ( s >= RADIANS_180 && s < RADIANS_360 &&
-                  e >= RADIANS_0 && e < RADIANS_180 )
+        else if (s >= RADIANS_180 && s < RADIANS_360 && e >= RADIANS_0 && e < RADIANS_180)
         {
             return true;
         }
@@ -261,17 +260,15 @@ public final class Geometry
             // deduct from 360, if angle is above
             ae = Geometry.RADIANS_360 - ae;
         }
-
-        if ( !clockwise(as, ae)  )
+        if (!clockwise(as, ae))
         {
             // reverse to make clockwise
             double t = ae;
             ae = as;
             as = t;
         }
-
-
-        if ( ae < as ) {
+        if (ae < as)
+        {
             // this only happens when as is before RADIANS_270 and and ae is after RADIANS_270
             ae += Geometry.RADIANS_360;
         }
@@ -846,9 +843,11 @@ public final class Geometry
         if (denominator != 0)
         {
             double numerator1 = (b1.getX() - b0.getX()) * (a0.getY() - b0.getY()) - (b1.getY() - b0.getY()) * (a0.getX() - b0.getX());
+
             double numerator2 = (a1.getX() - a0.getX()) * (a0.getY() - b0.getY()) - (a1.getY() - a0.getY()) * (a0.getX() - b0.getX());
 
             double a = numerator1 / denominator;
+
             double b = numerator2 / denominator;
 
             if (0 <= a && a <= 1 && 0 <= b && b <= 1)
@@ -856,7 +855,6 @@ public final class Geometry
                 return new Point2D(a0.getX() + a * (a1.getX() - a0.getX()), a0.getY() + a * (a1.getY() - a0.getY()));
             }
         }
-
         return null;
     }
 
@@ -882,27 +880,28 @@ public final class Geometry
         Point2DArray arcIntersectPoints = new Point2DArray();
 
         Point2D ps = arcPoints.get(0);
+
         Point2D pc = arcPoints.get(1);
+
         Point2D pe = arcPoints.get(2);
 
         if (!ps.equals(p0))
         {
             // canvas draws a line form p0 to p1, this is a new potential intersection point
             Point2D t = intersectLineLine(p0, ps, a0, a1);
+
             if (t != null)
             {
                 arcIntersectPoints.push(t);
             }
         }
-
-        if ((pe.sub(pc)).crossScalar((ps.sub(pc)) ) < 0 )
+        if ((pe.sub(pc)).crossScalar((ps.sub(pc))) < 0)
         {
             // reverse to make counterclockwise
             Point2D t = pe;
             pe = ps;
             ps = t;
         }
-
         // As the intersect is on the circle, rather than the arc, it can return back two points.
         // However we know only one of those points is both on the arc and on the line.
         // This means a simple bounding box check on the intersect points and the line can be used.
@@ -913,12 +912,11 @@ public final class Geometry
             boolean within = intersectLineBounding(t, a0, a1);
 
             // check which points are on the arc. page 4 http://www.geometrictools.com/Documentation/IntersectionLine2Circle2.pdf
-            if ( within && t.sub( ps ).dot(pe.sub(ps).perpendicular() ) >= 0 )
+            if (within && t.sub(ps).dot(pe.sub(ps).perpendicular()) >= 0)
             {
                 arcIntersectPoints.push(t);
             }
         }
-
         if (circleIntersectPoints.size() == 2)
         {
             Point2D t = circleIntersectPoints.get(1);
@@ -926,18 +924,18 @@ public final class Geometry
             boolean within = intersectLineBounding(t, a0, a1);
 
             // check which points are on the arc. page 4 http://www.geometrictools.com/Documentation/IntersectionLine2Circle2.pdf
-            if ( within && t.sub( ps ).dot(pe.sub(ps).perpendicular() ) >= 0 )
+            if (within && t.sub(ps).dot(pe.sub(ps).perpendicular()) >= 0)
             {
                 arcIntersectPoints.push(t);
             }
         }
-
         return arcIntersectPoints;
     }
 
     private static boolean intersectLineBounding(Point2D p, Point2D a0, Point2D a1)
     {
         boolean withinX = false;
+
         if (a0.getX() < a1.getX())
         {
             withinX = p.getX() >= a0.getX() && p.getX() <= a1.getX();
@@ -946,8 +944,8 @@ public final class Geometry
         {
             withinX = p.getX() >= a1.getX() && p.getX() <= a0.getX();
         }
-
         boolean withinY = false;
+
         if (a0.getY() < a1.getY())
         {
             withinY = p.getY() >= a0.getY() && p.getY() <= a1.getY();
@@ -956,7 +954,6 @@ public final class Geometry
         {
             withinY = p.getY() >= a1.getY() && p.getY() <= a0.getY();
         }
-
         return withinX && withinY;
     }
 
@@ -973,6 +970,7 @@ public final class Geometry
         // http://stackoverflow.com/a/29067085
         // http://mathworld.wolfram.com/Circle-LineIntersection.html
         Point2D p1 = a0.sub(pc);
+
         Point2D p2 = a1.sub(pc);
 
         Point2D d = p2.sub(p1);
@@ -988,36 +986,45 @@ public final class Geometry
             // line does not intersect
             return EMPTY;
         }
-
         if (discrimant == 0)
         {
             // line only intersects once, so the start or end is inside of the circle
             Point2DArray t = new Point2DArray();
+
             double x = det * d.getY() / dSq + pc.getX();
+
             double y = -det * d.getX() / dSq + pc.getY();
+
             Point2D t0 = new Point2D(Math.round(x), Math.round(y));
+
             t.push(t0);
+
             return t;
         }
-
         double discSqrt = Math.sqrt(discrimant);
 
         double sgn = 1;
+
         if (d.getY() < 0)
         {
             sgn = -1;
         }
-
         Point2DArray t = new Point2DArray();
+
         double x = (det * d.getY() + sgn * d.getX() * discSqrt) / dSq + pc.getX();
+
         double y = (-det * d.getX() + Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
+
         Point2D t0 = new Point2D(Math.round(x), Math.round(y));
 
         x = (det * d.getY() - sgn * d.getX() * discSqrt) / dSq + pc.getX();
+
         y = (-det * d.getX() - Math.abs(d.getY()) * discSqrt) / dSq + pc.getY();
+
         Point2D t1 = new Point2D(Math.round(x), Math.round(y));
 
         t.push(t0);
+
         t.push(t1);
 
         return t;
@@ -1037,31 +1044,41 @@ public final class Geometry
         // see tangents drawn from same point to a circle
         // http://www.mathcaptain.com/geometry/tangent-of-a-circle.html
         double a0 = getAngleBetweenTwoLines(p0, p1, p2) / 2;
+
         double a1 = RADIANS_90 - a0;
 
         double l = getLengthFromASA(a1, r, a0);
 
         Point2D dv = p1.sub(p0);
+
         Point2D dx = dv.unit();
+
         Point2D dl = dx.mul(Math.round(l));
+
         Point2D ps = p1.sub(dl); // ps is arc start point
 
         dv = p1.sub(p2);
+
         dx = dv.unit();
+
         dl = dx.mul(Math.round(l));
+
         Point2D pe = p1.sub(dl); // ep is arc end point
 
         // this gets the direction as a unit, from p1 to the center
-        Point2D midPoint = new Point2D( Math.round((ps.getX() + pe.getX())/2),  Math.round((ps.getY() + pe.getY())/2));
+        Point2D midPoint = new Point2D(Math.round((ps.getX() + pe.getX()) / 2), Math.round((ps.getY() + pe.getY()) / 2));
+
         dx = midPoint.sub(p1).unit();
 
         // now determine the length
-        double p1tocLength = Math.sqrt((r*r) + (l*l));
-        Point2D pc= p1.add( dx.mul(p1tocLength) );
+        double p1tocLength = Math.sqrt((r * r) + (l * l));
+
+        Point2D pc = p1.add(dx.mul(p1tocLength));
 
         //Point2D pc = ps.add(dx.perpendicular().mul(r));
 
         Point2DArray points = new Point2DArray();
+
         points.push(ps, pc, pe);
 
         return points;
@@ -1070,12 +1087,16 @@ public final class Geometry
     public static Point2D[] getCardinalIntersects(PathPartList path)
     {
         Point2D[] cardinals = getCardinals(path);
+
         Point2D center = cardinals[0];
 
         // Entry 0 is M
         PathPartEntryJSO entry = path.get(0);
+
         NFastDoubleArrayJSO points = entry.getPoints();
+
         Point2D m = new Point2D(points.get(0), points.get(1));
+
         Point2D start = m;
 
         @SuppressWarnings("unchecked")
@@ -1085,6 +1106,7 @@ public final class Geometry
         for (int i = 1; i < path.size(); i++)
         {
             entry = path.get(i);
+
             switch (entry.getCommand())
             {
                 case PathPartEntryJSO.LINETO_ABSOLUTE:
@@ -1144,18 +1166,23 @@ public final class Geometry
     public static Point2D[] removeInnerPoints(Point2D c, Set<Point2D>[] pointSet)
     {
         Point2D[] points = new Point2D[pointSet.length];
+
         int i = 0;
+
         for (Set<Point2D> set : pointSet)
         {
             double furthestDistance = 0;
+
             if (set != null && !set.isEmpty())
             {
                 for (Point2D p : set)
                 {
                     double currentDistance = p.distance(c);
+
                     if (currentDistance > furthestDistance)
                     {
                         furthestDistance = currentDistance;
+
                         points[i] = p;
                     }
                 }
@@ -1168,27 +1195,36 @@ public final class Geometry
     public static void addIntersect(Set<Point2D>[] cardinalList, int index, Point2D point)
     {
         Set<Point2D> intersects = cardinalList[index];
+
         if (intersects == null)
         {
             intersects = new HashSet<Point2D>();
+
             cardinalList[index] = intersects;
         }
-
         intersects.add(point);
     }
 
     public static Point2D[] getCardinals(PathPartList path)
     {
         BoundingBox box = path.getBoundingBox();
+
         Point2D c = new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
+
         Point2D n = new Point2D(c.getX(), box.getY());
+
         Point2D e = new Point2D(box.getX() + box.getWidth(), c.getY());
+
         Point2D s = new Point2D(c.getX(), box.getY() + box.getHeight());
+
         Point2D w = new Point2D(box.getX(), c.getY());
 
         Point2D ne = new Point2D(e.getX(), n.getY());
+
         Point2D se = new Point2D(e.getX(), s.getY());
+
         Point2D sw = new Point2D(w.getX(), s.getY());
+
         Point2D nw = new Point2D(w.getX(), n.getY());
 
         Point2D[] ordinals = new Point2D[] { c, n, ne, e, se, s, sw, w, nw };
@@ -1211,6 +1247,7 @@ public final class Geometry
     public static int getQuadrant(double x0, double y0, Point2D c)
     {
         int xy;
+
         if (x0 > c.getX() && y0 < c.getY())
         {
             xy = 0;
@@ -1228,7 +1265,6 @@ public final class Geometry
         {
             xy = 3;
         }
-
         return xy;
     }
 }
