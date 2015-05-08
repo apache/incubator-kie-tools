@@ -763,6 +763,29 @@
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
     <plugins>
+
+      <!-- See http://stackoverflow.com/questions/19905695/maven-how-to-include-annotation-generated-java-files-in-the-jar -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-annotations</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>target/generated-sources/annotations</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -770,7 +793,6 @@
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <localWorkers>1</localWorkers>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
-          <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
@@ -897,16 +919,10 @@
         </configuration>
         <executions>
           <execution>
-            <id>gwt-clean</id>
-            <phase>clean</phase>
+            <configuration>
+              <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
+            </configuration>
             <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>gwt-compile</id>
-            <goals>
-              <goal>resources</goal>
               <goal>compile</goal>
             </goals>
           </execution>
