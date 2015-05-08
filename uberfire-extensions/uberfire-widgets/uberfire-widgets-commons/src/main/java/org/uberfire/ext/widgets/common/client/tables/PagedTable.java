@@ -16,23 +16,13 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ListBox;
-import com.github.gwtbootstrap.client.ui.RadioButton;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.github.gwtbootstrap.client.ui.resources.ButtonSize;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
@@ -40,6 +30,7 @@ import org.uberfire.ext.services.shared.preferences.GridGlobalPreferences;
 import org.uberfire.ext.services.shared.preferences.GridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.resources.UberfireSimplePagerResources;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
+import org.uberfire.mvp.Command;
 
 
 /**
@@ -63,9 +54,9 @@ public class PagedTable<T>
     public UberfireSimplePager pager;
 
     @UiField
-    public ListBox pageSizesListBox;
+    public ListBox pageSizesSelector;
 
-    private boolean showPageSizesSelector = false;
+    public boolean showPageSizesSelector = false;
 
     private boolean showFFButton= true;
     private boolean showLButton = true;
@@ -79,7 +70,7 @@ public class PagedTable<T>
         this.pageSize=pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
-        createPageSizesListBox();
+        createPageSizesListBox(5,20,5);
     }
 
     public PagedTable( final int pageSize,
@@ -88,18 +79,18 @@ public class PagedTable<T>
         this.pageSize =pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
-        createPageSizesListBox();
+        createPageSizesListBox(5,20,5);
     }
 
     public PagedTable( final int pageSize,
                        final ProvidesKey<T> providesKey,
                        final GridGlobalPreferences gridGlobalPreferences ) {
         super( providesKey, gridGlobalPreferences );
-        pageSizesListBox.setVisible( false );
+        pageSizesSelector.setVisible( false );
         this.pageSize=pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
-        createPageSizesListBox();
+        createPageSizesListBox(5,20,5);
     }
 
     public PagedTable( final int pageSize,
@@ -112,7 +103,7 @@ public class PagedTable<T>
         this.pageSize=pageSize;
         this.dataGrid.setPageSize( pageSize );
         this.pager.setDisplay( dataGrid );
-        createPageSizesListBox();
+        createPageSizesListBox(5,20,5);
     }
 
     protected Widget makeWidget() {
@@ -141,23 +132,24 @@ public class PagedTable<T>
         this.dataGrid.setPageSize( pageSize );
         this.pager.setPageSize( pageSize );
         this.dataGrid.setHeight( ( pageSize * 41 ) + 42 + "px" );
-        pageSizesListBox.setVisible( this.showPageSizesSelector );
+        pageSizesSelector.setVisible( this.showPageSizesSelector );
     }
 
-    public void createPageSizesListBox() {
-        pageSizesListBox.clear();
-        for (int i=5;i<20;i=i+5) {
-            pageSizesListBox.addItem(String.valueOf( i ) + " " + CommonConstants.INSTANCE.Items(),String.valueOf(i));
+
+    public void createPageSizesListBox(int minPageSize, int maxPageSize,int incPageSize){
+        pageSizesSelector.clear();
+        for (int i=minPageSize;i<=maxPageSize;i=i+incPageSize) {
+            pageSizesSelector.addItem( String.valueOf( i ) + " " + CommonConstants.INSTANCE.Items(), String.valueOf( i ) );
             if(i==pageSize){
-                pageSizesListBox.setSelectedValue( String.valueOf(i) );
+                pageSizesSelector.setSelectedValue( String.valueOf( i ) );
             }
         }
 
-        pageSizesListBox.addChangeHandler( new ChangeHandler() {
+        pageSizesSelector.addChangeHandler( new ChangeHandler() {
             @Override
             public void onChange( ChangeEvent event ) {
-                storePageSizeInGridPreferences( Integer.parseInt( pageSizesListBox.getValue()) );
-                loadPageSizePreferences( );
+                storePageSizeInGridPreferences( Integer.parseInt( pageSizesSelector.getValue() ) );
+                loadPageSizePreferences();
             }
         } );
     }

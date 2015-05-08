@@ -61,10 +61,10 @@
             <b:DataGrid ui:field="dataGrid" addStyleNames="table table-bordered table-striped table-hover"/>
         </g:SimplePanel>
         <g:HorizontalPanel width="100%" addStyleNames="{style.horizontalContainer}">
-            <g:cell width="50%" horizontalAlignment="left">
-                <b:ListBox ui:field="pageSizesListBox" width="100px" />
+            <g:cell width="50%" horizontalAlignment="left" verticalAlignment="middle">
+                <b:ListBox ui:field="pageSizesSelector" width="100px" />
             </g:cell>
-            <g:cell width="50%" horizontalAlignment="right">
+            <g:cell width="50%" horizontalAlignment="right" verticalAlignment="top">
                 <uf:UberfireSimplePager ui:field="pager"
                                         addStyleNames="pagination pagination-right pull-right {style.horizontalContainer}"/>
             </g:cell>
