@@ -1,16 +1,10 @@
+package org.kie.workbench.common.screens.datamodeller.client;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.screens.datamodeller.client.DataModelHelper;
 
 import static org.junit.Assert.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: jschatte
- * Date: 14/06/13
- * Time: 13:00
- * To change this template use File | Settings | File Templates.
- */
 public class DataModelHelperTest {
 
     private DataModelHelper helper;
