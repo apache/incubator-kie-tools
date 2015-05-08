@@ -1,7 +1,7 @@
 $registerPerspective({
     id: "Home",
     is_default: true,
-    panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
+    panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
     view: {
         parts: [
             {
@@ -15,7 +15,7 @@ $registerPerspective({
                 width: 250,
                 min_width: 200,
                 position: "west",
-                panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
+                panel_type: "org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "YouTubeVideos",
@@ -30,13 +30,17 @@ $registerPerspective({
                     {
                         place: "TodoListScreen",
                         parameters: {}
+                    },
+                    {
+                        place: "ReadmeScreen",
+                        parameters: {}
                     }
                 ]
             },
             {
                 height: 400,
                 position: "south",
-                panel_type: "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter",
+                panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
                 parts: [
                     {
                         place: "YouTubeScreen",

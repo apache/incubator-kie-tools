@@ -44,14 +44,14 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchScreen(identifier = "TodoListScreen", preferredWidth = 400)
-public class TodoListScreen
+@WorkbenchScreen(identifier = "ReadmeScreen", preferredWidth = 400)
+public class ReadmeScreen
         extends Composite
         implements RequiresResize {
 
     interface ViewBinder
             extends
-            UiBinder<Widget, TodoListScreen> {
+            UiBinder<Widget, ReadmeScreen> {
 
     }
 
@@ -82,7 +82,7 @@ public class TodoListScreen
                     }
                 } ).readAllString( o );
             }
-        } ).get( "default://uf-playground/todo.md" );
+        } ).get( "default://uf-playground/README.md" );
     }
 
     @DefaultPosition
@@ -93,25 +93,17 @@ public class TodoListScreen
     @Override
     @WorkbenchPartTitle
     public String getTitle() {
-        return "Todo List";
+        return "README";
     }
 
     @WorkbenchMenu
     public Menus getMenu() {
         return MenuFactory
-                .newTopLevelMenu( "Save" )
+                .newTopLevelMenu( "Validate" )
                 .respondsWith( new Command() {
                     @Override
                     public void execute() {
-                        Window.alert( "Saved!" );
-                    }
-                } )
-                .endMenu()
-                .newTopLevelMenu( "Delete" )
-                .respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        Window.alert( "Deleted!" );
+                        Window.alert( "valid!" );
                     }
                 } )
                 .endMenu()
