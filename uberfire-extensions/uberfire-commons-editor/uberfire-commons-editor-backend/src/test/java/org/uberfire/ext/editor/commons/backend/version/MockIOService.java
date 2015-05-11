@@ -360,4 +360,9 @@ public class MockIOService
     public Path write(Path path, String s, Charset charset, Map<String, ?> stringMap, OpenOption... openOptions) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
+
+    @Override
+    public int priority() {
+        return 0;
+    }
 }
