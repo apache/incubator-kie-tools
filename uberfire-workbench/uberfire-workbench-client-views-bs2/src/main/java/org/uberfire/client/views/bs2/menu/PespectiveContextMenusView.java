@@ -54,38 +54,14 @@ public class PespectiveContextMenusView
         if ( notHavePermissionToMakeThis( item ) ) {
             return null;
         }
-        if ( isInstanceOfMenuItemCommand(item ) ) {
+        if ( item instanceof MenuItemCommand ) {
             return makeMenuItemCommand( item );
 
-        } else if ( isInstanceOfMenuGroup( item ) ) {
+        } else if ( item instanceof MenuGroup ) {
             return makeMenuGroup( (MenuGroup) item );
         }
 
         return null;
-    }
-
-    private boolean isInstanceOfMenuGroup( MenuItem item ) {
-        //Workaround af a dev mode bug that instanceOf doesn't seems to work with static inner classes
-        boolean isInstanceOfMenuGroup = false;
-        try {
-            final MenuGroup _x = (MenuGroup) item;
-            isInstanceOfMenuGroup = true;
-        } catch ( Exception ex ) {
-            isInstanceOfMenuGroup = false;
-        }
-        return isInstanceOfMenuGroup;
-    }
-
-    private boolean isInstanceOfMenuItemCommand( MenuItem item ) {
-        //Workaround af a dev mode bug that instanceOf doesn't seems to work with static inner classes
-        boolean isInstanceOfMenuItemCommand = false;
-        try {
-            final MenuItemCommand _x = (MenuItemCommand) item;
-            isInstanceOfMenuItemCommand = true;
-        } catch ( Exception ex ) {
-            isInstanceOfMenuItemCommand = false;
-        }
-        return isInstanceOfMenuItemCommand;
     }
 
     Widget makeMenuItemCommand( final MenuItem item ) {
