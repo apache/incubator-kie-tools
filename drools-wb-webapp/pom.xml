@@ -51,10 +51,6 @@
       <artifactId>guvnor-services-backend</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-bus</artifactId>
     </dependency>
@@ -69,6 +65,10 @@
     <dependency>
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-security-server</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-marshalling</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
@@ -121,6 +121,27 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-properties-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-service-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-backend-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-widgets-commons</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.kie</groupId>
@@ -150,6 +171,11 @@
     </dependency>
 
     <!-- Models held within Drools -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-workbench-models-commons</artifactId>
@@ -183,6 +209,10 @@
     <!-- Guvnor -->
     <dependency>
       <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-asset-mgmt-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
       <artifactId>guvnor-asset-mgmt-client</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -190,15 +220,19 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-asset-mgmt-backend</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-structure-backend</artifactId>
+      <artifactId>guvnor-structure-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-structure-client</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -210,13 +244,11 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-m2repo-editor-backend</artifactId>
@@ -226,13 +258,11 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-inbox-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-inbox-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-inbox-backend</artifactId>
@@ -242,7 +272,6 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-project-backend</artifactId>
@@ -252,7 +281,6 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-workingset-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-workingset-client</artifactId>
@@ -268,16 +296,14 @@
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-message-console-api</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.guvnor</groupId>
-      <artifactId>guvnor-message-console-backend</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.guvnor</groupId>
       <artifactId>guvnor-message-console-client</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-message-console-backend</artifactId>
     </dependency>
 
     <dependency>
@@ -290,7 +316,6 @@
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-datamodel-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-datamodel-backend</artifactId>
@@ -300,7 +325,6 @@
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-backend</artifactId>
@@ -308,15 +332,22 @@
 
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-refactoring-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-refactoring-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-project-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-project-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-project-editor-backend</artifactId>
@@ -332,13 +363,11 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-search-screen-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-search-screen-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-search-screen-backend</artifactId>
@@ -348,13 +377,11 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-project-explorer-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-project-explorer-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-project-explorer-backend</artifactId>
@@ -369,7 +396,11 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-data-modeller-api</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-data-modeller-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-data-modeller-backend</artifactId>
@@ -377,15 +408,8 @@
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-data-modeller-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-home-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-home-client</artifactId>
@@ -396,7 +420,6 @@
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-java-editor-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-java-editor-client</artifactId>
@@ -405,10 +428,13 @@
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-default-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-default-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-default-editor-backend</artifactId>
@@ -426,16 +452,19 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.workbench.screens</groupId>
-      <artifactId>kie-wb-common-social-home-page-client</artifactId>
-      <scope>provided</scope>
+      <groupId>org.kie.uberfire</groupId>
+      <artifactId>kie-uberfire-social-activities-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-social-home-page-api</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.kie.workbench.screens</groupId>
+      <artifactId>kie-wb-common-social-home-page-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-social-home-page-backend</artifactId>
@@ -471,6 +500,10 @@
     <!-- Uberfire Apps -->
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-apps-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-apps-client</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -494,10 +527,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-rule-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-rule-editor-backend</artifactId>
@@ -505,10 +541,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-template-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-template-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-template-editor-backend</artifactId>
@@ -516,10 +555,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-dtable-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-dtable-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-dtable-editor-backend</artifactId>
@@ -527,10 +569,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-dtree-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-dtree-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-dtree-editor-backend</artifactId>
@@ -538,10 +583,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-guided-scorecard-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-scorecard-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-guided-scorecard-editor-backend</artifactId>
@@ -549,10 +597,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-drl-text-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-drl-text-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-drl-text-editor-backend</artifactId>
@@ -560,10 +611,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-enum-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-enum-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-enum-editor-backend</artifactId>
@@ -571,15 +625,22 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-factmodel-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-factmodel-editor-backend</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-dsl-text-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-dsl-text-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-dsl-text-editor-backend</artifactId>
@@ -587,10 +648,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-dtable-xls-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-dtable-xls-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-dtable-xls-editor-backend</artifactId>
@@ -598,10 +662,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-scorecard-xls-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-scorecard-xls-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-scorecard-xls-editor-backend</artifactId>
@@ -611,13 +678,11 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-globals-editor-api</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-globals-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-globals-editor-backend</artifactId>
@@ -625,10 +690,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-test-scenario-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-test-scenario-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-test-scenario-editor-backend</artifactId>
@@ -636,10 +704,13 @@
 
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-wb-workitems-editor-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-wb-workitems-editor-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-wb-workitems-editor-backend</artifactId>
@@ -648,12 +719,16 @@
     <!-- UberFire PlugIn Extension -->
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-runtime-plugins-backend</artifactId>
+      <artifactId>uberfire-runtime-plugins-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-runtime-plugins-client</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-runtime-plugins-backend</artifactId>
     </dependency>
 
     <!-- UberFire Extension -->
