@@ -54,11 +54,17 @@ import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
@@ -119,7 +125,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
     private GlobalResourceTypeDefinition globalsType;
 
     private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
-    private Map<String, AnnotationDefinitionTO> annotationDefinitions;
+    private Map<String, AnnotationDefinition> annotationDefinitions;
 
     @PostConstruct
     public void initialiseTypeConversionMetaData() {
@@ -265,14 +271,14 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
         for ( String declaredType : declaredTypes ) {
             final FactModels factModels = FactModelPersistence.unmarshal( declaredType );
             final String packageName = factModels.getPackageName();
-            final DataModelTO dataModelTO = new DataModelTO();
+            final DataModel dataModel = new DataModelImpl();
 
             for ( FactMetaModel factMetaModel : factModels.getModels() ) {
-                final DataObjectTO dataObjectTO = new DataObjectTO( factMetaModel.getName(),
-                                                                    packageName,
-                                                                    factMetaModel.getSuperType() );
+                final DataObject dataObject = new DataObjectImpl( factMetaModel.getName(),
+                                                                    packageName );
+                dataObject.setSuperClassName( factMetaModel.getSuperType() );
                 final List<AnnotationMetaModel> annotationMetaModel = factMetaModel.getAnnotations();
-                addAnnotations( dataObjectTO,
+                addAnnotations( dataObject,
                                 annotationMetaModel );
 
                 final List<FieldMetaModel> fields = factMetaModel.getFields();
@@ -283,40 +289,42 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
                     //Guvnor 5.5 (and earlier) does not have MultipleType
                     boolean isMultiple = false;
                     boolean isBaseType = orderedBaseTypes.containsValue( fieldType );
-                    ObjectPropertyTO property = new ObjectPropertyTO( fieldName,
+                    ObjectProperty property = new ObjectPropertyImpl( fieldName,
                                                                       fieldType,
-                                                                      isMultiple,
-                                                                      isBaseType );
-                    //field has no annotation in Guvnor 5.5 (and earlier)
-                    dataObjectTO.getProperties().add( property );
+                                                                      isMultiple);
+                    property.setBaseType( isBaseType );
 
-                    result.addMessage( "Created Java Type " + getJavaTypeFQCN( dataObjectTO ),
+                    //field has no annotation in Guvnor 5.5 (and earlier)
+                    dataObject.addProperty( property );
+
+                    result.addMessage( "Created Java Type " + getJavaTypeFQCN( dataObject ),
                                        ConversionMessageType.INFO );
                 }
 
-                dataModelTO.getDataObjects().add( dataObjectTO );
+                dataModel.getDataObjects().add( dataObject );
             }
 
-            modellerService.saveModel( dataModelTO,
+            modellerService.saveModel( dataModel,
                                        project );
         }
     }
 
-    private String getJavaTypeFQCN( final DataObjectTO dataObjectTO ) {
-        final String packageName = dataObjectTO.getPackageName();
-        final String className = dataObjectTO.getClassName();
+    private String getJavaTypeFQCN( final DataObject dataObject ) {
+        final String packageName = dataObject.getPackageName();
+        final String className = dataObject.getClassName();
         if ( packageName == null || packageName.equals( "" ) ) {
             return className;
         }
         return packageName + "." + className;
     }
 
-    private void addAnnotations( final DataObjectTO dataObject,
+    private void addAnnotations( final DataObject dataObject,
                                  final List<AnnotationMetaModel> annotationMetaModelList ) {
         for ( AnnotationMetaModel annotationMetaModel : annotationMetaModelList ) {
             final String name = annotationMetaModel.name;
             final Map<String, String> values = annotationMetaModel.values;
 
+            Annotation annotation;
             String key = AnnotationDefinitionTO.VALUE_PARAM;
             String value = "";
 
@@ -326,17 +334,17 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             }
 
             if ( "Role".equals( name ) ) {
-                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ),
-                                          key,
-                                          value );
+                annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ) );
+                annotation.setValue( key, value );
+                dataObject.addAnnotation( annotation );
             } else if ( "Position".equals( name ) ) {
-                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.POSITION_ANNOTATION ),
-                                          key,
-                                          value );
+                annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.POSITION_ANNOTATION ) );
+                annotation.setValue( key, value );
+                dataObject.addAnnotation( annotation );
             } else if ( "Equals".equals( name ) ) {
-                dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.KEY_ANNOTATION ),
-                                          key,
-                                          value );
+                annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.KEY_ANNOTATION ) );
+                annotation.setValue( key, value );
+                dataObject.addAnnotation( annotation );
             }
         }
     }

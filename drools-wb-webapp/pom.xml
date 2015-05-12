@@ -361,6 +361,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-data-modeller-core</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.workbench.screens</groupId>
       <artifactId>kie-wb-common-data-modeller-api</artifactId>
     </dependency>
@@ -793,6 +798,8 @@
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <localWorkers>1</localWorkers>
           <extraJvmArgs>-Xmx2048m -XX:MaxPermSize=256m -Xms1024m -XX:PermSize=128m -Xss1M -XX:CompileThreshold=7000 -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+          <module>org.drools.workbench.FastCompiledDroolsWorkbench</module>
+
           <logLevel>INFO</logLevel>
           <noServer>false</noServer>
           <server>org.jboss.errai.cdi.server.gwt.EmbeddedWildFlyLauncher</server>
@@ -829,6 +836,8 @@
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-search-screen-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-project-explorer-client</compileSourcesArtifact>
+
+            <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-data-modeller-core</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-data-modeller-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.workbench.screens:kie-wb-common-home-api</compileSourcesArtifact>

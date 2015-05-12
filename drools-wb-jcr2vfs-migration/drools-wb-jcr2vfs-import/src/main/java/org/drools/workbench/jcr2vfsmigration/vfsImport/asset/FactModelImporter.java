@@ -27,15 +27,17 @@ import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 import org.guvnor.common.services.project.service.ProjectService;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationMemberDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -58,7 +60,7 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
     private DataModelerService modelerService;
 
     private Map<String, String> orderedBaseTypes = new TreeMap<String, String>();
-    private Map<String, AnnotationDefinitionTO> annotationDefinitions;
+    private Map<String, AnnotationDefinition> annotationDefinitions;
 
     @Override
     public Path importAsset( Module xmlModule, DataModelAsset xmlAsset, Path previousVersionPath ) {
@@ -75,7 +77,6 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
 
         initBasePropertyTypes();
         initAnnotationDefinitions();
-        AnnotationDefinitionTO positionAnnotationDef = getPositionAnnotationDefinition();
 
         if ( project == null ) {
             // formerly jcrModule.getName(), but when arriving at this point the jcrModule name has been replaced with
@@ -90,15 +91,15 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                                       "" );
         }
 
-        DataModelTO dataModelTO = new DataModelTO();
+        DataModel dataModel = new DataModelImpl();
 
         for ( Iterator<DataModelAsset.DataModelObject> objIt = xmlAsset.modelObjects(); objIt.hasNext(); ) {
             DataModelAsset.DataModelObject obj = objIt.next();
 
             // Same remark for the package as above
-            DataObjectTO dataObject = new DataObjectTO( obj.getName(),
-                                                        normalizedPackageName,
-                                                        obj.getSuperType() );
+            DataObject dataObject = new DataObjectImpl( obj.getName(),
+                                                        normalizedPackageName );
+            dataObject.setSuperClassName( obj.getSuperType() );
 
             // TODO add fileOrder to object properties, and adapt kie-wb-common accordingly so that the param order in the
             // param constructor respects the order of the properties in the generated java source file.
@@ -109,12 +110,11 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                 boolean isMultiple = false;
                 boolean isBaseType = isBaseType( fieldType );
 
-                ObjectPropertyTO property = new ObjectPropertyTO( fieldName,
+                ObjectProperty property = new ObjectPropertyImpl( fieldName,
                                                                   fieldType,
-                                                                  isMultiple,
-                                                                  isBaseType );
-
-                dataObject.getProperties().add( property );
+                                                                  isMultiple);
+                property.setBaseType( isBaseType );
+                dataObject.addProperty( property );
             }
 
             // Add annotations to data object
@@ -123,15 +123,17 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                 String name = objAnn.getName();
                 String key = objAnn.getKey();
                 String value = objAnn.getValue();
+                Annotation annotation;
 
                 if ( "Role".equals( name ) ) {
-                    dataObject.addAnnotation( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ), key, value );
+                    annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ) );
+                    annotation.setValue( key, value );
                 }
             }
 
-            dataModelTO.getDataObjects().add( dataObject );
+            dataModel.addDataObject( dataObject );
         }
-        modelerService.saveModel( dataModelTO, project );
+        modelerService.saveModel( dataModel, project );
 
         return path;
     }
@@ -147,17 +149,6 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
 
     private void initAnnotationDefinitions() {
         annotationDefinitions = modelerService.getAnnotationDefinitions();
-    }
-
-    private AnnotationDefinitionTO getPositionAnnotationDefinition() {
-        AnnotationDefinition positionAnnotationDef = PositionAnnotationDefinition.getInstance();
-        AnnotationDefinitionTO positionAnnotationDefTO = new AnnotationDefinitionTO( positionAnnotationDef.getName(), positionAnnotationDef.getClassName(), positionAnnotationDef.getShortDescription(), positionAnnotationDef.getDescription(), positionAnnotationDef.isObjectAnnotation(), positionAnnotationDef.isPropertyAnnotation() );
-        AnnotationMemberDefinitionTO memberDefinitionTO;
-        for ( AnnotationMemberDefinition memberDefinition : positionAnnotationDef.getAnnotationMembers() ) {
-            memberDefinitionTO = new AnnotationMemberDefinitionTO( memberDefinition.getName(), memberDefinition.getClassName(), memberDefinition.isPrimitiveType(), memberDefinition.isEnum(), memberDefinition.defaultValue(), memberDefinition.getShortDescription(), memberDefinition.getDescription() );
-            positionAnnotationDefTO.addMember( memberDefinitionTO );
-        }
-        return positionAnnotationDefTO;
     }
 
     private Boolean isBaseType( String type ) {
