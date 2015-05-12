@@ -20,17 +20,13 @@ import java.util.Map;
 
 public interface Annotation extends HasClassName {
 
-    /**
-     *
-     * @return return the same value as getAnnotationDefinition().getName();
-     */
-    String getName();
-
     Object getValue(String annotationMemberName);
 
     Map<String, Object> getValues();
 
     void setValue(String annotationMemberName, Object value);
+
+    void removeValue( String annotationMemberName );
     
     AnnotationDefinition getAnnotationDefinition();
 

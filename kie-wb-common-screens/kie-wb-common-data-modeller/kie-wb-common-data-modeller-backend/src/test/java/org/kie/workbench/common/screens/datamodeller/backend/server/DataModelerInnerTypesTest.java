@@ -3,11 +3,12 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 import java.net.URL;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
+
+import static org.junit.Assert.*;
 
 public class DataModelerInnerTypesTest extends DataModelerServiceBaseTest {
 
@@ -25,8 +26,8 @@ public class DataModelerInnerTypesTest extends DataModelerServiceBaseTest {
 
             KieProject project = projectService.resolveProject( packagePath );
 
-            DataModelTO dataModel = dataModelService.loadModel( project );
-            DataObjectTO dataObject = dataModel.getDataObjectByClassName("test.Outer");
+            DataModel dataModel = dataModelService.loadModel( project );
+            DataObject dataObject = dataModel.getDataObject( "test.Outer" );
             assertNotNull( "DataObject test.Outer was not loaded", dataObject );
             assertEquals( "DataObject test.Outer should not have readed properties", 0, dataObject.getProperties().size() );
         } catch ( Exception e ) {

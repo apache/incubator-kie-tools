@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.services.datamodeller.core;
 
-
-public interface ObjectProperty extends HasName, HasClassName, HasAnnotations {
+public interface ObjectProperty extends HasName, HasClassName, HasAnnotations, HasVisibility {
 
     boolean isMultiple();
 
@@ -38,5 +37,10 @@ public interface ObjectProperty extends HasName, HasClassName, HasAnnotations {
     boolean isFinal();
 
     int getModifiers();
+
+    void setClassName( String className );
+
+    //TODO check this method is here just because off the TO refactoring, this should probably be removed.
+    void setBaseType( boolean baseType );
 
 }

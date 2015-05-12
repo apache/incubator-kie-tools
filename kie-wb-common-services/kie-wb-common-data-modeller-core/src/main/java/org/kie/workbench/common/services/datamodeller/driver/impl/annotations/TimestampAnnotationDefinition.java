@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
 
+@Deprecated
 public class TimestampAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public TimestampAnnotationDefinition() {
-        super("@Timestamp", org.kie.api.definition.type.Timestamp.class.getName(), "Timestamp", "Timestamp annotation", true, false);
-        addMember(new AnnotationMemberDefinitionImpl("value", String.class.getName(), false, "value", "value"));
+        super(org.kie.api.definition.type.Timestamp.class.getName(), true, false);
+        addValuePair( new AnnotationValuePairDefinitionImpl( "value", String.class.getName(), AnnotationValuePairDefinition.ValuePairType.STRING ) );
     }
 
     public static TimestampAnnotationDefinition getInstance() {

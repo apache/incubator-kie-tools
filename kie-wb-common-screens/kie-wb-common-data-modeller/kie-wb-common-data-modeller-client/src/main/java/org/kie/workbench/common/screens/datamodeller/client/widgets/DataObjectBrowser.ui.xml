@@ -25,7 +25,6 @@
   <gwt:HTMLPanel>
 
     <gwt:VerticalPanel ui:field="mainPanel" styleName="row-fluid">
-      <!--gwt:SimplePanel ui:field="breadCrumbsPanel"></gwt:SimplePanel-->
 
       <gwt:HTMLPanel>
         <!--div class="well" style="margin-top:20px;"-->
@@ -72,14 +71,12 @@
           </div>
 
           <h5>
-            <gwt:Label ui:field="objectName" ></gwt:Label>
+            <b:Button ui:field="objectButton"></b:Button>
           </h5>
 
           <gwt:ScrollPanel width="100%" height="460px">
             <b:CellTable ui:field="dataObjectPropertiesTable" styleName="table table-bordered table-striped table-hover"/>
           </gwt:ScrollPanel>
-
-          <!--b:SimplePager ui:field="pager" display="{dataObjectPropertiesTable}"  /-->
 
         </div>
       </gwt:HTMLPanel>

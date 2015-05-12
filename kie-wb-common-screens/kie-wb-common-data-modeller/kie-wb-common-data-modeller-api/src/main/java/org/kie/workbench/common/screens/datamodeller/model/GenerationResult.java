@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.uberfire.backend.vfs.Path;
 
 import java.util.ArrayList;
@@ -33,14 +34,14 @@ public class GenerationResult extends DataModelerResult {
 
     private String source;
 
-    private DataObjectTO dataObject;
+    private DataObject dataObject;
 
     private Path path;
 
     public GenerationResult() {
     }
 
-    public GenerationResult( String source, DataObjectTO dataObject, List<DataModelerError> errors ) {
+    public GenerationResult( String source, DataObject dataObject, List<DataModelerError> errors ) {
         this.source = source;
         this.dataObject = dataObject;
         this.errors = errors;
@@ -74,11 +75,11 @@ public class GenerationResult extends DataModelerResult {
         this.source = source;
     }
 
-    public DataObjectTO getDataObject() {
+    public DataObject getDataObject() {
         return dataObject;
     }
 
-    public void setDataObject( DataObjectTO dataObject ) {
+    public void setDataObject( DataObject dataObject ) {
         this.dataObject = dataObject;
     }
 

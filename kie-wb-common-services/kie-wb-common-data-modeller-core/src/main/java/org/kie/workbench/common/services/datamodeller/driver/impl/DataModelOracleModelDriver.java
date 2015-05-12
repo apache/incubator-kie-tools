@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +28,6 @@ import org.drools.workbench.models.datamodel.oracle.Annotation;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
-import org.kie.workbench.common.services.datamodeller.driver.*;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.*;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.OpenOption;
 import org.kie.workbench.common.services.datamodel.backend.server.DataModelOracleUtilities;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
@@ -41,11 +37,21 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
+import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
+import org.kie.workbench.common.services.datamodeller.driver.FileChangeDescriptor;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
+import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
+import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.OpenOption;
 
 public class DataModelOracleModelDriver implements ModelDriver {
 
@@ -158,7 +164,9 @@ public class DataModelOracleModelDriver implements ModelDriver {
         ClassMetadata classMetadata = readClassMetadata(factType, classLoader);
 
         if (classMetadata != null && !classMetadata.isMemberClass() && !classMetadata.isAnonymousClass() && !classMetadata.isLocalClass() ) {
-            dataObject = dataModel.addDataObject( factType, source, classMetadata.getModifiers() );
+
+            Visibility visibility = DriverUtils.buildVisibility( classMetadata.getModifiers() );
+            dataObject = dataModel.addDataObject( factType, visibility, Modifier.isAbstract( classMetadata.getModifiers() ), Modifier.isFinal( classMetadata.getModifiers() ), source );
             dataObject.setSuperClassName( superClass );
 
             //process type annotations
@@ -178,8 +186,6 @@ public class DataModelOracleModelDriver implements ModelDriver {
                 Map<String, Set<Annotation>> typeFieldsAnnotations = DataModelOracleUtilities.getTypeFieldsAnnotations( oracleDataModel,
                                                                                                                         factType );
                 Set<Annotation> fieldAnnotations;
-                Integer naturalOrder = 0;
-                List<PropertyPosition> naturalOrderPositions = new ArrayList<PropertyPosition>();
 
                 if ( factFields != null && factFields.length > 0 ) {
                     for ( int j = 0; j < factFields.length; j++ ) {
@@ -212,14 +218,8 @@ public class DataModelOracleModelDriver implements ModelDriver {
                                     addFieldAnnotation( dataObject, property, fieldAnnotation );
                                 }
                             }
-
-                            AnnotationImpl position = new AnnotationImpl( PositionAnnotationDefinition.getInstance() );
-                            position.setValue( "value", naturalOrder.toString() );
-                            naturalOrderPositions.add( new PropertyPosition( property, position ) );
-                            naturalOrder++;
                         }
                     }
-                    verifyPositions( dataObject, naturalOrderPositions );
                 }
             } else {
                 logger.debug( "No fields for factTye: " + factType );
@@ -235,118 +235,6 @@ public class DataModelOracleModelDriver implements ModelDriver {
             logger.error("It was not possible to read class metadata for class: " + factType);
         }
         return null;
-    }
-
-    private void verifyPositions( DataObject dataObject,
-                                  List<PropertyPosition> naturalOrderPositions ) {
-
-        //1) check if all fields has position and all positions are consumed
-        HashMap<String, String> availablePositions = new HashMap<String, String>();
-        for ( int i = 0; i < dataObject.getProperties().size(); i++ ) {
-            availablePositions.put( String.valueOf( i ), "" );
-        }
-
-        boolean recalculate = false;
-        org.kie.workbench.common.services.datamodeller.core.Annotation position;
-        for ( ObjectProperty property : dataObject.getProperties().values() ) {
-            position = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
-            if ( position == null ) {
-                //the position is missing for at least one field.
-                recalculate = true;
-                break;
-            } else {
-                String value = (String) position.getValue( "value" );
-                if ( value != null ) {
-                    availablePositions.remove( value.trim() );
-                }
-            }
-        }
-
-        org.kie.workbench.common.services.datamodeller.core.Annotation desiredPosition;
-        List<PropertyPosition> desiredPositions = new ArrayList<PropertyPosition>();
-
-        if ( recalculate || availablePositions.size() > 0 ) {
-            //we need to recalculate positions.
-            for ( PropertyPosition propertyPosition : naturalOrderPositions ) {
-                desiredPosition = propertyPosition.property.removeAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
-                if ( desiredPosition != null ) {
-                    desiredPositions.add( new PropertyPosition( propertyPosition.property, desiredPosition ) );
-                }
-                propertyPosition.property.addAnnotation( propertyPosition.position );
-            }
-            recalculatePositions( dataObject, desiredPositions );
-        }
-    }
-
-    private void recalculatePositions( DataObject dataObject,
-                                       List<PropertyPosition> desiredPositions ) {
-
-        Collection<ObjectProperty> properties = dataObject.getProperties().values();
-        org.kie.workbench.common.services.datamodeller.core.Annotation currentPosition, naturalOrder;
-
-        for ( PropertyPosition desiredPosition : desiredPositions ) {
-            ObjectProperty property = dataObject.getProperties().get( desiredPosition.property.getName() );
-            currentPosition = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
-            recalculatePositions( properties, currentPosition, desiredPosition.position );
-        }
-    }
-
-    private void recalculatePositions( Collection<ObjectProperty> properties,
-                                       org.kie.workbench.common.services.datamodeller.core.Annotation oldPositionAnnotaion,
-                                       org.kie.workbench.common.services.datamodeller.core.Annotation newPositionAnnotation ) {
-
-        Integer newPosition;
-        Integer oldPosition;
-        Integer maxPosition = properties.size() - 1;
-
-        try {
-            oldPosition = Integer.parseInt( (String) oldPositionAnnotaion.getValue( "value" ) );
-        } catch ( NumberFormatException e ) {
-            //the old position is calculated by construction. This case is not possible.
-            return;
-        }
-
-        try {
-            newPosition = Integer.parseInt( (String) newPositionAnnotation.getValue( "value" ) );
-        } catch ( NumberFormatException e ) {
-            //if the value for the desired annotation is not valid it has no sence to continue.
-            return;
-        }
-
-        if ( newPosition < 0 ) {
-            newPosition = 0;
-        }
-        if ( newPosition > maxPosition ) {
-            newPosition = maxPosition;
-        }
-
-        if ( newPosition == oldPosition ) {
-            return;
-        }
-
-        org.kie.workbench.common.services.datamodeller.core.Annotation propertyPositionAnnotation;
-        int propertyPosition;
-        for ( ObjectProperty property : properties ) {
-
-            propertyPositionAnnotation = property.getAnnotation( PositionAnnotationDefinition.getInstance().getClassName() );
-            propertyPosition = Integer.parseInt( (String) propertyPositionAnnotation.getValue( "value" ) );
-
-            if ( newPosition < oldPosition ) {
-                if ( propertyPosition >= newPosition && propertyPosition < oldPosition ) {
-                    propertyPositionAnnotation.setValue( "value", Integer.valueOf( propertyPosition + 1 ).toString() );
-                }
-            } else {
-                if ( propertyPosition <= newPosition && propertyPosition > oldPosition ) {
-                    propertyPositionAnnotation.setValue( "value", Integer.valueOf( propertyPosition - 1 ).toString() );
-                }
-            }
-
-            if ( propertyPosition == oldPosition ) {
-                propertyPositionAnnotation.setValue( "value", newPosition.toString() );
-            }
-
-        }
-
     }
 
     private void addFactTypeAnnotation( DataObject dataObject,
@@ -413,18 +301,6 @@ public class DataModelOracleModelDriver implements ModelDriver {
      */
     private boolean isLoadableField( ModelField field ) {
         return ( field.getOrigin().equals( ModelField.FIELD_ORIGIN.DECLARED ) );
-    }
-
-    static class PropertyPosition {
-
-        ObjectProperty property;
-        org.kie.workbench.common.services.datamodeller.core.Annotation position;
-
-        PropertyPosition( ObjectProperty property,
-                          org.kie.workbench.common.services.datamodeller.core.Annotation position ) {
-            this.property = property;
-            this.position = position;
-        }
     }
 
     static class OracleGenerationListener implements GenerationListener {

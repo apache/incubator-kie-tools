@@ -1,3 +1,19 @@
+/**
+ * Copyright 2012 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
@@ -17,23 +33,24 @@ public class PropertyTypeFactoryImpl implements PropertyTypeFactory {
     
     private static HashMap<String, PropertyType> baseTypesByClass = new HashMap<String, PropertyType>();
 
-    private PropertyTypeFactoryImpl() {
-        baseTypes.add(new PropertyTypeImpl(Short.class.getSimpleName(), Short.class.getName()));
-        baseTypes.add(new PropertyTypeImpl(Integer.class.getSimpleName(), Integer.class.getName()));
-        baseTypes.add(new PropertyTypeImpl(Long.class.getSimpleName(), Long.class.getName()));
-        baseTypes.add(new PropertyTypeImpl(Byte.class.getSimpleName(), Byte.class.getName()));
+    //needs to be public for errai marshalling
+    public PropertyTypeFactoryImpl() {
+        baseTypes.add(new PropertyTypeImpl("Short", Short.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Integer", Integer.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Long", Long.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Byte", Byte.class.getName()));
 
-        baseTypes.add(new PropertyTypeImpl(Float.class.getSimpleName(), Float.class.getName()));
-        baseTypes.add(new PropertyTypeImpl(Double.class.getSimpleName(), Double.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Float", Float.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Double", Double.class.getName()));
 
-        baseTypes.add(new PropertyTypeImpl(Date.class.getSimpleName(), Date.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Date", Date.class.getName()));
 
-        baseTypes.add(new PropertyTypeImpl(Boolean.class.getSimpleName(), Boolean.class.getName()));
-        baseTypes.add(new PropertyTypeImpl(String.class.getSimpleName(), String.class.getName()));
-        baseTypes.add(new PropertyTypeImpl(Character.class.getSimpleName(), Character.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Boolean", Boolean.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("String", String.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("Character", Character.class.getName()));
 
-        baseTypes.add(new PropertyTypeImpl(BigDecimal.class.getSimpleName(), BigDecimal.class.getName()));
-        baseTypes.add(new PropertyTypeImpl(BigInteger.class.getSimpleName(), BigInteger.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("BigDecimal", BigDecimal.class.getName()));
+        baseTypes.add(new PropertyTypeImpl("BigInteger", BigInteger.class.getName()));
 
 
         baseTypes.add(new PropertyTypeImpl(NamingUtils.BYTE, NamingUtils.BYTE));

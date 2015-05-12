@@ -16,45 +16,63 @@
 
 package org.kie.workbench.common.services.datamodeller.core;
 
+import java.util.List;
 import java.util.Set;
 
 public interface DataModel {
 
     Set<DataObject> getDataObjects();
-    
-    Set<DataObject> getDataObjects(ObjectSource source);
+
+    Set<DataObject> getDataObjects( ObjectSource source );
 
     /**
      * The created data object will have the class name "packageName.name"
-     *
      * @param packageName The package to locate the DataObject.
-     *
      * @param name
-     *
-     * @return
+     * @return the created DataObject
      */
-    DataObject addDataObject(String packageName, String name);
+    DataObject addDataObject( String packageName, String name );
 
-    DataObject addDataObject(String packageName, String name, int modifiers);
-    
-    DataObject addDataObject(String className);
+    DataObject addDataObject( String packageName, String name, Visibility visibility );
+
+    DataObject addDataObject( String packageName, String name, Visibility visibility, boolean isAbstract, boolean isFinal );
+
+    DataObject addDataObject( String packageName, String name, Visibility visibility, boolean isAbstract, boolean isFinal, ObjectSource source );
+
+    DataObject addDataObject( String className, Visibility visibility, boolean isAbstract, boolean isFinal, ObjectSource source );
+
+    DataObject addDataObject( String className, Visibility visibility, boolean isAbstract, boolean isFinal );
+
+    DataObject addDataObject( String className );
 
     DataObject addDataObject( DataObject dataObject );
 
-    DataObject getDataObject(String className);
-    
-    DataObject removeDataObject(String className);
+    DataObject getDataObject( String className );
 
-    DataObject addDataObject(String packageName, String name, ObjectSource source);
+    DataObject addDataObject( String packageName, String name, ObjectSource source );
 
-    DataObject addDataObject(String packageName, String name, ObjectSource source, int modifiers);
+    DataObject addDataObject( String className, ObjectSource source );
 
-    DataObject addDataObject(String className, ObjectSource source);
+    DataObject getDataObject( String className, ObjectSource source );
 
-    DataObject addDataObject(String className, ObjectSource source, int modifiers);
+    DataObject removeDataObject( String className );
 
-    DataObject getDataObject(String className, ObjectSource source);
+    DataObject removeDataObject( String className, ObjectSource source );
 
-    DataObject removeDataObject(String className, ObjectSource source);
+    //TODO this method was added for refactoring purposes, check if this I should maintain this method
+    int getId();
+
+    //TODO this method was added for refactoring purposes, check if this I should maintain this method
+    public List<DataObject> getExternalClasses();
+
+
+    /**
+     *
+     * @param className
+     *
+     * @return  true if the given class name is an imported class.
+     */
+    boolean isExternal( String className );
+
 
 }

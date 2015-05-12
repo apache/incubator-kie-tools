@@ -3,24 +3,25 @@ package org.kie.workbench.common.screens.datamodeller.backend.server;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.spi.CreationalContext;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 
-import org.jboss.weld.environment.se.StartMain;
-import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.api.definition.type.ClassReactive;
+import org.kie.api.definition.type.Description;
+import org.kie.api.definition.type.Duration;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Key;
+import org.kie.api.definition.type.Label;
+import org.kie.api.definition.type.Position;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
+import org.kie.api.definition.type.TypeSafe;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.shared.project.KieProject;
-import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
 import static org.junit.Assert.*;
 
@@ -38,102 +39,98 @@ public class DataModelerServiceTest extends DataModelerServiceBaseTest {
 
         KieProject project = projectService.resolveProject( packagePath );
 
-        DataModelTO dataModelOriginalTO = createModel();
-        DataModelTO dataModelTO = dataModelService.loadModel( project );
-        Map<String, DataObjectTO> objectsMap = new HashMap<String, DataObjectTO>();
+        DataModel dataModelOriginal = createModel();
 
-        assertNotNull( dataModelTO );
+        org.kie.workbench.common.services.datamodeller.core.DataModel dataModel = dataModelService.loadModel( project );
+        Map<String, DataObject> objectsMap = new HashMap<String, DataObject>();
 
-        assertEquals( dataModelOriginalTO.getDataObjects().size(), dataModelTO.getDataObjects().size() );
+        assertNotNull( dataModel );
 
-        for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects() ) {
-            objectsMap.put( dataObjectTO.getClassName(), dataObjectTO );
+        assertEquals( dataModelOriginal.getDataObjects().size(), dataModel.getDataObjects().size() );
+
+        for ( DataObject dataObject : dataModel.getDataObjects() ) {
+            objectsMap.put( dataObject.getClassName(), dataObject );
         }
 
-        for ( DataObjectTO dataObjectTO : dataModelOriginalTO.getDataObjects() ) {
-            DataModelerAssert.assertEqualsDataObject( dataObjectTO, objectsMap.get( dataObjectTO.getClassName() ) );
+        for ( DataObject dataObject : dataModelOriginal.getDataObjects() ) {
+            org.kie.workbench.common.services.datamodeller.DataModelerAssert.assertEqualsDataObject( dataObject, objectsMap.get( dataObject.getClassName() ) );
         }
 
     }
 
-    private DataModelTO createModel() {
-        DataModelTO dataModelTO = new DataModelTO();
+    private DataModel createModel() {
+        DataModel dataModel = new DataModelImpl();
 
-        DataObjectTO pojo1 = createDataObject( "Pojo1", "t1p1", "t1p2.Pojo2" );
+        DataObject pojo1 = createDataObject( "t1p1",  "Pojo1", "t1p2.Pojo2" );
+        dataModel.addDataObject( pojo1 );
 
-        AnnotationTO annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION, "value", "true" );
-        pojo1.addAnnotation( annotationTO );
+        Annotation annotation = createAnnotation( systemAnnotations, null, TypeSafe.class.getName(), "value", Boolean.TRUE );
+        pojo1.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.ROLE_ANNOTATION, "value", "EVENT" );
-        pojo1.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Role.class.getName(), "value", "EVENT" );
+        pojo1.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.LABEL_ANNOTATION, "value", "Pojo1Label" );
-        pojo1.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Label.class.getName(), "value", "Pojo1Label" );
+        pojo1.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, "value", "Pojo1Description" );
-        pojo1.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Description.class.getName(), "value", "Pojo1Description" );
+        pojo1.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DURATION_ANNOTATION, "value", "duration" );
-        pojo1.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Duration.class.getName(), "value", "duration" );
+        pojo1.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.TIMESTAMP_ANNOTATION, "value", "timestamp" );
-        pojo1.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Timestamp.class.getName(), "value", "timestamp" );
+        pojo1.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION, null, null );
-        pojo1.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, ClassReactive.class.getName(), null, null );
+        pojo1.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.EXPIRES_ANNOTATION, "value", "1h25m" );
-        pojo1.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Expires.class.getName(), "value", "1h25m" );
+        pojo1.addAnnotation( annotation );
 
-        ObjectPropertyTO propertyTO = addProperty( pojo1, "field1", "java.lang.Character", true, false, null );
+        addProperty( pojo1, "serialVersionUID", "long", true, false, null );
+        ObjectProperty property = addProperty( pojo1, "field1", "java.lang.Character", true, false, null );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "0" );
-        propertyTO.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Position.class.getName(), "value", 0 );
+        property.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.KEY_ANNOTATION, null, null );
-        propertyTO.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Key.class.getName(), null, null );
+        property.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.LABEL_ANNOTATION, "value", "field1Label" );
-        propertyTO.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Label.class.getName(), "value", "field1Label" );
+        property.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, "value", "field1Description" );
-        propertyTO.addAnnotation( annotationTO );
-        pojo1.getProperties().add( propertyTO );
+        annotation = createAnnotation( systemAnnotations, null, Description.class.getName(), "value", "field1Description" );
+        property.addAnnotation( annotation );
 
-        propertyTO = addProperty( pojo1, "duration", "java.lang.Integer", true, false, null );
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "1" );
-        propertyTO.addAnnotation( annotationTO );
-        pojo1.getProperties().add( propertyTO );
+        property = addProperty( pojo1, "duration", "java.lang.Integer", true, false, null );
+        annotation = createAnnotation( systemAnnotations, null, Position.class.getName(), "value", 1 );
+        property.addAnnotation( annotation );
 
-        propertyTO = addProperty( pojo1, "timestamp", "java.util.Date", true, false, null );
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "2" );
-        propertyTO.addAnnotation( annotationTO );
-        pojo1.getProperties().add( propertyTO );
+        property = addProperty( pojo1, "timestamp", "java.util.Date", true, false, null );
+        annotation = createAnnotation( systemAnnotations, null, Position.class.getName(), "value", 2 );
+        property.addAnnotation( annotation );
 
-        propertyTO = addProperty( pojo1, "field2", "char", true, false, null );
+        property = addProperty( pojo1, "field2", "char", true, false, null );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "3" );
-        propertyTO.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Position.class.getName(), "value", 3 );
+        property.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.KEY_ANNOTATION, null, null );
-        propertyTO.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Key.class.getName(), null, null );
+        property.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.LABEL_ANNOTATION, "value", "field2Label" );
-        propertyTO.addAnnotation( annotationTO );
+        annotation = createAnnotation( systemAnnotations, null, Label.class.getName(), "value", "field2Label" );
+        property.addAnnotation( annotation );
 
-        annotationTO = createAnnotation( systemAnnotations, null, AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, "value", "field2Description" );
-        propertyTO.addAnnotation( annotationTO );
-        pojo1.getProperties().add( propertyTO );
+        annotation = createAnnotation( systemAnnotations, null, Description.class.getName(), "value", "field2Description" );
+        property.addAnnotation( annotation );
 
-        propertyTO = addProperty( pojo1, "serialVersionUID", "long", true, false, null );
-        pojo1.getProperties().add( propertyTO );
+        dataModel.getDataObjects().add( pojo1 );
 
-        dataModelTO.getDataObjects().add( pojo1 );
+        DataObject pojo2 = createDataObject( "t1p2", "Pojo2", null );
+        dataModel.addDataObject( pojo2 );
 
-        DataObjectTO pojo2 = createDataObject( "Pojo2", "t1p2", null );
-        dataModelTO.getDataObjects().add( pojo2 );
-
-        return dataModelTO;
+        return dataModel;
 
     }
 

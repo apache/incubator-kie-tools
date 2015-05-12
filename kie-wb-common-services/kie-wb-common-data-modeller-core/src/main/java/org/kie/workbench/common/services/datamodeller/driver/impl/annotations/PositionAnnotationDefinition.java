@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
 
+@Deprecated
 public class PositionAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public PositionAnnotationDefinition() {
 
-        super("@Position", org.kie.api.definition.type.Position.class.getName(), "Position", "Position annotation", false, true);
-        addMember(new AnnotationMemberDefinitionImpl("value", Integer.class.getName(), false, "", "value", "value"));
+        super(org.kie.api.definition.type.Position.class.getName(),  false, true);
+        addValuePair( new AnnotationValuePairDefinitionImpl( "value", Integer.class.getName(), AnnotationValuePairDefinition.ValuePairType.STRING, "" ) );
     }
 
     public static PositionAnnotationDefinition getInstance() {

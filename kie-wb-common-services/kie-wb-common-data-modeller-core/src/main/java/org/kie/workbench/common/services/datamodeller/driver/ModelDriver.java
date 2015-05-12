@@ -16,15 +16,10 @@
 
 package org.kie.workbench.common.services.datamodeller.driver;
 
+import java.util.List;
 
-import org.kie.workbench.common.services.datamodeller.codegen.GenerationListener;
-import org.uberfire.java.nio.file.OpenOption;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.Path;
-
-import java.util.List;
 
 public interface ModelDriver {
 

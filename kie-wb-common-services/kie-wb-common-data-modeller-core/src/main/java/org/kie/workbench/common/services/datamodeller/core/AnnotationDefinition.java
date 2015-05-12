@@ -20,62 +20,26 @@ import java.util.List;
 
 public interface AnnotationDefinition extends HasClassName {
 
-    /**
-     * Annotation name e.g. @DataObject, @Key, @Entity, @Column
-     *
-     * @return
-     */
-    String getName();
-
-    /**
-     * A marker annotation has no members.
-     *
-     * @return true if the given annotation is a marker annotation, false in any other case.
-     *
-     */
     boolean isMarker();
 
-    /**
-     *
-     * @return Annotation's short description.
-     */
-    String getShortDescription();
+    boolean isNormal();
 
-    /**
-     * 
-     * @return Annotation's long description.
-     * 
-     */
-    String getDescription();
+    boolean isSingleValue();
 
+    List<AnnotationValuePairDefinition> getValuePairs();
 
-    /**
-     * Set of supported parameters by this attribute.
-     *
-     * @return
-     */
-    List<AnnotationMemberDefinition> getAnnotationMembers();
+    boolean isTypeAnnotation();
 
-    /**
-     *
-     * @return true if the annotation applies to objects, false in any other case.
-     */
-    boolean isObjectAnnotation();
+    boolean isFieldAnnotation();
 
+    boolean hasValue( String name );
 
-    /**
-     *
-     * @return true if the annotation applies to properties, false in any other case.
-     */
-    boolean isPropertyAnnotation();
+    AnnotationRetention getRetention();
 
+    void setRetention( AnnotationRetention retention );
 
-    /**
-     *
-     * @param name
-     *
-     * @return true if the annotation has a member with the given name, false in any other case.
-     */
-    boolean hasMember(String name);
-       
+    List<ElementType> getTarget();
+
+    void addTarget( ElementType elementType );
+
 }

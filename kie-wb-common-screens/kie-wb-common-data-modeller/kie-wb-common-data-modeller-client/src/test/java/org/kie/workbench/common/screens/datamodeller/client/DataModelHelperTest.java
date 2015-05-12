@@ -11,7 +11,7 @@ public class DataModelHelperTest {
 
     @Before
     public void setUp() {
-        helper = new DataModelHelper();
+        helper = new DataModelHelper("test");
         /*
          * Set up siblingsMap such that:
          * a.A --> {a.B, a.b.F}             A--+        K

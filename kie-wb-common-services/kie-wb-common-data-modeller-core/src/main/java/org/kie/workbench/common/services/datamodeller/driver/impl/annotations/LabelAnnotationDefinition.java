@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
 
+@Deprecated
 public class LabelAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public LabelAnnotationDefinition() {
-        super("@Label",  org.kie.api.definition.type.Label.class.getName(), "Label", "Label annotation", true, true);
-        addMember(new AnnotationMemberDefinitionImpl("value", String.class.getName(), false, "", "value", "value"));
+        super(org.kie.api.definition.type.Label.class.getName(), true, true);
+        addValuePair( new AnnotationValuePairDefinitionImpl( "value", String.class.getName(), AnnotationValuePairDefinition.ValuePairType.STRING, "" ) );
     }
 
     public static LabelAnnotationDefinition getInstance() {

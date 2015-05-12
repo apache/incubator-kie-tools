@@ -17,20 +17,21 @@
 package org.kie.workbench.common.screens.datamodeller.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 
 @Portable
 public class TypeInfoResult extends DataModelerResult {
 
-    private JavaTypeInfoTO javaTypeInfo;
+    private JavaTypeInfo javaTypeInfo;
 
     public TypeInfoResult() {
     }
 
-    public JavaTypeInfoTO getJavaTypeInfo() {
+    public JavaTypeInfo getJavaTypeInfo() {
         return javaTypeInfo;
     }
 
-    public void setJavaTypeInfo( JavaTypeInfoTO javaTypeInfo ) {
+    public void setJavaTypeInfo( JavaTypeInfo javaTypeInfo ) {
         this.javaTypeInfo = javaTypeInfo;
     }
 }

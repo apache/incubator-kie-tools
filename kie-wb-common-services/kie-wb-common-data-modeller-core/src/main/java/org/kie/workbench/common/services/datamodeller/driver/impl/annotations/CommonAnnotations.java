@@ -19,24 +19,64 @@ package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.kie.api.definition.type.ClassReactive;
+import org.kie.api.definition.type.Description;
+import org.kie.api.definition.type.Duration;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Key;
+import org.kie.api.definition.type.Label;
+import org.kie.api.definition.type.Position;
+import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
+import org.kie.api.definition.type.TypeSafe;
+import org.kie.api.remote.Remotable;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 
 public class CommonAnnotations {
 
     private static List<AnnotationDefinition> commonAnnotations = new ArrayList<AnnotationDefinition>( );
     static {
-        commonAnnotations.add( DescriptionAnnotationDefinition.getInstance() );
-        commonAnnotations.add( KeyAnnotationDefinition.getInstance() );
-        commonAnnotations.add( LabelAnnotationDefinition.getInstance() );
-        commonAnnotations.add( RoleAnnotationDefinition.getInstance() );
-        commonAnnotations.add( PositionAnnotationDefinition.getInstance() );
-        commonAnnotations.add( PropertyReactiveAnnotationDefinition.getInstance() );
-        commonAnnotations.add( ClassReactiveAnnotationDefinition.getInstance() );
-        commonAnnotations.add( DurationAnnotationDefinition.getInstance() );
-        commonAnnotations.add( ExpiresAnnotationDefinition.getInstance() );
-        commonAnnotations.add( TimestampAnnotationDefinition.getInstance() );
-        commonAnnotations.add( TypeSafeAnnotationDefinition.getInstance() );
-        commonAnnotations.add( RemotableAnnotationDefinition.getInstance() );
+
+        //Drools & JBPM domain annotations.
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Description.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Key.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Label.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Role.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Position.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( PropertyReactive.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( ClassReactive.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Duration.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Expires.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Timestamp.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( TypeSafe.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Remotable.class ) );
+
+        //JPA domain annotations
+
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Entity.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Id.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( GeneratedValue.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( SequenceGenerator.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Table.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( Column.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( OneToOne.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( OneToMany.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( ManyToOne.class ) );
+        commonAnnotations.add( DriverUtils.buildAnnotationDefinition( ManyToMany.class ) );
+
     }
 
     public static List<AnnotationDefinition> getCommonAnnotations () {

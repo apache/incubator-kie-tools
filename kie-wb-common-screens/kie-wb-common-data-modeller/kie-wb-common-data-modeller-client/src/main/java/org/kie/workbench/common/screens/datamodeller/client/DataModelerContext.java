@@ -24,11 +24,12 @@ import java.util.Map;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Data modeler context shared between the different widgets that composes the editor.
@@ -37,7 +38,7 @@ public class DataModelerContext {
 
     private DataModelHelper helper;
 
-    private Map<String, AnnotationDefinitionTO> annotationDefinitions;
+    private Map<String, AnnotationDefinition> annotationDefinitions;
 
     private List<PropertyTypeTO> baseTypes;
 
@@ -46,6 +47,8 @@ public class DataModelerContext {
     private List<String> currentProjectPackages = new ArrayList<String>();
 
     private EditorModelContent editorModelContent;
+
+    private String contextId;
 
     /**
      * Status relative to the edition tabs. This is a kind of sub status, that tells us if there are pending changes
@@ -102,13 +105,17 @@ public class DataModelerContext {
     public DataModelerContext() {
     }
 
+    public DataModelerContext( String contextId ) {
+        this.contextId = contextId;
+    }
+
     public void init(List<PropertyTypeTO> baseTypes) {
         this.baseTypes = baseTypes;
-        helper = new DataModelHelper();
+        helper = new DataModelHelper( contextId );
         helper.setBaseTypes(baseTypes);
     }
 
-    public DataModelTO getDataModel() {
+    public DataModel getDataModel() {
         return editorModelContent != null ? editorModelContent.getDataModel() : null;
     }
 
@@ -116,11 +123,11 @@ public class DataModelerContext {
         return helper;
     }
 
-    public Map<String, AnnotationDefinitionTO> getAnnotationDefinitions() {
+    public Map<String, AnnotationDefinition> getAnnotationDefinitions() {
         return annotationDefinitions;
     }
 
-    public void setAnnotationDefinitions(Map<String, AnnotationDefinitionTO> annotationDefinitions) {
+    public void setAnnotationDefinitions(Map<String, AnnotationDefinition> annotationDefinitions) {
         this.annotationDefinitions = annotationDefinitions;
     }
 
@@ -205,17 +212,21 @@ public class DataModelerContext {
         return null;
     }
 
-    public DataObjectTO getDataObject() {
+    public DataObject getDataObject() {
         if ( editorModelContent != null ) {
             return editorModelContent.getDataObject();
         }
         return null;
     }
 
-    public void setDataObject(DataObjectTO dataObjectTO) {
+    public void setDataObject(DataObject dataObject) {
         if (editorModelContent != null) {
-            editorModelContent.setDataObject( dataObjectTO );
+            editorModelContent.setDataObject( dataObject );
         }
+    }
+
+    public Path getDataObjectPath( String className ) {
+        return ( editorModelContent != null && editorModelContent.getDataObjectPaths() != null ) ? editorModelContent.getDataObjectPaths().get( className ) : null;
     }
 
     public EditionStatus getEditionStatus() {
@@ -240,11 +251,19 @@ public class DataModelerContext {
         appendPackages( editorModelContent.getCurrentProjectPackages() );
     }
 
+    public String getContextId() {
+        return contextId;
+    }
+
+    public void setContextId( String contextId ) {
+        this.contextId = contextId;
+    }
+
     public void clear() {
         if (annotationDefinitions != null) annotationDefinitions.clear();
         if (baseTypes != null) baseTypes.clear();
         if (getDataModel() != null && getDataModel().getDataObjects() != null) getDataModel().getDataObjects().clear();
         cleanPackages();
-        helper = new DataModelHelper();
+        helper = new DataModelHelper( contextId );
     }
 }

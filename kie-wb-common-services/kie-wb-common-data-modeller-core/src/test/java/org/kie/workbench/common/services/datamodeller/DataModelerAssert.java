@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
@@ -42,14 +44,14 @@ public class DataModelerAssert {
         }
     }
 
-    public static void assertEqualsProperties( Map<String, ObjectProperty> properties1, Map<String, ObjectProperty> properties2 ) {
+    public static void assertEqualsProperties( List<ObjectProperty> properties1, List<ObjectProperty> properties2 ) {
         if ( properties1 != null ) {
 
             assertNotNull( properties2 );
             assertEquals( properties1.size(), properties2.size() );
 
-            for ( ObjectProperty property : properties1.values() ) {
-                assertEqualsProperty( property, properties2.get( property.getName() ) );
+            for ( int i = 0 ; i < properties1.size() ; i++ ) {
+                assertEqualsProperty( properties1.get( i ), properties2.get(i ) );
             }
         }
     }
@@ -93,12 +95,84 @@ public class DataModelerAssert {
 
             assertEquals( annotation1.getClassName(), annotation2.getClassName() );
             assertEquals( annotation1.getValues().size(), annotation2.getValues().size() );
+            assertEqualsAnnotationDefinition( annotation1.getAnnotationDefinition(), annotation2.getAnnotationDefinition() );
             for ( String annotationKey : annotation1.getValues().keySet() ) {
-                assertEquals( annotation1.getValues().get( annotationKey ), annotation2.getValues().get( annotationKey ) );
+                if ( (annotation1.getValue( annotationKey ) instanceof List ) && isAnnotationList((List)annotation1.getValue( annotationKey )) &&
+                     (annotation2.getValue( annotationKey ) instanceof List ) && isAnnotationList((List)annotation2.getValue( annotationKey )) ) {
+                    assertEqualsAnnotationList( (List) annotation1.getValue( annotationKey ), (List) annotation2.getValue( annotationKey )  );
+                } else if ( annotation1.getValue( annotationKey ) instanceof Annotation &&
+                            annotation2.getValue( annotationKey ) instanceof Annotation ) {
+                    assertEqualsAnnotation( (Annotation) annotation1.getValue( annotationKey ), (Annotation) annotation2.getValue( annotationKey ) );
+                } else {
+                    assertEquals( annotation1.getValues().get( annotationKey ), annotation2.getValues().get( annotationKey ) );
+                }
             }
         } else {
             assertNull( annotation2 );
         }
+    }
+
+    private static boolean isAnnotationList( List<?> list ) {
+        return list.size() > 0 && ( list.get( 0 ) instanceof Annotation );
+    }
+
+    private static void assertEqualsAnnotationList( List annotations1, List annotations2 ) {
+        if ( annotations1 != null ) {
+            assertNotNull( annotations2 );
+            assertEquals( annotations1.size(), annotations2.size() );
+            for ( int i = 0; i < annotations1.size(); i++ ) {
+                assertEqualsAnnotation( ( Annotation ) annotations1.get( i ), ( Annotation ) annotations2.get( i ) );
+            }
+        } else {
+            assertNull( annotations2 );
+        }
+    }
+
+    private static void assertEqualsAnnotationDefinition( AnnotationDefinition annotationDefinition1, AnnotationDefinition annotationDefinition2 ) {
+        if ( annotationDefinition1 != null ) {
+            assertNotNull( annotationDefinition2 );
+
+            assertEquals( annotationDefinition1.getClassName(),annotationDefinition2.getClassName() );
+            assertEquals( annotationDefinition1.isTypeAnnotation(), annotationDefinition2.isTypeAnnotation() );
+            assertEquals( annotationDefinition1.isFieldAnnotation(), annotationDefinition2.isFieldAnnotation() );
+
+            assertEquals( annotationDefinition1.isMarker(), annotationDefinition2.isMarker() );
+            assertEquals( annotationDefinition1.isNormal(), annotationDefinition2.isNormal() );
+            assertEquals( annotationDefinition1.isSingleValue(), annotationDefinition2.isSingleValue() );
+
+            assertEquals( annotationDefinition1.getRetention(), annotationDefinition2.getRetention() );
+            assertArrayEquals( annotationDefinition1.getTarget().toArray(), annotationDefinition2.getTarget().toArray() );
+
+            assertEquals( annotationDefinition1.getValuePairs().size(), annotationDefinition1.getValuePairs().size() );
+
+            assertEquals( annotationDefinition1.getValuePairs().size(), annotationDefinition2.getValuePairs().size() );
+        } else {
+            assertNull( annotationDefinition2 );
+        }
+    }
+
+    public static void assertEqualsAnnotationValuePair( AnnotationValuePairDefinition valuePairDefinition1, AnnotationValuePairDefinition valuePairDefinition2 ) {
+        if ( valuePairDefinition1 != null ) {
+            assertNotNull( valuePairDefinition2 );
+
+            assertEquals( valuePairDefinition1.getName(), valuePairDefinition2.getName() );
+            assertEquals( valuePairDefinition1.getClassName(), valuePairDefinition2.getClassName() );
+
+            assertEquals( valuePairDefinition1.isAnnotation(), valuePairDefinition2.isAnnotation() );
+            assertEquals( valuePairDefinition1.isClass(), valuePairDefinition2.isClass() );
+            assertEquals( valuePairDefinition1.isEnum(), valuePairDefinition2.isEnum() );
+            assertEquals( valuePairDefinition1.isPrimitiveType(), valuePairDefinition2.isPrimitiveType() );
+            assertEquals( valuePairDefinition1.isString(), valuePairDefinition2.isString() );
+            assertEquals( valuePairDefinition1.isArray(), valuePairDefinition2.isArray() );
+
+            assertEquals( valuePairDefinition1.hasDefaultValue(), valuePairDefinition2.hasDefaultValue() );
+            assertEquals( valuePairDefinition1.getDefaultValue(), valuePairDefinition2.getDefaultValue() );
+            assertEqualsAnnotationDefinition( valuePairDefinition1.getAnnotationDefinition(), valuePairDefinition2.getAnnotationDefinition() );
+
+        } else {
+            assertNotNull( valuePairDefinition2 );
+        }
+
     }
 
     public static void assertName( String name, DataObject dataObject ) {

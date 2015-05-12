@@ -20,6 +20,8 @@ package org.kie.workbench.common.screens.datamodeller.events;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
 public class DataObjectChangeEvent extends DataModelerPropertyChangeEvent {
@@ -27,7 +29,7 @@ public class DataObjectChangeEvent extends DataModelerPropertyChangeEvent {
     public DataObjectChangeEvent() {
     }
 
-    public DataObjectChangeEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject, String propertyName, Object oldValue, Object newValue) {
-        super(source, currentModel, currentDataObject, propertyName, oldValue, newValue);
+    public DataObjectChangeEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject, String propertyName, Object oldValue, Object newValue) {
+        super(contextId, source, currentModel, currentDataObject, propertyName, oldValue, newValue);
     }
 }

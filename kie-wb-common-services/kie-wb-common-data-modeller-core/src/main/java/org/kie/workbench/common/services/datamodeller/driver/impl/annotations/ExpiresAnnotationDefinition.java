@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
 
+@Deprecated
 public class ExpiresAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public ExpiresAnnotationDefinition() {
-        super("@Expires", org.kie.api.definition.type.Expires.class.getName(), "Expires", "Expires annotation", true, false);
-        addMember(new AnnotationMemberDefinitionImpl("value", String.class.getName(), false, "value", "value"));
+        super(org.kie.api.definition.type.Expires.class.getName(), true, false);
+        addValuePair( new AnnotationValuePairDefinitionImpl( "value", String.class.getName(), AnnotationValuePairDefinition.ValuePairType.STRING ) );
     }
 
     public static ExpiresAnnotationDefinition getInstance() {

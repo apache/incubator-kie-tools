@@ -41,26 +41,28 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Const
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.ShowUsagesPopup;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.DomainEditorContainer;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelSaved;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
-import org.kie.workbench.common.screens.datamodeller.model.JavaTypeInfoTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeatures;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.javaeditor.client.type.JavaResourceType;
 import org.kie.workbench.common.screens.javaeditor.client.widget.EditJavaSourceWidget;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
+import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorView;
@@ -89,6 +91,8 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
+import org.uberfire.workbench.model.menu.MenuFactory;
+import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -103,6 +107,11 @@ public class DataModelerScreenPresenter
             KieEditorView {
 
         void setContext( DataModelerContext context );
+
+        void setEditorId( String editorId );
+
+        //TODO temporal method until we have facets.
+        void showDomain( int domainId );
 
         void refreshTypeLists( boolean keepCurrentSelection );
     }
@@ -142,7 +151,6 @@ public class DataModelerScreenPresenter
 
     private boolean uiStarted = false;
 
-    @Inject
     private SessionInfo sessionInfo;
 
     private String currentMessageType;
@@ -152,6 +160,14 @@ public class DataModelerScreenPresenter
     private boolean sourceEditionEnabled = false;
 
     private static final int EDITABLE_SOURCE_TAB = 2;
+
+    private static int editorIds = 0;
+
+    private String editorId;
+
+    MenuItem mainDomainMenu;
+
+    MenuItem droolsDomainMenu;
 
     @WorkbenchPartTitle
     public String getTitleText() {
@@ -174,9 +190,12 @@ public class DataModelerScreenPresenter
     }
 
     @Inject
-    public DataModelerScreenPresenter( DataModelerScreenView baseView ) {
+    public DataModelerScreenPresenter( DataModelerScreenView baseView, SessionInfo sessionInfo ) {
         super( baseView );
         view = baseView;
+        this.sessionInfo = sessionInfo;
+        editorId = sessionInfo.getId() + "-" + editorIds++;
+        view.setEditorId( editorId );
     }
 
     @OnStartup
@@ -204,6 +223,7 @@ public class DataModelerScreenPresenter
 
     @OnMayClose
     public boolean onMayClose() {
+
         if ( isDirty() ) {
             return view.confirmClose();
         }
@@ -212,6 +232,7 @@ public class DataModelerScreenPresenter
 
     @OnClose
     public void OnClose() {
+
         open = false;
         versionRecordManager.clear();
         cleanSystemMessages( getCurrentMessageType() );
@@ -385,7 +406,7 @@ public class DataModelerScreenPresenter
             public void execute() {
 
                 //at validation time we must do the same calculation as if we were about to save.
-                final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
+                final DataObject[] modifiedDataObject = new DataObject[ 1 ];
                 if ( isDirty() ) {
                     if ( context.isEditorChanged() ) {
 
@@ -460,7 +481,7 @@ public class DataModelerScreenPresenter
 
     protected void save() {
 
-        final JavaTypeInfoTO newTypeInfo = new JavaTypeInfoTO();
+        final JavaTypeInfoImpl newTypeInfo = new JavaTypeInfoImpl();
         if ( isDirty() ) {
             if ( context.isEditorChanged() ) {
                 newTypeInfo.setPackageName( context.getDataObject().getPackageName() );
@@ -485,7 +506,7 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private void saveFile( final JavaTypeInfoTO newTypeInfo ) {
+    private void saveFile( final JavaTypeInfo newTypeInfo ) {
 
         String currentFileName = DataModelerUtils.extractSimpleFileName( versionRecordManager.getPathToLatest() );
 
@@ -560,22 +581,22 @@ public class DataModelerScreenPresenter
         }
     }
 
-    private boolean hasFileNameChanged( JavaTypeInfoTO newTypeInfo,
+    private boolean hasFileNameChanged( JavaTypeInfo newTypeInfo,
                                         String currentFileName ) {
         return currentFileName != null && newTypeInfo != null && newTypeInfo.getName() != null && !currentFileName.equals( newTypeInfo.getName() );
     }
 
-    private boolean hasPackageNameChanged( JavaTypeInfoTO newTypeInfo ) {
+    private boolean hasPackageNameChanged( JavaTypeInfo newTypeInfo ) {
         return newTypeInfo != null && newTypeInfo.getPackageName() != null && !newTypeInfo.getPackageName().equals( context.getEditorModelContent().getOriginalPackageName() );
     }
 
-    private ParameterizedCommand<String> getSaveCommand( final JavaTypeInfoTO newTypeInfo,
+    private ParameterizedCommand<String> getSaveCommand( final JavaTypeInfo newTypeInfo,
                                                          final Path path ) {
         return new ParameterizedCommand<String>() {
             @Override
             public void execute( final String commitMessage ) {
 
-                final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
+                final DataObject[] modifiedDataObject = new DataObject[ 1 ];
                 if ( isDirty() ) {
                     if ( context.isEditorChanged() ) {
 
@@ -612,7 +633,7 @@ public class DataModelerScreenPresenter
         };
     }
 
-    private RemoteCallback<GenerationResult> getSaveSuccessCallback( final JavaTypeInfoTO newTypeInfo,
+    private RemoteCallback<GenerationResult> getSaveSuccessCallback( final JavaTypeInfo newTypeInfo,
                                                                      final Path currentPath ) {
         return new RemoteCallback<GenerationResult>() {
 
@@ -661,12 +682,13 @@ public class DataModelerScreenPresenter
                     originalSourceHash = getSource().hashCode();
 
                     notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-                    dataModelerEvent.fire( new DataModelStatusChangeEvent( DataModelerEvent.DATA_MODEL_BROWSER,
+                    dataModelerEvent.fire( new DataModelStatusChangeEvent( context.getContextId(),
+                                                                           DataModelerEvent.DATA_MODEL_BROWSER,
                                                                            getDataModel(),
                                                                            oldDirtyStatus,
                                                                            false ) );
 
-                    dataModelerEvent.fire( new DataModelSaved( null, getDataModel() ) );
+                    dataModelerEvent.fire( new DataModelSaved( context.getContextId(), null, getDataModel() ) );
 
                     versionRecordManager.reloadVersions( currentPath );
 
@@ -682,9 +704,9 @@ public class DataModelerScreenPresenter
     @Override
     protected void loadContent() {
 
-        modelerService.call( new RemoteCallback<Map<String, AnnotationDefinitionTO>>() {
+        modelerService.call( new RemoteCallback<Map<String, AnnotationDefinition>>() {
             @Override
-            public void callback( final Map<String, AnnotationDefinitionTO> defs ) {
+            public void callback( final Map<String, AnnotationDefinition> defs ) {
 
                 context.setAnnotationDefinitions( defs );
 
@@ -762,7 +784,7 @@ public class DataModelerScreenPresenter
 
     private void rename( final boolean saveCurrentChanges ) {
 
-        final DataObjectTO[] modifiedDataObject = new DataObjectTO[ 1 ];
+        final DataObject[] modifiedDataObject = new DataObject[ 1 ];
         if ( saveCurrentChanges ) {
             if ( isDirty() ) {
                 if ( context.isEditorChanged() ) {
@@ -797,7 +819,7 @@ public class DataModelerScreenPresenter
         popup.show();
     }
 
-    public DataModelTO getDataModel() {
+    public DataModel getDataModel() {
         return context.getDataModel();
     }
 
@@ -834,10 +856,10 @@ public class DataModelerScreenPresenter
 
         if ( model.getDataObject() != null ) {
             context.setParseStatus( DataModelerContext.ParseStatus.PARSED );
-            dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), model.getDataObject() ) );
+            dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), model.getDataObject() ) );
         } else {
             context.setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
-            dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), null ) );
+            dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), null ) );
         }
     }
 
@@ -869,7 +891,7 @@ public class DataModelerScreenPresenter
         setSource( source );
     }
 
-    private void updateEditorView( DataObjectTO dataObjectTO ) {
+    private void updateEditorView( DataObject dataObject ) {
         //here we need to check if data object name, or package, changed, etc.
         //if this is the likely we can show an alert to the user, etc.
         //also the file should be renamed.
@@ -877,11 +899,11 @@ public class DataModelerScreenPresenter
         if ( context.getDataObject() != null ) {
             context.getDataModel().removeDataObject( context.getDataObject().getClassName() );
         }
-        if ( dataObjectTO != null ) {
-            context.getDataModel().removeDataObject( dataObjectTO.getClassName() );
-            context.getDataModel().getDataObjects().add( dataObjectTO );
+        if ( dataObject != null ) {
+            context.getDataModel().removeDataObject( dataObject.getClassName() );
+            context.getDataModel().getDataObjects().add( dataObject );
         }
-        dataModelerEvent.fire( new DataObjectSelectedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObjectTO ) );
+        dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject ) );
     }
 
     @Override
@@ -1007,7 +1029,7 @@ public class DataModelerScreenPresenter
                 event.isFrom( context.getCurrentProject() ) &&
                 event.getCurrentDataObject() != null &&
                 getDataModel() != null &&
-                getDataModel().getDataObjectByClassName( event.getCurrentDataObject().getClassName() ) == null ) {
+                getDataModel().getDataObject( event.getCurrentDataObject().getClassName() ) == null ) {
 
             getDataModel().getDataObjects().add( event.getCurrentDataObject() );
             view.refreshTypeLists( true );
@@ -1074,14 +1096,56 @@ public class DataModelerScreenPresenter
                 } )
                 .addValidate(
                         onValidate()
-                            )
+                )
                 .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+
+                //TODO temporal menu items for calling the different domain editors.
+                .addNewTopLevelMenu( MenuFactory.newTopLevelMenu( "Main" )
+                        .respondsWith( new Command() {
+                            @Override public void execute() {
+                                onShowMainDomain();
+                            }
+                        } )
+                        .endMenu()
+                        .build().getItems().get( 0 )
+                )
+                .addNewTopLevelMenu( MenuFactory.newTopLevelMenu( "Drools & JBPM" )
+                        .respondsWith( new Command() {
+                            @Override public void execute() {
+                                onShowDroolsDomain();
+                            }
+                        } )
+                        .endMenu()
+                        .build().getItems().get( 0 )
+                )
+                .addNewTopLevelMenu( MenuFactory.newTopLevelMenu( "JPA" )
+                        .respondsWith( new Command() {
+                            @Override public void execute() {
+                                onShowJPADomain();
+                            }
+                        } )
+                        .endMenu()
+                        .build().getItems().get( 0 )
+                )
+
                 .build();
 
     }
 
+    private void onShowMainDomain() {
+        view.showDomain( DomainEditorContainer.MAIN_DOMAIN );
+    }
+
+    private void onShowDroolsDomain() {
+        view.showDomain( DomainEditorContainer.DROOLS_DOMAIN );
+    }
+
+    private void onShowJPADomain() {
+        view.showDomain( DomainEditorContainer.JPA_DOMAIN );
+    }
+
     private void initContext( final ObservablePath path ) {
-        context = new DataModelerContext();
+        context = new DataModelerContext( editorId );
 
         modelerService.call(
                 new RemoteCallback<List<PropertyTypeTO>>() {

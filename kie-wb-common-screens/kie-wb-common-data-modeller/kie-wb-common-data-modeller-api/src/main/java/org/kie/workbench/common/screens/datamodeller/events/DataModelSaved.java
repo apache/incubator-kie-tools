@@ -20,6 +20,7 @@ package org.kie.workbench.common.screens.datamodeller.events;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
 
 @Portable
 public class DataModelSaved extends DataModelerEvent {
@@ -27,7 +28,7 @@ public class DataModelSaved extends DataModelerEvent {
     public DataModelSaved() {
     }
 
-    public DataModelSaved(String source, DataModelTO currentModel) {
-        super(source, currentModel, null);
+    public DataModelSaved(String contextId, String source, DataModel currentModel) {
+        super(contextId, source, currentModel, null);
     }
 }

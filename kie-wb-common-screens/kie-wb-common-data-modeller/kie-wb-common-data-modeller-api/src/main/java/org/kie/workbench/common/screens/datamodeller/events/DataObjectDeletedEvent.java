@@ -20,6 +20,8 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
 public class DataObjectDeletedEvent extends DataModelerEvent {
@@ -28,11 +30,11 @@ public class DataObjectDeletedEvent extends DataModelerEvent {
     }
 
     //Review if this constructor should be maintained.
-    public DataObjectDeletedEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject) {
+    public DataObjectDeletedEvent(String source, DataModel currentModel, DataObject currentDataObject) {
         super(source, currentModel, currentDataObject);
     }
 
-    public DataObjectDeletedEvent( Project currentProject, DataObjectTO currentDataObject ) {
+    public DataObjectDeletedEvent( Project currentProject, DataObject currentDataObject ) {
         super( currentProject, currentDataObject );
     }
 }

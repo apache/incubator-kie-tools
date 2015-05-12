@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+    >
+
+
+  <ui:with field="i18n" type="org.uberfire.ext.plugin.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .mandatory-field {
+      color: #FF0000 !important;
+    }
+  </ui:style>
+
+  <g:HTMLPanel>
+
+    <b:ControlGroup ui:field="generatorControlGroup">
+      <b:Controls>
+
+        <b:ControlLabel for="generatorType"  ><g:Label ui:field="generatorTypeLabel" text="Generator type"  /></b:ControlLabel>
+        <b:ListBox b:id="generatorTypeLabel" ui:field="generatorType"></b:ListBox>
+
+        <b:ControlLabel for="generatorName"  ><g:Label ui:field="generatorNameLabel" text="Generator name"  /></b:ControlLabel>
+        <b:TextBox b:id="generatorNameLabel" ui:field="generatorName" placeholder="generator name"/>
+
+        <b:HelpInline ui:field="generatorNameInline"/>
+
+      </b:Controls>
+    </b:ControlGroup>
+
+  </g:HTMLPanel>
+
+</ui:UiBinder>

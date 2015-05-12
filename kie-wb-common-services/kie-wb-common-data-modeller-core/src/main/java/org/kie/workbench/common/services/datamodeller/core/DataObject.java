@@ -17,40 +17,35 @@
 package org.kie.workbench.common.services.datamodeller.core;
 
 import java.util.List;
-import java.util.Map;
 
-public interface DataObject extends HasName, HasPackageName, HasClassName, HasAnnotations {
+public interface DataObject extends JavaClass {
 
-    List<String> getImports();
+    List<ObjectProperty> getProperties();
 
-    boolean hasSuperClass();
-
-    String getSuperClassName();
-
-    void setSuperClassName(String superClass);
-
-    Map<String, ObjectProperty> getProperties();
-    
     ObjectProperty addProperty(String name, String className);
 
-    ObjectProperty addProperty(String name, String className, int modifiers);
+    ObjectProperty addProperty(String name, String className, Visibility visibility, boolean isStatic, boolean isFinal);
 
     ObjectProperty addProperty(String name, String className, boolean multiple);
 
-    ObjectProperty addProperty(String name, String className, boolean multiple, int modifiers);
+    ObjectProperty addProperty(String name, String className, boolean multiple, Visibility visibility, boolean isStatic, boolean isFinal);
 
     ObjectProperty addProperty(String name, String className, boolean multiple, String bag);
 
-    ObjectProperty addProperty(String name, String className, boolean multiple, String bag, int modifiers);
+    ObjectProperty addProperty(String name, String className, boolean multiple, String bag, Visibility visibility, boolean isStatic, boolean isFinal);
 
     ObjectProperty addProperty( ObjectProperty property );
 
-    ObjectProperty removeProperty(String name);
+    boolean hasProperty( String name );
 
-    boolean isInterface();
+    ObjectProperty removeProperty( String name );
 
-    boolean isAbstract();
+    ObjectProperty getProperty( String name );
 
-    boolean isFinal();
+    //TODO added just for refactoring purposes, check where to move this
+    ObjectProperty getUnManagedProperty( String propertyName );
+
+    //TODO added just for refactoring purposes, check where to move this
+    List<ObjectProperty> getUnmanagedProperties();
 
 }

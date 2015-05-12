@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.services.datamodeller.core;
 
-
 public interface HasPackageName {
 
     String getPackageName();

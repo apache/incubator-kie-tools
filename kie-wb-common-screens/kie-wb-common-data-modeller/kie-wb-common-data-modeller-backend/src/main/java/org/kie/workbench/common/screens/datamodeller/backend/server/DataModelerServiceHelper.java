@@ -45,18 +45,20 @@ import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.JavaTypeInfoTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.VisibilityTO;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
 import org.kie.workbench.common.services.datamodeller.core.PropertyTypeFactory;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationDefinitionImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
@@ -152,7 +154,7 @@ public class DataModelerServiceHelper {
         dataObjectTO.setOriginalClassName( dataObject.getClassName() );
         dataObjectTO.setSuperClassName( dataObject.getSuperClassName() );
         List<ObjectProperty> properties = new ArrayList<ObjectProperty>();
-        properties.addAll( dataObject.getProperties().values() );
+        properties.addAll( dataObject.getProperties() );
 
         List<ObjectPropertyTO> propertiesTO = new ArrayList<ObjectPropertyTO>();
         PropertyTypeFactory typeFactory = PropertyTypeFactoryImpl.getInstance();
@@ -224,7 +226,7 @@ public class DataModelerServiceHelper {
         if ( properties != null ) {
             ObjectProperty property;
             for ( ObjectPropertyTO propertyTO : properties ) {
-                property = dataObject.addProperty( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), propertyTO.getModifiers() );
+                property = dataObject.addProperty( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), to2Domain( propertyTO.getVisibility() ), propertyTO.isStatic(), propertyTO.isFinal() );
                 //process member level annotations.
                 for ( AnnotationTO annotationTO : propertyTO.getAnnotations() ) {
                     Annotation annotation = to2Domain( annotationTO );
@@ -237,7 +239,7 @@ public class DataModelerServiceHelper {
     }
 
     public ObjectProperty to2Domain( ObjectPropertyTO propertyTO ) {
-        ObjectPropertyImpl property = new ObjectPropertyImpl( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), propertyTO.getModifiers() );
+        ObjectPropertyImpl property = new ObjectPropertyImpl( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), to2Domain( propertyTO.getVisibility() ), propertyTO.isStatic(), propertyTO.isFinal() );
         for ( AnnotationTO annotationTO : propertyTO.getAnnotations() ) {
             Annotation annotation = to2Domain( annotationTO );
             if ( annotation != null ) {
@@ -251,7 +253,7 @@ public class DataModelerServiceHelper {
         AnnotationDefinition annotationDefinition = to2Domain( annotationTO.getAnnotationDefinition() );
         Annotation annotation = new AnnotationImpl( annotationDefinition );
         Object memberValue;
-        for ( AnnotationMemberDefinition memberDefinition : annotationDefinition.getAnnotationMembers() ) {
+        for ( AnnotationValuePairDefinition memberDefinition : annotationDefinition.getValuePairs() ) {
             memberValue = annotationTO.getValue( memberDefinition.getName() );
             if ( memberValue != null ) {
                 annotation.setValue( memberDefinition.getName(), memberValue );
@@ -261,11 +263,12 @@ public class DataModelerServiceHelper {
     }
 
     public AnnotationDefinition to2Domain( AnnotationDefinitionTO annotationDefinitionTO ) {
-        AnnotationDefinitionImpl annotationDefinition = new AnnotationDefinitionImpl( annotationDefinitionTO.getName(), annotationDefinitionTO.getClassName(), annotationDefinitionTO.getShortDescription(), annotationDefinitionTO.getDescription(), annotationDefinitionTO.isObjectAnnotation(), annotationDefinitionTO.isPropertyAnnotation() );
-        AnnotationMemberDefinition memberDefinition;
+        AnnotationDefinitionImpl annotationDefinition = new AnnotationDefinitionImpl( annotationDefinitionTO.getClassName(), annotationDefinitionTO.isObjectAnnotation(), annotationDefinitionTO.isPropertyAnnotation() );
+        AnnotationValuePairDefinition memberDefinition;
         for ( AnnotationMemberDefinitionTO memberDefinitionTO : annotationDefinitionTO.getAnnotationMembers() ) {
-            memberDefinition = new AnnotationMemberDefinitionImpl( memberDefinitionTO.getName(), memberDefinitionTO.getClassName(), memberDefinitionTO.isEnum(), memberDefinitionTO.getDefaultValue(), memberDefinitionTO.getShortDescription(), memberDefinitionTO.getDescription() );
-            annotationDefinition.addMember( memberDefinition );
+            //TODO 6.3  check how to assign the value pair type properly
+            memberDefinition = new AnnotationValuePairDefinitionImpl( memberDefinitionTO.getName(), memberDefinitionTO.getClassName(), memberDefinitionTO.isEnum() ? AnnotationValuePairDefinition.ValuePairType.ENUM : AnnotationValuePairDefinition.ValuePairType.STRING , memberDefinitionTO.getDefaultValue() );
+            annotationDefinition.addValuePair( memberDefinition );
         }
         return annotationDefinition;
     }
@@ -285,10 +288,10 @@ public class DataModelerServiceHelper {
 
     public AnnotationDefinitionTO domain2To( AnnotationDefinition annotationDefinition ) {
 
-        AnnotationDefinitionTO annotationDefinitionTO = new AnnotationDefinitionTO( annotationDefinition.getName(), annotationDefinition.getClassName(), annotationDefinition.getShortDescription(), annotationDefinition.getDescription(), annotationDefinition.isObjectAnnotation(), annotationDefinition.isPropertyAnnotation() );
+        AnnotationDefinitionTO annotationDefinitionTO = new AnnotationDefinitionTO( annotationDefinition.getClassName(), annotationDefinition.isTypeAnnotation(), annotationDefinition.isFieldAnnotation() );
         AnnotationMemberDefinitionTO memberDefinitionTO;
-        for ( AnnotationMemberDefinition memberDefinition : annotationDefinition.getAnnotationMembers() ) {
-            memberDefinitionTO = new AnnotationMemberDefinitionTO( memberDefinition.getName(), memberDefinition.getClassName(), memberDefinition.isPrimitiveType(), memberDefinition.isEnum(), memberDefinition.defaultValue(), memberDefinition.getShortDescription(), memberDefinition.getDescription() );
+        for ( AnnotationValuePairDefinition memberDefinition : annotationDefinition.getValuePairs() ) {
+            memberDefinitionTO = new AnnotationMemberDefinitionTO( memberDefinition.getName(), memberDefinition.getClassName(), memberDefinition.isPrimitiveType(), memberDefinition.isEnum(), memberDefinition.getDefaultValue() );
             annotationDefinitionTO.addMember( memberDefinitionTO );
         }
 
@@ -393,6 +396,16 @@ public class DataModelerServiceHelper {
         return errors;
     }
 
+    public Map<String, org.uberfire.backend.vfs.Path> toVFSPaths( Map<String, Path> nioPaths ) {
+        Map<String, org.uberfire.backend.vfs.Path> vfsPaths = new HashMap<String, org.uberfire.backend.vfs.Path>(  );
+        if ( nioPaths != null ) {
+            for ( String key : nioPaths.keySet() ) {
+                vfsPaths.put( key, Paths.convert( nioPaths.get( key ) ) );
+            }
+        }
+        return vfsPaths;
+    }
+
     public List<ValidationMessage> toValidationMessage( List<DataModelerError> errors ) {
         List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>();
         ValidationMessage validationMessage;
@@ -469,6 +482,13 @@ public class DataModelerServiceHelper {
         if ( path == null ) return null;
         String fileName = path.getFileName();
         return fileName.substring( 0, fileName.indexOf( "." ) );
+    }
+
+    public Visibility to2Domain( VisibilityTO visibilityTO ) {
+        if ( visibilityTO == VisibilityTO.PUBLIC ) return Visibility.PUBLIC;
+        if ( visibilityTO == VisibilityTO.PRIVATE ) return Visibility.PRIVATE;
+        if ( visibilityTO == VisibilityTO.PACKAGE_PRIVATE ) return Visibility.PACKAGE_PRIVATE;
+        return Visibility.PROTECTED;
     }
 
 }

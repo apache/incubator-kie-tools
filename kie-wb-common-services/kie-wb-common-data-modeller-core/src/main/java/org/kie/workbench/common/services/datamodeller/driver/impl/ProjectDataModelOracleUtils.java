@@ -1,5 +1,6 @@
 package org.kie.workbench.common.services.datamodeller.driver.impl;
 
+import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,7 +13,9 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
+import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +50,14 @@ public class ProjectDataModelOracleUtils {
         String className = NamingUtils.extractClassName( factType );
         String superClass = DataModelOracleUtilities.getSuperType( oracleDataModel, factType );
         DataObject dataObject;
+        Visibility visibility;
 
         logger.debug( "Adding factType: " + factType + ", to dataModel: " + dataModel + ", from oracleDataModel: " + oracleDataModel );
         ClassMetadata classMetadata = readClassMetadata(factType, classLoader);
 
         if (classMetadata != null && !classMetadata.isMemberClass() && !classMetadata.isAnonymousClass() && !classMetadata.isLocalClass() ) {
-            dataObject = dataModel.addDataObject( factType, source, classMetadata.getModifiers() );
+            visibility = DriverUtils.buildVisibility( classMetadata.getModifiers() );
+            dataObject = dataModel.addDataObject( factType, visibility, Modifier.isAbstract( classMetadata.getModifiers() ), Modifier.isFinal( classMetadata.getModifiers() ), source );
             dataObject.setSuperClassName( superClass );
 
             //process type annotations
@@ -112,16 +117,8 @@ public class ProjectDataModelOracleUtils {
                             }
                             */
 
-                            /*
-                            AnnotationImpl position = new AnnotationImpl( PositionAnnotationDefinition.getInstance() );
-                            position.setValue( "value", naturalOrder.toString() );
-                            naturalOrderPositions.add( new PropertyPosition( property, position ) );
-                            naturalOrder++;
-                            */
-
                         }
                     }
-                    //verifyPositions( dataObject, naturalOrderPositions );
                 }
             } else {
                 logger.debug( "No fields for factTye: " + factType );

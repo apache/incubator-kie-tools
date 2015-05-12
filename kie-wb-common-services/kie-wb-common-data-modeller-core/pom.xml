@@ -51,6 +51,10 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-io</artifactId>
     </dependency>
     <dependency>
@@ -97,6 +101,11 @@
     <dependency>
       <groupId>org.jboss.forge.roaster</groupId>
       <artifactId>roaster-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
 
     <dependency>
@@ -153,6 +162,7 @@
             </executions>
           </plugin>
         </plugins>
+
       </build>
     </profile>
   </profiles>

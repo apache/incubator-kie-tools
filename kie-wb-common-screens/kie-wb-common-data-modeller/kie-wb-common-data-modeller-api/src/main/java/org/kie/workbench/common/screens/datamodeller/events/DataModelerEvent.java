@@ -21,19 +21,24 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @Portable
 public class DataModelerEvent {
 
-    protected DataModelTO currentModel;
+    protected DataModel currentModel;
 
-    protected DataObjectTO currentDataObject;
+    protected DataObject currentDataObject;
 
-    protected ObjectPropertyTO currentField;
+    protected ObjectProperty currentField;
 
     protected Project currentProject;
 
     protected String source;
+
+    protected String contextId;
 
     public static final String DATA_MODEL_BROWSER = "DATA_MODEL_BROWSER";
 
@@ -47,52 +52,57 @@ public class DataModelerEvent {
 
     public static final String NEW_DATA_OBJECT_POPUP = "NEW_DATA_OBJECT_POPUP";
 
-    private static int eventIds = 0;
-
-    private int id = eventIds++;
-
     public DataModelerEvent() {
     }
 
-    public DataModelerEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject) {
-        this.source = source;
-        this.currentModel = currentModel;
-        this.currentDataObject = currentDataObject;
+    public DataModelerEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject) {
+        this( contextId, source, currentModel, currentDataObject, null );
     }
 
-    public DataModelerEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject, ObjectPropertyTO currentField) {
+    public DataModelerEvent(String source, DataModel currentModel, DataObject currentDataObject) {
+        this( null, source, currentModel, currentDataObject, null );
+    }
+
+    public DataModelerEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject, ObjectProperty currentField) {
+        this.contextId = contextId;
         this.source = source;
         this.currentModel = currentModel;
         this.currentDataObject = currentDataObject;
         this.currentField = currentField;
     }
 
-    public DataModelerEvent( Project currentProject, DataObjectTO currentDataObject ) {
+    public DataModelerEvent( String contextId, Project currentProject, DataObject currentDataObject ) {
+        this.contextId = contextId;
         this.currentProject = currentProject;
         this.currentDataObject = currentDataObject;
     }
 
-    public DataModelTO getCurrentModel() {
-        return currentModel;
-    }
-
-    public void setCurrentModel(DataModelTO currentModel) {
-        this.currentModel = currentModel;
-    }
-
-    public DataObjectTO getCurrentDataObject() {
-        return currentDataObject;
-    }
-
-    public void setCurrentDataObject(DataObjectTO currentDataObject) {
+    public DataModelerEvent( Project currentProject, DataObject currentDataObject ) {
+        this.currentProject = currentProject;
         this.currentDataObject = currentDataObject;
     }
 
-    public ObjectPropertyTO getCurrentField() {
+    public DataModel getCurrentModel() {
+        return currentModel;
+    }
+
+    public void setCurrentModel(DataModel currentModel) {
+        this.currentModel = currentModel;
+    }
+
+    public DataObject getCurrentDataObject() {
+        return currentDataObject;
+    }
+
+    public void setCurrentDataObject(DataObject currentDataObject) {
+        this.currentDataObject = currentDataObject;
+    }
+
+    public ObjectProperty getCurrentField() {
         return currentField;
     }
 
-    public void setCurrentField(ObjectPropertyTO currentField) {
+    public void setCurrentField(ObjectProperty currentField) {
         this.currentField = currentField;
     }
 
@@ -112,7 +122,7 @@ public class DataModelerEvent {
         this.currentProject = currentProject;
     }
 
-    public boolean isFrom(DataModelTO dataModel) {
+    public boolean isFrom( DataModel dataModel) {
         return currentModel != null && dataModel != null && currentModel.getId() == dataModel.getId();
     }
 
@@ -124,7 +134,15 @@ public class DataModelerEvent {
         return source != null && source.equals( source );
     }
 
-    public int getId() {
-        return id;
+    public boolean isFromContext( String contextId ) {
+        return this.contextId != null && this.contextId.equals( contextId );
+    }
+
+    public String getContextId() {
+        return contextId;
+    }
+
+    public void setContextId( String contextId ) {
+        this.contextId = contextId;
     }
 }

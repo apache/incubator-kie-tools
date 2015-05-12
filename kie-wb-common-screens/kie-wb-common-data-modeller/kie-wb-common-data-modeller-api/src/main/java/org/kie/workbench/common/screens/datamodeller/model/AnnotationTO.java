@@ -25,8 +25,6 @@ public class AnnotationTO {
 
     private String className;
 
-    private String name;
-
     private AnnotationDefinitionTO annotationDefinition;
 
     private Map<String, Object> values = new HashMap<String, Object>();
@@ -37,7 +35,6 @@ public class AnnotationTO {
     public AnnotationTO(AnnotationDefinitionTO annotationDefinition) {
         this.annotationDefinition = annotationDefinition;
         this.className = annotationDefinition.getClassName();
-        this.name = annotationDefinition.getName();
     }
 
     public Object getValue(String annotationMemberName) {
@@ -58,14 +55,6 @@ public class AnnotationTO {
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public AnnotationDefinitionTO getAnnotationDefinition() {
@@ -107,9 +96,6 @@ public class AnnotationTO {
         if (className != null ? !className.equals(that.className) : that.className != null) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
         if (values != null ? !values.equals(that.values) : that.values != null) {
             return false;
         }
@@ -120,8 +106,6 @@ public class AnnotationTO {
     @Override
     public int hashCode() {
         int result = className != null ? className.hashCode() : 0;
-        result = ~~result;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (annotationDefinition != null ? annotationDefinition.hashCode() : 0);
         result = ~~result;

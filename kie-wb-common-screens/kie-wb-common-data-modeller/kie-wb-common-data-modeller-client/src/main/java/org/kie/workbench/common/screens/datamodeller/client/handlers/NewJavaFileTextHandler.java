@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.datamodeller.client.handlers;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -55,6 +56,15 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
+    @Inject
+    private JavaFileOptions options;
+
+    @PostConstruct
+    private void setupExtensions() {
+        extensions.add( new Pair<String, JavaFileOptions>( "JavaFileOptions",
+                options ) );
+    }
+
     @Override
     public String getDescription() {
         return Constants.INSTANCE.newJavaFile();
@@ -73,9 +83,10 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
         this.packagesListBox.setContext( context,
-                                         false );
+                false );
         return this.extensions;
     }
+
 
     @Override
     public void create( final org.guvnor.common.services.project.model.Package pkg,
@@ -87,7 +98,9 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
                                  new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).createJavaFile( pkg.getPackageMainSrcPath(),
                                                                                                                  buildFileName( baseFileName,
                                                                                                                                 resourceType ),
-                                                                                                                 "" );
+                                                                                                                 "",
+                                                                                                                 options.isPersitable(),
+                                                                                                                 options.getTableName());
 
     }
 

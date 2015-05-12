@@ -18,8 +18,6 @@ package org.kie.workbench.common.services.datamodeller.codegen;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.services.datamodeller.core.*;
-import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
-import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.PositionAnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
@@ -174,7 +172,7 @@ public class GenerationTools {
         //finally we can process annotation members.
         Object memberValue;
         int memberCount = 0;
-        for (AnnotationMemberDefinition memberDefinition : annotationDefinition.getAnnotationMembers()) {
+        for (AnnotationValuePairDefinition memberDefinition : annotationDefinition.getValuePairs()) {
             if ( (memberValue = annotation.getValue(memberDefinition.getName())) != null) {
                 //a value has been set for this member.
                 if (memberCount == 0) type.append("(");
@@ -188,34 +186,35 @@ public class GenerationTools {
         return type.toString();
     }
 
-    public String resolveMemberType(AnnotationMemberDefinition memberDefinition, Object value) {
+    public String resolveMemberType(AnnotationValuePairDefinition valuePairDefinition, Object value) {
         StringBuffer type = new StringBuffer();
 
-        type.append(memberDefinition.getName());
+        type.append(valuePairDefinition.getName());
         type.append(" = ");
 
-        if (memberDefinition.isEnum()) {
-            type.append(memberDefinition.getClassName());
+        //TODO add array types, annotation, and class processing
+        if (valuePairDefinition.isEnum()) {
+            type.append( NamingUtils.normalizeClassName( valuePairDefinition.getClassName() ) );
             type.append(".");
             type.append(value);
-        } else if (memberDefinition.isString()) {
+        } else if (valuePairDefinition.isString()) {
             type.append("\"");
             type.append(escapeStringForJavaCode(value != null ? value.toString() : null));
             type.append("\"");
-        } else if (memberDefinition.isPrimitiveType()) {
+        } else if (valuePairDefinition.isPrimitiveType()) {
             //primitive types are wrapped by the java.lang.type.
 
-            if (Character.class.getName().equals(memberDefinition.getClassName())) {
+            if (Character.class.getName().equals(valuePairDefinition.getClassName())) {
                 type.append("'");
                 type.append(value.toString());
                 type.append("'");
-            } else if (Long.class.getName().equals(memberDefinition.getClassName())) {
+            } else if (Long.class.getName().equals(valuePairDefinition.getClassName())) {
                 type.append(value.toString());
                 type.append("L");
-            } else if (Float.class.getName().equals(memberDefinition.getClassName())) {
+            } else if (Float.class.getName().equals(valuePairDefinition.getClassName())) {
                 type.append(value.toString());
                 type.append("f");
-            } else if (Double.class.getName().equals(memberDefinition.getClassName())) {
+            } else if (Double.class.getName().equals(valuePairDefinition.getClassName())) {
                 type.append(value.toString());
                 type.append("d");
             } else {
@@ -248,7 +247,7 @@ public class GenerationTools {
     public int keyFieldsCount(DataObject dataObject) {
         int count = 0;
         if (dataObject != null && dataObject.getProperties() != null && !dataObject.getProperties().isEmpty()) {
-            for (ObjectProperty prop : dataObject.getProperties().values()) {
+            for (ObjectProperty prop : dataObject.getProperties()) {
                 if ( DataModelUtils.isKeyField( prop )) count++;
             }
         }
@@ -262,7 +261,7 @@ public class GenerationTools {
     public int enabledForConstructorPropertiesCount(DataObject dataObject) {
         int count = 0;
         if (dataObject != null && dataObject.getProperties() != null && !dataObject.getProperties().isEmpty()) {
-            for (ObjectProperty prop : dataObject.getProperties().values()) {
+            for (ObjectProperty prop : dataObject.getProperties()) {
                 if ( DataModelUtils.isAssignable( prop )) count++;
             }
         }
@@ -426,7 +425,7 @@ public class GenerationTools {
     public String resolveAllFieldsConstructor(DataObject dataObject, String indent) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-            for (ObjectProperty property : dataObject.getProperties().values()) {
+            for (ObjectProperty property : dataObject.getProperties()) {
                 if ( DataModelUtils.isAssignable( property )) {
                     sortedProperties.add(property);
                 }
@@ -445,7 +444,7 @@ public class GenerationTools {
     public String resolveAllFieldsConstructor(DataObject dataObject) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-            for (ObjectProperty property : dataObject.getProperties().values()) {
+            for (ObjectProperty property : dataObject.getProperties()) {
                 if ( DataModelUtils.isAssignable( property )) {
                     sortedProperties.add(property);
                 }
@@ -463,7 +462,7 @@ public class GenerationTools {
     public String resolveKeyFieldsConstructor(DataObject dataObject, String indent) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-            for (ObjectProperty property : dataObject.getProperties().values()) {
+            for (ObjectProperty property : dataObject.getProperties()) {
                 if ( DataModelUtils.isAssignable( property ) && DataModelUtils.isKeyField( property )) {
                     //the property is marked as key.
                     sortedProperties.add(property);
@@ -480,7 +479,7 @@ public class GenerationTools {
     public String resolveKeyFieldsConstructor(DataObject dataObject) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-            for (ObjectProperty property : dataObject.getProperties().values()) {
+            for (ObjectProperty property : dataObject.getProperties()) {
                 if ( DataModelUtils.isAssignable( property ) && DataModelUtils.isKeyField( property )) {
                     //the property is marked as key.
                     sortedProperties.add(property);
@@ -497,7 +496,7 @@ public class GenerationTools {
     public String resolvePositionFieldsConstructor(DataObject dataObject) {
         if (!dataObject.getProperties().isEmpty()) {
             List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
-            for (ObjectProperty property : dataObject.getProperties().values()) {
+            for (ObjectProperty property : dataObject.getProperties()) {
                 if ( DataModelUtils.isAssignable( property ) && DataModelUtils.isPositionField( property )) {
                     //the property is marked as key.
                     sortedProperties.add(property);
@@ -518,8 +517,8 @@ public class GenerationTools {
                 if (o1 == null && o2 != null) return -1;
                 if (o1 != null && o2 == null) return 1;
 
-                Comparable key1 = o1.getName();
-                Comparable key2 = o2.getName();
+                Comparable key1 = o1.getClassName();
+                Comparable key2 = o2.getClassName();
 
                 if (key1 == null && key2 == null) return 0;
                 if (key1 != null && key2 != null) return key1.compareTo(key2);
@@ -545,7 +544,7 @@ public class GenerationTools {
     public List<ObjectProperty> sortedProperties(DataObject dataObject) {
         List<ObjectProperty> sortedProperties = new ArrayList<ObjectProperty>();
         if (dataObject != null && !dataObject.getProperties().isEmpty()) {
-            sortedProperties.addAll(dataObject.getProperties().values());
+            sortedProperties.addAll(dataObject.getProperties());
         }
         return sortByName(sortedProperties);
     }

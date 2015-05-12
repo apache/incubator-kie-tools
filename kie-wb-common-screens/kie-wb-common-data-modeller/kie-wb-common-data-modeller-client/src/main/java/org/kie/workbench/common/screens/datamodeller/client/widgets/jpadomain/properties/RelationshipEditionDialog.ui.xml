@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ Copyright 2015 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+    >
+
+
+  <ui:with field="i18n" type="org.uberfire.ext.plugin.client.resources.i18n.CommonConstants"/>
+
+  <ui:style>
+    .mandatory-field {
+      color: #FF0000 !important;
+    }
+  </ui:style>
+
+  <g:HTMLPanel>
+
+    <b:ControlGroup ui:field="relationControlGroup">
+      <b:Controls>
+        <b:ControlLabel for="relationType"  ><g:Label ui:field="relationTypeLabel" text="Relationship type"  /></b:ControlLabel>
+        <b:ListBox b:id="relationTypeLabel" ui:field="relationType"></b:ListBox>
+
+        <b:ControlLabel for="cascadeType"  ><g:Label ui:field="cascadeTypeLabel" text="Cascade mode"  /></b:ControlLabel>
+        <b:ListBox b:id="cascadeTypeLabel" ui:field="cascadeType"></b:ListBox>
+
+        <b:ControlLabel for="fetchMode"  ><g:Label ui:field="fetchModeLabel" text="Fetch mode"  /></b:ControlLabel>
+        <b:ListBox b:id="fetchModeLabel" ui:field="fetchMode"></b:ListBox>
+
+        <b:ControlLabel for="optional"  ><g:Label ui:field="optionalLabel" text="Optional"  /></b:ControlLabel>
+        <b:CheckBox b:id="optionalLabel" ui:field="optional"></b:CheckBox>
+
+        <b:ControlLabel for="mappedBy"  ><g:Label ui:field="mappedByLabel" text="Mapped by"  /></b:ControlLabel>
+        <b:TextBox b:id="mappedByLabel" ui:field="mappedBy" placeholder="field name"/>
+
+        <b:ControlLabel for="orphanRemoval"  ><g:Label ui:field="orphanRemovalLabel" text="Remove Orphans"  /></b:ControlLabel>
+        <b:CheckBox b:id="orphanRemovalLabel" ui:field="orphanRemoval"></b:CheckBox>
+
+        <b:HelpInline ui:field="relationGroupInline"/>
+
+      </b:Controls>
+    </b:ControlGroup>
+
+  </g:HTMLPanel>
+
+</ui:UiBinder>

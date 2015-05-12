@@ -19,10 +19,11 @@ package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
 
+@Deprecated
 public class KeyAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public KeyAnnotationDefinition() {
-        super("@Key", org.kie.api.definition.type.Key.class.getName(), "Equals", "Equals annotation", false, true);
+        super(org.kie.api.definition.type.Key.class.getName(), false, true);
     }
 
     public static KeyAnnotationDefinition getInstance() {

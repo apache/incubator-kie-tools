@@ -16,10 +16,6 @@
 
 package org.kie.workbench.common.services.datamodeller.util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
 public class NamingUtils {
 
     public static final String BYTE = "byte";
@@ -58,18 +54,6 @@ public class NamingUtils {
         }
     }
 
-    public static List<String> tokenizePackageName( final String packageName ) {
-        List<String> tokens = new ArrayList<String>();
-
-        if ( packageName != null ) {
-            StringTokenizer st = new StringTokenizer( packageName, "." );
-            while ( st.hasMoreTokens() ) {
-                tokens.add( st.nextToken() );
-            }
-        }
-        return tokens;
-    }
-
     public static boolean isPrimitiveTypeClass( final String className ) {
         //returns true for: byte, short, int, long, float, double, char, boolean
 
@@ -95,6 +79,26 @@ public class NamingUtils {
                         DOUBLE.equals( type ) ||
                         CHAR.equals( type ) ||
                         BOOLEAN.equals( type );
+    }
+
+    public static boolean isByteId( final String type ) {
+        return BYTE.equals( type != null ? type.trim() : type );
+    }
+
+    public static boolean isCharId( final String type ) {
+        return CHAR.equals( type != null ? type.trim() : type );
+    }
+
+    public static boolean isLongId( final String type ) {
+        return LONG.equals( type != null ? type.trim() : type );
+    }
+
+    public static boolean isFloatId( final String type ) {
+        return FLOAT.equals( type != null ? type.trim() : type );
+    }
+
+    public static boolean isDoubleId( final String type ) {
+        return FLOAT.equals( type != null ? type.trim() : type );
     }
 
     public static String getClassForPrimitiveTypeId( final String type ) {
@@ -140,12 +144,71 @@ public class NamingUtils {
         return result;
     }
 
-    public static String createQualifiedName(String packageName, String className) {
-        if (packageName != null && !"".equals( packageName )) {
-            return packageName+"."+className;
+    public static String createQualifiedName( String packageName, String className ) {
+        if ( packageName != null && !"".equals( packageName ) ) {
+            return packageName + "." + className;
         } else {
             return className;
         }
     }
 
+    public static Object parsePrimitiveValue( final String type, final String value ) throws NumberFormatException {
+
+        if ( value == null ) {
+            return null;
+        }
+
+        if ( BYTE.equals( type ) ) {
+            return Byte.valueOf( value );
+        }
+        if ( SHORT.equals( type ) ) {
+            return Short.valueOf( value );
+        }
+        if ( INT.equals( type ) ) {
+            return Integer.valueOf( value );
+        }
+        if ( LONG.equals( type ) ) {
+            return parseLongValue( value );
+        }
+        if ( FLOAT.equals( type ) ) {
+            return parseFloatValue( value );
+        }
+        if ( DOUBLE.equals( type ) ) {
+            return parseDoubleValue( value );
+        }
+        if ( CHAR.equals( type ) ) {
+            return value.trim().length() > 0 ? value.trim().charAt( 0 ) : null;
+        }
+        if ( BOOLEAN.equals( type ) ) {
+            return Boolean.valueOf( value );
+        }
+
+        return null;
+    }
+
+    public static Long parseLongValue( final String value ) {
+        String trimmedValue = PortableStringUtils.removeLastChar( value != null ? value.trim() : null,  'L' );
+        if ( trimmedValue == null || "".equals( trimmedValue ) ) return null;
+        return Long.valueOf( trimmedValue );
+    }
+
+    public static Float parseFloatValue( final String value ) {
+        String trimmedValue = PortableStringUtils.removeLastChar( value != null ? value.trim() : null,  'f' );
+        if ( trimmedValue == null || "".equals( trimmedValue ) ) return null;
+        return Float.valueOf( trimmedValue );
+    }
+
+    public static Double parseDoubleValue( final String value ) {
+        String trimmedValue = PortableStringUtils.removeLastChar( value != null ? value.trim() : null,  'd' );
+        if ( trimmedValue == null || "".equals( trimmedValue ) ) return null;
+        return Double.valueOf( trimmedValue );
+    }
+
+    public static String normalizeClassName( String className ) {
+        if ( className != null && className.contains( "$" ) ) {
+            return className.replace( "$", "." );
+        } else {
+            return className;
+        }
+    }
 }

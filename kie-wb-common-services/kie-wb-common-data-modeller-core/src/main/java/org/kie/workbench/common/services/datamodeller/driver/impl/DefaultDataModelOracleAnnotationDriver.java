@@ -19,7 +19,7 @@ package org.kie.workbench.common.services.datamodeller.driver.impl;
 
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
@@ -35,7 +35,7 @@ public class DefaultDataModelOracleAnnotationDriver implements AnnotationDriver 
             return annotation;
         } else if (oracleAnnotationToken.getAttributes() != null) {
             String currentAttributeValue;
-            for (AnnotationMemberDefinition annotationMember : annotationDefinition.getAnnotationMembers()) {
+            for (AnnotationValuePairDefinition annotationMember : annotationDefinition.getValuePairs()) {
                 currentAttributeValue = oracleAnnotationToken.getAttributes().get(annotationMember.getName());
                 if (currentAttributeValue != null) {
                     annotation.setValue(annotationMember.getName(), currentAttributeValue);

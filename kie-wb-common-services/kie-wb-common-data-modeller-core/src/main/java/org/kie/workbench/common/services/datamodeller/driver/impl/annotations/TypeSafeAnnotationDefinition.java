@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
 
+@Deprecated
 public class TypeSafeAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public TypeSafeAnnotationDefinition() {
-        super("@TypeSafe", org.kie.api.definition.type.TypeSafe.class.getName(), "TypeSafe", "TypeSafe annotation", true, false);
-        addMember(new AnnotationMemberDefinitionImpl("value", Boolean.class.getName(), false, false, "value", "value"));
+        super(org.kie.api.definition.type.TypeSafe.class.getName(), true, false);
+        addValuePair( new AnnotationValuePairDefinitionImpl( "value", Boolean.class.getName(), AnnotationValuePairDefinition.ValuePairType.PRIMITIVE, false ) );
     }
 
     public static TypeSafeAnnotationDefinition getInstance() {

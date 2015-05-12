@@ -22,6 +22,7 @@ import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFac
 import org.kie.workbench.common.services.datamodeller.parser.descr.DescriptorFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
 import org.kie.workbench.common.services.datamodeller.parser.descr.TypeDescr;
+import org.kie.workbench.common.services.datamodeller.parser.util.JavaDriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 
 import java.util.ArrayList;
@@ -83,11 +84,11 @@ public class Pojo1FieldParsingTest extends JavaParserBaseTest {
             assertEquals( fieldSentences.size(), fields.size() );
 
             for ( int i = 0; i < fieldSentences.size(); i++ ) {
-                assertEquals( typeTestResults.get( i ).primitive, DriverUtils.getInstance().isPrimitiveType( fields.get( i ).getType() ));
-                assertEquals( typeTestResults.get( i ).simpleClass, DriverUtils.getInstance().isSimpleClass(  fields.get( i ).getType() ));
-                assertEquals( typeTestResults.get( i ).array, DriverUtils.getInstance().isArray( fields.get( i ).getType() ));
+                assertEquals( typeTestResults.get( i ).primitive, JavaDriverUtils.isPrimitiveType( fields.get( i ).getType() ));
+                assertEquals( typeTestResults.get( i ).simpleClass, JavaDriverUtils.isSimpleClass(  fields.get( i ).getType() ));
+                assertEquals( typeTestResults.get( i ).array, JavaDriverUtils.isArray( fields.get( i ).getType() ));
 
-                Object[] genericsCheck = DriverUtils.getInstance().isSimpleGeneric( fields.get( i ).getType() );
+                Object[] genericsCheck = JavaDriverUtils.isSimpleGeneric( fields.get( i ).getType() );
 
                 assertEquals( typeTestResults.get( i ).simpleGeneric, genericsCheck[0] );
 

@@ -20,6 +20,8 @@ import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
 public class DataObjectCreatedEvent extends DataModelerEvent {
@@ -28,11 +30,11 @@ public class DataObjectCreatedEvent extends DataModelerEvent {
     }
 
     //TODO review if this constructor should be maintained
-    public DataObjectCreatedEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject) {
-        super(source, currentModel, currentDataObject);
+    public DataObjectCreatedEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject) {
+        super(contextId, source, currentModel, currentDataObject);
     }
 
-    public DataObjectCreatedEvent( Project currentProject, DataObjectTO currentDataObject ) {
+    public DataObjectCreatedEvent( Project currentProject, DataObject currentDataObject ) {
         super( currentProject, currentDataObject );
     }
 }

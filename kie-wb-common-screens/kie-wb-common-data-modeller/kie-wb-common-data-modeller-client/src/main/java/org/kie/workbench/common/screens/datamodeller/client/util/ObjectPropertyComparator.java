@@ -18,9 +18,11 @@ package org.kie.workbench.common.screens.datamodeller.client.util;
 
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+
 import java.util.Comparator;
 
-public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
+public class ObjectPropertyComparator implements Comparator<ObjectProperty> {
 
     String field;
 
@@ -30,7 +32,7 @@ public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
 
 
     @Override
-    public int compare(ObjectPropertyTO o1, ObjectPropertyTO o2) {
+    public int compare(ObjectProperty o1, ObjectProperty o2) {
         if (o1 == null && o2 == null) return 0;
         if (o1 == null && o2 != null) return -1;
         if (o1 != null && o2 == null) return 1;
@@ -46,11 +48,11 @@ public class ObjectPropertyComparator implements Comparator<ObjectPropertyTO> {
             key1 = o1.getName();
             key2 = o2.getName();
         } else if ("label".equals(field)) {
-            key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
-            key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key1 = AnnotationValueHandler.getStringValue(o1, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key2 = AnnotationValueHandler.getStringValue(o2, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
         } else if ("position".equals(field)) {
-            key1 = AnnotationValueHandler.getInstance().getStringValue(o1, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
-            key2 = AnnotationValueHandler.getInstance().getStringValue(o2, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key1 = AnnotationValueHandler.getStringValue(o1, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key2 = AnnotationValueHandler.getStringValue(o2, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
             if (key1 != null) {
                 try {
                     key1 = new Integer(key1.toString());

@@ -16,9 +16,8 @@
 
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
-import java.lang.reflect.Modifier;
-
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 
 public class ObjectPropertyImpl extends AbstractHasAnnotations implements ObjectProperty {
@@ -34,31 +33,39 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     private int modifiers = 0x0;
 
     private int fileOrder = -1;
+
+    private Visibility visibility = Visibility.PUBLIC;
+
+    private boolean _static = false;
+
+    private boolean _final = false;
     
-    private static final String DEFAULT_PROPERTY_BAG = "java.util.List";
+    public static final String DEFAULT_PROPERTY_BAG = "java.util.List";
+
+    public ObjectPropertyImpl() {
+        //errai marshalling
+    }
 
     public ObjectPropertyImpl(String name, String className, boolean multiple) {
-        this(name, className, multiple, 0x0);
+        this(name, className, multiple, Visibility.PUBLIC, false, false);
     }
 
-    public ObjectPropertyImpl(String name, String className, boolean multiple, int modifiers) {
-        this.name = name;
-        this.className = className;
-        this.bag = DEFAULT_PROPERTY_BAG;
-        this.multiple = multiple;
-        this.modifiers = modifiers;
-    }
-
-    public ObjectPropertyImpl(String name, String className, boolean multiple, String bag, int modifiers) {
-        this.name = name;
-        this.className = className;
-        this.multiple = multiple;
-        this.bag = bag;
-        this.modifiers = modifiers;
+    public ObjectPropertyImpl(String name, String className, boolean multiple, Visibility visibility, boolean isStatic, boolean isFinal) {
+        this(name, className, multiple, DEFAULT_PROPERTY_BAG, visibility, isStatic, isFinal);
     }
 
     public ObjectPropertyImpl(String name, String className, boolean multiple, String bag) {
-        this(name, className, multiple, bag, 0x0);
+        this(name, className, multiple, bag, Visibility.PUBLIC, false, false);
+    }
+
+    public ObjectPropertyImpl(String name, String className, boolean multiple, String bag, Visibility visibility, boolean isStatic, boolean isFinal) {
+        this.name = name;
+        this.className = className;
+        this.bag = bag;
+        this.multiple = multiple;
+        this.visibility = visibility;
+        this._static = isStatic;
+        this._final = isFinal;
     }
 
     @Override
@@ -66,6 +73,7 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
         return className;
     }
 
+    @Override
     public void setClassName(String className) {
         this.className = className;
     }
@@ -121,12 +129,12 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
 
     @Override
     public boolean isStatic() {
-        return Modifier.isStatic( modifiers );
+        return _static;
     }
 
     @Override
     public boolean isFinal() {
-        return Modifier.isFinal( modifiers );
+        return _final;
     }
 
     @Override
@@ -140,5 +148,34 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
 
     public void setFileOrder( int fileOrder ) {
         this.fileOrder = fileOrder;
+    }
+
+    @Override
+    public boolean isPackagePrivate() {
+        return Visibility.PACKAGE_PRIVATE == visibility;
+    }
+
+    @Override
+    public boolean isPublic() {
+        return Visibility.PUBLIC == visibility;
+    }
+
+    @Override
+    public boolean isPrivate() {
+        return Visibility.PRIVATE == visibility;
+    }
+
+    @Override
+    public boolean isProtected() {
+        return Visibility.PROTECTED == visibility;
+    }
+
+    @Override
+    public Visibility getVisibilty() {
+        return visibility;
+    }
+
+    @Override public void setBaseType( boolean baseType ) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -24,12 +24,11 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.DataObjectBrowser;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.ModelPropertiesEditor;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.DomainEditorContainer;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain.MainDomainEditor;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
@@ -55,10 +54,13 @@ public class DataModelerScreenViewImpl
     SimplePanel dataObjectPanel = new SimplePanel();
 
     @UiField
-    SimplePanel propertiesPanel = new SimplePanel();
+    SimplePanel domainContainerPanel = new SimplePanel();
 
     @Inject
-    private ModelPropertiesEditor modelPropertiesEditor;
+    private MainDomainEditor modelPropertiesEditor;
+
+    @Inject
+    private DomainEditorContainer domainEditorContainer;
 
     @Inject
     private DataObjectBrowser dataObjectBrowser;
@@ -68,6 +70,8 @@ public class DataModelerScreenViewImpl
 
     private DataModelerContext context;
 
+    private String editorId;
+
     public DataModelerScreenViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
@@ -75,14 +79,26 @@ public class DataModelerScreenViewImpl
     @PostConstruct
     private void initUI() {
         dataObjectPanel.add(dataObjectBrowser);
-        propertiesPanel.add(modelPropertiesEditor);
+        domainContainerPanel.add( domainEditorContainer );
     }
 
     @Override
     public void setContext(DataModelerContext context) {
         this.context = context;
         dataObjectBrowser.setContext(context);
-        modelPropertiesEditor.setContext(context);
+        //modelPropertiesEditor.setContext(context);
+        domainEditorContainer.setContext( context );
+    }
+
+    @Override
+    public void setEditorId( String editorId ) {
+        this.editorId = editorId;
+        dataObjectBrowser.setEditorId( editorId );
+    }
+
+    @Override
+    public void showDomain( int domainId ) {
+        domainEditorContainer.showDomain( domainId );
     }
 
     @Override
@@ -92,9 +108,9 @@ public class DataModelerScreenViewImpl
     }
 
     private void updateChangeStatus(DataModelerEvent event) {
-        if (context != null && event.isFrom(context.getDataModel())) {
+        if ( event.isFromContext( context != null ? context.getContextId() : null )) {
             context.setEditionStatus( DataModelerContext.EditionStatus.EDITOR_CHANGED );
-            dataModelerEvent.fire(new DataModelStatusChangeEvent(null, context.getDataModel(), false, true));
+            dataModelerEvent.fire(new DataModelStatusChangeEvent( context.getContextId(), null, context.getDataModel(), false, true));
         }
     }
 

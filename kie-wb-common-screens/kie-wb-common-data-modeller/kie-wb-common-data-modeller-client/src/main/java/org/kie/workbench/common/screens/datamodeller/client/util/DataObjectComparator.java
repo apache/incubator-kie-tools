@@ -16,14 +16,14 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-
 import java.util.Comparator;
 
-public class DataObjectComparator implements Comparator <DataObjectTO> {
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+
+public class DataObjectComparator implements Comparator <DataObject> {
 
     @Override
-    public int compare(DataObjectTO o1, DataObjectTO o2) {
+    public int compare(DataObject o1, DataObject o2) {
 
         if (o1 == null && o2 == null) return 0;
         if (o1 == null && o2 != null) return -1;

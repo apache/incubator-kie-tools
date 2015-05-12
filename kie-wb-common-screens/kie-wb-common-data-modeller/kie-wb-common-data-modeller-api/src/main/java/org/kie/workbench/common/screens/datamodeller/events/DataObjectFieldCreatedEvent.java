@@ -21,6 +21,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @Portable
 public class DataObjectFieldCreatedEvent extends DataModelerEvent {
@@ -28,8 +31,8 @@ public class DataObjectFieldCreatedEvent extends DataModelerEvent {
     public DataObjectFieldCreatedEvent() {
     }
 
-    public DataObjectFieldCreatedEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject, ObjectPropertyTO currentField) {
-        super(source, currentModel, currentDataObject);
+    public DataObjectFieldCreatedEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject, ObjectProperty currentField) {
+        super(contextId, source, currentModel, currentDataObject);
         setCurrentField(currentField);
     }
 }

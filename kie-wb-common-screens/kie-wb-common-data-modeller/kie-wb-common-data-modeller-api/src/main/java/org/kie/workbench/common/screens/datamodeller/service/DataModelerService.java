@@ -20,18 +20,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.guvnor.common.services.project.model.*;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
@@ -40,45 +40,45 @@ public interface DataModelerService {
 
     Path createJavaFile( final Path context, final String fileName, final String comment );
 
-    DataModelTO loadModel( final KieProject project );
+    Path createJavaFile(  final Path context, final String fileName, final String comment, boolean persistable, String tableName );
 
     EditorModelContent loadContent(final Path path);
 
-    GenerationResult saveModel( final DataModelTO dataModel,
+    DataModel loadModel(final KieProject project);
+
+    GenerationResult saveModel( final DataModel dataModel,
             final KieProject project,
             final boolean overwrite,
             final String commitMessage );
 
-    GenerationResult saveModel( final DataModelTO dataModel,
+    GenerationResult saveModel( final DataModel dataModel,
             final KieProject project );
 
-    GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage );
+    GenerationResult saveSource( final String source, final Path path, final DataObject dataObject, final Metadata metadata, final String commitMessage );
 
-    GenerationResult saveSource( final String source, final Path path, final DataObjectTO dataObjectTO, final Metadata metadata, final String commitMessage, final String newPackageName, final String newFileName );
+    GenerationResult saveSource( final String source, final Path path, final DataObject dataObject, final Metadata metadata, final String commitMessage, final String newPackageName, final String newFileName );
 
-    GenerationResult updateSource( final String source, final Path path, final DataObjectTO dataObjectTO );
+    GenerationResult updateSource( final String source, final Path path, final DataObject dataObject );
 
-    GenerationResult updateDataObject( final DataObjectTO dataObjectTO, final String source, final Path path );
+    public GenerationResult updateDataObject(final DataObject dataObject, final String source, final Path path);
 
     Path copy( final Path path, final String newName, final String comment, boolean refactor );
 
     public Path rename( final Path path, final String newName, String comment, final boolean refactor,
-            final boolean saveCurrentChanges, final String source, final DataObjectTO dataObjectTO,
+            final boolean saveCurrentChanges, final String source, final DataObject dataObject,
             final Metadata metadata );
 
     void delete( final Path path, final String comment );
 
     GenerationResult refactorClass( final Path path, final String newPackageName, final String newClassName );
 
-    List<ValidationMessage> validate( String source, final Path path, DataObjectTO dataObjectTO );
+    List<ValidationMessage> validate( String source, final Path path, DataObject dataObject );
 
     TypeInfoResult loadJavaTypeInfo( final String source);
 
     List<PropertyTypeTO> getBasePropertyTypes();
 
-    Map<String, AnnotationDefinitionTO> getAnnotationDefinitions();
-
-    Boolean verifiesHash( Path javaFile );
+    Map<String, AnnotationDefinition> getAnnotationDefinitions();
 
     List<Path> findClassUsages( Path currentPath, String className );
 

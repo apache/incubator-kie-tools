@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.datamodeller.events;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
 
 @Portable
 public class DataModelStatusChangeEvent extends DataModelerPropertyChangeEvent {
@@ -25,7 +26,7 @@ public class DataModelStatusChangeEvent extends DataModelerPropertyChangeEvent {
     public DataModelStatusChangeEvent() {
     }
 
-    public DataModelStatusChangeEvent(String source, DataModelTO currentModel, boolean oldDirtyStatus, boolean newDirtyStatus) {
-        super(source, currentModel, null, "dirtyStatus", oldDirtyStatus, newDirtyStatus);
+    public DataModelStatusChangeEvent(String contextId, String source, DataModel currentModel, boolean oldDirtyStatus, boolean newDirtyStatus) {
+        super(contextId, source, currentModel, null, "dirtyStatus", oldDirtyStatus, newDirtyStatus);
     }
 }

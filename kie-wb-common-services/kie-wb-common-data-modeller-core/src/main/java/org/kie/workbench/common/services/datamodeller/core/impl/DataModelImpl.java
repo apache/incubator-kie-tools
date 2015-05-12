@@ -17,11 +17,11 @@
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
 import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class DataModelImpl implements DataModel {
@@ -31,108 +31,119 @@ public class DataModelImpl implements DataModel {
     Map<String, DataObject> dependencyDataObjects = new HashMap<String, DataObject>();
 
     public DataModelImpl() {
+        //errai marshalling
     }
 
     @Override
     public Set<DataObject> getDataObjects() {
-        return getDataObjects(ObjectSource.INTERNAL);
+        return getDataObjects( ObjectSource.INTERNAL );
     }
 
     @Override
-    public Set<DataObject> getDataObjects(ObjectSource source) {
-        switch (source) {
+    public Set<DataObject> getDataObjects( ObjectSource source ) {
+        switch ( source ) {
             case INTERNAL:
-                return getDataObjects(dataObjects);
+                return getDataObjects( dataObjects );
             case DEPENDENCY:
-                return getDataObjects(dependencyDataObjects);
+                return getDataObjects( dependencyDataObjects );
         }
         return null;
     }
 
     @Override
-    public DataObject getDataObject(String className) {
-        return getDataObject(className, ObjectSource.INTERNAL);
+    public DataObject getDataObject( String className ) {
+        return getDataObject( className, ObjectSource.INTERNAL );
     }
 
     @Override
-    public DataObject getDataObject(String className, ObjectSource source) {
-        switch (source) {
+    public DataObject getDataObject( String className, ObjectSource source ) {
+        switch ( source ) {
             case INTERNAL:
-                return dataObjects.get(className);
+                return dataObjects.get( className );
             case DEPENDENCY:
-                return dependencyDataObjects.get(className);
+                return dependencyDataObjects.get( className );
         }
         return null;
     }
 
     @Override
-    public DataObject removeDataObject(String className) {
-        return removeDataObject(className, ObjectSource.INTERNAL);
+    public DataObject removeDataObject( String className ) {
+        return removeDataObject( className, ObjectSource.INTERNAL );
     }
 
     @Override
-    public DataObject removeDataObject(String className, ObjectSource source) {
-        switch (source) {
+    public DataObject removeDataObject( String className, ObjectSource source ) {
+        switch ( source ) {
             case INTERNAL:
-                return dataObjects.remove(className);
+                return dataObjects.remove( className );
             case DEPENDENCY:
-                return dependencyDataObjects.remove(className);
+                return dependencyDataObjects.remove( className );
         }
         return null;
     }
 
     @Override
-    public DataObject addDataObject(String packageName, String name) {
-        return addDataObject(packageName, name, ObjectSource.INTERNAL);
+    public DataObject addDataObject( String packageName, String name ) {
+        return addDataObject( packageName, name, ObjectSource.INTERNAL );
     }
 
     @Override
-    public DataObject addDataObject(String packageName, String name, int modifiers) {
-        return addDataObject(packageName, name, ObjectSource.INTERNAL, modifiers);
+    public DataObject addDataObject( String className ) {
+        return addDataObject( className, ObjectSource.INTERNAL );
     }
 
     @Override
-    public DataObject addDataObject(String packageName, String name, ObjectSource source) {
-        return addDataObject(packageName, name, source, Modifier.PUBLIC);
+    public DataObject addDataObject( String className, ObjectSource source ) {
+        return addDataObject( className, Visibility.PUBLIC, false, false, source );
     }
 
     @Override
-    public DataObject addDataObject(String packageName, String name, ObjectSource source, int modifiers) {
-        switch (source) {
+    public DataObject addDataObject( String packageName, String name, ObjectSource source ) {
+        return addDataObject( packageName, name, Visibility.PUBLIC, false, false, source );
+    }
+
+    @Override
+    public DataObject addDataObject( String packageName, String name, Visibility visibility ) {
+        return addDataObject( packageName, name, visibility, false, false, ObjectSource.INTERNAL );
+    }
+
+    @Override
+    public DataObject addDataObject( String packageName, String name, Visibility visibility, boolean isAbstract, boolean isFinal ) {
+        return addDataObject( packageName, name, visibility, isAbstract, isFinal, ObjectSource.INTERNAL );
+    }
+
+    @Override
+    public DataObject addDataObject( String className, Visibility visibility, boolean isAbstract, boolean isFinal ) {
+        return addDataObject( className, visibility, isAbstract, isFinal, ObjectSource.INTERNAL );
+    }
+
+    @Override
+    public DataObject addDataObject( String className, Visibility visibility, boolean isAbstract, boolean isFinal, ObjectSource source ) {
+        String name = NamingUtils.extractClassName( className );
+        String packageName = NamingUtils.extractPackageName( className );
+        return addDataObject( packageName, name, visibility, isAbstract, isFinal, source );
+    }
+
+    @Override
+    public DataObject addDataObject( String packageName, String name, Visibility visibility, boolean isAbstract, boolean isFinal, ObjectSource source ) {
+        switch ( source ) {
             case INTERNAL:
-                return addDataObject(packageName, name, dataObjects, modifiers);
+                return addDataObject( packageName, name, visibility, isAbstract, isFinal, dataObjects );
             case DEPENDENCY:
-                return addDataObject(packageName, name, dependencyDataObjects, modifiers);
+                return addDataObject( packageName, name, visibility, isAbstract, isFinal, dependencyDataObjects );
         }
         return null;
     }
 
-    @Override
-    public DataObject addDataObject(String className, ObjectSource source, int modifiers) {
-        String name = NamingUtils.extractClassName(className);
-        String packageName = NamingUtils.extractPackageName(className);
-        return addDataObject(packageName, name, source, modifiers);
-    }
-
-    @Override
-    public DataObject addDataObject(String className) {
-        return addDataObject(className, ObjectSource.INTERNAL);
-    }
-
-    @Override
-    public DataObject addDataObject(String className, ObjectSource source) {
-        return addDataObject(className, source, Modifier.PUBLIC);
-    }
-
-    private Set<DataObject> getDataObjects(Map<String, DataObject> objectsMap) {
+    private Set<DataObject> getDataObjects( Map<String, DataObject> objectsMap ) {
         HashSet<DataObject> set = new HashSet<DataObject>();
-        set.addAll(objectsMap.values());
+        set.addAll( objectsMap.values() );
         return set;
     }
 
-    private DataObject addDataObject(String packageName, String name, Map<String, DataObject> objectsMap, int modifiers) {
-        DataObject dataObject = new DataObjectImpl(packageName, name, modifiers);
-        objectsMap.put(dataObject.getClassName(), dataObject);
+    private DataObject addDataObject( String packageName, String name, Visibility visibility, boolean isAbstract, boolean isFinal, Map<String, DataObject> objectsMap ) {
+        DataObject dataObject = new DataObjectImpl( packageName, name, visibility, isAbstract, isFinal );
+        objectsMap.put( dataObject.getClassName(), dataObject );
         return dataObject;
     }
 
@@ -140,5 +151,22 @@ public class DataModelImpl implements DataModel {
     public DataObject addDataObject( DataObject dataObject ) {
         dataObjects.put( dataObject.getClassName(), dataObject );
         return dataObject;
+    }
+
+    @Override
+    public int getId() {
+        return hashCode();
+    }
+
+    @Override
+    public List<DataObject> getExternalClasses() {
+        List<DataObject> result = new ArrayList<DataObject>( );
+        result.addAll( dependencyDataObjects.values() );
+        return result;
+    }
+
+    @Override
+    public boolean isExternal( String className ) {
+        return dependencyDataObjects.containsKey( className );
     }
 }

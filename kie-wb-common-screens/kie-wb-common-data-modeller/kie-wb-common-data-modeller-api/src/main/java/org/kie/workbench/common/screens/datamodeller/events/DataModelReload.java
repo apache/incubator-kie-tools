@@ -19,6 +19,8 @@ package org.kie.workbench.common.screens.datamodeller.events;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
 public class DataModelReload extends DataModelerEvent {
@@ -26,7 +28,7 @@ public class DataModelReload extends DataModelerEvent {
     public DataModelReload() {
     }
 
-    public DataModelReload(String source, DataModelTO currentModel, DataObjectTO currentDataObject) {
-        super(source, currentModel, currentDataObject);
+    public DataModelReload(String contextId, String source, DataModel currentModel, DataObject currentDataObject) {
+        super(contextId, source, currentModel, currentDataObject);
     }
 }

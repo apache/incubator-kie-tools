@@ -40,11 +40,17 @@ public class ObjectPropertyTO {
 
     private int modifiers = 0;
 
+    private VisibilityTO visibility;
+
     private List<AnnotationTO> annotations = new ArrayList<AnnotationTO>();
     
     public static final String DEFAULT_PROPERTY_BAG = "java.util.List";
 
     private DataModelTO.TOStatus status = DataModelTO.TOStatus.VOLATILE;
+
+    private boolean _static = false;
+
+    private boolean _final = false;
 
     public ObjectPropertyTO() {
     }
@@ -98,6 +104,22 @@ public class ObjectPropertyTO {
 
     public void setBaseType(boolean baseType) {
         this.baseType = baseType;
+    }
+
+    public VisibilityTO getVisibility() {
+        return visibility;
+    }
+
+    public boolean isStatic() {
+        return _static;
+    }
+
+    public boolean isFinal() {
+        return  _final;
+    }
+
+    public void setVisibility( VisibilityTO visibility ) {
+        this.visibility = visibility;
     }
 
     public String getBag() {

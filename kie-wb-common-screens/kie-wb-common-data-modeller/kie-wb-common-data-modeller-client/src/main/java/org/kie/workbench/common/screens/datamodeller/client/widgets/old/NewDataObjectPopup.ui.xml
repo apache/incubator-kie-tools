@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2012 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ -->
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:datamodeler="urn:import:org.kie.workbench.common.screens.datamodeller.client.widgets.superselector"
+             xmlns:datamodeler_pkg="urn:import:org.kie.workbench.common.screens.datamodeller.client.widgets.packageselector"
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base"
+        >
+
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
+    <b:Well>
+        <b:Fieldset>
+            <b:ControlGroup ui:field="nameGroup">
+                <b:ControlLabel for="name"  ><gwt:Label ui:field="nameLabel" text="{i18n.new_dataobject_popup_identifier}"  /></b:ControlLabel>
+
+                <b:Controls>
+                    <b:TextBox b:id="nameLabel" ui:field="name" placeholder="{i18n.java_id_placeholder}"/>
+                </b:Controls>
+
+            </b:ControlGroup>
+
+            <b:ControlGroup ui:field="labelGroup">
+                <b:ControlLabel for="label"  ><gwt:Label ui:field="labelLabel" text="{i18n.new_dataobject_popup_label}"  /></b:ControlLabel>
+
+                <b:Controls>
+                    <b:TextBox b:id="labelLabel" ui:field="label"  placeholder="{i18n.objectBrowser_labelPlaceholder}"/>
+                </b:Controls>
+
+            </b:ControlGroup>
+
+            <b:ControlGroup>
+                <b:Fieldset title="PACKAGE">
+                    <b:ControlLabel for="package">
+                        <gwt:InlineHTML text="{i18n.objectEditor_packageLabel}"/>
+                    </b:ControlLabel>
+                    <b:Controls>
+                        <table>
+                            <tr>
+                                <td style="padding-right: 20px;">
+                                    <b:RadioButton ui:field="r_newPackage" name="package" text="{i18n.new_dataobject_popup_new_package}"/>
+                                </td>
+                                <td>
+                                    <b:RadioButton ui:field="r_existingPackage" name="package" text="{i18n.new_dataobject_popup_existing_package}"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </b:Controls>
+                </b:Fieldset>
+            </b:ControlGroup>
+
+            <b:ControlGroup ui:field="newPackageGroup" visible="true">
+                <b:Controls>
+                    <b:TextBox ui:field="newPackage" placeholder="{i18n.package_id_placeholder}"></b:TextBox>
+                    <b:Popover ui:field="newPackageHelpPopover" placement="LEFT" trigger="HOVER" heading="{i18n.new_dataobject_popup_new_package}">
+                        <b:Icon ui:field="newPackageHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
+                </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup ui:field="existingPackageGroup" visible="false">
+                <b:Controls>
+                    <base:DivWidget b:id="packageSelectorPanel">
+                        <datamodeler_pkg:PackageSelector ui:field="packageSelector"></datamodeler_pkg:PackageSelector>
+                    </base:DivWidget>
+                </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup ui:field="superClassGroup">
+                <b:ControlLabel for="superClassSelectorPanel" ><gwt:Label ui:field="superClassLabel" text="{i18n.new_dataobject_popup_superclass}" /></b:ControlLabel>
+
+                <b:Controls>
+                    <base:DivWidget b:id="superClassSelectorPanel">
+                        <datamodeler:SuperclassSelector ui:field="superclassSelector"></datamodeler:SuperclassSelector>
+                    </base:DivWidget>
+                </b:Controls>
+            </b:ControlGroup>
+
+            <b:ControlGroup ui:field="errorMessagesGroup">
+                <b:HelpInline ui:field="errorMessages"/>
+            </b:ControlGroup>
+
+        </b:Fieldset>
+    </b:Well>
+
+</ui:UiBinder>

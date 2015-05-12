@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationMemberDefinitionImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
 
+@Deprecated
 public class RoleAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public RoleAnnotationDefinition() {
 
-        super("@Role", org.kie.api.definition.type.Role.class.getName(), "Role", "Role annotation", true, false);
-        addMember(new AnnotationMemberDefinitionImpl("value", org.kie.api.definition.type.Role.class.getName()+".Type", true, "FACT", "value", "value"));
+        super(org.kie.api.definition.type.Role.class.getName(), true, false);
+        addValuePair( new AnnotationValuePairDefinitionImpl( "value", org.kie.api.definition.type.Role.class.getName() + ".Type", AnnotationValuePairDefinition.ValuePairType.ENUM, "FACT" ) );
     }
 
     public static RoleAnnotationDefinition getInstance() {

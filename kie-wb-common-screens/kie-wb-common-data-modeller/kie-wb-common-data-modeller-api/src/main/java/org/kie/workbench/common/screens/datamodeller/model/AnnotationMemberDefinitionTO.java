@@ -22,10 +22,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class AnnotationMemberDefinitionTO {
 
     private String name;
-    
-    private String description;
-    
-    private String shortDescription;
 
     private Object defaultValue;
 
@@ -40,14 +36,12 @@ public class AnnotationMemberDefinitionTO {
     public AnnotationMemberDefinitionTO() {
     }
 
-    public AnnotationMemberDefinitionTO(String name, String className, boolean primitiveType, boolean enumMember, Object defaultValue, String shortDescription, String description) {
+    public AnnotationMemberDefinitionTO(String name, String className, boolean primitiveType, boolean enumMember, Object defaultValue) {
         this.name = name;
         this.className = className;
         this.primitiveType = primitiveType;
         this.enumMember = enumMember;
         this.defaultValue = defaultValue;
-        this.shortDescription = shortDescription;
-        this.description = description;
     }
 
     public String getName() {
@@ -56,22 +50,6 @@ public class AnnotationMemberDefinitionTO {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
     }
 
     public Object getDefaultValue() {
@@ -125,15 +103,6 @@ public class AnnotationMemberDefinitionTO {
         if (defaultValue != null ? !defaultValue.equals(that.defaultValue) : that.defaultValue != null) {
             return false;
         }
-        if (description != null ? !description.equals(that.description) : that.description != null) {
-            return false;
-        }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
-        if (shortDescription != null ? !shortDescription.equals(that.shortDescription) : that.shortDescription != null) {
-            return false;
-        }
 
         return true;
     }
@@ -141,10 +110,6 @@ public class AnnotationMemberDefinitionTO {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = ~~result;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = ~~result;
-        result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (defaultValue != null ? defaultValue.hashCode() : 0);
         result = ~~result;

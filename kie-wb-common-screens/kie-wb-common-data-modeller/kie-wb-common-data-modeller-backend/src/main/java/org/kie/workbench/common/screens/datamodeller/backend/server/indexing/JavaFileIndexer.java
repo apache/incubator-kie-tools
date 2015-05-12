@@ -175,8 +175,7 @@ public class JavaFileIndexer implements Indexer {
                                    final DefaultIndexBuilder builder,
                                    final ClassLoader classLoader ) {
 
-        ClassTypeResolver classTypeResolver = DriverUtils.getInstance().createClassTypeResolver( javaClassSource, classLoader );
-        DriverUtils driverUtils = DriverUtils.getInstance();
+        ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( javaClassSource, classLoader );
         String superClass = null;
         Set<String> referencedTypes = new HashSet<String>();
 
@@ -213,10 +212,10 @@ public class JavaFileIndexer implements Indexer {
                 fieldName = field.getName();
                 fieldType = field.getType();
                 try {
-                    if ( driverUtils.isManagedType( fieldType, classTypeResolver ) ) {
+                    if ( DriverUtils.isManagedType( fieldType, classTypeResolver ) ) {
                         if ( fieldType.isPrimitive() ) {
                             fieldClassName = fieldType.getName();
-                        } else if ( driverUtils.isSimpleClass( fieldType ) ) {
+                        } else if ( DriverUtils.isSimpleClass( fieldType ) ) {
                             fieldClassName = classTypeResolver.getFullTypeName( fieldType.getName() );
                         } else {
                             //if this point was reached, we know it's a Collection.

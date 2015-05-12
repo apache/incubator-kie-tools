@@ -27,13 +27,7 @@ public class AnnotationDefinitionTO {
 
     private String className;
 
-    private String name;
-
     private boolean marker;
-
-    private String shortDescription;
-    
-    private String description;
 
     private boolean objectAnnotation;
 
@@ -63,6 +57,27 @@ public class AnnotationDefinitionTO {
 
     public static final String REMOTABLE_ANNOTATION = "org.kie.api.remote.Remotable";
 
+
+    public static final String JAVAX_PERSISTENCE_ENTITY_ANNOTATION = "javax.persistence.Entity";
+
+    public static final String JAVAX_PERSISTENCE_TABLE_ANNOTATION = "javax.persistence.Table";
+
+    public static final String JAVAX_PERSISTENCE_ID_ANNOTATION = "javax.persistence.Id";
+
+    public static final String JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION = "javax.persistence.GeneratedValue";
+
+    public static final String JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION = "javax.persistence.SequenceGenerator";
+
+    public static final String JAVAX_PERSISTENCE_COLUMN_ANNOTATION = "javax.persistence.Column";
+
+    public static final String JAVAX_PERSISTENCE_MANY_TO_ONE = "javax.persistence.ManyToOne";
+
+    public static final String JAVAX_PERSISTENCE_MANY_TO_MANY = "javax.persistence.ManyToMany";
+
+    public static final String JAVAX_PERSISTENCE_ONE_TO_MANY = "javax.persistence.OneToMany";
+
+    public static final String JAVAX_PERSISTENCE_ONE_TO_ONE = "javax.persistence.OneToOne";
+
     public static final String VALUE_PARAM = "value";
 
     private List<AnnotationMemberDefinitionTO> annotationMembers = new ArrayList<AnnotationMemberDefinitionTO>();
@@ -70,21 +85,10 @@ public class AnnotationDefinitionTO {
     public AnnotationDefinitionTO() {
     }
 
-    public AnnotationDefinitionTO(String name, String className, String shortDescription, String description, boolean objectAnnotation, boolean propertyAnnotation) {
-        this.name = name;
+    public AnnotationDefinitionTO(String className, boolean objectAnnotation, boolean propertyAnnotation) {
         this.className = className;
-        this.shortDescription = shortDescription;
-        this.description = description;
         this.objectAnnotation = objectAnnotation;
         this.propertyAnnotation = propertyAnnotation;
-    }
-
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getClassName() {
@@ -111,14 +115,6 @@ public class AnnotationDefinitionTO {
         return annotationMembers;
     }
 
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
-
     public boolean isObjectAnnotation() {
         return objectAnnotation;
     }
@@ -133,14 +129,6 @@ public class AnnotationDefinitionTO {
 
     public void setPropertyAnnotation(boolean propertyAnnotation) {
         this.propertyAnnotation = propertyAnnotation;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void addMember(AnnotationMemberDefinitionTO memberDefinitionTO) {
@@ -173,15 +161,6 @@ public class AnnotationDefinitionTO {
         if (className != null ? !className.equals(that.className) : that.className != null) {
             return false;
         }
-        if (description != null ? !description.equals(that.description) : that.description != null) {
-            return false;
-        }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
-            return false;
-        }
-        if (shortDescription != null ? !shortDescription.equals(that.shortDescription) : that.shortDescription != null) {
-            return false;
-        }
 
         return true;
     }
@@ -190,13 +169,7 @@ public class AnnotationDefinitionTO {
     public int hashCode() {
         int result = className != null ? className.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = ~~result;
         result = 31 * result + (marker ? 1 : 0);
-        result = ~~result;
-        result = 31 * result + (shortDescription != null ? shortDescription.hashCode() : 0);
-        result = ~~result;
-        result = 31 * result + (description != null ? description.hashCode() : 0);
         result = ~~result;
         result = 31 * result + (objectAnnotation ? 1 : 0);
         result = ~~result;

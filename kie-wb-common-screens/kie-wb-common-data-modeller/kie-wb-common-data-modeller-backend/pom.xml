@@ -176,6 +176,11 @@
       <artifactId>uberfire-commons-editor-backend</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+    </dependency>
+
     <!-- Weld Modules. For tests only -->
     <dependency>
       <groupId>org.jboss.weld</groupId>
@@ -212,6 +217,15 @@
       <artifactId>kie-wb-common-refactoring-backend</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-data-modeller-core</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+      <!-- TODO move this version number to kie-parent-with-dependencies, or whatever other place it should be -->
+      <!--version>6.3.0-SNAPSHOT</version-->
     </dependency>
 
     <dependency>

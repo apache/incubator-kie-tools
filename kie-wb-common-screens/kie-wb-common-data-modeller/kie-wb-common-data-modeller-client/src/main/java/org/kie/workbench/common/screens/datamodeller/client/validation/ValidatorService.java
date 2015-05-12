@@ -29,7 +29,9 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerErrorCall
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
@@ -110,11 +112,11 @@ public class ValidatorService {
 
     public void isUniqueEntityName( String packageName,
             String name,
-            DataModelTO model,
+            DataModel model,
             ValidatorCallback callback ) {
         Boolean b = Boolean.TRUE;
         String className = assembleClassName( packageName, name );
-        for ( DataObjectTO d : model.getDataObjects() ) {
+        for ( DataObject d : model.getDataObjects() ) {
             if ( d.getClassName().equals( className ) ) {
                 b = Boolean.FALSE;
                 break;
@@ -130,15 +132,15 @@ public class ValidatorService {
     // TODO add a validation in order to avoid cyclic extensions
 
     public void isUniqueAttributeName( String name,
-            DataObjectTO object,
+            DataObject object,
             ValidatorWithReasonCallback callback ) {
-        for ( ObjectPropertyTO prop : object.getProperties() ) {
+        for ( ObjectProperty prop : object.getProperties() ) {
             if ( prop.getName().equalsIgnoreCase( name ) ) {
                 callback.onFailure( MANAGED_PROPERTY_EXISTS );
                 return;
             }
         }
-        for ( ObjectPropertyTO unmanagedProp : object.getUnmanagedProperties() ) {
+        for ( ObjectProperty unmanagedProp : object.getUnmanagedProperties() ) {
             if ( unmanagedProp.getName().equalsIgnoreCase( name ) ) {
                 callback.onFailure( UN_MANAGED_PROPERTY_EXISTS );
                 return;
@@ -187,13 +189,13 @@ public class ValidatorService {
         return refs.contains( currentObject.getClassName() );
     }
 
-    public boolean isReferencedByCurrentObject( DataObjectTO referencedObject,
-            DataObjectTO currentObject ) {
+    public boolean isReferencedByCurrentObject( DataObject referencedObject,
+            DataObject currentObject ) {
 
         if ( currentObject.getSuperClassName() != null && currentObject.getSuperClassName().equals( referencedObject.getClassName() )) return true;
 
         if ( currentObject.getProperties() != null ) {
-            for ( ObjectPropertyTO propertyTO : currentObject.getProperties() ) {
+            for ( ObjectProperty propertyTO : currentObject.getProperties() ) {
                 if ( propertyTO.getClassName().equals( referencedObject.getClassName() ) ) return true;
             }
         }
@@ -202,8 +204,8 @@ public class ValidatorService {
 
 
     public Collection<String> getDataObjectExternalReferences( DataModelerContext context,
-            DataObjectTO object,
-            DataModelTO model ) {
+            DataObject object,
+            DataModel model ) {
         Collection<String> self = new ArrayList<String>(1);
         self.add( object.getClassName() );
         Collection<String> refs = context.getHelper().getDataObjectReferences( object.getClassName() );

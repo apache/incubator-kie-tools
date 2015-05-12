@@ -18,10 +18,11 @@ package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
 
+@Deprecated
 public class PropertyReactiveAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public PropertyReactiveAnnotationDefinition() {
-        super("@PropertyReactive", org.kie.api.definition.type.PropertyReactive.class.getName(), "PropertyReactive", "PropertyReactive annotation", true, false);
+        super( org.kie.api.definition.type.PropertyReactive.class.getName(), true, false);
     }
 
     public static PropertyReactiveAnnotationDefinition getInstance() {

@@ -20,6 +20,10 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 
 public class AnnotationImpl extends AbstractAnnotation {
 
+    public AnnotationImpl() {
+        //errai marshalling
+    }
+
     public AnnotationImpl(AnnotationDefinition annotationDefinition) {
         super(annotationDefinition);
     }

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2015 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:datamodeler="urn:import:org.kie.workbench.common.screens.datamodeller.client.widgets"
+        >
+
+    <ui:with field="i18n" type="org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants"/>
+
+    <!--gwt:HTMLPanel styleName="well container row-fluid " height="310px" -->
+
+    <gwt:HTMLPanel>
+
+        <style>
+            .propertiesTable2 {
+            min-height: 320px !Important;
+            min-width: 380px !Important;
+            overflow: hidden;
+            }
+
+            .propertiesTable2 textarea {
+            width: 185px !Important;
+            resize: none;
+            }
+
+            .propertiesTable2 select,
+            .propertiesTable2 input {
+            width: 185px !Important;
+            }
+
+        </style>
+
+        <div class="well well-small propertiesTable2">
+
+        <table class="row-fluid"  style="padding: 4px;">
+
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="typeSafeLabel" text="{i18n.objectEditor_typeSafeLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="typeSafeSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_typeSafeLabel}" text="{i18n.objectEditor_typeSafeHelp}" html="true" >
+                  <b:Icon ui:field="typeSafeHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+            <tr>
+                <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="classReactiveLabel" text="{i18n.objectEditor_classReactiveLabel}" />
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:CheckBox ui:field="classReactiveSelector"></b:CheckBox>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_classReactiveLabel}" text="{i18n.objectEditor_classReactiveLabelHelp}">
+                        <b:Icon ui:field="classReactiveHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+                <td style="white-space: nowrap; vertical-align: top;">
+                    <gwt:Label ui:field="propertyReactiveLabel" text="{i18n.objectEditor_propertyReactiveLabel}"/>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:CheckBox ui:field="propertyReactiveSelector"></b:CheckBox>
+                </td>
+                <td style="padding-left: 4px;">
+                    <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_propertyReactiveLabel}" text="{i18n.objectEditor_propertyReactiveLabelHelp}">
+                        <b:Icon ui:field="propertyReactiveHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                    </b:Popover>
+                </td>
+            </tr>
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="roleLabel" text="{i18n.objectEditor_roleLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="roleSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_roleLabel}" text="{i18n.objectEditor_roleHelp}" >
+                  <b:Icon ui:field="roleHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="timestampLabel" text="{i18n.objectEditor_timestampLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="timestampFieldSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_timestampLabel}" text="{i18n.objectEditor_timestampHelp}" html="true" >
+                  <b:Icon ui:field="timestampHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="durationLabel" text="{i18n.objectEditor_durationLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:ListBox ui:field="durationFieldSelector" styleName="span10"></b:ListBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_durationLabel}" text="{i18n.objectEditor_durationHelp}" html="true" >
+                  <b:Icon ui:field="durationHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="expiresLabel" text="{i18n.objectEditor_expiresLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:TextBox ui:field="expires" styleName="span10"></b:TextBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_expiresLabel}" text="{i18n.objectEditor_expiresHelp}" html="true" >
+                  <b:Icon ui:field="expiresHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+            <tr>
+              <td colspan="3" style="padding: 3px;"></td>
+            </tr>
+            <tr>
+              <td style="white-space: nowrap; vertical-align: top;">
+                <gwt:Label ui:field="remotableLabel" text="{i18n.objectEditor_remotableLabel}"/>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:CheckBox ui:field="remotableSelector"></b:CheckBox>
+              </td>
+              <td style="padding-left: 4px;">
+                <b:Popover placement="LEFT" trigger="HOVER" heading="{i18n.objectEditor_remotableLabel}" text="{i18n.objectEditor_remotableHelp}" html="true" >
+                  <b:Icon ui:field="remotableHelpIcon" type="QUESTION_SIGN"></b:Icon>
+                </b:Popover>
+              </td>
+            </tr>
+
+        </table>
+
+        </div>
+    </gwt:HTMLPanel>
+
+</ui:UiBinder>

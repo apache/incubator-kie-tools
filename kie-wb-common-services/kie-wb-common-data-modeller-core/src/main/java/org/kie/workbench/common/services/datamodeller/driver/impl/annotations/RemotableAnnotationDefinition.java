@@ -18,10 +18,11 @@ package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
 
+@Deprecated
 public class RemotableAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public RemotableAnnotationDefinition() {
-        super("@Remotable", org.kie.api.remote.Remotable.class.getName(), "Remotable", "Remotable annotation", true, false);
+        super( org.kie.api.remote.Remotable.class.getName(), true, false);
     }
 
     public static RemotableAnnotationDefinition getInstance() {

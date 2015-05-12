@@ -23,10 +23,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 import com.google.common.base.Charsets;
 import org.drools.core.base.ClassTypeResolver;
@@ -46,16 +53,13 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
-import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.jboss.forge.roaster.model.source.MethodSource;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
@@ -71,29 +75,22 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
-import org.kie.workbench.common.services.datamodeller.driver.impl.DataModelOracleModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.impl.JavaModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.ProjectDataModelOracleUtils;
-import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandler;
-import org.kie.workbench.common.services.datamodeller.parser.JavaFileHandlerFactory;
-import org.kie.workbench.common.services.datamodeller.parser.descr.ClassDescr;
-import org.kie.workbench.common.services.datamodeller.parser.descr.FieldDescr;
-import org.kie.workbench.common.services.datamodeller.parser.descr.FileDescr;
-import org.kie.workbench.common.services.datamodeller.parser.descr.VariableDeclarationDescr;
-import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
+import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
-import org.kie.workbench.common.services.datamodeller.util.FileHashingUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.kie.workbench.common.services.refactoring.model.index.terms.valueterms.ValueFieldIndexTerm;
@@ -192,11 +189,28 @@ public class DataModelerServiceImpl
     }
 
     @Override
+    public DataModel loadModel(final KieProject project) {
+        Pair<DataModel, ModelDriverResult> resultPair = loadModel(project, true);
+        return resultPair != null ? resultPair.getK1() : null;
+    }
+
+
+    @Override
+    public Path createJavaFile(final Path context,
+            final String fileName,
+            final String comment) {
+        return createJavaFile( context, fileName, comment, false, null );
+
+    }
+
+    @Override
     public Path createJavaFile(final Path context,
                                final String fileName,
-                               final String comment) {
+                               final String comment,
+                                final boolean persistable,
+                                final String tableName ) {
 
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve( fileName );
         final Path newPath = Paths.convert(nioPath);
 
         if (ioService.exists(nioPath)) {
@@ -212,15 +226,20 @@ public class DataModelerServiceImpl
             final KieProject currentProject = projectService.resolveProject(context);
 
             DataObject dataObject = new DataObjectImpl(packageName, className);
+
+            if ( persistable ) {
+                addPersistableOptions( dataObject, tableName );
+            }
+
             String source = createJavaSource(dataObject);
 
             ioService.write(nioPath, source, serviceHelper.makeCommentedOption(comment));
 
-            DataObjectTO dataObjectTO = new DataObjectTO();
-            serviceHelper.domain2To(dataObject, dataObjectTO, DataModelTO.TOStatus.PERSISTENT);
-            dataObjectTO.setPath(newPath);
+            //TODO. refactoring, check how to set the path to the created data Object
+            //dataObject.setPath(newPath);
+            //Probably we can add the path to the event. But check first in how many places this path is used
 
-            dataObjectCreatedEvent.fire(new DataObjectCreatedEvent(currentProject, dataObjectTO));
+            dataObjectCreatedEvent.fire(new DataObjectCreatedEvent(currentProject, dataObject));
 
             return newPath;
 
@@ -229,6 +248,40 @@ public class DataModelerServiceImpl
             logger.error("It was not possible to create Java file, for path: " + context.toURI() + ", fileName: " + fileName, e);
             throw new ServiceException("It was not possible to create Java file, for path: " + context.toURI() + ", fileName: " + fileName, e);
         }
+    }
+
+    private void addPersistableOptions( DataObject dataObject, String tableName ) {
+        //add default parameters for a persistable data object
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
+
+        //mark the class as Entity
+        dataObject.addAnnotation( new AnnotationImpl( modelDriver.getConfiguredAnnotation( Entity.class.getName() ) ) );
+
+        if ( tableName != null && !"".equals( tableName.trim() ) ) {
+            Annotation tableAnnotation = new AnnotationImpl( modelDriver.getConfiguredAnnotation( Table.class.getName() ) );
+            tableAnnotation.setValue( "name", tableName.trim() );
+            dataObject.addAnnotation( tableAnnotation );
+        }
+
+        //add the by default id field
+        ObjectProperty id = dataObject.addProperty( "id", Long.class.getName() );
+        id.addAnnotation( new AnnotationImpl( modelDriver.getConfiguredAnnotation( Id.class.getName() ) ) );
+
+        //set the by default generated value annotation.
+        String generatorName = dataObject.getName().toUpperCase() + "_ID_GENERATOR"; //TODO review this name generation
+        Annotation generatedValue = new AnnotationImpl( modelDriver.getConfiguredAnnotation( GeneratedValue.class.getName() ) );
+        generatedValue.setValue( "generator", generatorName );
+        generatedValue.setValue( "strategy", GenerationType.AUTO.name() );
+        id.addAnnotation( generatedValue );
+
+        //set by default sequence generator
+        Annotation sequenceGenerator = new AnnotationImpl( modelDriver.getConfiguredAnnotation( SequenceGenerator.class.getName() ) );
+
+        String sequenceName = dataObject.getName().toUpperCase() + "_ID_SEQ"; //TODO review this name generation
+        sequenceGenerator.setValue( "name", generatorName );
+        sequenceGenerator.setValue( "sequenceName", sequenceName );
+        id.addAnnotation( sequenceGenerator );
+
     }
 
     @Override
@@ -248,18 +301,18 @@ public class DataModelerServiceImpl
                 return editorModelContent;
             }
 
-            Pair<DataModelTO, ModelDriverResult> resultPair = loadModel(project, false);
-            DataModelTO dataModelTO = resultPair.getK1();
+            Pair<DataModel, ModelDriverResult> resultPair = loadModel( project, false );
             String className = calculateClassName(project, path);
 
             editorModelContent.setCurrentProject(project);
             editorModelContent.setPath( path );
             editorModelContent.setCurrentProjectPackages(projectService.resolvePackages(project));
-            editorModelContent.setDataModel(dataModelTO);
-            editorModelContent.setDataObject(dataModelTO.getDataObjectByClassName(className));
+            editorModelContent.setDataModel( resultPair.getK1() );
+            editorModelContent.setDataObject( resultPair.getK1().getDataObject( className  ) );
+            editorModelContent.setDataObjectPaths( serviceHelper.toVFSPaths( resultPair.getK2().getClassPaths() ) );
 
             editorModelContent.setOriginalClassName(className);
-            editorModelContent.setOriginalPackageName(NamingUtils.extractPackageName(className));
+            editorModelContent.setOriginalPackageName( NamingUtils.extractPackageName( className ) );
 
             //Read the sources for the file being edited.
             if (ioService.exists(Paths.convert(path))) {
@@ -273,7 +326,7 @@ public class DataModelerServiceImpl
 
             editorModelContent.setOverview(overview);
 
-            editorModelContent.setElapsedTime(System.currentTimeMillis() - startTime);
+            editorModelContent.setElapsedTime( System.currentTimeMillis() - startTime );
             if (logger.isDebugEnabled()) {
                 logger.debug("Time elapsed when loading editor model from:" + path + " : " + editorModelContent.getElapsedTime() + " ms");
             }
@@ -286,14 +339,8 @@ public class DataModelerServiceImpl
         }
     }
 
-    @Override
-    public DataModelTO loadModel(final KieProject project) {
-        Pair<DataModelTO, ModelDriverResult> resultPair = loadModel(project, true);
-        return resultPair != null ? resultPair.getK1() : null;
-    }
-
-    private Pair<DataModelTO, ModelDriverResult> loadModel(final KieProject project,
-                                                           boolean processErrors) {
+    private Pair<DataModel, ModelDriverResult> loadModel(final KieProject project,
+            boolean processErrors) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Loading data model from path: " + project.getRootPath());
@@ -313,7 +360,6 @@ public class DataModelerServiceImpl
             }
 
             ClassLoader classLoader = getProjectClassLoader(project);
-            //ModelDriver modelDriver = new JavaModelDriver( ioService, Paths.convert( defaultPackage.getPackageMainSrcPath() ) , true, classLoader );
 
             ModelDriver modelDriver = new JavaRoasterModelDriver(ioService, Paths.convert(defaultPackage.getPackageMainSrcPath()), true, classLoader);
             ModelDriverResult result = modelDriver.loadModel();
@@ -327,15 +373,12 @@ public class DataModelerServiceImpl
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel(projectPath);
             ProjectDataModelOracleUtils.loadExternalDependencies(dataModel, projectDataModelOracle, classLoader);
 
-            //Objects read from persistent .java format are tagged as PERSISTENT objects
-            DataModelTO dataModelTO = serviceHelper.domain2To(dataModel, result.getClassPaths(), result.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
-
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) {
                 logger.debug("Time elapsed when loading " + projectPath.getFileName() + ": " + (endTime - startTime) + " ms");
             }
 
-            return new Pair<DataModelTO, ModelDriverResult>(dataModelTO, result);
+            return new Pair<DataModel, ModelDriverResult>(dataModel, result);
 
         } catch (Exception e) {
             logger.error("Data model couldn't be loaded, path: " + projectPath + ", projectPath: " + projectPath + ".", e);
@@ -343,24 +386,24 @@ public class DataModelerServiceImpl
         }
     }
 
-    public TypeInfoResult loadJavaTypeInfo(final String source) {
+    public TypeInfoResult loadJavaTypeInfo( final String source ) {
 
         try {
             JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
             TypeInfoResult result = new TypeInfoResult();
-            org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult driverResult = modelDriver.loadJavaTypeInfo(source);
-            result.setJavaTypeInfo(serviceHelper.domain2TO(driverResult.getTypeInfo()));
-            if (driverResult.hasErrors()) {
-                result.setErrors(serviceHelper.toDataModelerError(driverResult.getErrors()));
+            org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult driverResult = modelDriver.loadJavaTypeInfo( source );
+            result.setJavaTypeInfo( driverResult.getTypeInfo() );
+            if ( driverResult.hasErrors() ) {
+                result.setErrors( serviceHelper.toDataModelerError( driverResult.getErrors() ) );
             }
             return result;
-        } catch (Exception e) {
-            logger.error("JavaTypeInfo object couldn't be loaded for source: " + source, e);
-            throw new ServiceException("JavaTypeInfo object couldn't be loaded for source.", e);
+        } catch ( Exception e ) {
+            logger.error( "JavaTypeInfo object couldn't be loaded for source: " + source, e );
+            throw new ServiceException( "JavaTypeInfo object couldn't be loaded for source.", e );
         }
     }
 
-    private Pair<DataObjectTO, List<DataModelerError>> loadDataObject(final Path projectPath,
+    private Pair<DataObject, List<DataModelerError>> loadDataObject(final Path projectPath,
                                                                       final String source,
                                                                       final Path sourcePath) {
 
@@ -369,13 +412,13 @@ public class DataModelerServiceImpl
         }
 
         KieProject project;
-        DataObjectTO dataObjectTO = null;
+        DataObject dataObject = null;
 
         try {
 
             project = projectService.resolveProject(projectPath);
             if (project == null) {
-                return new Pair<DataObjectTO, List<DataModelerError>>(null, new ArrayList<DataModelerError>());
+                return new Pair<DataObject, List<DataModelerError>>(null, new ArrayList<DataModelerError>());
             }
 
             ClassLoader classLoader = getProjectClassLoader(project);
@@ -384,12 +427,11 @@ public class DataModelerServiceImpl
 
             if (!driverResult.hasErrors()) {
                 if (driverResult.getDataModel().getDataObjects().size() > 0) {
-                    DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
-                    dataObjectTO = dataModelTO.getDataObjects().iterator().next();
+                    dataObject = driverResult.getDataModel().getDataObjects().iterator().next();
                 }
-                return new Pair<DataObjectTO, List<DataModelerError>>(dataObjectTO, new ArrayList<DataModelerError>());
+                return new Pair<DataObject, List<DataModelerError>>(dataObject, new ArrayList<DataModelerError>());
             } else {
-                return new Pair<DataObjectTO, List<DataModelerError>>(null, serviceHelper.toDataModelerError(driverResult.getErrors()));
+                return new Pair<DataObject, List<DataModelerError>>(null, serviceHelper.toDataModelerError(driverResult.getErrors()));
             }
 
         } catch (Exception e) {
@@ -398,22 +440,22 @@ public class DataModelerServiceImpl
         }
     }
 
-    private Pair<DataObjectTO, List<DataModelerError>> loadDataObject(final Path path) {
+    private Pair<DataObject, List<DataModelerError>> loadDataObject(final Path path) {
         return loadDataObject(path, ioService.readAllString(Paths.convert(path)), path);
     }
 
     /**
-     * Updates Java code provided in the source parameter with the data object values provided in the dataObjectTO
+     * Updates Java code provided in the source parameter with the data object values provided in the dataObject
      * parameter. This method does not write any changes in the file system.
      * @param source Java code to be updated.
      * @param path Path to the java file. (used for error messages generation and project )
-     * @param dataObjectTO Data object definition.
-     * @return returns a GenerationResult object with the updated Java code and the dataObjectTO parameter as is.
+     * @param dataObject Data object definition.
+     * @return returns a GenerationResult object with the updated Java code and the dataObject parameter as is.
      */
     @Override
     public GenerationResult updateSource(final String source,
-                                         final Path path,
-                                         final DataObjectTO dataObjectTO) {
+            final Path path,
+            final DataObject dataObject) {
 
         GenerationResult result = new GenerationResult();
         KieProject project;
@@ -428,31 +470,31 @@ public class DataModelerServiceImpl
             }
 
             ClassLoader classLoader = getProjectClassLoader(project);
-            Pair<String, List<DataModelerError>> updateResult = updateJavaSource(source, dataObjectTO, new HashMap<String, String>(), new ArrayList<String>(), classLoader);
+            Pair<String, List<DataModelerError>> updateResult = updateJavaSource(source, dataObject, new HashMap<String, String>(), new ArrayList<String>(), classLoader);
             result.setSource(updateResult.getK1());
-            result.setDataObject(dataObjectTO);
+            result.setDataObject(dataObject);
             result.setErrors(updateResult.getK2());
 
             return result;
 
         } catch (Exception e) {
-            logger.error("Source file for data object: " + dataObjectTO.getClassName() + ", couldn't be updated", e);
-            throw new ServiceException("Source file for data object: " + dataObjectTO.getClassName() + ", couldn't be updated", e);
+            logger.error("Source file for data object: " + dataObject.getClassName() + ", couldn't be updated", e);
+            throw new ServiceException("Source file for data object: " + dataObject.getClassName() + ", couldn't be updated", e);
         }
     }
 
     /**
-     * Updates data object provided in the dataObjectTO parameter with the Java code provided in the source parameter.
+     * Updates data object provided in the dataObject parameter with the Java code provided in the source parameter.
      * This method does not write changes in the file system.
-     * @param dataObjectTO Data object definition to be updated.
+     * @param dataObject Data object definition to be updated.
      * @param source Java code to use for the update.
      * @param path Path to the java file. (used for error messages generation)
      * @return returns a GenerationResult object with the updated data object and the source and path parameter as is.
      */
     @Override
-    public GenerationResult updateDataObject(final DataObjectTO dataObjectTO,
-                                             final String source,
-                                             final Path path) {
+    public GenerationResult updateDataObject(final DataObject dataObject,
+            final String source,
+            final Path path) {
         //Resolve the dataobject update in memory
 
         GenerationResult result = new GenerationResult();
@@ -475,41 +517,42 @@ public class DataModelerServiceImpl
                 result.setErrors(serviceHelper.toDataModelerError(driverResult.getErrors()));
             } else {
                 if (driverResult.getDataModel().getDataObjects().size() > 0) {
-                    DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
-                    result.setDataObject(dataModelTO.getDataObjects().iterator().next());
+                    //TODO refactoring check this.
+                    //DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
+                    result.setDataObject(driverResult.getDataModel().getDataObjects().iterator().next());
                 }
             }
 
             return result;
         } catch (Exception e) {
-            logger.error("Source file for data object: " + dataObjectTO.getClassName() + ", couldn't be parsed", e);
-            throw new ServiceException("Source file for data object: " + dataObjectTO.getClassName() + ", couldn't be parsed", e);
+            logger.error("Source file for data object: " + dataObject.getClassName() + ", couldn't be parsed", e);
+            throw new ServiceException("Source file for data object: " + dataObject.getClassName() + ", couldn't be parsed", e);
         }
     }
 
     @Override
     public GenerationResult saveSource(final String source,
-                                       final Path path,
-                                       final DataObjectTO dataObjectTO,
-                                       final Metadata metadata,
-                                       final String commitMessage) {
-        return saveSource(source, path, dataObjectTO, metadata, commitMessage, null, null);
+            final Path path,
+            final DataObject dataObject,
+            final Metadata metadata,
+            final String commitMessage) {
+        return saveSource(source, path, dataObject, metadata, commitMessage, null, null);
     }
 
     @Override
     public GenerationResult saveSource(final String source,
-                                       final Path path,
-                                       final DataObjectTO dataObjectTO,
-                                       final Metadata metadata,
-                                       final String commitMessage,
-                                       final String newPackageName,
-                                       final String newFileName) {
+            final Path path,
+            final DataObject dataObject,
+            final Metadata metadata,
+            final String commitMessage,
+            final String newPackageName,
+            final String newFileName) {
 
         Boolean onBatch = false;
 
         try {
 
-            GenerationResult result = resolveSaveSource(source, path, dataObjectTO);
+            GenerationResult result = resolveSaveSource(source, path, dataObject);
 
             Package currentPackage = projectService.resolvePackage(path);
             Package targetPackage = currentPackage;
@@ -538,9 +581,9 @@ public class DataModelerServiceImpl
                 ioService.startBatch(targetPath.getFileSystem());
                 onBatch = true;
                 ioService.write(Paths.convert(path),
-                                result.getSource(),
-                                metadataService.setUpAttributes(path, metadata),
-                                serviceHelper.makeCommentedOption(commitMessage));
+                        result.getSource(),
+                        metadataService.setUpAttributes(path, metadata),
+                        serviceHelper.makeCommentedOption(commitMessage));
 
                 //deleteService.delete( path, commitMessage );
                 ioService.move(Paths.convert(path), targetPath, serviceHelper.makeCommentedOption(commitMessage));
@@ -549,26 +592,26 @@ public class DataModelerServiceImpl
             } else if (nameChanged) {
                 //obs, rename service already do a startBatch.
                 ioService.write(Paths.convert(path),
-                                result.getSource(),
-                                metadataService.setUpAttributes(path, metadata),
-                                serviceHelper.makeCommentedOption(commitMessage));
+                        result.getSource(),
+                        metadataService.setUpAttributes(path, metadata),
+                        serviceHelper.makeCommentedOption(commitMessage));
 
                 Path newPath = renameService.rename(path, newFileName, commitMessage);
                 result.setPath(newPath);
             } else {
 
                 ioService.write(Paths.convert(path),
-                                result.getSource(),
-                                metadataService.setUpAttributes(path, metadata),
-                                serviceHelper.makeCommentedOption(commitMessage));
+                        result.getSource(),
+                        metadataService.setUpAttributes(path, metadata),
+                        serviceHelper.makeCommentedOption(commitMessage));
                 result.setPath(path);
 
             }
 
             return result;
         } catch (Exception e) {
-            logger.error("Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + (dataObjectTO != null ? dataObjectTO.getClassName() : null) + ".", e);
-            throw new ServiceException("Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + (dataObjectTO != null ? dataObjectTO.getClassName() : null) + ".", e);
+            logger.error( "Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + ( dataObject != null ? dataObject.getClassName() : null ) + ".", e );
+            throw new ServiceException("Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + (dataObject != null ? dataObject.getClassName() : null) + ".", e);
         } finally {
             if (onBatch) {
                 ioService.endBatch();
@@ -577,8 +620,8 @@ public class DataModelerServiceImpl
     }
 
     private GenerationResult resolveSaveSource(final String source,
-                                               final Path path,
-                                               final DataObjectTO dataObjectTO) {
+            final Path path,
+            final DataObject dataObject) {
         GenerationResult result = new GenerationResult();
         KieProject project;
         String updatedSource;
@@ -592,17 +635,17 @@ public class DataModelerServiceImpl
                 return result;
             }
 
-            if (dataObjectTO != null) {
+            if (dataObject != null) {
                 //the source needs to be updated with the DataObject definition prior to save
-                result = updateSource(source, path, dataObjectTO);
+                result = updateSource(source, path, dataObject);
                 updatedSource = result.getSource();
             } else {
-                //if the dataObjectTO wasn't provided the source is already prepared to be saved and likely
+                //if the dataObject wasn't provided the source is already prepared to be saved and likely
                 //it's not parsed at the ui. So we will save the provided source and try to parse the data object
                 updatedSource = source;
             }
 
-            if (dataObjectTO == null) {
+            if (dataObject == null) {
                 ClassLoader classLoader = getProjectClassLoader(project);
                 JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(ioService, Paths.convert(path), false, classLoader);
                 ModelDriverResult driverResult = modelDriver.loadDataObject(source, Paths.convert(path));
@@ -611,8 +654,7 @@ public class DataModelerServiceImpl
                     result.setErrors(serviceHelper.toDataModelerError(driverResult.getErrors()));
                 } else {
                     if (driverResult.getDataModel().getDataObjects().size() > 0) {
-                        DataModelTO dataModelTO = serviceHelper.domain2To(driverResult.getDataModel(), driverResult.getClassPaths(), driverResult.getUnmanagedProperties(), DataModelTO.TOStatus.PERSISTENT, true);
-                        result.setDataObject(dataModelTO.getDataObjects().iterator().next());
+                        result.setDataObject( driverResult.getDataModel().getDataObjects().iterator().next() );
                     }
                 }
             }
@@ -622,8 +664,8 @@ public class DataModelerServiceImpl
             return result;
 
         } catch (Exception e) {
-            logger.error("Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + (dataObjectTO != null ? dataObjectTO.getClassName() : null) + ".", e);
-            throw new ServiceException("Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + (dataObjectTO != null ? dataObjectTO.getClassName() : null) + ".", e);
+            logger.error( "Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + ( dataObject != null ? dataObject.getClassName() : null ) + ".", e );
+            throw new ServiceException("Source file couldn't be updated, path: " + path.toURI() + ", dataObject: " + (dataObject != null ? dataObject.getClassName() : null) + ".", e);
         }
     }
 
@@ -658,21 +700,21 @@ public class DataModelerServiceImpl
     }
 
     public Path rename(final Path path,
-                       final String newName,
-                       String comment,
-                       final boolean refactor,
-                       final boolean saveCurrentChanges,
-                       final String source,
-                       final DataObjectTO dataObjectTO,
-                       final Metadata metadata) {
+            final String newName,
+            String comment,
+            final boolean refactor,
+            final boolean saveCurrentChanges,
+            final String source,
+            final DataObject dataObject,
+            final Metadata metadata) {
 
         GenerationResult saveResult = null;
         if (saveCurrentChanges) {
-            saveResult = resolveSaveSource(source, path, dataObjectTO);
+            saveResult = resolveSaveSource(source, path, dataObject);
             ioService.write(Paths.convert(path),
-                            saveResult.getSource(),
-                            metadataService.setUpAttributes(path, metadata),
-                            serviceHelper.makeCommentedOption(comment));
+                    saveResult.getSource(),
+                    metadataService.setUpAttributes(path, metadata),
+                    serviceHelper.makeCommentedOption(comment));
         }
 
         Path targetPath = null;
@@ -792,7 +834,7 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public GenerationResult saveModel(final DataModelTO dataModel,
+    public GenerationResult saveModel(final DataModel dataModel,
                                       final KieProject project,
                                       final boolean overwrite,
                                       final String commitMessage) {
@@ -820,7 +862,6 @@ public class DataModelerServiceImpl
 
             GenerationResult result = new GenerationResult();
             result.setGenerationTime(endTime - startTime);
-            result.setObjectFingerPrints(serviceHelper.claculateFingerPrints(dataModel));
             return result;
 
         } catch (Exception e) {
@@ -834,12 +875,12 @@ public class DataModelerServiceImpl
                     logger.error("An error was produced when the IOService.endBatch processing was executed.", ex);
                 }
             }
-            throw new ServiceException("Data model: " + dataModel.getParentProjectName() + ", couldn't be generated due to the following error. " + e);
+            throw new ServiceException("Data model couldn't be generated due to the following error. " + e);
         }
     }
 
     @Override
-    public GenerationResult saveModel(DataModelTO dataModel,
+    public GenerationResult saveModel(DataModel dataModel,
                                       final KieProject project) {
 
         return saveModel(dataModel, project, false, DEFAULT_COMMIT_MESSAGE);
@@ -857,8 +898,8 @@ public class DataModelerServiceImpl
             }
             deleteService.delete(path, comment);
             String className = calculateClassName(project, path);
-            DataObjectTO dataObjectTO = new DataObjectTO(NamingUtils.extractClassName(className), NamingUtils.extractPackageName(className), null);
-            dataObjectDeletedEvent.fire(new DataObjectDeletedEvent(project, dataObjectTO));
+            DataObject dataObject = new DataObjectImpl(NamingUtils.extractClassName(className), NamingUtils.extractPackageName(className));
+            dataObjectDeletedEvent.fire(new DataObjectDeletedEvent(project, dataObject));
         } catch (final Exception e) {
             logger.error("File: " + path.toURI() + " couldn't be deleted due to the following error. ", e);
             throw new ServiceException("File: " + path.toURI() + " couldn't be deleted due to the following error. " + e.getMessage());
@@ -877,19 +918,19 @@ public class DataModelerServiceImpl
                                            final Path path,
                                            final String newPackageName,
                                            final String newClassName) {
-        Pair<DataObjectTO, List<DataModelerError>> result = loadDataObject(path, source, path);
+        Pair<DataObject, List<DataModelerError>> result = loadDataObject(path, source, path);
         if ((result.getK2() == null || result.getK2().isEmpty()) && result.getK1() != null) {
 
-            final DataObjectTO dataObjectTO = result.getK1();
+            final DataObject dataObject = result.getK1();
 
             if (newPackageName != null) {
-                dataObjectTO.setPackageName(newPackageName);
+                dataObject.setPackageName(newPackageName);
             }
             if (newClassName != null) {
-                dataObjectTO.setName(newClassName);
+                dataObject.setName(newClassName);
             }
 
-            return updateSource(source, path, dataObjectTO);
+            return updateSource(source, path, dataObject);
         } else {
             return new GenerationResult(null, null, result.getK2());
         }
@@ -898,7 +939,7 @@ public class DataModelerServiceImpl
     @Override
     public List<ValidationMessage> validate(final String source,
                                             final Path path,
-                                            final DataObjectTO dataObjectTO) {
+                                            final DataObject dataObject) {
 
         try {
             String validationSource = null;
@@ -915,10 +956,10 @@ public class DataModelerServiceImpl
                 return validations;
             }
 
-            if (dataObjectTO != null) {
+            if (dataObject != null) {
                 //the source needs to be updated with the DataObject definition prior to validation calculation.
                 //we must to the same processing as if the file was about to be saved.
-                GenerationResult result = updateSource(source, path, dataObjectTO);
+                GenerationResult result = updateSource(source, path, dataObject);
                 if (!result.hasErrors()) {
                     validationSource = result.getSource();
                 } else {
@@ -939,107 +980,48 @@ public class DataModelerServiceImpl
         }
     }
 
-    private void generateModel(DataModelTO dataModelTO,
+    private void generateModel(DataModel dataModel,
                                KieProject project,
                                CommentedOption option) throws Exception {
 
-        org.uberfire.java.nio.file.Path sourceFile;
         org.uberfire.java.nio.file.Path targetFile;
-        org.uberfire.java.nio.file.Path deletedObjectFile;
         org.uberfire.java.nio.file.Path javaRootPath;
-        ClassLoader classLoader;
-
         String newSource;
-        Map<String, String> renames = serviceHelper.calculatePersistentDataObjectRenames(dataModelTO);
-        List<String> deletions = serviceHelper.calculatePersistentDataObjectDeletions(dataModelTO);
 
-        classLoader = getProjectClassLoader(project);
         //ensure java sources directory exists.
         Path projectPath = project.getRootPath();
         javaRootPath = ensureProjectJavaPath(Paths.convert(projectPath));
 
-        //process deleted objects.
-        for (DataObjectTO dataObjectTO : dataModelTO.getDeletedDataObjects()) {
-            if (dataObjectTO.isPersistent()) {
-                deletedObjectFile = calculateFilePath(dataObjectTO.getOriginalClassName(), javaRootPath);
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Data object: " + dataObjectTO.getClassName() + " was deleted in the UI, associated .java file should be deleted.");
-                    logger.debug("current class name is: " + dataObjectTO.getClassName());
-                    logger.debug("original class name is: " + dataObjectTO.getOriginalClassName());
-                    logger.debug("file to be deleted is: " + deletedObjectFile);
-                }
-
-                ioService.deleteIfExists(deletedObjectFile, option);
+        for (DataObject dataObject : dataModel.getDataObjects()) {
+            targetFile = calculateFilePath(dataObject.getClassName(), javaRootPath);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Data object: " + dataObject.getClassName() + " java source code will be generated from scratch and written into file: " + targetFile);
             }
-        }
-
-        for (DataObjectTO dataObjectTO : dataModelTO.getDataObjects()) {
-
-            if (dataObjectTO.isVolatile()) {
-                //data object created in the UI
-
-                targetFile = calculateFilePath(dataObjectTO.getClassName(), javaRootPath);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Data object: " + dataObjectTO.getClassName() + " is a new object created in the UI, java source code will be generated from scratch and written into file: " + targetFile);
-                }
-                newSource = createJavaSource(serviceHelper.to2Domain(dataObjectTO));
-                ioService.write(targetFile, newSource, option);
-
-            } else if (hasUIChanges(dataObjectTO)) {
-                //data object that was read from a .java file and was modified in the UI.
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Data object: " + dataObjectTO.getClassName() + " needs to be updated with UI changes.");
-                }
-
-                if (dataObjectTO.classNameChanged()) {
-                    sourceFile = calculateFilePath(dataObjectTO.getOriginalClassName(), javaRootPath);
-                    targetFile = calculateFilePath(dataObjectTO.getClassName(), javaRootPath);
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Data object was renamed form class name: " + dataObjectTO.getOriginalClassName() + " to: " + dataObjectTO.getClassName());
-                    }
-
-                } else {
-                    sourceFile = calculateFilePath(dataObjectTO.getClassName(), javaRootPath);
-                    targetFile = sourceFile;
-                }
-
-                if (logger.isDebugEnabled()) {
-                    logger.debug("original content will be read from file: " + sourceFile);
-                    logger.debug("updated content will be written into file: " + targetFile);
-                }
-
-                if (ioService.exists(sourceFile)) {
-                    //common case, by construction the file should exist.
-                    newSource = updateJavaSource(sourceFile, dataObjectTO, renames, deletions, classLoader).getK1();
-                } else {
-                    //uncommon case
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("original content file: " + sourceFile + ", seems to not exists. Java source code will be generated from scratch.");
-                    }
-                    newSource = createJavaSource(serviceHelper.to2Domain(dataObjectTO));
-                }
-
-                ioService.write(targetFile, newSource, option);
-
-                if (!sourceFile.equals(targetFile)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("original content file: " + sourceFile + " needs to be deleted.");
-                    }
-                    ioService.deleteIfExists(sourceFile);
-                }
-            } else {
-                logger.debug("Data object: " + dataObjectTO.getClassName() + " wasn't changed in the UI, NO file update is needed.");
-            }
+            newSource = createJavaSource( dataObject );
+            ioService.write(targetFile, newSource, option);
         }
     }
 
+    private Pair<String, List<DataModelerError>> updateJavaSource(org.uberfire.java.nio.file.Path path,
+            DataObjectTO dataObjectTO,
+            Map<String, String> renames,
+            List<String> deletions,
+            ClassLoader classLoader) throws Exception {
+
+        String originalSource;
+        originalSource = ioService.readAllString(path);
+        if (logger.isDebugEnabled()) {
+            logger.debug("path is: " + path);
+        }
+
+        return updateJavaSource(originalSource, dataObjectTO, renames, deletions, classLoader);
+    }
+
     private Pair<String, List<DataModelerError>> updateJavaSource(String originalSource,
-                                                                  DataObjectTO dataObjectTO,
-                                                                  Map<String, String> renames,
-                                                                  List<String> deletions,
-                                                                  ClassLoader classLoader) throws Exception {
+            DataObjectTO dataObjectTO,
+            Map<String, String> renames,
+            List<String> deletions,
+            ClassLoader classLoader) throws Exception {
 
         String newSource;
         ClassTypeResolver classTypeResolver;
@@ -1061,7 +1043,7 @@ public class DataModelerServiceImpl
                 newSource = originalSource;
             } else {
                 JavaClassSource javaClassSource = (JavaClassSource) javaType;
-                classTypeResolver = DriverUtils.getInstance().createClassTypeResolver(javaClassSource, classLoader);
+                classTypeResolver = DriverUtils.createClassTypeResolver(javaClassSource, classLoader);
                 updateJavaClassSource(dataObjectTO, javaClassSource, renames, deletions, classTypeResolver);
                 newSource = javaClassSource.toString();
             }
@@ -1076,22 +1058,51 @@ public class DataModelerServiceImpl
         return new Pair<String, List<DataModelerError>>(newSource, errors);
     }
 
-    private Pair<String, List<DataModelerError>> updateJavaSource(org.uberfire.java.nio.file.Path path,
-                                                                  DataObjectTO dataObjectTO,
-                                                                  Map<String, String> renames,
-                                                                  List<String> deletions,
-                                                                  ClassLoader classLoader) throws Exception {
 
-        String originalSource;
-        originalSource = ioService.readAllString(path);
+
+    private Pair<String, List<DataModelerError>> updateJavaSource(String originalSource,
+            DataObject dataObject,
+            Map<String, String> renames,
+            List<String> deletions,
+            ClassLoader classLoader) throws Exception {
+
+        String newSource;
+        ClassTypeResolver classTypeResolver;
+        List<DataModelerError> errors = new ArrayList<DataModelerError>();
+
         if (logger.isDebugEnabled()) {
-            logger.debug("path is: " + path);
+            logger.debug( "Starting java source update for class: " + dataObject.getClassName() );
         }
 
-        return updateJavaSource(originalSource, dataObjectTO, renames, deletions, classLoader);
+        if (logger.isDebugEnabled()) {
+            logger.debug("original source is: " + originalSource);
+        }
+
+        JavaType<?> javaType = Roaster.parse(originalSource);
+        if (javaType.isClass()) {
+            if (javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
+                //if a file has parsing errors it will be skipped.
+                errors.addAll(serviceHelper.toDataModelerError(javaType.getSyntaxErrors(), null));
+                newSource = originalSource;
+            } else {
+                JavaClassSource javaClassSource = (JavaClassSource) javaType;
+                classTypeResolver = DriverUtils.createClassTypeResolver(javaClassSource, classLoader);
+                updateJavaClassSource(dataObject, javaClassSource, renames, deletions, classTypeResolver);
+                newSource = javaClassSource.toString();
+            }
+        } else {
+            logger.debug("No Class definition was found for source: " + originalSource + ", original source won't be modified.");
+            newSource = originalSource;
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("updated source is: " + newSource);
+        }
+        return new Pair<String, List<DataModelerError>>(newSource, errors);
     }
 
-    //TODO, refactor this method to JavaRoasterModelDriver class
+
+    @Deprecated
     private void updateJavaClassSource(DataObjectTO dataObjectTO,
                                        JavaClassSource javaClassSource,
                                        Map<String, String> renames,
@@ -1103,93 +1114,70 @@ public class DataModelerServiceImpl
             return;
         }
 
-        Map<String, FieldSource<JavaClassSource>> currentClassFields = new HashMap<String, FieldSource<JavaClassSource>>();
-        List<FieldSource<JavaClassSource>> classFields = javaClassSource.getFields();
-        Map<String, String> preservedFields = new HashMap<String, String>();
-        ObjectProperty property;
-        DataObject dataObject = serviceHelper.to2Domain(dataObjectTO);
         JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
+        UpdateInfo updateInfo = new UpdateInfo();
+        DataObject dataObject = serviceHelper.to2Domain(dataObjectTO);
 
-        //update package, class name, and super class name if needed.
-        modelDriver.updatePackage(javaClassSource, dataObjectTO.getPackageName());
-        modelDriver.updateImports(javaClassSource, renames, deletions);
-        modelDriver.updateAnnotations(javaClassSource, dataObject.getAnnotations(), classTypeResolver);
-        modelDriver.updateClassName(javaClassSource, dataObjectTO.getName());
-        modelDriver.updateSuperClassName(javaClassSource, dataObjectTO.getSuperClassName(), classTypeResolver);
-
-        if (classFields != null) {
-            for (FieldSource<JavaClassSource> field : classFields) {
-                currentClassFields.put(field.getName(), field);
-            }
-        }
-
-        List<ObjectProperty> currentManagedProperties = modelDriver.parseManagedTypesProperties( javaClassSource, classTypeResolver );
-        currentManagedProperties = DataModelUtils.filterAssignableFields( currentManagedProperties );
-
-        //prior to touch the class fields get the constructors candidates to be the current all fields, position annotated fields, and key annotated fields constructors.
-        List<MethodSource<JavaClassSource>> allFieldsConstructorCandidates = modelDriver.findAllFieldsConstructorCandidates( javaClassSource, currentManagedProperties, classTypeResolver );
-        List<MethodSource<JavaClassSource>> keyFieldsConstructorCandidates = modelDriver.findKeyFieldsConstructorCandidates( javaClassSource, currentManagedProperties, classTypeResolver );
-        List<MethodSource<JavaClassSource>> positionFieldsConstructorCandidates = modelDriver.findPositionFieldsConstructorCandidates( javaClassSource, currentManagedProperties, classTypeResolver );
-
-        //create new fields and update existing.
+        //prepare additional update info prior update
         for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
-
-            property = serviceHelper.to2Domain(propertyTO);
-
-            if (property.isFinal() || property.isStatic()) {
-                preservedFields.put(property.getName(), property.getName());
-                continue;
-            }
-
-            if (propertyTO.isVolatile()) {
-                //uncommon case
-                if (currentClassFields.containsKey(propertyTO.getName())) {
-                    modelDriver.removeField(javaClassSource, propertyTO.getName(), classTypeResolver);
-                }
-                modelDriver.createField(javaClassSource, property, classTypeResolver);
-                preservedFields.put(property.getName(), property.getName());
-            } else {
-                if (propertyTO.nameChanged()) {
-                    if (currentClassFields.containsKey(propertyTO.getOriginalName())) {
-                        modelDriver.updateField(javaClassSource, propertyTO.getOriginalName(), property, classTypeResolver);
-                        preservedFields.put(propertyTO.getName(), propertyTO.getName());
-                    } else {
-                        if (currentClassFields.containsKey(propertyTO.getName())) {
-                            modelDriver.removeField(javaClassSource, propertyTO.getName(), classTypeResolver);
-                        }
-                        modelDriver.createField(javaClassSource, property, classTypeResolver);
-                        preservedFields.put(property.getName(), property.getName());
-                    }
-                } else {
-                    if (currentClassFields.containsKey(propertyTO.getName())) {
-                        modelDriver.updateField(javaClassSource, propertyTO.getName(), property, classTypeResolver);
-                    } else {
-                        modelDriver.createField(javaClassSource, property, classTypeResolver);
-                    }
-                    preservedFields.put(property.getName(), property.getName());
-                }
+            if ( propertyTO.isVolatile() ) {
+                updateInfo.addNewProperty( dataObject.getProperty( propertyTO.getName() ) );
+            } else if ( propertyTO.nameChanged() ) {
+                updateInfo.addPropertyRename( dataObject.getProperty( propertyTO.getName() ), propertyTO.getName(), propertyTO.getOriginalName() );
             }
         }
 
-        //update constructors, equals and hashCode methods.
-        modelDriver.updateConstructors(javaClassSource,
-                dataObject,
-                allFieldsConstructorCandidates,
-                keyFieldsConstructorCandidates,
-                positionFieldsConstructorCandidates,
-                classTypeResolver);
-
-        //delete fields from .java file that not exists in the DataObject.
-        List<String> removableFields = new ArrayList<String>();
-        for (FieldSource<JavaClassSource> field : currentClassFields.values()) {
-            if (!preservedFields.containsKey(field.getName()) &&
-                modelDriver.isManagedField(field, classTypeResolver)) {
-                removableFields.add(field.getName());
+        if ( renames != null ) {
+            for ( Map.Entry<String, String> entry : renames.entrySet() ) {
+                updateInfo.addClassRename( entry.getKey(), entry.getValue() );
             }
         }
-        for (String fieldName : removableFields) {
-            modelDriver.removeField(javaClassSource, fieldName, classTypeResolver);
+        if ( deletions != null ) {
+            for ( String deletion : deletions ) {
+                updateInfo.addDeletedClass( deletion );
+            }
         }
+
+        modelDriver.updateSource( javaClassSource, dataObject, updateInfo, classTypeResolver );
+    }
+
+    private void updateJavaClassSource(DataObject dataObject,
+            JavaClassSource javaClassSource,
+            Map<String, String> renames,
+            List<String> deletions,
+            ClassTypeResolver classTypeResolver) throws Exception {
+
+        if (javaClassSource == null || !javaClassSource.isClass()) {
+            logger.warn("A null javaClassSource or javaClassSouce is not a Class, no processing will be done. javaClassSource: " + javaClassSource + " className: " + (javaClassSource != null ? javaClassSource.getName() : null));
+            return;
+        }
+
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
+        UpdateInfo updateInfo = new UpdateInfo();
+
+        //prepare additional update info prior update
+        /**
+        for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
+            if ( propertyTO.isVolatile() ) {
+                updateInfo.addNewProperty( dataObject.getProperty( propertyTO.getName() ) );
+            } else if ( propertyTO.nameChanged() ) {
+                updateInfo.addPropertyRename( dataObject.getProperty( propertyTO.getName() ), propertyTO.getName(), propertyTO.getOriginalName() );
+            }
+        }
+
+         **/
+        if ( renames != null ) {
+            for ( Map.Entry<String, String> entry : renames.entrySet() ) {
+                updateInfo.addClassRename( entry.getKey(), entry.getValue() );
+            }
+        }
+        if ( deletions != null ) {
+            for ( String deletion : deletions ) {
+                updateInfo.addDeletedClass( deletion );
+            }
+        }
+
+        modelDriver.updateSource( javaClassSource, dataObject, updateInfo, classTypeResolver );
     }
 
     private String createJavaSource(DataObject dataObject) throws Exception {
@@ -1213,28 +1201,6 @@ public class DataModelerServiceImpl
         final KieModule module = builderCache.assertBuilder(project).getKieModuleIgnoringErrors();
         final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
         return classLoader;
-    }
-
-    public Boolean verifiesHash(Path javaFile) {
-        if (javaFile == null) {
-            return false;
-        }
-        org.uberfire.java.nio.file.Path filePath = Paths.convert(javaFile);
-        String content;
-        String expectedHashValue;
-
-        content = ioService.readAllString(filePath);
-        content = content != null ? content.trim() : null;
-
-        if (content == null) {
-            return false;
-        }
-
-        expectedHashValue = FileHashingUtils.extractFileHashValue(content);
-        if (expectedHashValue != null) {
-            return FileHashingUtils.verifiesHash(content, expectedHashValue);
-        }
-        return false;
     }
 
     @Override
@@ -1315,14 +1281,12 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public Map<String, AnnotationDefinitionTO> getAnnotationDefinitions() {
-        Map<String, AnnotationDefinitionTO> annotations = new HashMap<String, AnnotationDefinitionTO>();
-        List<AnnotationDefinition> annotationDefinitions = DataModelOracleModelDriver.getInstance().getConfiguredAnnotations();
-        AnnotationDefinitionTO annotationDefinitionTO;
+    public Map<String, AnnotationDefinition> getAnnotationDefinitions() {
+        Map<String, AnnotationDefinition> annotations = new HashMap<String, AnnotationDefinition>();
+        List<AnnotationDefinition> annotationDefinitions =  (new JavaRoasterModelDriver()).getConfiguredAnnotations();
 
         for (AnnotationDefinition annotationDefinition : annotationDefinitions) {
-            annotationDefinitionTO = serviceHelper.domain2To(annotationDefinition);
-            annotations.put(annotationDefinitionTO.getClassName(), annotationDefinitionTO);
+            annotations.put(annotationDefinition.getClassName(), annotationDefinition);
         }
         return annotations;
     }
@@ -1345,20 +1309,11 @@ public class DataModelerServiceImpl
         }
     }
 
-    private boolean hasUIChanges(DataObjectTO dataObjectTO) {
-        String newFingerPrint = serviceHelper.calculateFingerPrint(dataObjectTO.getStringId());
-        boolean result = !newFingerPrint.equals(dataObjectTO.getFingerPrint());
-        if (!result) {
-            logger.debug("The class : " + dataObjectTO.getClassName() + " wasn't modified");
-        }
-        return result;
-    }
-
-    private void cleanupEmptyDirs(org.uberfire.java.nio.file.Path pojectPath) {
+    private void cleanupEmptyDirs(org.uberfire.java.nio.file.Path projectPath) {
         FileUtils fileUtils = FileUtils.getInstance();
         List<String> deleteableFiles = new ArrayList<String>();
         deleteableFiles.add(".gitignore");
-        fileUtils.cleanEmptyDirectories(ioService, pojectPath, false, deleteableFiles);
+        fileUtils.cleanEmptyDirectories(ioService, projectPath, false, deleteableFiles);
     }
 
     private org.uberfire.java.nio.file.Path existsProjectJavaPath(org.uberfire.java.nio.file.Path projectPath) {
@@ -1429,7 +1384,7 @@ public class DataModelerServiceImpl
         org.uberfire.java.nio.file.Path filePath = javaPath;
 
         if (packageName != null) {
-            List<String> packageNameTokens = NamingUtils.tokenizePackageName(packageName);
+            List<String> packageNameTokens = tokenizePackageName(packageName);
             for (String token : packageNameTokens) {
                 filePath = filePath.resolve(token);
             }
@@ -1439,115 +1394,16 @@ public class DataModelerServiceImpl
         return filePath;
     }
 
-    //TODO refactor this two methods to other class
-    private String updateJavaSourceAntlr(DataObjectTO dataObjectTO,
-                                         org.uberfire.java.nio.file.Path path,
-                                         ClassLoader classLoader) throws Exception {
+    public List<String> tokenizePackageName( final String packageName ) {
+        List<String> tokens = new ArrayList<String>();
 
-        String originalSource;
-        String newSource;
-        JavaFileHandler fileHandler;
-        ClassTypeResolver classTypeResolver;
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Starting java source update for class: " + dataObjectTO.getClassName() + ", and path: " + path);
-        }
-        originalSource = ioService.readAllString(path);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("original source is: " + originalSource);
-        }
-
-        fileHandler = JavaFileHandlerFactory.getInstance().newHandler(originalSource);
-        classTypeResolver = DriverUtils.getInstance().createClassTypeResolver(fileHandler.getFileDescr(), classLoader);
-        updateJavaFileDescrAntlr(dataObjectTO, fileHandler.getFileDescr(), classTypeResolver);
-        newSource = fileHandler.buildResult();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("updated source is: " + newSource);
-        }
-        return newSource;
-    }
-
-    private void updateJavaFileDescrAntlr(DataObjectTO dataObjectTO,
-                                          FileDescr fileDescr,
-                                          ClassTypeResolver classTypeResolver) throws Exception {
-
-        if (fileDescr == null || fileDescr.getClassDescr() == null) {
-            logger.warn("A null FileDescr or ClassDescr was provided, no processing will be done. fileDescr: " + fileDescr + " classDescr: " + (fileDescr != null ? fileDescr.getClassDescr() : null));
-            return;
-        }
-
-        ClassDescr classDescr = fileDescr.getClassDescr();
-        Map<String, FieldDescr> currentFields = new HashMap<String, FieldDescr>();
-        Map<String, String> preservedFields = new HashMap<String, String>();
-        ObjectProperty property;
-        DataObject dataObject = serviceHelper.to2Domain(dataObjectTO);
-        JavaModelDriver modelDriver = new JavaModelDriver();
-
-        //update package, class name, and super class name if needed.
-        modelDriver.updatePackage(fileDescr, dataObjectTO.getPackageName());
-        modelDriver.updateClassOrFieldAnnotations(fileDescr, classDescr, dataObject.getAnnotations(), classTypeResolver);
-        modelDriver.updateClassName(classDescr, dataObjectTO.getName());
-        modelDriver.updateSuperClassName(classDescr, dataObjectTO.getSuperClassName(), classTypeResolver);
-
-        //create new fields and update existing.
-        for (FieldDescr fieldDescr : classDescr.getFields()) {
-            for (VariableDeclarationDescr variableDescr : fieldDescr.getVariableDeclarations()) {
-                currentFields.put(variableDescr.getIdentifier().getIdentifier(), fieldDescr);
+        if ( packageName != null ) {
+            StringTokenizer st = new StringTokenizer( packageName, "." );
+            while ( st.hasMoreTokens() ) {
+                tokens.add( st.nextToken() );
             }
         }
-
-        for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
-
-            property = serviceHelper.to2Domain(propertyTO);
-
-            if (propertyTO.isVolatile()) {
-                if (currentFields.containsKey(propertyTO.getName())) {
-                    modelDriver.removeField(classDescr, propertyTO.getName());
-                }
-                modelDriver.createField(classDescr, property);
-                preservedFields.put(property.getName(), property.getName());
-            } else {
-                if (propertyTO.nameChanged()) {
-                    if (currentFields.containsKey(propertyTO.getOriginalName())) {
-                        modelDriver.updateField(classDescr, propertyTO.getOriginalName(), property, classTypeResolver);
-                        preservedFields.put(propertyTO.getName(), propertyTO.getName());
-                    } else {
-                        if (currentFields.containsKey(propertyTO.getName())) {
-                            modelDriver.removeField(classDescr, propertyTO.getName());
-                        }
-                        modelDriver.createField(classDescr, property);
-                        preservedFields.put(property.getName(), property.getName());
-                    }
-                } else {
-                    if (currentFields.containsKey(propertyTO.getName())) {
-                        modelDriver.updateField(classDescr, propertyTO.getName(), property, classTypeResolver);
-                    } else {
-                        modelDriver.createField(classDescr, property);
-                    }
-                    preservedFields.put(property.getName(), property.getName());
-                }
-            }
-        }
-
-        //update constructors, equals and hashCode methods.
-        modelDriver.updateConstructors(classDescr, dataObject);
-
-        //delete fields from .java file that not exists in the DataObject.
-        List<String> removableFields = new ArrayList<String>();
-        for (FieldDescr fieldDescr : classDescr.getFields()) {
-            for (VariableDeclarationDescr variableDescr : fieldDescr.getVariableDeclarations()) {
-                if (!preservedFields.containsKey(variableDescr.getIdentifier().getIdentifier()) &&
-                    variableDescr.getDimensionsCount() == 0 &&
-                    modelDriver.isManagedField(fieldDescr, classTypeResolver)) {
-                    removableFields.add(variableDescr.getIdentifier().getIdentifier());
-                }
-            }
-        }
-        for (String fieldName : removableFields) {
-            modelDriver.removeField(classDescr, fieldName);
-        }
+        return tokens;
     }
 
 }

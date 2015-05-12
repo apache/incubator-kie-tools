@@ -40,6 +40,10 @@ public class JavaTypeInfoImpl implements JavaTypeInfo {
 
     boolean _protected;
 
+    public JavaTypeInfoImpl() {
+        //errai marshalling
+    }
+
     @Override
     public String getName() {
         return _name;

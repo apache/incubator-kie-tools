@@ -18,10 +18,11 @@ package org.kie.workbench.common.services.datamodeller.driver.impl.annotations;
 
 import org.kie.workbench.common.services.datamodeller.core.impl.AbstractAnnotationDefinition;
 
+@Deprecated
 public class ClassReactiveAnnotationDefinition extends AbstractAnnotationDefinition {
 
     public ClassReactiveAnnotationDefinition() {
-        super("@ClassReactive", org.kie.api.definition.type.ClassReactive.class.getName(), "ClassReactive", "ClassReactive annotation", true, false);
+        super(org.kie.api.definition.type.ClassReactive.class.getName(), true, false);
     }
 
     public static ClassReactiveAnnotationDefinition getInstance() {

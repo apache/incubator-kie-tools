@@ -28,7 +28,7 @@ import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Duration;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationMemberDefinition;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
@@ -50,7 +50,7 @@ public class DefaultJavaModelAnnotationDriver implements AnnotationDriver {
         } else {
             //try to read annotation parameters
             if (javaAnnotationToken.hasElementValue()) {
-                for (AnnotationMemberDefinition annotationMember : annotationDefinition.getAnnotationMembers()) {
+                for (AnnotationValuePairDefinition annotationMember : annotationDefinition.getValuePairs()) {
                     if ("value".equals(annotationMember.getName())) {
                         annotation.setValue( annotationMember.getName(), parseParamValue(annotationDefinition, annotationMember.getName(), javaAnnotationToken.getElementValue().getValue() ));
                     }
@@ -63,7 +63,7 @@ public class DefaultJavaModelAnnotationDriver implements AnnotationDriver {
                         valuePairValues.put( valuePair.getIdentifier().getIdentifier(), valuePair.getValue() );
                     }
 
-                    for (AnnotationMemberDefinition annotationMember : annotationDefinition.getAnnotationMembers()) {
+                    for (AnnotationValuePairDefinition annotationMember : annotationDefinition.getValuePairs()) {
                         ElementValueDescr value = valuePairValues.get( annotationMember.getName() );
                         if (value != null) {
                             annotation.setValue(annotationMember.getName(), parseParamValue( annotationDefinition, annotationMember.getName(), value.getValue()) );

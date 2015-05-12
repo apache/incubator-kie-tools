@@ -116,7 +116,7 @@ public class JavaFileHandler1Test extends JavaFileHandlerBaseTest {
             fileHandler.deleteField("field11");
             fileHandler.deleteField("field14");
 
-            fileHandler.addMember("\n\tpublic String getUserName() {\n\t\treturn surname;\n\t}\n");
+            fileHandler.addValuePair("\n\tpublic String getUserName() {\n\t\treturn surname;\n\t}\n");
             */
 
             String result = fileHandler.buildResult( );

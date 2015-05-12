@@ -16,151 +16,115 @@
 
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
+import org.uberfire.backend.vfs.Path;
 
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+public class DataObjectImpl extends JavaClassImpl implements DataObject {
 
-public class DataObjectImpl extends AbstractHasAnnotations implements DataObject {
+    private List<ObjectProperty> properties = new ArrayList<ObjectProperty>();
 
-    private String name;
+    public DataObjectImpl() {
 
-    private String packageName;
-    
-    private String superClassName;
-
-    private List<String> imports = new ArrayList<String>();
-
-    private Map<String, ObjectProperty> properties = new HashMap<String, ObjectProperty>();
-
-    int modifiers = 0x0;
-
-    public DataObjectImpl(String packageName, String name, int modifiers) {
-        this.setName(name);
-        this.packageName = packageName;
-        this.modifiers = modifiers;
     }
 
-    public DataObjectImpl(String packageName, String name) {
-        this(packageName, name, Modifier.PUBLIC);
+    public DataObjectImpl( String packageName, String name ) {
+        super( packageName, name, Visibility.PUBLIC );
+    }
+
+    public DataObjectImpl( String packageName, String name, Visibility visibility, boolean isAbstract, boolean isFinal ) {
+        super( packageName, name, visibility, isAbstract, isFinal );
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getPackageName() {
-        return packageName;
-    }
-
-    @Override
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
-    }
-
-    @Override
-    public String getClassName() {
-        return ( (packageName != null && !"".equals(packageName)) ? packageName+"." : "") + getName();
-    }
-
-    @Override
-    public boolean hasSuperClass() {
-        return superClassName != null;
-    }
-
-    @Override
-    public String getSuperClassName() {
-        return superClassName;
-    }
-
-    @Override
-    public void setSuperClassName(String superClassName) {
-        this.superClassName = superClassName;
-    }
-
-    @Override
-    public Map<String, ObjectProperty> getProperties() {
+    public List<ObjectProperty> getProperties() {
         return properties;
     }
 
     @Override
-    public ObjectProperty addProperty(String name, String className) {
-        return addProperty(name, className, false);
+    public ObjectProperty addProperty( String name, String className ) {
+        return addProperty( name, className, false );
     }
 
     @Override
-    public ObjectProperty addProperty(String name, String className, int modifiers) {
-        return addProperty(name, className, false, modifiers);
+    public ObjectProperty addProperty( String name, String className, Visibility visibility, boolean isStatic, boolean isFinal) {
+        return addProperty( name, className, false, visibility, isStatic, isFinal );
     }
 
     @Override
-    public ObjectProperty addProperty(String name, String className, boolean multiple) {
-        ObjectProperty property = new ObjectPropertyImpl(name, className, multiple);
-        properties.put(name, property);
-        return property;
+    public ObjectProperty addProperty( String name, String className, boolean multiple ) {
+        return addProperty( name, className, multiple, Visibility.PUBLIC, false, false );
     }
 
     @Override
-    public ObjectProperty addProperty(String name, String className, boolean multiple, int modifiers) {
-        ObjectProperty property = new ObjectPropertyImpl(name, className, multiple, modifiers);
-        properties.put(name, property);
-        return property;
-    }
-
-
-    @Override
-    public ObjectProperty addProperty(String name, String className, boolean multiple, String bag) {
-        ObjectProperty property = new ObjectPropertyImpl(name, className, multiple, bag);
-        properties.put(name, property);
-        return property;
+    public ObjectProperty addProperty( String name, String className, boolean multiple, String bag ) {
+        return addProperty( name, className, multiple, bag, Visibility.PUBLIC, false, false );
     }
 
     @Override
-    public ObjectProperty addProperty(String name, String className, boolean multiple, String bag, int modifiers) {
-        ObjectProperty property = new ObjectPropertyImpl(name, className, multiple, bag, modifiers);
-        properties.put(name, property);
-        return property;
+    public ObjectProperty addProperty( String name, String className, boolean multiple, Visibility visibility, boolean isStatic, boolean isFinal ) {
+        return addProperty( new ObjectPropertyImpl( name, className, multiple, visibility, isStatic, isFinal ) );
+    }
+
+    @Override
+    public ObjectProperty addProperty( String name, String className, boolean multiple, String bag, Visibility visibility, boolean isStatic, boolean isFinal ) {
+        ObjectProperty property = new ObjectPropertyImpl( name, className, multiple, bag, visibility, isStatic, isFinal );
+        return addProperty( property );
     }
 
     @Override
     public ObjectProperty addProperty( ObjectProperty property ) {
-        properties.put( property.getName(), property );
+        if ( property == null ) {
+            return null;
+        }
+        removeProperty( property.getName() );
+        properties.add( property );
         return property;
     }
 
     @Override
-    public ObjectProperty removeProperty(String name) {
-        return properties.remove(name);
+    public ObjectProperty removeProperty( String name ) {
+        ObjectProperty removedProperty = getProperty( name );
+        if ( removedProperty != null ) properties.remove( removedProperty );
+        return removedProperty;
     }
 
     @Override
-    public List<String> getImports() {
-        return imports;
+    public ObjectProperty getProperty( String name ) {
+        if ( name == null ) return null;
+        for ( ObjectProperty property : properties ) {
+            if ( name.equals( property.getName() ) ) {
+                return property;
+            }
+        }
+        return null;
+    }
+
+    @Override public ObjectProperty getUnManagedProperty( String propertyName ) {
+        if ( propertyName == null ) return null;
+        for ( ObjectProperty property : getUnmanagedProperties() ) {
+            if ( propertyName.equals( property.getName() ) ) {
+                return property;
+            }
+        }
+        return null;
+    }
+
+    @Override public List<ObjectProperty> getUnmanagedProperties() {
+        return new ArrayList<ObjectProperty>(  );
     }
 
     @Override
-    public boolean isInterface() {
-        return Modifier.isInterface(modifiers);
+    public boolean hasProperty( String name ) {
+        if ( name == null ) return false;
+        for ( ObjectProperty property : properties ) {
+            if ( name.equals( property.getName() ) ) return true;
+        }
+        return false;
     }
 
-    @Override
-    public boolean isAbstract() {
-        return Modifier.isAbstract(modifiers);
-    }
-
-    @Override
-    public boolean isFinal() {
-        return Modifier.isFinal(modifiers);
-    }
 }

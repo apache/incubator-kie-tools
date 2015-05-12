@@ -16,21 +16,33 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerPropertyChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
-import java.util.*;
-
-import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.assembleClassName;
+import static org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils.*;
 
 public class DataModelHelper {
 
-    private DataModelTO dataModel;
+    private DataModel dataModel;
 
     // Map linking Objects with the Objects they are being referenced by (e.g. x.y.A --> {u.v.B} means B holds a reference to A)
     private Map<String, Set<String>> referencedBy = new HashMap<String, Set<String>>(10);
@@ -51,7 +63,10 @@ public class DataModelHelper {
 
     Map <String, PropertyTypeTO> baseTypesByClassName = new HashMap<String, PropertyTypeTO>();
 
-    public DataModelHelper() {
+    String contextId;
+
+    public DataModelHelper( String contextId ) {
+        this.contextId = contextId;
     }
 
     public Collection<String> getDataObjectReferences( String className ) {
@@ -90,7 +105,7 @@ public class DataModelHelper {
     // DataModelHelper methods
 
     public void dataModelChanged(DataModelerPropertyChangeEvent changeEvent) {
-        if (changeEvent.isFrom(dataModel)) {
+        if (changeEvent.isFrom( contextId )) {
             if (DataModelerEvent.DATA_OBJECT_EDITOR.equalsIgnoreCase(changeEvent.getSource())) {
                 // If any object referenced the object whose name or package just changed, we need to adjust those internally
                 if ("name".equals(changeEvent.getPropertyName())) nameChanged( changeEvent.getCurrentDataObject(),
@@ -104,17 +119,19 @@ public class DataModelHelper {
         }
     }
 
-    private void nameChanged(DataObjectTO object, String oldName, String newName) {
+    private void nameChanged(DataObject object, String oldName, String newName) {
         adjustDataObjects( assembleClassName(object.getPackageName(), oldName),
                            assembleClassName(object.getPackageName(), newName) );
     }
 
-    private void packageChanged(DataObjectTO object, String oldPackage, String newPackage) {
+    private void packageChanged(DataObject object, String oldPackage, String newPackage) {
         adjustDataObjects( assembleClassName(oldPackage, object.getName()),
                            assembleClassName(newPackage, object.getName()) );
     }
 
     private void adjustDataObjects(String oldClassName, String newClassname) {
+        //TODO, WM, this method seems to be no longer needed after we changed to 1:1 edition
+        /*
         Set<String> s = referencedBy.get(oldClassName);
         if ( s != null && s.size() != 0 ) {
             // Get the object referencing the modified object
@@ -135,6 +152,7 @@ public class DataModelHelper {
                 offspring.setSuperClassName(newClassname);
             }
         }
+        */
     }
 
     public void dataObjectReferenced(String objectClassName, String subjectClassName) {
@@ -196,7 +214,7 @@ public class DataModelHelper {
         return true;
     }
 
-    public void setDataModel(DataModelTO dataModel) {
+    public void setDataModel(DataModel dataModel) {
         this.dataModel = dataModel;
         reset();
     }
@@ -219,19 +237,19 @@ public class DataModelHelper {
         labelledClassNames.clear();
         offspringMap.clear();
         if (dataModel != null) {
-            for (DataObjectTO extClassName : dataModel.getExternalClasses()) {
+            for (DataObject extClassName : dataModel.getExternalClasses()) {
                 classNames.put(extClassName.getClassName(), null);
                 labelledClassNames.put(extClassName.getClassName(), extClassName.getClassName());
             }
-            for (DataObjectTO object : dataModel.getDataObjects()) {
+            for (DataObject object : dataModel.getDataObjects()) {
                 String className = object.getClassName();
-                classNames.put(className, object.getLabel());
+                classNames.put(className, AnnotationValueHandler.getStringValue( object, AnnotationDefinitionTO.LABEL_ANNOTATION ));
                 labelledClassNames.put(DataModelerUtils.getDataObjectFullLabel(object), className);
 
                 String superClassName = object.getSuperClassName();
                 if (superClassName != null &&  !"".equals(superClassName)) objectExtended(superClassName, className, true);
 
-                for (ObjectPropertyTO prop : object.getProperties()) {
+                for (ObjectProperty prop : object.getProperties()) {
                     if (!prop.isBaseType()) {
                         objectReferenced(prop.getClassName(), object.getClassName());
                     }

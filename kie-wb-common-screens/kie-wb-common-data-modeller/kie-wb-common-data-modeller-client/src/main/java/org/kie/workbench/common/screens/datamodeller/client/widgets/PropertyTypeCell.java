@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
@@ -24,12 +27,9 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static com.google.gwt.dom.client.BrowserEvents.*;
 
 public class PropertyTypeCell extends TextCell {
 
@@ -53,7 +53,7 @@ public class PropertyTypeCell extends TextCell {
     @Override
     public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event, ValueUpdater<String> stringValueUpdater) {
 
-        ObjectPropertyTO property = (ObjectPropertyTO)context.getKey();
+        ObjectProperty property = (ObjectProperty)context.getKey();
         if (DOM.eventGetType((Event) event) == Event.ONCLICK && !property.isBaseType()) {
             editor.onTypeCellSelection(property);
         } else {
@@ -64,7 +64,7 @@ public class PropertyTypeCell extends TextCell {
     @Override
     public void render(Context context, SafeHtml value, SafeHtmlBuilder sb) {
 
-        ObjectPropertyTO property = (ObjectPropertyTO)context.getKey();
+        ObjectProperty property = (ObjectProperty)context.getKey();
         if (navigable && property != null && !property.isBaseType()) {
             SafeHtml startAnchor = null;
             SafeHtml endAnchor = null;

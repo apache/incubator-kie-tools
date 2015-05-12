@@ -197,4 +197,12 @@ public class StringEscapeUtils {
             }
         }
     }
+
+    public static String unquote( String str ) {
+        return PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( str, '"' ), '"' );
+    }
+
+    public static String unquoteSingle( String str ) {
+        return PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( str, '\'' ), '\'' );
+    }
 }

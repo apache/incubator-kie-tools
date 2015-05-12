@@ -17,8 +17,8 @@
 package org.kie.workbench.common.screens.datamodeller.events;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
 public class DataModelerPropertyChangeEvent extends DataModelerEvent {
@@ -32,8 +32,8 @@ public class DataModelerPropertyChangeEvent extends DataModelerEvent {
     public DataModelerPropertyChangeEvent() {
     }
 
-    public DataModelerPropertyChangeEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject, String propertyName, Object oldValue, Object newValue) {
-        super(source, currentModel, currentDataObject);
+    public DataModelerPropertyChangeEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject, String propertyName, Object oldValue, Object newValue) {
+        super(contextId, source, currentModel, currentDataObject);
         this.propertyName = propertyName;
         this.oldValue = oldValue;
         this.newValue = newValue;

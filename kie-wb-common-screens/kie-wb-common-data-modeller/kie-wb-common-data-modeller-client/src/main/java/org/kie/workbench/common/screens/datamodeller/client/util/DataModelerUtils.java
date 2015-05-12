@@ -16,13 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
-import com.github.gwtbootstrap.client.ui.ListBox;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
-import org.uberfire.backend.vfs.Path;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,6 +23,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import com.github.gwtbootstrap.client.ui.ListBox;
+import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.uberfire.backend.vfs.Path;
 
 public class DataModelerUtils {
 
@@ -50,25 +51,14 @@ public class DataModelerUtils {
     /*
      * Returns the data-object's class name or the label, in case the object has one.
      */
-    public static String getDataObjectUILabel(DataObjectTO dataObject) {
-        return getDataObjectUILabel(dataObject, false, null);
-    }
-
-    /*
-     * Returns the data-object's class name or the label, in case the object has one.
-     */
-    public static String getDataObjectUILabel(DataObjectTO dataObject, boolean appendReadonlyMark, String readonlyMark) {
+    public static String getDataObjectUILabel(DataObject dataObject) {
         if (dataObject != null) {
-            String label = dataObject.getLabel();
+            String label = AnnotationValueHandler.getStringValue( dataObject, AnnotationDefinitionTO.LABEL_ANNOTATION );
             if (label == null) label = dataObject.getName();
-            if (appendReadonlyMark && dataObject.isExternallyModified()) {
-                label = label + " (" + readonlyMark + ")";
-            }
             return label;
         }
         return "";
     }
-
 
     public static String getMaxLengthClippedString(String s, int maxLength) {
         return s.length() > maxLength ? s.substring(0, maxLength) + CLIPPED_MARKER : s;
@@ -78,11 +68,11 @@ public class DataModelerUtils {
      * Returns the data-object's class name or, in case the object has a label, the label followed by the
      * class name between brackets.
      */
-    public static String getDataObjectFullLabel(DataObjectTO dataObject) {
+    public static String getDataObjectFullLabel(DataObject dataObject) {
         StringBuilder sb = new StringBuilder("");
         if (dataObject != null) {
             sb.append(dataObject.getClassName());
-            String objectLabel = dataObject.getLabel();
+            String objectLabel = AnnotationValueHandler.getStringValue( dataObject, AnnotationDefinitionTO.LABEL_ANNOTATION );
             if (objectLabel != null) sb.insert(0, objectLabel + " (").append(")");
         }
         return sb.toString();
@@ -159,32 +149,32 @@ public class DataModelerUtils {
         }
     }
 
-    public static List<ObjectPropertyTO> getFieldsUsingPosition(DataObjectTO dataObjectTO, int position, String skipField) {
-        List<ObjectPropertyTO> fields = new ArrayList<ObjectPropertyTO>(  );
-        if ( dataObjectTO != null && dataObjectTO.getProperties() != null ) {
-            for ( ObjectPropertyTO propertyTO : dataObjectTO.getProperties() ) {
+    public static List<ObjectProperty> getFieldsUsingPosition(DataObject dataObject, int position, String skipField) {
+        List<ObjectProperty> fields = new ArrayList<ObjectProperty>(  );
+        if ( dataObject != null && dataObject.getProperties() != null ) {
+            for ( ObjectProperty property : dataObject.getProperties() ) {
 
-                if ( skipField != null && skipField.equals( propertyTO.getName() )) continue;
+                if ( skipField != null && skipField.equals( property.getName() )) continue;
 
-                String currentPosition = AnnotationValueHandler.getInstance().getStringValue(
-                        propertyTO.getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION ),
+                String currentPosition = AnnotationValueHandler.getStringValue(
+                        property.getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION ),
                         AnnotationDefinitionTO.VALUE_PARAM );
                 if ( currentPosition != null && currentPosition.trim().equals( position+"" ) ) {
-                    fields.add( propertyTO );
+                    fields.add( property );
                 }
             }
         }
         return fields;
     }
 
-    public static Integer getMaxPosition(DataObjectTO dataObjectTO) {
-        List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
+    public static Integer getMaxPosition(DataObject dataObject) {
+        List<ObjectProperty> properties = dataObject.getProperties();
         Integer maxPosition = -1;
         Integer currentPosition;
         if (properties != null && properties.size() > 0) {
-            for (ObjectPropertyTO property : properties) {
+            for (ObjectProperty property : properties) {
                 try {
-                    currentPosition = new Integer( AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "-1") );
+                    currentPosition = new Integer( AnnotationValueHandler.getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "-1") );
                 } catch (Exception e) {
                     currentPosition = -1;
                 }
@@ -194,93 +184,25 @@ public class DataModelerUtils {
         return maxPosition;
     }
 
-    public static void recalculatePositions(DataObjectTO dataObjectTO, Integer positionRemoved) {
-        if (dataObjectTO == null || positionRemoved < 0) return;
-        List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
-
-        if (properties != null && properties.size() > 0) {
-            for (ObjectPropertyTO property : properties) {
-                if (DataModelerUtils.isManagedProperty( property ) && hasPosition( property ) ) {
-                    Integer pos = Integer.parseInt(AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1"), 10);
-                    if (pos > positionRemoved) {
-                        property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ).setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf(pos-1).toString());
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Recalculates the positions among the object's attributes, according to the following:
-     *
-     * Example 1:
-     * fieldPositions: 1 - 2 - 3 - 4 - 5
-     *                     +------>     oldPosition = 2, newPosition = 4 (nP > oP)
-     * implies: fieldPos 4 becomes 3    or:   when oP < fP <= nP --> fP = fP - 1
-     *          fieldPos 3 becomes 2
-     *
-     *          fieldPos 2 becomes 4    or:   when fP == oP --> fP = nP
-     *
-     * Example 2:
-     * fieldPositions: 1 - 2 - 3 - 4 - 5
-     *                      <------+    oldPosition = 4 | newPosition = 2 (nP < oP)
-     * implies: fieldPos 2 becomes 3    or:   when nP <= fP < oP --> fP = fP + 1
-     *          fieldPos 3 becomes 4
-     *
-     *          fieldPos 4 becomes 2    or:   when fP == oP --> fP = nP
-     */
-    public static void recalculatePositions(DataObjectTO dataObjectTO, Integer oldPosition, Integer newPosition) {
-        if (dataObjectTO == null || oldPosition == -1 || newPosition.equals(oldPosition)) return;
-        List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
-
-        if (properties != null && properties.size() > 0) {
-            for (ObjectPropertyTO property : properties) {
-                if (isManagedProperty( property ) && hasPosition( property )) {
-                    String sfieldPos = AnnotationValueHandler.getInstance().getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM, "-1");
-                    if (sfieldPos != null && sfieldPos.length() > 0) {
-                        Integer fieldPos = Integer.parseInt(sfieldPos, 10);
-
-                        if (newPosition < oldPosition) {
-                            if (fieldPos >= newPosition && fieldPos < oldPosition) {
-                                property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
-                                        .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos + 1 ).toString());
-                            }
-                        } else {
-                            if (fieldPos <= newPosition && fieldPos > oldPosition) {
-                                property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
-                                        .setValue(AnnotationDefinitionTO.VALUE_PARAM, Integer.valueOf( fieldPos - 1 ).toString());
-                            }
-                        }
-
-                        if (fieldPos == oldPosition)
-                            property.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION )
-                                    .setValue(AnnotationDefinitionTO.VALUE_PARAM, newPosition.toString());
-
-                    }
-                }
-            }
-        }
-    }
-
     public static boolean hasPosition(ObjectPropertyTO propertyTO) {
         return propertyTO != null && propertyTO.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ) != null;
     }
 
-    public static List<ObjectPropertyTO> getManagedProperties( DataObjectTO dataObjectTO ) {
-        List<ObjectPropertyTO> editableProperties = new ArrayList<ObjectPropertyTO>( );
+    public static List<ObjectProperty> getManagedProperties( DataObject dataObject ) {
+        List<ObjectProperty> editableProperties = new ArrayList<ObjectProperty>( );
 
-        if ( dataObjectTO != null && dataObjectTO.getProperties() != null ) {
-            for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
-                if ( isManagedProperty( propertyTO ) ) {
-                    editableProperties.add( propertyTO );
+        if ( dataObject != null && dataObject.getProperties() != null ) {
+            for (ObjectProperty property : dataObject.getProperties()) {
+                if ( isManagedProperty( property ) ) {
+                    editableProperties.add( property );
                 }
             }
         }
         return editableProperties;
     }
 
-    public static boolean isManagedProperty( ObjectPropertyTO propertyTO ) {
-        return !ReflectionUtil.isFinal( propertyTO.getModifiers() ) && !ReflectionUtil.isStatic( propertyTO.getModifiers() );
+    public static boolean isManagedProperty( ObjectProperty property ) {
+        return !property.isFinal() && !property.isStatic();
     }
 
     public static String calculateExpectedClassName(Path projectRootPath, Path javaFilePath) {
@@ -301,9 +223,9 @@ public class DataModelerUtils {
         return javaFilePathUri.replaceAll("/", ".");
     }
 
-    public static List<ObjectPropertyTO> filterPropertiesByType(Collection<ObjectPropertyTO> properties, List<String> expectedTypes, boolean skipUnmanaged) {
+    public static List<ObjectProperty> filterPropertiesByType(Collection<ObjectProperty> properties, List<String> expectedTypes, boolean skipUnmanaged) {
 
-        final ArrayList<ObjectPropertyTO> result = new ArrayList<ObjectPropertyTO>( );
+        final ArrayList<ObjectProperty> result = new ArrayList<ObjectProperty>( );
         if (properties == null || properties.size() == 0) return result;
 
         final Map<String, String> types = new HashMap<String, String>( );
@@ -315,7 +237,7 @@ public class DataModelerUtils {
             return result;
         }
 
-        for ( ObjectPropertyTO propertyTO : properties ) {
+        for ( ObjectProperty propertyTO : properties ) {
             if (propertyTO.getClassName() != null && types.containsKey( propertyTO.getClassName() )) {
 
                 if (skipUnmanaged && ( ReflectionUtil.isStatic( propertyTO.getModifiers() ) || ReflectionUtil.isFinal( propertyTO.getModifiers() ))) continue;
@@ -334,15 +256,15 @@ public class DataModelerUtils {
         }
     }
 
-    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObjectTO> dataObjects, final Collection<DataObjectTO> externalClasses, boolean includeEmptyItem ) {
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, boolean includeEmptyItem ) {
         initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, null, false, includeEmptyItem );
     }
 
-    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObjectTO> dataObjects, final Collection<DataObjectTO> externalClasses, final String selectedType, boolean selectedTypeMultiple ) {
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, final String selectedType, boolean selectedTypeMultiple ) {
         initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, selectedType, selectedTypeMultiple, false );
     }
 
-    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObjectTO> dataObjects, final Collection<DataObjectTO> externalClasses, final String selectedType, boolean selectedTypeMultiple, boolean includeEmptyItem ) {
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, final String selectedType, boolean selectedTypeMultiple, boolean includeEmptyItem ) {
 
         SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>();
         SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>();
@@ -375,7 +297,7 @@ public class DataModelerUtils {
 
         if ( dataObjects != null ) {
             // collect all model types, ordered
-            for ( DataObjectTO dataObject : dataObjects ) {
+            for ( DataObject dataObject : dataObjects ) {
                 String className = dataObject.getClassName();
                 String classLabel = DataModelerUtils.getDataObjectFullLabel( dataObject );
                 sortedModelTypeNames.put( classLabel, className );
@@ -387,7 +309,7 @@ public class DataModelerUtils {
 
         // collect external types, ordered
         if ( externalClasses != null ) {
-            for ( DataObjectTO externalDataObject : externalClasses ) {
+            for ( DataObject externalDataObject : externalClasses ) {
                 String extClass = externalDataObject.getClassName();
                 sortedExternalTypeNames.put( DataModelerUtils.EXTERNAL_PREFIX + extClass, extClass );
                 if ( selectedType != null && selectedType.equals( extClass ) ) {

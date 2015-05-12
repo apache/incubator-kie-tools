@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.services.datamodeller.core;
 
-
 import java.util.List;
 
 public interface HasAnnotations {

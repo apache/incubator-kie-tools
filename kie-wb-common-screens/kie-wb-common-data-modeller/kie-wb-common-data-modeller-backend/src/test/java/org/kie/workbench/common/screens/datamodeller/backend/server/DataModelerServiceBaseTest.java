@@ -7,11 +7,15 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.jboss.weld.environment.se.StartMain;
 import org.junit.Before;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.Visibility;
+import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
+import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
@@ -23,7 +27,7 @@ public class DataModelerServiceBaseTest {
     protected Paths paths;
     protected DataModelerService dataModelService;
     protected KieProjectService projectService;
-    protected Map<String, AnnotationDefinitionTO> systemAnnotations = null;
+    protected Map<String, AnnotationDefinition> systemAnnotations = null;
 
     @Before
     public void setUp() throws Exception {
@@ -59,38 +63,39 @@ public class DataModelerServiceBaseTest {
 
     }
 
-    public DataObjectTO createDataObject( String name,
-            String packageName,
+    public DataObject createDataObject( String packageName,
+            String name,
             String superClassName ) {
-        return new DataObjectTO( name, packageName, superClassName );
+        DataObject dataObject = new DataObjectImpl( packageName, name );
+        dataObject.setSuperClassName( superClassName );
+        return dataObject;
     }
 
-    public ObjectPropertyTO addProperty( DataObjectTO dataObjectTO,
+    public ObjectProperty addProperty( DataObject dataObject,
             String name,
             String className,
             boolean baseType,
             boolean multiple,
             String bag ) {
         //todo set modifiers.
-        ObjectPropertyTO propertyTO = new ObjectPropertyTO( name, className, multiple, baseType, bag, -1 );
-        return propertyTO;
+        ObjectProperty property = new ObjectPropertyImpl( name, className, multiple,bag, Visibility.PUBLIC, false, false );
+        dataObject.addProperty( property );
+        return property;
     }
 
-    public AnnotationTO createAnnotation( Map<String, AnnotationDefinitionTO> systemAnnotations,
+    public Annotation createAnnotation( Map<String, AnnotationDefinition> systemAnnotations,
             String name,
             String className,
             String memberName,
-            String value ) {
-        AnnotationDefinitionTO annotationDefinitionTO = systemAnnotations.get( className );
+            Object value ) {
+        AnnotationDefinition annotationDefinition = systemAnnotations.get( className );
 
-        AnnotationTO annotationTO = new AnnotationTO( annotationDefinitionTO );
-        annotationTO.setName( name );
-        annotationTO.setClassName( className );
+        Annotation annotation = new AnnotationImpl( annotationDefinition );
         if ( memberName != null ) {
-            annotationTO.setValue( memberName, value );
+            annotation.setValue( memberName, value );
         }
 
-        return annotationTO;
+        return annotation;
     }
 
 }

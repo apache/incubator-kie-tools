@@ -62,13 +62,12 @@
           </div>
         </td>
         <td class="TdLateralTable">
-          <div class="well well-small">
-            <div style="height:660px;">
-              <gwt:SimplePanel ui:field="propertiesPanel"></gwt:SimplePanel>
-            </div>
+          <div class="well well-small" style="height:660px;">
+              <gwt:SimplePanel ui:field="domainContainerPanel"  ></gwt:SimplePanel>
           </div>
         </td>
       </tr>
+
     </table>
 
 

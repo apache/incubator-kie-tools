@@ -20,6 +20,9 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @Portable
 public class DataObjectFieldDeletedEvent extends DataModelerEvent {
@@ -27,8 +30,8 @@ public class DataObjectFieldDeletedEvent extends DataModelerEvent {
     public DataObjectFieldDeletedEvent() {
     }
 
-    public DataObjectFieldDeletedEvent(String source, DataModelTO currentModel, DataObjectTO currentDataObject, ObjectPropertyTO currentField) {
-        super(source, currentModel, currentDataObject);
+    public DataObjectFieldDeletedEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject, ObjectProperty currentField) {
+        super(contextId, source, currentModel, currentDataObject);
         setCurrentField(currentField);
     }
 }

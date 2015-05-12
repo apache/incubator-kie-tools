@@ -16,29 +16,31 @@
 
 package org.kie.workbench.common.screens.datamodeller.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import org.guvnor.common.services.project.model.*;
 import org.guvnor.common.services.project.model.Package;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class EditorModelContent extends DataModelerResult {
 
     /**
-     * Data model for current project at the time the DataObjectTO was loaded.
+     * Data model for current project at the time the DataObject was loaded.
      */
-    DataModelTO dataModel;
+    DataModel dataModel;
 
     /**
      * Model for the .java file being edited.
      */
-    private DataObjectTO dataObject;
+    private DataObject dataObject;
 
     private String originalClassName;
 
@@ -62,6 +64,8 @@ public class EditorModelContent extends DataModelerResult {
 
     private Set<Package> currentProjectPackages = new HashSet<Package>(  );
 
+    private Map<String, Path> dataObjectPaths = new HashMap<String, Path>(  );
+
     private static int modelIds = 0;
 
     //only to distinguish models created in memory
@@ -70,19 +74,19 @@ public class EditorModelContent extends DataModelerResult {
     public EditorModelContent() {
     }
 
-    public DataModelTO getDataModel() {
+    public DataModel getDataModel() {
         return dataModel;
     }
 
-    public void setDataModel( DataModelTO dataModel ) {
+    public void setDataModel( DataModel dataModel ) {
         this.dataModel = dataModel;
     }
 
-    public DataObjectTO getDataObject() {
+    public DataObject getDataObject() {
         return dataObject;
     }
 
-    public void setDataObject( DataObjectTO dataObject ) {
+    public void setDataObject( DataObject dataObject ) {
         this.dataObject = dataObject;
     }
 
@@ -148,5 +152,13 @@ public class EditorModelContent extends DataModelerResult {
 
     public void setOverview( Overview overview ) {
         this.overview = overview;
+    }
+
+    public Map<String, Path> getDataObjectPaths() {
+        return dataObjectPaths;
+    }
+
+    public void setDataObjectPaths( Map<String, Path> dataObjectPaths ) {
+        this.dataObjectPaths = dataObjectPaths;
     }
 }
