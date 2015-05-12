@@ -25,6 +25,8 @@ public class PropertyEditorFieldInfo {
     private List<PropertyFieldValidator> validators = new ArrayList<PropertyFieldValidator>();
     private String key;
     private boolean isRemovalSupported = false;
+    private String helpHeading;
+    private String helpText;
 
     public PropertyEditorFieldInfo() {
     }
@@ -87,6 +89,12 @@ public class PropertyEditorFieldInfo {
         return this;
     }
 
+    public PropertyEditorFieldInfo withHelpInfo( String helpHeading, String helpText ) {
+        this.helpHeading = helpHeading;
+        this.helpText = helpText;
+        return this;
+    }
+
     /**
      * Add validators to a specific field. This validators are executed before the change event.
      * @param validators
@@ -126,6 +134,10 @@ public class PropertyEditorFieldInfo {
         return isRemovalSupported;
     }
 
+    public boolean hasHelpInfo() {
+        return helpHeading != null && helpText != null;
+    }
+
     public void setCurrentStringValue( String currentStringValue ) {
         this.currentStringValue = currentStringValue;
     }
@@ -152,6 +164,14 @@ public class PropertyEditorFieldInfo {
 
     public String getKey() {
         return key;
+    }
+
+    public String getHelpHeading() {
+        return helpHeading;
+    }
+
+    public String getHelpText() {
+        return helpText;
     }
 
     @Override

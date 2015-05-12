@@ -42,6 +42,10 @@ public enum PropertyEditorFieldType {
         public Widget widget( PropertyEditorFieldInfo property ) {
             return getWidget( property, ColorField.class );
         }
+    }, CUSTOM {
+        @Override public Widget widget( PropertyEditorFieldInfo property ) {
+            return null;
+        }
     };
 
     private static Widget getWidget( PropertyEditorFieldInfo property,

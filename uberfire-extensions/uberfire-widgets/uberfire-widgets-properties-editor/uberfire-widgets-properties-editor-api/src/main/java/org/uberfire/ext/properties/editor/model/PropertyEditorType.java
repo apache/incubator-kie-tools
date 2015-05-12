@@ -71,6 +71,8 @@ public enum PropertyEditorType {
             validators.add( new ColorValidator() );
             return validators;
         }
+    }, CUSTOM {
+
     };
 
     public boolean isType( Class<?> type ) {

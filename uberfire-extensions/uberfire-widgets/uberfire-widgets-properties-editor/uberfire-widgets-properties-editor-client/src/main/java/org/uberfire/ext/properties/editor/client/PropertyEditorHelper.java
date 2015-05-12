@@ -10,12 +10,18 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.ext.properties.editor.client.fields.AbstractField;
 import org.uberfire.ext.properties.editor.client.fields.PropertyEditorFieldType;
 import org.uberfire.ext.properties.editor.client.widgets.AbstractPropertyEditorWidget;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorErrorWidget;
+import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemHelp;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemLabel;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemRemovalButton;
 import org.uberfire.ext.properties.editor.client.widgets.PropertyEditorItemsWidget;
+import org.uberfire.ext.properties.editor.model.CustomPropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
@@ -87,11 +93,14 @@ public class PropertyEditorHelper {
         PropertyEditorItemsWidget items = GWT.create( PropertyEditorItemsWidget.class );
         items.add( createLabel( field ) );
         items.add( createField( field, items ) );
+        if ( field.hasHelpInfo() ) {
+            items.add( createHelp( field) );
+        }
         if ( field.isRemovalSupported() ) {
             items.add( createRemovalButton( field,
-                                            category,
-                                            items,
-                                            categoryAccordion ) );
+                    category,
+                    items,
+                    categoryAccordion ) );
         }
         return items;
     }
@@ -102,18 +111,40 @@ public class PropertyEditorHelper {
         return item;
     }
 
+    static PropertyEditorItemHelp createHelp( PropertyEditorFieldInfo field ) {
+        PropertyEditorItemHelp itemHelp = GWT.create( PropertyEditorItemHelp.class );
+        itemHelp.setHeading( field.getHelpHeading() );
+        itemHelp.setText( field.getHelpText() );
+        return itemHelp;
+    }
+
     static PropertyEditorItemWidget createField( PropertyEditorFieldInfo field,
                                                  PropertyEditorItemsWidget parent ) {
         PropertyEditorItemWidget itemWidget = GWT.create( PropertyEditorItemWidget.class );
         PropertyEditorErrorWidget errorWidget = GWT.create( PropertyEditorErrorWidget.class );
         PropertyEditorFieldType editorFieldType = PropertyEditorFieldType.getFieldTypeFrom( field );
-        Widget widget = editorFieldType.widget( field );
+        Widget widget;
+        if ( editorFieldType == PropertyEditorFieldType.CUSTOM ) {
+            Class<?> widgetClass = ( ( CustomPropertyEditorFieldInfo ) field ).getCustomEditorClass();
+            widget = getWidget( field, widgetClass );
+        } else {
+            widget = editorFieldType.widget( field );
+        }
 
         createErrorHandlingInfraStructure( parent, itemWidget, errorWidget, widget );
         itemWidget.add( widget );
         itemWidget.add( errorWidget );
 
         return itemWidget;
+    }
+
+
+    private static Widget getWidget( PropertyEditorFieldInfo property,
+            Class fieldType ) {
+        SyncBeanManager beanManager = IOC.getBeanManager();
+        IOCBeanDef iocBeanDef = beanManager.lookupBean( fieldType );
+        AbstractField field = (AbstractField) iocBeanDef.getInstance();
+        return field.widget( property );
     }
 
     static void createErrorHandlingInfraStructure( PropertyEditorItemsWidget parent,
