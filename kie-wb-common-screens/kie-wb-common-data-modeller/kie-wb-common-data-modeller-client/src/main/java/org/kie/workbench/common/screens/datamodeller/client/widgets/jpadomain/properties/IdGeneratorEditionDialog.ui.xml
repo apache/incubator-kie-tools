@@ -22,9 +22,6 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
     >
 
-
-  <ui:with field="i18n" type="org.uberfire.ext.plugin.client.resources.i18n.CommonConstants"/>
-
   <ui:style>
     .mandatory-field {
       color: #FF0000 !important;
