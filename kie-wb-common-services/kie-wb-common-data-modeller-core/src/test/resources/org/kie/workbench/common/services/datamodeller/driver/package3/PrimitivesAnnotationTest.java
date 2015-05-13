@@ -26,7 +26,7 @@ import org.kie.workbench.common.services.datamodeller.annotations.PrimitivesAnno
 @PrimitivesAnnotation( byteParam = ( byte ) 1, byteArrayParam = { 1, 2 },
         shortParam = 1, shortArrayParam = { 1, 2 },
         intParam = 1, intArrayParam = { 1, 2 },
-        longParam = 1, longArrayParam = { 1L, 2 },
+        longParam = 1, longArrayParam = { 1, 2 },
         floatParam = 1, floatArrayParam = { 1, 2 },
         doubleParam = 1, doubleArrayParam = { 1, 2 },
         booleanParam = true, booleanArrayParam = { true, true },
