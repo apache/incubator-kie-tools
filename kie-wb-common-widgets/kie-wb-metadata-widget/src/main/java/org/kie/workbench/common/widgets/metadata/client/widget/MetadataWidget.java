@@ -153,6 +153,7 @@ public class MetadataWidget
         }
         Image unlockImage = new Image( ImageResources.INSTANCE.unlock() );
         unlock.setHTML( "<span>" + unlockImage.toString() + " " + unlock.getText() + "</span>" );
+        unlock.getElement().setAttribute( "data-uf-lock", "false" );
         unlock.setEnabled( lockInfo.isLocked() );
         unlock.setVisible( metadata.isUnlockAllowed() );
     }
