@@ -1182,7 +1182,7 @@ as a "classpath entry of interest to Errai".
 # https://github.com/errai/errai/blob/master/errai-docs/src/main/asciidoc/reference.asciidoc#erraiappproperties
 # for details.
 
-errai.security.user_cookie_enabled=true
+errai.security.user_on_hostpage_enabled=true
 ------
 
 Since we want Errai's client-side security system to pay attention to
