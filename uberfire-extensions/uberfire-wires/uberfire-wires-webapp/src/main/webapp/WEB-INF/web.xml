@@ -37,6 +37,16 @@
     <url-pattern>/org.uberfire.ext.wires.WiresShowcase/*</url-pattern>
   </filter-mapping>
 
+  <filter>
+    <filter-name>Host Page Patch</filter-name>
+    <filter-class>org.jboss.errai.security.server.servlet.UserHostPageFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>Host Page Patch</filter-name>
+    <url-pattern>/wires.html</url-pattern>
+  </filter-mapping>
+
   <servlet>
     <!-- NOTE: the integration-test profile uses this web.xml. Integration tests only work properly
 with the DefaultBlockingServlet. If you change this setting, make a backup of this web.xml
