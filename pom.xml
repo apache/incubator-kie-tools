@@ -41,6 +41,28 @@
   </modules>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <inherited>true</inherited>
+              <configuration>
+                <rules>
+                  <requireJavaVersion>
+                    <version>[1.7.0,)</version>
+                  </requireJavaVersion>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <!--Fix translations from Zanata -->
       <plugin>
