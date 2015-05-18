@@ -82,7 +82,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         m_list.add(list);
     }
 
-    protected final NFastArrayList<PathPartList> getPathPartListArray()
+    public final NFastArrayList<PathPartList> getPathPartListArray()
     {
         return m_list;
     }

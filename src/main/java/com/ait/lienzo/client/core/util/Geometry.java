@@ -19,13 +19,16 @@ package com.ait.lienzo.client.core.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.BezierCurve;
+import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
+import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 
 /**
@@ -1084,10 +1087,27 @@ public final class Geometry
         return points;
     }
 
-    public static Point2D[] getCardinalIntersects(PathPartList path)
+    public static Point2D[] getCardinalIntersects(AbstractMultiPathPartShape multiPath)
     {
-        Point2D[] cardinals = getCardinals(path);
+        BoundingBox box = multiPath.getBoundingBox();
+        Point2D[] cardinals = getCardinals(box);
 
+        @SuppressWarnings("unchecked")
+        Set<Point2D>[] intersections = new Set[cardinals.length]; // c is removed, so -1
+
+        NFastArrayList<PathPartList> paths = multiPath.getPathPartListArray();
+        for( int i = 0; i < paths.size(); i++ )
+        {
+            getCardinalIntersects(paths.get(i), cardinals, intersections);
+        }
+
+        Point2D center = cardinals[0];
+        Point2D[] points = removeInnerPoints(center, intersections);
+        return points;
+    }
+
+    public static void getCardinalIntersects(PathPartList path, Point2D[] cardinals, Set<Point2D>[] intersections)
+    {
         Point2D center = cardinals[0];
 
         // Entry 0 is M
@@ -1098,9 +1118,6 @@ public final class Geometry
         Point2D m = new Point2D(points.get(0), points.get(1));
 
         Point2D start = m;
-
-        @SuppressWarnings("unchecked")
-        Set<Point2D>[] intersections = new Set[cardinals.length - 1]; // c is removed, so -1
 
         // A set is used as vertex's may intersect, so the start/end of two liens will intersect
         for (int i = 1; i < path.size(); i++)
@@ -1121,7 +1138,7 @@ public final class Geometry
                         Point2D intersectPoint = Geometry.intersectLineLine(center, cardinal, start, end);
                         if (intersectPoint != null)
                         {
-                            addIntersect(intersections, j - 1, intersectPoint); // c is removed, so -1
+                            addIntersect(intersections, j, intersectPoint);
                         }
                     }
                     start = end;
@@ -1150,17 +1167,32 @@ public final class Geometry
                         {
                             for (Point2D p : intersectPoints)
                             {
-                                addIntersect(intersections, j - 1, p); // c is removed, so -1
+                                addIntersect(intersections, j, p);
                             }
 
                         }
                     }
                     start = end;
                 }
-                    break;
+                break;
             }
         }
-        return removeInnerPoints(center, intersections);
+
+        addIntersect(intersections, 0, center);
+    }
+
+    public static Point2D[] getCardinalIntersects(PathPartList path)
+    {
+        Point2D[] cardinals = getCardinals(path.getBoundingBox());
+
+        @SuppressWarnings("unchecked")
+        Set<Point2D>[] intersections = new Set[cardinals.length]; // c is removed, so -1
+        getCardinalIntersects(path, cardinals, intersections);
+
+        Point2D center = cardinals[0];
+        Point2D[] points = removeInnerPoints(center, intersections);
+
+        return points;
     }
 
     public static Point2D[] removeInnerPoints(Point2D c, Set<Point2D>[] pointSet)
@@ -1171,8 +1203,7 @@ public final class Geometry
 
         for (Set<Point2D> set : pointSet)
         {
-            double furthestDistance = 0;
-
+            double furthestDistance = -1;
             if (set != null && !set.isEmpty())
             {
                 for (Point2D p : set)
@@ -1205,10 +1236,8 @@ public final class Geometry
         intersects.add(point);
     }
 
-    public static Point2D[] getCardinals(PathPartList path)
+    public static Point2D[] getCardinals(BoundingBox box)
     {
-        BoundingBox box = path.getBoundingBox();
-
         Point2D c = new Point2D(box.getX() + box.getWidth() / 2, box.getY() + box.getHeight() / 2);
 
         Point2D n = new Point2D(c.getX(), box.getY());
