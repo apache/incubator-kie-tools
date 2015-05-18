@@ -21,7 +21,6 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.shape.AbstractMultiPathPartShape;
 import com.ait.lienzo.client.core.shape.BezierCurve;
-import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.QuadraticCurve;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
@@ -1087,22 +1086,25 @@ public final class Geometry
         return points;
     }
 
-    public static Point2D[] getCardinalIntersects(AbstractMultiPathPartShape multiPath)
+    public static Point2D[] getCardinalIntersects(AbstractMultiPathPartShape<?> multiPath)
     {
         BoundingBox box = multiPath.getBoundingBox();
+
         Point2D[] cardinals = getCardinals(box);
 
         @SuppressWarnings("unchecked")
         Set<Point2D>[] intersections = new Set[cardinals.length]; // c is removed, so -1
 
         NFastArrayList<PathPartList> paths = multiPath.getPathPartListArray();
-        for( int i = 0; i < paths.size(); i++ )
+
+        for (int i = 0; i < paths.size(); i++)
         {
             getCardinalIntersects(paths.get(i), cardinals, intersections);
         }
-
         Point2D center = cardinals[0];
+        
         Point2D[] points = removeInnerPoints(center, intersections);
+        
         return points;
     }
 
@@ -1174,10 +1176,9 @@ public final class Geometry
                     }
                     start = end;
                 }
-                break;
+                    break;
             }
         }
-
         addIntersect(intersections, 0, center);
     }
 
@@ -1187,9 +1188,11 @@ public final class Geometry
 
         @SuppressWarnings("unchecked")
         Set<Point2D>[] intersections = new Set[cardinals.length]; // c is removed, so -1
+        
         getCardinalIntersects(path, cardinals, intersections);
 
         Point2D center = cardinals[0];
+        
         Point2D[] points = removeInnerPoints(center, intersections);
 
         return points;
@@ -1204,6 +1207,7 @@ public final class Geometry
         for (Set<Point2D> set : pointSet)
         {
             double furthestDistance = -1;
+            
             if (set != null && !set.isEmpty())
             {
                 for (Point2D p : set)
