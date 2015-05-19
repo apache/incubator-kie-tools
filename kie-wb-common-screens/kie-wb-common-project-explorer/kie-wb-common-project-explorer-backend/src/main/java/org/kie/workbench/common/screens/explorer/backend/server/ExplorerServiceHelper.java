@@ -49,7 +49,6 @@ import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
-import org.uberfire.rpc.SessionInfo;
 
 import com.google.common.collect.Lists;
 import com.thoughtworks.xstream.XStream;
@@ -79,9 +78,6 @@ public class ExplorerServiceHelper {
     @Inject
     private UserServicesImpl userServices;
     
-    @Inject
-    private SessionInfo sessionInfo;
-
     public static FolderItem toFolderItem( final org.guvnor.common.services.project.model.Package pkg ) {
         if ( pkg == null ) {
             return null;
@@ -95,8 +91,7 @@ public class ExplorerServiceHelper {
             return new FolderItem( p,
                                    p.getFileName(),
                                    FolderItemType.FILE,
-                                   Paths.readLockedBy( p ),
-                                   false);
+                                   Paths.readLockedBy( p ) );
         } else if ( Files.isDirectory( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
             return new FolderItem( p,
@@ -166,8 +161,7 @@ public class ExplorerServiceHelper {
                 final FolderItem folderItem = new FolderItem( p,
                                                               p.getFileName(),
                                                               FolderItemType.FILE,
-                                                              lockedBy,
-                                                              sessionInfo.getIdentity().getIdentifier().equals( lockedBy ));
+                                                              lockedBy );
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
@@ -237,8 +231,7 @@ public class ExplorerServiceHelper {
                 final FolderItem folderItem = new FolderItem( path,
                                                               path.getFileName(),
                                                               FolderItemType.FILE,
-                                                              lockedBy,
-                                                              sessionInfo.getIdentity().getIdentifier().equals( lockedBy ));
+                                                              lockedBy );
                 folderItems.add( folderItem );
             }
         }

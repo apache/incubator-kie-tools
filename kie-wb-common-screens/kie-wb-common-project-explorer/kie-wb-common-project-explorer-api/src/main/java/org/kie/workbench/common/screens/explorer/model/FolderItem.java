@@ -30,19 +30,16 @@ public class FolderItem {
     private String itemName;
     private FolderItemType type;
     private String lockedBy;
-    private Boolean lockOwned;
 
     public FolderItem( @MapsTo("item") final Object item,
                        @MapsTo("itemName") final String itemName,
                        @MapsTo("type") final FolderItemType type,
-                       @MapsTo("lockedBy") final String lockedBy,
-                       @MapsTo("lockedOwned") final Boolean lockOwned ) {
+                       @MapsTo("lockedBy") final String lockedBy ) {
 
         this( item,
               itemName,
               type );
         this.lockedBy = lockedBy;
-        this.lockOwned = lockOwned;
     }
 
     public FolderItem( final Object item,
@@ -73,17 +70,12 @@ public class FolderItem {
         return lockedBy;
     }
 
-    public boolean isLockOwned() {
-        return lockOwned;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((item == null) ? 0 : item.hashCode());
         result = prime * result + ((itemName == null) ? 0 : itemName.hashCode());
-        result = prime * result + ((lockOwned == null) ? 0 : lockOwned.hashCode());
         result = prime * result + ((lockedBy == null) ? 0 : lockedBy.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
@@ -107,11 +99,6 @@ public class FolderItem {
             if ( other.itemName != null )
                 return false;
         } else if ( !itemName.equals( other.itemName ) )
-            return false;
-        if ( lockOwned == null ) {
-            if ( other.lockOwned != null )
-                return false;
-        } else if ( !lockOwned.equals( other.lockOwned ) )
             return false;
         if ( lockedBy == null ) {
             if ( other.lockedBy != null )

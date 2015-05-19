@@ -33,6 +33,7 @@ import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
 import org.kie.workbench.common.screens.explorer.client.resources.images.ProjectExplorerImageResources;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
@@ -106,6 +107,9 @@ public class BusinessViewWidget extends Composite implements View {
 
     @Inject
     PlaceManager placeManager;
+    
+    @Inject
+    User user;
     
     //TreeSet sorts members upon insertion
     private final Set<FolderItem> sortedFolderItems = new TreeSet<FolderItem>( Sorters.ITEM_SORTER );
@@ -281,7 +285,7 @@ public class BusinessViewWidget extends Composite implements View {
         if ( folderItem.getLockedBy() == null ) {
             lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockEmpty() );
         }
-        else if ( folderItem.isLockOwned() ) {
+        else if ( folderItem.getLockedBy().equals( user.getIdentifier() ) ) {
             lockImage = new Image( ProjectExplorerImageResources.INSTANCE.lockOwned() );
             lockImage.setTitle( ProjectExplorerConstants.INSTANCE.lockOwnedHint());
         }
