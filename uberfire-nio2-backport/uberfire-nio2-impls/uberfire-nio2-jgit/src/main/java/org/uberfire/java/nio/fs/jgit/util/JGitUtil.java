@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
@@ -105,6 +105,36 @@ public final class JGitUtil {
         } catch ( GitAPIException e ) {
             throw new IOException( e );
         }
+    }
+
+    public static Git newRepository( final File repoFolder,
+                                     final boolean bare,
+                                     final File hookDir ) throws IOException {
+        final Git git = newRepository( repoFolder, bare );
+        if ( hookDir == null ) {
+            return git;
+        }
+
+        final File repoHookDir;
+        if ( bare ) {
+            repoHookDir = new File( repoFolder, "hooks" );
+        } else {
+            repoHookDir = new File( repoFolder, ".git/hooks" );
+        }
+
+        try {
+            FileUtils.copyDirectory( hookDir, repoHookDir );
+        } catch ( final Exception ex ) {
+            throw new RuntimeException( ex );
+        }
+
+        for ( final File file : repoHookDir.listFiles() ) {
+            if ( file != null && file.isFile() ) {
+                file.setExecutable( true );
+            }
+        }
+
+        return git;
     }
 
     public static List<Ref> branchList( final Git git ) {

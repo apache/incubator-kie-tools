@@ -68,7 +68,9 @@ import org.eclipse.jgit.transport.resolver.ReceivePackFactory;
 import org.eclipse.jgit.transport.resolver.RepositoryResolver;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
+import org.eclipse.jgit.util.FS;
 import org.eclipse.jgit.util.FileUtils;
+import org.eclipse.jgit.util.Hook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
@@ -181,6 +183,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     private File gitReposParentDir;
 
+    private File hookDir;
+
     private int commitLimit;
     private boolean daemonEnabled;
     private int daemonPort;
@@ -210,12 +214,14 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
     private GitSSHService gitSSHService = null;
     private FileSystemAuthenticator authenticator;
     private FileSystemAuthorizer fileSystemAuthorizer;
+    private FS detectedFS = FS.DETECTED;
 
     private void loadConfig( final ConfigProperties config ) {
         LOG.debug( "Configuring from properties:" );
 
         final String currentDirectory = System.getProperty( "user.dir" );
 
+        final ConfigProperty hookDirProp = config.get( "org.uberfire.nio.git.hooks", null );
         final ConfigProperty bareReposDirProp = config.get( "org.uberfire.nio.git.dir", currentDirectory );
         final ConfigProperty enabledProp = config.get( "org.uberfire.nio.git.daemon.enabled", DAEMON_DEFAULT_ENABLED );
         final ConfigProperty hostProp = config.get( "org.uberfire.nio.git.daemon.host", DEFAULT_HOST_ADDR );
@@ -232,6 +238,13 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
         if ( LOG.isDebugEnabled() ) {
             LOG.debug( config.getConfigurationSummary( "Summary of JGit configuration:" ) );
+        }
+
+        if ( hookDirProp != null && hookDirProp.getValue() != null ) {
+            hookDir = new File( hookDirProp.getValue() );
+            if ( !hookDir.exists() ) {
+                hookDir = null;
+            }
         }
 
         gitReposParentDir = new File( bareReposDirProp.getValue(), REPOSITORIES_CONTAINER_DIR );
@@ -596,7 +609,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
             git = cloneRepository( repoDest, originURI, bare, credential );
         } else {
             credential = buildCredential( null );
-            git = newRepository( repoDest, bare );
+            git = newRepository( repoDest, bare, hookDir );
         }
 
         final JGitFileSystem fs = new JGitFileSystem( this, fullHostNames, git, name, listMode, credential );
@@ -1900,6 +1913,8 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         if ( !batchState ) {
             final ObjectId newHead = JGitUtil.getTreeRefObjectId( path.getFileSystem().gitRepo().getRepository(), branchName );
 
+            postCommitHook( git.getRepository() );
+
             notifyDiffs( path.getFileSystem(), branchName, commitInfo.getSessionId(), commitInfo.getName(), commitInfo.getMessage(), oldHead, newHead );
         } else if ( !oldHeadsOfPendingDiffs.containsKey( path.getFileSystem() ) ||
                 !oldHeadsOfPendingDiffs.get( path.getFileSystem() ).containsKey( branchName ) ) {
@@ -1920,6 +1935,10 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
 
         fileSystem.unlock();
+    }
+
+    private void postCommitHook( final Repository repository ) {
+        detectedFS.runIfPresent( repository, Hook.POST_COMMIT, new String[ 0 ] );
     }
 
     private void notifyAllDiffs() {
@@ -2067,4 +2086,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
     }
 
+    public void setDetectedFS( final FS detectedFS ) {
+        this.detectedFS = detectedFS;
+    }
 }
