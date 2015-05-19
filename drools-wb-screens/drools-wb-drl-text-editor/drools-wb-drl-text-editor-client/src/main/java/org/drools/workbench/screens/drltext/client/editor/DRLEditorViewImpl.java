@@ -19,29 +19,49 @@ package org.drools.workbench.screens.drltext.client.editor;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.widget.ClickEvent;
 import org.drools.workbench.screens.drltext.client.widget.DSLSentenceBrowserWidget;
+import org.drools.workbench.screens.drltext.client.widget.DrlEditor;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
-import org.drools.workbench.screens.drltext.client.widget.RuleContentWidget;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class DRLEditorViewImpl
         extends KieEditorViewImpl
         implements DRLEditorView {
 
-    private RuleContentWidget ruleContentWidget = null;
+    interface ViewBinder
+            extends
+            UiBinder<Widget, DRLEditorViewImpl> {
+
+    }
+
+    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+
+    //Scroll-bar Height + Container padding * 2
+    private static int SCROLL_BAR_SIZE = 32;
+    private static int CONTAINER_PADDING = 15;
+    private static int VERTICAL_MARGIN = SCROLL_BAR_SIZE + ( CONTAINER_PADDING * 2 );
+
+    private DrlEditor drlEditor = null;
     private FactTypeBrowserWidget factTypeBrowser = null;
     private DSLSentenceBrowserWidget dslConditionsBrowser = null;
     private DSLSentenceBrowserWidget dslActionsBrowser = null;
-    private VerticalPanel browsers = new VerticalPanel();
+
+    @UiField
+    FlowPanel columnsContainer;
+
+    @UiField
+    FlowPanel columnBrowsers;
+
+    @UiField
+    FlowPanel columnDrl;
 
     @Override
     public void init( final DRLEditorPresenter presenter ) {
@@ -50,16 +70,13 @@ public class DRLEditorViewImpl
 
     @PostConstruct
     public void init() {
-        this.ruleContentWidget = new RuleContentWidget();
+        this.drlEditor = new DrlEditor();
 
         final ClickEvent ce = new ClickEvent() {
             public void selected( String text ) {
-                ruleContentWidget.insertText( text );
+                drlEditor.insertAtCursor( text );
             }
         };
-
-        final Grid layout = new Grid( 1,
-                                      2 );
 
         this.factTypeBrowser = new FactTypeBrowserWidget( ce );
         this.dslConditionsBrowser = new DSLSentenceBrowserWidget( ce,
@@ -68,32 +85,13 @@ public class DRLEditorViewImpl
         this.dslActionsBrowser = new DSLSentenceBrowserWidget( ce,
                                                                DRLTextEditorConstants.INSTANCE.showDSLActions(),
                                                                DRLTextEditorConstants.INSTANCE.dslActions() );
-        browsers.add( factTypeBrowser );
-        browsers.add( dslConditionsBrowser );
-        browsers.add( dslActionsBrowser );
+        initWidget( uiBinder.createAndBindUi( this ) );
 
-        layout.setWidget( 0,
-                          0,
-                          browsers );
-        layout.setWidget( 0,
-                          1,
-                          ruleContentWidget );
+        columnBrowsers.add( factTypeBrowser );
+        columnBrowsers.add( dslConditionsBrowser );
+        columnBrowsers.add( dslActionsBrowser );
 
-        layout.getColumnFormatter().setWidth( 0,
-                                              "20%" );
-        layout.getColumnFormatter().setWidth( 1,
-                                              "80%" );
-        layout.getCellFormatter().setAlignment( 0,
-                                                0,
-                                                HasHorizontalAlignment.ALIGN_LEFT,
-                                                HasVerticalAlignment.ALIGN_TOP );
-        layout.getCellFormatter().setAlignment( 0,
-                                                1,
-                                                HasHorizontalAlignment.ALIGN_LEFT,
-                                                HasVerticalAlignment.ALIGN_TOP );
-        layout.setWidth( "95%" );
-
-        initWidget( layout );
+        columnDrl.add( drlEditor );
     }
 
     @Override
@@ -101,9 +99,9 @@ public class DRLEditorViewImpl
                             final List<String> fullyQualifiedClassNames ) {
         dslConditionsBrowser.setVisible( false );
         dslActionsBrowser.setVisible( false );
-        ruleContentWidget.setContent( drl );
         factTypeBrowser.setFullyQualifiedClassNames( fullyQualifiedClassNames );
         factTypeBrowser.setDSLR( false );
+        drlEditor.setText( drl );
     }
 
     @Override
@@ -113,16 +111,22 @@ public class DRLEditorViewImpl
                             final List<DSLSentence> dslActions ) {
         dslConditionsBrowser.setVisible( true );
         dslActionsBrowser.setVisible( true );
-        ruleContentWidget.setContent( dslr );
         factTypeBrowser.setFullyQualifiedClassNames( fullyQualifiedClassNames );
         factTypeBrowser.setDSLR( true );
         dslConditionsBrowser.setDSLSentences( dslConditions );
         dslActionsBrowser.setDSLSentences( dslActions );
+        drlEditor.setText( dslr );
     }
 
     @Override
     public String getContent() {
-        return ruleContentWidget.getContent();
+        return drlEditor.getText();
     }
 
+    @Override
+    public void onResize() {
+        final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
+        columnsContainer.setHeight( ( height > 0 ? height : 0 ) + "px" );
+        drlEditor.onResize();
+    }
 }

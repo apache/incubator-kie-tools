@@ -26,11 +26,15 @@ public interface StylesCss
         extends
         CssResource {
     
-    @ClassName("default-text-Area")
-    String defaultTextArea();
-
     @ClassName("category-explorer-Tree")
     String categoryExplorerTree();
 
+    String columnsContainer();
+
+    String columnBrowsers();
+
+    String columnDrl();
+
+    String drlEditorContainer();
 
 }

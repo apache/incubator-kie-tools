@@ -13,16 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-.default-text-Area {
-    border: 1px solid #aa9;
-    background: #FFFFF0;
-}
-
 .category-explorer-Tree {
     width: 100%;
 }
 
 .category-explorer-Tree img {
     vertical-align: middle;
+}
+
+.columnsContainer {
+    margin: 14px 14px;
+}
+
+.columnBrowsers {
+    height: 100%;
+    width: 280px;
+    overflow: auto;
+    background-color: #e6f1f6;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border: solid 1px #ebebeb;
+    padding: 15px;
+}
+
+.columnDrl {
+    width: 100%;
+}
+
+.drlEditorContainer {
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 330px;
+    right: 0;
 }

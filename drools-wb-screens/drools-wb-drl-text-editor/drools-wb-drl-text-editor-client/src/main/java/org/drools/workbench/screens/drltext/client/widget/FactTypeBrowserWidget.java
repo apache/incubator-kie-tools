@@ -108,7 +108,7 @@ public class FactTypeBrowserWidget
                                                            for ( String field : fields ) {
                                                                final TreeItem fi = new TreeItem();
                                                                fi.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().fieldImage() ).getHTML()
-                                                                                   + "<small>"
+                                                                                   + "<small style=\"cursor: pointer\">"
                                                                                    + field + "</small>" );
                                                                fi.setUserObject( field );
                                                                item.addItem( fi );
@@ -145,7 +145,7 @@ public class FactTypeBrowserWidget
             for ( String type : fullyQualifiedClassNames ) {
                 final TreeItem it = new TreeItem();
                 it.setHTML( AbstractImagePrototype.create( DRLTextEditorResources.INSTANCE.images().classImage() ).getHTML()
-                                    + "<small>"
+                                    + "<small style=\"cursor: pointer\">"
                                     + type + "</small>" );
                 it.setUserObject( new ClassUserObject( type + "( )",
                                                        type ) );
