@@ -97,7 +97,7 @@ public class NewResourcesMenu {
     }
 
     public List<MenuItem> getMenuItemsWithoutProject() {
-        return items.subList( 1, items.size() - 1 );
+        return items.subList( 1, items.size() );
     }
 
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
