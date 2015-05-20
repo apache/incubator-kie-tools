@@ -44,7 +44,6 @@ import org.kie.workbench.common.screens.datamodeller.client.validation.Validator
 import org.kie.workbench.common.screens.datamodeller.client.widgets.packageselector.PackageSelector;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.superselector.SuperclassSelector;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -349,7 +348,7 @@ public class NewDataObjectPopup extends Modal {
 
     private void notifyObjectCreated( DataObject createdObjectTO ) {
         getContext().getHelper().dataObjectCreated( createdObjectTO.getClassName() );
-        dataModelerEvent.fire( new DataObjectCreatedEvent( getContext().getContextId(), DataModelerEvent.NEW_DATA_OBJECT_POPUP, getDataModel(), createdObjectTO ) );
+        //dataModelerEvent.fire( new DataObjectCreatedEvent( getContext().getContextId(), DataModelerEvent.NEW_DATA_OBJECT_POPUP, getDataModel(), createdObjectTO ) );
         notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataObject_created( DataModelerUtils.getDataObjectUILabel( createdObjectTO ) ) ) );
     }
 

@@ -24,7 +24,6 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
@@ -83,6 +82,8 @@ public interface DataModelerService {
     List<Path> findClassUsages( Path currentPath, String className );
 
     List<Path> findFieldUsages( Path currentPath, String className, String fieldName );
+
+    List<String> findPersistableClasses( final Path path );
 
     Boolean exists( Path path );
 

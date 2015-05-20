@@ -16,85 +16,99 @@
 
 package org.kie.workbench.common.screens.javaeditor.client.widget;
 
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
-import org.uberfire.ext.widgets.common.client.common.ResizableTextArea;
+import org.uberfire.ext.widgets.common.client.ace.AceEditor;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorCallback;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 
-public class EditJavaSourceWidget extends Composite implements RequiresResize {
+public class EditJavaSourceWidget
+        extends Composite
+        implements RequiresResize {
 
-    private final ResizableTextArea textArea = new ResizableTextArea();
+
+    private final AceEditor editor = new AceEditor( );
+
+    private final List<TextChangeHandler> handlers = new ArrayList<TextChangeHandler>();
+
+    private boolean disableHandlers = false;
+
+    public interface TextChangeHandler {
+        void onTextChange();
+    }
 
     public EditJavaSourceWidget() {
-        textArea.setWidth( "100%" );
-        textArea.getElement().setAttribute( "spellcheck",
-                                            "false" );
-
-        Element element = textArea.getElement();
-        DOM.setStyleAttribute( element, "fontFamily", "monospace" );
-
-        textArea.addKeyDownHandler( new KeyDownHandler() {
-
-            public void onKeyDown( KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
-                    int pos = textArea.getCursorPos();
-                    insertText( "\t" );
-                    textArea.setCursorPos( pos + 1 );
-                    textArea.cancelKey();
-                    textArea.setFocus( true );
-                }
+        editor.startEditor();
+        editor.setMode( AceEditorMode.JAVA );
+        editor.setTheme( AceEditorTheme.CHROME );
+        editor.setReadOnly( true );
+        editor.addOnChangeHandler( new AceEditorCallback() {
+            @Override
+            public void invokeAceCallback( JavaScriptObject obj ) {
+                onAceEditorChange();
             }
         } );
-
-        initWidget( textArea );
+        initWidget( editor );
     }
 
     public void setContent( final String input ) {
-        if ( input == null ) {
-            textArea.setText( "" );
-        } else {
-            textArea.setText( input );
-        }
+        //the AceEditor raises the change event when the text is set programmatically
+        disableHandlers = true;
+        editor.setText( input != null ? input : "" );
+        disableHandlers = false;
     }
 
     public String getContent() {
-        return textArea.getValue();
+        return editor.getValue();
     }
 
-    public void clearContent() {
-        setContent( "" );
-    }
-
-    private void insertText( final String ins ) {
-        final int i = textArea.getCursorPos();
-        final String left = textArea.getText().substring( 0,
-                                                          i );
-        final String right = textArea.getText().substring( i,
-                                                           textArea.getText().length() );
-        textArea.setText( left + ins + right );
+    public void clear() {
+        setContent( null );
     }
 
     public void setReadonly( boolean readonly ) {
-        textArea.setReadOnly( readonly );
-        textArea.getElement().getStyle().setBackgroundColor( "#FFFFFF" );
+        editor.setReadOnly( readonly );
     }
 
-    public HandlerRegistration addChangeHandler( ChangeHandler handler ) {
-        return textArea.addChangeHandler( handler );
+    public void addChangeHandler( TextChangeHandler changeHandler ) {
+        if ( !handlers.contains( changeHandler ) ) {
+            handlers.add( changeHandler );
+        }
+    }
+
+    public void removeChangeHandler( TextChangeHandler changeHandler ) {
+        handlers.remove( changeHandler );
     }
 
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        setPixelSize( width,
-                      height );
-        textArea.onResize();
+
+        setPixelSize( ensureValidMeasure( width ), ensureValidMeasure( height ) );
+
+        editor.setHeight( ensureValidMeasure( height ) + "px" );
+        editor.redisplay();
+    }
+
+    private void onAceEditorChange() {
+        if ( !disableHandlers ) {
+            for ( TextChangeHandler handler : handlers ) {
+                handler.onTextChange();
+            }
+        }
+    }
+
+    private int ensureValidMeasure( int value ) {
+        if ( value < 0 ) {
+            return 0;
+        } else {
+            return value;
+        }
     }
 }

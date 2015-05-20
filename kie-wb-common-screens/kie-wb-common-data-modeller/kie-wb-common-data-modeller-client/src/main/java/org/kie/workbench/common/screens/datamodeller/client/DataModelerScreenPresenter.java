@@ -25,8 +25,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.shared.security.KieWorkbenchACL;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
@@ -211,9 +209,9 @@ public class DataModelerScreenPresenter
         currentMessageType = "DataModeler" + path.toURI();
         cleanSystemMessages( getCurrentMessageType() );
 
-        javaSourceEditor.addChangeHandler( new ChangeHandler() {
+        javaSourceEditor.addChangeHandler( new EditJavaSourceWidget.TextChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onTextChange() {
                 if ( context != null ) {
                     context.setEditionStatus( DataModelerContext.EditionStatus.SOURCE_CHANGED );
                 }

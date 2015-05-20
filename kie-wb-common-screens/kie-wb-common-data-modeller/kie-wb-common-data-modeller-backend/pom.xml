@@ -19,6 +19,7 @@
   <dependencies>
 
     <!-- dependencies added because of new illegal transitive dependency check -->
+
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
