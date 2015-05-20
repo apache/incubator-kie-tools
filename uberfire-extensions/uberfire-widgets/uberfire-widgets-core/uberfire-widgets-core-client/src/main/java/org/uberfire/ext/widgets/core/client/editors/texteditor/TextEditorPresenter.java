@@ -24,6 +24,7 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnStartup;
@@ -34,17 +35,18 @@ public abstract class TextEditorPresenter {
             extends
             IsWidget {
 
-        void setContent( String content );
+        void setContent( final String content,
+                         final AceEditorMode mode );
 
         String getContent();
 
         void setFocus();
 
-        void setDirty( boolean dirty );
+        void setDirty( final boolean dirty );
 
         boolean isDirty();
 
-        void setReadOnly( boolean isReadOnly );
+        void setReadOnly( final boolean isReadOnly );
     }
 
     @Inject
@@ -62,9 +64,11 @@ public abstract class TextEditorPresenter {
             @Override
             public void callback( String response ) {
                 if ( response == null ) {
-                    view.setContent( CoreConstants.INSTANCE.EmptyEntry() );
+                    view.setContent( CoreConstants.INSTANCE.EmptyEntry(),
+                                     getAceEditorMode() );
                 } else {
-                    view.setContent( response );
+                    view.setContent( response,
+                                     getAceEditorMode() );
                 }
                 onAfterViewLoaded();
             }
@@ -77,6 +81,15 @@ public abstract class TextEditorPresenter {
      * The default implementation does nothing.
      */
     protected void onAfterViewLoaded() {
+    }
+
+    /**
+     * This allows sub-classes to determine the Mode of the AceEditor.
+     * By default the AceEditor assumes the AceEditorMode.TEXT.
+     * @return
+     */
+    public AceEditorMode getAceEditorMode() {
+        return AceEditorMode.TEXT;
     }
 
     @IsDirty

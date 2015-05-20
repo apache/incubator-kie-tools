@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 import org.uberfire.client.annotations.WorkbenchEditor;
@@ -31,6 +30,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.client.workbench.type.DotResourceType;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
@@ -39,7 +39,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "TextEditor", supportedTypes = {TextResourceType.class, DotResourceType.class})
+@WorkbenchEditor(identifier = "TextEditor", supportedTypes = { TextResourceType.class, DotResourceType.class })
 public class TextEditorWorkbenchEditor
         extends TextEditorPresenter {
 
@@ -50,32 +50,35 @@ public class TextEditorWorkbenchEditor
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     @OnStartup
-    public void onStartup(final Path path, final PlaceRequest placeRequest) {
-        vfsServices.call(new RemoteCallback<String>() {
+    public void onStartup( final Path path,
+                           final PlaceRequest placeRequest ) {
+        vfsServices.call( new RemoteCallback<String>() {
             @Override
-            public void callback(String response) {
-                if (response == null) {
-                    view.setContent( CoreConstants.INSTANCE.EmptyEntry());
+            public void callback( String response ) {
+                if ( response == null ) {
+                    view.setContent( CoreConstants.INSTANCE.EmptyEntry(),
+                                     getAceEditorMode() );
                 } else {
-                    view.setContent(response);
+                    view.setContent( response,
+                                     getAceEditorMode() );
                 }
                 changeTitleWidgetEvent.fire(
                         new ChangeTitleWidgetEvent(
                                 placeRequest,
-                                CoreConstants.INSTANCE.TextEditor() +" [" + path.getFileName() + "]"));
+                                CoreConstants.INSTANCE.TextEditor() + " [" + path.getFileName() + "]" ) );
 
             }
-        }).readAllString(path);
+        } ).readAllString( path );
     }
 
     @OnSave
     public void onSave() {
-        vfsServices.call(new RemoteCallback<Path>() {
+        vfsServices.call( new RemoteCallback<Path>() {
             @Override
-            public void callback(Path response) {
-                view.setDirty(false);
+            public void callback( Path response ) {
+                view.setDirty( false );
             }
-        }).write(path, view.getContent());
+        } ).write( path, view.getContent() );
     }
 
     @IsDirty

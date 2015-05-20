@@ -26,6 +26,9 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeLayoutPanel;
+import org.uberfire.ext.widgets.common.client.ace.AceEditor;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
 import org.uberfire.ext.widgets.common.client.common.ResizableTextArea;
 
 /**
@@ -45,7 +48,7 @@ public class TextEditorView extends Composite
     private static TextEditorViewBinder uiBinder = GWT.create( TextEditorViewBinder.class );
 
     @UiField
-    public ResizableTextArea fileContent;
+    public AceEditor editor;
 
     private boolean isDirty = false;
 
@@ -53,25 +56,26 @@ public class TextEditorView extends Composite
     public void init() {
         initWidget( uiBinder.createAndBindUi( this ) );
 
-        fileContent.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent event ) {
-                isDirty = true;
-            }
-        } );
-
+        editor.startEditor();
+        editor.setTheme( AceEditorTheme.CHROME );
     }
 
-    public void setContent( final String content ) {
-        fileContent.setText( content );
+    @Override
+    public void setContent( final String content,
+                            final AceEditorMode mode) {
+        editor.setMode( mode);
+        editor.setText( content );
+        editor.redisplay();
     }
 
+    @Override
     public String getContent() {
-        return fileContent.getText();
+        return editor.getText();
     }
 
     @Override
     public void setFocus() {
-        fileContent.setFocus( true );
+        editor.setFocus();
     }
 
     @Override
@@ -81,7 +85,7 @@ public class TextEditorView extends Composite
 
     @Override
     public void setReadOnly( final boolean isReadOnly ) {
-        fileContent.setEnabled( !isReadOnly );
+        editor.setReadOnly( isReadOnly );
     }
 
     @Override
@@ -95,7 +99,7 @@ public class TextEditorView extends Composite
         int width = getParent().getOffsetWidth();
         setPixelSize( width,
                       height );
-        fileContent.onResize();
+        editor.onResize();
     }
 
 }

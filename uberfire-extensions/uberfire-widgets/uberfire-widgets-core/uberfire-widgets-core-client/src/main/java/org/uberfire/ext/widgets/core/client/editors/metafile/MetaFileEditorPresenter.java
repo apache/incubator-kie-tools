@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
 import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.ObservablePath;
@@ -40,9 +41,11 @@ public class MetaFileEditorPresenter {
             @Override
             public void callback( String response ) {
                 if ( response == null ) {
-                    view.setContent( CoreConstants.INSTANCE.EmptyEntry() );
+                    view.setContent( CoreConstants.INSTANCE.EmptyEntry(),
+                                     AceEditorMode.TEXT );
                 } else {
-                    view.setContent( response );
+                    view.setContent( response,
+                                     AceEditorMode.TEXT );
                 }
             }
         } ).readAllString( path );

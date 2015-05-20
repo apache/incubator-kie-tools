@@ -17,7 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:common="urn:import:org.uberfire.ext.widgets.common.client.common">
+             xmlns:common="urn:import:org.uberfire.ext.widgets.common.client.ace">
 
   <ui:style>
     .betterSetup {
@@ -27,6 +27,6 @@
   </ui:style>
 
   <g:ResizeLayoutPanel>
-    <common:ResizableTextArea ui:field="fileContent" styleName="{style.betterSetup}"/>
+    <common:AceEditor ui:field="editor" styleName="{style.betterSetup}"/>
   </g:ResizeLayoutPanel>
 </ui:UiBinder>
