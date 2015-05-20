@@ -84,4 +84,5 @@ public class KieMetaDataEditorPresenter
     public Menus getMenus() {
         return menus;
     }
+
 }

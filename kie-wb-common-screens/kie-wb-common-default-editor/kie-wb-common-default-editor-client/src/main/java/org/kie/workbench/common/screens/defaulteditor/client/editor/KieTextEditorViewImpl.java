@@ -19,6 +19,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorTitle;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.common.BusyPopup;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
 
@@ -100,5 +101,10 @@ public class KieTextEditorViewImpl
     @Override
     public boolean confirmClose() {
         return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+    }
+
+    @Override
+    public AceEditorMode getAceEditorMode() {
+        return presenter.getAceEditorMode();
     }
 }

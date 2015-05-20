@@ -32,6 +32,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.validation.DefaultFileNameValidator;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextResourceType;
@@ -42,7 +43,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
-public class KieTextEditorPresenter
+public abstract class KieTextEditorPresenter
         extends KieEditor {
 
     protected KieTextEditorView view;
@@ -165,6 +166,15 @@ public class KieTextEditorPresenter
     @OnMayClose
     public boolean mayClose() {
         return super.mayClose( view.getContent().hashCode() );
+    }
+
+    /**
+     * This allows sub-classes to determine the Mode of the AceEditor.
+     * By default the AceEditor assumes the AceEditorMode.TEXT.
+     * @return
+     */
+    public AceEditorMode getAceEditorMode() {
+        return AceEditorMode.TEXT;
     }
 
 }

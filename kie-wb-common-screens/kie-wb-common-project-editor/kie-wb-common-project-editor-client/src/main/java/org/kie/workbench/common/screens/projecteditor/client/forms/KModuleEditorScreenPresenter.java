@@ -12,6 +12,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
@@ -21,8 +22,8 @@ public class KModuleEditorScreenPresenter
         extends KieTextEditorPresenter {
 
     @Inject
-    public KModuleEditorScreenPresenter(KieTextEditorView baseView) {
-        super(baseView);
+    public KModuleEditorScreenPresenter( KieTextEditorView baseView ) {
+        super( baseView );
     }
 
     @OnStartup
@@ -51,6 +52,10 @@ public class KModuleEditorScreenPresenter
         return super.getWidget();
     }
 
+    @Override
+    public AceEditorMode getAceEditorMode() {
+        return AceEditorMode.XML;
+    }
 }
 
 

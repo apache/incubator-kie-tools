@@ -25,6 +25,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.core.client.editors.texteditor.TextResourceType;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
@@ -36,17 +37,35 @@ public class KieTextEditorScreenPresenter
         extends KieTextEditorPresenter {
 
     @Inject
-    private TextResourceType type;
+    private TextResourceType typeText;
+
+    @Inject
+    private XmlResourceType typeXML;
+
+    @Inject
+    private PackageNameWhiteListResourceType typeWhiteList;
 
     @Inject
     public KieTextEditorScreenPresenter( final KieTextEditorView baseView ) {
         super( baseView );
     }
 
+    private AceEditorMode mode;
+
     @OnStartup
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
-        super.onStartup( path, place );
+        super.onStartup( path,
+                         place );
+        if ( typeText.accept( path ) ) {
+            mode = AceEditorMode.TEXT;
+        } else if ( typeXML.accept( path ) ) {
+            mode = AceEditorMode.XML;
+        } else if ( typeWhiteList.accept( path ) ) {
+            mode = AceEditorMode.TEXT;
+        } else {
+            mode = AceEditorMode.TEXT;
+        }
     }
 
     @WorkbenchPartTitle
@@ -67,6 +86,11 @@ public class KieTextEditorScreenPresenter
     @WorkbenchMenu
     public Menus getMenus() {
         return menus;
+    }
+
+    @Override
+    public AceEditorMode getAceEditorMode() {
+        return mode;
     }
 
 }
