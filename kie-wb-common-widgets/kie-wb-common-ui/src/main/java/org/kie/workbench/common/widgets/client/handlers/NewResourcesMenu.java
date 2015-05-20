@@ -49,6 +49,7 @@ public class NewResourcesMenu {
     private NewResourcePresenter newResourcePresenter;
 
     private final List<MenuItem> items = new ArrayList<MenuItem>();
+    private boolean hasProjectMenuItem = false;
     private final Map<NewResourceHandler, MenuItem> newResourceHandlers = new HashMap<NewResourceHandler, MenuItem>();
 
     @PostConstruct
@@ -88,6 +89,7 @@ public class NewResourcesMenu {
                           } );
         if ( projectMenuItem != null ) {
             items.add( 0, projectMenuItem );
+            hasProjectMenuItem = true;
         }
 
     }
@@ -97,7 +99,11 @@ public class NewResourcesMenu {
     }
 
     public List<MenuItem> getMenuItemsWithoutProject() {
-        return items.subList( 1, items.size() );
+        if ( hasProjectMenuItem ) {
+            return items.subList( 1, items.size() );
+        } else {
+            return items;
+        }
     }
 
     public void onProjectContextChanged( @Observes final ProjectContextChangeEvent event ) {
