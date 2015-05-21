@@ -87,9 +87,7 @@ public class EditorLockManagerImpl implements EditorLockManager {
     
     @Override
     public void initJs() {
-        this.publishAcquireLock();
-        this.publishReleaseLock();
-        this.publishIsLocked();
+        this.publishJsApi();
     }
 
     @Override
@@ -272,22 +270,17 @@ public class EditorLockManagerImpl implements EditorLockManager {
         }
     }
     
-    private native void publishIsLocked( )/*-{
+    private native void publishJsApi( )/*-{
       var lockManager = this;
       $wnd.isLocked = function () {
           return lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::isLocked()();
       }
-    }-*/;
-    
-    private native void publishAcquireLock( )/*-{
-      var lockManager = this;
+      $wnd.isLockedByCurrentUser = function () {
+          return lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::isLockedByCurrentUser()();
+      }
       $wnd.acquireLock = function () {        
           lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::acquireLock()();
       }
-    }-*/;
-    
-    private native void publishReleaseLock( )/*-{
-      var lockManager = this;
       $wnd.releaseLock = function () {        
           lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::releaseLock()();
       }
