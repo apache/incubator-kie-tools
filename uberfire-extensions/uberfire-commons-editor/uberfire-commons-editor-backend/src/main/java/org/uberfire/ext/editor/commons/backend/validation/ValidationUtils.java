@@ -19,7 +19,7 @@ package org.uberfire.ext.editor.commons.backend.validation;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ValidationUtils {
 

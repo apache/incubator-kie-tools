@@ -3,7 +3,7 @@ package org.uberfire.ext.security.server;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 /**
  * Note: This implementation has been borrowed from Aerogear Security.
@@ -19,7 +19,7 @@ public class XSSServletRequestWrapper extends HttpServletRequestWrapper {
         final String[] values = super.getParameterValues( param );
 
         for ( int i = 0; i < values.length; i++ ) {
-            values[ i ] = StringEscapeUtils.escapeHtml( values[ i ] );
+            values[ i ] = StringEscapeUtils.escapeHtml4( values[ i ] );
         }
 
         return values;
@@ -27,7 +27,7 @@ public class XSSServletRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public String getParameter( final String param ) {
-        return StringEscapeUtils.escapeHtml( super.getParameter( param ) );
+        return StringEscapeUtils.escapeHtml4( super.getParameter( param ) );
     }
 
 }
