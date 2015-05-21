@@ -19,6 +19,12 @@ public interface EditorLockManager {
     void init( AbstractWorkbenchEditorActivity activity );
 
     /**
+     * Publishes JavaScript methods for lock management. These methods can be
+     * used by non-native editors (i.e editors that a rendered on the server).
+     */
+    void initJs();
+
+    /**
      * Registers DOM handlers to detect editor changes and, if required, tries
      * to acquire a lock. Errors in the execution of this method are propagated
      * to the global RPC/MessageBus error handler.

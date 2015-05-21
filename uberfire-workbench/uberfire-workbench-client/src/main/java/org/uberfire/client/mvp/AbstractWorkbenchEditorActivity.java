@@ -83,6 +83,12 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         lockManager.releaseLock();
         super.onClose();
     }
+    
+    @Override
+    public void onFocus() {
+        super.onFocus();
+        lockManager.initJs();
+    }
 
     public ObservablePath getPath() {
         return path;

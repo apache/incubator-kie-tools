@@ -16,12 +16,14 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class EditorLockPopup {
 
     private PopupPanel popup;
+    private Timer closeTimer;
 
     public void show( final Element parent,
                       final String lockedBy ) {
 
         if ( popup != null ) {
             popup.hide();
+            closeTimer.cancel();
         }
 
         popup = new PopupPanel( true );
@@ -40,12 +42,13 @@ public class EditorLockPopup {
         } );
         popup.show();
 
-        new Timer() {
+        closeTimer = new Timer() {
 
             @Override
             public void run() {
                 popup.hide();
             }
-        }.schedule( 7500 );
+        };
+        closeTimer.schedule( 5000 );
     }
 }
