@@ -169,4 +169,29 @@ public class DataModelImpl implements DataModel {
     public boolean isExternal( String className ) {
         return dependencyDataObjects.containsKey( className );
     }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        DataModelImpl dataModel = ( DataModelImpl ) o;
+
+        if ( dataObjects != null ? !dataObjects.equals( dataModel.dataObjects ) : dataModel.dataObjects != null ) {
+            return false;
+        }
+        return !( dependencyDataObjects != null ? !dependencyDataObjects.equals( dataModel.dependencyDataObjects ) : dataModel.dependencyDataObjects != null );
+
+    }
+
+    @Override public int hashCode() {
+        int result = dataObjects != null ? dataObjects.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + ( dependencyDataObjects != null ? dependencyDataObjects.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

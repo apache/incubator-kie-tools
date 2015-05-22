@@ -118,4 +118,49 @@ public class AbstractAnnotationDefinition implements AnnotationDefinition {
         }
         return false;
     }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        AbstractAnnotationDefinition that = ( AbstractAnnotationDefinition ) o;
+
+        if ( objectAnnotation != that.objectAnnotation ) {
+            return false;
+        }
+        if ( propertyAnnotation != that.propertyAnnotation ) {
+            return false;
+        }
+        if ( className != null ? !className.equals( that.className ) : that.className != null ) {
+            return false;
+        }
+        if ( valuePairs != null ? !valuePairs.equals( that.valuePairs ) : that.valuePairs != null ) {
+            return false;
+        }
+        if ( targets != null ? !targets.equals( that.targets ) : that.targets != null ) {
+            return false;
+        }
+        return retention == that.retention;
+
+    }
+
+    @Override public int hashCode() {
+        int result = className != null ? className.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + ( valuePairs != null ? valuePairs.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( objectAnnotation ? 1 : 0 );
+        result = ~~result;
+        result = 31 * result + ( propertyAnnotation ? 1 : 0 );
+        result = ~~result;
+        result = 31 * result + ( targets != null ? targets.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( retention != null ? retention.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

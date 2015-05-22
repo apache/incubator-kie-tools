@@ -65,4 +65,24 @@ public abstract class AbstractHasAnnotations implements HasAnnotations {
         }
         return result;
     }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        AbstractHasAnnotations that = ( AbstractHasAnnotations ) o;
+
+        return !( annotations != null ? !annotations.equals( that.annotations ) : that.annotations != null );
+
+    }
+
+    @Override public int hashCode() {
+        int result = annotations != null ? annotations.hashCode() : 0;
+        result = ~~result;
+        return result;
+    }
 }

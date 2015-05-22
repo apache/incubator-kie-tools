@@ -127,4 +127,28 @@ public class DataObjectImpl extends JavaClassImpl implements DataObject {
         return false;
     }
 
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        DataObjectImpl that = ( DataObjectImpl ) o;
+
+        return !( properties != null ? !properties.equals( that.properties ) : that.properties != null );
+
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( properties != null ? properties.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

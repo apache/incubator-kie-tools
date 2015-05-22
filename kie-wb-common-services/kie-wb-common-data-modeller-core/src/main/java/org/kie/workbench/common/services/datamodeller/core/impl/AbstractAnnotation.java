@@ -66,4 +66,28 @@ public abstract class AbstractAnnotation implements Annotation {
         return annotationDefinition.getClassName();
     }
 
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        AbstractAnnotation that = ( AbstractAnnotation ) o;
+
+        if ( annotationDefinition != null ? !annotationDefinition.equals( that.annotationDefinition ) : that.annotationDefinition != null ) {
+            return false;
+        }
+        return !( values != null ? !values.equals( that.values ) : that.values != null );
+
+    }
+
+    @Override public int hashCode() {
+        int result = annotationDefinition != null ? annotationDefinition.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + ( values != null ? values.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

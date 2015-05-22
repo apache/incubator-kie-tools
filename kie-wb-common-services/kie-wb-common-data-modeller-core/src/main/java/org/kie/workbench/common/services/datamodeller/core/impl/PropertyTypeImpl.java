@@ -61,4 +61,29 @@ public class PropertyTypeImpl implements PropertyType {
     public boolean isPrimitive() {
         return NamingUtils.isPrimitiveTypeId(className);
     }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        PropertyTypeImpl that = ( PropertyTypeImpl ) o;
+
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+            return false;
+        }
+        return !( className != null ? !className.equals( that.className ) : that.className != null );
+
+    }
+
+    @Override public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + ( className != null ? className.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

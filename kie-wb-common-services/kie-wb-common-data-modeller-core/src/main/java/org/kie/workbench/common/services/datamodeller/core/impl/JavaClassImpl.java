@@ -86,4 +86,49 @@ public class JavaClassImpl extends AbstractJavaType implements JavaClass {
     public List<String> getInterfaces() {
         return interfaces;
     }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        JavaClassImpl javaClass = ( JavaClassImpl ) o;
+
+        if ( _static != javaClass._static ) {
+            return false;
+        }
+        if ( _final != javaClass._final ) {
+            return false;
+        }
+        if ( _abstract != javaClass._abstract ) {
+            return false;
+        }
+        if ( superClassName != null ? !superClassName.equals( javaClass.superClassName ) : javaClass.superClassName != null ) {
+            return false;
+        }
+        return !( interfaces != null ? !interfaces.equals( javaClass.interfaces ) : javaClass.interfaces != null );
+
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( superClassName != null ? superClassName.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( interfaces != null ? interfaces.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( _static ? 1 : 0 );
+        result = ~~result;
+        result = 31 * result + ( _final ? 1 : 0 );
+        result = ~~result;
+        result = 31 * result + ( _abstract ? 1 : 0 );
+        result = ~~result;
+        return result;
+    }
 }

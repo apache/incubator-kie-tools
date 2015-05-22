@@ -39,7 +39,7 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     private boolean _static = false;
 
     private boolean _final = false;
-    
+
     public static final String DEFAULT_PROPERTY_BAG = "java.util.List";
 
     public ObjectPropertyImpl() {
@@ -176,6 +176,71 @@ public class ObjectPropertyImpl extends AbstractHasAnnotations implements Object
     }
 
     @Override public void setBaseType( boolean baseType ) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        //do nothing
+    }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        ObjectPropertyImpl that = ( ObjectPropertyImpl ) o;
+
+        if ( multiple != that.multiple ) {
+            return false;
+        }
+        if ( modifiers != that.modifiers ) {
+            return false;
+        }
+        if ( fileOrder != that.fileOrder ) {
+            return false;
+        }
+        if ( _static != that._static ) {
+            return false;
+        }
+        if ( _final != that._final ) {
+            return false;
+        }
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+            return false;
+        }
+        if ( className != null ? !className.equals( that.className ) : that.className != null ) {
+            return false;
+        }
+        if ( bag != null ? !bag.equals( that.bag ) : that.bag != null ) {
+            return false;
+        }
+        return visibility == that.visibility;
+
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( className != null ? className.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( bag != null ? bag.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( multiple ? 1 : 0 );
+        result = ~~result;
+        result = 31 * result + modifiers;
+        result = ~~result;
+        result = 31 * result + fileOrder;
+        result = ~~result;
+        result = 31 * result + ( visibility != null ? visibility.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( _static ? 1 : 0 );
+        result = ~~result;
+        result = 31 * result + ( _final ? 1 : 0 );
+        result = ~~result;
+        return result;
     }
 }
