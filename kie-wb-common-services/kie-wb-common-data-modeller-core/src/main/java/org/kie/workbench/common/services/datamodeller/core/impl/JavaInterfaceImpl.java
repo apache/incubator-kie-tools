@@ -56,4 +56,29 @@ public class JavaInterfaceImpl extends AbstractJavaType implements JavaInterface
     public List<String> getInterfaces() {
         return interfaces;
     }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        JavaInterfaceImpl that = ( JavaInterfaceImpl ) o;
+
+        return !( interfaces != null ? !interfaces.equals( that.interfaces ) : that.interfaces != null );
+
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( interfaces != null ? interfaces.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }

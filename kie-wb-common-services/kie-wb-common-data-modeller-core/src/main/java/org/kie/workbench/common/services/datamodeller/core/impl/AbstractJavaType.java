@@ -135,4 +135,54 @@ public abstract class AbstractJavaType extends AbstractHasAnnotations implements
     public Visibility getVisibilty() {
         return visibility;
     }
+
+    @Override public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
+
+        AbstractJavaType that = ( AbstractJavaType ) o;
+
+        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+            return false;
+        }
+        if ( packageName != null ? !packageName.equals( that.packageName ) : that.packageName != null ) {
+            return false;
+        }
+        if ( enclosingType != null ? !enclosingType.equals( that.enclosingType ) : that.enclosingType != null ) {
+            return false;
+        }
+        if ( nestedTypes != null ? !nestedTypes.equals( that.nestedTypes ) : that.nestedTypes != null ) {
+            return false;
+        }
+        if ( visibility != that.visibility ) {
+            return false;
+        }
+        return typeKind == that.typeKind;
+
+    }
+
+    @Override public int hashCode() {
+        int result = super.hashCode();
+        result = ~~result;
+        result = 31 * result + ( name != null ? name.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( packageName != null ? packageName.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( enclosingType != null ? enclosingType.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( nestedTypes != null ? nestedTypes.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( visibility != null ? visibility.hashCode() : 0 );
+        result = ~~result;
+        result = 31 * result + ( typeKind != null ? typeKind.hashCode() : 0 );
+        result = ~~result;
+        return result;
+    }
 }
