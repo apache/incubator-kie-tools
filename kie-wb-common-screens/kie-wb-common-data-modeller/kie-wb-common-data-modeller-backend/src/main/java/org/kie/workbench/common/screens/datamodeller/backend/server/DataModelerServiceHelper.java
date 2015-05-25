@@ -30,6 +30,8 @@ import javax.inject.Named;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.util.ClassUtils;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.service.ProjectService;
@@ -37,6 +39,8 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.model.SyntaxError;
+import org.kie.api.builder.KieModule;
+import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationMemberDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
@@ -46,6 +50,8 @@ import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.JavaTypeInfoTO;
 import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.screens.datamodeller.model.VisibilityTO;
+import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.LRUProjectDependenciesClassLoaderCache;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
@@ -64,6 +70,8 @@ import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
+import org.kie.workbench.common.services.shared.project.KieProject;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -84,7 +92,14 @@ public class DataModelerServiceHelper {
     IOService ioService;
 
     @Inject
-    private ProjectService<?> projectService;
+    protected KieProjectService projectService;
+
+    @Inject
+    @Named("LRUProjectDependenciesClassLoaderCache")
+    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
+
+    @Inject
+    private LRUBuilderCache builderCache;
 
     public DataModel to2Domain( DataModelTO dataModelTO ) {
         DataModel dataModel = ModelFactoryImpl.getInstance().newModel();
@@ -489,6 +504,21 @@ public class DataModelerServiceHelper {
         if ( visibilityTO == VisibilityTO.PRIVATE ) return Visibility.PRIVATE;
         if ( visibilityTO == VisibilityTO.PACKAGE_PRIVATE ) return Visibility.PACKAGE_PRIVATE;
         return Visibility.PROTECTED;
+    }
+
+    public ClassLoader getProjectClassLoader(KieProject project) {
+
+        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+        ClassLoader dependenciesClassLoader = dependenciesClassLoaderCache.assertDependenciesClassLoader( project );
+        ClassLoader projectClassLoader;
+        if ( module instanceof InternalKieModule ) {
+            //will always be an internal kie module
+            InternalKieModule internalModule = (InternalKieModule) module;
+            projectClassLoader = new ClassUtils.MapClassLoader( internalModule.getClassesMap( true ), dependenciesClassLoader );
+        } else {
+            projectClassLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
+        }
+        return projectClassLoader;
     }
 
 }

@@ -51,6 +51,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.slf4j.Logger;
@@ -104,12 +105,15 @@ public class Builder {
 
     private Set<String> javaResources = new HashSet<String>();
 
+    private LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache;
+
     public Builder( final Project project,
                     final IOService ioService,
                     final KieProjectService projectService,
                     final ProjectImportsService importsService,
                     final List<BuildValidationHelper> buildValidationHelpers,
-                    final PackageNameWhiteList packageNameWhiteList ) {
+                    final PackageNameWhiteList packageNameWhiteList,
+                    final LRUProjectDependenciesClassLoaderCache dependenciesClassLoaderCache ) {
         this.project = project;
         this.ioService = ioService;
         this.projectService = projectService;
@@ -121,6 +125,7 @@ public class Builder {
         this.projectPrefix = projectRoot.toUri().toString();
         this.kieServices = KieServices.Factory.get();
         this.kieFileSystem = kieServices.newKieFileSystem();
+        this.dependenciesClassLoaderCache = dependenciesClassLoaderCache;
 
         DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = Files.newDirectoryStream( projectRoot );
         visitPaths( directoryStream );
@@ -185,6 +190,9 @@ public class Builder {
             final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( ( (InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors() );
             final Set<String> packageNamesWhiteList = packageNameWhiteList.filterPackageNames( project,
                                                                                                kieModuleMetaData.getPackages() );
+            //store the project dependencies ClassLoader for optimization purposes.
+            updateDependenciesClassLoader( project, kieModuleMetaData );
+
             for ( final String packageName : kieModuleMetaData.getPackages() ) {
                 if ( packageNamesWhiteList.contains( packageName ) ) {
                     for ( final String className : kieModuleMetaData.getClasses( packageName ) ) {
@@ -215,6 +223,14 @@ public class Builder {
             }
 
             return results;
+        }
+    }
+
+    private void updateDependenciesClassLoader( Project project, KieModuleMetaData kieModuleMetaData ) {
+        KieProject kieProject = projectService.resolveProject( project.getPomXMLPath() );
+        if ( kieProject != null ) {
+            dependenciesClassLoaderCache.setDependenciesClassLoader( kieProject,
+                    LRUProjectDependenciesClassLoaderCache.buildClassLoader( kieProject, kieModuleMetaData ) );
         }
     }
 

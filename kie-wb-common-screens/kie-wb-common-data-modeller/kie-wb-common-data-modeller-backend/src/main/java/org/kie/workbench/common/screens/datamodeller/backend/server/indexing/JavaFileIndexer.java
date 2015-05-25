@@ -28,8 +28,7 @@ import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.Type;
 import org.jboss.forge.roaster.model.source.FieldSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.kie.api.builder.KieModule;
-import org.kie.scanner.KieModuleMetaData;
+import org.kie.workbench.common.screens.datamodeller.backend.server.DataModelerServiceHelper;
 import org.kie.workbench.common.screens.datamodeller.model.index.FieldName;
 import org.kie.workbench.common.screens.datamodeller.model.index.FieldType;
 import org.kie.workbench.common.screens.datamodeller.model.index.JavaType;
@@ -103,10 +102,10 @@ public class JavaFileIndexer implements Indexer {
     protected KieProjectService projectService;
 
     @Inject
-    private LRUBuilderCache builderCache;
+    protected JavaResourceTypeDefinition javaResourceTypeDefinition;
 
     @Inject
-    protected JavaResourceTypeDefinition javaResourceTypeDefinition;
+    DataModelerServiceHelper dataModelerServiceHelper;
 
     @Override
     public boolean supportsPath( final Path path ) {
@@ -252,8 +251,6 @@ public class JavaFileIndexer implements Indexer {
     }
 
     protected ClassLoader getProjectClassLoader( final KieProject project ) {
-        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
-        final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
-        return classLoader;
+        return dataModelerServiceHelper.getProjectClassLoader( project );
     }
 }
