@@ -13,114 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.widgets.client.source;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
 
 public class ViewDRLSourceWidget
-        extends Composite {
+        extends FlowPanel
+        implements RequiresResize {
 
-    private final FlexTable table = new FlexTable();
+    private final DrlEditor drlEditor = new DrlEditor();
 
     public ViewDRLSourceWidget() {
-        initWidget(table);
+        add( drlEditor );
+        drlEditor.setReadOnly( true );
+        setWidth( "100%" );
+        setHeight( "100%" );
     }
 
     public void setContent( final String content ) {
         clearContent();
-        final String[] rows = content.split( "\n" );
-
-        for ( int i = 0; i < rows.length; i++ ) {
-
-
-            table.setHTML( i,
-                           0,
-                           "<span style='font-family: Courier, monospace; color:grey;'>"
-                                   + ( i + 1 )
-                                   + ".</span>" );
-            table.setHTML( i,
-                           1,
-                           "<span style='font-family: Courier, monospace; color:green;' >|</span>" );
-            table.setHTML( i,
-                           2,
-                           addSyntaxHighlights( rows[ i ] ) );
-
-        }
+        drlEditor.setText( content );
     }
 
     public void clearContent() {
-        table.removeAllRows();
+        drlEditor.setText( "" );
     }
 
-    private String addSyntaxHighlights( String text ) {
-
-        if ( text.trim().startsWith( "#" ) ) {
-            text = "<span style='font-family: Courier, monospace; color:green'>"
-                    + text
-                    + "</span>";
-        } else {
-
-            String[] keywords = { "rule", "when", "then", "end", "accumulate", "collect", "from", "null", "over", "lock-on-active", "date-effective", "date-expires", "no-loop", "auto-focus", "activation-group", "agenda-group", "ruleflow-group",
-                    "entry-point", "duration", "package", "import", "dialect", "salience", "enabled", "attributes", "extend", "template", "query", "declare", "function", "global", "eval", "exists", "forall", "action", "reverse", "result", "end",
-                    "init" };
-
-            for ( String keyword : keywords ) {
-                final String match = "\\b" + keyword + "\\b";
-                text = text.replaceAll( match,
-                                        "<span style='font-family: Courier, monospace; color:red;'>"
-                                                + keyword
-                                                + "</span>" );
-            }
-
-            text = handleStrings( "\"",
-                                  text );
-        }
-        text = text.replace( "\t",
-                             "&nbsp;&nbsp;&nbsp;&nbsp;" );
-
-        return "<span style='font-family: Courier, monospace;'>" + text + "</span>";
-    }
-
-    private String handleStrings( String character,
-                                  String text ) {
-        int stringStart = text.indexOf( character );
-        while ( stringStart >= 0 ) {
-            int stringEnd = text.indexOf( character,
-                                          stringStart + 1 );
-            if ( stringEnd < 0 ) {
-                stringStart = -1;
-                break;
-            }
-
-            String oldString = text.substring( stringStart,
-                                               stringEnd + 1 );
-
-            String newString = "<span style='font-family: Courier, monospace; color:green;'>"
-                    + oldString
-                    + "</span>";
-
-            String beginning = text.substring( 0,
-                                               stringStart );
-            String end = text.substring( stringEnd + 1 );
-
-            text = beginning
-                    + newString
-                    + end;
-
-            int searchStart = stringStart
-                    + newString.length()
-                    + 1;
-
-            if ( searchStart < text.length() ) {
-                stringStart = text.indexOf( character,
-                                            searchStart );
-            } else {
-                stringStart = -1;
-            }
-        }
-        return text;
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight();
+        int width = getParent().getOffsetWidth();
+        setPixelSize( width,
+                      height );
+        drlEditor.onResize();
     }
 
 }
