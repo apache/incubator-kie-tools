@@ -67,18 +67,22 @@ public abstract class AbstractGuidedDecisionTableAttributeBuilder
         }
     }
 
+    @Override
     public ActionType.Code getActionTypeCode() {
         return this.actionType;
     }
 
+    @Override
     public void clearValues() {
         this.values.clear();
     }
 
+    @Override
     public boolean hasValues() {
         return this.values.size() > 0;
     }
 
+    @Override
     public void addTemplate( final int row,
                              final int column,
                              final String content ) {
@@ -90,8 +94,13 @@ public abstract class AbstractGuidedDecisionTableAttributeBuilder
                                           ConversionMessageType.ERROR );
     }
 
+    @Override
     public String getResult() {
         throw new UnsupportedOperationException( this.getClass().getSimpleName() + " does not return DRL." );
     }
 
+    @Override
+    public int getRowCount() {
+        return values.size();
+    }
 }

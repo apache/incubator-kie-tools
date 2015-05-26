@@ -24,14 +24,14 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
  */
 public interface ParameterizedValueBuilder {
 
-    public String getTemplate();
+    String getTemplate();
 
-    public List<String> getParameters();
+    List<String> getParameters();
 
-    public List<List<DTCellValue52>> getColumnData();
+    List<List<DTCellValue52>> getColumnData();
 
-    public void addCellValue( final int row,
-                              final int column,
-                              final String value );
+    void addCellValue( final int row,
+                       final int column,
+                       final String value );
 
 }

@@ -31,7 +31,15 @@ public class RowNumberBuilder
 
     private List<DTCellValue52> values = new ArrayList<DTCellValue52>();
 
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable ) {
+    @Override
+    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                       final int maxRowCount ) {
+        if ( this.values.size() < maxRowCount ) {
+            for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
+                this.values.add( new DTCellValue52() );
+            }
+        }
+
         for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
             dtable.getData().add( new ArrayList<DTCellValue52>() );
             final DTCellValue52 dcv = this.values.get( iRow );
@@ -41,32 +49,43 @@ public class RowNumberBuilder
         }
     }
 
+    @Override
     public void addCellValue( final int row,
                               final int col,
                               final String value ) {
         this.values.add( new DTCellValue52() );
     }
 
+    @Override
     public void clearValues() {
         this.values.clear();
     }
 
+    @Override
     public boolean hasValues() {
         return this.values.size() > 0;
     }
 
+    @Override
     public Code getActionTypeCode() {
         throw new UnsupportedOperationException( "RowNumberBuilder does implement an ActionType.Code" );
     }
 
+    @Override
     public String getResult() {
         throw new UnsupportedOperationException( "RowNumberBuilder does not return DRL." );
     }
 
+    @Override
     public void addTemplate( final int row,
                              final int col,
                              final String content ) {
         throw new UnsupportedOperationException( "RowNumberBuilder does implement code snippets." );
+    }
+
+    @Override
+    public int getRowCount() {
+        return values.size();
     }
 
 }

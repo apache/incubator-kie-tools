@@ -33,39 +33,57 @@ public class DefaultDescriptionBuilder
 
     private List<DTCellValue52> values = new ArrayList<DTCellValue52>();
 
+    @Override
     public Code getActionTypeCode() {
         return ActionType.Code.DESCRIPTION;
     }
 
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable ) {
+    @Override
+    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                       final int maxRowCount ) {
+        if ( this.values.size() < maxRowCount ) {
+            for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
+                this.values.add( new DTCellValue52( "" ) );
+            }
+        }
+
         for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
             dtable.getData().get( iRow ).add( 1,
                                               this.values.get( iRow ) );
         }
     }
 
-    public void addCellValue( int row,
-                              int column,
-                              String value ) {
+    @Override
+    public void addCellValue( final int row,
+                              final int column,
+                              final String value ) {
         this.values.add( new DTCellValue52( "Created from row " + ( row + 1 ) ) );
     }
 
+    @Override
     public void clearValues() {
         this.values.clear();
     }
 
+    @Override
     public boolean hasValues() {
         return this.values.size() > 0;
     }
 
+    @Override
     public String getResult() {
         throw new UnsupportedOperationException( "DefaultDescriptionBuilder does not return DRL." );
     }
 
-    public void addTemplate( int row,
-                             int col,
-                             String content ) {
+    @Override
+    public void addTemplate( final int row,
+                             final int col,
+                             final String content ) {
         throw new UnsupportedOperationException( "DefaultDescriptionBuilder does implement code snippets." );
     }
 
+    @Override
+    public int getRowCount() {
+        return values.size();
+    }
 }

@@ -33,13 +33,16 @@ public class GuidedDecisionTableNameBuilder extends AbstractGuidedDecisionTableA
                conversionResult );
     }
 
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable ) {
+    @Override
+    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                       final int maxRowCount ) {
         //ActionType.Code.NAME columns do not have an equivalent
     }
 
-    public void addCellValue( int row,
-                              int column,
-                              String value ) {
+    @Override
+    public void addCellValue( final int row,
+                              final int column,
+                              final String value ) {
         //ActionType.Code.NAME columns do not have an equivalent
     }
 

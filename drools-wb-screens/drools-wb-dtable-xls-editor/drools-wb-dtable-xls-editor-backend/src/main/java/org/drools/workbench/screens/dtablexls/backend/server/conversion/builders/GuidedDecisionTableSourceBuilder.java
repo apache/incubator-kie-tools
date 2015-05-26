@@ -22,16 +22,26 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
  * Interface for additional responsibilities for Guided Decision Table builders
  */
 public interface GuidedDecisionTableSourceBuilder
-    extends
-    SourceBuilder {
+        extends
+        SourceBuilder {
 
     /**
      * Populate the given Decision Table with details of the parsed column.
      * Actions should include adding applicable columns and data to the
      * underlying model.
-     * 
-     * @param dtable
+     * @param dtable The target Guided Decision Table to populate
+     * @param maxRowCount The maximum number of used rows detected in the XLS
      */
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable );
+    void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                final int maxRowCount );
+
+    /**
+     * Get the number of rows processed by the SourceBuilder. POI returns
+     * cells that contain empty values (if the User has set the value to, for
+     * example, an empty String). This can mean not all columns contain the
+     * same number of rows.
+     * @return
+     */
+    int getRowCount();
 
 }

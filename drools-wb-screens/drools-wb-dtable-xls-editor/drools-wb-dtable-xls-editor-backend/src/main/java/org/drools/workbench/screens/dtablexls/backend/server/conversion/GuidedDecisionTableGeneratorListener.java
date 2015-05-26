@@ -28,12 +28,12 @@ import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.decisiontable.parser.SourceBuilder;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
-import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
-import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.template.model.Global;
 import org.drools.template.model.Import;
 import org.drools.template.model.Package;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
+import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.DefaultDescriptionBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableActivationGroupBuilder;
 import org.drools.workbench.screens.dtablexls.backend.server.conversion.builders.GuidedDecisionTableAgendaGroupBuilder;
@@ -76,7 +76,6 @@ public class GuidedDecisionTableGeneratorListener
 
     //State machine variables for this parser
     private boolean _isInRuleTable = false;
-    private boolean _haveColumnsBeenIdentified = false;
     private int _ruleRow;
     private int _ruleStartColumn;
     private int _ruleEndColumn;
@@ -154,12 +153,8 @@ public class GuidedDecisionTableGeneratorListener
                          final int column,
                          final String value,
                          int mergedColStart ) {
-        //Ignore empty cells unless we've identified all columns
-        if ( isCellValueEmpty( value ) && !this._haveColumnsBeenIdentified ) {
-            return;
-        }
-        //Ignore cells beyond the extent of the defined columns
-        if ( column > this._ruleEndColumn && this._haveColumnsBeenIdentified ) {
+        //Ignore empty cells past the last ACTION_ROW cell
+        if ( isCellValueEmpty( value ) && column > _ruleEndColumn ) {
             return;
         }
         if ( _isInRuleTable && row == this._ruleStartRow ) {
@@ -222,14 +217,19 @@ public class GuidedDecisionTableGeneratorListener
             this._dtables.add( this._dtable );
             this._currentSequentialFlag = false;
             this._isInRuleTable = false;
-            this._haveColumnsBeenIdentified = false;
             this._isNewDataRow = false;
         }
     }
 
     private void populateDecisionTable() {
+        int maxRowCount = 0;
         for ( GuidedDecisionTableSourceBuilder sb : this._sourceBuilders ) {
-            sb.populateDecisionTable( this._dtable );
+            maxRowCount = Math.max( maxRowCount,
+                                    sb.getRowCount() );
+        }
+        for ( GuidedDecisionTableSourceBuilder sb : this._sourceBuilders ) {
+            sb.populateDecisionTable( this._dtable,
+                                      maxRowCount );
         }
     }
 
@@ -306,7 +306,6 @@ public class GuidedDecisionTableGeneratorListener
         switch ( row - this._ruleStartRow ) {
             case ACTION_ROW:
                 //CONDITION, ACTION, ATTRIBUTE etc...
-                this._ruleEndColumn = column;
                 doActionTypeCell( row,
                                   column,
                                   trimVal );
@@ -314,7 +313,6 @@ public class GuidedDecisionTableGeneratorListener
 
             case OBJECT_TYPE_ROW:
                 //Pattern definition ("Driver", "Smurf" etc...)
-                this._haveColumnsBeenIdentified = true;
                 doObjectTypeCell( row,
                                   column,
                                   trimVal,
@@ -355,6 +353,8 @@ public class GuidedDecisionTableGeneratorListener
     private void doActionTypeCell( final int row,
                                    final int column,
                                    final String trimVal ) {
+        _ruleEndColumn = column;
+
         ActionType.addNewActionType( this._actions,
                                      trimVal,
                                      column,
@@ -554,6 +554,27 @@ public class GuidedDecisionTableGeneratorListener
 
         final ActionType actionType = getActionForColumn( row,
                                                           column );
+        if ( actionType.getSourceBuilder() == null ) {
+            if ( actionType.getCode() == Code.CONDITION ) {
+                GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableLHSBuilder( row - 2,
+                                                                                         column,
+                                                                                         "",
+                                                                                         this._parameterUtilities,
+                                                                                         this._conversionResult );
+                this._sourceBuilders.add( sb );
+                actionType.setSourceBuilder( sb );
+
+            } else if ( actionType.getCode() == Code.ACTION ) {
+                GuidedDecisionTableSourceBuilder sb = new GuidedDecisionTableRHSBuilder( row - 2,
+                                                                                         column,
+                                                                                         "",
+                                                                                         this._parameterUtilities,
+                                                                                         this._conversionResult );
+                this._sourceBuilders.add( sb );
+                actionType.setSourceBuilder( sb );
+            }
+        }
+
         if ( value.trim().equals( "" ) &&
                 ( actionType.getCode() == Code.ACTION ||
                         actionType.getCode() == Code.CONDITION ||

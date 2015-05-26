@@ -41,7 +41,9 @@ public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTa
         this.isSequential = isSequential;
     }
 
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable ) {
+    @Override
+    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                       final int maxRowCount ) {
         final AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.SALIENCE_ATTR );
 
@@ -56,10 +58,18 @@ public class GuidedDecisionTableSalienceBuilder extends AbstractGuidedDecisionTa
             }
         }
         dtable.getAttributeCols().add( column );
+
+        if ( this.values.size() < maxRowCount ) {
+            for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
+                this.values.add( new DTCellValue52( Integer.valueOf( "" ) ) );
+            }
+        }
+
         addColumnData( dtable,
                        column );
     }
 
+    @Override
     public void addCellValue( final int row,
                               final int column,
                               final String content ) {

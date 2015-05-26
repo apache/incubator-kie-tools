@@ -22,11 +22,10 @@ public interface HasColumnHeadings {
 
     /**
      * Set column header
-     * 
      * @param column
      * @param value
      */
-    public void setColumnHeader( int column,
-                                 String value );
+    void setColumnHeader( int column,
+                          String value );
 
 }

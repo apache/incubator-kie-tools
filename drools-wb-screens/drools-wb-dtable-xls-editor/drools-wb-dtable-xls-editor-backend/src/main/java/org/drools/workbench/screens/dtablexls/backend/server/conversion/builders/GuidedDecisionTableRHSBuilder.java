@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.screens.dtablexls.backend.server.conversion.builders;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,9 @@ public class GuidedDecisionTableRHSBuilder
         this.conversionResult = conversionResult;
     }
 
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable ) {
+    @Override
+    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                       final int maxRowCount ) {
         //Sort column builders by column index to ensure Actions are added in the correct sequence
         final Set<Integer> sortedIndexes = new TreeSet<Integer>( this.valueBuilders.keySet() );
 
@@ -78,26 +81,31 @@ public class GuidedDecisionTableRHSBuilder
             final ParameterizedValueBuilder vb = this.valueBuilders.get( index );
             addColumn( dtable,
                        vb,
+                       maxRowCount,
                        index );
         }
     }
 
     private void addColumn( final GuidedDecisionTable52 dtable,
                             final ParameterizedValueBuilder vb,
+                            final int maxRowCount,
                             final int index ) {
         if ( vb instanceof LiteralValueBuilder ) {
             addLiteralColumn( dtable,
                               (LiteralValueBuilder) vb,
+                              maxRowCount,
                               index );
         } else {
             addBRLFragmentColumn( dtable,
                                   vb,
+                                  maxRowCount,
                                   index );
         }
     }
 
     private void addLiteralColumn( final GuidedDecisionTable52 dtable,
                                    final LiteralValueBuilder vb,
+                                   final int maxRowCount,
                                    final int index ) {
         //Create column - Everything is a BRL fragment (for now)
         final BRLActionColumn column = new BRLActionColumn();
@@ -111,7 +119,8 @@ public class GuidedDecisionTableRHSBuilder
         dtable.getActionCols().add( column );
 
         //Add column data
-        final List<List<DTCellValue52>> columnData = vb.getColumnData();
+        final List<List<DTCellValue52>> columnData = assertColumnData( vb,
+                                                                       maxRowCount );
         final int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
         for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
             final List<DTCellValue52> rowData = dtable.getData().get( iRow );
@@ -123,6 +132,7 @@ public class GuidedDecisionTableRHSBuilder
 
     private void addBRLFragmentColumn( final GuidedDecisionTable52 dtable,
                                        final ParameterizedValueBuilder vb,
+                                       final int maxRowCount,
                                        final int index ) {
         //Create column - Everything is a BRL fragment (for now)
         final BRLActionColumn column = new BRLActionColumn();
@@ -139,7 +149,8 @@ public class GuidedDecisionTableRHSBuilder
         dtable.getActionCols().add( column );
 
         //Add column data
-        final List<List<DTCellValue52>> columnData = vb.getColumnData();
+        final List<List<DTCellValue52>> columnData = assertColumnData( vb,
+                                                                       maxRowCount );
 
         //We can use the index of the first child column to add all data
         final int iColIndex = dtable.getExpandedColumns().indexOf( column.getChildColumns().get( 0 ) );
@@ -150,6 +161,7 @@ public class GuidedDecisionTableRHSBuilder
         }
     }
 
+    @Override
     public void addTemplate( final int row,
                              final int column,
                              final String content ) {
@@ -204,6 +216,7 @@ public class GuidedDecisionTableRHSBuilder
         throw new DecisionTableParseException( "SnippetBuilder.SnippetType '" + type.toString() + "' is not supported. The column will not be added." );
     }
 
+    @Override
     public void addCellValue( final int row,
                               final int column,
                               final String value ) {
@@ -222,20 +235,50 @@ public class GuidedDecisionTableRHSBuilder
                          value );
     }
 
+    @Override
     public String getResult() {
         throw new UnsupportedOperationException( "GuidedDecisionTableRHSBuilder does not return DRL." );
     }
 
+    @Override
     public Code getActionTypeCode() {
         return Code.ACTION;
     }
 
+    @Override
     public void clearValues() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean hasValues() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getRowCount() {
+        int maxRowCount = 0;
+        for ( ParameterizedValueBuilder pvb : valueBuilders.values() ) {
+            maxRowCount = Math.max( maxRowCount,
+                                    pvb.getColumnData().size() );
+        }
+        return maxRowCount;
+    }
+
+    private List<List<DTCellValue52>> assertColumnData( final ParameterizedValueBuilder pvb,
+                                                        final int maxRowCount ) {
+        final List<List<DTCellValue52>> columnData = pvb.getColumnData();
+        final List<String> parameters = pvb.getParameters();
+        if ( columnData.size() < maxRowCount ) {
+            for ( int iRow = columnData.size(); iRow < maxRowCount; iRow++ ) {
+                final List<DTCellValue52> brlFragmentData = new ArrayList<DTCellValue52>();
+                for ( int iCol = 0; iCol < parameters.size(); iCol++ ) {
+                    brlFragmentData.add( new DTCellValue52() );
+                }
+                columnData.add( brlFragmentData );
+            }
+        }
+        return columnData;
     }
 
 }

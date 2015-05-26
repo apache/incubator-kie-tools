@@ -1155,6 +1155,37 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     }
 
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2188
+    public void testTestNonExistentCellsFromPOI() {
+
+        final ConversionResult result = new ConversionResult();
+        final List<DataListener> listeners = new ArrayList<DataListener>();
+        final GuidedDecisionTableGeneratorListener listener = new GuidedDecisionTableGeneratorListener( result );
+        listeners.add( listener );
+
+        //Convert
+        final ExcelParser parser = new ExcelParser( listeners );
+        final InputStream is = this.getClass().getResourceAsStream( "GUVNOR-2188.xls" );
+
+        try {
+            parser.parseFile( is );
+        } finally {
+            try {
+                is.close();
+            } catch ( IOException ioe ) {
+                fail( ioe.getMessage() );
+            }
+        }
+
+        //Check conversion results
+        assertEquals( 0,
+                      result.getMessages().size() );
+
+        //Check basics
+        List<GuidedDecisionTable52> dtables = listener.getGuidedDecisionTables();
+    }
+
     private boolean isRowEquivalent( String[] expected,
                                      List<DTCellValue52> actual ) {
         //Sizes should match

@@ -51,12 +51,21 @@ public class GuidedDecisionTableMetadataBuilder
         this.conversionResult = conversionResult;
     }
 
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable ) {
+    @Override
+    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                       final int maxRowCount ) {
         final MetadataCol52 column = new MetadataCol52();
         final String value = this.definitions.get( headerCol );
         column.setHideColumn( true );
         column.setMetadata( value );
         dtable.getMetadataCols().add( column );
+
+        if ( this.values.size() < maxRowCount ) {
+            for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
+                this.values.add( new DTCellValue52( "" ) );
+            }
+        }
+
         addColumnData( dtable,
                        column );
     }
@@ -75,6 +84,7 @@ public class GuidedDecisionTableMetadataBuilder
         }
     }
 
+    @Override
     public void addTemplate( final int row,
                              final int column,
                              final String content ) {
@@ -87,6 +97,7 @@ public class GuidedDecisionTableMetadataBuilder
                          content.trim() );
     }
 
+    @Override
     public void addCellValue( final int row,
                               final int column,
                               final String value ) {
@@ -101,20 +112,29 @@ public class GuidedDecisionTableMetadataBuilder
         this.values.add( dcv );
     }
 
+    @Override
     public ActionType.Code getActionTypeCode() {
         return ActionType.Code.METADATA;
     }
 
+    @Override
     public void clearValues() {
         this.values.clear();
     }
 
+    @Override
     public boolean hasValues() {
         return this.values.size() > 0;
     }
 
+    @Override
     public String getResult() {
         throw new UnsupportedOperationException( "GuidedDecisionTableMetadataBuilder does not return DRL." );
+    }
+
+    @Override
+    public int getRowCount() {
+        return values.size();
     }
 
 }

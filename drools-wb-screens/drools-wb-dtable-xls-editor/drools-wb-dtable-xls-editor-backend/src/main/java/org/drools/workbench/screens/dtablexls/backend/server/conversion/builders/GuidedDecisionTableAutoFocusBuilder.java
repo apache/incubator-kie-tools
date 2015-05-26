@@ -36,17 +36,27 @@ public class GuidedDecisionTableAutoFocusBuilder extends AbstractGuidedDecisionT
                conversionResult );
     }
 
-    public void populateDecisionTable( final GuidedDecisionTable52 dtable ) {
+    @Override
+    public void populateDecisionTable( final GuidedDecisionTable52 dtable,
+                                       final int maxRowCount ) {
         final AttributeCol52 column = new AttributeCol52();
         column.setAttribute( GuidedDecisionTable52.AUTO_FOCUS_ATTR );
         dtable.getAttributeCols().add( column );
+
+        if ( this.values.size() < maxRowCount ) {
+            for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
+                this.values.add( new DTCellValue52( RuleSheetParserUtil.isStringMeaningTrue( "" ) ) );
+            }
+        }
+
         addColumnData( dtable,
                        column );
     }
 
-    public void addCellValue( int row,
-                              int column,
-                              String value ) {
+    @Override
+    public void addCellValue( final int row,
+                              final int column,
+                              final String value ) {
         final DTCellValue52 dcv = new DTCellValue52( RuleSheetParserUtil.isStringMeaningTrue( value ) );
         this.values.add( dcv );
     }
