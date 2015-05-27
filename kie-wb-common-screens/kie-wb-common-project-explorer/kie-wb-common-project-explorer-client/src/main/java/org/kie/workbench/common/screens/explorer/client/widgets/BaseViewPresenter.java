@@ -17,12 +17,12 @@ package org.kie.workbench.common.screens.explorer.client.widgets;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.guvnor.asset.management.social.AssetManagementEventTypes;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -64,6 +64,7 @@ import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
@@ -82,6 +83,8 @@ import org.uberfire.workbench.events.ResourceBatchChangesEvent;
 import org.uberfire.workbench.events.ResourceCopiedEvent;
 import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
+
+import com.google.gwt.user.client.Window;
 
 public abstract class BaseViewPresenter implements ViewPresenter {
 
@@ -790,62 +793,28 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     // Refresh when a Resource has been added, if it exists in the active package
     public void onResourceAdded( @Observes final ResourceAddedEvent event ) {
-        if ( !getView().isVisible() ) {
-            return;
-        }
-        final Path resource = event.getPath();
-        if ( resource == null ) {
-            return;
-        }
-        if ( !Utils.isInFolderItem( activeFolderItem,
-                                    resource ) ) {
-            return;
-        }
-
-        explorerService.call( new RemoteCallback<FolderListing>() {
-            @Override
-            public void callback( final FolderListing folderListing ) {
-                getView().setItems( folderListing );
-            }
-        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
-                                                          activeRepository,
-                                                          activeProject,
-                                                          activeFolderItem,
-                                                          getActiveOptions() );
+        refresh( event.getPath() );
     }
 
     // Refresh when a Resource has been deleted, if it exists in the active package
     public void onResourceDeleted( @Observes final ResourceDeletedEvent event ) {
-        if ( !getView().isVisible() ) {
-            return;
-        }
-        final Path resource = event.getPath();
-        if ( resource == null ) {
-            return;
-        }
-        if ( !Utils.isInFolderItem( activeFolderItem,
-                                    resource ) ) {
-            return;
-        }
-
-        explorerService.call( new RemoteCallback<FolderListing>() {
-            @Override
-            public void callback( final FolderListing folderListing ) {
-                getView().setItems( folderListing );
-            }
-        }, new DefaultErrorCallback() ).getFolderListing( activeOrganizationalUnit,
-                                                          activeRepository,
-                                                          activeProject,
-                                                          activeFolderItem,
-                                                          getActiveOptions() );
+        refresh( event.getPath() );
     }
 
     // Refresh when a Resource has been copied, if it exists in the active package
     public void onResourceCopied( @Observes final ResourceCopiedEvent event ) {
+        refresh( event.getDestinationPath() );
+    }
+
+    // Refresh when a lock status changes has occurred, if it affects the active package
+    public void onLockStatusChange( @Observes final LockInfo lockInfo ) {
+        refresh( lockInfo.getFile() );
+    }
+    
+    private void refresh(final Path resource) {
         if ( !getView().isVisible() ) {
             return;
         }
-        final Path resource = event.getDestinationPath();
         if ( resource == null ) {
             return;
         }
@@ -865,7 +834,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                                           activeFolderItem,
                                                           getActiveOptions() );
     }
-
+    
     public void onSocialFileSelected( @Observes final SocialFileSelectedEvent event ) {
         vfsService.call( new RemoteCallback<Path>() {
             @Override
