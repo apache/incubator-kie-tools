@@ -247,6 +247,18 @@
       <version>${project.version}</version>
       <classifier>eap6.4</classifier>
     </dependency>
+
+    <!-- Testing Utils -->
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+
   </dependencies>
 
   <!-- Plugins -->
