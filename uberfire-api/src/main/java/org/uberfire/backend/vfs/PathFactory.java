@@ -48,12 +48,16 @@ public final class PathFactory {
         return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
     }
     
-    public static Path newLock(final Path path) {
+    public static Path newLock( final Path path ) {
         checkNotNull( "path", path );
-        return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION, 
-                                    path.toURI() + LOCK_FILE_EXTENSION );
-    }
 
+        // TODO find a way to convert path URIs between file systems automatically
+        final String systemUri = path.toURI().replaceFirst( "(@)([^/]*)", "$1system" );
+        
+        return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION,
+                                    systemUri + LOCK_FILE_EXTENSION );
+    }
+    
     @Portable
     public static class PathImpl implements Path,
                                             IsVersioned {

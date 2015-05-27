@@ -56,7 +56,7 @@ public class VFSLockServiceImpl implements VFSLockService {
         else {
             ioService.write( Paths.convert( lockInfo.getLock() ),
                              userId );
-            updateSession( lockInfo.getLock(), false );
+            updateSession( lockInfo, false );
 
             result = LockResult.acquired( path,
                                           userId );
@@ -75,7 +75,7 @@ public class VFSLockServiceImpl implements VFSLockService {
         if ( lockInfo.isLocked() ) {
             if ( sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) || sessionInfo.isAdmin() ) {
                 ioService.delete( Paths.convert( lockInfo.getLock() ) );
-                updateSession( lockInfo.getLock(), true );
+                updateSession( lockInfo, true );
 
                 result = LockResult.released( path );
                 lockEvent.fire( result.getLockInfo() );
@@ -115,24 +115,20 @@ public class VFSLockServiceImpl implements VFSLockService {
         return result;
     }
     
-    private void updateSession( final Path path, boolean remove ) {
-        if ( !Paths.isLock( path ) ) {
-            throw new IllegalArgumentException( path.toURI() + " is not a lock" );
-        }
-
+    private void updateSession( final LockInfo lockInfo, boolean remove ) {
         final HttpSession session = RpcContext.getHttpSession();
         @SuppressWarnings("unchecked")
-        Set<Path> locks = (Set<Path>) session.getAttribute( LOCK_SESSION_ATTRIBUTE_NAME );
+        Set<LockInfo> locks = (Set<LockInfo>) session.getAttribute( LOCK_SESSION_ATTRIBUTE_NAME );
         
         if ( remove && locks != null ) {
-            locks.remove( path );
+            locks.remove( lockInfo );
         }
         else {
             if ( locks == null ) {
-                locks = new HashSet<Path>();
+                locks = new HashSet<LockInfo>();
             }
 
-            locks.add( path );
+            locks.add( lockInfo );
             session.setAttribute( LOCK_SESSION_ATTRIBUTE_NAME,
                                   locks ); 
         }
