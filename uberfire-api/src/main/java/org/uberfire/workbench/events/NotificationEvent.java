@@ -26,16 +26,34 @@ public class NotificationEvent implements UberFireEvent {
 
     private final String notification;
     private final NotificationType type;
+    private final boolean isSingleton;
 
     public NotificationEvent( final String notification ) {
         this( notification,
-              NotificationType.DEFAULT );
+              NotificationType.DEFAULT,
+              false );
     }
 
     public NotificationEvent( final String notification,
                               final NotificationType type ) {
+        this( notification,
+              type,
+              false );
+    }
+
+    public NotificationEvent( final String notification,
+                              final boolean isSingleton ) {
+        this( notification,
+              NotificationType.DEFAULT,
+              isSingleton );
+    }
+
+    public NotificationEvent( final String notification,
+                              final NotificationType type,
+                              final boolean isSingleton ) {
         this.notification = notification;
         this.type = type;
+        this.isSingleton = isSingleton;
     }
 
     public String getNotification() {
@@ -46,9 +64,44 @@ public class NotificationEvent implements UberFireEvent {
         return type;
     }
 
+    public boolean isSingleton() {
+        return isSingleton;
+    }
+
     @Override
     public String toString() {
         return "NotificationEvent [notification=" + notification + ", type=" + type + "]";
     }
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof NotificationEvent ) ) {
+            return false;
+        }
+
+        NotificationEvent that = (NotificationEvent) o;
+
+        if ( isSingleton != that.isSingleton ) {
+            return false;
+        }
+        if ( notification != null ? !notification.equals( that.notification ) : that.notification != null ) {
+            return false;
+        }
+        return type == that.type;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = notification != null ? notification.hashCode() : 0;
+        result = ~~result;
+        result = 31 * result + type.hashCode();
+        result = ~~result;
+        result = 31 * result + ( isSingleton ? 1 : 0 );
+        result = ~~result;
+        return result;
+    }
 }

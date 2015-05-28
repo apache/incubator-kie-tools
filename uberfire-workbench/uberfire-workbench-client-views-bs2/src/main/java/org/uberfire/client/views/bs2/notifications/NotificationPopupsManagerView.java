@@ -3,15 +3,13 @@ package org.uberfire.client.views.bs2.notifications;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager.NotificationPopupHandle;
 import org.uberfire.commons.validation.PortablePreconditions;
-import org.uberfire.workbench.events.NotificationEvent.NotificationType;
-
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-
+import org.uberfire.workbench.events.NotificationEvent;
 
 public class NotificationPopupsManagerView implements NotificationManager.View {
 
@@ -25,24 +23,28 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
     private final List<PopupHandle> pendingRemovals = new ArrayList<PopupHandle>();
 
     private static class PopupHandle implements NotificationPopupHandle {
-        final NotificationPopupView view;
 
-        PopupHandle( NotificationPopupView view ) {
+        final NotificationPopupView view;
+        final NotificationEvent event;
+
+        PopupHandle( NotificationPopupView view,
+                     NotificationEvent event ) {
             this.view = PortablePreconditions.checkNotNull( "view", view );
+            this.event = PortablePreconditions.checkNotNull( "event", event );
         }
     }
 
     @Override
-    public NotificationPopupHandle show( NotificationType type,
-                                         String message,
+    public NotificationPopupHandle show( NotificationEvent event,
                                          Command hideCommand ) {
         final NotificationPopupView view = new NotificationPopupView();
-        final PopupHandle popupHandle = new PopupHandle( view );
+        final PopupHandle popupHandle = new PopupHandle( view,
+                                                         event );
         activeNotifications.add( popupHandle );
         view.setPopupPosition( getMargin(),
                                activeNotifications.size() * SPACING );
-        view.setNotification( message );
-        view.setType( type );
+        view.setNotification( event.getNotification() );
+        view.setType( event.getType() );
         view.setNotificationWidth( getWidth() + "px" );
         view.show( hideCommand );
         return popupHandle;
@@ -55,11 +57,11 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
             return;
         }
         if ( removing ) {
-            pendingRemovals.add((PopupHandle) handle);
+            pendingRemovals.add( (PopupHandle) handle );
             return;
         }
         removing = true;
-        final NotificationPopupView view = ((PopupHandle) handle).view;
+        final NotificationPopupView view = ( (PopupHandle) handle ).view;
         final LinearFadeOutAnimation fadeOutAnimation = new LinearFadeOutAnimation( view ) {
             @Override
             public void onUpdate( double progress ) {
@@ -87,6 +89,16 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
 
         };
         fadeOutAnimation.run( 500 );
+    }
+
+    @Override
+    public boolean isShowing( NotificationEvent event ) {
+        for ( PopupHandle handle : activeNotifications ) {
+            if ( handle.event.equals( event ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //80% of screen width

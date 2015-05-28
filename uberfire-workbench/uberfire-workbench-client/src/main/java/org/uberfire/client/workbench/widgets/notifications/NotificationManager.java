@@ -46,10 +46,8 @@ public class NotificationManager {
         /**
          * Displays a notification with the given severity and contents.
          *
-         * @param type
-         *            The notification type. Must not be null.
-         * @param message
-         *            The message to display. Must not be null.
+         * @param event
+         *            The notification event. Must not be null.
          * @param hideCommand
          *            The command that must be called when the notification is to be closed. When this command is
          *            invoked, the notification manager will change the notification status from active to acknowledged,
@@ -58,8 +56,7 @@ public class NotificationManager {
          * @return The object to pass to {@link #hide(NotificationPopupHandle)} that will hide this notification. Must
          *         not return null.
          */
-        NotificationPopupHandle show( NotificationType type,
-                                      String message,
+        NotificationPopupHandle show( NotificationEvent event,
                                       Command hideCommand );
 
         /**
@@ -72,10 +69,19 @@ public class NotificationManager {
          *            the handle for the active notification that should be hidden.
          */
         void hide( NotificationPopupHandle popup );
+
+        /**
+         * Checks whether the given event is currently being shown.
+         *
+         * @param event
+         *            The notification event. Must not be null.
+         * @return true if shown
+         */
+        boolean isShowing( NotificationEvent event );
     }
 
     @Inject
-    public NotificationManager(View view) {
+    public NotificationManager( View view ) {
         this.view = checkNotNull( "view", view );
     }
 
@@ -105,11 +111,12 @@ public class NotificationManager {
      *            the notification to display and store in the notification system.
      */
     public void addNotification( @Observes final NotificationEvent event ) {
-        HideNotificationCommand hideCommand = new HideNotificationCommand();
-        NotificationPopupHandle handle = view.show( event.getType(),
-                                                    event.getNotification(),
-                                                    hideCommand );
-        hideCommand.setHandle( handle );
+        if ( !event.isSingleton() || ( event.isSingleton() && !view.isShowing( event ) ) ) {
+            HideNotificationCommand hideCommand = new HideNotificationCommand();
+            NotificationPopupHandle handle = view.show( event,
+                                                        hideCommand );
+            hideCommand.setHandle( handle );
+        }
     }
 
 }
