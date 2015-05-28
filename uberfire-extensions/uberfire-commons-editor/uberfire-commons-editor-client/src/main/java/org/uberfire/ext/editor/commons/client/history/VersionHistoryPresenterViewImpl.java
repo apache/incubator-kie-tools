@@ -41,6 +41,7 @@ public class VersionHistoryPresenterViewImpl
 
     public VersionHistoryPresenterViewImpl() {
         initWidget( table );
+        table.getElement().setAttribute( "data-uf-lock", "false" );
         Column<VersionRecord, String> column = new Column<VersionRecord, String>( new ButtonCell() ) {
 
             @Override
