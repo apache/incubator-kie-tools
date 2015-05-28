@@ -90,6 +90,7 @@
     -ms-transition: top 0.5s ease-in;
     -o-transition: top 0.5s ease-in;
     transition: top 0.5s ease-in;
+    z-index: 1;
 }
 
 .show-context {

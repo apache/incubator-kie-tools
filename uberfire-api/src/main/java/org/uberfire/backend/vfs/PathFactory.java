@@ -52,7 +52,8 @@ public final class PathFactory {
         checkNotNull( "path", path );
 
         // TODO find a way to convert path URIs between file systems automatically
-        final String systemUri = path.toURI().replaceFirst( "(@)([^/]*)", "$1system" );
+        final String systemUri = path.toURI().replaceFirst( "([^/&^\\\\]*)@([^/&^\\\\]*)",
+                                                            "locks@system/$2/$1" );
         
         return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION,
                                     systemUri + LOCK_FILE_EXTENSION );

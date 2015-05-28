@@ -49,6 +49,6 @@ public class EditorLockPopup {
                 popup.hide();
             }
         };
-        closeTimer.schedule( 5000 );
+        closeTimer.schedule( 50000 );
     }
 }
