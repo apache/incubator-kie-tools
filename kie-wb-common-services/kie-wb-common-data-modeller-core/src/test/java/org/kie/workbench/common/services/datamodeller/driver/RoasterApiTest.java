@@ -42,30 +42,27 @@ public class RoasterApiTest {
         javaClass = createClass( "org.kie.workbench.common.services.datamodeller.driver", "TestAnnotations" );
     }
 
-
-    public JavaClassSource createClass(String pkg, String name) {
+    public JavaClassSource createClass( String pkg, String name ) {
         JavaClassSource javaClass = Roaster.create( JavaClassSource.class );
 
-        javaClass.setPackage(pkg);
+        javaClass.setPackage( pkg );
         javaClass.setName( name );
         return javaClass;
     }
 
-
     @Test
     public void testAnnotations() {
-        AnnotationSource annotationSource = javaClass.addAnnotation( ClassAnnotation.class.getName() );
+        AnnotationSource<JavaClassSource> annotationSource = javaClass.addAnnotation( ClassAnnotation.class.getName() );
 
         //Class value pair
         annotationSource.setClassValue( "classParam", java.util.List.class );
-        Class cls = annotationSource.getClassValue( "classParam" );
-        assertEquals( java.util.List.class, cls);
+        Class<?> cls = annotationSource.getClassValue( "classParam" );
+        assertEquals( java.util.List.class, cls );
 
         //Class array value pair
-        annotationSource.setClassArrayValue( "classArrayParam", new Class[] { Map.class, List.class, Serializable.class} );
-        Class[] clss = annotationSource.getClassArrayValue( "classArrayParam" );
-        assertArrayEquals(  new Class[] { Map.class, List.class, Serializable.class}, clss );
-
+        annotationSource.setClassArrayValue( "classArrayParam", new Class<?>[]{ Map.class, List.class, Serializable.class } );
+        Class<?>[] clss = annotationSource.getClassArrayValue( "classArrayParam" );
+        assertArrayEquals( new Class<?>[]{ Map.class, List.class, Serializable.class }, clss );
 
         annotationSource = javaClass.addAnnotation( PrimitivesAnnotation.class.getName() );
         //String value pair
@@ -74,11 +71,10 @@ public class RoasterApiTest {
         assertEquals( "TheValue", stringResult );
 
         //String array value pair
-        String[] stringArray =  {"value1", "value2", "value3"};
-        annotationSource.setStringArrayValue( "stringArrayParam", new String[] {"value1", "value2", "value3"} );
+        String[] stringArray = { "value1", "value2", "value3" };
+        annotationSource.setStringArrayValue( "stringArrayParam", new String[]{ "value1", "value2", "value3" } );
         String[] stringArrayResult = annotationSource.getStringArrayValue( "stringArrayParam" );
         assertArrayEquals( stringArray, stringArrayResult );
-
 
         annotationSource = javaClass.addAnnotation( EnumsAnnotation.class.getName() );
         //Enum value pair
@@ -96,28 +92,32 @@ public class RoasterApiTest {
         annotationSource.setEnumArrayValue( "enum2ArrayParam", enumArrayValues );
 
         Object[] enumArrayValuesResult = annotationSource.getEnumArrayValue( TestEnums.ENUM2.class, "enum2ArrayParam" );
-        assertArrayEquals( enumArrayValues, enumArrayValuesResult  );
-
+        assertArrayEquals( enumArrayValues, enumArrayValuesResult );
 
         //Annotation value pair
-        annotationSource = javaClass.addAnnotation(AnnotationValuesAnnotation.class.getName());
+        annotationSource = javaClass.addAnnotation( AnnotationValuesAnnotation.class.getName() );
 
-        AnnotationSource primitivesAnnotation = annotationSource.setAnnotationValue( "primitivesParam" );
+        AnnotationSource<JavaClassSource> primitivesAnnotation = annotationSource.setAnnotationValue( "primitivesParam" );
         primitivesAnnotation.setName( PrimitivesAnnotation.class.getName() );
         primitivesAnnotation.setStringValue( "stringParam", "The Value" );
 
-        AnnotationSource arrayAnnotationValue1 = annotationSource.addAnnotationValue( "primitivesArrayParam" );
+        AnnotationSource<JavaClassSource> arrayAnnotationValue1 = annotationSource.addAnnotationValue( "primitivesArrayParam" );
         arrayAnnotationValue1.setName( PrimitivesAnnotation.class.getName() );
         arrayAnnotationValue1.setStringValue( "stringParam", "The Value1" );
 
-
-        AnnotationSource arrayAnnotationValue2 = annotationSource.addAnnotationValue( "primitivesArrayParam" );
+        AnnotationSource<JavaClassSource> arrayAnnotationValue2 = annotationSource.addAnnotationValue( "primitivesArrayParam" );
         arrayAnnotationValue2.setName( PrimitivesAnnotation.class.getName() );
         arrayAnnotationValue2.setStringValue( "stringParam", "The Value2" );
 
-        AnnotationSource primitivesParamValue = annotationSource.getAnnotationValue("primitivesParam");
+        AnnotationSource<JavaClassSource> primitivesParamValue = annotationSource.getAnnotationValue( "primitivesParam" );
+        assertEquals( "The Value", primitivesParamValue.getStringValue( "stringParam" ) );
 
-        AnnotationSource[] primitivesArrayParamValue = annotationSource.getAnnotationArrayValue("primitivesArrayParam");
+        AnnotationSource<JavaClassSource>[] primitivesArrayParamValue = annotationSource.getAnnotationArrayValue( "primitivesArrayParam" );
+        assertEquals( 2, primitivesArrayParamValue.length );
+        assertEquals( PrimitivesAnnotation.class.getName(), primitivesArrayParamValue[0].getName() );
+        assertEquals( PrimitivesAnnotation.class.getName(), primitivesArrayParamValue[1].getName() );
+        assertEquals( "The Value1", primitivesArrayParamValue[0].getStringValue( "stringParam" ) );
+        assertEquals( "The Value2", primitivesArrayParamValue[1].getStringValue( "stringParam" ) );
 
         System.out.println( javaClass.toString() );
     }
