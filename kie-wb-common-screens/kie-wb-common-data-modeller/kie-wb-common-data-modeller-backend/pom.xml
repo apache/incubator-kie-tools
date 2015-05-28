@@ -232,8 +232,6 @@
       <artifactId>kie-wb-common-data-modeller-core</artifactId>
       <classifier>tests</classifier>
       <scope>test</scope>
-      <!-- TODO move this version number to kie-parent-with-dependencies, or whatever other place it should be -->
-      <!--version>6.3.0-SNAPSHOT</version-->
     </dependency>
 
     <dependency>
