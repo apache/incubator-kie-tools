@@ -134,6 +134,9 @@ public class GuidedScoreCardEditor extends Composite {
         disclosurePanel.add( config );
         container.setWidget( disclosurePanel );
 
+        characteristicsAttrMap.clear();
+        characteristicsAttrPanelMap.clear();
+
         for ( final Characteristic characteristic : model.getCharacteristics() ) {
             final FlexTable flexTable = addCharacteristic( characteristic );
             for ( Attribute attribute : characteristic.getAttributes() ) {
@@ -469,6 +472,7 @@ public class GuidedScoreCardEditor extends Composite {
                            new Callback<String[]>() {
                                @Override
                                public void callback( final String[] eligibleFieldsForSelectedFactType ) {
+                                   int selectedFieldIndex = 0;
                                    dropDownFields.addItem( GuidedScoreCardConstants.INSTANCE.pleaseChoose() );
                                    dropDownFields.setEnabled( eligibleFieldsForSelectedFactType.length > 0 );
                                    for ( final String field : eligibleFieldsForSelectedFactType ) {
@@ -476,15 +480,20 @@ public class GuidedScoreCardEditor extends Composite {
                                    }
                                    for ( String type : typesForScore ) {
                                        final String qualifiedFieldName = model.getFieldName() + " : " + type;
-                                       final int selectedFieldIndex = Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName );
-                                       dropDownFields.setSelectedIndex( selectedFieldIndex >= 0 ? selectedFieldIndex + 1 : 0 );
+                                       selectedFieldIndex = Math.max( selectedFieldIndex,
+                                                                      Arrays.asList( eligibleFieldsForSelectedFactType ).indexOf( qualifiedFieldName ) + 1 );
+                                       if ( selectedFieldIndex > 0 ) {
+                                           break;
+                                       }
                                    }
+                                   dropDownFields.setSelectedIndex( selectedFieldIndex );
                                }
                            } );
     }
 
     private Widget getCharacteristics() {
         characteristicsPanel = new VerticalPanel();
+        characteristicsTables = new ArrayList<FlexTable>(  );
         final HorizontalPanel toolbar = new HorizontalPanel();
         btnAddCharacteristic = new Button( GuidedScoreCardConstants.INSTANCE.addCharacteristic(),
                                            new ClickHandler() {
@@ -922,7 +931,7 @@ public class GuidedScoreCardEditor extends Composite {
                                                     }
                                                 }
                                             }
-                                            callback.callback( eligibleFieldNames.toArray( new String[]{ } ) );
+                                            callback.callback( eligibleFieldNames.toArray( new String[]{} ) );
                                         }
                                     } );
     }
