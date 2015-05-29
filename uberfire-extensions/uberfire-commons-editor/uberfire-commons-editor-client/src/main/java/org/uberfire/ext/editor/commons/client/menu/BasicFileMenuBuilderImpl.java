@@ -16,16 +16,22 @@
 
 package org.uberfire.ext.editor.commons.client.menu;
 
+import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.EditorLockInfo;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -48,8 +54,6 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
-
 public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
 
     @Inject
@@ -67,7 +71,9 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     private Command saveCommand = null;
     private MenuItem saveMenuItem;
     private Command deleteCommand = null;
+    private MenuItem deleteMenuItem;
     private Command renameCommand = null;
+    private MenuItem renameMenuItem;
     private Command copyCommand = null;
     private Command validateCommand = null;
     private Command restoreCommand = null;
@@ -285,16 +291,18 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         }
 
         if ( deleteCommand != null ) {
-            menuItems.put( MenuItems.DELETE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
+            deleteMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
                     .respondsWith( deleteCommand )
                     .endMenu()
-                    .build().getItems().get( 0 ) );
+                    .build().getItems().get( 0 );
+            menuItems.put( MenuItems.DELETE, deleteMenuItem );
         }
 
         if ( renameCommand != null ) {
-            menuItems.put( MenuItems.RENAME, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
+            renameMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
                     .respondsWith( renameCommand )
-                    .endMenu().build().getItems().get( 0 ) );
+                    .endMenu().build().getItems().get( 0 );
+            menuItems.put( MenuItems.RENAME, renameMenuItem );
         }
 
         if ( copyCommand != null ) {
@@ -368,5 +376,15 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     public BasicFileMenuBuilder addNewTopLevelMenu( MenuItem menu ) {
         topLevelMenus.add( menu );
         return this;
+    }
+    
+    private void onEditorLockInfo( @Observes EditorLockInfo lockInfo ) {
+        boolean renameDeleteEnabled = (!lockInfo.isLocked() || lockInfo.isLockedByCurrentUser());
+        if ( renameMenuItem != null ) {
+            renameMenuItem.setEnabled( renameDeleteEnabled );
+        }
+        if ( deleteMenuItem != null ) {
+            deleteMenuItem.setEnabled( renameDeleteEnabled );
+        }
     }
 }
