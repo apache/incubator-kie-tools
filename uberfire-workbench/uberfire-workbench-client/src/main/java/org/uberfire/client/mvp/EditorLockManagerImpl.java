@@ -9,6 +9,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.backend.vfs.impl.EditorLockInfo;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.client.workbench.VFSLockServiceProxy;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.UIObject;
 
 /**
  * Default implementation of {@link EditorLockManager} using the
@@ -48,6 +50,9 @@ public class EditorLockManagerImpl implements EditorLockManager {
 
     @Inject
     private javax.enterprise.event.Event<ChangeTitleWidgetEvent> changeTitleEvent;
+
+    @Inject
+    private javax.enterprise.event.Event<EditorLockInfo> editorLockInfoEvent;
 
     @Inject
     private EditorLockPopup lockPopup;
@@ -86,10 +91,11 @@ public class EditorLockManagerImpl implements EditorLockManager {
     }
     
     @Override
-    public void initJs() {
-        this.publishJsApi();
+    public void onFocus() {
+        publishJsApi();
+        fireEditorLockEvent();
     }
-
+    
     @Override
     public void acquireLockOnDemand() {
         final Element element = activity.getWidget().asWidget().getElement();
@@ -249,6 +255,9 @@ public class EditorLockManagerImpl implements EditorLockManager {
                 changeTitleEvent.fire( LockTitleWidgetEvent.create( activity,
                                                                     lockInfo ) );
             }
+            
+            fireEditorLockEvent();
+            
             for ( Runnable runnable : syncCompleteRunnables ) {
                 runnable.run();
             }
@@ -288,5 +297,15 @@ public class EditorLockManagerImpl implements EditorLockManager {
     
     private boolean isLocked() {
         return lockInfo.isLocked();
+    }
+    
+    private void fireEditorLockEvent() {
+        Element element = activity.getWidget().asWidget().getElement();
+        boolean visible = UIObject.isVisible( element ) && (element.getAbsoluteLeft() > 0) && (element.getAbsoluteTop() > 0);
+        
+        if ( visible ) {
+            editorLockInfoEvent.fire( new EditorLockInfo( lockInfo.isLocked(),
+                                                          isLockedByCurrentUser() ) );
+        }
     }
 }

@@ -32,7 +32,7 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     private EditorLockManager lockManager;
 
     protected ObservablePath path;
-
+    
     public AbstractWorkbenchEditorActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
@@ -87,9 +87,9 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public void onFocus() {
         super.onFocus();
-        lockManager.initJs();
+        lockManager.onFocus();
     }
-
+    
     public ObservablePath getPath() {
         return path;
     }

@@ -4,8 +4,8 @@ import org.uberfire.backend.vfs.Path;
 
 /**
  * Provides functionality to lock a {@link Path} associated with an editor
- * activities. Instances must have a one-to-one relationship with the
- * corresponding {@link WorkbenchEditorActivity}.
+ * Instances must have a one-to-one relationship with the corresponding
+ * {@link WorkbenchEditorActivity}.
  */
 public interface EditorLockManager {
 
@@ -19,10 +19,12 @@ public interface EditorLockManager {
     void init( AbstractWorkbenchEditorActivity activity );
 
     /**
-     * Publishes JavaScript methods for lock management. These methods can be
-     * used by non-native editors (i.e editors that a rendered on the server).
+     * Called when the editor gets focus to initialize state specific to the
+     * editor widget i.e. publishes JavaScript methods for lock management.
+     * These methods can be used by non-native editors (i.e editors that a
+     * rendered on the server).
      */
-    void initJs();
+    void onFocus();
 
     /**
      * Registers DOM handlers to detect editor changes and, if required, tries
