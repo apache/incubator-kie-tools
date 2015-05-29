@@ -13,20 +13,20 @@ import org.kie.workbench.common.screens.server.management.model.impl.ScannerOper
 @Remote
 public interface ServerManagementService {
 
-    public Collection<ServerRef> listServers();
+    Collection<ServerRef> listServers();
 
-    public void registerServer( final String endpoint,
-                                final String name,
-                                final String username,
-                                final String password,
-                                final String controllerUrl) throws ServerAlreadyRegisteredException;
+    void registerServer( final String endpoint,
+                         final String name,
+                         final String username,
+                         final String password,
+                         final String controllerUrl ) throws ServerAlreadyRegisteredException;
 
     void deleteOp( final Collection<String> servers,
                    final Map<String, List<String>> containers );
 
     void startContainers( final Map<String, List<String>> containers );
 
-    void stopContainers( Map<String, List<String>> containers );
+    void stopContainers( final Map<String, List<String>> containers );
 
     void createContainer( final String serverId,
                           final String containerId,
@@ -34,8 +34,8 @@ public interface ServerManagementService {
 
     void refresh();
 
-    Container getContainerInfo( String serverId,
-                                String container );
+    Container getContainerInfo( final String serverId,
+                                final String container );
 
     ScannerOperationResult scanNow( final String serverId,
                                     final String containerId );

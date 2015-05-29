@@ -25,15 +25,21 @@ import org.uberfire.java.nio.file.Path;
 @ApplicationScoped
 public class ServerReferenceStorageImpl {
 
-    @Inject
-    @Named("configIO")
     private IOService ioService;
-
-    @Inject
-    @Named("systemFS")
     private FileSystem fileSystem;
 
-    private XStream xs = new XStream();
+    private final XStream xs = new XStream();
+
+    //enable proxy
+    public ServerReferenceStorageImpl() {
+    }
+
+    @Inject
+    public ServerReferenceStorageImpl( @Named("configIO") final IOService ioService,
+                                       @Named("systemFS") final FileSystem fileSystem ) {
+        this.ioService = ioService;
+        this.fileSystem = fileSystem;
+    }
 
     public boolean exists( final ServerRef serverRef ) {
         return ioService.exists( buildPath( serverRef ) );
@@ -104,14 +110,14 @@ public class ServerReferenceStorageImpl {
         }
     }
 
-    private Path buildPath( final ServerRef serverRef ) {
+    Path buildPath( final ServerRef serverRef ) {
         if ( serverRef == null ) {
             return buildPath( (String) null );
         }
         return buildPath( serverRef.getId() );
     }
 
-    private Path buildPath( final String endpoint ) {
+    Path buildPath( final String endpoint ) {
         if ( endpoint != null ) {
             return fileSystem.getPath( "servers", "remote", toHex( endpoint ) + ".xml" );
         } else {
@@ -120,18 +126,17 @@ public class ServerReferenceStorageImpl {
     }
 
     public String toHex( final String arg ) {
-        if ( isHex(arg)) {
+        if ( isHex( arg ) ) {
             return arg;
         }
         return String.format( "%x", new BigInteger( 1, arg.toLowerCase().getBytes( Charset.forName( "UTF-8" ) ) ) );
     }
 
-    private boolean isHex(final String endpoint) {
-
-        try{
-            new BigInteger(endpoint, 16);
+    private boolean isHex( final String endpoint ) {
+        try {
+            new BigInteger( endpoint, 16 );
             return true;
-        } catch(NumberFormatException ex) {
+        } catch ( NumberFormatException ex ) {
             return false;
         }
     }

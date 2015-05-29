@@ -5,286 +5,92 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOC;
-import org.kie.workbench.common.screens.server.management.client.artifact.NewContainerForm;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.server.management.client.box.BoxPresenter;
 import org.kie.workbench.common.screens.server.management.client.box.BoxType;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderClearSelectionEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderDeleteEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderFilterEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderRefreshEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderSelectAllEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderStartEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderStopEvent;
 import org.kie.workbench.common.screens.server.management.client.header.HeaderPresenter;
-import org.kie.workbench.common.screens.server.management.client.registry.ServerRegistryEndpointForm;
 import org.kie.workbench.common.screens.server.management.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.server.management.events.ContainerCreated;
 import org.kie.workbench.common.screens.server.management.events.ContainerDeleted;
-import org.kie.workbench.common.screens.server.management.events.ContainerStarted;
-import org.kie.workbench.common.screens.server.management.events.ContainerStopped;
-import org.kie.workbench.common.screens.server.management.events.ContainerUpdated;
 import org.kie.workbench.common.screens.server.management.events.ServerConnected;
 import org.kie.workbench.common.screens.server.management.events.ServerDeleted;
 import org.kie.workbench.common.screens.server.management.events.ServerOnError;
 import org.kie.workbench.common.screens.server.management.model.ConnectionType;
 import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
-import org.kie.workbench.common.screens.server.management.model.Server;
 import org.kie.workbench.common.screens.server.management.model.ServerRef;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.mvp.UberView;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.lifecycle.OnOpen;
-import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "ServerManagementBrowser")
 public class ServerManagementBrowserPresenter {
 
-    public interface View extends UberView<ServerManagementBrowserPresenter> {
-
-        void loadServer( final Server executionServer );
-
-        void loadServer( final ServerRef executionServerRef );
+    public interface View extends IsWidget {
 
         void setHeader( final HeaderPresenter header );
 
-        void remove( final BoxPresenter value );
+        void addBox( final BoxPresenter container );
 
-        void loadContainer( final ContainerRef container,
-                            final BoxPresenter serverContainer );
+        void addBox( final BoxPresenter container,
+                     final BoxPresenter parentContainer );
+
+        void removeBox( final BoxPresenter value );
+
+        void cleanup();
+
+        void confirmDeleteOperation( final Collection<String> serverNames,
+                                     final Collection<List<String>> container2delete,
+                                     final Command command );
     }
 
-    @Inject
-    private View view;
+    private final View view;
 
-    @Inject
-    private HeaderPresenter header;
+    private final HeaderPresenter header;
 
-    @Inject
-    private Caller<ServerManagementService> service;
+    private final Caller<ServerManagementService> service;
 
-    @Inject
-    private PlaceManager placeManager;
+    private final SyncBeanManager beanManager;
 
     private Map<Object, BoxPresenter> containers = new HashMap<Object, BoxPresenter>();
 
     @Inject
-    private ServerRegistryEndpointForm serverRegistryEndpoint;
-
-    @Inject
-    private NewContainerForm newContainerForm;
-
-    private int selectedItems = 0;
-
-    private final Command unselectContainerCommand = new Command() {
-        @Override
-        public void execute() {
-            boolean hasServerSelected = false;
-            boolean hasContainerSelected = false;
-            boolean hasStartedContainerSelected = false;
-            boolean hasStoppedContainerSelected = false;
-            for ( BoxPresenter container : containers.values() ) {
-                if ( container.isSelected() ) {
-                    if ( container.getType().equals( BoxType.SERVER ) ) {
-                        hasServerSelected = true;
-                    } else if ( container.getType().equals( BoxType.CONTAINER ) ) {
-                        hasContainerSelected = true;
-                        if ( container.getStatus().equals( ContainerStatus.STARTED ) ) {
-                            hasStartedContainerSelected = true;
-                        } else if ( container.getStatus().equals( ContainerStatus.STOPPED ) ) {
-                            hasStoppedContainerSelected = true;
-                        }
-                    }
-                }
-                if ( hasServerSelected && hasStartedContainerSelected && hasStoppedContainerSelected ) {
-                    break;
-                }
-            }
-
-            if ( hasContainerSelected ) {
-                header.displayDeleteContainer();
-            } else {
-                header.hideDeleteContainer();
-            }
-
-            if ( hasStartedContainerSelected ) {
-                header.displayStopContainer();
-            } else {
-                header.hideStopContainer();
-            }
-
-            if ( hasStoppedContainerSelected ) {
-                header.displayStartContainer();
-            } else {
-                header.hideStartContainer();
-            }
-        }
-    };
-
-    @PostConstruct
-    public void init() {
-        view.setHeader( header );
-
-        header.setOnFilterChange( new ParameterizedCommand<String>() {
-            @Override
-            public void execute( final String parameter ) {
-                for ( final BoxPresenter container : containers.values() ) {
-                    container.filter( parameter );
-                }
-            }
-        } );
-
-        header.setOnClearSelection( new Command() {
-            @Override
-            public void execute() {
-                for ( final BoxPresenter container : containers.values() ) {
-                    container.select( false );
-                }
-            }
-        } );
-
-        header.setOnDelete( new Command() {
-            @Override
-            public void execute() {
-                final Map<String, String> serverNames = new HashMap<String, String>();
-                final Map<String, List<String>> container2delete = new HashMap<String, List<String>>();
-                for ( final Map.Entry<Object, BoxPresenter> container : containers.entrySet() ) {
-                    if ( container.getValue().isSelected() ) {
-                        if ( container.getKey() instanceof ServerRef && ( (ServerRef) container.getKey() ).getConnectionType().equals( ConnectionType.REMOTE ) ) {
-                            serverNames.put( ( (ServerRef) container.getKey() ).getId(), ( (ServerRef) container.getKey() ).getName() );
-                        } else if ( container.getKey() instanceof ContainerRef ) {
-                            final ContainerRef simpleContainer = (ContainerRef) container.getKey();
-                            if ( !container2delete.containsKey( simpleContainer.getServerId() ) ) {
-                                container2delete.put( simpleContainer.getServerId(), new ArrayList<String>() );
-                            }
-                            container2delete.get( simpleContainer.getServerId() ).add( simpleContainer.getId() );
-                        }
-                    }
-                }
-
-                YesNoCancelPopup.newYesNoCancelPopup(
-                        "Delete",
-                        buildMessage( serverNames, container2delete ),
-                        new Command() {
-                            @Override
-                            public void execute() {
-                                service.call().deleteOp( new ArrayList<String>( serverNames.keySet() ), container2delete );
-                            }
-                        },
-                        org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.YES(),
-                        ButtonType.DANGER,
-                        IconType.EXCLAMATION_SIGN,
-
-                        new Command() {
-                            @Override
-                            public void execute() {
-                            }
-                        },
-                        org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants.INSTANCE.NO(),
-                        ButtonType.DEFAULT,
-                        null,
-
-                        null,
-                        null,
-                        null,
-                        null
-                                                    ).show();
-            }
-        } );
-
-        header.setOnStart( new Command() {
-            @Override
-            public void execute() {
-                final Map<String, List<String>> container2Start = new HashMap<String, List<String>>();
-                for ( final Map.Entry<Object, BoxPresenter> container : containers.entrySet() ) {
-                    if ( container.getValue().isSelected() ) {
-                        if ( container.getKey() instanceof ContainerRef && ( (ContainerRef) container.getKey() ).getStatus().equals( ContainerStatus.STOPPED ) ) {
-                            final ContainerRef simpleContainer = (ContainerRef) container.getKey();
-                            if ( !container2Start.containsKey( simpleContainer.getServerId() ) ) {
-                                container2Start.put( simpleContainer.getServerId(), new ArrayList<String>() );
-                            }
-                            container2Start.get( simpleContainer.getServerId() ).add( simpleContainer.getId() );
-                        }
-                    }
-                }
-
-                service.call().startContainers( container2Start );
-            }
-        } );
-
-        header.setOnStop( new Command() {
-            @Override
-            public void execute() {
-                final Map<String, List<String>> container2Stop = new HashMap<String, List<String>>();
-                for ( final Map.Entry<Object, BoxPresenter> container : containers.entrySet() ) {
-                    if ( container.getValue().isSelected() ) {
-                        if ( container.getKey() instanceof ContainerRef && ( (ContainerRef) container.getKey() ).getStatus().equals( ContainerStatus.STARTED ) ) {
-                            final ContainerRef simpleContainer = (ContainerRef) container.getKey();
-                            if ( !container2Stop.containsKey( simpleContainer.getServerId() ) ) {
-                                container2Stop.put( simpleContainer.getServerId(), new ArrayList<String>() );
-                            }
-                            container2Stop.get( simpleContainer.getServerId() ).add( simpleContainer.getId() );
-                        }
-                    }
-                }
-
-                service.call().stopContainers( container2Stop );
-            }
-        } );
-
-        header.setOnRefresh( new Command() {
-            @Override
-            public void execute() {
-                service.call().refresh();
-            }
-        } );
-
-        header.setOnRegisterServer( new Command() {
-            @Override
-            public void execute() {
-                serverRegistryEndpoint.show();
-            }
-        } );
-
-        header.setOnSelectAll( new Command() {
-            @Override
-            public void execute() {
-                for ( final BoxPresenter container : containers.values() ) {
-                    if ( container.isVisible() ) {
-                        container.select( true );
-                    } else {
-                        container.select( false );
-                    }
-                }
-            }
-        } );
-    }
-
-    @OnStartup
-    public void onOnStartup() {
-        listServers();
+    public ServerManagementBrowserPresenter( final View view,
+                                             final SyncBeanManager beanManager,
+                                             final HeaderPresenter header,
+                                             final Caller<ServerManagementService> service ) {
+        this.view = view;
+        this.beanManager = beanManager;
+        this.header = header;
+        this.service = service;
+        this.view.setHeader( header );
     }
 
     @OnOpen
     public void onOpen() {
-        listServers();
-    }
-
-    private void listServers() {
         service.call( new RemoteCallback<Collection<ServerRef>>() {
             @Override
             public void callback( final Collection<ServerRef> response ) {
-                loadContent( response );
+                loadServers( response );
             }
         } ).listServers();
     }
@@ -295,93 +101,131 @@ public class ServerManagementBrowserPresenter {
     }
 
     @WorkbenchPartView
-    public UberView<ServerManagementBrowserPresenter> getView() {
+    public IsWidget getView() {
         return view;
     }
 
-    private String buildMessage( final Map<String, String> serverNames,
-                                 final Map<String, List<String>> container2delete ) {
-        final StringBuilder sb = new StringBuilder();
-        if ( !serverNames.isEmpty() ) {
-            sb.append( Constants.INSTANCE.confirm_delete_servers() ).append( "<br/>" );
-            for ( final String s : serverNames.values() ) {
-                sb.append( s ).append( ", " );
-            }
-            sb.setLength( sb.length() - 2 );
-            sb.append( "." );
+    void onHeaderRefresh( @Observes final HeaderRefreshEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            service.call().refresh();
         }
-        if ( !container2delete.isEmpty() ) {
-            if ( serverNames.isEmpty() ) {
-                sb.append( Constants.INSTANCE.confirm_delete_containers() ).append( "<br/>" );
-            } else {
-                sb.append( "<br/>").append( Constants.INSTANCE.and_containers() ).append( "<br/>" );
-            }
-            for ( final Map.Entry<String, List<String>> entry : container2delete.entrySet() ) {
-                for ( String s : entry.getValue() ) {
-                    sb.append( s ).append( ", " );
-                }
-            }
-            sb.setLength( sb.length() - 2 );
-            sb.append( "." );
-        }
-        return sb.toString();
     }
 
-    public BoxPresenter newContainer( final Object container ) {
-        final BoxPresenter boxPresenter = IOC.getBeanManager().lookupBean( BoxPresenter.class ).getInstance();
+    void onHeaderFilter( @Observes final HeaderFilterEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            for ( final BoxPresenter container : containers.values() ) {
+                container.filter( event.getFilter() );
+            }
+        }
+    }
 
-        containers.put( container, boxPresenter );
+    void onHeaderSelectAll( @Observes final HeaderSelectAllEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            for ( final BoxPresenter container : containers.values() ) {
+                if ( container.isVisible() ) {
+                    container.select( true );
+                } else {
+                    container.select( false );
+                }
+            }
+        }
+    }
 
-        boxPresenter.onUnSelect( unselectContainerCommand );
+    void onHeaderClearSelection( @Observes final HeaderClearSelectionEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            for ( final BoxPresenter container : containers.values() ) {
+                container.select( false );
+            }
+        }
+    }
 
-        if ( container instanceof ServerRef ) {
-            boxPresenter.setOnAddAction( new Command() {
+    void onHeaderStart( @Observes final HeaderStartEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            service.call().startContainers( getSelectedItems().getK2() );
+        }
+    }
+
+    void onHeaderStop( @Observes final HeaderStopEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            service.call().stopContainers( getSelectedItems().getK2() );
+        }
+    }
+
+    void onHeaderDelete( @Observes final HeaderDeleteEvent event ) {
+        if ( event.getContext().equals( header ) ) {
+            final Pair<Map<String, String>, Map<String, List<String>>> value = getSelectedItems();
+
+            view.confirmDeleteOperation( value.getK1().values(), value.getK2().values(), new Command() {
                 @Override
                 public void execute() {
-                    newContainerForm.show( (ServerRef) container );
+                    service.call().deleteOp( new ArrayList<String>( value.getK1().keySet() ), value.getK2() );
                 }
             } );
         }
-
-        return boxPresenter;
     }
 
-    public void loadContent( final Collection<ServerRef> executionServers ) {
+    void onServerConnected( @Observes final ServerConnected event ) {
+        loadServer( event.getServer() );
+    }
+
+    void onServerError( @Observes final ServerOnError event ) {
+        loadServer( event.getServer() );
+    }
+
+    void onContainerCreated( @Observes final ContainerCreated event ) {
+        loadContainer( event.getContainer(), ContainerStatus.STARTED );
+    }
+
+    void onServerDeleted( @Observes final ServerDeleted event ) {
+        removeServer( event.getServerId() );
+    }
+
+    void onContainerDeleted( @Observes final ContainerDeleted event ) {
+        removeContainer( event.getServerId(), event.getContainerId() );
+    }
+
+    private void loadServers( final Collection<ServerRef> executionServers ) {
+        view.cleanup();
+        for ( final BoxPresenter container : containers.values() ) {
+            beanManager.destroyBean( container );
+        }
+        containers.clear();
         for ( final ServerRef executionServer : executionServers ) {
             loadServer( executionServer );
         }
     }
 
-    public void onServerConnected( @Observes final ServerConnected event ) {
-        loadServer( event.getServer() );
+    private void loadServer( final ServerRef executionServerRef ) {
+        if ( !containers.containsKey( executionServerRef ) ) {
+            view.addBox( newContainer( executionServerRef ) );
+        }
+
+        for ( final ContainerRef containerRef : executionServerRef.getContainersRef() ) {
+            loadContainer( containerRef, executionServerRef.getStatus() );
+        }
     }
 
-    public void onContainerCreated( @Observes final ContainerCreated event ) {
-        loadContainer( event.getContainer(), ContainerStatus.STARTED );
-    }
+    private void loadContainer( final ContainerRef container,
+                                final ContainerStatus serverStatus ) {
+        if ( serverStatus.equals( ContainerStatus.ERROR ) ) {
+            container.setStatus( ContainerStatus.ERROR );
+        }
 
-    public void onContainerStarted( @Observes final ContainerStarted event ) {
-        loadContainer( event.getContainer(), ContainerStatus.STARTED );
-    }
+        if ( containers.containsKey( container ) ) {
+            return;
+        }
 
-    public void onServerError( @Observes final ServerOnError event ) {
-        loadServer( event.getServer() );
-    }
+        BoxPresenter serverContainer = null;
+        for ( final Map.Entry<Object, BoxPresenter> entry : containers.entrySet() ) {
+            if ( entry.getKey() instanceof ServerRef && ( (ServerRef) entry.getKey() ).getId().equals( container.getServerId() ) ) {
+                serverContainer = entry.getValue();
+                break;
+            }
+        }
 
-    public void onServerDeleted( @Observes final ServerDeleted event ) {
-        removeServer( event.getServerId() );
-    }
-
-    public void onContainerDeleted( @Observes final ContainerDeleted event ) {
-        removeContainer( event.getServerId(), event.getContainerId() );
-    }
-
-    public void onContainerStopped( @Observes final ContainerStopped event ) {
-        loadContainer( event.getContainer(), ContainerStatus.STARTED );
-    }
-
-    public void onContainerUpdated( @Observes final ContainerUpdated event ) {
-        loadContainer( event.getContainer(), ContainerStatus.STARTED );
+        if ( serverContainer != null ) {
+            view.addBox( newContainer( container ), serverContainer );
+        }
     }
 
     private void removeContainer( final String serverId,
@@ -390,14 +234,12 @@ public class ServerManagementBrowserPresenter {
         for ( final Map.Entry<Object, BoxPresenter> entry : containers.entrySet() ) {
             if ( entry.getKey() instanceof ContainerRef && ( (ContainerRef) entry.getKey() ).getServerId().equals( serverId ) && ( (ContainerRef) entry.getKey() ).getId().equals( containerId ) ) {
                 ref = entry.getKey();
-                view.remove( entry.getValue() );
+                view.removeBox( entry.getValue() );
                 break;
             }
         }
         if ( ref != null ) {
-            final BoxPresenter presenter = containers.remove( ref );
-            presenter.select( false );
-            IOC.getBeanManager().destroyBean( presenter );
+            destroyBoxPresenter( ref );
         }
     }
 
@@ -406,69 +248,124 @@ public class ServerManagementBrowserPresenter {
         for ( final Map.Entry<Object, BoxPresenter> entry : containers.entrySet() ) {
             if ( entry.getKey() instanceof ServerRef && ( (ServerRef) entry.getKey() ).getId().equals( serverId ) ||
                     entry.getKey() instanceof ContainerRef && ( (ContainerRef) entry.getKey() ).getServerId().equals( serverId ) ) {
-                view.remove( entry.getValue() );
+                view.removeBox( entry.getValue() );
                 refs.add( entry.getKey() );
             }
         }
 
         if ( !refs.isEmpty() ) {
             for ( Object ref : refs ) {
-                final BoxPresenter presenter = containers.remove( ref );
-                presenter.select( false );
-                IOC.getBeanManager().destroyBean( presenter );
+                destroyBoxPresenter( ref );
             }
         }
     }
 
-    public void loadServer( final ServerRef executionServerRef ) {
-        if ( containers.containsKey( executionServerRef ) ) {
-            final BoxPresenter presenter = containers.get( executionServerRef );
-            presenter.setup( executionServerRef );
-        } else {
-            view.loadServer( executionServerRef );
-        }
-
-        for ( final ContainerRef containerRef : executionServerRef.getContainersRef() ) {
-            loadContainer( containerRef, executionServerRef.getStatus() );
-        }
+    private void destroyBoxPresenter( final Object ref ) {
+        final BoxPresenter presenter = containers.remove( ref );
+        presenter.select( false );
+        beanManager.destroyBean( presenter );
     }
 
-    public void loadServer( final Server executionServer ) {
-        if ( containers.containsKey( executionServer ) ) {
-            final BoxPresenter presenter = containers.get( executionServer );
-            presenter.setup( executionServer );
-        } else {
-            view.loadServer( executionServer );
+    private BoxPresenter newContainer( final Object container ) {
+        final BoxPresenter boxPresenter = beanManager.lookupBean( BoxPresenter.class ).getInstance();
+
+        containers.put( container, boxPresenter );
+
+        boxPresenter.setOnDeselect( new Command() {
+            @Override
+            public void execute() {
+                boolean hasServerSelected = false;
+                boolean hasContainerSelected = false;
+                boolean hasStartedContainerSelected = false;
+                boolean hasStoppedContainerSelected = false;
+                for ( final BoxPresenter container : containers.values() ) {
+                    if ( container.isSelected() ) {
+                        if ( container.getType().equals( BoxType.SERVER ) ) {
+                            hasServerSelected = true;
+                        } else if ( container.getType().equals( BoxType.CONTAINER ) ) {
+                            hasContainerSelected = true;
+                            if ( container.getStatus().equals( ContainerStatus.STARTED ) ) {
+                                hasStartedContainerSelected = true;
+                            } else if ( container.getStatus().equals( ContainerStatus.STOPPED ) ) {
+                                hasStoppedContainerSelected = true;
+                            }
+                        }
+                    }
+                    if ( hasServerSelected && hasStartedContainerSelected && hasStoppedContainerSelected ) {
+                        break;
+                    }
+                }
+
+                if ( hasContainerSelected ) {
+                    header.displayDeleteContainer();
+                } else {
+                    header.hideDeleteContainer();
+                }
+
+                if ( hasStartedContainerSelected ) {
+                    header.displayStopContainer();
+                } else {
+                    header.hideStopContainer();
+                }
+
+                if ( hasStoppedContainerSelected ) {
+                    header.displayStartContainer();
+                } else {
+                    header.hideStartContainer();
+                }
+            }
+        } );
+
+        if ( container instanceof ContainerRef ) {
+            boxPresenter.setOnSelect( new Command() {
+                @Override
+                public void execute() {
+                    header.displayDeleteContainer();
+                    if ( boxPresenter.getStatus().equals( ContainerStatus.STARTED ) ) {
+                        header.displayStopContainer();
+                        header.hideStartContainer();
+                    } else if ( boxPresenter.getStatus().equals( ContainerStatus.STOPPED ) ) {
+                        header.displayStartContainer();
+                        header.hideStopContainer();
+                    } else if ( boxPresenter.getStatus().equals( ContainerStatus.ERROR ) ) {
+                        header.hideStartContainer();
+                        header.hideStopContainer();
+                    }
+                }
+            } );
+
+            boxPresenter.setup( (ContainerRef) container );
+        } else if ( container instanceof ServerRef ) {
+            boxPresenter.setOnSelect( new Command() {
+                @Override
+                public void execute() {
+                    header.displayDeleteContainer();
+                }
+            } );
+            boxPresenter.setup( (ServerRef) container );
         }
 
-        for ( final ContainerRef container : executionServer.getContainersRef() ) {
-            loadContainer( container, executionServer.getStatus() );
-        }
+        return boxPresenter;
     }
 
-    private void loadContainer( final ContainerRef container,
-                                final ContainerStatus serverStatus ) {
-        if ( serverStatus.equals( ContainerStatus.ERROR ) ) {
-            container.setStatus( serverStatus );
-        }
-
-        if ( containers.containsKey( container ) ) {
-            final BoxPresenter presenter = containers.remove( container );
-            containers.put( container, presenter );
-            presenter.setup( container );
-            return;
-        }
-
-        BoxPresenter serverContainer = null;
-        for ( final Map.Entry<Object, BoxPresenter> entry : containers.entrySet() ) {
-            if ( entry.getKey() instanceof ServerRef && ( (ServerRef) entry.getKey() ).getId().equals( container.getServerId() ) ) {
-                serverContainer = entry.getValue();
+    private Pair<Map<String, String>, Map<String, List<String>>> getSelectedItems() {
+        final Map<String, String> serverNames = new HashMap<String, String>();
+        final Map<String, List<String>> container2delete = new HashMap<String, List<String>>();
+        for ( final Map.Entry<Object, BoxPresenter> container : containers.entrySet() ) {
+            if ( container.getValue().isSelected() ) {
+                if ( container.getKey() instanceof ServerRef && ( (ServerRef) container.getKey() ).getConnectionType().equals( ConnectionType.REMOTE ) ) {
+                    serverNames.put( ( (ServerRef) container.getKey() ).getId(), ( (ServerRef) container.getKey() ).getName() );
+                } else if ( container.getKey() instanceof ContainerRef ) {
+                    final ContainerRef simpleContainer = (ContainerRef) container.getKey();
+                    if ( !container2delete.containsKey( simpleContainer.getServerId() ) ) {
+                        container2delete.put( simpleContainer.getServerId(), new ArrayList<String>() );
+                    }
+                    container2delete.get( simpleContainer.getServerId() ).add( simpleContainer.getId() );
+                }
             }
         }
 
-        if ( serverContainer != null ) {
-            view.loadContainer( container, serverContainer );
-        }
+        return Pair.newPair( serverNames, container2delete );
     }
 
 }

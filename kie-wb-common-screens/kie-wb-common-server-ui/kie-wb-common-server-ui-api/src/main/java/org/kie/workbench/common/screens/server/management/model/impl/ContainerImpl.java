@@ -3,7 +3,6 @@ package org.kie.workbench.common.screens.server.management.model.impl;
 import org.guvnor.common.services.project.model.GAV;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.screens.server.management.model.Container;
-import org.kie.workbench.common.screens.server.management.model.ContainerRef;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
 import org.kie.workbench.common.screens.server.management.model.ScannerStatus;
 

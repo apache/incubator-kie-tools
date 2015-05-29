@@ -78,11 +78,7 @@ public class ContainerRefImpl implements ContainerRef {
 
         ContainerRefImpl that = (ContainerRefImpl) o;
 
-        if ( !id.equals( that.id ) ) {
-            return false;
-        }
-
-        return serverId.equals( that.serverId );
+        return id.equals( that.id ) && serverId.equals( that.serverId );
     }
 
     @Override

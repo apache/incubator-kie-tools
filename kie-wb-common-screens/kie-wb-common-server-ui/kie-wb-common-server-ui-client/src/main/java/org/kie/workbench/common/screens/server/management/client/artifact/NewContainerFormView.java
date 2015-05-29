@@ -15,9 +15,7 @@
  */
 package org.kie.workbench.common.screens.server.management.client.artifact;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Column;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -31,40 +29,19 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.m2repo.service.M2RepoService;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.server.management.model.ServerRef;
-import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.mvp.ParameterizedCommand;
-
-import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Dependent
-public class NewContainerForm
-        extends PopupPanel {
+public class NewContainerFormView extends Composite implements NewContainerFormPresenter.View {
 
     interface Binder
             extends
-            UiBinder<Widget, NewContainerForm> {
+            UiBinder<Widget, NewContainerFormView> {
 
     }
 
-    @Inject
-    private DependencyListWidget dependencyListWidget;
-
-    @Inject
-    private Caller<M2RepoService> m2RepoService;
-
-    @Inject
-    private Caller<ServerManagementService> service;
-
-    @UiField
-    BaseModal popup;
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     ControlGroup containerNameGroup;
@@ -96,42 +73,22 @@ public class NewContainerForm
     @UiField
     Row content;
 
-    private ServerRef serverRef;
+    private NewContainerFormPresenter presenter;
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    public NewContainerFormView() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
 
-    @PostConstruct
-    public void init() {
-        setWidget( uiBinder.createAndBindUi( this ) );
-        popup.setDynamicSafe( true );
+    @Override
+    public void init( final NewContainerFormPresenter presenter ) {
+        this.presenter = presenter;
 
-        content.add( new Column( 12, dependencyListWidget ) );
-
-        popup.setWidth( 640 );
-        popup.setMaxHeigth( "560px" );
-
-        dependencyListWidget.addOnSelect( new ParameterizedCommand<String>() {
-            @Override
-            public void execute( final String path ) {
-                m2RepoService.call( new RemoteCallback<GAV>() {
-                    @Override
-                    public void callback( GAV gav ) {
-                        groupIdGroup.setType( ControlGroupType.NONE );
-                        artifactIdGroup.setType( ControlGroupType.NONE );
-                        versionGroup.setType( ControlGroupType.NONE );
-
-                        groupId.setText( gav.getGroupId() );
-                        artifactId.setText( gav.getArtifactId() );
-                        version.setText( gav.getVersion() );
-                    }
-                } ).loadGAVFromJar( path );
-            }
-        } );
+        content.add( new Column( 12, presenter.getDependencyListWidgetPresenter().getView().asWidget() ) );
 
         containerName.addKeyUpHandler( new KeyUpHandler() {
             @Override
             public void onKeyUp( KeyUpEvent event ) {
-                endpoint.setText( serverRef.getUrl() + "/containers/" + containerName.getText() );
+                presenter.setContainerName( containerName.getText() );
                 if ( !containerName.getText().trim().isEmpty() ) {
                     containerNameGroup.setType( ControlGroupType.NONE );
                 }
@@ -164,7 +121,35 @@ public class NewContainerForm
                 }
             }
         } );
+    }
 
+    @Override
+    public void setGroupId( final String value ) {
+        groupId.setText( value );
+        if ( !groupId.getText().trim().isEmpty() ) {
+            groupIdGroup.setType( ControlGroupType.NONE );
+        }
+    }
+
+    @Override
+    public void setAtifactId( final String value ) {
+        artifactId.setText( value );
+        if ( !artifactId.getText().trim().isEmpty() ) {
+            artifactIdGroup.setType( ControlGroupType.NONE );
+        }
+    }
+
+    @Override
+    public void setVersion( final String value ) {
+        version.setText( value );
+        if ( !version.getText().trim().isEmpty() ) {
+            versionGroup.setType( ControlGroupType.NONE );
+        }
+    }
+
+    @Override
+    public void setEndpoint( final String value ) {
+        endpoint.setText( value );
     }
 
     @UiHandler("ok")
@@ -194,36 +179,7 @@ public class NewContainerForm
             return;
         }
 
-        service.call().createContainer( serverRef.getId(),
-                                        containerName.getText(),
-                                        new GAV( groupId.getText(), artifactId.getText(), version.getText() ) );
-
-        hide();
+        presenter.createContainer( containerName.getText(), groupId.getText(), artifactId.getText(), version.getText() );
+        presenter.close();
     }
-
-    private void cleanup() {
-        containerName.setText( "" );
-        endpoint.setText( "" );
-        groupId.setText( "" );
-        artifactId.setText( "" );
-        version.setText( "" );
-        containerNameGroup.setType( ControlGroupType.NONE );
-        groupIdGroup.setType( ControlGroupType.NONE );
-        artifactIdGroup.setType( ControlGroupType.NONE );
-        versionGroup.setType( ControlGroupType.NONE );
-        serverRef = null;
-    }
-
-    public void show( final ServerRef serverRef ) {
-        cleanup();
-        this.serverRef = checkNotNull( "serverRef", serverRef );
-        endpoint.setText( serverRef.getId() + "/containers/" );
-        popup.show();
-    }
-
-    public void hide() {
-        cleanup();
-        popup.hide();
-    }
-
 }

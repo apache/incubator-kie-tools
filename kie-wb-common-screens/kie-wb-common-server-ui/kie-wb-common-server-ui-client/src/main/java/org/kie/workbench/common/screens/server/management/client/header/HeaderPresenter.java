@@ -1,24 +1,27 @@
 package org.kie.workbench.common.screens.server.management.client.header;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderClearSelectionEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderDeleteEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderFilterEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderRefreshEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderSelectAllEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderStartEvent;
+import org.kie.workbench.common.screens.server.management.client.events.HeaderStopEvent;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.UberView;
 
 @Dependent
 public class HeaderPresenter {
 
-    public View getView() {
-        return view;
+    enum State {
+        DISPLAY, HIDE
     }
 
-    @Inject
-    private View view;
-
-    public interface View extends IsWidget {
+    public interface View extends UberView<HeaderPresenter> {
 
         void displayDeleteContainer();
 
@@ -31,86 +34,121 @@ public class HeaderPresenter {
         void hideStopContainer();
 
         void hideStartContainer();
-
-        void setOnFilterChange( ParameterizedCommand<String> command );
-
-        void setOnClearSelection( Command command );
-
-        void setOnRegisterServer( final Command onConnectToServerSelection );
-
-        void setOnSelectAll( Command command );
-
-        void setOnDelete( final Command onDelete );
-
-        void setOnStart( Command onStart );
-
-        void setOnStop( Command onStop );
-
-        void setOnRefresh( Command onStop );
-
-        void filter( final String content );
-
-        void clearFilter();
     }
 
-    @PostConstruct
-    public void setup() {
-    }
+    private final View view;
 
-    public void setOnFilterChange( final ParameterizedCommand<String> command ) {
-        view.setOnFilterChange( command );
-    }
+    private final Event<HeaderFilterEvent> filterEvent;
 
-    public void setOnClearSelection( final Command command ) {
-        view.setOnClearSelection( command );
-    }
+    private final Event<HeaderClearSelectionEvent> clearSelectionEvent;
 
-    public void setOnSelectAll( final Command command ) {
-        view.setOnSelectAll( command );
-    }
+    private final Event<HeaderSelectAllEvent> selectAllEvent;
 
-    public void setOnDelete( final Command command ) {
-        view.setOnDelete( command );
-    }
+    private final Event<HeaderDeleteEvent> headerDeleteEvent;
 
-    public void setOnRefresh( final Command command ) {
-        view.setOnRefresh( command );
-    }
+    private final Event<HeaderStopEvent> headerStopEvent;
 
-    public void setOnRegisterServer( final Command onRegisterServer ) {
-        view.setOnRegisterServer( onRegisterServer );
-    }
+    private final Event<HeaderStartEvent> headerStartEvent;
 
-    public void setOnStart( final Command onStart ) {
-        view.setOnStart( onStart );
-    }
+    private final Event<HeaderRefreshEvent> headerRefreshEvent;
 
-    public void setOnStop( final Command onStop ) {
-        view.setOnStop( onStop );
+    private final PlaceManager placeManager;
+
+    private State deleteContainerState = State.DISPLAY;
+    private State stopContainerState = State.DISPLAY;
+    private State startContainerState = State.DISPLAY;
+
+    @Inject
+    public HeaderPresenter( final View view,
+                            final PlaceManager placeManager,
+                            final Event<HeaderFilterEvent> filterEvent,
+                            final Event<HeaderClearSelectionEvent> clearSelectionEvent,
+                            final Event<HeaderSelectAllEvent> selectAllEvent,
+                            final Event<HeaderDeleteEvent> headerDeleteEvent,
+                            final Event<HeaderStopEvent> headerStopEvent,
+                            final Event<HeaderStartEvent> headerStartEvent,
+                            final Event<HeaderRefreshEvent> headerRefreshEvent ) {
+        this.view = view;
+        this.placeManager = placeManager;
+        this.filterEvent = filterEvent;
+        this.clearSelectionEvent = clearSelectionEvent;
+        this.selectAllEvent = selectAllEvent;
+        this.headerDeleteEvent = headerDeleteEvent;
+        this.headerStopEvent = headerStopEvent;
+        this.headerStartEvent = headerStartEvent;
+        this.headerRefreshEvent = headerRefreshEvent;
+        this.view.init( this );
     }
 
     public void displayDeleteContainer() {
+        deleteContainerState = State.DISPLAY;
         view.displayDeleteContainer();
     }
 
     public void displayStopContainer() {
+        stopContainerState = State.DISPLAY;
         view.displayStopContainer();
     }
 
     public void displayStartContainer() {
+        startContainerState = State.DISPLAY;
         view.displayStartContainer();
     }
 
     public void hideStartContainer() {
+        startContainerState = State.HIDE;
         view.hideStartContainer();
     }
 
     public void hideStopContainer() {
+        stopContainerState = State.HIDE;
         view.hideStopContainer();
     }
 
     public void hideDeleteContainer() {
+        deleteContainerState = State.HIDE;
         view.hideDeleteContainer();
     }
 
+    public View getView() {
+        return view;
+    }
+
+    public void filter( String value ) {
+        filterEvent.fire( new HeaderFilterEvent( this, value ) );
+    }
+
+    public void registerServer() {
+        placeManager.goTo( "ServerRegistryEndpoint" );
+    }
+
+    public void refresh() {
+        headerRefreshEvent.fire( new HeaderRefreshEvent( this ) );
+    }
+
+    public void selectAll() {
+        selectAllEvent.fire( new HeaderSelectAllEvent( this ) );
+    }
+
+    public void clearSelection() {
+        clearSelectionEvent.fire( new HeaderClearSelectionEvent( this ) );
+    }
+
+    public void start() {
+        if ( startContainerState.equals( State.DISPLAY ) ) {
+            headerStartEvent.fire( new HeaderStartEvent( this ) );
+        }
+    }
+
+    public void stopContainer() {
+        if ( stopContainerState.equals( State.DISPLAY ) ) {
+            headerStopEvent.fire( new HeaderStopEvent( this ) );
+        }
+    }
+
+    public void delete() {
+        if ( deleteContainerState.equals( State.DISPLAY ) ) {
+            headerDeleteEvent.fire( new HeaderDeleteEvent( this ) );
+        }
+    }
 }

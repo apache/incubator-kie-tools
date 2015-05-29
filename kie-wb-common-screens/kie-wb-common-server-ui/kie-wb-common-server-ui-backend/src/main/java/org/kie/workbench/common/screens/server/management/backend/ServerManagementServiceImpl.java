@@ -3,6 +3,7 @@ package org.kie.workbench.common.screens.server.management.backend;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -40,42 +41,82 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 @ApplicationScoped
 public class ServerManagementServiceImpl implements ServerManagementService {
 
-    @Inject
     private Event<ServerConnected> serverConnectedEvent;
-
-    @Inject
     private Event<ServerOnError> serverOnErrorEvent;
-
-    @Inject
     private Event<ServerDeleted> serverDeletedEvent;
-
-    @Inject
     private Event<ContainerCreated> containerCreatedEvent;
-
-    @Inject
     private Event<ContainerStarted> containerStartedEvent;
-
-    @Inject
     private Event<ContainerStopped> containerStoppedEvent;
-
-    @Inject
     private Event<ContainerDeleted> containerDeletedEvent;
-
-    @Inject
     private Event<ContainerUpdated> containerUpdatedEvent;
 
-    @Inject
     private ServerReferenceStorageImpl storage;
+    private RemoteAccessImpl remoteAccess;
+
+    private Executor executor;
+
+    //enable proxy
+    public ServerManagementServiceImpl() {
+    }
 
     @Inject
-    private RemoteAccessImpl remoteAccess;
+    public ServerManagementServiceImpl( final Event<ServerConnected> serverConnectedEvent,
+                                        final Event<ServerOnError> serverOnErrorEvent,
+                                        final Event<ServerDeleted> serverDeletedEvent,
+                                        final Event<ContainerCreated> containerCreatedEvent,
+                                        final Event<ContainerStarted> containerStartedEvent,
+                                        final Event<ContainerStopped> containerStoppedEvent,
+                                        final Event<ContainerDeleted> containerDeletedEvent,
+                                        final Event<ContainerUpdated> containerUpdatedEvent,
+                                        final ServerReferenceStorageImpl storage,
+                                        final RemoteAccessImpl remoteAccess ) {
+        this( serverConnectedEvent,
+              serverOnErrorEvent,
+              serverDeletedEvent,
+              containerCreatedEvent,
+              containerStartedEvent,
+              containerStoppedEvent,
+              containerDeletedEvent,
+              containerUpdatedEvent,
+              storage, remoteAccess,
+              SimpleAsyncExecutorService.getDefaultInstance() );
+    }
+
+    public ServerManagementServiceImpl( final Event<ServerConnected> serverConnectedEvent,
+                                        final Event<ServerOnError> serverOnErrorEvent,
+                                        final Event<ServerDeleted> serverDeletedEvent,
+                                        final Event<ContainerCreated> containerCreatedEvent,
+                                        final Event<ContainerStarted> containerStartedEvent,
+                                        final Event<ContainerStopped> containerStoppedEvent,
+                                        final Event<ContainerDeleted> containerDeletedEvent,
+                                        final Event<ContainerUpdated> containerUpdatedEvent,
+                                        final ServerReferenceStorageImpl storage,
+                                        final RemoteAccessImpl remoteAccess,
+                                        final Executor executor ) {
+        this.serverConnectedEvent = serverConnectedEvent;
+        this.serverOnErrorEvent = serverOnErrorEvent;
+        this.serverDeletedEvent = serverDeletedEvent;
+        this.containerCreatedEvent = containerCreatedEvent;
+        this.containerStartedEvent = containerStartedEvent;
+        this.containerStoppedEvent = containerStoppedEvent;
+        this.containerDeletedEvent = containerDeletedEvent;
+        this.containerUpdatedEvent = containerUpdatedEvent;
+        this.storage = storage;
+        this.remoteAccess = remoteAccess;
+        this.executor = executor;
+    }
+
+    @Override
+    public void refresh() {
+        listServers();
+    }
 
     @Override
     public Collection<ServerRef> listServers() {
         final Collection<ServerRef> result = storage.listRegisteredServers();
 
         for ( final ServerRef serverRef : result ) {
-            SimpleAsyncExecutorService.getDefaultInstance().execute( new Runnable() {
+            executor.execute( new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -110,7 +151,7 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         checkNotEmpty( "name", name );
         checkNotEmpty( "controllerUrl", controllerUrl );
 
-        final Server server = remoteAccess.registerServer(endpoint, name, username, password, REMOTE, controllerUrl);
+        final Server server = remoteAccess.registerServer( endpoint, name, username, password, REMOTE, controllerUrl );
 
         if ( storage.exists( server ) ) {
             throw new ServerAlreadyRegisteredException( "Server already registered." );
@@ -123,32 +164,19 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     @Override
-    public void deleteOp( final Collection<String> servers2Unregister,
-                          final Map<String, List<String>> containers2delete ) {
-        for ( final Map.Entry<String, List<String>> stringListEntry : containers2delete.entrySet() ) {
-            for ( final String containerId : stringListEntry.getValue() ) {
-                deleteContainer( stringListEntry.getKey(), containerId );
-            }
-        }
-        for ( final String server2Unregister : servers2Unregister ) {
-            unregisterServer( server2Unregister );
-        }
-    }
-
-    @Override
-    public void startContainers( Map<String, List<String>> containers ) {
+    public void startContainers( final Map<String, List<String>> containers ) {
         for ( Map.Entry<String, List<String>> entry : containers.entrySet() ) {
             final ServerRef serverRef = storage.loadServerRef( entry.getKey() );
             for ( final String containerId : entry.getValue() ) {
                 final ContainerRef containerRef = serverRef.getContainerRef( containerId );
-                final Container container = remoteAccess.install( serverRef.getUrl(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword(), containerRef.getReleasedId() );
+                final Container container = remoteAccess.install( serverRef.getId(), serverRef.getUrl(), containerRef.getId(), serverRef.getUsername(), serverRef.getPassword(), containerRef.getReleasedId() );
                 containerStartedEvent.fire( new ContainerStarted( container ) );
             }
         }
     }
 
     @Override
-    public void stopContainers( Map<String, List<String>> containers ) {
+    public void stopContainers( final Map<String, List<String>> containers ) {
         for ( Map.Entry<String, List<String>> entry : containers.entrySet() ) {
             final ServerRef serverRef = storage.loadServerRef( entry.getKey() );
             for ( final String containerId : entry.getValue() ) {
@@ -163,26 +191,18 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         }
     }
 
-    private void deleteContainer( final String serverId,
-                                  final String containerId ) {
-        final ServerRef serverRef = storage.loadServerRef( serverId );
-        storage.deleteContainer( serverId, containerId );
-        remoteAccess.deleteContainer( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
-        containerDeletedEvent.fire( new ContainerDeleted( serverId, containerId ) );
-    }
-
     @Override
     public void createContainer( final String serverId,
                                  final String containerId,
                                  final GAV gav ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
         try {
-            if (remoteAccess.containerExists(serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword())) {
-                throw new ContainerAlreadyRegisteredException(containerId);
+            if ( remoteAccess.containerExists( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() ) ) {
+                throw new ContainerAlreadyRegisteredException( containerId );
             }
-        } catch (ContainerAlreadyRegisteredException e) {
+        } catch ( ContainerAlreadyRegisteredException e ) {
             throw e;
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             // log only to support offline mode
         }
         final ContainerRef containerRef = new ContainerRefImpl( serverId, containerId, ContainerStatus.STOPPED, gav, null, null );
@@ -191,16 +211,11 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     @Override
-    public void refresh() {
-        listServers();
-    }
-
-    @Override
     public Container getContainerInfo( final String serverId,
                                        final String container ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
-        final Pair<Boolean, Container> result = remoteAccess.getContainer( serverRef.getUrl(), container, serverRef.getUsername(), serverRef.getPassword() );
+        final Pair<Boolean, Container> result = remoteAccess.getContainer( serverRef.getId(), serverRef.getUrl(), container, serverRef.getUsername(), serverRef.getPassword() );
         if ( result.getK2() != null ) {
             return result.getK2();
         }
@@ -236,8 +251,8 @@ public class ServerManagementServiceImpl implements ServerManagementService {
     }
 
     @Override
-    public ScannerOperationResult stopScanner( String serverId,
-                                               String containerId ) {
+    public ScannerOperationResult stopScanner( final String serverId,
+                                               final String containerId ) {
         final ServerRef serverRef = storage.loadServerRef( serverId );
 
         return remoteAccess.stopScanner( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
@@ -255,6 +270,27 @@ public class ServerManagementServiceImpl implements ServerManagementService {
         } finally {
             containerUpdatedEvent.fire( new ContainerUpdated( getContainerInfo( serverId, containerId ) ) );
         }
+    }
+
+    @Override
+    public void deleteOp( final Collection<String> servers2Unregister,
+                          final Map<String, List<String>> containers2delete ) {
+        for ( final Map.Entry<String, List<String>> stringListEntry : containers2delete.entrySet() ) {
+            for ( final String containerId : stringListEntry.getValue() ) {
+                deleteContainer( stringListEntry.getKey(), containerId );
+            }
+        }
+        for ( final String server2Unregister : servers2Unregister ) {
+            unregisterServer( server2Unregister );
+        }
+    }
+
+    private void deleteContainer( final String serverId,
+                                  final String containerId ) {
+        final ServerRef serverRef = storage.loadServerRef( serverId );
+        storage.deleteContainer( serverId, containerId );
+        remoteAccess.deleteContainer( serverRef.getUrl(), containerId, serverRef.getUsername(), serverRef.getPassword() );
+        containerDeletedEvent.fire( new ContainerDeleted( serverId, containerId ) );
     }
 
     private void unregisterServer( final String id ) {

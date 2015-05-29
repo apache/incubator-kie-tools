@@ -1,12 +1,12 @@
 package org.kie.workbench.common.screens.server.management.client.events;
 
-public class ContainerInfo {
+public class ContainerInfoUpdateEvent {
 
     private String serverId;
     private String containerId;
 
-    public ContainerInfo( String serverId,
-                          String containerId ) {
+    public ContainerInfoUpdateEvent( final String serverId,
+                                     final String containerId ) {
         this.serverId = serverId;
         this.containerId = containerId;
     }

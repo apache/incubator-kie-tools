@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.screens.server.management.client.registry;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
@@ -33,40 +31,21 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
-import org.kie.workbench.common.screens.server.management.model.Server;
-import org.kie.workbench.common.screens.server.management.service.ServerAlreadyRegisteredException;
-import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.mvp.Command;
 import org.uberfire.util.URIUtil;
 
 @Dependent
-public class ServerRegistryEndpointForm
-        extends PopupPanel {
+public class ServerRegistryEndpointView extends Composite
+        implements ServerRegistryEndpointPresenter.View {
 
-    interface ServerRegistryEndpointFormBinder
+    interface Binder
             extends
-            UiBinder<Widget, ServerRegistryEndpointForm> {
+            UiBinder<Widget, ServerRegistryEndpointView> {
 
     }
 
-    private static ServerRegistryEndpointFormBinder uiBinder = GWT.create( ServerRegistryEndpointFormBinder.class );
-
-    @Inject
-    private Caller<ServerManagementService> service;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private ErrorPopupPresenter errorPopup;
+    private static Binder uiBinder = GWT.create( Binder.class );
 
     @UiField
     Button connect;
@@ -98,14 +77,16 @@ public class ServerRegistryEndpointForm
     @UiField
     PasswordTextBox passwordTextBox;
 
-    @UiField
-    BaseModal popup;
+    private ServerRegistryEndpointPresenter presenter;
 
-    @PostConstruct
-    public void init() {
-        setWidget( uiBinder.createAndBindUi( this ) );
+    public ServerRegistryEndpointView() {
+        initWidget( uiBinder.createAndBindUi( this ) );
+    }
 
-        popup.setDynamicSafe( true );
+    @Override
+    public void init( final ServerRegistryEndpointPresenter presenter ) {
+        this.presenter = presenter;
+
         endpointTextBox.addKeyPressHandler( new KeyPressHandler() {
             @Override
             public void onKeyPress( final KeyPressEvent event ) {
@@ -117,7 +98,6 @@ public class ServerRegistryEndpointForm
 
     @UiHandler("connect")
     public void onConnectClick( final ClickEvent e ) {
-
         if ( endpointTextBox.getText() == null || endpointTextBox.getText().trim().isEmpty() ) {
             urlGroup.setType( ControlGroupType.ERROR );
             urlHelpInline.setText( "Endpoint mandatory" );
@@ -138,35 +118,16 @@ public class ServerRegistryEndpointForm
             nameGroup.setType( ControlGroupType.NONE );
         }
 
-        lockScreen();
-        String controllerURL = GWT.getHostPageBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "" )+"rest";
-        service.call( new RemoteCallback<Server>() {
-                          @Override
-                          public void callback( final Server response ) {
-                              hide();
-                          }
-                      }, new ErrorCallback<Object>() {
-                          @Override
-                          public boolean error( final Object message,
-                                                final Throwable throwable ) {
-                              String errorMessage = "Can't connect to endpoint.";
-                              if ( throwable instanceof ServerAlreadyRegisteredException ) {
-                                  errorMessage = throwable.getMessage();
-                              }
-                              errorPopup.showMessage( errorMessage, null, new Command() {
-                                  @Override
-                                  public void execute() {
-                                      hide();
-                                  }
-                              } );
-                              return false;
-                          }
-                      }
-                    ).registerServer( endpointTextBox.getText(), nameTextBox.getText(), usernameTextBox.getText(), passwordTextBox.getText(), controllerURL );
+        presenter.registerServer( endpointTextBox.getText(), nameTextBox.getText(), usernameTextBox.getText(), passwordTextBox.getText() );
     }
 
-    private void lockScreen() {
-        popup.setCloseVisible( false );
+    @Override
+    public String getBaseURL() {
+        return GWT.getHostPageBaseURL().replaceFirst( "/" + GWT.getModuleName() + "/", "" );
+    }
+
+    @Override
+    public void lockScreen() {
         connect.setEnabled( false );
         cancel.setEnabled( false );
         passwordTextBox.setEnabled( false );
@@ -175,8 +136,8 @@ public class ServerRegistryEndpointForm
         nameTextBox.setEnabled( false );
     }
 
-    private void unlockScreen() {
-        popup.setCloseVisible( true );
+    @Override
+    public void unlockScreen() {
         connect.setEnabled( true );
         cancel.setEnabled( true );
         passwordTextBox.setEnabled( true );
@@ -187,23 +148,6 @@ public class ServerRegistryEndpointForm
 
     @UiHandler("cancel")
     public void onCancelClick( final ClickEvent e ) {
-        hide();
+        presenter.close();
     }
-
-    public void hide() {
-        unlockScreen();
-
-        passwordTextBox.setText( "" );
-        usernameTextBox.setText( "" );
-        endpointTextBox.setText( "" );
-        nameTextBox.setText( "" );
-
-        popup.hide();
-        super.hide();
-    }
-
-    public void show() {
-        popup.show();
-    }
-
 }

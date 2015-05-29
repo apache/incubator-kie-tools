@@ -33,10 +33,9 @@ import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.server.management.client.resources.ContainerResources;
-import org.kie.workbench.common.screens.server.management.client.util.ContainerStatusUtil;
 import org.kie.workbench.common.screens.server.management.model.ContainerStatus;
 
-import static org.kie.workbench.common.screens.server.management.client.util.ContainerStatusUtil.setupStatus;
+import static org.kie.workbench.common.screens.server.management.client.util.ContainerStatusUtil.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Dependent
@@ -86,93 +85,83 @@ public class BoxView extends Composite implements BoxPresenter.View {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void setup( final BoxPresenter presenter ) {
+    @Override
+    public void init( BoxPresenter presenter ) {
         this.presenter = checkNotNull( "presenter", presenter );
+    }
 
+    @Override
+    public void setup( final BoxType type ) {
         selected.setTitle( "Selected" );
         notSelected.setTitle( "Not selected" );
         addAction.setTitle( "New Container" );
         openAction.setTitle( "Open" );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) selected, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) selected, new EventListener() {
+        DOM.sinkEvents( selected, Event.ONCLICK );
+        DOM.setEventListener( selected, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                unSelect();
+                onDeselect();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) notSelected, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) notSelected, new EventListener() {
+        DOM.sinkEvents( notSelected, Event.ONCLICK );
+        DOM.setEventListener( notSelected, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                select();
+                onSelect();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) addAction, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) addAction, new EventListener() {
+        DOM.sinkEvents( addAction, Event.ONCLICK );
+        DOM.setEventListener( addAction, new EventListener() {
             public void onBrowserEvent( final Event event ) {
                 addAction();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) openAction, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) openAction, new EventListener() {
+        DOM.sinkEvents( openAction, Event.ONCLICK );
+        DOM.setEventListener( openAction, new EventListener() {
             public void onBrowserEvent( final Event event ) {
                 openAction();
             }
         } );
 
-        containerName.setInnerText( presenter.getName() );
-        if ( presenter.getType().equals( BoxType.CONTAINER ) ) {
+        if ( type.equals( BoxType.CONTAINER ) ) {
             box.addClassName( ContainerResources.INSTANCE.CSS().childContainer() );
         } else {
             box.removeClassName( ContainerResources.INSTANCE.CSS().childContainer() );
         }
-
-        complement.setInnerText( presenter.getDescription() );
-
-        setStatus( presenter.getStatus() );
-
-        if ( presenter.getStatus().equals( ContainerStatus.STARTED ) && presenter.getOnAddAction() != null ) {
-            enableAddAction();
-        } else {
-            disableAddAction();
-        }
-
-        if ( presenter.getOnOpenAction() != null ) {
-            enableOpenAction();
-        } else {
-            disableOpenAction();
-        }
-
     }
 
     private void openAction() {
-        presenter.getOnOpenAction().execute();
+        presenter.openBoxInfo();
     }
 
     private void addAction() {
-        presenter.getOnAddAction().execute();
+        presenter.openAddScreen();
     }
 
+    @Override
     public void enableAddAction() {
         addAction.getStyle().clearDisplay();
     }
 
+    @Override
     public void disableAddAction() {
         addAction.getStyle().setDisplay( Style.Display.NONE );
     }
 
+    @Override
     public void enableOpenAction() {
         openAction.getStyle().clearDisplay();
     }
 
+    @Override
     public void disableOpenAction() {
         openAction.getStyle().setDisplay( Style.Display.NONE );
     }
 
     @Override
-    public void select() {
+    public void onSelect() {
         notSelected.getStyle().setDisplay( Style.Display.NONE );
         selected.getStyle().clearDisplay();
         box.addClassName( ContainerResources.INSTANCE.CSS().selected() );
@@ -180,7 +169,7 @@ public class BoxView extends Composite implements BoxPresenter.View {
     }
 
     @Override
-    public void unSelect() {
+    public void onDeselect() {
         selected.getStyle().setDisplay( Style.Display.NONE );
         notSelected.getStyle().clearDisplay();
         box.removeClassName( ContainerResources.INSTANCE.CSS().selected() );
@@ -200,12 +189,17 @@ public class BoxView extends Composite implements BoxPresenter.View {
     @Override
     public void hide() {
         this.box.getStyle().setDisplay( Style.Display.NONE );
-        unSelect();
+        onDeselect();
     }
 
     @Override
-    public boolean isVisible() {
-        return !this.box.getStyle().getDisplay().equals( Style.Display.NONE );
+    public void setName( final String value ) {
+        containerName.setInnerText( value );
+    }
+
+    @Override
+    public void setDescription( String value ) {
+        complement.setInnerText( value );
     }
 
 }

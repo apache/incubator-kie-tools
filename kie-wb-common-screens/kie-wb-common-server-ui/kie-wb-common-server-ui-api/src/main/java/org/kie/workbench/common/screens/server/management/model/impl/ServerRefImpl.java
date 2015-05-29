@@ -14,14 +14,14 @@ import org.kie.workbench.common.screens.server.management.service.ContainerAlrea
 @Portable
 public class ServerRefImpl implements ServerRef {
 
-    private         String          id;
-    private         String          url;
-    private         String          name;
-    private         String          username;
-    private         String          password;
-    private         ContainerStatus status;
-    private         ConnectionType  connectionType;
-    private final   Map<String, String>       properties    = new HashMap<String, String>();
+    private String id;
+    private String url;
+    private String name;
+    private String username;
+    private String password;
+    private ContainerStatus status;
+    private ConnectionType connectionType;
+    private final Map<String, String> properties = new HashMap<String, String>();
     protected final Map<String, ContainerRef> containersRef = new HashMap<String, ContainerRef>();
 
     public ServerRefImpl() {
@@ -36,7 +36,7 @@ public class ServerRefImpl implements ServerRef {
             final ContainerStatus status,
             final ConnectionType connectionType,
             final Map<String, String> properties,
-            final Collection<ContainerRef> containerRefs) {
+            final Collection<ContainerRef> containerRefs ) {
         this.id = id;
         this.url = url;
         this.name = name;
@@ -62,7 +62,7 @@ public class ServerRefImpl implements ServerRef {
 
     @Override
     public String getUrl() {
-        if (url == null) {
+        if ( url == null ) {
             return id;
         }
         return url;
@@ -133,13 +133,9 @@ public class ServerRefImpl implements ServerRef {
             return false;
         }
 
-        ServerRefImpl serverRef = (ServerRefImpl) o;
+        final ServerRefImpl serverRef = (ServerRefImpl) o;
 
-        if ( !id.equals( serverRef.id ) ) {
-            return false;
-        }
-
-        return true;
+        return id.equals( serverRef.id );
     }
 
     @Override

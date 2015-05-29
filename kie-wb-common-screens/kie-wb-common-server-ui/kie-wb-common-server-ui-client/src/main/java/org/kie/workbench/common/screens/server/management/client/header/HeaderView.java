@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.server.management.client.header;
 
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -30,13 +29,12 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class HeaderView extends Composite
         implements HeaderPresenter.View {
+
+    private HeaderPresenter presenter;
 
     interface HeaderViewBinder
             extends
@@ -73,64 +71,6 @@ public class HeaderView extends Composite
     @UiField
     InputElement inputFilter;
 
-    @Inject
-    private PlaceManager placeManager;
-
-    private ParameterizedCommand<String> onFilterChange = new ParameterizedCommand<String>() {
-        @Override
-        public void execute( String parameter ) {
-        }
-    };
-
-    private Command onSelectAll = new Command() {
-        @Override
-        public void execute() {
-
-        }
-    };
-
-    private Command onClearSelection = new Command() {
-        @Override
-        public void execute() {
-
-        }
-    };
-
-    private Command onRegisterServer = new Command() {
-        @Override
-        public void execute() {
-
-        }
-    };
-
-    private Command onRefresh = new Command() {
-        @Override
-        public void execute() {
-
-        }
-    };
-
-    private Command onDelete = new Command() {
-        @Override
-        public void execute() {
-
-        }
-    };
-
-    private Command onStart = new Command() {
-        @Override
-        public void execute() {
-
-        }
-    };
-
-    private Command onStop = new Command() {
-        @Override
-        public void execute() {
-
-        }
-    };
-
     public HeaderView() {
         initWidget( uiBinder.createAndBindUi( this ) );
         inputFilter.setPropertyString( "placeholder", "Filter..." );
@@ -140,63 +80,64 @@ public class HeaderView extends Composite
 
             @Override
             public void onBrowserEvent( Event event ) {
-                onFilterChange.execute( inputFilter.getValue() );
+                presenter.filter( inputFilter.getValue() );
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) clearFilter, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) clearFilter, new EventListener() {
+        DOM.sinkEvents( clearFilter, Event.ONCLICK );
+        DOM.setEventListener( clearFilter, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                clearFilter();
+                inputFilter.setValue( "" );
+                presenter.filter( "" );
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) registerArea, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) registerArea, new EventListener() {
+        DOM.sinkEvents( registerArea, Event.ONCLICK );
+        DOM.setEventListener( registerArea, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                registerServer();
+                presenter.registerServer();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) refreshArea, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) refreshArea, new EventListener() {
+        DOM.sinkEvents( refreshArea, Event.ONCLICK );
+        DOM.setEventListener( refreshArea, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                refresh();
+                presenter.refresh();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) startArea, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) startArea, new EventListener() {
+        DOM.sinkEvents( startArea, Event.ONCLICK );
+        DOM.setEventListener( startArea, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                startContainer();
+                presenter.start();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) stopArea, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) stopArea, new EventListener() {
+        DOM.sinkEvents( stopArea, Event.ONCLICK );
+        DOM.setEventListener( stopArea, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                stopContainer();
+                presenter.stopContainer();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) deleteArea, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) deleteArea, new EventListener() {
+        DOM.sinkEvents( deleteArea, Event.ONCLICK );
+        DOM.setEventListener( deleteArea, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                deleteContainer();
+                presenter.delete();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) selectAll, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) selectAll, new EventListener() {
+        DOM.sinkEvents( selectAll, Event.ONCLICK );
+        DOM.setEventListener( selectAll, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                onSelectAll.execute();
+                presenter.selectAll();
             }
         } );
 
-        DOM.sinkEvents( (com.google.gwt.user.client.Element) clearSelection, Event.ONCLICK );
-        DOM.setEventListener( (com.google.gwt.user.client.Element) clearSelection, new EventListener() {
+        DOM.sinkEvents( clearSelection, Event.ONCLICK );
+        DOM.setEventListener( clearSelection, new EventListener() {
             public void onBrowserEvent( final Event event ) {
-                onClearSelection.execute();
+                presenter.clearSelection();
             }
         } );
 
@@ -205,24 +146,9 @@ public class HeaderView extends Composite
         deleteArea.getStyle().setDisplay( Style.Display.NONE );
     }
 
-    private void refresh() {
-        onRefresh.execute();
-    }
-
-    private void registerServer() {
-        onRegisterServer.execute();
-    }
-
-    private void deleteContainer() {
-        onDelete.execute();
-    }
-
-    private void stopContainer() {
-        onStop.execute();
-    }
-
-    private void startContainer() {
-        onStart.execute();
+    @Override
+    public void init( final HeaderPresenter presenter ) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -253,57 +179,5 @@ public class HeaderView extends Composite
     @Override
     public void hideStartContainer() {
         startArea.getStyle().setDisplay( Style.Display.NONE );
-    }
-
-    @Override
-    public void setOnFilterChange( final ParameterizedCommand<String> command ) {
-        this.onFilterChange = command;
-    }
-
-    @Override
-    public void setOnSelectAll( final Command onSelectAll ) {
-        this.onSelectAll = onSelectAll;
-    }
-
-    @Override
-    public void setOnClearSelection( final Command onClearSelection ) {
-        this.onClearSelection = onClearSelection;
-    }
-
-    @Override
-    public void setOnRegisterServer( final Command onRegisterServer ) {
-        this.onRegisterServer = onRegisterServer;
-    }
-
-    @Override
-    public void setOnDelete( final Command onDelete ) {
-        this.onDelete = onDelete;
-    }
-
-    @Override
-    public void setOnStart( final Command onStart ) {
-        this.onStart = onStart;
-    }
-
-    @Override
-    public void setOnStop( final Command onStop ) {
-        this.onStop = onStop;
-    }
-
-    @Override
-    public void setOnRefresh( final Command onRefresh ) {
-        this.onRefresh = onRefresh;
-    }
-
-    @Override
-    public void filter( final String content ) {
-        this.inputFilter.setValue( content );
-        onFilterChange.execute( "" );
-    }
-
-    @Override
-    public void clearFilter() {
-        inputFilter.setValue( "" );
-        onFilterChange.execute( "" );
     }
 }
