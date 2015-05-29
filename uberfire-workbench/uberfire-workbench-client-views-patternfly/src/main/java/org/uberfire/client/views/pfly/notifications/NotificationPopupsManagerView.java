@@ -2,21 +2,25 @@ package org.uberfire.client.views.pfly.notifications;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager.NotificationPopupHandle;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.workbench.events.NotificationEvent;
 
+@Dependent
 public class NotificationPopupsManagerView implements NotificationManager.View {
 
     //When true we are in the process of removing a notification message
     private boolean removing = false;
 
     private final int SPACING = 48;
+
+    private IsWidget container;
 
     private final List<PopupHandle> activeNotifications = new ArrayList<PopupHandle>();
 
@@ -35,14 +39,23 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
     }
 
     @Override
+    public void setContainer( final IsWidget container ) {
+        this.container = PortablePreconditions.checkNotNull( "container", container );
+    }
+
+    @Override
     public NotificationPopupHandle show( NotificationEvent event,
                                          Command hideCommand ) {
+        if ( container == null ) {
+            throw new IllegalStateException( "The setContainer() method hasn't been called!" );
+        }
+
         final NotificationPopupView view = new NotificationPopupView();
         final PopupHandle popupHandle = new PopupHandle( view,
                                                          event );
         activeNotifications.add( popupHandle );
-        view.setPopupPosition( getMargin(),
-                               activeNotifications.size() * SPACING );
+        view.setPopupPosition( container.asWidget().getAbsoluteLeft() + getMargin(),
+                               container.asWidget().getAbsoluteTop() + activeNotifications.size() * SPACING );
         view.setNotification( event.getNotification() );
         view.setType( event.getType() );
         view.setNotificationWidth( getWidth() + "px" );
@@ -52,6 +65,10 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
 
     @Override
     public void hide( final NotificationPopupHandle handle ) {
+        if ( container == null ) {
+            throw new IllegalStateException( "The setContainer() method hasn't been called!" );
+        }
+
         final int removingIndex = activeNotifications.indexOf( handle );
         if ( removingIndex == -1 ) {
             return;
@@ -69,7 +86,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
                 for ( int i = removingIndex; i < activeNotifications.size(); i++ ) {
                     NotificationPopupView v = activeNotifications.get( i ).view;
                     final int left = v.getPopupLeft();
-                    final int top = (int) ( ( ( i + 1 ) * SPACING ) - ( progress * SPACING ) );
+                    final int top = (int) ( ( ( i + 1 ) * SPACING ) - ( progress * SPACING ) ) + container.asWidget().getAbsoluteTop();
                     v.setPopupPosition( left,
                                         top );
                 }
@@ -101,14 +118,14 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
         return false;
     }
 
-    //80% of screen width
+    //80% of container width
     private int getWidth() {
-        return (int) ( Window.getClientWidth() * 0.8 );
+        return (int) ( container.asWidget().getElement().getClientWidth() * 0.8 );
     }
 
-    //10% of screen width
+    //10% of container width
     private int getMargin() {
-        return ( Window.getClientWidth() - getWidth() ) / 2;
+        return ( container.asWidget().getElement().getClientWidth() - getWidth() ) / 2;
     }
 
 }

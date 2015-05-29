@@ -15,6 +15,8 @@
  */
 package org.uberfire.workbench.events;
 
+import org.uberfire.mvp.PlaceRequest;
+
 /**
  * An event to show a notification pop-up in the Workbench
  */
@@ -27,33 +29,48 @@ public class NotificationEvent implements UberFireEvent {
     private final String notification;
     private final NotificationType type;
     private final boolean isSingleton;
+    private final PlaceRequest placeRequest;
 
     public NotificationEvent( final String notification ) {
         this( notification,
               NotificationType.DEFAULT,
-              false );
+              false,
+              null );
     }
 
     public NotificationEvent( final String notification,
                               final NotificationType type ) {
         this( notification,
               type,
-              false );
+              false,
+              null );
     }
 
     public NotificationEvent( final String notification,
                               final boolean isSingleton ) {
         this( notification,
               NotificationType.DEFAULT,
-              isSingleton );
+              isSingleton,
+              null );
     }
 
     public NotificationEvent( final String notification,
                               final NotificationType type,
                               final boolean isSingleton ) {
+        this( notification,
+              NotificationType.DEFAULT,
+              isSingleton,
+              null );
+    }
+
+    public NotificationEvent( final String notification,
+                              final NotificationType type,
+                              final boolean isSingleton,
+                              final PlaceRequest placeRequest ) {
         this.notification = notification;
         this.type = type;
         this.isSingleton = isSingleton;
+        this.placeRequest = placeRequest;
     }
 
     public String getNotification() {
@@ -66,6 +83,10 @@ public class NotificationEvent implements UberFireEvent {
 
     public boolean isSingleton() {
         return isSingleton;
+    }
+
+    public PlaceRequest getPlaceRequest() {
+        return placeRequest;
     }
 
     @Override
@@ -90,7 +111,10 @@ public class NotificationEvent implements UberFireEvent {
         if ( notification != null ? !notification.equals( that.notification ) : that.notification != null ) {
             return false;
         }
-        return type == that.type;
+        if ( type != that.type ) {
+            return false;
+        }
+        return !( placeRequest != null ? !placeRequest.equals( that.placeRequest ) : that.placeRequest != null );
 
     }
 
@@ -101,6 +125,8 @@ public class NotificationEvent implements UberFireEvent {
         result = 31 * result + type.hashCode();
         result = ~~result;
         result = 31 * result + ( isSingleton ? 1 : 0 );
+        result = ~~result;
+        result = 31 * result + ( placeRequest != null ? placeRequest.hashCode() : 0 );
         result = ~~result;
         return result;
     }
