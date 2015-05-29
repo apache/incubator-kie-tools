@@ -65,6 +65,16 @@ public class NotificationManager {
          *          The container relative to which Notifications will be shown. Must not be null.
          */
         void setContainer( final IsWidget container );
+        
+        /**
+         * Configures the initial vertical spacing for the first notifications
+         * (see {@link NotificationEvent#getInitialTopOffset()}). A default value is
+         * used if this method is never invoked.
+         * 
+         * @param spacing
+         *            the vertical spacing in number of pixels
+         */
+        void setInitialSpacing (int spacing);
 
         /**
          * Displays a notification with the given severity and contents.
@@ -162,6 +172,9 @@ public class NotificationManager {
             if ( containerViewBeanDef != null ) {
                 notificationsContainerView = containerViewBeanDef.getInstance();
                 notificationsContainerView.setContainer( notificationsContainer );
+                if (event.getInitialTopOffset() != null) {
+                    notificationsContainerView.setInitialSpacing( event.getInitialTopOffset() );
+                }
                 notificationsContainerViewMap.put( placeRequest,
                                                    notificationsContainerView );
             }

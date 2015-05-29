@@ -19,6 +19,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
     private boolean removing = false;
 
     private final int SPACING = 48;
+    private int initialSpacing = SPACING;
 
     private IsWidget container;
 
@@ -42,6 +43,11 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
     public void setContainer( final IsWidget container ) {
         this.container = PortablePreconditions.checkNotNull( "container", container );
     }
+    
+    @Override
+    public void setInitialSpacing( int spacing ) {
+        this.initialSpacing = spacing;
+    }
 
     @Override
     public NotificationPopupHandle show( NotificationEvent event,
@@ -54,8 +60,10 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
         final PopupHandle popupHandle = new PopupHandle( view,
                                                          event );
         activeNotifications.add( popupHandle );
+        int size = activeNotifications.size();
+        int topMargin = (size == 1) ? initialSpacing : (size * SPACING) - (SPACING - initialSpacing);
         view.setPopupPosition( container.asWidget().getAbsoluteLeft() + getMargin(),
-                               container.asWidget().getAbsoluteTop() + activeNotifications.size() * SPACING );
+                               container.asWidget().getAbsoluteTop() + topMargin );
         view.setNotification( event.getNotification() );
         view.setType( event.getType() );
         view.setNotificationWidth( getWidth() + "px" );

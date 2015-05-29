@@ -198,7 +198,8 @@ public class EditorLockManagerImpl implements EditorLockManager {
         lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockedMessage( lockInfo.lockedBy() ),
                                                       NotificationEvent.NotificationType.INFO,
                                                       true,
-                                                      activity.getPlace() ) );
+                                                      activity.getPlace(),
+                                                      20) );
 
         // Delay reloading slightly in case we're dealing with a flood of events
         if ( reloadTimer == null ) {
