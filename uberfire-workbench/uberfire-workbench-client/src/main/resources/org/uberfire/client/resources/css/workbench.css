@@ -76,23 +76,6 @@
     height: 32px;
 }
 
-.uf-lock-hint {
-	width: 180px;
-	height: 90px;
-	background-color: #FFFFFF;
-	color: #848484;
-	border: 1px solid;
-	border-color: #848484;	
-	text-align: center;
-	font-size: 13px;
-	-webkit-transition: top 0.5s ease-in;
-    -moz-transition: top 0.5s ease-in;
-    -ms-transition: top 0.5s ease-in;
-    -o-transition: top 0.5s ease-in;
-    transition: top 0.5s ease-in;
-    z-index: 1;
-}
-
 .show-context {
     margin-left: 0;
     -webkit-transition: all 0.7s ease-out;
