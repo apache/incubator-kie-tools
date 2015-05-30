@@ -291,17 +291,22 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         }
 
         if ( deleteCommand != null ) {
-            deleteMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
-                    .respondsWith( deleteCommand )
-                    .endMenu()
-                    .build().getItems().get( 0 );
+            if ( deleteMenuItem == null ) {
+                deleteMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
+                                            .respondsWith( deleteCommand )
+                                            .endMenu()
+                                            .build().getItems().get( 0 );
+            }
             menuItems.put( MenuItems.DELETE, deleteMenuItem );
         }
 
         if ( renameCommand != null ) {
-            renameMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
-                    .respondsWith( renameCommand )
-                    .endMenu().build().getItems().get( 0 );
+            if ( renameMenuItem == null ) {
+                renameMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
+                                            .respondsWith( renameCommand )
+                                            .endMenu()
+                                            .build().getItems().get( 0 );
+            }
             menuItems.put( MenuItems.RENAME, renameMenuItem );
         }
 
