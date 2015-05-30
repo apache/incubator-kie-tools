@@ -94,7 +94,8 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
                 for ( int i = removingIndex; i < activeNotifications.size(); i++ ) {
                     NotificationPopupView v = activeNotifications.get( i ).view;
                     final int left = v.getPopupLeft();
-                    final int top = (int) ( ( ( i + 1 ) * SPACING ) - ( progress * SPACING ) ) + container.asWidget().getAbsoluteTop();
+                    final int top = (int) ( ( ( i + 1 ) * SPACING ) - ( progress * SPACING ) ) 
+                            - (SPACING - initialSpacing) + container.asWidget().getAbsoluteTop();
                     v.setPopupPosition( left,
                                         top );
                 }
