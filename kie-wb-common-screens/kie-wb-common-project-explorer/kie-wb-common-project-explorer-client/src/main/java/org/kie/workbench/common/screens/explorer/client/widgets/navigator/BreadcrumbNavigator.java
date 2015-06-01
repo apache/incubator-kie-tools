@@ -2,9 +2,23 @@ package org.kie.workbench.common.screens.explorer.client.widgets.navigator;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.guvnor.structure.client.resources.NavigatorResources;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.kie.workbench.common.screens.explorer.client.resources.i18n.ProjectExplorerConstants;
+import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
+import org.kie.workbench.common.screens.explorer.model.FolderItem;
+import org.kie.workbench.common.screens.explorer.model.FolderItemType;
+import org.kie.workbench.common.screens.explorer.model.FolderListing;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.uberfire.backend.vfs.Path;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
 import com.github.gwtbootstrap.client.ui.Icon;
 import com.github.gwtbootstrap.client.ui.Tooltip;
@@ -18,16 +32,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
-import org.guvnor.structure.client.resources.NavigatorResources;
-import org.kie.workbench.common.screens.explorer.client.widgets.ViewPresenter;
-import org.kie.workbench.common.screens.explorer.model.FolderItem;
-import org.kie.workbench.common.screens.explorer.model.FolderItemType;
-import org.kie.workbench.common.screens.explorer.model.FolderListing;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
-import org.uberfire.workbench.type.DotResourceTypeDefinition;
 
 @Dependent
 public class BreadcrumbNavigator extends Composite implements Navigator {
@@ -35,6 +39,9 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
     @Inject
     private DotResourceTypeDefinition hiddenTypeDef;
 
+    @Inject
+    private User user;
+    
     private FolderListing activeContent;
 
     private final FlowPanel container = new FlowPanel();
@@ -150,6 +157,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
     private void createUpFolder( final FolderItem item ) {
         int col = 0;
         navigator.setText( 0, col, "" );
+        navigator.setText( 0, ++col, "" );
 
         navigator.setWidget( 0, ++col, new Anchor( ".." ) {{
             addClickHandler( new ClickHandler() {
@@ -175,10 +183,34 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
                                 final IconType iconType,
                                 final String style,
                                 final Command onClick ) {
+        
+        final Boolean locked = (folderItem.getLockedBy() != null);
+        final Boolean lockOwned = (locked && folderItem.getLockedBy().equals( user.getIdentifier() ));
+        
         int col = 0;
         navigator.setWidget( row, col, new Icon( iconType ) {{
             addStyleName( style );
         }} );
+        
+        col++;
+        if ( locked ) {
+            final InlineHTML lock = new InlineHTML( "<i class=\"icon-lock\"" + ((lockOwned) ? "style=\"color:#0083d0\"" : "") + "></i>" );
+            navigator.setWidget( row,
+                                 col,
+                                 lock );
+
+            new Tooltip() {
+                {
+                    setWidget( lock );
+                    setText( (lockOwned) ? ProjectExplorerConstants.INSTANCE.lockOwnedHint() :
+                            ProjectExplorerConstants.INSTANCE.lockHint() + " " + folderItem.getLockedBy() );
+                    setPlacement( Placement.TOP );
+                    setShowDelay( 1000 );
+                    reconfigure();
+                }
+            };
+        }
+        
         navigator.setWidget( row, ++col, new Anchor( folderItem.getFileName().replaceAll( " ", "\u00a0" ) ) {{
             addClickHandler( new ClickHandler() {
                 @Override
@@ -198,24 +230,27 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             }
         } );
 
-        final InlineHTML renameContainer = new InlineHTML( "<i class=\"icon-font\"></i>" );
+        final InlineHTML renameContainer = new InlineHTML( getRenameIcon( locked && !lockOwned ) );
         renameContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.renameItem( folderItem );
+                if (!locked) {
+                    presenter.renameItem( folderItem );
+                }
             }
         } );
         renameContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
 
-        final InlineHTML deleteContainer = new InlineHTML( "<i class=\"icon-trash\"></i>" );
+        final InlineHTML deleteContainer = new InlineHTML( getDeleteIcon( locked && !lockOwned ) );
         deleteContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                presenter.deleteItem( folderItem );
+                if (!locked) {
+                    presenter.deleteItem( folderItem );
+                }
             }
         } );
         deleteContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
-
 
         iconContainer.add( copyContainer );
         iconContainer.add( renameContainer );
@@ -267,5 +302,20 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         }};
 
         navigator.setWidget( row, ++col, iconContainer );
+    }
+    
+    private String getRenameIcon( boolean allowed ) {
+        String icon = "<i class=\"icon-font\"></i>";
+        return (allowed) ? ban( icon ) : icon;
+    };
+
+    private String getDeleteIcon( boolean allowed ) {
+        String icon = "<i class=\"icon-trash\"></i>";
+        return (allowed) ? ban( icon ) : icon;
+    }
+    
+    private String ban(String icon) {
+        return "<span class=\"icon-stack\">" + icon + 
+                "<i class=\"icon-ban-circle icon-stack-base\"></i></span>";
     }
 }
