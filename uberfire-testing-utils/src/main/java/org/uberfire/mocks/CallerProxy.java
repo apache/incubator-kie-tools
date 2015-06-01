@@ -11,24 +11,26 @@ public class CallerProxy implements java.lang.reflect.InvocationHandler {
     private RemoteCallback<Object> successCallBack;
     private ErrorCallback<Object> errorCallBack;
 
-    static Object newInstance( Object target,
-                               RemoteCallback<Object> successCallBack,
-                               ErrorCallback<Object> errorCallBack ) {
+    static Object newInstance( final Object target ) {
         return java.lang.reflect.Proxy.newProxyInstance( target.getClass().getClassLoader(), target
-                .getClass().getInterfaces(), new CallerProxy( target, successCallBack, errorCallBack ) );
+                .getClass().getInterfaces(), new CallerProxy( target ) );
     }
 
-    private CallerProxy( Object target,
-                         RemoteCallback successCallBack,
-                         ErrorCallback errorCallBack ) {
+    private CallerProxy( final Object target ) {
         this.target = target;
+    }
+
+    public void setSuccessCallBack( final RemoteCallback<Object> successCallBack ) {
         this.successCallBack = successCallBack;
+    }
+
+    public void setErrorCallBack( final ErrorCallback<Object> errorCallBack ) {
         this.errorCallBack = errorCallBack;
     }
 
-    public Object invoke( Object proxy,
-                          Method m,
-                          Object[] args ) throws Throwable {
+    public Object invoke( final Object proxy,
+                          final Method m,
+                          final Object[] args ) throws Throwable {
         Object result = null;
         try {
             result = m.invoke( target, args );

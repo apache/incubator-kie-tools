@@ -47,7 +47,7 @@ public class CallerMockTest {
     public void callerSampleCallBackSuccessTest() {
         when( sampleTarget.targetCall() ).thenReturn( "callback" );
 
-        callerMock = new CallerMock<SampleTarget>( sampleTarget, successCallBack, errorCallBack );
+        callerMock = new CallerMock<SampleTarget>( sampleTarget );
         callerSample = new CallerSampleClient( callerMock, successCallBack, errorCallBack );
 
         callerSample.targetCallWithSuccessCallBack();
@@ -62,7 +62,7 @@ public class CallerMockTest {
     public void callerSampleCallBackErrorTest() throws SampleException {
         when( sampleTarget.targetCallWithCheckedException() ).thenThrow( SampleException.class );
 
-        callerMock = new CallerMock<SampleTarget>( sampleTarget, successCallBack, errorCallBack );
+        callerMock = new CallerMock<SampleTarget>( sampleTarget );
         callerSample = new CallerSampleClient( callerMock, successCallBack, errorCallBack );
 
         callerSample.targetCallWithSuccessAndErrorCallBackCheckedException();
@@ -87,7 +87,7 @@ public class CallerMockTest {
             }
         };
 
-        callerMock = new CallerMock<SampleTarget>( target, successCallBack, errorCallBack );
+        callerMock = new CallerMock<SampleTarget>( target );
         callerSample = new CallerSampleClient( callerMock, successCallBack, errorCallBack );
 
         callerSample.targetCallWithSuccessAndErrorCallBack();
