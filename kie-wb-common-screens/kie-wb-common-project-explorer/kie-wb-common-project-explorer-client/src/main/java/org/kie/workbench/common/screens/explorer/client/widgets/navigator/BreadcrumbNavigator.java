@@ -230,22 +230,24 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             }
         } );
 
-        final InlineHTML renameContainer = new InlineHTML( getRenameIcon( locked && !lockOwned ) );
+        final Boolean disabledRename = locked && !lockOwned;
+        final InlineHTML renameContainer = new InlineHTML( getRenameIcon( disabledRename  ) );
         renameContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                if (!locked) {
+                if (!disabledRename) {
                     presenter.renameItem( folderItem );
                 }
             }
         } );
         renameContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
 
-        final InlineHTML deleteContainer = new InlineHTML( getDeleteIcon( locked && !lockOwned ) );
+        final Boolean disabledDelete = locked && !lockOwned;
+        final InlineHTML deleteContainer = new InlineHTML( getDeleteIcon( disabledDelete ) );
         deleteContainer.addClickHandler( new ClickHandler() {
             @Override
             public void onClick( ClickEvent event ) {
-                if (!locked) {
+                if (!disabledDelete) {
                     presenter.deleteItem( folderItem );
                 }
             }
@@ -304,14 +306,14 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         navigator.setWidget( row, ++col, iconContainer );
     }
     
-    private String getRenameIcon( boolean allowed ) {
+    private String getRenameIcon( boolean disabled ) {
         String icon = "<i class=\"icon-font\"></i>";
-        return (allowed) ? ban( icon ) : icon;
+        return (disabled) ? ban( icon ) : icon;
     };
 
-    private String getDeleteIcon( boolean allowed ) {
+    private String getDeleteIcon( boolean disabled ) {
         String icon = "<i class=\"icon-trash\"></i>";
-        return (allowed) ? ban( icon ) : icon;
+        return (disabled) ? ban( icon ) : icon;
     }
     
     private String ban(String icon) {
