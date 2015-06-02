@@ -439,4 +439,8 @@ public class ObservablePathImpl implements ObservablePath,
         return this.getOriginal().toURI().hashCode();
     }
 
+    @Override
+    public String toString() {
+        return toURI();
+    }
 }
