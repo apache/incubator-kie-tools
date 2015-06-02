@@ -52,5 +52,9 @@ public class LockResult {
         return new LockResult( false,
                                lockInfo );
     }
+    
+    public static LockResult error() {
+        return new LockResult(false, null);
+    }
 
 }

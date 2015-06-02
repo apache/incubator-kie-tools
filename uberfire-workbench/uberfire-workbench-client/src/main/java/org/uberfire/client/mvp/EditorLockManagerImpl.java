@@ -119,7 +119,7 @@ public class EditorLockManagerImpl implements EditorLockManager {
 
     private void acquireLock() {
         if ( lockInfo.isLocked() ) {
-            handleLockFailure();
+            handleLockFailure(lockInfo);
         } 
         else if ( !lockRequestPending ) {
             lockRequestPending = true;
@@ -127,13 +127,12 @@ public class EditorLockManagerImpl implements EditorLockManager {
 
                 @Override
                 public void execute( final LockResult result ) {
-                    updateLockInfo( result.getLockInfo() );
-
                     if ( result.isSuccess() ) {
+                        updateLockInfo( result.getLockInfo() );
                         releaseLockOnClose();
                     } 
                     else {
-                        handleLockFailure();
+                        handleLockFailure(result.getLockInfo());
                     }
                     lockRequestPending = false;
                 }
@@ -194,13 +193,23 @@ public class EditorLockManagerImpl implements EditorLockManager {
         } );
     }
 
-    private void handleLockFailure() {
-        lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockedMessage( lockInfo.lockedBy() ),
-                                                      NotificationEvent.NotificationType.INFO,
-                                                      true,
-                                                      activity.getPlace(),
-                                                      20) );
-
+    private void handleLockFailure(final LockInfo lockInfo) {
+        
+        if ( lockInfo != null ) {
+            updateLockInfo( lockInfo );
+            lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockedMessage( lockInfo.lockedBy() ),
+                                                          NotificationEvent.NotificationType.INFO,
+                                                          true,
+                                                          activity.getPlace(),
+                                                          20 ) );
+        }
+        else {
+            lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockError(),
+                                                          NotificationEvent.NotificationType.ERROR,
+                                                          true,
+                                                          activity.getPlace(),
+                                                          20 ) );
+        }
         // Delay reloading slightly in case we're dealing with a flood of events
         if ( reloadTimer == null ) {
             reloadTimer = new Timer() {
