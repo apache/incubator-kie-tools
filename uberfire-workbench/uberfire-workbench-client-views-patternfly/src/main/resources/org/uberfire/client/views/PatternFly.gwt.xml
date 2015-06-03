@@ -7,9 +7,7 @@
 
   <source path="pfly"/>
 
-  <public path="pfly/bower_components">
-    <include name="patternfly/**"/>
-  </public>
+  <public path="static"/>
 
   <stylesheet src="patternfly/dist/css/patternfly.min.css"/>
 

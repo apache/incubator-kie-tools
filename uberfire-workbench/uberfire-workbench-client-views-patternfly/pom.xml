@@ -98,6 +98,51 @@
   <build>
     <plugins>
       <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <version>1.2.1</version>
+            <executions>
+                <execution>
+                    <id>download-patternfly</id>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>wget</goal>
+                    </goals>
+                    <configuration>
+                        <url>https://github.com/patternfly/patternfly/archive/v${version.org.patternfly}.zip</url>
+                        <unpack>true</unpack>
+                        <outputDirectory>${project.build.directory}/patternfly</outputDirectory>
+                        <md5>1f88285b9a0662107c66b2e9768167e3</md5>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>copy-patternfly-resources</id>
+                    <phase>process-resources</phase>
+                    <goals>
+                        <goal>copy-resources</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>${project.build.directory}/classes/org/uberfire/client/views/static/patternfly</outputDirectory>
+                        <resources>
+                            <resource>
+                                <directory>${project.build.directory}/patternfly/patternfly-${version.org.patternfly}</directory>
+                                <includes>
+                                    <include>dist/**</include>
+                                    <include>components/**</include>
+                                </includes>
+                            </resource>
+                        </resources>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
