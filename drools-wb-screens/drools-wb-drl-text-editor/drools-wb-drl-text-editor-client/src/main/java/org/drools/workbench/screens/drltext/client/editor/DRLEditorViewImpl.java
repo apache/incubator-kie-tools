@@ -28,8 +28,8 @@ import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.screens.drltext.client.resources.i18n.DRLTextEditorConstants;
 import org.drools.workbench.screens.drltext.client.widget.ClickEvent;
 import org.drools.workbench.screens.drltext.client.widget.DSLSentenceBrowserWidget;
-import org.drools.workbench.screens.drltext.client.widget.DrlEditor;
 import org.drools.workbench.screens.drltext.client.widget.FactTypeBrowserWidget;
+import org.kie.workbench.common.widgets.client.source.DrlEditor;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
 
 public class DRLEditorViewImpl
@@ -49,7 +49,6 @@ public class DRLEditorViewImpl
     private static int CONTAINER_PADDING = 15;
     private static int VERTICAL_MARGIN = SCROLL_BAR_SIZE + ( CONTAINER_PADDING * 2 );
 
-    private DrlEditor drlEditor = null;
     private FactTypeBrowserWidget factTypeBrowser = null;
     private DSLSentenceBrowserWidget dslConditionsBrowser = null;
     private DSLSentenceBrowserWidget dslActionsBrowser = null;
@@ -61,7 +60,10 @@ public class DRLEditorViewImpl
     FlowPanel columnBrowsers;
 
     @UiField
-    FlowPanel columnDrl;
+    DrlEditor drlEditor;
+
+    @UiField
+    FlowPanel drlContainer;
 
     @Override
     public void init( final DRLEditorPresenter presenter ) {
@@ -70,7 +72,6 @@ public class DRLEditorViewImpl
 
     @PostConstruct
     public void init() {
-        this.drlEditor = new DrlEditor();
 
         final ClickEvent ce = new ClickEvent() {
             public void selected( String text ) {
@@ -90,8 +91,6 @@ public class DRLEditorViewImpl
         columnBrowsers.add( factTypeBrowser );
         columnBrowsers.add( dslConditionsBrowser );
         columnBrowsers.add( dslActionsBrowser );
-
-        columnDrl.add( drlEditor );
     }
 
     @Override
@@ -127,6 +126,7 @@ public class DRLEditorViewImpl
     public void onResize() {
         final int height = getParent().getOffsetHeight() - VERTICAL_MARGIN;
         columnsContainer.setHeight( ( height > 0 ? height : 0 ) + "px" );
+        drlContainer.setHeight( ( ( height > 0 ? height : 0 ) + SCROLL_BAR_SIZE ) + "px" );
         drlEditor.onResize();
     }
 }

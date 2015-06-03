@@ -33,8 +33,6 @@ public interface StylesCss
 
     String columnBrowsers();
 
-    String columnDrl();
-
     String drlEditorContainer();
 
 }

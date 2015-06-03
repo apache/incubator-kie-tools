@@ -16,12 +16,15 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+             xmlns:drleditor="urn:import:org.kie.workbench.common.widgets.client.source">
 
   <ui:with field="res" type="org.drools.workbench.screens.drltext.client.resources.DRLTextEditorResources"/>
 
-  <g:FlowPanel addStyleNames="{res.CSS.columnsContainer}" ui:field="columnsContainer">
-    <g:FlowPanel addStyleNames="{res.CSS.columnBrowsers}" ui:field="columnBrowsers"/>
-    <g:FlowPanel addStyleNames="{res.CSS.columnDrl}" ui:field="columnDrl"/>
-  </g:FlowPanel>
+  <gwt:FlowPanel addStyleNames="{res.CSS.columnsContainer}" ui:field="columnsContainer">
+    <gwt:FlowPanel addStyleNames="{res.CSS.columnBrowsers}" ui:field="columnBrowsers"/>
+    <gwt:FlowPanel addStyleNames="{res.CSS.drlEditorContainer}" ui:field="drlContainer">
+      <drleditor:DrlEditor ui:field="drlEditor"/>
+    </gwt:FlowPanel>
+  </gwt:FlowPanel>
 </ui:UiBinder>
