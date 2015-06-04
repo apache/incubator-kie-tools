@@ -186,6 +186,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         
         final Boolean locked = (folderItem.getLockedBy() != null);
         final Boolean lockOwned = (locked && folderItem.getLockedBy().equals( user.getIdentifier() ));
+        final Boolean hasLockedItems = folderItem.hasLockedItems();
         
         int col = 0;
         navigator.setWidget( row, col, new Icon( iconType ) {{
@@ -230,7 +231,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
             }
         } );
 
-        final Boolean disabledRename = locked && !lockOwned;
+        final Boolean disabledRename = (locked && !lockOwned) || hasLockedItems;
         final InlineHTML renameContainer = new InlineHTML( getRenameIcon( disabledRename  ) );
         renameContainer.addClickHandler( new ClickHandler() {
             @Override
@@ -242,7 +243,7 @@ public class BreadcrumbNavigator extends Composite implements Navigator {
         } );
         renameContainer.getElement().getStyle().setPaddingLeft( 10, Style.Unit.PX );
 
-        final Boolean disabledDelete = locked && !lockOwned;
+        final Boolean disabledDelete = (locked && !lockOwned) || hasLockedItems;
         final InlineHTML deleteContainer = new InlineHTML( getDeleteIcon( disabledDelete ) );
         deleteContainer.addClickHandler( new ClickHandler() {
             @Override

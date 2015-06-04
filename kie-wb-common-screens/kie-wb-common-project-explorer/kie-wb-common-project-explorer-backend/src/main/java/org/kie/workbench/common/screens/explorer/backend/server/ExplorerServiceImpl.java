@@ -15,11 +15,16 @@
  */
 package org.kie.workbench.common.screens.explorer.backend.server;
 
+import static java.util.Collections.emptyList;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -27,7 +32,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.thoughtworks.xstream.XStream;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
@@ -53,13 +57,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.UserServicesBackendImpl;
 import org.uberfire.backend.server.UserServicesImpl;
+import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.commons.async.DescriptiveRunnable;
 import org.uberfire.commons.async.SimpleAsyncExecutorService;
 import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
-import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.file.FileSystem;
@@ -68,8 +73,7 @@ import org.uberfire.java.nio.file.StandardDeleteOption;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import com.thoughtworks.xstream.XStream;
 
 @Service
 @ApplicationScoped
@@ -95,9 +99,6 @@ public class ExplorerServiceImpl
 
     @Inject
     private ExplorerServiceHelper helper;
-
-    @Inject
-    private DeleteService deleteService;
 
     @Inject
     private OrganizationalUnitService organizationalUnitService;
@@ -127,6 +128,9 @@ public class ExplorerServiceImpl
 
     @Inject
     private RepositoryService repositoryService;
+    
+    @Inject
+    private VFSLockServiceImpl lockService;
 
     @Inject
     //@AppResourcesAuthz
@@ -324,6 +328,9 @@ public class ExplorerServiceImpl
             }
 
             for ( final Path path : paths ) {
+                final LockInfo lockInfo = lockService.retrieveLockInfo( path );
+                checkLockState(path, lockInfo);
+                
                 ioService.deleteIfExists( Paths.convert( path ),
                                           new CommentedOption( sessionInfo.getId(),
                                                                identity.getIdentifier(),
@@ -341,6 +348,17 @@ public class ExplorerServiceImpl
         }
     }
 
+    private void checkLockState( final Path path, final LockInfo lockInfo ) {
+        if ( lockInfo.isLocked() && !identity.getIdentifier().equals( lockInfo.lockedBy() ) ) {
+            throw new RuntimeException( path.toURI() + " is locked by: " + lockInfo.lockedBy() );
+        }
+        
+        final List<LockInfo> lockInfos = lockService.retrieveLockInfos( path, true );
+        if ( !lockInfos.isEmpty() ) {
+            throw new RuntimeException( path.toURI() + " contains the following locked files: " + lockInfos );
+        }
+    }
+
     @Override
     public void renameItem( final FolderItem folderItem,
                             final String newName,
@@ -352,6 +370,9 @@ public class ExplorerServiceImpl
             ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
 
             for ( final Path path : paths ) {
+                final LockInfo lockInfo = lockService.retrieveLockInfo( path );
+                checkLockState(path, lockInfo);
+                
                 final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
                 if ( Files.exists( _path ) ) {

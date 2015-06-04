@@ -42,6 +42,7 @@ import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.UserServicesImpl;
+import org.uberfire.backend.server.VFSLockServiceImpl;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.commons.async.DescriptiveRunnable;
@@ -74,6 +75,9 @@ public class ExplorerServiceHelper {
     @Inject
     @Named("configIO")
     private IOService ioServiceConfig;
+    
+    @Inject
+    private VFSLockServiceImpl lockService;
 
     @Inject
     private UserServicesImpl userServices;
@@ -91,6 +95,7 @@ public class ExplorerServiceHelper {
             return new FolderItem( p,
                                    p.getFileName(),
                                    FolderItemType.FILE,
+                                   false,
                                    Paths.readLockedBy( p ) );
         } else if ( Files.isDirectory( path ) ) {
             final org.uberfire.backend.vfs.Path p = Paths.convert( path );
@@ -161,13 +166,17 @@ public class ExplorerServiceHelper {
                 final FolderItem folderItem = new FolderItem( p,
                                                               p.getFileName(),
                                                               FolderItemType.FILE,
+                                                              false,
                                                               lockedBy );
                 folderItems.add( folderItem );
             } else if ( Files.isDirectory( np ) ) {
                 final org.uberfire.backend.vfs.Path p = Paths.convert( np );
+                boolean lockedItems = !lockService.retrieveLockInfos( Paths.convert( np ), true ).isEmpty();
                 final FolderItem folderItem = new FolderItem( p,
                                                               p.getFileName(),
-                                                              FolderItemType.FOLDER );
+                                                              FolderItemType.FOLDER,
+                                                              lockedItems,
+                                                              null);
                 folderItems.add( folderItem );
             }
         }
@@ -231,6 +240,7 @@ public class ExplorerServiceHelper {
                 final FolderItem folderItem = new FolderItem( path,
                                                               path.getFileName(),
                                                               FolderItemType.FILE,
+                                                              false,
                                                               lockedBy );
                 folderItems.add( folderItem );
             }

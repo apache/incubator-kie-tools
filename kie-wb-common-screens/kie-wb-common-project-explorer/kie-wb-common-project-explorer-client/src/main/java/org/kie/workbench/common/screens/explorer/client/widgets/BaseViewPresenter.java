@@ -409,7 +409,7 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
                 if ( signalChange ) {
                     fireContextChangeEvent();
-                }
+                } 
 
                 if ( buildSelectedProject ) {
                     buildProject( activeProject );
@@ -428,6 +428,9 @@ public abstract class BaseViewPresenter implements ViewPresenter {
                                       activeContent,
                                       content.getSiblings() );
 
+                if (activeFolderItem == null) {
+                    setActiveFolderAndPackage( content );
+                }
                 getView().hideBusyIndicator();
             }
 
@@ -808,17 +811,20 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     // Refresh when a lock status changes has occurred, if it affects the active package
     public void onLockStatusChange( @Observes final LockInfo lockInfo ) {
-        refresh( lockInfo.getFile() );
+        refresh( lockInfo.getFile(), true );
     }
     
     private void refresh(final Path resource) {
+        refresh (resource, false);
+    }
+    private void refresh(final Path resource, boolean force) {
         if ( !getView().isVisible() ) {
             return;
         }
         if ( resource == null ) {
             return;
         }
-        if ( !Utils.isInFolderItem( activeFolderItem,
+        if ( !force && !Utils.isInFolderItem( activeFolderItem,
                                     resource ) ) {
             return;
         }

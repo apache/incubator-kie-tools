@@ -30,15 +30,18 @@ public class FolderItem {
     private String itemName;
     private FolderItemType type;
     private String lockedBy;
+    private boolean lockedItems;
 
     public FolderItem( @MapsTo("item") final Object item,
                        @MapsTo("itemName") final String itemName,
                        @MapsTo("type") final FolderItemType type,
+                       @MapsTo("lockedItems") final boolean lockedItems,
                        @MapsTo("lockedBy") final String lockedBy ) {
 
         this( item,
               itemName,
               type );
+        this.lockedItems = lockedItems;
         this.lockedBy = lockedBy;
     }
 
@@ -66,6 +69,10 @@ public class FolderItem {
         return type;
     }
 
+    public boolean hasLockedItems() {
+        return lockedItems;
+    }
+    
     public String getLockedBy() {
         return lockedBy;
     }
@@ -77,6 +84,7 @@ public class FolderItem {
         result = prime * result + ((item == null) ? 0 : item.hashCode());
         result = prime * result + ((itemName == null) ? 0 : itemName.hashCode());
         result = prime * result + ((lockedBy == null) ? 0 : lockedBy.hashCode());
+        result = prime * result + (lockedItems ? 1231 : 1237);
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
@@ -104,6 +112,8 @@ public class FolderItem {
             if ( other.lockedBy != null )
                 return false;
         } else if ( !lockedBy.equals( other.lockedBy ) )
+            return false;
+        if ( lockedItems != other.lockedItems )
             return false;
         if ( type != other.type )
             return false;
