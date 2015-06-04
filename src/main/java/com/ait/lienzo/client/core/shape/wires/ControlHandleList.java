@@ -21,17 +21,20 @@ import java.util.Iterator;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.ait.tooling.common.api.types.Activatible;
+import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
-public final class ControlHandleList extends Activatible implements IControlHandleList
+public final class ControlHandleList extends Activatable implements IControlHandleList
 {
+    private static final long serialVersionUID = 2074423747469042319L;
+
     private Layer                                m_layer;
 
     private final NFastArrayList<IControlHandle> m_chlist = new NFastArrayList<IControlHandle>();
 
     public ControlHandleList()
     {
+        super(true);
     }
 
     @Override

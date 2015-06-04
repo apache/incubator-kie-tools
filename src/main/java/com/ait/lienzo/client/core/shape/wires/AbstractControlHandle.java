@@ -17,13 +17,19 @@
 package com.ait.lienzo.client.core.shape.wires;
 
 import com.ait.lienzo.client.core.shape.IPrimitive;
-import com.ait.tooling.common.api.types.Activatible;
+import com.ait.tooling.common.api.types.Activatable;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public abstract class AbstractControlHandle extends Activatible implements IControlHandle
+@SuppressWarnings("serial")
+public abstract class AbstractControlHandle extends Activatable implements IControlHandle
 {
     private final HandlerRegistrationManager m_manage = new HandlerRegistrationManager();
+
+    protected AbstractControlHandle()
+    {
+        super(true);
+    }
 
     protected HandlerRegistration register(final HandlerRegistration handler)
     {

@@ -26,17 +26,19 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class Magnet extends AbstractControlHandle implements Iterable<Handle>
 {
+    private static final long      serialVersionUID = 3820187031688704400L;
+
     private final int              m_indexer;
 
     private final IPrimitive<?>    m_control;
 
     private final IWiresContext    m_context;
 
-    private double                 m_strong  = 0.5;
+    private double                 m_strong         = 0.5;
 
-    private NFastArrayList<Handle> m_handles = null;
+    private NFastArrayList<Handle> m_handles        = null;
 
-    private DoublePowerFunction    m_powerfn = null;
+    private DoublePowerFunction    m_powerfn        = null;
 
     public Magnet(final IWiresContext context, final int indexer, final IPrimitive<?> control)
     {

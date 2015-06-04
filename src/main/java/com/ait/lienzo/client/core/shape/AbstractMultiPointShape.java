@@ -117,9 +117,11 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                 final Point2D p = point;
 
                 final Circle prim = new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(m_shape.getX() + p.getX()).setY(m_shape.getY() + p.getY()).setDraggable(true).setDragMode(m_dmode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
-                
+
                 m_hlist.add(new AbstractPointControlHandle()
                 {
+                    private static final long serialVersionUID = -1839635043082960976L;
+
                     @Override
                     public AbstractPointControlHandle init()
                     {
@@ -177,7 +179,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
 
                     @Override
                     public void destroy()
-                    { 
+                    {
                         super.destroy();
                     }
                 }.init());
@@ -186,6 +188,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         }
     }
 
+    @SuppressWarnings("serial")
     private static abstract class AbstractPointControlHandle extends AbstractControlHandle
     {
         public abstract AbstractPointControlHandle init();

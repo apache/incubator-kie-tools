@@ -20,13 +20,15 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 
 public class Handle extends AbstractControlHandle
 {
+    private static final long   serialVersionUID = 9178762251337207445L;
+
     private final int           m_indexer;
 
     private final IPrimitive<?> m_control;
 
     private final IWiresContext m_context;
 
-    private Magnet              m_magnet = null;
+    private Magnet              m_magnet         = null;
 
     public Handle(final IWiresContext context, final int indexer, final IPrimitive<?> control)
     {

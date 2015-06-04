@@ -22,7 +22,6 @@ import com.ait.tooling.common.api.flow.Flows.BooleanOp;
 import com.ait.tooling.common.api.flow.Flows.PredicateBooleanOp;
 import com.ait.tooling.nativetools.client.collection.NFastStringSet;
 
-
 public final class AttributeOp
 {
     private static NFastStringSet s_changed;
@@ -122,6 +121,7 @@ public final class AttributeOp
         return new OneStringSetOp(toSet(attributes));
     }
 
+    @SuppressWarnings("serial")
     private static abstract class AbstractStringSetOp extends PredicateBooleanOp<NFastStringSet>
     {
         protected AbstractStringSetOp(final NFastStringSet attributes)
@@ -132,6 +132,8 @@ public final class AttributeOp
 
     private static final class AnyStringSetOp extends AbstractStringSetOp
     {
+        private static final long serialVersionUID = 921547187036525995L;
+
         private AnyStringSetOp(final NFastStringSet attributes)
         {
             super(attributes);
@@ -146,6 +148,8 @@ public final class AttributeOp
 
     private static final class NoneStringSetOp extends AbstractStringSetOp
     {
+        private static final long serialVersionUID = 2263656448082358424L;
+
         private NoneStringSetOp(final NFastStringSet attributes)
         {
             super(attributes);
@@ -160,6 +164,8 @@ public final class AttributeOp
 
     private static final class AllStringSetOp extends AbstractStringSetOp
     {
+        private static final long serialVersionUID = 982510166969064326L;
+
         private AllStringSetOp(final NFastStringSet attributes)
         {
             super(attributes);
@@ -174,6 +180,8 @@ public final class AttributeOp
 
     private static final class OneStringSetOp extends AbstractStringSetOp
     {
+        private static final long serialVersionUID = -1081575470724957104L;
+
         private OneStringSetOp(final NFastStringSet attributes)
         {
             super(attributes);
