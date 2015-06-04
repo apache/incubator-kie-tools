@@ -43,4 +43,6 @@ public interface AnalysisConstants
 
     String ThisRowIsSubsumedByRow(int rowNumber);
 
+    String ThisRowIsDeficient();
+
 }

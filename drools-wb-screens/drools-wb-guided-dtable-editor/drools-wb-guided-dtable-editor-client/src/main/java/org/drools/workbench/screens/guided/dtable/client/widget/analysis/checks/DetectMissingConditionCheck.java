@@ -19,35 +19,23 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspector;
 
-public class DetectMissingRestrictionCheck
+public class DetectMissingConditionCheck
         extends SingleCheck {
 
-    private String issue;
-
-    public DetectMissingRestrictionCheck( RowInspector rowInspector ) {
+    public DetectMissingConditionCheck( RowInspector rowInspector ) {
         super( rowInspector );
     }
 
     @Override
     public void check() {
-        if ( rowInspector.getConditions().allValues().isEmpty() ) {
-            issue = AnalysisConstants.INSTANCE.RuleHasNoRestrictionsAndWillAlwaysFire();
-            hasIssues = true;
-        } else {
-            for ( ConditionInspector condition : rowInspector.getConditions().allValues() ) {
-                if ( condition.hasValue() ) {
-                    return;
-                }
-                issue = AnalysisConstants.INSTANCE.RuleHasNoRestrictionsAndWillAlwaysFire();
-                hasIssues = true;
-            }
+        if ( rowInspector.getActions().hasValues() ) {
+            hasIssues = !rowInspector.getConditions().hasValues();
         }
     }
 
     @Override
     public String getIssue() {
-        return issue;
+        return AnalysisConstants.INSTANCE.RuleHasNoRestrictionsAndWillAlwaysFire();
     }
 }

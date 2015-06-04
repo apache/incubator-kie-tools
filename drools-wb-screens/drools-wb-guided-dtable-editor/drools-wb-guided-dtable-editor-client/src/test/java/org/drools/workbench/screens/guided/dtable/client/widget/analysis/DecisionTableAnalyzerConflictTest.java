@@ -62,6 +62,8 @@ public class DecisionTableAnalyzerConflictTest {
         ApplicationPreferences.setUp( preferences );
 
         when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+        when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
+        when( oracle.getFieldType( "Person", "lastName" ) ).thenReturn( DataType.TYPE_STRING );
         when( oracle.getFieldType( "Account", "deposit" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
         when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
 
@@ -73,8 +75,8 @@ public class DecisionTableAnalyzerConflictTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", ">" )
-                .withIntegerColumn( "d", "Account", "deposit", "<" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withConditionIntegerColumn( "d", "Account", "deposit", "<" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{ { 1, "description", 100, 0, true } } )
                 .build();
@@ -93,8 +95,8 @@ public class DecisionTableAnalyzerConflictTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", ">" )
-                .withIntegerColumn( "a", "Person", "age", "<" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withConditionIntegerColumn( "a", "Person", "age", "<" )
                 .withData( new Object[][]{ { 1, "description", 100, 0 } } )
                 .build();
 
@@ -123,7 +125,8 @@ public class DecisionTableAnalyzerConflictTest {
                         setBooleanValue( false );
                     }
                 } )
-                .withData( new Object[][]{ { 1, "description", true, true, false },
+                .withData( new Object[][]{
+                        {1, "description", true, true, false},
                         { 2, "description", true, false, true } } )
                 .build();
 
@@ -136,6 +139,58 @@ public class DecisionTableAnalyzerConflictTest {
         List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
         assertContains( "ConflictingMatchWithRow(2)", result );
         assertContains( "ConflictingMatchWithRow(1)", result );
+
+    }
+
+    @Test
+    public void testConflictIgnoreEmptyRows() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withActionSetField( "a", "approved", DataType.TYPE_STRING )
+                .withData( new Object[][]{
+                        {1, "description", null, ""},
+                        {2, "description", null, "true"}} )
+                .build();
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
+                                                                    table52,
+                                                                    eventBus );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
+        assertDoesNotContain( "ConflictingMatchWithRow(1)", result );
+        assertDoesNotContain( "ConflictingMatchWithRow(2)", result );
+
+    }
+
+    @Test
+    public void testConflictWithASubsumingRow() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withStringColumn( "a", "Person", "name", "==" )
+                .withStringColumn( "a", "Person", "lastName", "==" )
+                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
+                .withActionSetField( "a", "description", DataType.TYPE_STRING )
+                .withData( new Object[][]{
+                        {1, "description", 10, null, null, 100, "ok"},
+                        {2, "description", null, "Toni", null, 200, "ok"},
+                        {3, "description", 12, "Toni", "Rikkola", 300, "ok"},
+                        {4, "description", null, null, null, null, null}
+                } )
+                .build();
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
+                                                                    table52,
+                                                                    eventBus );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        assertContains( "ConflictingMatchWithRow(3)", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
 
     }
 }

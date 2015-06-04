@@ -83,7 +83,7 @@ public class DecisionTableAnalyzerUpdateTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         { 1, "description", 1, true },
@@ -113,8 +113,8 @@ public class DecisionTableAnalyzerUpdateTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         { 1, "description", 1, 1, true },
@@ -159,8 +159,8 @@ public class DecisionTableAnalyzerUpdateTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         { 1, "description", 1, 1, true },
@@ -191,7 +191,7 @@ public class DecisionTableAnalyzerUpdateTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         { 1, "description", 1, true },
@@ -224,7 +224,7 @@ public class DecisionTableAnalyzerUpdateTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         { 1, "description", 1, true },
@@ -258,8 +258,8 @@ public class DecisionTableAnalyzerUpdateTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         { 1, "description", 1, 1, true },
@@ -280,7 +280,6 @@ public class DecisionTableAnalyzerUpdateTest {
 
         assertEquals( 4, eventBus.getUpdateColumnDataEvent().getColumnData().size() );
 
-        assertContains( "RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
         assertContains( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
 
     }
@@ -290,8 +289,8 @@ public class DecisionTableAnalyzerUpdateTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
-                .withIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
+                .withConditionIntegerColumn( "a", "Person", "age", "==" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{
                         { 1, "description", 1, 1, true },

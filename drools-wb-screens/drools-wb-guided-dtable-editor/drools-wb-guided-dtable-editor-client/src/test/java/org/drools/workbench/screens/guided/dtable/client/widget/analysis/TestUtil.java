@@ -19,6 +19,9 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericIntegerConditionInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.StringConditionInspector;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 
 import static org.junit.Assert.*;
@@ -78,5 +81,24 @@ public class TestUtil {
         Analysis analysis = (Analysis) result.get( rowNumber ).getValue();
 
         assertTrue( "Could not find " + expected, analysis.toHtmlString().contains( expected ) );
+    }
+
+    public static NumericIntegerConditionInspector getNumericIntegerCondition( Pattern52 pattern,
+                                                                               String factField,
+                                                                               String operator,
+                                                                               int value ) {
+        return new NumericIntegerConditionInspector( pattern,
+                                                     factField,
+                                                     value,
+                                                     operator );
+    }
+    public static StringConditionInspector getStringCondition( Pattern52 pattern,
+                                                               String  factField,
+                                                               String  operator,
+                                                               String  value ) {
+        return new StringConditionInspector( pattern,
+                                             factField,
+                                             value,
+                                             operator );
     }
 }

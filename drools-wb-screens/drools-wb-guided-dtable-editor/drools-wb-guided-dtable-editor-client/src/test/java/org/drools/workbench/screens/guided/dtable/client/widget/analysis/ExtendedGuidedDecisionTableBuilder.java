@@ -57,10 +57,10 @@ public class ExtendedGuidedDecisionTableBuilder
         return this;
     }
 
-    public ExtendedGuidedDecisionTableBuilder withIntegerColumn( String boundName,
-                                                                 String factType,
-                                                                 String field,
-                                                                 String operator ) {
+    public ExtendedGuidedDecisionTableBuilder withConditionIntegerColumn( String boundName,
+                                                                          String factType,
+                                                                          String field,
+                                                                          String operator ) {
         Pattern52 pattern = findPattern( boundName, factType );
 
         ConditionCol52 con1 = new ConditionCol52();
@@ -129,11 +129,11 @@ public class ExtendedGuidedDecisionTableBuilder
 
     public static ActionSetFieldCol52 createActionSetField( String boundName,
                                                             String factField,
-                                                            String typeNumericInteger ) {
+                                                            String type ) {
         ActionSetFieldCol52 column = new ActionSetFieldCol52();
         column.setBoundName( boundName );
         column.setFactField( factField );
-        column.setType( typeNumericInteger );
+        column.setType( type );
         return column;
     }
 

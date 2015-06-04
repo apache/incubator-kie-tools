@@ -105,6 +105,23 @@ public class StringConditionInspectorOverlapTest {
         assertTrue( b.overlaps( a ) );
     }
 
+    @Test
+    public void test010() throws Exception {
+        StringConditionInspector a = getCondition( "", "==" );
+        StringConditionInspector b = getCondition( "", "==" );
+
+        assertFalse( a.overlaps( b ) );
+        assertFalse( b.overlaps( a ) );
+    }
+
+    @Test
+    public void test011() throws Exception {
+        StringConditionInspector a = getCondition( "Toni", "==" );
+        StringConditionInspector b = getCondition( "Toni", "==" );
+
+        assertTrue( a.overlaps( b ) );
+        assertTrue( b.overlaps( a ) );
+    }
     private StringConditionInspector getCondition( String value,
                                                    String operator ) {
         return new StringConditionInspector( mock( Pattern52.class ), "name", value, operator );

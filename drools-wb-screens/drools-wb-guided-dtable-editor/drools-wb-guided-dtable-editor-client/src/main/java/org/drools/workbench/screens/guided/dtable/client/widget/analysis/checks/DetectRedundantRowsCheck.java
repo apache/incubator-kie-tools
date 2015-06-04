@@ -33,7 +33,7 @@ public class DetectRedundantRowsCheck
 
     @Override
     public void check() {
-        if ( other.getRowIndex() != rowInspector.getRowIndex() ) {
+        if ( other.getActions().hasValues() ) {
             if ( rowInspector.isRedundant( other ) ) {
                 hasIssues = true;
                 isRedundant = true;

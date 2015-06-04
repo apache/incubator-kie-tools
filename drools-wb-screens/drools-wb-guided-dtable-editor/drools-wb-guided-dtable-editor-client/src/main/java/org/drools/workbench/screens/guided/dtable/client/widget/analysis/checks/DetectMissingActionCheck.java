@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 
 public class DetectMissingActionCheck
@@ -32,23 +31,13 @@ public class DetectMissingActionCheck
 
     @Override
     public void check() {
-        if ( rowInspector.getActions().isEmpty() ) {
-            issue = AnalysisConstants.INSTANCE.RuleHasNoAction();
-            hasIssues = true;
-        } else {
-            for ( ActionInspector action : rowInspector.getActions().allValues() ) {
-                if ( action.hasValue() ) {
-                    return;
-                }
-            }
-            issue = AnalysisConstants.INSTANCE.RuleHasNoAction();
-            hasIssues = true;
+        if ( rowInspector.getConditions().hasValues() ) {
+            hasIssues = !rowInspector.getActions().hasValues();
         }
-
     }
 
     @Override
     public String getIssue() {
-        return issue;
+        return AnalysisConstants.INSTANCE.RuleHasNoAction();
     }
 }

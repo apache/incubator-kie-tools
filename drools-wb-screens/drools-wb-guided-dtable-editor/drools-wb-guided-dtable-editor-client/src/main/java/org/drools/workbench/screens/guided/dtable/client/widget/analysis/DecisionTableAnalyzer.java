@@ -47,7 +47,7 @@ public class DecisionTableAnalyzer
     private final GuidedDecisionTable52 model;
     private final EventBus eventBus;
     private final Checks checks = new Checks();
-    private final EvenManager eventManager = new EvenManager();
+    private final EventManager eventManager = new EventManager();
 
     public DecisionTableAnalyzer( AsyncPackageDataModelOracle oracle,
                                   GuidedDecisionTable52 model,
@@ -108,10 +108,10 @@ public class DecisionTableAnalyzer
 
     private void updateAnalysisColumn() {
         model.getAnalysisData().clear();
-        model.getAnalysisData().addAll( analyze() );
+        model.getAnalysisData().addAll(analyze());
 
-        eventBus.fireEvent( new UpdateColumnDataEvent( getAnalysisColumnIndex(),
-                                                       getAnalysisColumnData() ) );
+        eventBus.fireEvent(new UpdateColumnDataEvent(getAnalysisColumnIndex(),
+                                                     getAnalysisColumnData()));
 
     }
 
@@ -195,7 +195,7 @@ public class DecisionTableAnalyzer
     private void addRow( int index ) {
         RowInspector rowInspector = cache.addRow( index,
                                                   model.getData().get( index ) );
-        checks.add( rowInspector );
+        checks.add(rowInspector);
     }
 
     @Override
@@ -213,7 +213,7 @@ public class DecisionTableAnalyzer
         eventManager.rowInserted = event.getIndex();
     }
 
-    class EvenManager {
+    class EventManager {
 
         boolean rowAppended = false;
         Integer rowInserted = null;

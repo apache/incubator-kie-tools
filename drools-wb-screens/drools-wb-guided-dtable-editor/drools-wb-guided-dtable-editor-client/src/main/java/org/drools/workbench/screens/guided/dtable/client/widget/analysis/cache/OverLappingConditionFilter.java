@@ -26,12 +26,12 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInsp
  * Row with condition x < 100 overlaps row x > 0, when x is less than 100 and greater than 0.
  * <p/>
  */
-public class OverLappingConditionSelector
-        implements RowInspectorCache.Selector {
+public class OverLappingConditionFilter
+        implements RowInspectorCache.Filter {
 
     private final RowInspector rowInspector;
 
-    public OverLappingConditionSelector( RowInspector rowInspector ) {
+    public OverLappingConditionFilter( RowInspector rowInspector ) {
         this.rowInspector = rowInspector;
     }
 

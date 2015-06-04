@@ -64,10 +64,6 @@ public class RowInspector
                         conditionInspector );
     }
 
-    public boolean containsActionInspector( ActionInspectorKey key ) {
-        return actions.containsKey( key );
-    }
-
     public void addActionInspector( ActionInspector actionInspector ) {
         actions.put( actionInspector.getKey(),
                      actionInspector );

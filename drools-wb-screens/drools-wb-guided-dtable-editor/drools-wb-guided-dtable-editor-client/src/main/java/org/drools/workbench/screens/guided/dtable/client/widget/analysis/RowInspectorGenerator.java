@@ -123,7 +123,8 @@ public class RowInspectorGenerator {
     private void addActionInspector( ActionCol52 actionCol,
                                      DTCellValue52 visibleCellValue ) {
         // Blank cells are ignored
-        if ( isCellNotBlank( actionCol, visibleCellValue ) ) {
+        if ( isCellNotBlank( actionCol,
+                             visibleCellValue ) ) {
             rowInspector.addActionInspector( buildActionInspector( actionCol,
                                                                    visibleCellValue ) );
         }
@@ -133,7 +134,9 @@ public class RowInspectorGenerator {
                                         ConditionCol52 conditionColumn,
                                         DTCellValue52 visibleCellValue ) {
         // Blank cells are ignored
-        if ( isCellNotBlank( conditionColumn, visibleCellValue ) ) {
+        boolean cellNotBlank = isCellNotBlank( conditionColumn,
+                                               visibleCellValue );
+        if ( cellNotBlank ) {
             rowInspector.addConditionInspector( buildConditionInspector( pattern,
                                                                          conditionColumn,
                                                                          visibleCellValue ) );
@@ -148,7 +151,8 @@ public class RowInspectorGenerator {
                 utils,
                 pattern,
                 conditionColumn,
-                getRealCellValue( conditionColumn, visibleCellValue )
+                getRealCellValue( conditionColumn,
+                                  visibleCellValue )
         ).buildConditionInspector();
 
     }

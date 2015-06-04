@@ -20,22 +20,21 @@ import org.drools.workbench.screens.guided.dtable.client.resources.i18n.Analysis
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
 
-public class DetectConflictCheck
+public class DetectConflictingRowsCheck
         extends PairCheck {
 
-    public DetectConflictCheck( RowInspector rowInspector,
-                                RowInspector other ) {
-        super( rowInspector, other );
+    public DetectConflictingRowsCheck( RowInspector rowInspector,
+                                       RowInspector other ) {
+        super( rowInspector,
+               other );
     }
 
     @Override
     public void check() {
-        if ( other.getRowIndex() != rowInspector.getRowIndex() ) {
-            if ( rowInspector.getConditions().isRedundant( other.getConditions() ) ) {
-                if ( rowInspector.getActions().conflicts( other.getActions() ) ) {
-                    hasIssues = true;
-                }
-            }
+        if ( rowInspector.getActions().conflicts( other.getActions() )
+                && other.getConditions().subsumes( rowInspector.getConditions() ) ) {
+
+                hasIssues = true;
         }
     }
 

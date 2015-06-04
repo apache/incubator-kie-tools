@@ -87,27 +87,31 @@ public class StringConditionInspector
     @Override
     public boolean overlaps( Object other ) {
         if ( other instanceof StringConditionInspector ) {
-            switch ( operator ) {
-                case EQUALS:
-                    switch ( ( (StringConditionInspector) other ).getOperator() ) {
-                        case NOT_EQUALS:
-                            return !( (StringConditionInspector) other ).values.contains( values.get( 0 ) );
-                        default:
-                            return ( (StringConditionInspector) other ).values.contains( values.get( 0 ) );
-                    }
-                case NOT_EQUALS:
-                    return !( (StringConditionInspector) other ).values.contains( values.get( 0 ) );
-                case IN:
-                    switch ( ( (StringConditionInspector) other ).getOperator() ) {
-                        case EQUALS:
-                            return values.contains( ( (StringConditionInspector) other ).getValues().get( 0 ) );
-                        case NOT_EQUALS:
-                            return !values.contains( ( (StringConditionInspector) other ).getValues().get( 0 ) );
-                        case IN:
-                            if ( containsAny( ( (StringConditionInspector) other ).values ) ) {
-                                return true;
-                            }
-                    }
+            if ( !((StringConditionInspector) other).hasValue() ) {
+                return false;
+            } else {
+                switch (operator) {
+                    case EQUALS:
+                        switch (((StringConditionInspector) other).getOperator()) {
+                            case NOT_EQUALS:
+                                return !((StringConditionInspector) other).values.contains( values.get( 0 ) );
+                            default:
+                                return ((StringConditionInspector) other).values.contains( values.get( 0 ) );
+                        }
+                    case NOT_EQUALS:
+                        return !((StringConditionInspector) other).values.contains( values.get( 0 ) );
+                    case IN:
+                        switch (((StringConditionInspector) other).getOperator()) {
+                            case EQUALS:
+                                return values.contains( ((StringConditionInspector) other).getValues().get( 0 ) );
+                            case NOT_EQUALS:
+                                return !values.contains( ((StringConditionInspector) other).getValues().get( 0 ) );
+                            case IN:
+                                if ( containsAny( ((StringConditionInspector) other).values ) ) {
+                                    return true;
+                                }
+                        }
+                }
             }
         }
 
@@ -130,8 +134,8 @@ public class StringConditionInspector
         if ( other instanceof StringConditionInspector ) {
 
             if ( ( (StringConditionInspector) other ).getOperator().equals( operator ) ) {
-                return Redundancy.isSubsumptant( getValues(),
-                                                 ( (StringConditionInspector) other ).getValues() );
+                return Redundancy.subsumes( getValues(),
+                                            ((StringConditionInspector) other).getValues() );
             } else if ( operator.equals( Operator.IN ) && ( (StringConditionInspector) other ).getOperator().equals( Operator.EQUALS ) ) {
                 return getValues().contains( ( (StringConditionInspector) other ).getValues().get( 0 ) );
             } else if ( operator.equals( Operator.IN ) && ( (StringConditionInspector) other ).getOperator().equals( Operator.NOT_EQUALS ) ) {

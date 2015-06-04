@@ -22,12 +22,19 @@ public class Redundancy {
 
     public static boolean isRedundant( Collection collection,
                                        Collection otherCollection ) {
-        return isSubsumptant( collection, otherCollection )
-                && isSubsumptant( otherCollection, collection );
+        return subsumes( collection,
+                         otherCollection )
+                && subsumes( otherCollection,
+                             collection );
     }
 
-    public static boolean isSubsumptant( Collection collection,
-                                         Collection otherCollection ) {
+    /**
+     * @param collection
+     * @param otherCollection
+     * @return True if every object in otherCollection is subsumed by an item in collection.
+     */
+    public static boolean subsumes( Collection collection,
+                                    Collection otherCollection ) {
         if ( collection == null || otherCollection == null ) {
             return false;
         }
@@ -37,16 +44,19 @@ public class Redundancy {
             return false;
         }
 
+        // Every object in other collection is subsumed by an object in collection.
         for ( Object object : otherCollection ) {
-            if ( !hasSubsumingObjectInList( collection, object ) ) {
+            if ( !isSubsumedByAnObjectInThisList( collection,
+                                                  object ) ) {
                 return false;
             }
         }
+
         return true;
     }
 
-    public static boolean hasSubsumingObjectInList( Collection otherCollection,
-                                                    Object object ) {
+    public static boolean isSubsumedByAnObjectInThisList( Collection otherCollection,
+                                                          Object object ) {
         if ( object instanceof IsSubsuming ) {
             for ( Object otherObject : otherCollection ) {
                 if ( ( (IsSubsuming) object ).subsumes( otherObject ) ) {

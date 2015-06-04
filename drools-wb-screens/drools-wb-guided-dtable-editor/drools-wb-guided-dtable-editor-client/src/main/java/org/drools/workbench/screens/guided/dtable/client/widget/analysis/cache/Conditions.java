@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
 import java.util.Collection;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsDeficient;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsRedundant;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.IsSubsuming;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Redundancy;
@@ -27,7 +28,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.conditi
 public class Conditions
         extends MultiMap<ConditionInspectorKey, ConditionInspector>
         implements IsRedundant,
-                   IsSubsuming {
+                   IsSubsuming,
+                   IsDeficient {
 
     public void addAll( Collection<ConditionInspector> conditionInspectorList ) {
         for ( ConditionInspector inspector : conditionInspectorList ) {
@@ -51,8 +53,13 @@ public class Conditions
     @Override
     public boolean subsumes( Object other ) {
         if ( other instanceof Conditions ) {
-            for ( ConditionInspectorKey key : keys() ) {
-                if ( !Redundancy.isSubsumptant( get( key ), ( (Conditions) other ).get( key ) ) ) {
+            for (ConditionInspectorKey key : ((Conditions) other).keys()) {
+                if ( containsKey( key ) ) {
+                    if ( !Redundancy.subsumes( get( key ),
+                                               ((Conditions) other).get( key ) ) ) {
+                        return false;
+                    }
+                } else {
                     return false;
                 }
             }
@@ -60,5 +67,43 @@ public class Conditions
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean isDeficient( Object object ) {
+        if ( object instanceof ConditionInspectorKey ) {
+            if ( !keys().contains( object ) ) {
+                return true;
+            } else {
+                for (ConditionInspector inspector : get( (ConditionInspectorKey) object )) {
+                    if ( inspector.hasValue() ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return Do the conditions have values set in them.
+     */
+    public boolean hasValues() {
+        for (ConditionInspector condition : allValues()) {
+            if ( condition.hasValue() ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean keyHasNoValues( ConditionInspectorKey key ) {
+        for (ConditionInspector inspector : get( key )) {
+            if ( inspector.hasValue() ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

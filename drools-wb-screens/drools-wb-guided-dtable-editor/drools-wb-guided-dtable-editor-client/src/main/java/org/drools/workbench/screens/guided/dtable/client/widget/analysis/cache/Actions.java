@@ -43,7 +43,8 @@ public class Actions
     public boolean subsumes( Object other ) {
         if ( other instanceof Actions ) {
             for ( ActionInspectorKey key : keys() ) {
-                if ( !Redundancy.isSubsumptant( get( key ), ( (Actions) other ).get( key ) ) ) {
+                if ( !Redundancy.subsumes( get( key ),
+                                           ((Actions) other).get( key ) ) ) {
                     return false;
                 }
             }
@@ -57,7 +58,8 @@ public class Actions
     public boolean conflicts( Object other ) {
         if ( other instanceof Actions ) {
             for ( ActionInspectorKey key : keys() ) {
-                if ( Conflict.isConflicting( get( key ), ( (Actions) other ).get( key ) ) ) {
+                if ( Conflict.isConflicting( get( key ),
+                                             ((Actions) other).get( key ) ) ) {
                     return true;
                 }
             }
@@ -65,5 +67,14 @@ public class Actions
         } else {
             return false;
         }
+    }
+
+    public boolean hasValues() {
+        for (ActionInspector action : allValues()) {
+            if ( action.hasValue() ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

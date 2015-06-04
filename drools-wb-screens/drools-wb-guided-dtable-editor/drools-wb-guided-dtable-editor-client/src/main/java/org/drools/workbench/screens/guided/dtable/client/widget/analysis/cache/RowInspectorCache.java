@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -61,6 +62,16 @@ public class RowInspectorCache {
         return rowInspectorList.getSortedList();
     }
 
+    public Collection<RowInspector> all( Filter filter ) {
+        ArrayList<RowInspector> result = new ArrayList<RowInspector>();
+        for (RowInspector rowInspector : all()) {
+            if ( filter.accept( rowInspector ) ) {
+                result.add( rowInspector );
+            }
+        }
+        return result;
+    }
+
     public Conditions getConditions() {
         return conditions;
     }
@@ -100,7 +111,7 @@ public class RowInspectorCache {
         return rowInspector;
     }
 
-    public interface Selector {
+    public interface Filter {
 
         boolean accept( RowInspector rowInspector );
 

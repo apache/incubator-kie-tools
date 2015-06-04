@@ -30,7 +30,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -38,7 +37,6 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleImpl;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordinate;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.UpdateColumnDataEvent;
 import org.mockito.Mock;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
@@ -86,7 +84,7 @@ public class DecisionTableAnalyzerTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
                                                                                new ArrayList<Import>(),
                                                                                "mytable")
-                .withIntegerColumn("a", "Person", "age", ">")
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
                 .withData(new Object[][]{{1, "description", 0}})
                 .build();
 
@@ -104,11 +102,14 @@ public class DecisionTableAnalyzerTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
                                                                                new ArrayList<Import>(),
                                                                                "mytable")
-                .withIntegerColumn("a", "Person", "age", ">")
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
                 .withActionSetField("a", "age", DataType.TYPE_NUMERIC_INTEGER)
                 .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
                 .withActionSetField("a", "name", DataType.TYPE_STRING)
-                .withData(new Object[][]{{1, "description", 0, null, null, ""}})
+                .withData( new Object[][]{
+                        {1, "description", 0, null, null, ""},
+                        {2, "description", null, null, null, null}
+                } )
                 .build();
 
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
@@ -116,7 +117,8 @@ public class DecisionTableAnalyzerTest {
                                                                    eventBus);
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
-        assertContains("RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData());
+        assertContains( "RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
+        assertDoesNotContain( "RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
 
     }
 
@@ -143,10 +145,13 @@ public class DecisionTableAnalyzerTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
                                                                                new ArrayList<Import>(),
                                                                                "mytable")
-                .withIntegerColumn("a", "Person", "age", ">")
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
                 .withStringColumn("a", "Person", "name", "==")
                 .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
-                .withData(new Object[][]{{1, "description", null, "", true}})
+                .withData( new Object[][]{
+                        {1, "description", null, "", true},
+                        {2, "description", null, null, null}
+                } )
                 .build();
 
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
@@ -154,7 +159,8 @@ public class DecisionTableAnalyzerTest {
                                                                    eventBus);
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
-        assertContains("RuleHasNoRestrictionsAndWillAlwaysFire", eventBus.getUpdateColumnDataEvent().getColumnData());
+        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
+        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
 
     }
 
@@ -163,7 +169,7 @@ public class DecisionTableAnalyzerTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
                                                                                new ArrayList<Import>(),
                                                                                "mytable")
-                .withIntegerColumn("a", "Person", "age", ">")
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
                 .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
                 .withActionSetField("a", "approved", DataType.TYPE_BOOLEAN)
                 .withData(new Object[][]{{1, "description", 100, true, false}})
@@ -184,13 +190,13 @@ public class DecisionTableAnalyzerTest {
                 new ArrayList<Import>(),
                 "mytable")
                 .withIntegerColumn("a", "Person", "age", "==", 0)
-                .withAction("a", "Person", "approved", new DTCellValue52() {
+                .withAction( "a", "Person", "approved", new DTCellValue52() {
                     {
-                        setBooleanValue(true);
+                        setBooleanValue( true );
                     }
-                }).withAction("a", "Person", "approved", new DTCellValue52() {
+                } ).withAction( "a", "Person", "approved", new DTCellValue52() {
                     {
-                        setBooleanValue(true);
+                        setBooleanValue( true );
                     }
                 })
                 .withData(new Object[][]{

@@ -77,18 +77,20 @@ public class DecisionTableAnalyzerRedundancyTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "application", "LoanApplication", "amount", ">" )
-                .withIntegerColumn( "application", "LoanApplication", "amount", "<=" )
-                .withIntegerColumn( "application", "LoanApplication", "lengthYears", "==" )
-                .withIntegerColumn( "application", "LoanApplication", "deposit", "<" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "amount", ">" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "amount", "<=" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "lengthYears", "==" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "deposit", "<" )
                 .withStringColumn( "income", "IncomeSource", "type", "==" )
                 .withActionSetField( "application", "approved", DataType.TYPE_BOOLEAN )
                 .withActionSetField( "application", "insuranceCost", DataType.TYPE_NUMERIC_INTEGER )
                 .withActionSetField( "application", "approvedRate", DataType.TYPE_NUMERIC_INTEGER )
                 .withData( new Object[][]{
-                        { 1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2 },
-                        { 2, "description", 10000, 100000, 20, 2000, "Job", true, 0, 4 },
-                        { 3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6 } } )
+                        {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
+                        {2, "description", 10000, 100000, 20, 2000, "Job", true, 0, 4},
+                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6},
+                        {4, "description", null, null, null, null, null, null, null, null},
+                        {5, "description", null, null, null, null, null, null, null, null}} )
                 .build();
 
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
@@ -101,6 +103,8 @@ public class DecisionTableAnalyzerRedundancyTest {
         assertDoesNotContain( "ThisRowIsRedundantTo(1)", result );
         assertDoesNotContain( "ThisRowIsRedundantTo(2)", result );
         assertDoesNotContain( "ThisRowIsRedundantTo(3)", result );
+        assertDoesNotContain( "ThisRowIsRedundantTo(4)", result );
+        assertDoesNotContain( "ThisRowIsRedundantTo(5)", result );
 
     }
 
@@ -109,10 +113,10 @@ public class DecisionTableAnalyzerRedundancyTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "application", "LoanApplication", "amount", ">" )
-                .withIntegerColumn( "application", "LoanApplication", "amount", "<=" )
-                .withIntegerColumn( "application", "LoanApplication", "lengthYears", "==" )
-                .withIntegerColumn( "application", "LoanApplication", "deposit", "<" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "amount", ">" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "amount", "<=" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "lengthYears", "==" )
+                .withConditionIntegerColumn( "application", "LoanApplication", "deposit", "<" )
                 .withStringColumn( "income", "IncomeSource", "type", "==" )
                 .withActionSetField( "application", "approved", DataType.TYPE_BOOLEAN )
                 .withActionSetField( "application", "insuranceCost", DataType.TYPE_NUMERIC_INTEGER )
@@ -226,8 +230,8 @@ public class DecisionTableAnalyzerRedundancyTest {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
-                .withIntegerColumn( "a", "Person", "age", ">" )
-                .withIntegerColumn( "d", "Account", "deposit", "<" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withConditionIntegerColumn( "d", "Account", "deposit", "<" )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
                 .withData( new Object[][]{

@@ -110,7 +110,9 @@ public class ActionInspector
     @Override
     public boolean conflicts( Object other ) {
         if ( other instanceof ActionInspector ) {
-            if ( key.equals( ( (ActionInspector) other ).key ) ) {
+            if ( key.equals( ((ActionInspector) other).key )
+                    && hasValue()
+                    && ((ActionInspector) other).hasValue() ) {
                 return !isRedundant( other );
             }
         }
