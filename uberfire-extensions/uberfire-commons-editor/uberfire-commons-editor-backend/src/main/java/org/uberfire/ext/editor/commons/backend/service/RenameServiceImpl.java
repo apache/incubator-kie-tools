@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSLockService;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.ext.editor.commons.backend.service.helper.RenameHelper;
 import org.uberfire.ext.editor.commons.service.RenameService;
 import org.uberfire.io.IOService;
@@ -36,13 +38,21 @@ public class RenameServiceImpl implements RenameService {
     @Inject
     private Instance<RenameHelper> helpers;
 
+    @Inject
+    private VFSLockService lockService;
+    
     @Override
     public Path rename( final Path path,
                         final String newName,
                         final String comment ) {
-        try {
-            LOGGER.info( "User:" + identity.getIdentifier() + " renaming file [" + path.getFileName() + "] to [" + newName + "]" );
+        LOGGER.info( "User:" + identity.getIdentifier() + " renaming file [" + path.getFileName() + "] to [" + newName + "]" );
 
+        final LockInfo lockInfo = lockService.retrieveLockInfo( path );
+        if ( lockInfo.isLocked() && !identity.getIdentifier().equals( lockInfo.lockedBy() ) ) {
+            throw new RuntimeException( path.toURI() + " cannot be renamed. It is locked by: " + lockInfo.lockedBy() );
+        }
+
+        try {
             final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
 
             String originalFileName = _path.getFileName().toString();
@@ -72,7 +82,7 @@ public class RenameServiceImpl implements RenameService {
             } finally {
                 ioService.endBatch();
             }
-
+            
             return Paths.convert( _target );
 
         } catch ( Exception e ) {

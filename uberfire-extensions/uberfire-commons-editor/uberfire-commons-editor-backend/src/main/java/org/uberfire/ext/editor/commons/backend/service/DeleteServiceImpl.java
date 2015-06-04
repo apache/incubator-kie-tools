@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.VFSLockService;
+import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
@@ -30,19 +32,28 @@ public class DeleteServiceImpl implements DeleteService {
 
     @Inject
     private SessionInfo sessionInfo;
+    
+    @Inject
+    private VFSLockService lockService;
 
     @Override
     public void delete( final Path path,
                         final String comment ) {
-        try {
-            LOGGER.info( "User:" + identity.getIdentifier() + " deleting file [" + path.getFileName() + "]" );
+        
+        LOGGER.info( "User:" + identity.getIdentifier() + " deleting file [" + path.getFileName() + "]" );
 
+        final LockInfo lockInfo = lockService.retrieveLockInfo( path );
+        if ( lockInfo.isLocked() && !identity.getIdentifier().equals( lockInfo.lockedBy() ) ) {
+            throw new RuntimeException( path.toURI() + " cannot be deleted. It is locked by: " + lockInfo.lockedBy() );
+        }
+
+        try {
             ioService.delete( Paths.convert( path ),
                               new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
                                                    identity.getIdentifier(),
                                                    null,
                                                    comment ) );
-
+            
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
         }
