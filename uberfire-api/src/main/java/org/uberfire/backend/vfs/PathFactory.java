@@ -49,15 +49,30 @@ public final class PathFactory {
     }
     
     public static Path newLock( final Path path ) {
+        Path lockPath = newLockPath(path);
+        return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION,
+                                    lockPath.toURI() + LOCK_FILE_EXTENSION );
+    }
+    
+    public static Path newLockPath( final Path path) {
         checkNotNull( "path", path );
 
-        // TODO find a way to convert path URIs between file systems automatically
         final String systemUri = path.toURI().replaceFirst( "([^/&^\\\\]*)@([^/&^\\\\]*)",
                                                             "locks@system/$2/$1" );
         
-        return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION,
-                                    systemUri + LOCK_FILE_EXTENSION );
+        return PathFactory.newPath( "/", 
+                                    systemUri);
     }
+    
+    public static Path fromLock( final Path lockPath ) {
+        checkNotNull( "path", lockPath );
+
+        final String uri = lockPath.toURI().replaceFirst( "locks@system(/|\\\\)([^/&^\\\\]*)(/|\\\\)([^/&^\\\\]*)",
+                                                          "$4@$2" );
+
+        return PathFactory.newPath( lockPath.getFileName().replace( LOCK_FILE_EXTENSION, "" ),
+                                    uri.replace( LOCK_FILE_EXTENSION, "" ) );
+    }        
     
     @Portable
     public static class PathImpl implements Path,

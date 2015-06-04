@@ -1,5 +1,7 @@
 package org.uberfire.backend.vfs;
 
+import java.util.List;
+
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
@@ -49,7 +51,7 @@ public interface VFSLockService {
             throws IllegalArgumentException, IOException;
 
     /**
-     * Retrieve the lock information for the specified {@link Path}.
+     * Retrieves the lock information for the specified {@link Path}.
      * 
      * @param path
      *            the path of the file or directory.
@@ -58,9 +60,30 @@ public interface VFSLockService {
      * @throws IllegalArgumentException
      *             If the provided path is invalid or null.
      * @throws IOException
-     *             If a lock file can't be deleted or an existing lock can't be
-     *             read.
+     *             If a lock file can't be read.
      */
     LockInfo retrieveLockInfo( Path path )
+            throws IllegalArgumentException, IOException;
+
+    /**
+     * Retrieves all locks for children (files or directories) of the provided
+     * path.
+     * 
+     * @param path
+     *            the path of the directory.
+     * @param excludeOwnedLocks
+     *            filters the resulting list so it doesn't contain locks owned
+     *            by the currently authenticated user.
+     * @return the list of {@link LockInfo}s for children of the provided path
+     *         that are currently locked, or an empty list if no such locks
+     *         exist.
+     * 
+     * @throws IllegalArgumentException
+     *             If the provided path is invalid or null.
+     * @throws IOException
+     *             If a lock file can't be read.
+     */
+    List<LockInfo> retrieveLockInfos( Path path,
+                                      boolean excludeOwnedLocks )
             throws IllegalArgumentException, IOException;
 }

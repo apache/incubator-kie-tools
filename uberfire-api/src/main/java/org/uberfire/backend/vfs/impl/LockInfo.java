@@ -90,4 +90,9 @@ public class LockInfo {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "[file=" + file + ", lockedBy=" + lockedBy + "]";
+    }
+    
 }

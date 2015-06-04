@@ -51,13 +51,16 @@ public class LockCleanupSessionListener implements HttpSessionListener {
             try {
                 ioService.startBatch( fileSystem );
                 for ( LockInfo lockInfo : locks ) {
-                    ioService.delete( Paths.convert( lockInfo.getLock() ) );
-                    lockEvent.fire( LockResult.released( lockInfo.getFile() ).getLockInfo() );
+                    try {
+                        ioService.delete( Paths.convert( lockInfo.getLock() ) );
+                        lockEvent.fire( LockResult.released( lockInfo.getFile() ).getLockInfo() );
+                    } catch ( Throwable t ) {
+                        logger.warn( "Problem when releasing lock on session end: " + lockInfo,
+                                     t );
+                    }
                 }
-            } catch ( Throwable t ) {
-                logger.warn( "Problem when releasing locks on session end " + locks,
-                             t );
-            } finally {
+            } 
+            finally {
                 ioService.endBatch();
             }
         }

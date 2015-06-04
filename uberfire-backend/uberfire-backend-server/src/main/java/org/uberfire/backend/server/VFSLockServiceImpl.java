@@ -1,10 +1,17 @@
 package org.uberfire.backend.server;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -21,7 +28,11 @@ import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.DirectoryStream.Filter;
+import org.uberfire.java.nio.file.Files;
 import org.uberfire.rpc.impl.SessionInfoWrapper;
+import org.uberfire.workbench.events.ResourceDeletedEvent;
+import org.uberfire.workbench.events.ResourceRenamedEvent;
 
 /**
  * Errai RPC endpoint exposing a {@link VFSLockService}.
@@ -36,7 +47,7 @@ public class VFSLockServiceImpl implements VFSLockService {
     @Inject
     @Named("configIO")
     private IOService ioService;
-
+    
     @Inject
     private SessionInfoWrapper sessionInfo;
 
@@ -94,7 +105,7 @@ public class VFSLockServiceImpl implements VFSLockService {
     @Override
     public LockInfo retrieveLockInfo( Path path )
             throws IllegalArgumentException, IOException {
-
+        
         final Path vfsLock = PathFactory.newLock( path );
         final org.uberfire.java.nio.file.Path realLock = Paths.convert( vfsLock );
 
@@ -115,6 +126,62 @@ public class VFSLockServiceImpl implements VFSLockService {
         return result;
     }
     
+    @Override
+    public List<LockInfo> retrieveLockInfos( Path path,
+                                             boolean excludeOwnedLocks )
+            throws IllegalArgumentException, IOException {
+
+        if ( !Files.isDirectory( Paths.convert( path ) ) ) {
+            return Collections.emptyList();
+        }
+
+        final Path lockPath = PathFactory.newLockPath( path );
+
+        final List<Path> locks = new ArrayList<Path>();
+        retrieveLocks( ioService.get( URI.create( lockPath.toURI() ) ),
+                       locks );
+
+        final List<LockInfo> lockInfos = new LinkedList<LockInfo>();
+        for ( Path lock : locks ) {
+            LockInfo lockInfo = retrieveLockInfo( PathFactory.fromLock( lock ) );
+
+            if ( !excludeOwnedLocks || !sessionInfo.getIdentity().getIdentifier().equals( lockInfo.lockedBy() ) ) {
+                if ( Files.exists( Paths.convert( lockInfo.getFile() ) ) ) {
+                    lockInfos.add( lockInfo );
+                }
+            }
+        }
+
+        return lockInfos;
+    }
+    
+    private void retrieveLocks( final org.uberfire.java.nio.file.Path path,
+                                final List<Path> accu ) {
+        
+        if (!Files.exists( path )) 
+            return;
+        
+        Filter<org.uberfire.java.nio.file.Path> filter = new Filter<org.uberfire.java.nio.file.Path>() {
+
+            @Override
+            public boolean accept( final org.uberfire.java.nio.file.Path entry ) throws org.uberfire.java.nio.IOException {
+                if ( Paths.convert( entry ).toURI().endsWith( PathFactory.LOCK_FILE_EXTENSION ) ) {
+                    accu.add( Paths.convert( entry ) );
+                }
+                else if ( Files.isDirectory( entry ) ) {
+                    retrieveLocks( ioService.get( entry.toUri() ),
+                                   accu );
+                }
+                return true;
+            }
+        };
+                
+        Iterator<org.uberfire.java.nio.file.Path> it = ioService.newDirectoryStream( path , filter ).iterator();
+        while ( it.hasNext() ) {
+            it.next();
+        }
+    }
+    
     private void updateSession( final LockInfo lockInfo, boolean remove ) {
         final HttpSession session = RpcContext.getHttpSession();
         @SuppressWarnings("unchecked")
@@ -133,5 +200,19 @@ public class VFSLockServiceImpl implements VFSLockService {
                                   locks ); 
         }
     }
+    
+    private void onResourceDeleted( @Observes ResourceDeletedEvent res ) {
+        maybeDeleteLock( res.getPath() );
+    }
 
+    private void onResourceRenamed( @Observes ResourceRenamedEvent res ) {
+        maybeDeleteLock( res.getPath() );
+    }
+
+    private void maybeDeleteLock( final Path path ) {
+        final LockInfo lockInfo = retrieveLockInfo( path );
+        if ( lockInfo.isLocked() ) {
+            ioService.delete( Paths.convert( lockInfo.getLock() ) );
+        }
+    }
 }
