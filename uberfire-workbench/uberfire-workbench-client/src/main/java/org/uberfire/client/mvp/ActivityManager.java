@@ -92,8 +92,6 @@ public interface ActivityManager {
      * activities that can handle the given place request, one of them is chosen at random. TODO (UF-92) : make this
      * deterministic.
      *
-     * @param clazz
-     *            the type of activity that you expect to find.
      * @param placeRequest
      * @return an activity that handles the given PlaceRequest, or null if no available activity can handle. <b>No
      *         actual type checking is performed! If you guess the type wrong, you will have an instance of the
@@ -117,6 +115,8 @@ public interface ActivityManager {
      * request. If you are wrong, there will not be a ClassCastException as a result of this call. The safer approach is
      * to use {@link #getActivity(PlaceRequest)} and cast its return value explicitly.
      *
+     * @param clazz
+     *            the type of activity that you expect to find.
      * @param placeRequest
      *            the place the resolved activity should handle
      * @return an activity that can handle the request, or null if no known activity can handle it. If the return value
@@ -130,7 +130,7 @@ public interface ActivityManager {
      *
      * @param activity
      *            the activity instance to destroy. <b>Warning: do not use with instances of SplashScreenActivity. These
-     *            are ApplicationScoped and cannot be destroyed.
+     *            are ApplicationScoped and cannot be destroyed.</b>
      * @throws IllegalArgumentException
      *             if {@code activity} is a SplashScreenActivity. TODO (UF-91) : fix this.
      */
