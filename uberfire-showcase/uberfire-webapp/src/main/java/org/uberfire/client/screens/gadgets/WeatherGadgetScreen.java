@@ -16,33 +16,19 @@
 
 package org.uberfire.client.screens.gadgets;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.safehtml.shared.UriUtils;
-import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
-@WorkbenchScreen(identifier = "WeatherGadget")
-public class WeatherGadgetScreen {
+@WorkbenchScreen( identifier = "WeatherGadget" )
+public class WeatherGadgetScreen extends AbstractGadgetScreen {
 
     private static final String URL = "http://www.gmodules.com/ig/ifr?url=http://www.meteogroup.com/meteo/gadgets/wetter24.xml&amp;up_loc=&amp;up_loccode=&amp;up_temp_unit=&amp;synd=open&amp;w=320&amp;h=200&amp;title=Weather&amp;lang=all&amp;country=ALL&amp;border=http%3A%2F%2Fwww.gmodules.com%2Fig%2Fimages%2F&amp;output=js";
 
-    private Frame frame;
-
-    @PostConstruct
-    public void init() {
-        frame = new Frame();
-        frame.setWidth("100%");
-        frame.setHeight("300px");
-        frame.getElement().getStyle().setBorderWidth(0, Style.Unit.PX);
-        frame.setUrl(UriUtils.fromString(GWT.getModuleBaseURL() + "google.gadget?src=" + URL).asString());
+    public WeatherGadgetScreen() {
+        super( URL );
     }
 
     @WorkbenchPartTitle
@@ -50,8 +36,4 @@ public class WeatherGadgetScreen {
         return "Weather";
     }
 
-    @WorkbenchPartView
-    public IsWidget getView() {
-        return frame;
-    }
 }

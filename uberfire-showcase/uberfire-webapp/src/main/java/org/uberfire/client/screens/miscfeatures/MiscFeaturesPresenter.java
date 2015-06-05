@@ -19,7 +19,7 @@ package org.uberfire.client.screens.miscfeatures;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
+import com.google.gwt.core.client.GWT;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -27,7 +27,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.lifecycle.OnFocus;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -74,7 +73,7 @@ public class MiscFeaturesPresenter {
 
     @OnFocus
     public void onFocus() {
-        Window.alert( "focus!" );
+        GWT.log("focus!");
     }
 
     public void launchUnknownPlace() {

@@ -26,7 +26,7 @@ public interface AppImages
         extends
         ClientBundle {
 
-    @Source("images/uf_user_logo.png")
-    ImageResource ufUserLogo();
+    @Source("images/uf.png")
+    ImageResource ufBrandLogo();
 
 }

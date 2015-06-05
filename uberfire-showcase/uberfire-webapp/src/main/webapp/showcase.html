@@ -4,23 +4,36 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
     <title>UberFire Showcase</title>
-    <link rel="stylesheet" href="org.uberfire.UberfireShowcase/css/uberfire-loading.css">
+    <link rel="stylesheet" href="org.uberfire.UberfireShowcase/patternfly/dist/css/patternfly.min.css">
     <link rel="stylesheet" href="org.uberfire.UberfireShowcase/css/uberfire-showcase.css">
-    <link rel="stylesheet" href="org.uberfire.UberfireShowcase/css/ruleflow.css">
+    <link rel="stylesheet" href="org.uberfire.UberfireShowcase/css/uberfire-loading.css">
 </head>
 <body>
 <iframe id="__gwt_historyFrame" style="width: 0; height: 0; border: 0"></iframe>
 
 <!-- loading indicator. the js app hides this once it's loaded. -->
-<div id="loading">
-    <div class="loading-indicator">
-        <img src="org.uberfire.UberfireShowcase/images/loading-icon.gif" width="32" height="32" style="margin-right: 8px; float: left; vertical-align: top;"/>
-        Please wait<br/><span id="loading-msg">Loading application...</span>
+<div id="loading" class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="center-block text-center">
+                <div class="spinner spinner-lg"></div>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="center-block text-center">
+                <h3>Please wait</h3>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="center-block text-center">
+                <span>Loading application...</span>
+            </div>
+        </div>
     </div>
 </div>
 
 <!-- The GWT js file generated at compile time -->
 <script type="text/javascript" src="org.uberfire.UberfireShowcase/org.uberfire.UberfireShowcase.nocache.js"></script>
-
+<script type="text/javascript" src="org.uberfire.UberfireShowcase/js/marked.js"></script>
 </body>
 </html>

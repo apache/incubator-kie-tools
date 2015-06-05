@@ -16,24 +16,32 @@
 
 package org.uberfire.client.screens.gadgets;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.ScriptElement;
+import com.google.gwt.user.client.ui.Composite;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
-@WorkbenchScreen( identifier = "IPInfoGadget" )
-public class IPInfoGadgetScreen extends AbstractGadgetScreen {
+@WorkbenchScreen( identifier = "TwitterGadget" )
+@Templated
+public class TwitterGadgetScreen extends Composite {
 
-    private static final String URL = "http://aruljohn.com/widget/ip/ip.php";
-
-    public IPInfoGadgetScreen() {
-        super( URL );
+    @PostConstruct
+    public void init(){
+        final ScriptElement se = Document.get().createScriptElement();
+        se.setId( "twitter-wjs" );
+        se.setSrc( "http://platform.twitter.com/widgets.js" );
+        this.getElement().appendChild( se );
     }
 
     @WorkbenchPartTitle
     public String getName() {
-        return "IP Info";
+        return "Uberfire Twitter";
     }
 
 }

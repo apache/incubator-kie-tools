@@ -6,7 +6,6 @@ $registerPerspective({
         parts: [
             {
                 place: "welcome",
-                min_height: 100,
                 parameters: {}
             }
         ],
@@ -25,14 +24,15 @@ $registerPerspective({
             },
             {
                 position: "east",
+                width: 450,
                 panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
                 parts: [
                     {
-                        place: "TodoListScreen",
+                        place: "ReadmeScreen",
                         parameters: {}
                     },
                     {
-                        place: "ReadmeScreen",
+                        place: "TodoListScreen",
                         parameters: {}
                     }
                 ]
@@ -42,6 +42,10 @@ $registerPerspective({
                 position: "south",
                 panel_type: "org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter",
                 parts: [
+                    {
+                        place: "SampleWorkbenchEditor",
+                        parameters: {}
+                    },
                     {
                         place: "YouTubeScreen",
                         parameters: {}

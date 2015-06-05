@@ -16,19 +16,11 @@
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui">
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:h="urn:import:org.gwtbootstrap3.client.ui.html">
 
-  <ui:style>
-    .welcome {
-      padding-top: 20px;
-      margin-top: 10px;
-      text-align: center;
-    }
-  </ui:style>
-
-  <b:Hero addStyleNames="{style.welcome}">
-    <b:Heading size="2">Welcome to UberFire</b:Heading>
-    <b:Paragraph>Now with a bright new Look &amp; Feel based on Boostrap.</b:Paragraph>
-  </b:Hero>
-
+  <h:Div>
+    <b:Heading alignment="CENTER" size="H1" text="Welcome to UberFire"/>
+    <h:Paragraph alignment="CENTER">Now with a bright new Look &amp; Feel based on PatternFly.</h:Paragraph>
+  </h:Div>
 </ui:UiBinder>

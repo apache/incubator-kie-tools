@@ -33,25 +33,6 @@
 	margin: 0px !important;
 }
 
-/* Other styles */
-body {
-    font-family: tahoma, arial, helvetica, sans-serif;
-    line-height: 1.5em;
-    color: #444;
-    margin: 0;
-    padding: 0;
-    background: #FFF;
-}
-
-code {
-    font-size: small;
-}
-
-td, th {
-    margin: 0;
-    padding: 0;
-}
-
 .form-field {
     margin: 0;
     font: normal 12px tahoma, arial, helvetica, sans-serif;

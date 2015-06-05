@@ -19,44 +19,30 @@ package org.uberfire.client.screens.youtube;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.UriUtils;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.events.YouTubeVideo;
 
-import static com.google.gwt.dom.client.Style.Unit.*;
-
 @Dependent
 @WorkbenchScreen(identifier = "YouTubeScreen")
-public class YouTubeScreen
-        extends Composite {
-
-    interface ViewBinder
-            extends
-            UiBinder<Widget, YouTubeScreen> {
-
-    }
+@Templated
+public class YouTubeScreen extends Composite {
 
     private static final String URL = "http://www.youtube.com/embed/xnmSR62_4Us?rel=0";
 
-    @UiField
+    @Inject
+    @DataField
     protected Frame iframe;
-
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     @PostConstruct
     public void init() {
-        initWidget(uiBinder.createAndBindUi(this));
-        iframe.setWidth("640px");
-        iframe.setHeight("480px");
-        iframe.getElement().getStyle().setBorderWidth(0, PX);
         iframe.setUrl(UriUtils.fromString(URL).asString());
     }
 

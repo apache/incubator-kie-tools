@@ -10,63 +10,33 @@ $registerPerspective({
         ],
         panels: [
             {
-                width: 370,
+                width: 450,
+                position: "west",
+                panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
+                parts: [
+                    {
+                        place: "my_angular_js"
+                    }
+                ]
+            },
+            {
+                width: 380,
+                position: "east",
+                panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
+                parts: [
+                    {
+                        place: "TwitterGadget"
+                    }
+                ]
+            },
+            {
+                width: 570,
                 height: 340,
                 position: "south",
                 panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
                 parts: [
                     {
-                        place: "StockQuotesGadget"
-                    }
-                ],
-                panels: [
-                    {
-                        width: 570,
-                        height: 340,
-                        position: "east",
-                        panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
-                        parts: [
-                            {
-                                place: "WeatherGadget"
-                            }
-                        ],
-                        panels: [
-                        {
-                            width: 520,
-                            height: 340,
-                            position: "east",
-                            panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
-                            parts: [
-                                {
-                                    place: "SportsNewsGadget"
-                                }
-                            ]
-                        }
-                    ]
-                    }
-                ]
-            },
-            {
-                width: 700,
-                min_width: 330,
-                position: "east",
-                panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
-                parts: [
-                    {
-                        place: "TodoListScreen"
-                    }
-                ],
-                panels: [
-                    {
-                        width: 380,
-                        height: 330,
-                        position: "east",
-                        panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
-                        parts: [
-                            {
-                                place: "welcome"
-                            }
-                        ]
+                        place: "welcome"
                     }
                 ]
             }

@@ -2,6 +2,7 @@ package org.uberfire.client.screens.splash;
 
 import java.util.Arrays;
 
+import org.gwtbootstrap3.client.ui.html.Text;
 import org.jboss.errai.ioc.client.api.ActivatedBy;
 import org.uberfire.client.annotations.SplashBodyHeight;
 import org.uberfire.client.annotations.SplashFilter;
@@ -11,7 +12,6 @@ import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.model.impl.SplashScreenFilterImpl;
 
-import com.github.gwtbootstrap.client.ui.base.TextNode;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -27,7 +27,7 @@ public class FileExplorerSplashScreen {
     @WorkbenchPartView
     public Widget getView() {
         FlowPanel p = new FlowPanel();
-        p.add( new TextNode( "OI MUNDO!" ) );
+        p.add( new Text( "Hello world!" ) );
         return p;
     }
 
