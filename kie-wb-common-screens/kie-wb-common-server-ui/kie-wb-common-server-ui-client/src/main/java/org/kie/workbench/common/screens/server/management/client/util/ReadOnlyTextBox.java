@@ -8,7 +8,7 @@ import com.google.gwt.user.client.Event;
 
 public class ReadOnlyTextBox extends TextBox {
 
-    private final KeyPressHandler readOnlyTextBox = new KeyPressHandler() {
+    final KeyPressHandler onKeyPressCancelHandler = new KeyPressHandler() {
         public void onKeyPress( KeyPressEvent event ) {
             ( (TextBox) event.getSource() ).cancelKey();
         }
@@ -17,18 +17,22 @@ public class ReadOnlyTextBox extends TextBox {
     public ReadOnlyTextBox() {
         super();
         sinkEvents( Event.ONPASTE );
-        addKeyPressHandler( readOnlyTextBox );
+        addKeyPressHandler( onKeyPressCancelHandler );
     }
 
     @Override
     public void onBrowserEvent( Event event ) {
         super.onBrowserEvent( event );
 
-        switch ( DOM.eventGetType( event ) ) {
+        switch ( getType( event ) ) {
             case Event.ONPASTE:
                 event.preventDefault();
                 break;
         }
+    }
+
+    int getType( Event event ) {
+        return DOM.eventGetType( event );
     }
 
 }

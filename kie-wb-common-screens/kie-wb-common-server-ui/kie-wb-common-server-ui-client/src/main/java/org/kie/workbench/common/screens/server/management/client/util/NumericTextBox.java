@@ -6,8 +6,7 @@ import com.google.gwt.regexp.shared.RegExp;
 
 public class NumericTextBox extends AbstractRestrictedEntryTextBox {
 
-    // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
+    private static final RegExp VALID_NUMBER = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
     public NumericTextBox() {
         super( false );
@@ -20,7 +19,7 @@ public class NumericTextBox extends AbstractRestrictedEntryTextBox {
     @Override
     public boolean isValidValue( String value,
                                  boolean isOnFocusLost ) {
-        boolean isValid = VALID.test( value );
+        boolean isValid = VALID_NUMBER.test( value );
         if ( !isValid ) {
             return isValid;
         }
