@@ -18,6 +18,8 @@ package org.uberfire.client.mvp;
 import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.impl.LockTarget;
+import org.uberfire.backend.vfs.impl.LockTarget.TitleProvider;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -30,9 +32,9 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
     @Inject
     private EditorLockManager lockManager;
-
-    protected ObservablePath path;
     
+    protected ObservablePath path;
+
     public AbstractWorkbenchEditorActivity( final PlaceManager placeManager ) {
         super( placeManager );
     }
@@ -55,17 +57,35 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public void onStartup( final ObservablePath path,
                            final PlaceRequest place ) {
+        
         super.onStartup( place );
         this.path = path;
-        lockManager.init( this );
+        
+        final Runnable reload = new Runnable() {
+            @Override
+            public void run() {
+                onStartup( path,
+                           getPlace() );
+            }
+        };
+        final TitleProvider titleProvider = new TitleProvider() {
+            @Override
+            public String getTitle() {
+                return AbstractWorkbenchEditorActivity.this.getTitle();
+            }
+        };
+        
+        lockManager.init( new LockTarget( path,
+                                          getWidget().asWidget(),
+                                          getPlace(),
+                                          titleProvider,
+                                          reload ) );
     }
 
     @Override
     public void onOpen() {
         super.onOpen();
-        if ( path != null ) {
-            lockManager.acquireLockOnDemand();
-        }
+        lockManager.acquireLockOnDemand();
     }
 
     @Override
@@ -90,12 +110,4 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
         lockManager.onFocus();
     }
     
-    public ObservablePath getPath() {
-        return path;
-    }
-    
-    public boolean isOpen() {
-        return open;
-    }
-
 }

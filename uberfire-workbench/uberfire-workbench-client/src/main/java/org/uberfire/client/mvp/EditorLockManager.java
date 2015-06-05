@@ -1,6 +1,7 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.impl.LockTarget;
 
 /**
  * Provides functionality to lock a {@link Path} associated with an editor
@@ -12,11 +13,11 @@ public interface EditorLockManager {
     /**
      * Updates the UI with the latest lock information.
      * 
-     * @param activity
-     *            the activity associated with this instance of
-     *            {@link EditorLockManager}.
+     * @param lockTarget
+     *            the {@link LockTarget} providing information about what to
+     *            lock.
      */
-    void init( AbstractWorkbenchEditorActivity activity );
+    void init( LockTarget lockTarget );
 
     /**
      * Called when the editor gets focus to initialize state specific to the
