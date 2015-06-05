@@ -4,6 +4,8 @@ public class ListbarPreferences {
 
     private boolean contextEnabled;
 
+    private boolean hideTitleDropDownOnSingleElement = true;
+
     public ListbarPreferences() {
 
     }
@@ -14,5 +16,13 @@ public class ListbarPreferences {
 
     public boolean isContextEnabled() {
         return contextEnabled;
+    }
+
+    public boolean isHideTitleDropDownOnSingleElement() {
+        return hideTitleDropDownOnSingleElement;
+    }
+
+    public void setHideTitleDropDownOnSingleElement( boolean hideTitleDropDownOnSingleElement ) {
+        this.hideTitleDropDownOnSingleElement = hideTitleDropDownOnSingleElement;
     }
 }

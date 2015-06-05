@@ -4,7 +4,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.TabShowEvent;
 import org.gwtbootstrap3.client.shared.event.TabShowHandler;
 import org.gwtbootstrap3.client.shared.event.TabShownEvent;
@@ -20,27 +30,31 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * A Bootstrap3 TabPanel which supports a mix of normal tabs and tabs that are dropdown menus. Selecting an item from a
  * dropdown menu tab causes that item's associated content to display in the tab panel's content area.
  */
+@Dependent
 public class TabPanelWithDropdowns extends Composite {
 
+    interface TabPanelWithDropdownsBinder
+            extends
+            UiBinder<TabPanel, TabPanelWithDropdowns> {
+
+    }
+
+    private static TabPanelWithDropdownsBinder uiBinder = GWT.create( TabPanelWithDropdownsBinder.class );
     /**
      * The bar at the top where the tabs sit.
      */
-    protected final NavTabs tabBar;
+    @UiField
+    protected NavTabs tabBar;
 
     /**
      * The content area that shows the content for the currently selected tab.
      */
-    protected final TabContent tabContent;
+    @UiField
+    protected TabContent tabContent;
 
     /**
      * Widgets we have created that can have the CSS style name "active" added to them. When a new tab is selected, all
@@ -57,7 +71,9 @@ public class TabPanelWithDropdowns extends Composite {
         @Override
         public void onShow( TabShowEvent showEvent ) {
             for ( Widget w : activatableWidgets ) {
-                w.removeStyleName( Styles.ACTIVE );
+                if ( showEvent.getTab().asWidget() != w ) {
+                    w.removeStyleName( Styles.ACTIVE );
+                }
             }
             TabPanelWithDropdowns.this.fireEvent( showEvent );
         }
@@ -82,7 +98,6 @@ public class TabPanelWithDropdowns extends Composite {
 
     /**
      * Registers a handler that is notified just before any tab in this panel (nested under a dropdown or not) is shown.
-     *
      * @param tabShowHandler the handler that will receive the notifications.
      */
     public HandlerRegistration addShowHandler( TabShowHandler tabShowHandler ) {
@@ -91,8 +106,7 @@ public class TabPanelWithDropdowns extends Composite {
 
     /**
      * Registers a handler that is notified just after any tab in this panel (nested under a dropdown or not) is shown.
-     *
-     * @param tabShowHandler the handler that will receive the notifications.
+     * @param tabShownHandler the handler that will receive the notifications.
      */
     public HandlerRegistration addShownHandler( TabShownHandler tabShownHandler ) {
         return addHandler( tabShownHandler, TabShownEvent.getType() );
@@ -107,23 +121,15 @@ public class TabPanelWithDropdowns extends Composite {
     /**
      * Creates an empty tab panel.
      */
-    public TabPanelWithDropdowns() {
-        tabBar = new NavTabs();
-        tabContent = new TabContent();
-
-        TabPanel root = new TabPanel();
-        root.add( tabBar );
-        root.add( tabContent );
-        initWidget( root );
+    @PostConstruct
+    public void init() {
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     /**
      * Adds a normal tab (not a dropdown) with the given label and contents.
-     *
-     * @param label
-     *            the label for the tab itself.
-     * @param content
-     *            the contents that should appear in the content area when the tab is selected.
+     * @param label the label for the tab itself.
+     * @param content the contents that should appear in the content area when the tab is selected.
      * @return the newly created entry object that ties together the tab widget and its contents.
      */
     public TabPanelEntry addItem( String label,
@@ -135,7 +141,6 @@ public class TabPanelWithDropdowns extends Composite {
 
     /**
      * Adds a normal tab (not a dropdown) with the given label and contents.
-     *
      * @param tab the label and contents associated with the new tab.
      */
     public void addItem( TabPanelEntry tab ) {
@@ -146,12 +151,11 @@ public class TabPanelWithDropdowns extends Composite {
         tabBar.add( tab.getTabWidget() );
         tabContent.add( tab.getContentPane() );
     }
+
     /**
      * Removes the given tab and its associated contents that were previously added with
      * {@link #addItem(String, Widget)}. Has no effect if the item is not currently in this tab panel.
-     *
-     * @param tab
-     *            the item to remove.
+     * @param tab the item to remove.
      */
     public boolean remove( TabPanelEntry tab ) {
         for ( HandlerRegistration registration : tabHandlerRegistrations.removeAll( tab ) ) {
@@ -169,9 +173,7 @@ public class TabPanelWithDropdowns extends Composite {
      * a dropdown menu when the tab is clicked. This dropdown menu is initially empty. Items can be added and removed
      * using the {@link DropDownTab#addItem(String, Widget)} and
      * {@link DropDownTab#removeItem(String, Widget)} methods.
-     *
-     * @param label
-     *            The text that should appear on the dropdown tab.
+     * @param label The text that should appear on the dropdown tab.
      * @return the container for the items that appear when the tab is clicked.
      */
     public DropDownTab addDropdownTab( String label ) {
@@ -195,7 +197,6 @@ public class TabPanelWithDropdowns extends Composite {
     /**
      * Adds a pre-made dropdown tab to this tab panel. This can be used for re-attaching a dropdown tab that was
      * previously added with {@link #addDropdownTab(String)} and then removed.
-     *
      * @param tab the tab to add back
      */
     public void addDropdownTab( DropDownTab contents ) {
@@ -224,7 +225,7 @@ public class TabPanelWithDropdowns extends Composite {
         }
 
         public TabPanelEntry addItem( String label,
-                             Widget content ) {
+                                      Widget content ) {
             TabPanelEntry tab = new TabPanelEntry( label, content );
             addItem( tab );
             return tab;
@@ -253,7 +254,6 @@ public class TabPanelWithDropdowns extends Composite {
 
         /**
          * Sets the text that appears on this dropdown's main tab.
-         *
          * @param text the new label for the dropdown tab.
          */
         public void setText( String text ) {
@@ -301,12 +301,43 @@ public class TabPanelWithDropdowns extends Composite {
     /**
      * Returns the tab whose contents are currently being displayed. The tab widget itself may be a top-level tab, or
      * nested under a dropdown tab.
-     *
      * @return the currently selected (active) tab. If no tab has been displayed yet, returns null.
      */
     public TabPanelEntry getActiveTab() {
         for ( TabPanelEntry entry : allContentTabs ) {
             if ( entry.isActive() ) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the tab index associated with the current selected tab.
+     * @return the currently selected (active) tab index. -1 If there is no active tab
+     */
+    public int getSelectedTabIndex() {
+        final TabPanelEntry activeTab = getActiveTab();
+        if ( activeTab == null ) {
+            return -1;
+        } else {
+            return tabBar.getWidgetIndex( activeTab.getTabWidget() );
+        }
+    }
+
+    public void selectTabIndex( int index ) {
+        final TabListItem item = (TabListItem) tabBar.getWidget( index );
+        if ( item != null ) {
+            item.showTab();
+        }
+    }
+
+    /**
+     * Finds the TabPanelEntry associated with the given tab widget, even if it's nested in a DropdownTab.
+     */
+    public TabPanelEntry findEntryForTabWidget( final TabListItem tabWidget ) {
+        for ( TabPanelEntry entry : allContentTabs ) {
+            if ( entry.getTabWidget() == tabWidget ) {
                 return entry;
             }
         }

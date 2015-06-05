@@ -1,9 +1,8 @@
 package org.uberfire.client.workbench.widgets.dnd;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +16,10 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.allen_sauer.gwt.dnd.client.DragContext;
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CompassDropControllerTest {
@@ -48,7 +48,7 @@ public class CompassDropControllerTest {
 
     @Test
     public void compassDelegationTest() {
-        CompassWidget compass = compassDropController.mock;
+        CompassWidget compass = compassDropController.compass;
 
         DragContext dragContext = mock( DragContext.class );
 
@@ -71,7 +71,7 @@ public class CompassDropControllerTest {
         DragContext dragContext = mock( DragContext.class );
         compassDropController.onDrop( dragContext );
 
-        verify( compassDropController.mock,never() ).onDrop( dragContext );
+        verify( compassDropController.compass,never() ).onDrop( dragContext );
     }
 
     @Test

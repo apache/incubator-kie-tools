@@ -15,20 +15,25 @@
  */
 package org.uberfire.client.workbench.widgets.split;
 
-import org.uberfire.workbench.model.CompassPosition;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.resources.WorkbenchResources;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.workbench.model.CompassPosition;
 
 /**
  * A panel that adds user-positioned splitters between each of its child
@@ -68,9 +73,23 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
                          boolean reverse) {
             super( target,
                    reverse );
-            getElement().getStyle().setPropertyPx( "width",
-                                                   splitterSize );
-            setStyleName( "gwt-SplitLayoutPanel-HDragger" );
+            setStyleName(WorkbenchResources.INSTANCE.CSS().splitLayoutPanelHDragger());
+        }
+
+        @Override
+        protected void setUpHoverStyle( final Style style, int size ) {
+            style.setWidth( size, Unit.PX );
+            style.setMarginLeft( - (size/2), Unit.PX );
+        }
+
+        @Override
+        public void onResize() {
+            hover.getElement().getStyle().setHeight( target.getOffsetHeight(), Unit.PX );
+        }
+
+        @Override
+        protected Style.Cursor getHoverCursorStyle() {
+            return Style.Cursor.COL_RESIZE;
         }
 
         @Override
@@ -99,8 +118,10 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
         }
     }
 
-    abstract class Splitter extends Widget {
-        protected final Widget   target;
+    abstract class Splitter extends Composite implements RequiresResize {
+        protected final Widget target;
+        protected final Widget hover;
+        protected final Element mouseTracker;
 
         private int              offset;
         private boolean          mouseDown;
@@ -116,17 +137,32 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
             this.target = target;
             this.reverse = reverse;
 
-            setElement( Document.get().createDivElement() );
-            sinkEvents( Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE
-                        | Event.ONDBLCLICK );
+            final ResizeFlowPanel widget = new ResizeFlowPanel();
+
+            sinkEvents( Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE | Event.ONDBLCLICK );
+
+            this.hover = new FlowPanel();
+            final Style style = hover.getElement().getStyle();
+            style.setOpacity( 0 );
+            style.setZIndex( 2 );
+            style.setPosition( Position.FIXED );
+            setUpHoverStyle( style, DEFAULT_SPLITTER_HOVER_SIZE );
+            widget.add( hover );
+            initWidget( widget );
+
+            mouseTracker = Document.get().createDivElement();
+            mouseTracker.getStyle().setCursor( getHoverCursorStyle() );
+            mouseTracker.getStyle().setZIndex( Integer.MAX_VALUE );
+            mouseTracker.getStyle().setPosition( Position.ABSOLUTE );
+            mouseTracker.getStyle().setHeight( 50, Unit.PX );
+            mouseTracker.getStyle().setWidth( 50, Unit.PX );
         }
 
         @Override
-        public void onBrowserEvent(Event event) {
+        public void onBrowserEvent(final Event event) {
             switch ( event.getTypeInt() ) {
                 case Event.ONMOUSEDOWN :
                     mouseDown = true;
-
                     /*
                      * Resize glassElem to take up the entire scrollable window
                      * area, which is the greater of the scroll size and the
@@ -145,6 +181,8 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
                     offset = getEventPosition( event ) - getAbsolutePosition();
                     Event.setCapture( getElement() );
                     event.preventDefault();
+
+                    Document.get().getBody().appendChild( mouseTracker );
                     break;
 
                 case Event.ONMOUSEUP :
@@ -154,6 +192,8 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
                     Event.releaseCapture( getElement() );
                     event.preventDefault();
+
+                    mouseTracker.removeFromParent();
                     break;
 
                 case Event.ONMOUSEMOVE :
@@ -167,6 +207,9 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
                         }
                         setAssociatedWidgetSize( size );
                         event.preventDefault();
+
+                        mouseTracker.getStyle().setLeft( event.getClientX() - mouseTracker.getOffsetWidth() / 2, Unit.PX );
+                        mouseTracker.getStyle().setTop( event.getClientY() - mouseTracker.getOffsetHeight() / 2, Unit.PX );
                     }
                     break;
             }
@@ -180,6 +223,10 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
             // minSize value.
             setAssociatedWidgetSize( (int) layout.size );
         }
+
+        protected abstract void setUpHoverStyle(Style style, int size);
+
+        protected abstract Style.Cursor getHoverCursorStyle();
 
         protected abstract int getAbsolutePosition();
 
@@ -250,9 +297,23 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
                          boolean reverse) {
             super( target,
                    reverse );
-            getElement().getStyle().setPropertyPx( "height",
-                                                   splitterSize );
-            setStyleName( "gwt-SplitLayoutPanel-VDragger" );
+            setStyleName(WorkbenchResources.INSTANCE.CSS().splitLayoutPanelVDragger());
+        }
+
+        @Override
+        protected void setUpHoverStyle( final Style style, int size ) {
+            style.setHeight( size, Unit.PX );
+            style.setMarginTop( -( size / 2 ), Unit.PX );
+        }
+
+        @Override
+        public void onResize() {
+            hover.getElement().getStyle().setWidth( target.getOffsetWidth(), Unit.PX );
+        }
+
+        @Override
+        protected Style.Cursor getHoverCursorStyle() {
+            return Style.Cursor.ROW_RESIZE;
         }
 
         @Override
@@ -281,7 +342,8 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
         }
     }
 
-    private static final int DEFAULT_SPLITTER_SIZE = 8;
+    private static final int DEFAULT_SPLITTER_SIZE = 1;
+    private static final int DEFAULT_SPLITTER_HOVER_SIZE = 10;
 
     /**
      * The element that masks the screen so we can catch mouse events over
@@ -311,7 +373,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
     public WorkbenchSplitLayoutPanel(int splitterSize) {
         super( Unit.PX );
         this.splitterSize = splitterSize;
-        setStyleName( "gwt-SplitLayoutPanel" );
+        setStyleName(WorkbenchResources.INSTANCE.CSS().splitLayoutPanel());
 
         if ( glassElem == null ) {
             glassElem = Document.get().createDivElement();

@@ -1,12 +1,9 @@
 package org.uberfire.client.views.pfly.menu;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import javax.inject.Qualifier;
-
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import org.gwtbootstrap3.client.ui.NavbarBrand;
+import org.gwtbootstrap3.client.ui.html.Text;
 
 /**
  * Denotes that the target class or producer of type {@link NavbarBrand} provides the main branding link that appears above
@@ -14,9 +11,13 @@ import org.gwtbootstrap3.client.ui.NavbarBrand;
  * <p>
  * To fit with the overall layout, <b>the NavbarBrand widget that bears this qualifier must have a height of 25px.</b>
  */
-@Qualifier
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface MainBrand {
+public class MainBrand extends Composite {
 
+    public MainBrand(final String text){
+        initWidget(new Text(text));
+    }
+
+    public MainBrand(final Image image){
+        initWidget(image);
+    }
 }

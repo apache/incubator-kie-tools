@@ -37,14 +37,6 @@ extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
 
     @Override
     protected MultiPartWidget setupWidget() {
-        if ( contextWidget != null ) {
-            listBar.setExpanderCommand( new Command() {
-                @Override
-                public void execute() {
-                    contextWidget.toogleDisplay();
-                }
-            } );
-        }
         addOnFocusHandler( listBar );
         addSelectionHandler( listBar );
 

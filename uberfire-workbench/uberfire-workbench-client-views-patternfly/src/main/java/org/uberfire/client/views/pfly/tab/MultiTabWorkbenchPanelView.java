@@ -19,32 +19,31 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.impl.AbstractMultiPartWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 
 @Dependent
-@Named("MultiTabWorkbenchPanelView")
+@Named( "MultiTabWorkbenchPanelView" )
 public class MultiTabWorkbenchPanelView
-extends AbstractMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
+        extends AbstractMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
+
+    private UberTabPanel uberTabPanel;
 
     @Inject
-    private PlaceManager placeManager;
+    public MultiTabWorkbenchPanelView( final UberTabPanel uberTabPanel ) {
+        this.uberTabPanel = uberTabPanel;
+    }
 
     @Override
     protected MultiPartWidget setupWidget() {
-        final UberTabPanel tabPanel = getUberTabPanel();
+        uberTabPanel.addStyleName( "uf-multitab-panel" );
+        Layouts.setToFillParent( uberTabPanel );
+        addOnFocusHandler( uberTabPanel );
+        addSelectionHandler( uberTabPanel );
 
-        Layouts.setToFillParent( tabPanel );
-        addOnFocusHandler( tabPanel );
-        addSelectionHandler( tabPanel );
-
-        return tabPanel;
+        return uberTabPanel;
     }
 
-    UberTabPanel getUberTabPanel() {
-        return new UberTabPanel( placeManager );
-    }
 }

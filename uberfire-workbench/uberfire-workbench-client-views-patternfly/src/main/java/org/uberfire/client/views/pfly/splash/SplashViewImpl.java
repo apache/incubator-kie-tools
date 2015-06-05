@@ -19,18 +19,17 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.uberfire.client.views.pfly.modal.Bs3Modal;
-import org.uberfire.client.workbench.widgets.splash.SplashView;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.Commands;
-import org.uberfire.mvp.ParameterizedCommand;
-
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.uberfire.client.views.pfly.modal.Bs3Modal;
+import org.uberfire.client.workbench.widgets.splash.SplashView;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.Commands;
+import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 public class SplashViewImpl extends Composite implements SplashView {
@@ -52,7 +51,9 @@ public class SplashViewImpl extends Composite implements SplashView {
                 hide();
             }
         } );
+
         modal.setFooterContent( footer );
+
         final SimplePanel panel = new SimplePanel( modal );
         initWidget( panel );
     }
@@ -69,7 +70,7 @@ public class SplashViewImpl extends Composite implements SplashView {
 
     @Override
     public void setTitle( final String title ) {
-        modal.setTitle( title );
+        modal.setModalTitle( title );
     }
 
     @Override
@@ -80,13 +81,13 @@ public class SplashViewImpl extends Composite implements SplashView {
     @Override
     public void show() {
         modal.show( Commands.DO_NOTHING,
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            showAgain = footer.getShowAgain();
-                            CloseEvent.fire( SplashViewImpl.this, SplashViewImpl.this, false );
-                        }
-                    } );
+                new Command() {
+                    @Override
+                    public void execute() {
+                        showAgain = footer.getShowAgain();
+                        CloseEvent.fire( SplashViewImpl.this, SplashViewImpl.this, false );
+                    }
+                } );
     }
 
     @Override

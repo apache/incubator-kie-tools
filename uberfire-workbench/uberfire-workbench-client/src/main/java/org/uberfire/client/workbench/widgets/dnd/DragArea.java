@@ -9,9 +9,18 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 public class DragArea extends SimplePanel implements HasClickHandlers,
                                                      HasMouseDownHandlers {
+
+    public DragArea() {
+        super();
+    }
+
+    public DragArea( final Widget child ) {
+        super( child );
+    }
 
     public void add( final Element element ) {
         getElement().appendChild( element );

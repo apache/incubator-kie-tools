@@ -15,7 +15,9 @@
  */
 package org.uberfire.client.views.pfly.popup;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
@@ -27,25 +29,24 @@ import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
-import org.gwtbootstrap3.client.ui.Modal;
-import org.gwtbootstrap3.client.ui.ModalBody;
+import org.uberfire.client.views.pfly.modal.Bs3Modal;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 
 @Dependent
 public class PopupViewImpl extends Composite implements PopupView {
 
-    final Modal modal = new Modal();
+    @Inject
+    private Bs3Modal modal;
 
-    public PopupViewImpl() {
+    @PostConstruct
+    public void init() {
         final SimplePanel panel = new SimplePanel( modal );
         initWidget( panel );
     }
 
     @Override
     public void setContent( final IsWidget widget ) {
-        ModalBody body = new ModalBody();
-        body.add( widget );
-        modal.add( body );
+        modal.setContent( widget );
     }
 
     @Override
@@ -64,12 +65,12 @@ public class PopupViewImpl extends Composite implements PopupView {
             }
         } );
 
-        modal.addHideHandler(new ModalHideHandler() {
+        modal.addHideHandler( new ModalHideHandler() {
             @Override
             public void onHide( ModalHideEvent evt ) {
                 CloseEvent.fire( PopupViewImpl.this, PopupViewImpl.this, false );
             }
-        });
+        } );
     }
 
     @Override

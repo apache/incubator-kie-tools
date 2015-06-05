@@ -18,15 +18,14 @@ package org.uberfire.client.views.pfly.splash;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.mvp.ParameterizedCommand;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
 
 /**
  * The footer component for the splash screen popup. Has a "don't show again" toggle and a close button.
@@ -36,27 +35,29 @@ public class SplashModalFooter extends Composite {
 
     private ParameterizedCommand<Boolean> closeCommand;
 
-    @Inject @DataField
-    private CheckBox dontShowAgain;
+    @Inject
+    @DataField
+    private CheckBox show;
 
-    @Inject @DataField
+    @Inject
+    @DataField
     private Button closeButton;
 
     @PostConstruct
     private void setup() {
         closeButton.ensureDebugId( "SplashModalFooter-close" );
-        dontShowAgain.ensureDebugId( "SplashModalFooter-dontShowAgain" );
+        show.ensureDebugId( "SplashModalFooter-dontShowAgain" );
     }
 
-    @EventHandler("closeButton")
+    @EventHandler( "closeButton" )
     public void onOKButtonClick( final ClickEvent e ) {
         if ( closeCommand != null ) {
-            closeCommand.execute( !dontShowAgain.getValue() );
+            closeCommand.execute( !show.getValue() );
         }
     }
 
     public boolean getShowAgain() {
-        return !dontShowAgain.getValue();
+        return !show.getValue();
     }
 
     /**

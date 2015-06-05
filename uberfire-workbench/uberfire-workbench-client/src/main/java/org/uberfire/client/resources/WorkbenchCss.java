@@ -24,8 +24,10 @@ public interface WorkbenchCss
         extends
         CssResource {
 
+    @ClassName( "uf-drop-target-highlight" )
     String dropTargetHighlight();
 
+    @ClassName( "uf-drop-target-compass" )
     String dropTargetCompass();
 
     String notification();
@@ -34,6 +36,7 @@ public interface WorkbenchCss
 
     String statusBar();
 
+    @ClassName("uf-activeNavTabs")
     String activeNavTabs();
 
     String tabCloseButton();
@@ -43,4 +46,16 @@ public interface WorkbenchCss
 
     @ClassName("show-context")
     String showContext();
+
+    @ClassName("uf-split-layout-panel")
+    String splitLayoutPanel();
+
+    @ClassName("uf-split-layout-panel-hdragger")
+    String splitLayoutPanelHDragger();
+
+    @ClassName("uf-split-layout-panel-vdragger")
+    String splitLayoutPanelVDragger();
+
+    @ClassName("uf-modal")
+    String modal();
 }

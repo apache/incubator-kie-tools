@@ -10,5 +10,5 @@
   <public path="static"/>
 
   <stylesheet src="patternfly/dist/css/patternfly.min.css"/>
-
+  <stylesheet src="uberfire-patternfly.css" />
 </module>

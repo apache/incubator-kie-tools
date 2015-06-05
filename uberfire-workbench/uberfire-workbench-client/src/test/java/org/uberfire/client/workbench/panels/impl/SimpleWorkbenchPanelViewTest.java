@@ -1,9 +1,10 @@
 package org.uberfire.client.workbench.panels.impl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +15,10 @@ import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SimpleWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelViewTest {
@@ -64,7 +64,7 @@ public class SimpleWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelV
     @Test
     public void shouldSetupDragAndDropOnListBar() {
         verify( listBar ).setDndManager( eq( dndManager ) );
-        verify( listBar ).setup( false, false );
+        verify( listBar ).disableDnd();
         verify( listBar ).addSelectionHandler( any( SelectionHandler.class ) );
         verify( listBar ).addSelectionHandler( any( SelectionHandler.class ) );
         verify( listBar ).addOnFocusHandler( any( Command.class ) );

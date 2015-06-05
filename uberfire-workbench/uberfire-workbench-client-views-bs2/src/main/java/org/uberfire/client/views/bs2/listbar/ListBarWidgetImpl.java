@@ -15,43 +15,15 @@
  */
 package org.uberfire.client.views.bs2.listbar;
 
-import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
-import static com.google.gwt.dom.client.Style.Display.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import org.jboss.errai.ioc.client.container.IOCResolutionException;
-import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.client.util.Layouts;
-import org.uberfire.client.views.bs2.maximize.MaximizeToggleButton;
-import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
-import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.dnd.DragArea;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
-import org.uberfire.client.workbench.widgets.listbar.ListbarPreferences;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFocusPanel;
-import org.uberfire.commons.data.Pair;
-import org.uberfire.mvp.Command;
-import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.workbench.model.PartDefinition;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
-import org.uberfire.workbench.model.menu.MenuGroup;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemCommand;
 
 import com.github.gwtbootstrap.client.ui.Button;
 import com.github.gwtbootstrap.client.ui.ButtonGroup;
@@ -84,6 +56,32 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ResizeComposite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.jboss.errai.ioc.client.container.IOCResolutionException;
+import org.jboss.errai.security.shared.api.identity.User;
+import org.uberfire.client.util.Layouts;
+import org.uberfire.client.views.bs2.maximize.MaximizeToggleButton;
+import org.uberfire.client.workbench.PanelManager;
+import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
+import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
+import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
+import org.uberfire.client.workbench.widgets.dnd.DragArea;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
+import org.uberfire.client.workbench.widgets.listbar.ListbarPreferences;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFocusPanel;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.mvp.Command;
+import org.uberfire.security.authz.AuthorizationManager;
+import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
+import org.uberfire.workbench.model.menu.MenuCustom;
+import org.uberfire.workbench.model.menu.MenuGroup;
+import org.uberfire.workbench.model.menu.MenuItem;
+import org.uberfire.workbench.model.menu.MenuItemCommand;
+
+import static com.github.gwtbootstrap.client.ui.resources.ButtonSize.*;
+import static com.google.gwt.dom.client.Style.Display.*;
 
 /**
  * Implementation of ListBarWidget based on GWTBootstrap 2 components.
@@ -188,7 +186,6 @@ public class ListBarWidgetImpl
         scheduleResize();
     }
 
-    @Override
     public void setup( boolean isMultiPart,
                        boolean isDndEnabled ) {
         this.isMultiPart = isMultiPart;
@@ -248,11 +245,15 @@ public class ListBarWidgetImpl
     }
 
     @Override
+    public void disableDnd() {
+        this.isDndEnabled = false;
+    }
+
+    @Override
     public boolean isDndEnabled() {
         return isDndEnabled;
     }
 
-    @Override
     public void setExpanderCommand( final Command command ) {
         if ( !isPropertyListbarContextDisable() ) {
             contextDisplay.addClickHandler( new ClickHandler() {
@@ -658,7 +659,6 @@ public class ListBarWidgetImpl
         return maximizeButtonPresenter;
     }
 
-    @Override
     public boolean isMultiPart() {
         return isMultiPart;
     }

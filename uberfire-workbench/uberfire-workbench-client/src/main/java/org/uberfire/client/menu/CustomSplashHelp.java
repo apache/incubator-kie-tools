@@ -1,19 +1,13 @@
 package org.uberfire.client.menu;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import javax.enterprise.context.ApplicationScoped;
-
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
-import org.uberfire.workbench.model.menu.MenuVisitor;
+import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class CustomSplashHelp implements MenuFactory.CustomMenuBuilder {
@@ -25,7 +19,7 @@ public class CustomSplashHelp implements MenuFactory.CustomMenuBuilder {
 
     @Override
     public MenuItem build() {
-        return new MenuCustom<IsWidget>() {
+        return new BaseMenuCustom<IsWidget>() {
 
             @Override
             public IsWidget build() {
@@ -33,58 +27,8 @@ public class CustomSplashHelp implements MenuFactory.CustomMenuBuilder {
             }
 
             @Override
-            public boolean isEnabled() {
-                return true;
-            }
-
-            @Override
-            public void setEnabled( boolean enabled ) {
-
-            }
-
-            @Override
-            public String getContributionPoint() {
-                return null;
-            }
-
-            @Override
-            public String getCaption() {
-                return null;
-            }
-
-            @Override
             public MenuPosition getPosition() {
                 return MenuPosition.RIGHT;
-            }
-
-            @Override
-            public int getOrder() {
-                return 0;
-            }
-
-            @Override
-            public void addEnabledStateChangeListener( EnabledStateChangeListener listener ) {
-
-            }
-
-            @Override
-            public String getSignatureId() {
-                return null;
-            }
-
-            @Override
-            public Collection<String> getRoles() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public Collection<String> getTraits() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public void accept( MenuVisitor visitor ) {
-                visitor.visit( this );
             }
         };
     }

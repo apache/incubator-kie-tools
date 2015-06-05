@@ -26,7 +26,6 @@ import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
-import org.uberfire.client.workbench.widgets.panel.ContextPanel;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
@@ -39,20 +38,17 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
     @Inject
     protected ListBarWidget listBar;
 
-    @Inject
-    protected ContextPanel contextWidget;
-
     @PostConstruct
     void setup() {
         setupListBar();
 
-        getPartViewContainer().add( contextWidget );
         getPartViewContainer().add( listBar );
     }
 
     private void setupListBar() {
         listBar.setDndManager( dndManager );
-        listBar.setup( false, false );
+        listBar.disableDnd();
+        dndManager.unregisterDropController( this );
         addOnFocusHandler( listBar );
         addSelectionHandler( listBar );
         listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );

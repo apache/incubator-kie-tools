@@ -2,8 +2,9 @@ package org.uberfire.client.views.pfly.maximize;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
+import com.google.gwt.event.shared.HandlerRegistration;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
@@ -12,7 +13,7 @@ import org.uberfire.mvp.Command;
 
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-public class MaximizeToggleButton extends Button implements View {
+public class MaximizeToggleButton extends AnchorListItem implements View {
 
     private MaximizeToggleButtonPresenter presenter;
     private boolean maximized;
@@ -20,15 +21,19 @@ public class MaximizeToggleButton extends Button implements View {
     private Command unmaximizeCommand;
 
     public MaximizeToggleButton() {
-        setIcon( IconType.CHEVRON_UP );
-        setSize( ButtonSize.SMALL );
-        setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
-        addClickHandler( new ClickHandler() {
+        setMaximized(maximized);
+        addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 presenter.handleClick();
             }
-        } );
+        });
+        setIconSize(IconSize.LARGE);
+    }
+
+    @Override
+    public HandlerRegistration addClickHandler( ClickHandler handler ) {
+        return this.addDomHandler( handler, ClickEvent.getType() );
     }
 
     @Override
@@ -45,12 +50,10 @@ public class MaximizeToggleButton extends Button implements View {
         if ( wasMaximized ) {
             if ( unmaximizeCommand != null ) {
                 unmaximizeCommand.execute();
-                setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
             }
         } else {
             if ( maximizeCommand != null ) {
                 maximizeCommand.execute();
-                setTitle( WorkbenchConstants.INSTANCE.minimizePanel() );
             }
         }
     }
@@ -101,10 +104,10 @@ public class MaximizeToggleButton extends Button implements View {
     public void setMaximized( boolean maximized ) {
         this.maximized = maximized;
         if ( maximized ) {
-            setIcon( IconType.CHEVRON_DOWN );
+            setIcon( IconType.COMPRESS );
             setTitle( WorkbenchConstants.INSTANCE.minimizePanel() );
         } else {
-            setIcon( IconType.CHEVRON_UP );
+            setIcon( IconType.EXPAND );
             setTitle( WorkbenchConstants.INSTANCE.maximizePanel() );
         }
     }

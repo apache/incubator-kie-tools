@@ -27,10 +27,11 @@ import org.uberfire.workbench.model.PartDefinition;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.util.DOMUtil;
-import com.allen_sauer.gwt.dnd.client.util.DragClientBundle;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -79,50 +80,27 @@ public class WorkbenchPickupDragController extends PickupDragController {
                                                                        minWidth );
         dndManager.setWorkbenchContext( context );
         super.dragStart();
-        final Widget movablePanel = getMoveablePanel();
-        if ( movablePanel != null ) {
-            DOMUtil.fastSetElementPosition( movablePanel.getElement(),
-                                            super.context.mouseX,
-                                            super.context.mouseY );
-        }
+        updateDragProxyPosition();
     }
 
     @Override
     public void dragMove() {
         super.dragMove();
-        final Widget movablePanel = getMoveablePanel();
-        if ( movablePanel != null ) {
-            DOMUtil.fastSetElementPosition( movablePanel.getElement(),
-                                            super.context.mouseX,
-                                            super.context.mouseY );
-        }
+        updateDragProxyPosition();
+    }
+
+    private void updateDragProxyPosition() {
+        DOMUtil.fastSetElementPosition( dragProxy.getElement(), super.context.mouseX - 20, super.context.mouseY - 20 );
     }
 
     @Override
     protected Widget newDragProxy( DragContext context ) {
-        AbsolutePanel container = new AbsolutePanel();
-        container.getElement().getStyle().setProperty( "overflow",
-                "visible" );
-        container.getElement().getStyle().setOpacity( 0.75 );
-        container.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        final Style style = dragProxy.getElement().getStyle();
+        style.setPosition( Style.Position.FIXED );
+        style.setOpacity( 0.5 );
+        style.setZIndex( Integer.MAX_VALUE );
 
-        //Offset to centre of dragProxy
-        int offsetX = 0 - ( (int) ( dragProxy.getWidth() * 0.5 ) );
-        int offsetY = 0 - ( (int) ( dragProxy.getHeight() * 1.5 ) );
-        container.add( dragProxy,
-                       offsetX,
-                       offsetY );
-        return container;
-    }
-
-    private Widget getMoveablePanel() {
-        for ( int index = 0; index < context.boundaryPanel.getWidgetCount(); index++ ) {
-            final Widget w = context.boundaryPanel.getWidget( index );
-            if ( w.getStyleName().equals( DragClientBundle.INSTANCE.css().movablePanel() ) ) {
-                return w;
-            }
-        }
-        return null;
+        return new SimplePanel( dragProxy );
     }
 
 }

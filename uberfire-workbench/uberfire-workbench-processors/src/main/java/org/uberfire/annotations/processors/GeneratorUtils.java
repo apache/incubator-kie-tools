@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
@@ -1183,7 +1184,7 @@ public class GeneratorUtils {
 
     public static String getRoleList( final Elements elementUtils, final Element element ) throws GenerationException {
         final List<? extends AnnotationMirror> annotationMirrors = element.getAnnotationMirrors();
-        final Set<String> result = new HashSet<String>();
+        final Set<String> result = new TreeSet<String>();
         for ( final AnnotationMirror annotationMirror : annotationMirrors ) {
             if ( getAnnotation( elementUtils, annotationMirror.getAnnotationType().asElement(), SecurityModule.getRolesTypeClass() ) != null ) {
                 for ( final Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : annotationMirror.getElementValues().entrySet() ) {

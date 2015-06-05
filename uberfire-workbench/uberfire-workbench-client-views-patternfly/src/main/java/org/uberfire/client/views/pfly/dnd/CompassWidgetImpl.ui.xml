@@ -1,0 +1,56 @@
+<!--
+  ~ /*
+  ~  * Copyright 2012 JBoss Inc
+  ~  *
+  ~  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  ~  * use this file except in compliance with the License. You may obtain a copy of
+  ~  * the License at
+  ~  *
+  ~  * http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  ~  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  ~  * License for the specific language governing permissions and limitations under
+  ~  * the License.
+  ~  */
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+             xmlns:h="urn:import:org.gwtbootstrap3.client.ui.html">
+
+    <g:PopupPanel ui:field="popup" addStyleNames="uf-drop-target-compass" width="100px" height="100px">
+        <g:DockLayoutPanel ui:field="container" unit="PCT">
+            <g:south size="25">
+                <h:Div ui:field="south" addStyleNames="uf-drop-target-compass-south">
+                    <b:Icon type="CHEVRON_DOWN"/>
+                </h:Div>
+            </g:south>
+            <g:north size="25">
+                <h:Div ui:field="north" addStyleNames="uf-drop-target-compass-north">
+                    <b:Icon type="CHEVRON_UP"/>
+                </h:Div>
+            </g:north>
+            <g:west size="30">
+                <h:Div ui:field="west" addStyleNames="uf-drop-target-compass-west">
+                    <b:Icon type="CHEVRON_LEFT"/>
+                </h:Div>
+            </g:west>
+            <g:east size="30">
+                <h:Div ui:field="east" addStyleNames="uf-drop-target-compass-east">
+                    <b:Icon type="CHEVRON_RIGHT"/>
+                </h:Div>
+            </g:east>
+            <g:center>
+                <h:Div ui:field="centre" addStyleNames="uf-drop-target-compass-centre">
+                    <b:Icon type="SQUARE" size="LARGE"/>
+                </h:Div>
+            </g:center>
+        </g:DockLayoutPanel>
+    </g:PopupPanel>
+
+
+</ui:UiBinder> 

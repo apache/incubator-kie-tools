@@ -19,6 +19,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.events.DropPlaceEvent;
@@ -30,11 +34,6 @@ import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.allen_sauer.gwt.dnd.client.DragContext;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * A Drop Controller covering the entire DecoratedWorkbenchPanel that renders a Compass
  * with which to select the target position of the drag operation.
@@ -42,11 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
 @Dependent
 public class CompassDropController implements DropController {
 
-    private final CompassWidget compass = getCompassWidgetInstance();
-
-    CompassWidget getCompassWidgetInstance() {
-        return CompassWidget.getInstance();
-    }
+    @Inject
+    CompassWidget compass;
 
     WorkbenchPanelView<?> dropTarget;
 
@@ -96,7 +92,6 @@ public class CompassDropController implements DropController {
         final Menus menus = workbenchContext.getMenus();
 
 
-
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
         final PanelDefinition dropPanel = dropTarget.getPresenter().getDefinition();
 
@@ -123,22 +118,22 @@ public class CompassDropController implements DropController {
         final Integer minWidth = workbenchContext.getMinWidth();
 
         final PanelDefinition targetPanel = panelManager.addWorkbenchPanel( dropPanel,
-                                                                            p,
-                                                                            height,
-                                                                            width,
-                                                                            minHeight,
-                                                                            minWidth );
+                p,
+                height,
+                width,
+                minHeight,
+                minWidth );
         final UIPart uiPart = workbenchContext.getUiPart();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
 
         panelManager.addWorkbenchPart( place,
-                                       sourcePart,
-                                       targetPanel,
-                                       menus,
-                                       uiPart,
-                                       workbenchContext.getContextId(),
-                                       null,
-                                       null );
+                sourcePart,
+                targetPanel,
+                menus,
+                uiPart,
+                workbenchContext.getContextId(),
+                null,
+                null );
     }
 
     void firePartDroppedEvent( PlaceRequest place ) {

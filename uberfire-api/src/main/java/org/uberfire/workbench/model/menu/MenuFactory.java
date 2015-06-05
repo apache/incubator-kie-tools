@@ -53,7 +53,8 @@ public final class MenuFactory {
 
     public interface MenuBuilder<T>
             extends SimpleMenuBuilder<MenuBuilder<T>>,
-                    SecurityInfos<MenuBuilder<T>> {
+                    SecurityInfos<MenuBuilder<T>>,
+                    CommandMenu<MenuBuilder<T>> {
 
         TerminalMenu<T> custom( final CustomMenuBuilder builder );
 
@@ -62,8 +63,6 @@ public final class MenuFactory {
         SubMenusBuilder<SubMenuBuilder<T>> menus();
 
         TerminalMenu<T> withItems( final List<? extends MenuItem> items );
-
-        TerminalMenu<T> respondsWith( final Command command );
 
         T endMenu();
     }
@@ -115,6 +114,11 @@ public final class MenuFactory {
         void push( final CustomMenuBuilder element );
 
         MenuItem build();
+    }
+
+    public interface CommandMenu<T> {
+
+        T respondsWith( final Command command );
     }
 
 }

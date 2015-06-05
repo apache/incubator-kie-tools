@@ -1,33 +1,23 @@
 package org.uberfire.client.workbench;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.uberfire.client.util.Layouts;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.HeaderPanel;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.uberfire.client.util.Layouts;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
+import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
+import org.uberfire.workbench.model.PerspectiveDefinition;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The default layout implementation.
@@ -46,14 +36,33 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         private String width;
         private String height;
         private String zIndex;
+        private int absoluteTop;
+        private int absoluteLeft;
+        private int clientHeight;
+        private int clientWidth;
+
+        public OriginalStyleInfo( final Widget w ){
+            absoluteLeft = w.getAbsoluteLeft();
+            absoluteTop = w.getAbsoluteTop();
+            clientHeight = w.getElement().getClientHeight();
+            clientWidth = w.getElement().getClientWidth();
+
+            final Style style = w.getElement().getStyle();
+            position = style.getPosition();
+            top = style.getTop();
+            left = style.getLeft();
+            width = style.getWidth();
+            height = style.getHeight();
+            zIndex = style.getZIndex();
+        }
 
         /**
          * Restores to {@code w} all style values to those most recently set on this instance.
          *
          * @param w the widget to restore styles on.
          */
-        public void restore( Widget w ) {
-            Style style = w.getElement().getStyle();
+        public void restore( final Widget w ) {
+            final Style style = w.getElement().getStyle();
             style.setProperty( "position", position );
             style.setProperty( "top", top );
             style.setProperty( "left", left );
@@ -62,52 +71,20 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
             style.setProperty( "zIndex", zIndex );
         }
 
-        public String getPosition() {
-            return position;
+        public int getAbsoluteTop() {
+            return absoluteTop;
         }
 
-        public void setPosition( String position ) {
-            this.position = position;
+        public int getAbsoluteLeft() {
+            return absoluteLeft;
         }
 
-        public String getTop() {
-            return top;
+        public int getClientHeight() {
+            return clientHeight;
         }
 
-        public void setTop( String top ) {
-            this.top = top;
-        }
-
-        public String getLeft() {
-            return left;
-        }
-
-        public void setLeft( String left ) {
-            this.left = left;
-        }
-
-        public String getWidth() {
-            return width;
-        }
-
-        public void setWidth( String width ) {
-            this.width = width;
-        }
-
-        public String getHeight() {
-            return height;
-        }
-
-        public void setHeight( String height ) {
-            this.height = height;
-        }
-
-        public String getZIndex() {
-            return zIndex;
-        }
-
-        public void setZIndex( String zIndex ) {
-            this.zIndex = zIndex;
+        public int getClientWidth() {
+            return clientWidth;
         }
 
     }
@@ -244,7 +221,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
     private final Map<Widget, OriginalStyleInfo> maximizedWidgetOriginalStyles = new HashMap<Widget, OriginalStyleInfo>();
 
     @Override
-    public void maximize( Widget w ) {
+    public void maximize( final Widget w ) {
         if ( maximizedWidgetOriginalStyles.get( w ) != null ) {
             return;
         }
@@ -252,28 +229,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
         // this allows application-specified background colour, animation, borders, etc.
         w.addStyleName( "uf-maximized-panel" );
 
-        Style style = w.getElement().getStyle();
-        OriginalStyleInfo backup = new OriginalStyleInfo();
-
-        backup.setPosition( style.getPosition() );
-        style.setPosition( Position.FIXED );
-
-        backup.setTop( style.getTop() );
-        style.setTop( perspectiveRootContainer.getAbsoluteTop(), Unit.PX );
-
-        backup.setLeft( style.getLeft() );
-        style.setLeft( perspectiveRootContainer.getAbsoluteLeft(), Unit.PX );
-
-        backup.setWidth( style.getWidth() );
-        style.setWidth( perspectiveRootContainer.getOffsetWidth(), Unit.PX );
-
-        backup.setHeight( style.getHeight() );
-        style.setHeight( perspectiveRootContainer.getOffsetHeight(), Unit.PX );
-
-        backup.setZIndex( style.getZIndex() );
-        style.setZIndex( MAXIMIZED_PANEL_Z_INDEX );
-
-        maximizedWidgetOriginalStyles.put( w, backup );
+        new ExpandAnimation(w).run();
 
         if ( w instanceof RequiresResize ) {
             ((RequiresResize) w).onResize();
@@ -285,10 +241,7 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
         w.removeStyleName( "uf-maximized-panel" );
 
-        OriginalStyleInfo originalStyleInfo = maximizedWidgetOriginalStyles.remove( w );
-        if ( originalStyleInfo != null ) {
-            originalStyleInfo.restore( w );
-        }
+        new ColapseAnimation(w).run();
 
         if ( w instanceof RequiresResize ) {
             ((RequiresResize) w).onResize();
@@ -296,4 +249,117 @@ public class WorkbenchLayoutImpl implements WorkbenchLayout {
 
     }
 
+    private abstract class AbstractResizeAnimation extends Animation {
+
+        protected final Style style;
+        protected final Widget w;
+
+        public AbstractResizeAnimation(final Widget w) {
+            this.w = w;
+            style = w.getElement().getStyle();
+        }
+
+        @Override
+        protected void onUpdate(double progress) {
+            final double width = newTarget(w.getElement().getClientWidth(), getTargetWidth(), progress);
+            style.setWidth(width, Unit.PX);
+            final double height = newTarget(w.getElement().getClientHeight(), getTargetHeight(), progress);
+            style.setHeight(height, Unit.PX);
+            final double top = newTarget(w.getAbsoluteTop(), getTargetTop(), progress);
+            style.setTop(top, Unit.PX);
+            final double left = newTarget(w.getAbsoluteLeft(), getTargetLeft(), progress);
+            style.setLeft(left, Unit.PX);
+        }
+
+        public abstract int getTargetWidth();
+
+        public abstract int getTargetHeight();
+
+        public abstract int getTargetTop();
+
+        public abstract int getTargetLeft();
+
+        public void run() {
+            super.run(1000);
+        }
+
+        private double newTarget(int current, int target, double progress) {
+            return Math.round(current + ((target - current) * progress));
+        }
+    }
+
+    private class ExpandAnimation extends AbstractResizeAnimation {
+
+        public ExpandAnimation(final Widget w) {
+            super(w);
+        }
+
+        @Override
+        protected void onStart() {
+            maximizedWidgetOriginalStyles.put( w, new OriginalStyleInfo( w ) );
+            style.setZIndex(MAXIMIZED_PANEL_Z_INDEX);
+            style.setHeight(w.getElement().getClientHeight(), Unit.PX);
+            style.setWidth(w.getElement().getClientWidth(), Unit.PX);
+            style.setTop(w.getAbsoluteTop(), Unit.PX);
+            style.setLeft(w.getAbsoluteLeft(), Unit.PX);
+            style.setPosition(Position.FIXED);
+        }
+
+        @Override
+        public int getTargetWidth() {
+            return perspectiveRootContainer.getOffsetWidth();
+        }
+
+        @Override
+        public int getTargetHeight() {
+            return perspectiveRootContainer.getOffsetHeight();
+        }
+
+        @Override
+        public int getTargetTop() {
+            return perspectiveRootContainer.getAbsoluteTop();
+        }
+
+        @Override
+        public int getTargetLeft() {
+            return perspectiveRootContainer.getAbsoluteLeft();
+        }
+
+     }
+
+    private class ColapseAnimation extends AbstractResizeAnimation {
+
+        private final OriginalStyleInfo originalStyleInfo;
+
+        public ColapseAnimation(final Widget w) {
+            super(w);
+            originalStyleInfo = maximizedWidgetOriginalStyles.remove(w);
+        }
+
+        @Override
+        public int getTargetWidth() {
+            return originalStyleInfo.getClientWidth();
+        }
+
+        @Override
+        public int getTargetHeight() {
+            return originalStyleInfo.getClientHeight();
+        }
+
+        @Override
+        public int getTargetTop() {
+            return originalStyleInfo.getAbsoluteTop();
+        }
+
+        @Override
+        public int getTargetLeft() {
+            return originalStyleInfo.getAbsoluteLeft();
+        }
+
+        @Override
+        protected void onComplete() {
+            originalStyleInfo.restore( w );
+        }
+
+    }
 }

@@ -111,10 +111,13 @@ public class PlaceRequestHistoryMapperImplTest {
     public void createPlaceRequest() throws Exception {
         String url = " http://127.0.0.1:8888/org.uberfire.UberfireShowcase/out.16590-4829.erraiBus?z=12&clientId=16590-4829";
         PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest( url );
-        assertEquals( url, placeRequest.getFullIdentifier() );
+        assertEquals( url.substring( 0, url.indexOf( "?" ) ), placeRequest.getIdentifier() );
 
         Map<String, String> parameters = placeRequest.getParameters();
 
+        assertFalse( parameters.isEmpty() );
+        assertTrue( parameters.containsKey( "z" ) );
+        assertTrue( parameters.containsKey( "clientId" ) );
         assertEquals( "12", parameters.get( "z" ) );
         assertEquals( "16590-4829", parameters.get( "clientId" ) );
     }

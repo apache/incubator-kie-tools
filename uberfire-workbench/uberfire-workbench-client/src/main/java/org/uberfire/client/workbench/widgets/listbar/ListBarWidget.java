@@ -42,17 +42,16 @@ public interface ListBarWidget extends MultiPartWidget {
     public static final String DEBUG_TITLE_PREFIX = "ListBar-title-";
 
     /**
-     * Sets this list bar's properties: single-part or multi-part; support drag and drop of parts or not.
+     * Enable this list bar's to support drag and drop.
      *
-     * @param isMultiPart If true, the list bar will keep track of multiple parts and offer a drop-down list that allows the user to pick the current one.
-     * @param isDndEnabled
      */
-    public void setup( boolean isMultiPart,
-                       boolean isDndEnabled );
-
     public void enableDnd();
 
-    public void setExpanderCommand( final Command command );
+    /**
+     * Disable this list bar's to support drag and drop.
+     *
+     */
+    public void disableDnd();
 
     /**
      * Returns the toggle button, which is initially hidden, that can be used to trigger maximizing and unmaximizing
@@ -64,5 +63,4 @@ public interface ListBarWidget extends MultiPartWidget {
 
     public boolean isDndEnabled();
 
-    public boolean isMultiPart();
 }

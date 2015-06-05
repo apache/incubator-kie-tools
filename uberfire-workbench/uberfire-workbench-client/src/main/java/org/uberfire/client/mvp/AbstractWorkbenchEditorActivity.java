@@ -107,7 +107,16 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public void onFocus() {
         super.onFocus();
-        lockManager.onFocus();
+        if ( path != null ) {
+            lockManager.onFocus();
+        }
     }
-    
+
+    public ObservablePath getPath() {
+        return path;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
 }

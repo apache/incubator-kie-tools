@@ -9,9 +9,6 @@
   <inherits name="com.google.gwt.resources.Resources"/>
   <inherits name="com.google.gwt.activity.Activity"/>
 
-  <!-- inherit css based theme -->
-  <inherits name='com.google.gwt.user.theme.clean.Clean'/>
-
   <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
 

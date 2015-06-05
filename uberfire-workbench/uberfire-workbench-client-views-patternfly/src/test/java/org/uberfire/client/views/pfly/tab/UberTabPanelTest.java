@@ -1,26 +1,31 @@
 package org.uberfire.client.views.pfly.tab;
 
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.uberfire.client.views.pfly.mock.MockPlaceManager;
 import org.uberfire.mvp.Command;
 
-import com.google.gwt.junit.client.GWTTestCase;
+import static org.junit.Assert.*;
 
-public class UberTabPanelTest extends GWTTestCase {
+@RunWith(GwtMockitoTestRunner.class)
+public class UberTabPanelTest {
 
     private UberTabPanel uberTabPanel;
 
+    @GwtMock
+    private ResizeTabPanel resizeTabPanel;
+
     private final MockPlaceManager mockPlaceManager = new MockPlaceManager();
 
-    @Override
-    public String getModuleName() {
-        return "org.uberfire.client.views.pfly.PatternFlyTabTests";
+    @Before
+    public void gwtSetUp() throws Exception {
+        uberTabPanel = new UberTabPanel( mockPlaceManager, resizeTabPanel );
     }
 
-    @Override
-    protected void gwtSetUp() throws Exception {
-        uberTabPanel = new UberTabPanel( mockPlaceManager );
-    }
-
+    @Test
     public void testFireFocusEventWhenClickedWhenUnfocused() throws Exception {
         uberTabPanel.setFocus( false );
 

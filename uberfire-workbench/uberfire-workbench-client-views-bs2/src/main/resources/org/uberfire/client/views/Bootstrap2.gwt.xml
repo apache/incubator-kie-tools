@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
-    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+        "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
-  <inherits name="org.uberfire.UberfireWorkbench"/>
-  <inherits name="com.github.gwtbootstrap.Bootstrap"/>
+    <inherits name='com.google.gwt.user.theme.clean.Clean'/>
+    <inherits name="org.uberfire.UberfireWorkbench"/>
+    <inherits name="com.github.gwtbootstrap.Bootstrap"/>
 
-  <source path="bs2"/>
+    <source path="bs2"/>
 
-  <replace-with class="org.uberfire.client.views.bs2.resources.UberFireConfigurator">
-    <when-type-is class="com.github.gwtbootstrap.client.ui.config.Configurator"/>
-  </replace-with>
+    <replace-with class="org.uberfire.client.views.bs2.resources.UberFireConfigurator">
+        <when-type-is class="com.github.gwtbootstrap.client.ui.config.Configurator"/>
+    </replace-with>
 
-  <public path="bs2/resources">
-    <include name="**/css/font-*.*"/>
-    <include name="**/font/*.*"/>
-  </public>
+    <public path="bs2/resources">
+        <include name="**/css/font-*.*"/>
+        <include name="**/font/*.*"/>
+        <include name="uberfire-bs2.css"/>
+    </public>
 
+    <stylesheet src="uberfire-bs2.css"/>
 </module>

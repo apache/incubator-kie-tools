@@ -19,11 +19,11 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.mvp.Command;
-
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
+import org.uberfire.mvp.Command;
 
 /**
  * A popup that shows an error message
@@ -39,9 +39,9 @@ public class ErrorPopupView extends Composite implements ErrorPopupPresenter.Vie
                              final Command afterShow,
                              final Command afterClose ) {
 
-        Bs3Modal modal = modalFactory.get();
-        modal.setTitle( "Error" );
-        modal.setContent( new HTML( msg ) );
+        final Bs3Modal modal = modalFactory.get();
+        modal.setModalTitle( "Error" );
+        modal.setContent( new HTML( SafeHtmlUtils.fromString( msg ) ) );
         modal.show( afterShow, afterClose );
     }
 

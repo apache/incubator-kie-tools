@@ -1,7 +1,8 @@
 package org.uberfire.client.views.pfly.menu;
 
-import java.util.Stack;
-
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.ListItem;
@@ -9,18 +10,9 @@ import org.gwtbootstrap3.client.ui.base.AbstractListItem;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.client.menu.AuthFilterMenuVisitor;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
-import org.uberfire.workbench.model.menu.MenuCustom;
-import org.uberfire.workbench.model.menu.MenuGroup;
-import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuItemCommand;
-import org.uberfire.workbench.model.menu.MenuItemPlain;
-import org.uberfire.workbench.model.menu.MenuVisitor;
-import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.workbench.model.menu.*;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.Stack;
 
 /**
  * Utilities for building Bootstrap 3 menus from UberFire menu descriptions.
@@ -71,7 +63,7 @@ public class Bs3Menus {
 
             @Override
             public void visit( MenuCustom<?> menuCustom ) {
-                IsWidget customMenuItem = (IsWidget) menuCustom.build();
+                IsWidget customMenuItem = ((IsWidget) menuCustom.build()).asWidget();
                 AbstractListItem view;
                 if ( customMenuItem instanceof AbstractListItem ) {
                     view = (AbstractListItem) customMenuItem;

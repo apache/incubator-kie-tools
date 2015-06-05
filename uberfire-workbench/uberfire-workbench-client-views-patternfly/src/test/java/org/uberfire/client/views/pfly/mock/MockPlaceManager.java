@@ -2,6 +2,8 @@ package org.uberfire.client.views.pfly.mock;
 
 import java.util.Collection;
 
+import com.google.gwt.user.client.ui.HasWidgets;
+import org.jboss.errai.ioc.client.api.TestMock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -12,8 +14,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-
+@TestMock
 public class MockPlaceManager implements PlaceManager {
 
     @Override
