@@ -49,6 +49,8 @@ public interface ProjectScreenView
 
         void onDeploymentDescriptorSelected();
 
+        void onPersistenceDescriptorSelected();
+
         void validateGroupID( String groupId );
 
         void validateArtifactID( String artifactId );

@@ -65,6 +65,12 @@
           <bootstrap:NavLink ui:field="deploymentDescriptorButton">
             <ui:text from="{i18n.DeploymentDescriptor}"/>
           </bootstrap:NavLink>
+          <bootstrap:NavHeader ui:field="persistenceSettingsHeader">
+                Persistence settings
+          </bootstrap:NavHeader>
+          <bootstrap:NavLink ui:field="persistenceDescriptorButton">
+                Persistence descriptor
+          </bootstrap:NavLink>
           <!--<bootstrap:NavLink addStyleNames="nav-header" ui:field="categoriesButton">-->
           <!--<ui:text from="{i18n.Categories}"/>-->
           <!--</bootstrap:NavLink>-->

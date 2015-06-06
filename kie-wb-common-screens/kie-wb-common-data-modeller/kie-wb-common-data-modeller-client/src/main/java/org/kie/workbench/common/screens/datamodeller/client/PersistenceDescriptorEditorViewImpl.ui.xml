@@ -1,0 +1,87 @@
+<!--
+  ~ Copyright 2015 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
+             xmlns:base="urn:import:com.github.gwtbootstrap.client.ui.base">
+
+  <g:HTMLPanel>
+    <b:Well>
+      <b:Fieldset>
+
+        <!-- persistence unit -->
+        <b:ControlGroup ui:field="persistenceUnitGroup">
+          <b:ControlLabel for="persistenceUnit">
+            <g:Label ui:field="persistenceUnitLabel" text="Persistence Unit"/>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:TextBox b:id="persistenceUnit" ui:field="persistenceUnitTextBox" placeholder=""/>
+            <b:HelpInline ui:field="persistenceUnitHelpInline"/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <!-- persistence provider -->
+        <b:ControlGroup ui:field="persistenceProviderGroup">
+          <b:ControlLabel for="persistenceProvider">
+            <g:Label ui:field="persistenceProviderLabel" text="Persistence Provider"/>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:ListBox b:id="persistenceProvider" ui:field="persistenceProviderDropdown"/>
+            <b:HelpInline ui:field="persistenceProviderHelpInline"/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <!-- data source -->
+        <b:ControlGroup ui:field="datasourceGroup">
+          <b:ControlLabel for="datasource">
+            <g:Label ui:field="datasourceLabel" text="Data Source"/>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:ListBox b:id="datasource" ui:field="datasourceDropdown"/>
+            <b:HelpInline ui:field="datasourceHelpInline"/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <!-- persistence unit -->
+        <b:ControlGroup ui:field="transactionTypeGroup">
+          <b:ControlLabel for="transactionType">
+            <g:Label ui:field="transactionTypeLabel" text="Transactions Type"/>
+          </b:ControlLabel>
+          <b:Controls>
+            <b:RadioButton b:id="transactionType" ui:field="transactionTypeRadioButton" name="transactionType" text="JTA"/>
+            <b:HelpInline ui:field="transactionTypeHelpInline"/>
+          </b:Controls>
+        </b:ControlGroup>
+
+        <b:Accordion>
+          <b:AccordionGroup ui:field="addPropertiesAccordion" heading="Advanced properties">
+                <base:DivWidget ui:field="propertiesGridPanel" />
+          </b:AccordionGroup>
+        </b:Accordion>
+
+        <b:Accordion>
+          <b:AccordionGroup ui:field="persistenceUnitClassesPanelAccordion" heading="Project persistable Data Objects">
+              <base:DivWidget ui:field="persistenceUnitClassesPanel" />
+          </b:AccordionGroup>
+      </b:Accordion>
+
+      </b:Fieldset>
+    </b:Well>
+  </g:HTMLPanel>
+
+</ui:UiBinder>

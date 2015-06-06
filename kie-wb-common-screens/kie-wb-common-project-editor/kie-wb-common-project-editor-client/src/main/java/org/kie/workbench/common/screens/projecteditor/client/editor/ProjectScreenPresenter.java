@@ -17,6 +17,8 @@
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
@@ -71,6 +73,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
@@ -797,6 +800,14 @@ public class ProjectScreenPresenter
     public void onDeploymentDescriptorSelected() {
         placeManager.goTo( PathFactory.newPath( "kie-deployment-descriptor.xml",
                                                 project.getRootPath().toURI() + "/src/main/resources/META-INF/kie-deployment-descriptor.xml" ) );
+    }
+
+    @Override
+    public void onPersistenceDescriptorSelected() {
+        PathPlaceRequest placeRequest = new PathPlaceRequest( PathFactory.newPath( "persistence.xml",
+                project.getRootPath().toURI() + "/src/main/resources/META-INF/persistence.xml" ) );
+        placeRequest.addParameter( "createIfNotExists", "true" );
+        placeManager.goTo( placeRequest );
     }
 
     private boolean isDirty() {

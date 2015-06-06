@@ -20,6 +20,7 @@
 <module>
 
 
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorAPI"/>
   <inherits name="org.kie.workbench.common.services.KieWorkbenchCommonServicesAPI" />
   <inherits name="org.kie.workbench.common.services.refactoring.KieWorkbenchCommonRefactoringAPI" />
   <inherits name="org.guvnor.messageconsole.GuvnorMessageConsoleAPI" />
@@ -28,5 +29,6 @@
   <source path="model"/>
   <source path="service"/>
   <source path="events" />
+  <source path="type" />
 
 </module>

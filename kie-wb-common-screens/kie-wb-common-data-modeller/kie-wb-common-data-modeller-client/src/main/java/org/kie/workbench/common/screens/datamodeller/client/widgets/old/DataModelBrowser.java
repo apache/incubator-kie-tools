@@ -63,7 +63,6 @@ import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChang
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
@@ -420,7 +419,7 @@ public class DataModelBrowser extends Composite {
 
     private void notifyObjectDeleted( DataObject dataObject ) {
         getContext().getHelper().dataObjectDeleted( dataObject.getClassName() );
-        dataModelerEvent.fire( new DataObjectDeletedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject ) );
+        //dataModelerEvent.fire( new DataObjectDeletedEvent( DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject ) );
         notification.fire( new NotificationEvent( Constants.INSTANCE.modelEditor_notification_dataObject_deleted( DataModelerUtils.getDataObjectUILabel( dataObject ) ) ) );
     }
 

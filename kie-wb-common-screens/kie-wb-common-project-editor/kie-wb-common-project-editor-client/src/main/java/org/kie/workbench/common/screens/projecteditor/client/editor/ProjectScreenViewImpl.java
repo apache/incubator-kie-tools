@@ -106,6 +106,12 @@ public class ProjectScreenViewImpl
     NavLink deploymentDescriptorButton;
 
     @UiField
+    NavHeader persistenceSettingsHeader;
+
+    @UiField
+    NavLink persistenceDescriptorButton;
+
+    @UiField
     FluidContainer container;
 
     @Inject
@@ -181,7 +187,7 @@ public class ProjectScreenViewImpl
     }
 
     private void setGAVDropboxTitle(String subItem) {
-        dropDownButton.setText(ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem);
+        dropDownButton.setText( ProjectEditorResources.CONSTANTS.ProjectSettings() + ": " + subItem );
     }
 
     @UiHandler(value = "dependenciesButton")
@@ -208,8 +214,8 @@ public class ProjectScreenViewImpl
 
     @Override
     public void showKBaseMetadataPanel() {
-        deckPanel.showWidget(KBASE_METADATA_PANEL_INDEX);
-        dropDownButton.setText(ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata());
+        deckPanel.showWidget( KBASE_METADATA_PANEL_INDEX );
+        dropDownButton.setText( ProjectEditorResources.CONSTANTS.KnowledgeBaseSettings() + ": " + ProjectEditorResources.CONSTANTS.Metadata() );
     }
 
     @UiHandler(value = "importsButton")
@@ -225,6 +231,11 @@ public class ProjectScreenViewImpl
     @UiHandler(value = "deploymentDescriptorButton")
     public void onDeploymentDescriptorButtonClick(ClickEvent clickEvent) {
         presenter.onDeploymentDescriptorSelected();
+    }
+
+    @UiHandler(value = "persistenceDescriptorButton")
+    public void onPersistenceDescriptorDescriptorButtonClick(ClickEvent clickEvent) {
+        presenter.onPersistenceDescriptorSelected();
     }
 
     @Override

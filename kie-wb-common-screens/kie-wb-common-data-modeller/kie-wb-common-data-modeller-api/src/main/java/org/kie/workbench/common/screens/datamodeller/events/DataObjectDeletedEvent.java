@@ -18,20 +18,12 @@ package org.kie.workbench.common.screens.datamodeller.events;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
 public class DataObjectDeletedEvent extends DataModelerEvent {
 
     public DataObjectDeletedEvent() {
-    }
-
-    //Review if this constructor should be maintained.
-    public DataObjectDeletedEvent(String source, DataModel currentModel, DataObject currentDataObject) {
-        super(source, currentModel, currentDataObject);
     }
 
     public DataObjectDeletedEvent( Project currentProject, DataObject currentDataObject ) {

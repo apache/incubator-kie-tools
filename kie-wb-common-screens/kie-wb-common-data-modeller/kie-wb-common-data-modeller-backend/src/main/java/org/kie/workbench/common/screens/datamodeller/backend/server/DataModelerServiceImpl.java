@@ -36,9 +36,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.google.common.base.Charsets;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.base.ClassTypeResolver;
-import org.drools.core.util.ClassUtils;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.file.JavaFileFilter;
@@ -56,8 +54,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
-import org.kie.api.builder.KieModule;
-import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
@@ -71,8 +67,6 @@ import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
-import org.kie.workbench.common.services.backend.builder.LRUProjectDependenciesClassLoaderCache;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
@@ -365,12 +359,12 @@ public class DataModelerServiceImpl
             dataModel = result.getDataModel();
 
             if (processErrors && result.hasErrors()) {
-                processErrors(project, result);
+                processErrors( project, result );
             }
 
             //by now we still use the DMO to calculate project external dependencies.
             ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel(projectPath);
-            ProjectDataModelOracleUtils.loadExternalDependencies(dataModel, projectDataModelOracle, classLoader);
+            ProjectDataModelOracleUtils.loadExternalDependencies( dataModel, projectDataModelOracle, classLoader );
 
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) {
@@ -422,7 +416,7 @@ public class DataModelerServiceImpl
 
             ClassLoader classLoader = serviceHelper.getProjectClassLoader( project );
             JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(ioService, null, false, classLoader);
-            ModelDriverResult driverResult = modelDriver.loadDataObject(source, Paths.convert(sourcePath));
+            ModelDriverResult driverResult = modelDriver.loadDataObject( source, Paths.convert( sourcePath ) );
 
             if (!driverResult.hasErrors()) {
                 if (driverResult.getDataModel().getDataObjects().size() > 0) {
@@ -770,9 +764,9 @@ public class DataModelerServiceImpl
             final org.uberfire.java.nio.file.Path _path = Paths.convert(path);
 
             String originalFileName = _path.getFileName().toString();
-            final String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+            final String extension = originalFileName.substring( originalFileName.lastIndexOf( "." ) );
             final org.uberfire.java.nio.file.Path _target = _path.resolveSibling(newName + extension);
-            final Path targetPath = Paths.convert(_target);
+            final Path targetPath = Paths.convert( _target );
 
             try {
 
@@ -806,7 +800,7 @@ public class DataModelerServiceImpl
     public String getSource(Path path) {
         //TODO, remove this method if source service is defined for .java files.
         org.uberfire.java.nio.file.Path convertedPath = Paths.convert(path);
-        return ioService.readAllString(convertedPath);
+        return ioService.readAllString( convertedPath );
     }
 
     private void processErrors(KieProject project,
@@ -860,7 +854,7 @@ public class DataModelerServiceImpl
             }
 
             GenerationResult result = new GenerationResult();
-            result.setGenerationTime(endTime - startTime);
+            result.setGenerationTime( endTime - startTime );
             return result;
 
         } catch (Exception e) {
@@ -897,7 +891,9 @@ public class DataModelerServiceImpl
             }
             deleteService.delete(path, comment);
             String className = calculateClassName(project, path);
-            DataObject dataObject = new DataObjectImpl(NamingUtils.extractClassName(className), NamingUtils.extractPackageName(className));
+            DataObject dataObject = new DataObjectImpl(
+                    NamingUtils.extractPackageName(className),
+                    NamingUtils.extractClassName(className) );
             dataObjectDeletedEvent.fire( new DataObjectDeletedEvent( project, dataObject ) );
         } catch (final Exception e) {
             logger.error("File: " + path.toURI() + " couldn't be deleted due to the following error. ", e);
@@ -917,7 +913,7 @@ public class DataModelerServiceImpl
                                            final Path path,
                                            final String newPackageName,
                                            final String newClassName) {
-        Pair<DataObject, List<DataModelerError>> result = loadDataObject(path, source, path);
+        Pair<DataObject, List<DataModelerError>> result = loadDataObject( path, source, path );
         if ((result.getK2() == null || result.getK2().isEmpty()) && result.getK1() != null) {
 
             final DataObject dataObject = result.getK1();
@@ -1008,12 +1004,12 @@ public class DataModelerServiceImpl
             ClassLoader classLoader) throws Exception {
 
         String originalSource;
-        originalSource = ioService.readAllString(path);
+        originalSource = ioService.readAllString( path );
         if (logger.isDebugEnabled()) {
             logger.debug("path is: " + path);
         }
 
-        return updateJavaSource(originalSource, dataObjectTO, renames, deletions, classLoader);
+        return updateJavaSource( originalSource, dataObjectTO, renames, deletions, classLoader );
     }
 
     private Pair<String, List<DataModelerError>> updateJavaSource(String originalSource,
@@ -1201,7 +1197,7 @@ public class DataModelerServiceImpl
 
         HashSet<ValueIndexTerm> queryTerms = new HashSet<ValueIndexTerm>();
         queryTerms.add(new ValueTypeIndexTerm(className));
-        return executeReferencesQuery(currentPath, "FindTypesQuery", queryTerms);
+        return executeReferencesQuery( currentPath, "FindTypesQuery", queryTerms );
     }
 
     @Override
@@ -1213,6 +1209,25 @@ public class DataModelerServiceImpl
         queryTerms.add(new ValueTypeIndexTerm(className));
         queryTerms.add(new ValueFieldIndexTerm(fieldName));
         return executeReferencesQuery( currentPath, "FindTypeFieldsQuery", queryTerms );
+    }
+
+    @Override
+    public List<String> findPersistableClasses( final Path path ) {
+        //TODO provide the definitive implementation, likely querying the index and providing additional parameters.
+        //This initial implementation is just for complete an iteration.
+        List<String> classes = new ArrayList<String>(  );
+        KieProject project = projectService.resolveProject( path );
+        if ( project != null ) {
+            DataModel dataModel = loadModel( project );
+            if ( dataModel != null ) {
+                for ( DataObject dataObject : dataModel.getDataObjects() ) {
+                    if ( dataObject.getAnnotation( Entity.class.getName() ) != null ) {
+                        classes.add( dataObject.getClassName() );
+                    }
+                }
+            }
+        }
+        return classes;
     }
 
     private List<Path> executeReferencesQuery(Path currentPath,
@@ -1286,7 +1301,7 @@ public class DataModelerServiceImpl
 
     @Override
     public Boolean exists(Path path) {
-        return ioService.exists(Paths.convert(path));
+        return ioService.exists( Paths.convert( path ) );
     }
 
     @Override
