@@ -2,10 +2,13 @@ package org.uberfire.client.views.pfly.notifications;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
 import org.uberfire.client.workbench.widgets.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager;
 import org.uberfire.client.workbench.widgets.notifications.NotificationManager.NotificationPopupHandle;
@@ -62,13 +65,33 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
         activeNotifications.add( popupHandle );
         int size = activeNotifications.size();
         int topMargin = (size == 1) ? initialSpacing : (size * SPACING) - (SPACING - initialSpacing);
-        view.setPopupPosition( container.asWidget().getAbsoluteLeft() + getMargin(),
-                               container.asWidget().getAbsoluteTop() + topMargin );
+        view.setPopupPosition( getLeftPosition( container.asWidget() ) + getMargin(),
+                               getTopPosition( container.asWidget() ) + topMargin );
         view.setNotification( event.getNotification() );
         view.setType( event.getType() );
         view.setNotificationWidth( getWidth() + "px" );
         view.show( hideCommand );
         return popupHandle;
+    }
+    
+    private int getTopPosition( final Widget widget ) {
+        int top = widget.getAbsoluteTop();
+        // if top is negative (due to scrolling) we try to align with the parent 
+        // to make sure the notifications are always visible
+        if ( top < 0 && widget.getParent() != null ) {
+            top = getTopPosition( widget.getParent() );
+        }
+        return Math.max(top, 0);
+    }
+    
+    private int getLeftPosition( final Widget widget ) {
+        int left = widget.getAbsoluteLeft();
+        // if left is negative (due to scrolling) we try to align with the parent
+        // to make sure the notifications are always visible
+        if ( left < 0 && widget.getParent() != null ) {
+            left = getLeftPosition( widget.getParent() );
+        }
+        return Math.max(left, 0);
     }
 
     @Override
@@ -95,7 +118,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
                     NotificationPopupView v = activeNotifications.get( i ).view;
                     final int left = v.getPopupLeft();
                     final int top = (int) ( ( ( i + 1 ) * SPACING ) - ( progress * SPACING ) ) 
-                            - (SPACING - initialSpacing) + container.asWidget().getAbsoluteTop();
+                            - (SPACING - initialSpacing) + getTopPosition( container.asWidget() );
                     v.setPopupPosition( left,
                                         top );
                 }
@@ -115,6 +138,13 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
 
         };
         fadeOutAnimation.run( 500 );
+    }
+    
+    @Override
+    public void hideAll() {
+        for ( NotificationPopupHandle handle : activeNotifications ) {
+            hide( handle );
+        }
     }
 
     @Override

@@ -17,6 +17,7 @@ package org.uberfire.client.workbench.widgets.notifications;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -24,12 +25,14 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
+
 import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchActivity;
 import org.uberfire.client.workbench.events.ClosePlaceEvent;
+import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
 import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -102,6 +105,11 @@ public class NotificationManager {
          *          The handle for the active notification that should be hidden.
          */
         void hide( final NotificationPopupHandle popup );
+        
+        /**
+         * Hides all active notifications.
+         */
+        void hideAll();
 
         /**
          * Checks whether the given event is currently being shown.
@@ -198,7 +206,18 @@ public class NotificationManager {
         if ( placeRequest == null ) {
             return;
         }
-        notificationsContainerViewMap.remove( placeRequest );
+        
+        final View view = notificationsContainerViewMap.remove( placeRequest );
+        if ( view != null ) {
+            view.hideAll();
+        }
+    }
+    
+    public void onPlaceLostFocus( @Observes final PlaceLostFocusEvent event ) {
+        final View view = notificationsContainerViewMap.get( event.getPlace() );
+        if ( view != null ) {
+            view.hideAll();
+        }
     }
 
 }
