@@ -19,7 +19,9 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.DropdownButton;
@@ -27,6 +29,8 @@ import com.github.gwtbootstrap.client.ui.NavLink;
 import com.github.gwtbootstrap.client.ui.constants.ButtonType;
 import com.github.gwtbootstrap.client.ui.constants.IconType;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -49,11 +53,15 @@ import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
 import org.kie.workbench.common.widgets.client.callbacks.CommandDrivenErrorCallback;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.client.mvp.EditorLockManager;
+import org.uberfire.client.mvp.LockTarget;
+import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
@@ -121,6 +129,14 @@ public class ProjectScreenPresenter
 
     private ProjectContext             workbenchContext;
     private ProjectContextChangeHandle projectContextChangeHandle;
+    
+    private Instance<EditorLockManager> lockManagerInstanceProvider;
+    private Map<Widget, EditorLockManager> lockManagers = new HashMap<Widget, EditorLockManager>();
+
+    private Runnable reloadRunnable;
+
+    private TitleProvider titleProvider;
+    private String title;
 
     public ProjectScreenPresenter() {
     }
@@ -137,7 +153,8 @@ public class ProjectScreenPresenter
                                   final PlaceManager placeManager,
                                   final BusyIndicatorView busyIndicatorView,
                                   final KieWorkbenchACL kieACL,
-                                  final Caller<AssetManagementService> assetManagementServices) {
+                                  final Caller<AssetManagementService> assetManagementServices,
+                                  final Instance<EditorLockManager> lockManagerInstanceProvider) {
         this.view = view;
         view.setPresenter(this);
         view.setDeployToRuntimeSetting(ApplicationPreferences.getBooleanPref("support.runtime.deploy"));
@@ -154,6 +171,7 @@ public class ProjectScreenPresenter
         this.busyIndicatorView = busyIndicatorView;
         this.kieACL = kieACL;
         this.workbenchContext = workbenchContext;
+        this.lockManagerInstanceProvider = lockManagerInstanceProvider;
         projectContextChangeHandle = workbenchContext.addChangeHandler(new ProjectContextChangeHandler() {
             @Override
             public void onChange() {
@@ -163,6 +181,22 @@ public class ProjectScreenPresenter
         this.buildOptions = view.getBuildOptionsButton();
 
         makeMenuBar();
+        
+        reloadRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                ProjectScreenPresenter.this.reload();
+            }
+        };
+        
+        titleProvider = new TitleProvider() {
+
+            @Override
+            public String getTitle() {
+                return (title == null) ? ProjectScreenPresenter.this.getTitle() : title;
+            }
+        };
     }
 
     private boolean isRepositoryManaged() {
@@ -180,7 +214,7 @@ public class ProjectScreenPresenter
         this.placeRequest = placeRequest;
         update();
     }
-
+    
     @OnMayClose
     public boolean onMayClose() {
         if (isDirty()) {
@@ -192,8 +226,11 @@ public class ProjectScreenPresenter
     @OnClose
     public void onClose() {
         workbenchContext.removeChangeHandler(projectContextChangeHandle);
+        for (EditorLockManager lockManager : lockManagers.values()) {
+            lockManager.releaseLock();
+        }
     }
-
+    
     private void update() {
         if (workbenchContext.getActiveProject() == null) {
             disableMenus();
@@ -259,6 +296,7 @@ public class ProjectScreenPresenter
                         }
 
                         updateEditorTitle();
+                        updateCurrentView();
                     }
                 },
                 new CommandDrivenErrorCallback( view,
@@ -269,16 +307,44 @@ public class ProjectScreenPresenter
                                                                                          menus )
                                                         .build() ) ).load( pathToPomXML );
 
-        view.showGAVPanel();
+        if ( model == null ) {
+            view.showGAVPanel();
+        }
     }
 
     private void updateEditorTitle() {
+        title = ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
+                model.getPOM().getGav().getArtifactId() + ":" +
+                        model.getPOM().getGav().getGroupId() + ":" +
+                        model.getPOM().getGav().getVersion() );
+        
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                 placeRequest,
-                ProjectEditorResources.CONSTANTS.ProjectScreenWithName(
-                        model.getPOM().getGav().getArtifactId() + ":" +
-                                model.getPOM().getGav().getGroupId() + ":" +
-                                model.getPOM().getGav().getVersion() ) ) );
+                title ) );
+    }
+    
+    private void updateCurrentView() {
+        if ( view.showsGAVPanel() ) {
+            onGAVPanelSelected();
+        }
+        else if ( view.showsGAVMetadataPanel() ) {
+            onGAVMetadataPanelSelected();
+        }
+        else if ( view.showsImportsPanel() ) {
+            onImportsPanelSelected();
+        }
+        else if ( view.showsImportsMetadataPanel() ) {
+            onImportsMetadataPanelSelected();
+        }
+        else if ( view.showsKBasePanel() ) {
+            onKBasePanelSelected();
+        } 
+        else if ( view.showsKBaseMetadataPanel() ) {
+            onKBaseMetadataPanelSelected();
+        }
+        else if ( view.showsDependenciesPanel() ) {
+            onDependenciesSelected();
+        }
     }
 
     private void setupPathToPomXML() {
@@ -764,36 +830,43 @@ public class ProjectScreenPresenter
     @Override
     public void onGAVPanelSelected() {
         view.showGAVPanel();
+        acquireLockOnDemand(model.getPathToPOM(), view.getPomPart());
     }
 
     @Override
     public void onGAVMetadataPanelSelected() {
         view.showGAVMetadataPanel();
+        acquireLockOnDemand(model.getPathToPOM(), view.getPomMetadataPart());
     }
 
     @Override
     public void onKBasePanelSelected() {
         view.showKBasePanel();
+        acquireLockOnDemand(model.getPathToKModule(), view.getKModulePart());
     }
 
     @Override
     public void onKBaseMetadataPanelSelected() {
         view.showKBaseMetadataPanel();
+        acquireLockOnDemand(model.getPathToKModule(), view.getKModuleMetadataPart());
     }
 
     @Override
     public void onImportsPanelSelected() {
         view.showImportsPanel();
+        acquireLockOnDemand(model.getPathToImports(), view.getImportsPart());
     }
 
     @Override
     public void onImportsMetadataPanelSelected() {
         view.showImportsMetadataPanel();
+        acquireLockOnDemand(model.getPathToImports(), view.getImportsMetadataPart());
     }
 
     @Override
     public void onDependenciesSelected() {
         view.showDependenciesPanel();
+        acquireLockOnDemand(model.getPathToPOM(), view.getDependenciesPart());
     }
 
     @Override
@@ -892,4 +965,21 @@ public class ProjectScreenPresenter
             }
         } ).validateVersion( version );
     }
+    
+    private void acquireLockOnDemand(final Path path, final Widget widget) {
+        final EditorLockManager lockManager = getOrCreateLockManager( widget );
+        final LockTarget lockTarget = new LockTarget(path, widget, placeRequest, titleProvider, reloadRunnable );
+        lockManager.init( lockTarget );
+        lockManager.acquireLockOnDemand();
+    }
+    
+    private EditorLockManager getOrCreateLockManager(final Widget widget) {
+        EditorLockManager lockManager = lockManagers.get( widget );
+        if (lockManager == null) {
+            lockManager = lockManagerInstanceProvider.get();
+            lockManagers.put( widget, lockManager);
+        }
+        return lockManager;
+    }
+    
 }

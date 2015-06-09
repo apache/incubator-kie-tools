@@ -18,14 +18,16 @@ package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.List;
 
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+
+import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 public interface ProjectScreenView
         extends HasBusyIndicator,
@@ -76,18 +78,32 @@ public interface ProjectScreenView
     void setImportsMetadata( Metadata projectImportsMetadata );
 
     void showImportsPanel();
+    
+    boolean showsImportsPanel();
 
     void showImportsMetadataPanel();
+    
+    boolean showsImportsMetadataPanel();
 
     void showDependenciesPanel();
+    
+    boolean showsDependenciesPanel();
 
     void showGAVMetadataPanel();
+    
+    boolean showsGAVMetadataPanel();
 
     void showGAVPanel();
+    
+    boolean showsGAVPanel();
 
     void showKBasePanel();
+    
+    boolean showsKBasePanel();
 
     void showKBaseMetadataPanel();
+    
+    boolean showsKBaseMetadataPanel();
 
     void switchBusyIndicator( String newMessage );
 
@@ -108,5 +124,19 @@ public interface ProjectScreenView
     void setValidArtifactID( boolean isValid );
 
     void setValidVersion( boolean isValid );
+    
+    Widget getPomPart();
+    
+    Widget getDependenciesPart();
+    
+    Widget getPomMetadataPart();
+    
+    Widget getImportsPart();
+    
+    Widget getImportsMetadataPart();
+    
+    Widget getKModulePart();
+    
+    Widget getKModuleMetadataPart();
 
 }

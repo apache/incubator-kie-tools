@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 
 public class KSessionModelOptionsPopUp {

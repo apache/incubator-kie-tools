@@ -17,6 +17,7 @@
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
 import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.guvnor.common.services.project.client.ArtifactIdChangeHandler;
 import org.guvnor.common.services.project.client.GroupIdChangeHandler;
 import org.guvnor.common.services.project.client.POMEditorPanel;
@@ -433,4 +435,75 @@ public class ProjectScreenViewImpl
         container.setPixelSize(width,
                                height);
     }
+
+    @Override
+    public Widget getPomPart() {
+        return pomEditorPanel.asWidget();
+    }
+
+    @Override
+    public Widget getImportsPart() {
+        return importsWidgetPresenter.asWidget();
+    }
+
+    @Override
+    public Widget getKModulePart() {
+        return kModuleEditorPanel.asWidget();
+    }
+
+    @Override
+    public Widget getDependenciesPart() {
+        return dependencyGrid.asWidget();
+    }
+
+    @Override
+    public Widget getPomMetadataPart() {
+        return pomMetadataWidget;
+    }
+
+    @Override
+    public Widget getImportsMetadataPart() {
+        return importsPageMetadata;
+    }
+
+    @Override
+    public Widget getKModuleMetadataPart() {
+        return kModuleMetaDataPanel;
+    }
+
+    @Override
+    public boolean showsImportsPanel() {
+        return IMPORTS_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+
+    @Override
+    public boolean showsImportsMetadataPanel() {
+        return IMPORTS_METADATA_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+
+    @Override
+    public boolean showsDependenciesPanel() {
+        return DEPENDENCY_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+
+    @Override
+    public boolean showsGAVMetadataPanel() {
+        return GAV_METADATA_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+
+    @Override
+    public boolean showsGAVPanel() {
+        return GAV_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+
+    @Override
+    public boolean showsKBasePanel() {
+        return KBASE_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+
+    @Override
+    public boolean showsKBaseMetadataPanel() {
+        return KBASE_METADATA_PANEL_INDEX == deckPanel.getVisibleWidget();
+    }
+    
 }

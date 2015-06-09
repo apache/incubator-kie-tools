@@ -18,11 +18,15 @@ package org.kie.workbench.common.screens.projecteditor.client.widgets;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.guvnor.common.services.project.model.HasListFormComboPanelProperties;
 import org.kie.workbench.common.widgets.client.popups.text.FormPopup;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
+import org.uberfire.client.mvp.LockRequiredEvent;
 
 public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperties>
         implements IsWidget, ListFormComboPanelView.Presenter {
@@ -33,6 +37,9 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
 
     private String selectedItemName = null;
     private final Form<T> form;
+
+    @Inject
+    private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
 
     public ListFormComboPanel(ListFormComboPanelView view,
             Form<T> form,
@@ -82,6 +89,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
                     setSelected(model);
 
                     namePopup.hide();
+                    fireLockRequiredEvent();
                 }
             }
         });
@@ -106,6 +114,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
                     setSelected(model);
 
                     namePopup.hide();
+                    fireLockRequiredEvent();
                 } else {
                     view.showXsdIDError();
                 }
@@ -148,6 +157,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
 
     @Override
     public void onRemove() {
+        fireLockRequiredEvent();
         if (selectedItemName == null) {
             view.showPleaseSelectAnItem();
         } else {
@@ -162,6 +172,7 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
 
     @Override
     public void onMakeDefault() {
+        fireLockRequiredEvent();
         if (selectedItemName == null) {
             view.showPleaseSelectAnItem();
         } else {
@@ -170,6 +181,12 @@ public abstract class ListFormComboPanel<T extends HasListFormComboPanelProperti
             }
             items.get(selectedItemName).setDefault(true);
             view.disableMakeDefault();
+        }
+    }
+    
+    private void fireLockRequiredEvent() {
+        if (lockRequired != null) {
+            lockRequired.fire( new LockRequiredEvent() );
         }
     }
 }

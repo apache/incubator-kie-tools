@@ -17,14 +17,17 @@
 package org.kie.workbench.common.screens.projecteditor.client.forms;
 
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.screens.projecteditor.client.widgets.XsdIDValidator;
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
+import org.uberfire.client.mvp.LockRequiredEvent;
 
 public class KSessionsPanel
         implements KSessionsPanelView.Presenter,
@@ -33,6 +36,9 @@ public class KSessionsPanel
     private final KSessionsPanelView view;
     private final TextBoxFormPopup namePopup;
     private List<KSessionModel> items;
+    
+    @Inject
+    private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
 
     @Inject
     public KSessionsPanel(
@@ -67,6 +73,7 @@ public class KSessionsPanel
 
                     namePopup.setOldName("");
                     namePopup.hide();
+                    lockRequired.fire( new LockRequiredEvent() );
                 } else {
                     view.showXsdIDError();
                 }

@@ -51,7 +51,7 @@ public class CRUDListBoxViewImpl
 
     @UiField
     ListBox listBox;
-
+    
     @Inject
     public CRUDListBoxViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -124,4 +124,5 @@ public class CRUDListBoxViewImpl
     public void onDelete(ClickEvent clickEvent) {
         presenter.onDelete();
     }
+    
 }

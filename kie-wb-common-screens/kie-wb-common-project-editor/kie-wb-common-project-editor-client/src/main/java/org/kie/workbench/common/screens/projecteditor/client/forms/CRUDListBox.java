@@ -21,8 +21,10 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.kie.workbench.common.widgets.client.popups.text.PopupSetFieldCommand;
 import org.kie.workbench.common.widgets.client.popups.text.TextBoxFormPopup;
+import org.uberfire.client.mvp.LockRequiredEvent;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -37,6 +39,9 @@ public class CRUDListBox
     private CRUDListBoxView view;
     private TextBoxFormPopup newItemPopup;
 
+    @Inject
+    javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
+    
     public CRUDListBox() {
     }
 
@@ -56,6 +61,7 @@ public class CRUDListBox
             public void setName(String name) {
                 view.addItemAndFireEvent(name);
                 newItemPopup.hide();
+                fireLockRequiredEvent();
             }
         });
     }
@@ -64,6 +70,7 @@ public class CRUDListBox
     public void onDelete() {
         if (view.getSelectedItem() != null) {
             view.removeItem(view.getSelectedItem());
+            fireLockRequiredEvent();
         }
     }
 
@@ -101,5 +108,11 @@ public class CRUDListBox
 
     public void clear() {
         view.clear();
+    }
+    
+    private void fireLockRequiredEvent() {
+        if (lockRequired != null) {
+            lockRequired.fire( new LockRequiredEvent() );
+        }
     }
 }

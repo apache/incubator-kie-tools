@@ -18,6 +18,7 @@ package org.kie.workbench.common.widgets.configresource.client.widget.bound;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.Button;
@@ -40,10 +41,12 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.configresource.client.resources.i18n.ImportConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.client.mvp.LockRequiredEvent;
 
 public class ImportsWidgetViewImpl
         extends KieEditorViewImpl
@@ -64,6 +67,9 @@ public class ImportsWidgetViewImpl
 
     @Inject
     private AddImportPopup addImportPopup;
+    
+    @Inject
+    private javax.enterprise.event.Event<LockRequiredEvent> lockRequired;
 
     private List<Import> importTypes = new ArrayList<Import>();
     private List<Import> allAvailableImportTypes = new ArrayList<Import>();
@@ -161,6 +167,7 @@ public class ImportsWidgetViewImpl
             public void execute() {
                 final Import importType = new Import( addImportPopup.getImportType() );
                 dataProvider.getList().add( importType );
+                lockRequired.fire( new LockRequiredEvent() );
                 presenter.onAddImport( importType );
             }
         };
