@@ -158,6 +158,12 @@ public class PersistenceDescriptorEditorViewImpl
         persistenceUnitClasses.fillList( wrappClassesList( classes ) );
     }
 
+    @Override
+    public void redraw() {
+        persistenceUnitProperties.redraw();
+        persistenceUnitClasses.redraw();
+    }
+
     private void loadProviders() {
         //TODO load the list of platform registered JPA providers.
         persistenceProviderDropdown.clear();

@@ -40,6 +40,7 @@ import org.uberfire.ext.editor.commons.client.file.SaveOperationService;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.Page;
 import org.uberfire.lifecycle.OnClose;
+import org.uberfire.lifecycle.OnFocus;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -79,6 +80,12 @@ public class PersistenceDescriptorEditorPresenter
             final PlaceRequest place ) {
         this.createIfNotExists = "true".equals( place.getParameter( "createIfNotExists", null ) );
         init( path, place, type );
+    }
+
+    @OnFocus
+    public void onFocus() {
+        //for some reason the tables needs to be repainted when the view is restored.
+        view.redraw();
     }
 
     @WorkbenchPartTitle

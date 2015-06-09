@@ -38,6 +38,8 @@ public interface PersistenceDescriptorEditorView
 
     void loadClasses( List<String> classes );
 
+    void redraw();
+
     interface Presenter extends ProjectClassListView.LoadClassesHandler {
 
         void onPersistenceUnitNameChanged( String value );
