@@ -12,7 +12,6 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.backend.vfs.impl.EditorLockInfo;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
-import org.uberfire.backend.vfs.impl.LockTarget;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.VFSLockServiceProxy;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
@@ -291,6 +290,12 @@ public class EditorLockManagerImpl implements EditorLockManager {
             releaseLock();
         }
     }
+    
+    private void onLockRequired( @Observes LockRequiredEvent event ) {
+        if ( isVisible() && !isLockedByCurrentUser() ) {
+            acquireLock();
+        }
+    }
 
     private native void publishJsApi()/*-{
         var lockManager = this;
@@ -329,7 +334,7 @@ public class EditorLockManagerImpl implements EditorLockManager {
     private boolean isVisible() {
         Element element = lockTarget.getWidget().getElement();
         boolean visible = UIObject.isVisible( element ) && 
-                (element.getAbsoluteLeft() > 0) && (element.getAbsoluteTop() > 0);
+                (element.getAbsoluteLeft() != 0) && (element.getAbsoluteTop() != 0);
 
         return visible;
     }

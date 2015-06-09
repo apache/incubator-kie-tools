@@ -1,7 +1,6 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.impl.LockInfo;
-import org.uberfire.backend.vfs.impl.LockTarget;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;

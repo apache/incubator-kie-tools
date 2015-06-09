@@ -18,9 +18,8 @@ package org.uberfire.client.mvp;
 import javax.inject.Inject;
 
 import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.impl.LockTarget;
-import org.uberfire.backend.vfs.impl.LockTarget.TitleProvider;
 import org.uberfire.client.annotations.WorkbenchEditor;
+import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 

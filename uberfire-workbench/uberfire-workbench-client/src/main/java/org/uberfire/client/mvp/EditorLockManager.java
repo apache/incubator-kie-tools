@@ -1,7 +1,6 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.LockTarget;
 
 /**
  * Provides functionality to lock a {@link Path} associated with an editor

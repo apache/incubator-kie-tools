@@ -1,4 +1,4 @@
-package org.uberfire.backend.vfs.impl;
+package org.uberfire.client.mvp;
 
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
