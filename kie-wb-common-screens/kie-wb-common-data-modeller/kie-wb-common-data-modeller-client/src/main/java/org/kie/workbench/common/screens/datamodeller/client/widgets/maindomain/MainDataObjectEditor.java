@@ -19,7 +19,6 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.TextArea;
@@ -35,7 +34,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -46,18 +44,13 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domai
 import org.kie.workbench.common.screens.datamodeller.client.widgets.packageselector.PackageSelector;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.superselector.SuperclassSelector;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
@@ -138,8 +131,9 @@ public class MainDataObjectEditor extends ObjectEditor {
         setReadonly( true );
     }
 
-    private Project getProject() {
-        return getContext() != null ? getContext().getCurrentProject() : null;
+    @Override
+    public String getName() {
+        return "MAIN_OBJECT_EDITOR";
     }
 
     public void setContext( DataModelerContext context ) {
@@ -156,7 +150,7 @@ public class MainDataObjectEditor extends ObjectEditor {
         superclassSelector.refreshList( keepSelection );
     }
 
-    protected void setReadonly( boolean readonly ) {
+    public void setReadonly( boolean readonly ) {
         super.setReadonly( readonly );
         boolean value = !readonly;
 
@@ -191,33 +185,6 @@ public class MainDataObjectEditor extends ObjectEditor {
 
             setReadonly( getContext() == null || getContext().isReadonly() );
         }
-    }
-
-    // Event observers
-
-    private void onDataObjectFieldCreated( @Observes DataObjectFieldCreatedEvent event ) {
-    }
-
-    private void onDataObjectFieldChange( @Observes DataObjectFieldChangeEvent event ) {
-    }
-
-    private void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
-    }
-
-    private void updateFieldDependentSelectors( DataModelerEvent event,
-            DataObject currentDataObject,
-            ObjectProperty currentField ) {
-
-    }
-
-    // Event notifications
-    private void notifyObjectChange( String memberName,
-            Object oldValue,
-            Object newValue ) {
-        DataObjectChangeEvent changeEvent = new DataObjectChangeEvent( getContext().getContextId(), DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue );
-        // Notify helper directly
-        getContext().getHelper().dataModelChanged( changeEvent );
-        dataModelerEvent.fire( changeEvent );
     }
 
     // Event handlers
@@ -317,7 +284,7 @@ public class MainDataObjectEditor extends ObjectEditor {
                     public void onSuccess() {
                         nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
                         dataObject.setName( newValue );
-                        notifyObjectChange( "name", oldValue, newValue );
+                        notifyObjectChange( ChangeType.CLASS_NAME_CHANGE, "name", oldValue, newValue );
                     }
                 } );
             }
@@ -350,7 +317,8 @@ public class MainDataObjectEditor extends ObjectEditor {
             }
         }
         // TODO replace 'label' literal with annotation definition constant
-        notifyObjectChange( "label", oldValue, _label );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                "label", oldValue, _label );
     }
 
     @UiHandler("description")
@@ -377,7 +345,8 @@ public class MainDataObjectEditor extends ObjectEditor {
                 getDataObject().addAnnotation( annotation );
             }
         }
-        notifyObjectChange( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description );
     }
 
     private void packageChanged( ChangeEvent event ) {
@@ -441,7 +410,8 @@ public class MainDataObjectEditor extends ObjectEditor {
     private void doPackageChange( String oldPackageName,
             String newPackageName ) {
         getDataObject().setPackageName( newPackageName );
-        notifyObjectChange( "packageName", oldPackageName, newPackageName );
+        notifyObjectChange( ChangeType.PACKAGE_NAME_CHANGE,
+                "packageName", oldPackageName, newPackageName );
     }
 
     private void superClassChanged( ChangeEvent event ) {
@@ -484,17 +454,19 @@ public class MainDataObjectEditor extends ObjectEditor {
                         getContext().getHelper().dataObjectExtended( oldSuperClass, getDataObject().getClassName(), false );
                     }
                     getContext().getHelper().dataObjectExtended( newSuperClass, getDataObject().getClassName(), true );
-                    notifyObjectChange( "superClassName", oldSuperClass, newSuperClass );
+                    notifyObjectChange( ChangeType.SUPER_CLASS_NAME_CHANGE,
+                            "superClassName", oldSuperClass, newSuperClass );
                 }
             } );
         } else {
             getDataObject().setSuperClassName( null );
             getContext().getHelper().dataObjectExtended( oldSuperClass, getDataObject().getClassName(), false );
-            notifyObjectChange( "superClassName", oldSuperClass, newSuperClass );
+            notifyObjectChange( ChangeType.SUPER_CLASS_NAME_CHANGE,
+                    "superClassName", oldSuperClass, newSuperClass );
         }
     }
 
-    protected void clean() {
+    public void clean() {
         nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
         name.setText( null );
         label.setText( null );

@@ -18,9 +18,6 @@ package org.kie.workbench.common.screens.datamodeller.events;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -42,15 +39,9 @@ public class DataModelerEvent {
 
     public static final String DATA_MODEL_BROWSER = "DATA_MODEL_BROWSER";
 
-    public static final String DATA_MODEL_BREAD_CRUMB = "DATA_MODEL_BREAD_CRUMB";
-
     public static final String DATA_OBJECT_BROWSER = "DATA_OBJECT_BROWSER";
 
-    public static final String DATA_OBJECT_FIELD_EDITOR = "DATA_OBJECT_FIELD_EDITOR";
-
     public static final String DATA_OBJECT_EDITOR = "DATA_OBJECT_EDITOR";
-
-    public static final String NEW_DATA_OBJECT_POPUP = "NEW_DATA_OBJECT_POPUP";
 
     public DataModelerEvent() {
     }

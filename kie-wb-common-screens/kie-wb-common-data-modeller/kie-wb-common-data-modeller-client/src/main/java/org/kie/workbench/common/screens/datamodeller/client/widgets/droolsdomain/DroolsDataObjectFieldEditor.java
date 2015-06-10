@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.droolsdomai
 
 import java.util.List;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.CheckBox;
@@ -35,21 +34,17 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
@@ -110,22 +105,23 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
         setReadonly( true );
     }
 
-    private DataModel getDataModel() {
-        return getContext() != null ? getContext().getDataModel() : null;
+    @Override
+    public String getName() {
+        return "DROOLS_FIELD_EDITOR";
     }
 
-    private Project getProject() {
-        return getContext() != null ? getContext().getCurrentProject() : null;
-    }
-
-    protected void setReadonly( boolean readonly ) {
+    public void setReadonly( boolean readonly ) {
         super.setReadonly( readonly );
         boolean value = !readonly;
         equalsSelector.setEnabled( value );
         position.setEnabled( value );
     }
 
-    // Event notifications
+    public void clean() {
+        equalsSelector.setValue( Boolean.FALSE );
+        positionLabel.setStyleName( DEFAULT_LABEL_CLASS );
+        position.setText( null );
+    }
 
     // Event observers
 
@@ -175,7 +171,7 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
             annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.KEY_ANNOTATION ) );
             getObjectField().addAnnotation( annotation );
         }
-        notifyFieldChange( AnnotationDefinitionTO.KEY_ANNOTATION, oldEquals, setEquals );
+        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE, AnnotationDefinitionTO.KEY_ANNOTATION, oldEquals, setEquals );
     }
 
     private void positionChanged( ChangeEvent event ) {
@@ -239,7 +235,8 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
         }
 
         if ( notify ) {
-            notifyFieldChange( AnnotationDefinitionTO.POSITION_ANNOTATION, oldValue, newValue );
+            notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE ,
+                    AnnotationDefinitionTO.POSITION_ANNOTATION, oldValue, newValue );
         }
     }
 
@@ -258,11 +255,5 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
             first = false;
         }
         return names.toString();
-    }
-
-    protected void clean() {
-        equalsSelector.setValue( Boolean.FALSE );
-        positionLabel.setStyleName( DEFAULT_LABEL_CLASS );
-        position.setText( null );
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -97,7 +98,7 @@ public class DataModelerScreenViewImpl
     }
 
     @Override
-    public void showDomain( int domainId ) {
+    public void showDomain( String domainId ) {
         domainEditorContainer.showDomain( domainId );
     }
 
@@ -105,6 +106,11 @@ public class DataModelerScreenViewImpl
     public void refreshTypeLists( boolean keepSelection ) {
         dataObjectBrowser.refreshTypeList( keepSelection );
         modelPropertiesEditor.refreshTypeList( keepSelection );
+    }
+
+    @Override
+    public List<String> getAvailableDomains() {
+        return domainEditorContainer.getInstantiatedDomains();
     }
 
     private void updateChangeStatus(DataModelerEvent event) {

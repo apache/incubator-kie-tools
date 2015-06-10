@@ -16,13 +16,9 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
@@ -30,28 +26,13 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEv
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
-public abstract class FieldEditor extends Composite {
-
-    protected DataModelerContext context;
+public abstract class FieldEditor extends BaseEditor {
 
     protected DataObject dataObject;
 
     protected ObjectProperty objectField;
 
-    protected boolean readonly = false;
-
-    @Inject
-    protected Event<DataModelerEvent> dataModelerEventEvent;
-
     protected FieldEditor() {
-    }
-
-    public DataModelerContext getContext() {
-        return context;
-    }
-
-    public void setContext( DataModelerContext context ) {
-        this.context = context;
     }
 
     public DataObject getDataObject() {
@@ -65,15 +46,6 @@ public abstract class FieldEditor extends Composite {
     protected abstract void loadDataObjectField( DataObject dataObject,
             ObjectProperty objectField );
 
-    protected abstract void clean();
-
-    protected void setReadonly( boolean readonly ) {
-        this.readonly = readonly;
-    }
-
-    protected boolean isReadonly() {
-        return readonly;
-    }
 
     // Event observers
 
@@ -101,16 +73,23 @@ public abstract class FieldEditor extends Composite {
         }
     }
 
-    protected void notifyFieldChange( String memberName,
+    protected void notifyFieldChange( ChangeType changeType,
+            String memberName,
             Object oldValue,
             Object newValue ) {
 
         //TODO check if data model for the event is needed
-        DataObjectFieldChangeEvent changeEvent = new DataObjectFieldChangeEvent( getContext().getContextId(), DataModelerEvent.DATA_OBJECT_FIELD_EDITOR, null, getDataObject(), getObjectField(), memberName, oldValue, newValue );
+        DataObjectFieldChangeEvent changeEvent = new DataObjectFieldChangeEvent( changeType,
+                getContext().getContextId(),
+                getName(),
+                null,
+                getDataObject(),
+                getObjectField(),
+                memberName, oldValue, newValue );
         //TODO, check if the helper is still needed.
         // Notify helper directly
         getContext().getHelper().dataModelChanged( changeEvent );
-        dataModelerEventEvent.fire( changeEvent );
+        dataModelerEvent.fire( changeEvent );
     }
 
 }

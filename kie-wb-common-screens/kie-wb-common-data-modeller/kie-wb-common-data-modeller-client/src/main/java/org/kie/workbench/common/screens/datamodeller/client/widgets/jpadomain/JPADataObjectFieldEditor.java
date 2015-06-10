@@ -26,7 +26,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.CascadeType;
@@ -39,9 +38,9 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domai
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties.IdGeneratorField;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties.RelationshipField;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties.SequenceGeneratorField;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
@@ -95,16 +94,9 @@ public class JPADataObjectFieldEditor extends FieldEditor {
         setReadonly( true );
     }
 
-    private DataModel getDataModel() {
-        return getContext() != null ? getContext().getDataModel() : null;
-    }
-
-    private Project getProject() {
-        return getContext() != null ? getContext().getCurrentProject() : null;
-    }
-
-    protected void setReadonly( boolean readonly ) {
-        super.setReadonly( readonly );
+    @Override
+    public String getName() {
+        return "JPA_FIELD_EDITOR";
     }
 
     @Override
@@ -348,7 +340,8 @@ public class JPADataObjectFieldEditor extends FieldEditor {
             getObjectField().addAnnotation( annotation );
         }
         if ( wasSet != isSet ) {
-            notifyFieldChange( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ID_ANNOTATION, wasSet, isSet );
+            notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                    AnnotationDefinitionTO.JAVAX_PERSISTENCE_ID_ANNOTATION, wasSet, isSet );
         }
     }
 
@@ -436,7 +429,8 @@ public class JPADataObjectFieldEditor extends FieldEditor {
             getObjectField().removeAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION );
         }
 
-        notifyFieldChange( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, oldValue, newValue );
+        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, oldValue, newValue );
     }
 
     boolean hasOnlyDefaultValues( Annotation columnAnnotation ) {
@@ -496,7 +490,8 @@ public class JPADataObjectFieldEditor extends FieldEditor {
         }
 
         //TODO review this
-        notifyFieldChange( AnnotationDefinitionTO.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION, "oldValue", "newValue" );
+        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION, "oldValue", "newValue" );
     }
 
     private void relationTypeFieldChanged( DataModelerPropertyEditorFieldInfo fieldInfo, String newValue ) {
@@ -527,7 +522,8 @@ public class JPADataObjectFieldEditor extends FieldEditor {
         }
 
         //TODO review this
-        notifyFieldChange( "relationType", oldRelationHandler != null ? oldRelationHandler.getClassName() : null,
+        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                "relationType", oldRelationHandler != null ? oldRelationHandler.getClassName() : null,
                 newRelation != null ? newRelation.getClassName() : null );
     }
 
@@ -557,13 +553,14 @@ public class JPADataObjectFieldEditor extends FieldEditor {
         }
 
         //TODO review this
-        notifyFieldChange( "sequenceGenerator", oldGeneratorHandler != null ? oldGeneratorHandler.getName() : null,
+        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                "sequenceGenerator", oldGeneratorHandler != null ? oldGeneratorHandler.getName() : null,
                 newGenerator != null ? name : null );
     }
 
     // Event handlers
 
-    protected void clean() {
+    public void clean() {
         cleanIdentifierField();
         cleanGeneratedValueField();
         cleanSequenceGeneratorField();

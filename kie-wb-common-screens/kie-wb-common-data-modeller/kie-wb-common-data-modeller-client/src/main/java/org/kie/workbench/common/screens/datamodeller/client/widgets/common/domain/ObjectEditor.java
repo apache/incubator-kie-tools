@@ -16,51 +16,22 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
-public abstract class ObjectEditor extends Composite {
-
-    protected DataModelerContext context;
+public abstract class ObjectEditor extends BaseEditor {
 
     protected DataObject dataObject;
-
-    protected boolean readonly = false;
-
-    @Inject
-    protected Event<DataModelerEvent> dataModelerEvent;
 
     protected ObjectEditor() {
     }
 
-    public DataModelerContext getContext() {
-        return context;
-    }
-
-    public void setContext( DataModelerContext context ) {
-        this.context = context;
-    }
-
     public DataObject getDataObject() {
         return dataObject;
-    }
-
-    protected abstract void clean();
-
-    protected void setReadonly( boolean readonly ) {
-        this.readonly = readonly;
-    }
-
-    protected boolean isReadonly() {
-        return readonly;
     }
 
     protected abstract void loadDataObject( DataObject dataObject );
@@ -71,4 +42,19 @@ public abstract class ObjectEditor extends Composite {
         }
     }
 
+    // Event notifications
+    protected void notifyObjectChange( ChangeType changeType,
+            String memberName,
+            Object oldValue,
+            Object newValue ) {
+
+        //TODO check if data model for the event is needed
+        DataObjectChangeEvent changeEvent = new DataObjectChangeEvent( changeType,
+                getContext().getContextId(),
+                getName(),
+                null, getDataObject(), memberName, oldValue, newValue );
+        // Notify helper directly
+        getContext().getHelper().dataModelChanged( changeEvent );
+        dataModelerEvent.fire( changeEvent );
+    }
 }

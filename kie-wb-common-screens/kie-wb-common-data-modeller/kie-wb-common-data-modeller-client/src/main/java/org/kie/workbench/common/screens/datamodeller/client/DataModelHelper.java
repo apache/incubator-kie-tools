@@ -30,10 +30,9 @@ import java.util.TreeSet;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerPropertyChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerValueChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -104,7 +103,7 @@ public class DataModelHelper {
 
     // DataModelHelper methods
 
-    public void dataModelChanged(DataModelerPropertyChangeEvent changeEvent) {
+    public void dataModelChanged(DataModelerValueChangeEvent changeEvent) {
         if (changeEvent.isFrom( contextId )) {
             if (DataModelerEvent.DATA_OBJECT_EDITOR.equalsIgnoreCase(changeEvent.getSource())) {
                 // If any object referenced the object whose name or package just changed, we need to adjust those internally

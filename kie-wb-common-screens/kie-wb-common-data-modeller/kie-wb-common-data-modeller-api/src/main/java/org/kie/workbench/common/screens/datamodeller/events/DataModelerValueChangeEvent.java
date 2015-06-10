@@ -21,7 +21,7 @@ import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
-public class DataModelerPropertyChangeEvent extends DataModelerEvent {
+public class DataModelerValueChangeEvent extends DataModelerEvent {
 
     private String propertyName;
 
@@ -29,11 +29,22 @@ public class DataModelerPropertyChangeEvent extends DataModelerEvent {
 
     private Object newValue;
 
-    public DataModelerPropertyChangeEvent() {
+    private ChangeType changeType;
+
+    public DataModelerValueChangeEvent() {
     }
 
-    public DataModelerPropertyChangeEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject, String propertyName, Object oldValue, Object newValue) {
+    public DataModelerValueChangeEvent( ChangeType changeType,
+            String contextId,
+            String source,
+            DataModel currentModel,
+            DataObject currentDataObject,
+            String propertyName,
+            Object oldValue,
+            Object newValue ) {
+
         super(contextId, source, currentModel, currentDataObject);
+        this.changeType = changeType;
         this.propertyName = propertyName;
         this.oldValue = oldValue;
         this.newValue = newValue;
@@ -61,5 +72,9 @@ public class DataModelerPropertyChangeEvent extends DataModelerEvent {
 
     public void setNewValue(Object newValue) {
         this.newValue = newValue;
+    }
+
+    public ChangeType getChangeType() {
+        return changeType;
     }
 }

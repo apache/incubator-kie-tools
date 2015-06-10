@@ -16,15 +16,27 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseDomainEditor;
 
+@Dependent
 public class JPADomainEditor extends BaseDomainEditor {
+
+    public JPADomainEditor() {
+    }
 
     @Inject
     public JPADomainEditor( JPADataObjectEditor objectEditor, JPADataObjectFieldEditor fieldEditor ) {
         super( objectEditor, fieldEditor );
     }
 
+    @Override public String getName() {
+        return "JPA";
+    }
+
+    @Override public int getPriority() {
+        return 3;
+    }
 }

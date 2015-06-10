@@ -26,15 +26,12 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
@@ -76,16 +73,9 @@ public class JPADataObjectEditor extends ObjectEditor {
         setReadonly( true );
     }
 
-    private Project getProject() {
-        return getContext() != null ? getContext().getCurrentProject() : null;
-    }
-
-    private DataModel getDataModel() {
-        return getContext() != null ? getContext().getDataModel() : null;
-    }
-
-    protected void setReadonly( boolean readonly ) {
-        super.setReadonly( readonly );
+    @Override
+    public String getName() {
+        return "JPA_OBJECT_EDITOR";
     }
 
     protected void loadDataObject( DataObject dataObject ) {
@@ -156,7 +146,7 @@ public class JPADataObjectEditor extends ObjectEditor {
     }
 
     @Override
-    protected void clean() {
+    public void clean() {
         cleanEntityField();
         cleanTableNameField();
     }
@@ -210,7 +200,8 @@ public class JPADataObjectEditor extends ObjectEditor {
             getDataObject().addAnnotation( annotation );
         }
 
-        notifyObjectChange( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, oldValue, isChecked );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, oldValue, isChecked );
     }
 
     private void tableNameChanged( String newValue ) {
@@ -237,20 +228,11 @@ public class JPADataObjectEditor extends ObjectEditor {
             }
         }
         // TODO replace 'label' literal with annotation definition constant
-        notifyObjectChange( "tableName", oldValue, _label );
-    }
-
-    private void notifyObjectChange( String memberName,
-            Object oldValue,
-            Object newValue ) {
-        DataObjectChangeEvent changeEvent = new DataObjectChangeEvent( getContext().getContextId(), DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue );
-        // Notify helper directly
-        getContext().getHelper().dataModelChanged( changeEvent );
-        dataModelerEvent.fire( changeEvent );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,  "tableName", oldValue, _label );
     }
 
     private String getCurrentEditorEventId() {
-        //TODO, temporal mecanism to avoid two property editors opened in different workech JPA editors receiving crossed events
+        //TODO, temporal mecanism to avoid two property editors opened in different workbench JPA editors receiving crossed events
         return JPA_DATA_OBJECT_EDITOR_EVENT + "-" + this.hashCode();
     }
 

@@ -39,7 +39,7 @@ public interface DataModelerService {
 
     Path createJavaFile( final Path context, final String fileName, final String comment );
 
-    Path createJavaFile(  final Path context, final String fileName, final String comment, boolean persistable, String tableName );
+    Path createJavaFile(  final Path context, final String fileName, final String comment, Map<String, Object> portableParams );
 
     EditorModelContent loadContent(final Path path);
 

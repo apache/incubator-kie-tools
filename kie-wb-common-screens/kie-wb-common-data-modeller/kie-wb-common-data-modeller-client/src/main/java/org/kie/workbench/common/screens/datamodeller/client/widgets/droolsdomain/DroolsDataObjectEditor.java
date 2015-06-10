@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -42,23 +41,20 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
@@ -205,15 +201,12 @@ public class DroolsDataObjectEditor extends ObjectEditor {
         setReadonly( true );
     }
 
-    private Project getProject() {
-        return getContext() != null ? getContext().getCurrentProject() : null;
+    @Override
+    public String getName() {
+        return "DROOLS_OBJECT_EDITOR";
     }
 
-    private DataModel getDataModel() {
-        return getContext() != null ? getContext().getDataModel() : null;
-    }
-
-    protected void setReadonly( boolean readonly ) {
+    public void setReadonly( boolean readonly ) {
         super.setReadonly( readonly );
         boolean value = !readonly;
 
@@ -316,16 +309,6 @@ public class DroolsDataObjectEditor extends ObjectEditor {
         }
     }
 
-    // Event notifications
-    private void notifyObjectChange( String memberName,
-            Object oldValue,
-            Object newValue ) {
-        DataObjectChangeEvent changeEvent = new DataObjectChangeEvent( getContext().getContextId(), DataModelerEvent.DATA_OBJECT_EDITOR, getDataModel(), getDataObject(), memberName, oldValue, newValue );
-        // Notify helper directly
-        getContext().getHelper().dataModelChanged( changeEvent );
-        dataModelerEvent.fire( changeEvent );
-    }
-
     // Event handlers
 
     void roleChanged( final ChangeEvent event ) {
@@ -351,7 +334,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
                 getDataObject().addAnnotation( annotation );
             }
         }
-        notifyObjectChange( AnnotationDefinitionTO.ROLE_ANNOTATION, oldValue, _role );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.ROLE_ANNOTATION, oldValue, _role );
     }
 
     void typeSafeChanged( final ChangeEvent event ) {
@@ -377,7 +361,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
                 getDataObject().addAnnotation( annotation );
             }
         }
-        notifyObjectChange( AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION, oldValue, _typeSaveValue );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.TYPE_SAFE_ANNOTATION, oldValue, _typeSaveValue );
     }
 
     void timestampChanged( final ChangeEvent event ) {
@@ -403,7 +388,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
                 getDataObject().addAnnotation( annotation );
             }
         }
-        notifyObjectChange( AnnotationDefinitionTO.TIMESTAMP_ANNOTATION, oldValue, _timestampValue );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.TIMESTAMP_ANNOTATION, oldValue, _timestampValue );
     }
 
     void durationChanged( final ChangeEvent event ) {
@@ -429,7 +415,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
                 getDataObject().addAnnotation( annotation );
             }
         }
-        notifyObjectChange( AnnotationDefinitionTO.DURATION_ANNOTATION, oldValue, _durationValue );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.DURATION_ANNOTATION, oldValue, _durationValue );
     }
 
     @UiHandler( "propertyReactiveSelector" )
@@ -456,7 +443,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
             classReactiveSelector.setValue( false );
         }
         //TODO check if this event is needed and add validation, this annotation cannot coexist with the ClassReactiveAnnotation
-        notifyObjectChange( AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION, oldValue, isChecked );
+        notifyObjectChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.PROPERTY_REACTIVE_ANNOTATION, oldValue, isChecked );
     }
 
     @UiHandler( "classReactiveSelector" )
@@ -483,7 +471,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
             propertyReactiveSelector.setValue( false );
         }
         //TODO check if this event is needed and add validation, this annotation cannot coexist with the PropertyReactiveAnnotation
-        notifyObjectChange( AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION, oldValue, isChecked );
+        notifyObjectChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.CLASS_REACTIVE_ANNOTATION, oldValue, isChecked );
     }
 
     @UiHandler( "expires" )
@@ -524,7 +513,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
                     getDataObject().addAnnotation( annotation );
                 }
 
-                notifyObjectChange( AnnotationDefinitionTO.EXPIRES_ANNOTATION, oldValue, newValue );
+                notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                        AnnotationDefinitionTO.EXPIRES_ANNOTATION, oldValue, newValue );
             }
         } );
     }
@@ -548,7 +538,8 @@ public class DroolsDataObjectEditor extends ObjectEditor {
             getDataObject().addAnnotation( annotation );
         }
 
-        notifyObjectChange( AnnotationDefinitionTO.REMOTABLE_ANNOTATION, oldValue, isChecked );
+        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.REMOTABLE_ANNOTATION, oldValue, isChecked );
     }
 
     private void loadDurationSelector( DataObject dataObject ) {
@@ -619,7 +610,7 @@ public class DroolsDataObjectEditor extends ObjectEditor {
         selector.setSelectedValue( NOT_SELECTED );
     }
 
-    protected void clean() {
+    public void clean() {
         roleSelector.setSelectedValue( NOT_SELECTED );
         classReactiveSelector.setValue( false );
         propertyReactiveSelector.setValue( false );

@@ -20,20 +20,18 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
 import com.google.common.base.Charsets;
 import org.drools.core.base.ClassTypeResolver;
@@ -56,6 +54,7 @@ import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
+import org.kie.workbench.common.screens.datamodeller.backend.server.handler.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
@@ -71,13 +70,10 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
-import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
@@ -171,6 +167,10 @@ public class DataModelerServiceImpl
     @Inject
     private GenericValidator genericValidator;
 
+    @Inject
+    @Any
+    private Instance<DomainHandler> domainHandlers;
+
     private static final String DEFAULT_COMMIT_MESSAGE = "Data modeller generated action.";
 
     public DataModelerServiceImpl() {
@@ -192,89 +192,55 @@ public class DataModelerServiceImpl
     public Path createJavaFile(final Path context,
             final String fileName,
             final String comment) {
-        return createJavaFile( context, fileName, comment, false, null );
+        return createJavaFile( context, fileName, comment, null );
 
     }
 
     @Override
-    public Path createJavaFile(final Path context,
-                               final String fileName,
-                               final String comment,
-                                final boolean persistable,
-                                final String tableName ) {
+    public Path createJavaFile( final Path context,
+            final String fileName,
+            final String comment,
+            final Map<String, Object> portableParams ) {
 
-        final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve( fileName );
-        final Path newPath = Paths.convert(nioPath);
+        final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
+        final Path newPath = Paths.convert( nioPath );
 
-        if (ioService.exists(nioPath)) {
-            throw new FileAlreadyExistsException(nioPath.toString());
+        if ( ioService.exists( nioPath ) ) {
+            throw new FileAlreadyExistsException( nioPath.toString() );
         }
 
         try {
 
-            final Package currentPackage = projectService.resolvePackage(context);
+            final Package currentPackage = projectService.resolvePackage( context );
             String packageName = currentPackage.getPackageName();
-            String className = fileName.substring(0, fileName.indexOf(".java"));
+            String className = fileName.substring( 0, fileName.indexOf( ".java" ) );
 
-            final KieProject currentProject = projectService.resolveProject(context);
+            final KieProject currentProject = projectService.resolveProject( context );
 
-            DataObject dataObject = new DataObjectImpl(packageName, className);
+            DataObject dataObject = new DataObjectImpl( packageName, className );
 
-            if ( persistable ) {
-                addPersistableOptions( dataObject, tableName );
+            Iterator<DomainHandler> it = domainHandlers != null ? domainHandlers.iterator() : null;
+            while ( it != null && it.hasNext() ) {
+                it.next().setDefaultValues( dataObject, portableParams );
             }
 
-            String source = createJavaSource(dataObject);
+            String source = createJavaSource( dataObject );
 
-            ioService.write(nioPath, source, serviceHelper.makeCommentedOption(comment));
+            ioService.write( nioPath, source, serviceHelper.makeCommentedOption( comment ) );
 
             //TODO. refactoring, check how to set the path to the created data Object
             //dataObject.setPath(newPath);
             //Probably we can add the path to the event. But check first in how many places this path is used
 
-            dataObjectCreatedEvent.fire(new DataObjectCreatedEvent(currentProject, dataObject));
+            dataObjectCreatedEvent.fire( new DataObjectCreatedEvent( currentProject, dataObject ) );
 
             return newPath;
 
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             //uncommon error.
-            logger.error("It was not possible to create Java file, for path: " + context.toURI() + ", fileName: " + fileName, e);
-            throw new ServiceException("It was not possible to create Java file, for path: " + context.toURI() + ", fileName: " + fileName, e);
+            logger.error( "It was not possible to create Java file, for path: " + context.toURI() + ", fileName: " + fileName, e );
+            throw new ServiceException( "It was not possible to create Java file, for path: " + context.toURI() + ", fileName: " + fileName, e );
         }
-    }
-
-    private void addPersistableOptions( DataObject dataObject, String tableName ) {
-        //add default parameters for a persistable data object
-        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
-
-        //mark the class as Entity
-        dataObject.addAnnotation( new AnnotationImpl( modelDriver.getConfiguredAnnotation( Entity.class.getName() ) ) );
-
-        if ( tableName != null && !"".equals( tableName.trim() ) ) {
-            Annotation tableAnnotation = new AnnotationImpl( modelDriver.getConfiguredAnnotation( Table.class.getName() ) );
-            tableAnnotation.setValue( "name", tableName.trim() );
-            dataObject.addAnnotation( tableAnnotation );
-        }
-
-        //add the by default id field
-        ObjectProperty id = dataObject.addProperty( "id", Long.class.getName() );
-        id.addAnnotation( new AnnotationImpl( modelDriver.getConfiguredAnnotation( Id.class.getName() ) ) );
-
-        //set the by default generated value annotation.
-        String generatorName = dataObject.getName().toUpperCase() + "_ID_GENERATOR"; //TODO review this name generation
-        Annotation generatedValue = new AnnotationImpl( modelDriver.getConfiguredAnnotation( GeneratedValue.class.getName() ) );
-        generatedValue.setValue( "generator", generatorName );
-        generatedValue.setValue( "strategy", GenerationType.AUTO.name() );
-        id.addAnnotation( generatedValue );
-
-        //set by default sequence generator
-        Annotation sequenceGenerator = new AnnotationImpl( modelDriver.getConfiguredAnnotation( SequenceGenerator.class.getName() ) );
-
-        String sequenceName = dataObject.getName().toUpperCase() + "_ID_SEQ"; //TODO review this name generation
-        sequenceGenerator.setValue( "name", generatorName );
-        sequenceGenerator.setValue( "sequenceName", sequenceName );
-        id.addAnnotation( sequenceGenerator );
-
     }
 
     @Override

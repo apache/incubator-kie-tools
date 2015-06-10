@@ -36,7 +36,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
@@ -46,11 +45,9 @@ import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtil
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
+import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
-import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
@@ -133,15 +130,16 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         isTypeMultiple.setEnabled( false );
     }
 
+    @Override
+    public String getName() {
+        return "MAIN_FIELD_EDITOR";
+    }
+
     private DataModel getDataModel() {
         return getContext() != null ? getContext().getDataModel() : null;
     }
 
-    private Project getProject() {
-        return getContext() != null ? getContext().getCurrentProject() : null;
-    }
-
-    protected void setReadonly( boolean readonly ) {
+    public void setReadonly( boolean readonly ) {
         super.setReadonly( readonly );
         boolean value = !readonly;
 
@@ -303,7 +301,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
                     public void onSuccess() {
                         nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
                         objectField.setName( newValue );
-                        notifyFieldChange( "name", oldValue, newValue );
+                        notifyFieldChange( ChangeType.FIELD_NAME_CHANGE, "name", oldValue, newValue );
                     }
                 } );
             }
@@ -335,7 +333,8 @@ public class MainDataObjectFieldEditor extends FieldEditor {
             }
         }
         // TODO replace 'label' literal with annotation definition constant
-        notifyFieldChange( "label", oldValue, _label );
+        notifyFieldChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
+                "label", oldValue, _label );
     }
 
     @UiHandler("description")
@@ -362,7 +361,8 @@ public class MainDataObjectFieldEditor extends FieldEditor {
                 getObjectField().addAnnotation( annotation );
             }
         }
-        notifyFieldChange( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description );
+        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
+                AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description );
     }
 
     private void typeChanged( ChangeEvent event ) {
@@ -409,7 +409,8 @@ public class MainDataObjectFieldEditor extends FieldEditor {
             getContext().getHelper().dataObjectUnReferenced( oldType, getDataObject().getClassName() );
             getContext().getHelper().dataObjectReferenced( newType, getDataObject().getClassName() );
         }
-        notifyFieldChange( "className", oldType, newType );
+        notifyFieldChange( ChangeType.FIELD_TYPE_CHANGE,
+                "className", oldType, newType );
     }
 
     private String listNames( List<ObjectProperty> fields ) {
@@ -457,7 +458,7 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         }
     }
 
-    protected void clean() {
+    public void clean() {
         nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
         name.setText( null );
         label.setText( null );

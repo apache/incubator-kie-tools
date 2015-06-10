@@ -558,27 +558,7 @@ public class DataObjectBrowser extends Composite {
 
     private void checkAndDeleteDataObjectProperty( final ObjectProperty objectProperty,
                                                    final int index ) {
-        /*if (getContext().isDMOInvalidated()) {
-            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
-                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            //deleteDataObjectProperty(objectPropertyTO, index);
-                            checkUsageAndDeleteDataObjectProperty( objectPropertyTO, index );
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            dataModelerEvent.fire(new DataModelReload(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), dataObject));
-                        }
-                    }
-            ).show();
-        } else {*/
-        //deleteDataObjectProperty(objectPropertyTO, index);
         checkUsageAndDeleteDataObjectProperty( objectProperty, index );
-        //}
     }
 
     private void deleteDataObjectProperty( final ObjectProperty objectProperty,
@@ -722,32 +702,11 @@ public class DataObjectBrowser extends Composite {
 
     @UiHandler("newPropertyButton")
     void newPropertyClick( ClickEvent event ) {
-        /*if (getContext().isDMOInvalidated()) {
-            newConcurrentChange( getContext().getLastDMOUpdate().getProject().getRootPath(),
-                    getContext().getLastDMOUpdate().getSessionInfo().getIdentity(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            createNewProperty(dataObject,
-                                    DataModelerUtils.unCapitalize(newPropertyId.getText()),
-                                    newPropertyLabel.getText(),
-                                    newPropertyType.getValue());
-                        }
-                    },
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            dataModelerEvent.fire(new DataModelReload(DataModelerEvent.DATA_OBJECT_BROWSER, getDataModel(), dataObject));
-                        }
-                    }
-            ).show();
-        } else {*/
         createNewProperty( dataObject,
                            DataModelerUtils.unCapitalize( newPropertyId.getText() ),
                            newPropertyLabel.getText(),
                            newPropertyType.getValue(),
                            isNewPropertyMultiple.getValue() );
-        //}
     }
 
     //Event Observers

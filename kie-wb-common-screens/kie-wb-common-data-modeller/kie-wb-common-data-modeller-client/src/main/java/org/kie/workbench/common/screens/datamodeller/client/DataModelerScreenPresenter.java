@@ -39,7 +39,6 @@ import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Const
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.JavaFileNameValidator;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.DomainEditorContainer;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelSaved;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelStatusChangeEvent;
@@ -90,7 +89,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuFactory;
-import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -109,9 +107,12 @@ public class DataModelerScreenPresenter
         void setEditorId( String editorId );
 
         //TODO temporal method until we have facets.
-        void showDomain( int domainId );
+        void showDomain( String domainId );
 
         void refreshTypeLists( boolean keepCurrentSelection );
+
+        List<String> getAvailableDomains();
+
     }
 
     private DataModelerScreenView view;
@@ -162,10 +163,6 @@ public class DataModelerScreenPresenter
     private static int editorIds = 0;
 
     private String editorId;
-
-    MenuItem mainDomainMenu;
-
-    MenuItem droolsDomainMenu;
 
     @WorkbenchPartTitle
     public String getTitleText() {
@@ -293,7 +290,7 @@ public class DataModelerScreenPresenter
             public void execute( final String comment ) {
                 view.showBusyIndicator( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.Deleting() );
                 modelerService.call( getDeleteSuccessCallback(), new DataModelerErrorCallback( Constants.INSTANCE.modelEditor_deleting_error() ) ).delete( path,
-                                                                                                                                                           comment );
+                        comment );
             }
         } );
         popup.show();
@@ -766,7 +763,7 @@ public class DataModelerScreenPresenter
 
     private void addSourceEditorPage() {
         addPage( new Page( javaSourceEditor,
-                           org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
+                org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.SourceTabTitle() ) {
             @Override
             public void onFocus() {
                 if ( uiStarted ) {
@@ -1067,79 +1064,53 @@ public class DataModelerScreenPresenter
 
     protected void makeMenuBar() {
 
-        menus = menuBuilder
-                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
-                    @Override
-                    public void execute() {
-                        onSave();
-                    }
-                } ) )
-                .addCopy( new Command() {
-                    @Override
-                    public void execute() {
-                        onCopy();
-                    }
-                } )
-                .addRename( new Command() {
-                    @Override
-                    public void execute() {
-                        onSafeRename();
-                    }
-                } )
-                .addDelete( new Command() {
-                    @Override
-                    public void execute() {
-                        onSafeDelete();
-                    }
-                } )
-                .addValidate(
-                        onValidate()
-                )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+        //menus =
+        menuBuilder
+        .addSave( versionRecordManager.newSaveMenuItem( new Command() {
+            @Override
+            public void execute() {
+                onSave();
+            }
+        } ) )
+        .addCopy( new Command() {
+            @Override
+            public void execute() {
+                onCopy();
+            }
+        } )
+        .addRename( new Command() {
+            @Override
+            public void execute() {
+                onSafeRename();
+            }
+        } )
+        .addDelete( new Command() {
+            @Override
+            public void execute() {
+                onSafeDelete();
+            }
+        } )
+        .addValidate(
+                onValidate()
+        )
+        .addNewTopLevelMenu( versionRecordManager.buildMenu() );
 
-                //TODO temporal menu items for calling the different domain editors.
-                .addNewTopLevelMenu( MenuFactory.newTopLevelMenu( "Main" )
-                        .respondsWith( new Command() {
-                            @Override public void execute() {
-                                onShowMainDomain();
-                            }
-                        } )
-                        .endMenu()
-                        .build().getItems().get( 0 )
-                )
-                .addNewTopLevelMenu( MenuFactory.newTopLevelMenu( "Drools & JBPM" )
-                        .respondsWith( new Command() {
-                            @Override public void execute() {
-                                onShowDroolsDomain();
-                            }
-                        } )
-                        .endMenu()
-                        .build().getItems().get( 0 )
-                )
-                .addNewTopLevelMenu( MenuFactory.newTopLevelMenu( "JPA" )
-                        .respondsWith( new Command() {
-                            @Override public void execute() {
-                                onShowJPADomain();
-                            }
-                        } )
-                        .endMenu()
-                        .build().getItems().get( 0 )
-                )
-
-                .build();
-
+        for ( final String availableDomain : view.getAvailableDomains() ) {
+            menuBuilder.addNewTopLevelMenu( MenuFactory.newTopLevelMenu( availableDomain )
+                            .respondsWith( new Command() {
+                                @Override public void execute() {
+                                    onShowDomain( availableDomain );
+                                }
+                            } )
+                            .endMenu()
+                            .build().getItems().get( 0 )
+            );
+        }
+        menus = menuBuilder.build();
     }
 
-    private void onShowMainDomain() {
-        view.showDomain( DomainEditorContainer.MAIN_DOMAIN );
-    }
-
-    private void onShowDroolsDomain() {
-        view.showDomain( DomainEditorContainer.DROOLS_DOMAIN );
-    }
-
-    private void onShowJPADomain() {
-        view.showDomain( DomainEditorContainer.JPA_DOMAIN );
+    private void onShowDomain( String domain ) {
+        view.showDomain( domain);
     }
 
     private void initContext( final ObservablePath path ) {

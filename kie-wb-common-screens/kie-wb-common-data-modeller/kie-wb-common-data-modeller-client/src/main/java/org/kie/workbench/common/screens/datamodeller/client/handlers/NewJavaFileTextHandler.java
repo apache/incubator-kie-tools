@@ -16,16 +16,24 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.handlers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
-
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.container.IOCBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.javaeditor.client.resources.JavaEditorResources;
 import org.kie.workbench.common.screens.javaeditor.client.resources.i18n.Constants;
@@ -57,12 +65,30 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     private BusyIndicatorView busyIndicatorView;
 
     @Inject
-    private JavaFileOptions options;
+    private SyncBeanManager iocBeanManager;
+
+    private List<DomainOptionsHandler> optionsHandler = new ArrayList<DomainOptionsHandler>(  );
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add( new Pair<String, JavaFileOptions>( "JavaFileOptions",
-                options ) );
+
+        final Collection<IOCBeanDef<DomainOptionsHandler>> optionsHandlerBeans = iocBeanManager.lookupBeans( DomainOptionsHandler.class );
+        if ( optionsHandlerBeans != null && optionsHandlerBeans.size() > 0 ) {
+            for ( IOCBeanDef<DomainOptionsHandler> beanDef : optionsHandlerBeans ) {
+                optionsHandler.add( beanDef.getInstance() );
+            }
+        }
+        Collections.sort( optionsHandler, new Comparator<DomainOptionsHandler>() {
+            @Override public int compare( DomainOptionsHandler handler1, DomainOptionsHandler handler2 ) {
+                Integer key1 = handler1.getPriority();
+                Integer key2 = handler2.getPriority();
+                return key1.compareTo( key2 );
+            }
+        } );
+
+        for ( DomainOptionsHandler handler : optionsHandler ) {
+            extensions.add( new Pair<String, Widget>( handler.getName(), handler.getWidget() ) );
+        }
     }
 
     @Override
@@ -94,14 +120,18 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
                         final NewResourcePresenter presenter ) {
 
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        dataModelerService.call( getSuccessCallback( presenter ),
-                                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).createJavaFile( pkg.getPackageMainSrcPath(),
-                                                                                                                 buildFileName( baseFileName,
-                                                                                                                                resourceType ),
-                                                                                                                 "",
-                                                                                                                 options.isPersitable(),
-                                                                                                                 options.getTableName());
 
+        Map<String, Object> params = new HashMap<String, Object>( );
+        for ( DomainOptionsHandler handler : optionsHandler ) {
+            params.putAll( handler.getOptions() );
+        }
+
+        dataModelerService.call( getSuccessCallback( presenter ),
+                                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).createJavaFile(
+                pkg.getPackageMainSrcPath(),
+                buildFileName( baseFileName, resourceType ),
+                "",
+                params );
     }
 
     @Override

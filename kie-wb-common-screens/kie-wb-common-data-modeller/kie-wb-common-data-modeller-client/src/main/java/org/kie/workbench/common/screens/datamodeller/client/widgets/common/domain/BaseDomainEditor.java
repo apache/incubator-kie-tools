@@ -19,9 +19,6 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.common.doma
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -35,21 +32,15 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelec
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEvent;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 
-public class BaseDomainEditor extends Composite {
+public abstract class BaseDomainEditor
+        extends Composite
+        implements DomainEditor {
 
-    interface BaseDomainEditorUIBinder
-            extends UiBinder<Widget, BaseDomainEditor> {
+    protected static int OBJECT_EDITOR = 0;
 
-    }
+    protected static int FIELD_EDITOR = 1;
 
-    public static int OBJECT_EDITOR = 0;
-
-    public static int FIELD_EDITOR = 1;
-
-    private static BaseDomainEditorUIBinder uiBinder = GWT.create( BaseDomainEditorUIBinder.class );
-
-    @UiField
-    SimplePanel mainPanel;
+    protected SimplePanel mainPanel = new SimplePanel(  );
 
     protected DeckPanel editorsDeck = new DeckPanel();
 
@@ -60,7 +51,7 @@ public class BaseDomainEditor extends Composite {
     protected DataModelerContext context;
 
     public BaseDomainEditor() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget( mainPanel );
     }
 
     public BaseDomainEditor( ObjectEditor objectEditor, FieldEditor fieldEditor ) {
@@ -101,6 +92,11 @@ public class BaseDomainEditor extends Composite {
 
     public void showFieldEditor() {
         editorsDeck.showWidget( FIELD_EDITOR );
+    }
+
+    @Override
+    public Widget getWidget() {
+        return this.asWidget();
     }
 
     protected void showFieldEditor( DataModelerEvent event ) {
@@ -147,5 +143,4 @@ public class BaseDomainEditor extends Composite {
             showFieldEditor( event );
         }
     }
-
 }

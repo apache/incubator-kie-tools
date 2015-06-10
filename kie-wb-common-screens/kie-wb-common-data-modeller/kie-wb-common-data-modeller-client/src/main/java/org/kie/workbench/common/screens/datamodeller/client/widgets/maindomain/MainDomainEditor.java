@@ -16,11 +16,16 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.BaseDomainEditor;
 
+@Dependent
 public class MainDomainEditor extends BaseDomainEditor {
+
+    public MainDomainEditor() {
+    }
 
     @Inject
     public MainDomainEditor( MainDataObjectEditor objectEditor, MainDataObjectFieldEditor fieldEditor ) {
@@ -30,5 +35,13 @@ public class MainDomainEditor extends BaseDomainEditor {
     public void refreshTypeList( boolean keepSelection ) {
         ( ( MainDataObjectEditor ) objectEditor ).refreshTypeList( keepSelection );
         ( ( MainDataObjectFieldEditor ) fieldEditor ).refreshTypeList( keepSelection );
+    }
+
+    @Override public String getName() {
+        return "MAIN";
+    }
+
+    @Override public int getPriority() {
+        return 1;
     }
 }
