@@ -104,11 +104,9 @@ public class ExplorerServiceImpl
     private OrganizationalUnitService organizationalUnitService;
 
     @Inject
-    @SessionScoped
     private User identity;
 
     @Inject
-    @SessionScoped
     private SessionInfo sessionInfo;
 
     @Inject

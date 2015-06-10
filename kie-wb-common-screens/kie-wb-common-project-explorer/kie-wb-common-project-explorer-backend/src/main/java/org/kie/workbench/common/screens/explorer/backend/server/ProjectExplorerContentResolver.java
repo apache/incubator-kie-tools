@@ -66,7 +66,6 @@ public class ProjectExplorerContentResolver {
     private OrganizationalUnitService organizationalUnitService;
 
     @Inject
-    @SessionScoped
     protected User identity;
 
     @Inject
