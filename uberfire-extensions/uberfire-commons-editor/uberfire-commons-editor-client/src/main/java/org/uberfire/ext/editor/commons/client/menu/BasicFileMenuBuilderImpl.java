@@ -30,9 +30,9 @@ import javax.inject.Inject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.impl.EditorLockInfo;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.WidgetLockInfo;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
@@ -383,7 +383,7 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
         return this;
     }
     
-    private void onEditorLockInfo( @Observes EditorLockInfo lockInfo ) {
+    private void onEditorLockInfo( @Observes WidgetLockInfo lockInfo ) {
         boolean renameDeleteEnabled = (!lockInfo.isLocked() || lockInfo.isLockedByCurrentUser());
         if ( renameMenuItem != null ) {
             renameMenuItem.setEnabled( renameDeleteEnabled );
