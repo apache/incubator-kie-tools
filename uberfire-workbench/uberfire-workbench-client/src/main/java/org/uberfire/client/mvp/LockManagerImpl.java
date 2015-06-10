@@ -9,7 +9,6 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.backend.vfs.impl.EditorLockInfo;
 import org.uberfire.backend.vfs.impl.LockInfo;
 import org.uberfire.backend.vfs.impl.LockResult;
 import org.uberfire.client.resources.i18n.WorkbenchConstants;
@@ -31,11 +30,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.UIObject;
 
 /**
- * Default implementation of {@link EditorLockManager} using the
+ * Default implementation of {@link LockManager} using the
  * {@link VFSLockServiceProxy} for lock management.
  */
 @Dependent
-public class EditorLockManagerImpl implements EditorLockManager {
+public class LockManagerImpl implements LockManager {
 
     private static final List<String> TAG_CLICK_LOCK_EXCLUSIONS =
             Arrays.asList( "a",
@@ -53,7 +52,7 @@ public class EditorLockManagerImpl implements EditorLockManager {
     private javax.enterprise.event.Event<ChangeTitleWidgetEvent> changeTitleEvent;
 
     @Inject
-    private javax.enterprise.event.Event<EditorLockInfo> editorLockInfoEvent;
+    private javax.enterprise.event.Event<WidgetLockInfo> widgetLockInfoEvent;
 
     @Inject
     private javax.enterprise.event.Event<NotificationEvent> lockNotification;
@@ -95,7 +94,7 @@ public class EditorLockManagerImpl implements EditorLockManager {
     public void onFocus() {
         publishJsApi();
         fireChangeTitleEvent();
-        fireEditorLockEvent();
+        fireWigetLockInfoEvent();
     }
     
     @Override
@@ -269,7 +268,7 @@ public class EditorLockManagerImpl implements EditorLockManager {
             this.lockSyncComplete = true;
 
             fireChangeTitleEvent();
-            fireEditorLockEvent();
+            fireWigetLockInfoEvent();
             
             for ( Runnable runnable : syncCompleteRunnables ) {
                 runnable.run();
@@ -300,16 +299,16 @@ public class EditorLockManagerImpl implements EditorLockManager {
     private native void publishJsApi()/*-{
         var lockManager = this;
         $wnd.isLocked = function () {
-            return lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::isLocked()();
+            return lockManager.@org.uberfire.client.mvp.LockManagerImpl::isLocked()();
         }
         $wnd.isLockedByCurrentUser = function () {
-            return lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::isLockedByCurrentUser()();
+            return lockManager.@org.uberfire.client.mvp.LockManagerImpl::isLockedByCurrentUser()();
         }
         $wnd.acquireLock = function () {
-            lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::acquireLock()();
+            lockManager.@org.uberfire.client.mvp.LockManagerImpl::acquireLock()();
         }
         $wnd.releaseLock = function () {
-            lockManager.@org.uberfire.client.mvp.EditorLockManagerImpl::releaseLock()();
+            lockManager.@org.uberfire.client.mvp.LockManagerImpl::releaseLock()();
         }
     }-*/;
 
@@ -324,9 +323,9 @@ public class EditorLockManagerImpl implements EditorLockManager {
         }
     }
     
-    private void fireEditorLockEvent() {
+    private void fireWigetLockInfoEvent() {
         if ( isVisible() ) {
-            editorLockInfoEvent.fire( new EditorLockInfo( lockInfo.isLocked(),
+            widgetLockInfoEvent.fire( new WidgetLockInfo( lockInfo.isLocked(),
                                                           isLockedByCurrentUser() ) );
         }
     }

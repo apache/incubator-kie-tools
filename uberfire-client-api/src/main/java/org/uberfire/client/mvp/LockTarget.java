@@ -1,5 +1,7 @@
 package org.uberfire.client.mvp;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 
@@ -25,6 +27,12 @@ public class LockTarget {
                        PlaceRequest place,
                        TitleProvider titleProvider,
                        Runnable reloadRunnable) {
+        
+        checkNotNull( "path", path );
+        checkNotNull( "widget", widget );
+        checkNotNull( "place", place );
+        checkNotNull( "titleProvider", titleProvider );
+        checkNotNull( "reloadRunnable", reloadRunnable );
         
         this.path = path;
         this.widget = widget;

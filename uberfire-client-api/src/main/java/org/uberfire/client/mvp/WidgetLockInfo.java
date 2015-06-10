@@ -1,12 +1,12 @@
-package org.uberfire.backend.vfs.impl;
+package org.uberfire.client.mvp;
 
 
-public class EditorLockInfo {
+public class WidgetLockInfo {
 
     private final boolean locked;
     private final boolean lockedByCurrentUser;
 
-    public EditorLockInfo( boolean locked, boolean lockedByCurrentUser ) {
+    public WidgetLockInfo( boolean locked, boolean lockedByCurrentUser ) {
         this.locked = locked;
         this.lockedByCurrentUser = lockedByCurrentUser;
     }

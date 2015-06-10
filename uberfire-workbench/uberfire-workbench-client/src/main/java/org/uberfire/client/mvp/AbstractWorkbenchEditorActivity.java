@@ -30,7 +30,7 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchActivity implements WorkbenchEditorActivity {
 
     @Inject
-    private EditorLockManager lockManager;
+    private LockManager lockManager;
     
     protected ObservablePath path;
 
