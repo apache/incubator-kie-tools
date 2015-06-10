@@ -8,16 +8,16 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface AppImages extends ClientBundle {
 
-    @Source("org/uberfire/ext/wires/core/public/images/wires-user-logo.png")
+    @Source("wires-user-logo.png")
     ImageResource wiresUserLogo();
-    
-    @Source("org/uberfire/ext/wires/core/public/images/layerPanel/delete.png")
-    public ImageResource delete();
-    
-    @Source("org/uberfire/ext/wires/core/public/images/layerPanel/view.png")
-    public ImageResource view();
-    
-    @Source("org/uberfire/ext/wires/core/public/images/layerPanel/clear.png")
-    public ImageResource clear();
+
+    @Source("layerPanel/delete.png")
+    ImageResource delete();
+
+    @Source("layerPanel/view.png")
+    ImageResource view();
+
+    @Source("layerPanel/clear.png")
+    ImageResource clear();
 
 }
