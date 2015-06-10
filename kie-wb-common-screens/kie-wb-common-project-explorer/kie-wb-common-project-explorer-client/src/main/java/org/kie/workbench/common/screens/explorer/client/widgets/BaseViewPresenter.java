@@ -47,7 +47,6 @@ import org.guvnor.structure.repositories.RepositoryUpdatedEvent;
 import org.guvnor.structure.repositories.impl.git.GitRepository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.uberfire.social.activities.model.ExtendedTypes;
 import org.kie.uberfire.social.activities.model.SocialFileSelectedEvent;
@@ -117,9 +116,6 @@ public abstract class BaseViewPresenter implements ViewPresenter {
 
     @Inject
     private transient SessionInfo sessionInfo;
-
-    @Inject
-    private SyncBeanManager iocBeanManager;
 
     //Active context
     protected OrganizationalUnit activeOrganizationalUnit = null;
@@ -817,11 +813,12 @@ public abstract class BaseViewPresenter implements ViewPresenter {
     private void refresh(final Path resource) {
         refresh (resource, false);
     }
+    
     private void refresh(final Path resource, boolean force) {
         if ( !getView().isVisible() ) {
             return;
         }
-        if ( resource == null ) {
+        if ( resource == null || activeProject == null ) {
             return;
         }
         if ( !force && !Utils.isInFolderItem( activeFolderItem,

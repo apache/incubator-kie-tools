@@ -59,7 +59,7 @@ import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.EditorLockManager;
+import org.uberfire.client.mvp.LockManager;
 import org.uberfire.client.mvp.LockTarget;
 import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.client.mvp.PlaceManager;
@@ -130,8 +130,8 @@ public class ProjectScreenPresenter
     private ProjectContext             workbenchContext;
     private ProjectContextChangeHandle projectContextChangeHandle;
     
-    private Instance<EditorLockManager> lockManagerInstanceProvider;
-    private Map<Widget, EditorLockManager> lockManagers = new HashMap<Widget, EditorLockManager>();
+    private Instance<LockManager> lockManagerInstanceProvider;
+    private Map<Widget, LockManager> lockManagers = new HashMap<Widget, LockManager>();
 
     private Runnable reloadRunnable;
 
@@ -154,7 +154,7 @@ public class ProjectScreenPresenter
                                   final BusyIndicatorView busyIndicatorView,
                                   final KieWorkbenchACL kieACL,
                                   final Caller<AssetManagementService> assetManagementServices,
-                                  final Instance<EditorLockManager> lockManagerInstanceProvider) {
+                                  final Instance<LockManager> lockManagerInstanceProvider) {
         this.view = view;
         view.setPresenter(this);
         view.setDeployToRuntimeSetting(ApplicationPreferences.getBooleanPref("support.runtime.deploy"));
@@ -226,7 +226,7 @@ public class ProjectScreenPresenter
     @OnClose
     public void onClose() {
         workbenchContext.removeChangeHandler(projectContextChangeHandle);
-        for (EditorLockManager lockManager : lockManagers.values()) {
+        for (LockManager lockManager : lockManagers.values()) {
             lockManager.releaseLock();
         }
     }
@@ -967,14 +967,14 @@ public class ProjectScreenPresenter
     }
     
     private void acquireLockOnDemand(final Path path, final Widget widget) {
-        final EditorLockManager lockManager = getOrCreateLockManager( widget );
+        final LockManager lockManager = getOrCreateLockManager( widget );
         final LockTarget lockTarget = new LockTarget(path, widget, placeRequest, titleProvider, reloadRunnable );
         lockManager.init( lockTarget );
         lockManager.acquireLockOnDemand();
     }
     
-    private EditorLockManager getOrCreateLockManager(final Widget widget) {
-        EditorLockManager lockManager = lockManagers.get( widget );
+    private LockManager getOrCreateLockManager(final Widget widget) {
+        LockManager lockManager = lockManagers.get( widget );
         if (lockManager == null) {
             lockManager = lockManagerInstanceProvider.get();
             lockManagers.put( widget, lockManager);
