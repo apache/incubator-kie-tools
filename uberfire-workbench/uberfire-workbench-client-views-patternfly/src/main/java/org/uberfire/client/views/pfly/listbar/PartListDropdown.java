@@ -26,6 +26,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DragStartEvent;
 import com.google.gwt.event.dom.client.DragStartHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.HasCloseHandlers;
@@ -63,6 +65,11 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     private HandlerRegistration noDragHandler;
     private WorkbenchDragAndDropManager dndManager;
     private boolean dndEnabled = true;
+
+    public PartListDropdown(){
+        super();
+        this.addDomHandler( new NoMouseDownHandler(), MouseDownEvent.getType() );
+    }
 
     public void setDndManager( final WorkbenchDragAndDropManager dndManager ) {
         this.dndManager = dndManager;
@@ -115,6 +122,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         final DragArea dragArea = new DragArea( text );
         dragArea.ensureDebugId( DEBUG_TITLE_PREFIX + title );
         dragArea.addStyleName( Styles.PULL_LEFT );
+        dragArea.addMouseDownHandler( new NoMouseDownHandler() );
         return dragArea;
     }
 
@@ -180,7 +188,7 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         if ( noDragHandler == null ) {
             noDragHandler = this.addDomHandler( new DragStartHandler() {
                 @Override
-                public void onDragStart( final DragStartEvent event ) {
+                public void onDragStart( DragStartEvent event ) {
                     event.preventDefault();
                 }
             }, DragStartEvent.getType() );
@@ -207,5 +215,13 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     @Override
     public HandlerRegistration addCloseHandler( final CloseHandler<PartDefinition> handler ) {
         return super.addHandler( handler, CloseEvent.getType() );
+    }
+
+    private class NoMouseDownHandler implements MouseDownHandler {
+        @Override
+        public void onMouseDown( MouseDownEvent event ) {
+//              Prevents drag from propagating to text elements
+            event.preventDefault();
+        }
     }
 }
