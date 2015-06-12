@@ -33,6 +33,7 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
@@ -255,8 +256,13 @@ public class ShowcaseEntryPoint {
 
     @Produces
     @ApplicationScoped
-    public MainBrand createBrand() {
-        return new MainBrand( new Image( AppResource.INSTANCE.images().ufBrandLogo() ) );
+    public MainBrand createBrandLogo() {
+        return new MainBrand() {
+            @Override
+            public Widget asWidget() {
+                return new Image( AppResource.INSTANCE.images().ufBrandLogo() );
+            }
+        };
     }
 
 }
