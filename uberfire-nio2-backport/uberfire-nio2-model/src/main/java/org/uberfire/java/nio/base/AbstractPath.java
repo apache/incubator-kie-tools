@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.FilenameUtils;
+import org.uberfire.apache.commons.io.FilenameUtils;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.java.nio.EncodingUtil;
 import org.uberfire.java.nio.IOException;
