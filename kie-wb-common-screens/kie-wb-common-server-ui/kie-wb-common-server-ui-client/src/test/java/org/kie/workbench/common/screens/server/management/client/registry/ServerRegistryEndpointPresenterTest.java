@@ -4,7 +4,9 @@ import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.server.management.events.ContainerStarted;
 import org.kie.workbench.common.screens.server.management.service.ServerManagementService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -60,21 +62,24 @@ public class ServerRegistryEndpointPresenterTest {
         verify( view, times( 1 ) ).lockScreen();
         verify( placeManager, times( 1 ) ).forceClosePlace( placeRequest );
         verify( view, times( 1 ) ).unlockScreen();
+        verify( errorPopup, times( 0 ) ).showMessage( anyString(), any( Command.class ), any( Command.class ) );
 
         doThrow( RuntimeException.class ).when( serverManagementService ).registerServer( "http:endpoint", "my_server", null, null, "localhost/rest" );
+
+        final ArgumentCaptor<Command> commandCaptor = ArgumentCaptor.forClass( Command.class );
 
         doAnswer( new Answer() {
             @Override
             public Object answer( InvocationOnMock invocationOnMock ) throws Throwable {
-                presenter.close();
+                commandCaptor.getValue().execute();
                 return null;
             }
-        } ).when( errorPopup ).showMessage( any( String.class ), any( Command.class ), any( Command.class ) );
+        } ).when( errorPopup ).showMessage( any( String.class ), any( Command.class ), commandCaptor.capture() );
 
         presenter.registerServer( "http:endpoint", "my_server", null, null );
 
         verify( errorPopup, times( 1 ) ).showMessage( anyString(), any( Command.class ), any( Command.class ) );
-        verify( placeManager, times( 2 ) ).forceClosePlace( placeRequest );
+        verify( placeManager, times( 1 ) ).forceClosePlace( placeRequest );
         verify( view, times( 2 ) ).unlockScreen();
     }
 

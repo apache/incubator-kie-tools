@@ -108,7 +108,7 @@ public class ServerRegistryEndpointPresenter {
                               errorPopup.showMessage( errorMessage, Commands.DO_NOTHING, new Command() {
                                   @Override
                                   public void execute() {
-                                      close();
+                                      view.unlockScreen();
                                   }
                               } );
                               return false;
