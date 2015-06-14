@@ -25,6 +25,8 @@ public interface IControlHandleList extends IActivatable, Iterable<IControlHandl
 
     public boolean isEmpty();
 
+    public IControlHandle getHandle(int index);
+
     public void add(IControlHandle handle);
 
     public void remove(IControlHandle handle);

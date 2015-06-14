@@ -49,6 +49,11 @@ public final class ControlHandleList extends Activatable implements IControlHand
         return (0 == m_chlist.size());
     }
 
+    public IControlHandle getHandle(int index)
+    {
+        return m_chlist.get(index);
+    }
+
     @Override
     public final boolean contains(final IControlHandle handle)
     {

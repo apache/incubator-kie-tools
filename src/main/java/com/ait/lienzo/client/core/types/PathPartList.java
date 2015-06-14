@@ -288,6 +288,12 @@ public final class PathPartList
         points.push(cx, cy, rx, ry, th, dt, ps, fs);
     }
 
+    public void resetBoundingBox()
+    {
+        m_box = null;
+    }
+
+
     public BoundingBox getBoundingBox()
     {
         final int size = size();
