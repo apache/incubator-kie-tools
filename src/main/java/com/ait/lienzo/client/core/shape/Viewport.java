@@ -133,6 +133,12 @@ public class Viewport extends ContainerNode<Scene, Viewport> implements IJSONSer
         return getAttributes().getTransform();
     }
 
+    @Override
+    protected Transform getPossibleNodeTransform()
+    {
+        return getTransform();
+    }
+
     private final void setSceneAndState(final Scene main)
     {
         add(m_back, m_main = main, m_drag);

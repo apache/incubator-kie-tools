@@ -487,7 +487,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
         }
     }
 
-    protected final Transform getPossibleNodeTransform()
+    protected Transform getPossibleNodeTransform()
     {
         if (false == m_attr.hasAnyTransformAttributes())
         {
