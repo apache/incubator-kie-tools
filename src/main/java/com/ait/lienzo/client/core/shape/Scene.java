@@ -902,7 +902,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
         @Override
         public final boolean addNodeForContainer(final IContainer<?, ?> container, final Node<?> node, final ValidationContext ctx)
         {
-            if (node.getNodeType() == NodeType.LAYER)
+            if ((node.getNodeType() == NodeType.LAYER) || (node.getNodeType() == NodeType.GRID_LAYER))
             {
                 container.asScene().add(node.asLayer());
 

@@ -525,7 +525,7 @@ public class GridLayer extends Layer
         }
 
         @Override
-        public GridLayer create(JSONObject node, ValidationContext ctx) throws ValidationException
+        public GridLayer container(final JSONObject node, final ValidationContext ctx) throws ValidationException
         {
             Line[] lines = new Line[4];
 
