@@ -1,159 +1,83 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
+<%--
+  ~ Copyright 2012 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  --%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<%@page import="org.jboss.errai.security.server.FormAuthenticationScheme"%>
+<html xmlns="http://www.w3.org/1999/xhtml" class="login-pf">
 <head>
-  <title>UF Showcase</title>
-
-  <style type="text/css">
-    * {
-      font-family: Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      margin: 0;
-      padding: 0;
-      color: ${symbol_pound}fff;
-      background: url('<%=request.getContextPath()%>/${package}.${capitalizedRootArtifactId}Showcase/images/bg-login.png') repeat ${symbol_pound}1b1b1b;
-      font-size: 14px;
-      text-shadow: ${symbol_pound}050505 0 -1px 0;
-      font-weight: bold;
-    }
-
-    li {
-      list-style: none;
-    }
-
-    ${symbol_pound}dummy {
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-bottom: solid 3px ${symbol_pound}777973;
-      height: 250px;
-      width: 100%;
-      background: url('<%=request.getContextPath()%>/${package}.${capitalizedRootArtifactId}Showcase/images/bg-login-top.png') repeat ${symbol_pound}fff;
-      z-index: 1;
-    }
-
-    ${symbol_pound}dummy2 {
-      position: absolute;
-      top: 0;
-      left: 0;
-      border-bottom: solid 2px ${symbol_pound}545551;
-      height: 252px;
-      width: 100%;
-      background: transparent;
-      z-index: 2;
-    }
-
-    ${symbol_pound}login-wrapper {
-      margin: 0 0 0 -160px;
-      width: 320px;
-      text-align: center;
-      z-index: 99;
-      position: absolute;
-      top: 0;
-      left: 50%;
-    }
-
-    ${symbol_pound}login-top {
-      height: 120px;
-      width: 401px;
-      padding-top: 20px;
-      text-align: center;
-    }
-
-    ${symbol_pound}login-content {
-      margin-top: 120px;
-    }
-
-    label {
-      width: 70px;
-      float: left;
-      padding: 8px;
-      line-height: 14px;
-      margin-top: -4px;
-    }
-
-    input.text-input {
-      width: 200px;
-      float: right;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;
-      border-radius: 4px;
-      background: ${symbol_pound}fff;
-      border: solid 1px transparent;
-      color: ${symbol_pound}555;
-      padding: 8px;
-      font-size: 13px;
-    }
-
-    input.button {
-      float: right;
-      padding: 6px 10px;
-      color: ${symbol_pound}fff;
-      font-size: 14px;
-      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(${symbol_pound}a4d04a), to(${symbol_pound}459300));
-      text-shadow: ${symbol_pound}050505 0 -1px 0;
-      background-color: ${symbol_pound}459300;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;
-      border-radius: 4px;
-      border: solid 1px transparent;
-      font-weight: bold;
-      cursor: pointer;
-      letter-spacing: 1px;
-    }
-
-    input.button:hover {
-      background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(${symbol_pound}a4d04a), to(${symbol_pound}a4d04a), color-stop(80%, ${symbol_pound}76b226));
-      text-shadow: ${symbol_pound}050505 0 -1px 2px;
-      background-color: ${symbol_pound}a4d04a;
-      color: ${symbol_pound}fff;
-    }
-
-    div.error {
-      padding: 8px;
-      background: rgba(52, 4, 0, 0.4);
-      -moz-border-radius: 8px;
-      -webkit-border-radius: 8px;
-      border-radius: 8px;
-      border: solid 1px transparent;
-      margin: 6px 0;
-    }
-  </style>
+  <title>Login - UberFire Showcase</title>
+  <link rel="stylesheet" href="${package}.${capitalizedRootArtifactId}Showcase/patternfly/dist/css/patternfly.min.css">
 </head>
 
-<body id="login">
-
-<div id="login-wrapper" class="png_bg">
-  <div id="login-top">
-    <img src="<%=request.getContextPath()%>/${package}.${capitalizedRootArtifactId}Showcase/images/uf_logo.png" alt="Logo" title="Powered By Uberfire"/>
-  </div>
-
-  <div id="login-content">
-    <form action="uf_security_check" method="post">
-      <p>
-        <label>Username</label>
-        <input value="" name="uf_username" class="text-input" type="text"/>
-      </p>
-      <br style="clear: both;"/>
-
-      <p>
-        <label>Password</label>
-        <input name="uf_password" class="text-input" type="password"/>
-      </p>
-      <br style="clear: both;"/>
-
-      <p>
-        <input class="button" type="submit" value="Sign In"/>
-      </p>
-    </form>
+<body>
+<span id="badge">
+  <img src="${package}.${capitalizedRootArtifactId}Showcase/images/uf_logo.png" alt="UberFire Logo" title="Powered By Uberfire"/>
+</span>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div id="brand">
+        <img src="${package}.${capitalizedRootArtifactId}Showcase/images/uf.png" alt="Uberfire UI Framework">
+      </div>
+    </div>
+    <div class="col-md-4 login">
+      <% if (request.getParameter( FormAuthenticationScheme.LOGIN_ERROR_QUERY_PARAM ) != null) { %>
+      <div class="alert alert-danger">
+        <span class="pficon-layered">
+          <span class="pficon pficon-error-octagon"></span>
+          <span class="pficon pficon-error-exclamation"></span>
+        </span>
+        Login failed. Please try again.
+      </div>
+      <% } %>
+      <form class="form-horizontal" role="form" action="uf_security_check" method="post">
+        <div class="form-group">
+          <label for="uf_username" class="col-md-2 control-label">Username</label>
+          <div class="col-md-10">
+            <input type="text" class="form-control" id="uf_username" name="uf_username" placeholder="admin" tabindex="1" autofocus>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="uf_password" class="col-md-2 control-label">Password</label>
+          <div class="col-md-10">
+            <input type="password" class="form-control" id="uf_password" name="uf_password" placeholder="admin" tabindex="2">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-md-offset-2 col-md-7">
+            <div class="checkbox">
+              <label>
+                <input id="nosplash" name="nosplash" type="checkbox" tabindex="3"> Deactivate Splash Screen
+              </label>
+            </div>
+          </div>
+          <div class="col-md-3 submit">
+            <button type="submit" class="btn btn-primary btn-lg" tabindex="4">Log In</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-8 details">
+      <p><strong>Welcome to UberFire Showcase!</strong></p>
+    </div>
   </div>
 </div>
-<div id="dummy"></div>
-<div id="dummy2"></div>
+
 </body>
 </html>

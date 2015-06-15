@@ -1,4 +1,6 @@
+#set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -19,48 +21,45 @@
   <dependencySets>
     <dependencySet>
       <includes>
+        <include>org.jboss.errai:errai-weld-integration:jar</include>
+        <include>javax.enterprise:cdi-api:jar</include>
+        <include>org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:jar</include>
+        <include>com.sun.xml.bind:jaxb-impl:jar</include>
+        <include>com.sun.xml.bind:jaxb-xjc:jar</include>
+        <include>javax.inject:javax.inject:jar</include>
+        <include>javax.activation:activation:jar</include>
+
+        <include>org.slf4j:slf4j-api:jar</include>
+        <include>org.slf4j:slf4j-ext:jar</include>
+        <include>ch.qos.cal10n:cal10n-api:jar</include>
+
+        <include>org.hibernate.javax.persistence:hibernate-jpa-2.0-api:jar</include>
+        <include>org.jboss.logging:jboss-logging:jar</include>
+
+        <include>org.jboss.weld:weld-api:jar</include>
+        <include>org.jboss.weld:weld-core:jar</include>
+        <include>org.jboss.weld.servlet:weld-servlet-core:jar</include>
+        <include>org.jboss.weld:weld-spi:jar</include>
+        <include>org.jboss.weld.se:weld-se-core:jar</include>
+        <include>org.jboss.weld:weld-core-impl:jar</include>
+        <include>org.jboss.classfilewriter:jboss-classfilewriter:jar</include>
+        <include>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec:jar</include>
+      </includes>
+      <unpack>false</unpack>
+      <outputDirectory>WEB-INF/lib</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
         <include>${groupId}:${rootArtifactId}-webapp:war</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>
       <unpackOptions>
         <excludes>
-          <exclude>WEB-INF/jetty-env.xml</exclude>
           <exclude>WEB-INF/web.xml</exclude>
-
-          <!-- Client Component -->
-          <exclude>WEB-INF/lib/${rootArtifactId}-component-client-*.jar</exclude>
-
-          <!-- UF Client Related -->
-          <exclude>WEB-INF/lib/uberfire-js-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-client-api-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-security-client-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-workbench-*.jar</exclude>
-          <exclude>WEB-INF/lib/uberfire-panel-manager*.jar</exclude>
-
-          <!-- GWT Client Related -->
-          <exclude>WEB-INF/lib/gwt-bootstrap-*.jar</exclude>
-          <exclude>WEB-INF/lib/gwt-user-*.jar</exclude>
-          <exclude>WEB-INF/lib/guava-gwt-*.jar</exclude>
-          <exclude>WEB-INF/lib/gwt-dnd-*.jar</exclude>
-          <exclude>WEB-INF/lib/gchart-*.jar</exclude>
-
-          <exclude>WEB-INF/lib/*-sources.jar</exclude>
-          <exclude>WEB-INF/lib/el-api-*.jar</exclude>
-          <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
-
-          <!-- Errai -->
-          <exclude>WEB-INF/lib/errai-codegen-gwt-*.jar</exclude>
-          <exclude>WEB-INF/lib/errai-cdi-jetty-*.jar</exclude>
           <exclude>WEB-INF/lib/errai-jboss-as-support-*.jar</exclude>
-
-          <!-- Jetty -->
-          <exclude>WEB-INF/lib/jetty-*.jar</exclude>
-          <exclude>WEB-INF/lib/geronimo-spec-jta-*.jar</exclude>
-          <exclude>WEB-INF/lib/servlet-api-*.jar</exclude>
         </excludes>
       </unpackOptions>
-      <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>
   </dependencySets>
 

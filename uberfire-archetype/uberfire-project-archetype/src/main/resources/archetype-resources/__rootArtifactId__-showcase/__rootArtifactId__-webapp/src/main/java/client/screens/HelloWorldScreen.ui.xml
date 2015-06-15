@@ -15,22 +15,22 @@
         <strong>uberfire</strong>
       </div>
       <div class="row {res.CSS.welcomeBody}">
-        <div class="span4 {res.CSS.getStarted}">
+        <div class="col-md-4 {res.CSS.getStarted}">
           <div style="padding: 90px 60px 0 ;">
             <h3>Get Started</h3>
             <div class="{res.CSS.linkList}">
-              <a href="#">Documentation</a>
-              <a href="#">Get Started with tutorials</a>
-              <a href="#">Help us to write documentation</a>
+              <a href="${symbol_pound}">Documentation</a>
+              <a href="${symbol_pound}">Get Started with tutorials</a>
+              <a href="${symbol_pound}">Help us to write documentation</a>
             </div>
           </div>
         </div>
-        <div class="span8">
+        <div class="col-md-8">
           <div class="{res.CSS.git}">
             <div style="padding: 66px 60px;">
               <div class="{res.CSS.linkList}">
-                <a href="#">Fork from github</a>
-                <a href="#">Send Pull Requests</a>
+                <a href="${symbol_pound}">Fork from github</a>
+                <a href="${symbol_pound}">Send Pull Requests</a>
               </div>
             </div>
           </div>
@@ -38,7 +38,7 @@
             <div style="padding: 45px 45px;">
               <h3>Download uberfire</h3>
               <div class="{res.CSS.linkList}">
-                <a href="#">download uberfire</a>
+                <a href="${symbol_pound}">download uberfire</a>
               </div>
             </div>
           </div>

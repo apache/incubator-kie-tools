@@ -1,11 +1,14 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 package ${package}.component.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import ${package}.component.model.MyModel;
+import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface MyService {
 
-    public MyModel execute( final String param );
+    MyModel execute( final String param );
 
 }

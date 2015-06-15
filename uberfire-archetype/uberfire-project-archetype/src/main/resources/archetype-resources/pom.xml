@@ -8,20 +8,13 @@
   <packaging>pom</packaging>
   <name>${capitalizedRootArtifactId}</name>
 
-  <modules>
-    <module>${artifactId}-bom</module>
-    <module>${artifactId}-parent-with-dependencies</module>
-    <module>${artifactId}-component</module>
-    <module>${artifactId}-showcase</module>
-  </modules>
-
   <properties>
     <version.assembly.plugin>2.4</version.assembly.plugin>
     <version.buildhelper.plugin>1.7</version.buildhelper.plugin>
     <version.bundle.plugin>2.3.7</version.bundle.plugin>
     <version.clean.plugin>2.5</version.clean.plugin>
     <version.compiler.plugin>3.0</version.compiler.plugin>
-    <version.dependency.plugin>2.6</version.dependency.plugin>
+    <version.dependency.plugin>2.8</version.dependency.plugin>
     <version.failsafe.plugin>2.12.3</version.failsafe.plugin>
     <version.jar.plugin>2.4</version.jar.plugin>
     <version.resources.plugin>2.6</version.resources.plugin>
@@ -43,6 +36,13 @@
     <maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
   </properties>
 
+  <modules>
+    <module>${artifactId}-bom</module>
+    <module>${artifactId}-parent-with-dependencies</module>
+    <module>${artifactId}-component</module>
+    <module>${artifactId}-showcase</module>
+  </modules>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -54,55 +54,54 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${version.buildhelper.plugin}</version>
+          <version>1.7</version>
           <executions>
             <execution>
               <goals>
                 <goal>parse-version</goal>
               </goals>
             </execution>
+            <execution>
+              <id>add-source</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>add-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>target/generated-sources/annotations</source>
+                </sources>
+              </configuration>
+            </execution>
           </executions>
         </plugin>
+
         <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>${version.bundle.plugin}</version>
-          <extensions>true</extensions>
-          <configuration>
-            <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->
-            <excludeDependencies>true</excludeDependencies>
-            <instructions>
-              <_removeheaders>Ignore-Package</_removeheaders>
-              <_nouses>true</_nouses>
-              <_snapshot>${osgi.snapshot.qualifier}</_snapshot>
-              <Bundle-Version>
-                ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-              </Bundle-Version>
-            </instructions>
-          </configuration>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.2</version>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>${version.compiler.plugin}</version>
           <configuration>
             <fork>false</fork>
             <meminitial>128m</meminitial>
             <maxmem>512m</maxmem>
-            <showDeprecation>true</showDeprecation>
-            <showWarnings>true</showWarnings>
-            <compilerArguments>
-              <source>${maven.compiler.argument.source}</source>
-              <target>${maven.compiler.argument.target}</target>
-            </compilerArguments>
           </configuration>
         </plugin>
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${version.surefire.plugin}</version>
+          <version>2.18</version>
           <configuration>
             <includes>
               <include>**/*Test.java</include>
@@ -117,7 +116,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${version.failsafe.plugin}</version>
+          <version>2.12</version>
           <executions>
             <execution>
               <goals>
@@ -136,7 +135,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>${version.source.plugin}</version>
+          <version>2.1.2</version>
           <executions>
             <execution>
               <id>jar</id>
@@ -148,14 +147,10 @@
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                     <Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>
-                      ${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
-                    </Eclipse-SourceBundle>
+                    <Eclipse-SourceBundle>${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -170,14 +165,10 @@
                   <manifestEntries>
                     <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
                     <Bundle-SymbolicName>${project.artifactId}.tests.source</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>
-                      ${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
-                    </Eclipse-SourceBundle>
+                    <Eclipse-SourceBundle>${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."</Eclipse-SourceBundle>
                   </manifestEntries>
                 </archive>
               </configuration>
@@ -186,9 +177,78 @@
         </plugin>
 
         <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.1</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <!-- Manually push changes (including git tags) after nexus staged
+                 repo is successfully closed -->
+            <pushChanges>false</pushChanges>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.2.1</version>
+        </plugin>
+
+        <!-- Site plugin >= 3.3 required for compat with Maven 3.1.x -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.3</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <configuration>
+            <instrumentation>
+              <excludes>
+                <exclude>org/drools/**/*Test.class</exclude>
+              </excludes>
+            </instrumentation>
+          </configuration>
+          <executions>
+            <execution>
+              <goals>
+                <goal>clean</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <links>
+              <link>http://docs.oracle.com/javase/6/docs/api</link>
+            </links>
+            <minmemory>128m</minmemory>
+            <maxmemory>512m</maxmemory>
+            <author>false</author>
+            <breakiterator>true</breakiterator>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${version.war.plugin}</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>${version.jar.plugin}</version>
+          <version>2.3.1</version>
           <executions>
             <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
             <execution>
@@ -203,9 +263,7 @@
                 <archive>
                   <manifestEntries>
                     <Bundle-SymbolicName>${project.artifactId}.tests</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
+                    <Bundle-Version>${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}</Bundle-Version>
                     <Bundle-Name>${project.name}</Bundle-Name>
                     <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
                   </manifestEntries>
@@ -254,7 +312,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <execute/>
+                    <execute />
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -267,7 +325,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore/>
+                    <ignore />
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -322,16 +380,17 @@
             <fileset>
               <directory>${basedir}</directory>
               <includes>
-                <include>.errai/**</include>
+                <include>src/main/webapp/WEB-INF/deploy/</include>
+                <include>src/main/webapp/WEB-INF/classes/</include>
+                <include>src/main/webapp/WEB-INF/lib/</include>
+                <include>**/gwt-unitCache/**</include>
+                <include>.errai/</include>
                 <include>.niogit/**</include>
-                <include>.security/**</include>
-                <include>.index/**</include>
               </includes>
             </fileset>
           </filesets>
         </configuration>
       </plugin>
-
     </plugins>
 
   </build>

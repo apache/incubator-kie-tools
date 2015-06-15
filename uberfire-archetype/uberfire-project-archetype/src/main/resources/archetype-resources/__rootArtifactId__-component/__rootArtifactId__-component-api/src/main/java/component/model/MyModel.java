@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 package ${package}.component.model;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
