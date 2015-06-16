@@ -32,8 +32,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspectorKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.InsertFactActionInspectorKey;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.SetFieldColActionInspectorKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.FactFieldColumnActionInspectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.UnrecognizedActionInspectorKey;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspector;
@@ -166,9 +165,9 @@ public class RowInspectorGenerator {
 
     private ActionInspectorKey getKey( ActionCol52 actionCol ) {
         if ( actionCol instanceof ActionSetFieldCol52 ) {
-            return new SetFieldColActionInspectorKey( (ActionSetFieldCol52) actionCol );
+            return new FactFieldColumnActionInspectorKey( (ActionSetFieldCol52) actionCol );
         } else if ( actionCol instanceof ActionInsertFactCol52 ) {
-            return new InsertFactActionInspectorKey( (ActionInsertFactCol52) actionCol );
+            return new FactFieldColumnActionInspectorKey( (ActionInsertFactCol52) actionCol );
         } else {
             return new UnrecognizedActionInspectorKey( actionCol );
         }

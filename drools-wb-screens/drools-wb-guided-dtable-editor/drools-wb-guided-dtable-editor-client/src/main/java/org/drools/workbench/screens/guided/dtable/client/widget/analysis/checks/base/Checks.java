@@ -29,6 +29,8 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectMissingActionCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectMissingConditionCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectMultipleValuesForOneActionCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectRedundantActionCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectRedundantConditionsCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectRedundantRowsCheck;
 
 public class Checks {
@@ -162,6 +164,8 @@ public class Checks {
         checkList.add( new DetectMissingActionCheck( rowInspector ) );
         checkList.add( new DetectMissingConditionCheck( rowInspector ) );
         checkList.add( new DetectDeficientRowsCheck( rowInspector ) );
+        checkList.add( new DetectRedundantActionCheck( rowInspector ) );
+        checkList.add( new DetectRedundantConditionsCheck( rowInspector ) );
         return checkList;
     }
 }

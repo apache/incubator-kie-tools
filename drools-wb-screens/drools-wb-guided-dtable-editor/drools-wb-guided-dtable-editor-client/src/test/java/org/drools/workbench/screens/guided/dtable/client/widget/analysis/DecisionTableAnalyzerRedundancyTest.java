@@ -226,6 +226,27 @@ public class DecisionTableAnalyzerRedundancyTest {
     }
 
     @Test
+    public void testRedundantConditions001() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withEnumColumn( "a", "Person", "name", "==", "Toni,Eder" )
+                .withConditionIntegerColumn( "a", "Person", "name", "==" )
+                .withData( new Object[][]{{1, "description", "Toni", "Toni"}} )
+                .build();
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
+                                                                    table52,
+                                                                    eventBus );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
+        assertContains( "ConditionsForFieldAreRedundant(Person, name)", result );
+
+    }
+
+    @Test
     public void testRedundantRowsWithConflict() throws Exception {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
@@ -248,6 +269,60 @@ public class DecisionTableAnalyzerRedundancyTest {
         List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
         assertDoesNotContain( "ThisRowIsRedundantTo(1)", result );
         assertDoesNotContain( "ThisRowIsRedundantTo(2)", result );
+
+    }
+
+    @Test
+    public void testRedundantActionsInOneRow001() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "name", "==" )
+                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
+                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
+                .withData( new Object[][]{
+                        {1, "description", "Toni", 100, 100},
+                        {2, "description", "Eder", 200, null},
+                        {3, "description", "Michael", null, 300},
+                        {4, "description", null, null, null, null, null}
+                } )
+                .build();
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
+                                                                    table52,
+                                                                    eventBus );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
+        assertContains( "ValueForFactFieldIsSetTwice(a, salary)", result );
+
+    }
+
+    @Test
+    public void testRedundantActionsInOneRow002() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "name", "==" )
+                .withActionInsertFact( "Person","b","salary", DataType.TYPE_NUMERIC_INTEGER )
+                .withActionSetField( "b", "salary", DataType.TYPE_NUMERIC_INTEGER )
+                .withData( new Object[][]{
+                        {1, "description", "Toni", 100, 100},
+                        {2, "description", "Eder", 200, null},
+                        {3, "description", "Michael", null, 300},
+                        {4, "description", null, null, null, null, null}
+                } )
+                .build();
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
+                                                                    table52,
+                                                                    eventBus );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
+        assertContains( "ValueForFactFieldIsSetTwice(b, salary)", result );
 
     }
 

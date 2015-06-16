@@ -32,7 +32,7 @@ public abstract class ActionInspectorKey {
         if ( this == o ) {
             return true;
         } else if ( o instanceof ActionInspectorKey ) {
-            SetFieldColActionInspectorKey other = (SetFieldColActionInspectorKey) o;
+            FactFieldColumnActionInspectorKey other = (FactFieldColumnActionInspectorKey) o;
             return actionCol == other.actionCol;
         } else {
             return false;

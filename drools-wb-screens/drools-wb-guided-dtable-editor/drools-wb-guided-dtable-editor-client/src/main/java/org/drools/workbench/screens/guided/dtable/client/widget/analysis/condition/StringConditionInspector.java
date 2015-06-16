@@ -71,6 +71,11 @@ public class StringConditionInspector
     @Override
     public boolean conflicts( Object other ) {
         if ( other instanceof StringConditionInspector ) {
+
+            if ( !hasValue() || !((StringConditionInspector) other).hasValue() ) {
+                return false;
+            }
+
             switch ( ( (StringConditionInspector) other ).getOperator() ) {
                 case NOT_EQUALS:
                     switch ( operator ) {

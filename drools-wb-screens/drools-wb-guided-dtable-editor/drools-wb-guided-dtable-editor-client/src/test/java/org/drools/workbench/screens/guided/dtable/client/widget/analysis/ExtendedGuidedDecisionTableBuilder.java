@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
@@ -127,10 +128,35 @@ public class ExtendedGuidedDecisionTableBuilder
         return this;
     }
 
+    public ExtendedGuidedDecisionTableBuilder withActionInsertFact( String factType,
+                                                                    String boundName,
+                                                                    String factField,
+                                                                    String typeNumericInteger ) {
+
+        table.getActionCols().add( createActionInsertFact( factType,
+                                                           boundName,
+                                                           factField,
+                                                           typeNumericInteger ) );
+
+        return this;
+    }
+
     public static ActionSetFieldCol52 createActionSetField( String boundName,
-                                                            String factField,
-                                                            String type ) {
+                                                     String factField,
+                                                     String typeNumericInteger ) {
         ActionSetFieldCol52 column = new ActionSetFieldCol52();
+        column.setBoundName( boundName );
+        column.setFactField( factField );
+        column.setType( typeNumericInteger );
+        return column;
+    }
+
+    public static ActionInsertFactCol52 createActionInsertFact( String factType,
+                                                                String boundName,
+                                                                String factField,
+                                                                String type ) {
+        ActionInsertFactCol52 column = new ActionInsertFactCol52();
+        column.setFactType( factType );
         column.setBoundName( boundName );
         column.setFactField( factField );
         column.setType( type );

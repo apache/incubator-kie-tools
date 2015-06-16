@@ -91,7 +91,7 @@ public class DecisionTableAnalyzerConflictTest {
     }
 
     @Test
-    public void testImpossibleMatch() throws Exception {
+    public void testImpossibleMatch001() throws Exception {
         GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
                                                                                 new ArrayList<Import>(),
                                                                                 "mytable" )
@@ -106,7 +106,24 @@ public class DecisionTableAnalyzerConflictTest {
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
         assertContains( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData() );
+    }
 
+    @Test
+    public void testImpossibleMatch002() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withEnumColumn( "a", "Person", "name", "==", "Toni,Eder" )
+                .withConditionIntegerColumn( "a", "Person", "name", "==" )
+                .withData( new Object[][]{{1, "description", "Toni", ""}} )
+                .build();
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
+                                                                    table52,
+                                                                    eventBus );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+        assertDoesNotContain( "ImpossibleMatchOn(name)", eventBus.getUpdateColumnDataEvent().getColumnData() );
     }
 
     @Test

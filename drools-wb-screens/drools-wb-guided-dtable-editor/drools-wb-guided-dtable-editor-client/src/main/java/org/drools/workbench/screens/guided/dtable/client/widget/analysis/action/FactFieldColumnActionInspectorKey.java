@@ -17,27 +17,41 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.action;
 
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
+import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 
-public class InsertFactActionInspectorKey extends ActionInspectorKey {
+public class FactFieldColumnActionInspectorKey
+        extends ActionInspectorKey {
 
-    private String factType;
     private String boundName;
     private String factField;
 
-    public InsertFactActionInspectorKey( ActionInsertFactCol52 actionCol ) {
+    public FactFieldColumnActionInspectorKey( ActionSetFieldCol52 actionCol ) {
         super( actionCol );
-        this.factType = actionCol.getFactType();
         this.boundName = actionCol.getBoundName();
         this.factField = actionCol.getFactField();
+    }
+
+    public FactFieldColumnActionInspectorKey( ActionInsertFactCol52 actionCol ) {
+        super( actionCol );
+        this.boundName = actionCol.getBoundName();
+        this.factField = actionCol.getFactField();
+    }
+
+    public String getBoundName() {
+        return boundName;
+    }
+
+    public String getFactField() {
+        return factField;
     }
 
     @Override
     public boolean equals( Object o ) {
         if ( this == o ) {
             return true;
-        } else if ( o instanceof InsertFactActionInspectorKey ) {
-            InsertFactActionInspectorKey other = (InsertFactActionInspectorKey) o;
-            return factType.equals( other.factType ) && boundName.equals( other.boundName ) && factField.equals( other.factField );
+        } else if ( o instanceof FactFieldColumnActionInspectorKey ) {
+            FactFieldColumnActionInspectorKey other = (FactFieldColumnActionInspectorKey) o;
+            return boundName.equals( other.boundName ) && factField.equals( other.factField );
         } else {
             return false;
         }
@@ -45,7 +59,7 @@ public class InsertFactActionInspectorKey extends ActionInspectorKey {
 
     @Override
     public int hashCode() {
-        return ( factType.hashCode() * 37 + boundName.hashCode() ) * 37 + factField.hashCode();
+        return boundName.hashCode() * 37 + factField.hashCode();
     }
 
 }

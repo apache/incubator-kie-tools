@@ -191,7 +191,7 @@ public class ActionInspectorConflictTest {
     private ActionInspector createSetActionInspector( String boundName,
                                                       String factField,
                                                       DTCellValue52 cell ) {
-        return new ActionInspector( new SetFieldColActionInspectorKey( createActionSetFieldCol( boundName,
+        return new ActionInspector( new FactFieldColumnActionInspectorKey( createActionSetFieldCol( boundName,
                                                                                                 factField ) ),
                                     cell ) {
             @Override
@@ -207,7 +207,7 @@ public class ActionInspectorConflictTest {
 
     private ActionInspector createSetActionInspector( String stringValue,
                                                       ActionSetFieldCol52 actionCol ) {
-        return new ActionInspector( new SetFieldColActionInspectorKey( actionCol ),
+        return new ActionInspector( new FactFieldColumnActionInspectorKey( actionCol ),
                                     createStringValueCell( stringValue ) ) {
             @Override
             protected String format( Date dateValue ) {

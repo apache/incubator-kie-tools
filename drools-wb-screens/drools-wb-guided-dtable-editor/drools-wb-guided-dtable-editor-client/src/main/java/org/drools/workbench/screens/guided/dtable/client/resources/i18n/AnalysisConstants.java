@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
+import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 public interface AnalysisConstants
         extends
@@ -44,5 +45,11 @@ public interface AnalysisConstants
     String ThisRowIsSubsumedByRow(int rowNumber);
 
     String ThisRowIsDeficient();
+
+    String ValueForFactFieldIsSetTwice( String factName, String fieldName );
+
+    String ValueForAnActionIsSetTwice();
+
+    String ConditionsForFieldAreRedundant( String patternName, String factField );
 
 }
