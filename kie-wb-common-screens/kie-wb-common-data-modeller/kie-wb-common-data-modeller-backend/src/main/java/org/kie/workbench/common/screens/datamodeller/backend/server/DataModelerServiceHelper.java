@@ -31,10 +31,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.util.ClassUtils;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.service.ProjectService;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.guvnor.messageconsole.events.SystemMessage;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -70,6 +68,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
+import org.kie.workbench.common.services.datamodeller.util.MapClassLoader;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
@@ -514,7 +513,7 @@ public class DataModelerServiceHelper {
         if ( module instanceof InternalKieModule ) {
             //will always be an internal kie module
             InternalKieModule internalModule = (InternalKieModule) module;
-            projectClassLoader = new ClassUtils.MapClassLoader( internalModule.getClassesMap( true ), dependenciesClassLoader );
+            projectClassLoader = new MapClassLoader( internalModule.getClassesMap( true ), dependenciesClassLoader );
         } else {
             projectClassLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
         }
