@@ -25,10 +25,10 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -40,7 +40,7 @@ public class DataModelerContext {
 
     private Map<String, AnnotationDefinition> annotationDefinitions;
 
-    private List<PropertyTypeTO> baseTypes;
+    private List<PropertyType> baseTypes;
 
     private boolean readonly = false;
 
@@ -109,7 +109,7 @@ public class DataModelerContext {
         this.contextId = contextId;
     }
 
-    public void init(List<PropertyTypeTO> baseTypes) {
+    public void init(List<PropertyType> baseTypes) {
         this.baseTypes = baseTypes;
         helper = new DataModelHelper( contextId );
         helper.setBaseTypes(baseTypes);
@@ -131,7 +131,11 @@ public class DataModelerContext {
         this.annotationDefinitions = annotationDefinitions;
     }
 
-    public List<PropertyTypeTO> getBaseTypes() {
+    public AnnotationDefinition getAnnotationDefinition( String className ) {
+        return getAnnotationDefinitions().get( className );
+    }
+
+    public List<PropertyType> getBaseTypes() {
         return baseTypes;
     }
 

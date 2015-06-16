@@ -16,12 +16,18 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
+import java.util.List;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommandBuilder;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
+import org.kie.workbench.common.screens.datamodeller.events.DataModelerValueChangeEvent;
 
 public abstract class BaseEditor extends Composite {
 
@@ -31,6 +37,12 @@ public abstract class BaseEditor extends Composite {
 
     @Inject
     protected Event<DataModelerEvent> dataModelerEvent;
+
+    @Inject
+    protected DomainHandlerRegistry handlerRegistry;
+
+    @Inject
+    protected DataModelCommandBuilder commandBuilder;
 
     protected BaseEditor() {
     }
@@ -55,4 +67,19 @@ public abstract class BaseEditor extends Composite {
 
     public abstract String getName();
 
+    public abstract String getDomainName();
+
+    protected void executePostCommandProcessing( DataModelCommand command ) {
+        List<DomainHandler> handlers = handlerRegistry.getDomainHandlers( getDomainName() );
+        for ( DomainHandler handler : handlers ) {
+            handler.postCommandProcessing( command );
+        }
+    }
+
+    protected void notifyChange( DataModelerEvent event ) {
+        dataModelerEvent.fire( event );
+        //TODO, check if the helper is still needed.
+        // Notify helper directly
+        getContext().getHelper().dataModelChanged( ( DataModelerValueChangeEvent)event );
+    }
 }

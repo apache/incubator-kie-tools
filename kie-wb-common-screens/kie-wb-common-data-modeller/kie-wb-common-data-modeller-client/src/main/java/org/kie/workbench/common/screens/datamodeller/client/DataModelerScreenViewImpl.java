@@ -116,7 +116,7 @@ public class DataModelerScreenViewImpl
     private void updateChangeStatus(DataModelerEvent event) {
         if ( event.isFromContext( context != null ? context.getContextId() : null )) {
             context.setEditionStatus( DataModelerContext.EditionStatus.EDITOR_CHANGED );
-            dataModelerEvent.fire(new DataModelStatusChangeEvent( context.getContextId(), null, context.getDataModel(), false, true));
+            dataModelerEvent.fire(new DataModelStatusChangeEvent( context.getContextId(), null, false, true));
         }
     }
 

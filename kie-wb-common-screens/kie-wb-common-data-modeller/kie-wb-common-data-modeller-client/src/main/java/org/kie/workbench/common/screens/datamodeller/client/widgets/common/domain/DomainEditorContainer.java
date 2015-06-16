@@ -31,6 +31,8 @@ import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandlerRegistry;
 
 public class DomainEditorContainer extends Composite {
 
@@ -47,11 +49,11 @@ public class DomainEditorContainer extends Composite {
     DeckPanel deck = new DeckPanel();
 
     @Inject
-    private DomainEditorRegistry domainEditorRegistry;
+    private DomainHandlerRegistry domainHandlerRegistry;
 
     private DataModelerContext context;
 
-    private List<DomainEditor> domainEditors;
+    private List<DomainEditor> domainEditors = new ArrayList<DomainEditor>( );
 
     private List<String> instantiatedDomains = new ArrayList<String>(  );
 
@@ -65,15 +67,19 @@ public class DomainEditorContainer extends Composite {
     private void init() {
 
         mainPanel.add( deck );
-        this.domainEditors = domainEditorRegistry.getNewDomainEditorInstances();
         int index = 0;
-        for ( DomainEditor domainEditor : domainEditors ) {
+        DomainEditor domainEditor;
+        for ( DomainHandler handler : domainHandlerRegistry.getDomainHandlers() ) {
+            //current implementation creates new instances for the domain editors since they are added to current
+            //data modeler editor. When this code is moved to the tools windows approach likely we can simply have
+            //application scoped instances for the domain editors.
+            domainEditor = handler.getDomainEditor( true );
+            domainEditors.add( domainEditor );
             deck.add( domainEditor.getWidget() );
-            domainEditorIndex.put( domainEditor.getName(), new Integer( index ) );
-            instantiatedDomains.add( domainEditor.getName() );
+            domainEditorIndex.put( handler.getName(), new Integer( index ) );
+            instantiatedDomains.add( handler.getName() );
             index++;
         }
-
         showDomain( 0 );
     }
 

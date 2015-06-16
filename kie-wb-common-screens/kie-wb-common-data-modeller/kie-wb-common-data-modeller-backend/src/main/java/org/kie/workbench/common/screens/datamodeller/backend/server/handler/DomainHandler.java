@@ -22,6 +22,6 @@ import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 public interface DomainHandler {
 
-    void setDefaultValues( DataObject dataObject, Map<String, Object> portableParams );
+    void setDefaultValues( DataObject dataObject, Map<String, Object> options );
 
 }

@@ -39,8 +39,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
+import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
@@ -48,14 +49,11 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
@@ -135,6 +133,11 @@ public class MainDataObjectFieldEditor extends FieldEditor {
         return "MAIN_FIELD_EDITOR";
     }
 
+    @Override
+    public String getDomainName() {
+        return MainDomainEditor.MAIN_DOMAIN;
+    }
+
     private DataModel getDataModel() {
         return getContext() != null ? getContext().getDataModel() : null;
     }
@@ -154,9 +157,9 @@ public class MainDataObjectFieldEditor extends FieldEditor {
 
     private void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
         if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
-            if ( "name".equals( event.getPropertyName() ) ||
-                    "packageName".equals( event.getPropertyName() ) ||
-                    "label".equals( event.getPropertyName() ) ) {
+            if ( "name".equals( event.getValueName() ) ||
+                    "packageName".equals( event.getValueName() ) ||
+                    "label".equals( event.getValueName() ) ) {
 
                 initTypeList();
             }
@@ -174,14 +177,14 @@ public class MainDataObjectFieldEditor extends FieldEditor {
 
             name.setText( getObjectField().getName() );
 
-            Annotation annotation = objectField.getAnnotation( AnnotationDefinitionTO.LABEL_ANNOTATION );
+            Annotation annotation = objectField.getAnnotation( MainDomainAnnotations.LABEL_ANNOTATION );
             if ( annotation != null ) {
-                label.setText( ( String ) annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) );
+                label.setText( ( String ) annotation.getValue( MainDomainAnnotations.VALUE_PARAM ) );
             }
 
-            annotation = objectField.getAnnotation( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION );
+            annotation = objectField.getAnnotation( MainDomainAnnotations.DESCRIPTION_ANNOTATION );
             if ( annotation != null ) {
-                description.setText( ( String ) annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ) );
+                description.setText( ( String ) annotation.getValue( MainDomainAnnotations.VALUE_PARAM ) );
             }
 
             setReadonly( getContext() == null || getContext().isReadonly() );
@@ -301,7 +304,9 @@ public class MainDataObjectFieldEditor extends FieldEditor {
                     public void onSuccess() {
                         nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
                         objectField.setName( newValue );
-                        notifyFieldChange( ChangeType.FIELD_NAME_CHANGE, "name", oldValue, newValue );
+                        notifyChange( createFieldChangeEvent( ChangeType.FIELD_NAME_CHANGE )
+                                .withOldValue( oldValue )
+                                .withNewValue( newValue ) );
                     }
                 } );
             }
@@ -310,59 +315,24 @@ public class MainDataObjectFieldEditor extends FieldEditor {
 
     @UiHandler("label")
     void labelChanged( final ValueChangeEvent<String> event ) {
-        if ( getObjectField() == null ) {
-            return;
+        if ( getObjectField() != null ) {
+            String value = DataModelerUtils.nullTrim( label.getValue() );
+            DataModelCommand command = commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(),
+                    getName(), getDataObject(), getObjectField(), MainDomainAnnotations.LABEL_ANNOTATION,
+                    MainDomainAnnotations.VALUE_PARAM, value, true );
+            command.execute();
         }
-
-        String oldValue = null;
-        final String _label = label.getValue();
-        Annotation annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.LABEL_ANNOTATION );
-
-        if ( annotation != null ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
-            if ( _label != null && !"".equals( _label ) ) {
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _label );
-            } else {
-                getObjectField().removeAnnotation( annotation.getClassName() );
-            }
-        } else {
-            if ( _label != null && !"".equals( _label ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ) );
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _label );
-                getObjectField().addAnnotation( annotation );
-            }
-        }
-        // TODO replace 'label' literal with annotation definition constant
-        notifyFieldChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
-                "label", oldValue, _label );
     }
 
     @UiHandler("description")
     void descriptionChanged( final ValueChangeEvent<String> event ) {
-        if ( getObjectField() == null ) {
-            return;
+        if ( getObjectField() != null ) {
+            String value = DataModelerUtils.nullTrim( description.getValue() );
+            DataModelCommand command = commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(),
+                    getName(), getDataObject(), getObjectField(), MainDomainAnnotations.DESCRIPTION_ANNOTATION,
+                    MainDomainAnnotations.VALUE_PARAM, value, true );
+            command.execute();
         }
-
-        String oldValue = null;
-        final String _description = description.getValue();
-        Annotation annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION );
-
-        if ( annotation != null ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
-            if ( _description != null && !"".equals( _description ) ) {
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _description );
-            } else {
-                getObjectField().removeAnnotation( annotation.getClassName() );
-            }
-        } else {
-            if ( _description != null && !"".equals( _description ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION ) );
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _description );
-                getObjectField().addAnnotation( annotation );
-            }
-        }
-        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
-                AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description );
     }
 
     private void typeChanged( ChangeEvent event ) {
@@ -381,36 +351,23 @@ public class MainDataObjectFieldEditor extends FieldEditor {
     }
 
     private void typeChanged( String oldType, String newType, boolean isMultiple ) {
-        if ( getObjectField() == null ) {
-            return;
-        }
+        if ( getObjectField() != null ) {
 
-        boolean multiple = isMultiple;
+            boolean multiple = isMultiple;
 
-        if ( getContext().getHelper().isPrimitiveType( newType ) ) {
-            isTypeMultiple.setEnabled( false );
-            isTypeMultiple.setValue( false );
-            multiple = false;
-        } else {
-            isTypeMultiple.setEnabled( true );
-        }
+            if ( getContext().getHelper().isPrimitiveType( newType ) ) {
+                isTypeMultiple.setEnabled( false );
+                isTypeMultiple.setValue( false );
+                multiple = false;
+            } else {
+                isTypeMultiple.setEnabled( true );
+            }
 
-        getObjectField().setClassName( newType );
-        getObjectField().setMultiple( multiple );
-        if ( multiple && getObjectField().getBag() == null ) {
-            getObjectField().setBag( ObjectPropertyImpl.DEFAULT_PROPERTY_BAG );
+            DataModelCommand command = commandBuilder.buildChangeTypeCommand( getContext(), getName(), getDataObject(),
+                    getObjectField(), newType, multiple );
+            command.execute();
+            executePostCommandProcessing( command );
         }
-
-        if ( getContext().getHelper().isBaseType( newType ) ) {
-            getObjectField().setBaseType( true );
-        } else {
-            // Un-reference former type reference and set the new one
-            getObjectField().setBaseType( false );
-            getContext().getHelper().dataObjectUnReferenced( oldType, getDataObject().getClassName() );
-            getContext().getHelper().dataObjectReferenced( newType, getDataObject().getClassName() );
-        }
-        notifyFieldChange( ChangeType.FIELD_TYPE_CHANGE,
-                "className", oldType, newType );
     }
 
     private String listNames( List<ObjectProperty> fields ) {

@@ -42,19 +42,15 @@ public abstract class ObjectEditor extends BaseEditor {
         }
     }
 
-    // Event notifications
-    protected void notifyObjectChange( ChangeType changeType,
-            String memberName,
-            Object oldValue,
-            Object newValue ) {
+    protected void onDataObjectChange( @Observes DataObjectChangeEvent event ) {
+        if ( event.isFrom( context != null ? context.getContextId() : null ) &&
+                !getName().equals( event.getSource() ) ) {
+            loadDataObject( event.getCurrentDataObject() );
+        }
+    }
 
-        //TODO check if data model for the event is needed
-        DataObjectChangeEvent changeEvent = new DataObjectChangeEvent( changeType,
-                getContext().getContextId(),
-                getName(),
-                null, getDataObject(), memberName, oldValue, newValue );
-        // Notify helper directly
-        getContext().getHelper().dataModelChanged( changeEvent );
-        dataModelerEvent.fire( changeEvent );
+    protected DataObjectChangeEvent createDataObjectChangeEvent( ChangeType changeType ) {
+        //check if data model is necessary
+        return new DataObjectChangeEvent( changeType, getContext().getContextId(), getName(), getDataObject(), null, null, null );
     }
 }

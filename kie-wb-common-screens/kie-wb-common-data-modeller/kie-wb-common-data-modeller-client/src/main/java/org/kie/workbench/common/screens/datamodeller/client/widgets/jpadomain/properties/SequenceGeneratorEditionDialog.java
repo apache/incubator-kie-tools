@@ -26,7 +26,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
-import org.kie.workbench.common.screens.datamodeller.client.util.SequenceGeneratorValueHandler;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.SequenceGeneratorValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;

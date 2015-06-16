@@ -201,24 +201,29 @@ public class JavaRoasterModelDriverTest {
             //update the EnumsAnnotation
             Annotation enumsAnnotation = createAnnotation( EnumsAnnotation.class );
             enumsAnnotation.setValue( "enum1Param",  TestEnums.ENUM1.VALUE2.toString() );
-            enumsAnnotation.setValue( "enum1ArrayParam", "{TestEnums.ENUM1.VALUE3}" );
+            //enumsAnnotation.setValue( "enum1ArrayParam", "{TestEnums.ENUM1.VALUE3}" );
+            enumsAnnotation.setValue( "enum1ArrayParam", createEnumArrayParam( TestEnums.ENUM1.VALUE3 ) );
+
             enumsAnnotation.setValue( "enum2Param", TestEnums.ENUM2.VALUE2.toString() );
-            enumsAnnotation.setValue( "enum2ArrayParam", "{TestEnums.ENUM2.VALUE3}" );
+            //enumsAnnotation.setValue( "enum2ArrayParam", "{TestEnums.ENUM2.VALUE3}" );
+            enumsAnnotation.setValue( "enum2ArrayParam", createEnumArrayParam( TestEnums.ENUM2.VALUE3 ) );
+
             annotationsUpdateTest.addAnnotation( enumsAnnotation );
 
             //update the PrimitivesAnnotation
 
             Annotation primitivesAnnotation = createAnnotation( PrimitivesAnnotation.class );
             primitivesAnnotation.setValue( "byteParam", new Byte("2") );
-            primitivesAnnotation.setValue( "byteArrayParam", "{3,4}" );
+            //primitivesAnnotation.setValue( "byteArrayParam", "{3,4}" );
+            primitivesAnnotation.setValue( "byteArrayParam", createArrayParam( (byte)3, (byte)4 ) );
+
             primitivesAnnotation.setValue( "shortParam", new Short("2") );
-            primitivesAnnotation.setValue( "shortArrayParam", "{3,4}" );
+            //primitivesAnnotation.setValue( "shortArrayParam", "{3,4}" );
+            primitivesAnnotation.setValue( "shortArrayParam", createArrayParam( ( short ) 3, ( short ) 4 ) );
+
             primitivesAnnotation.setValue( "stringParam", "2" );
 
-            ArrayList<String> arrayValue = new ArrayList<String>(  );
-            arrayValue.add( "3" );
-            arrayValue.add( "4" );
-            primitivesAnnotation.setValue( "stringArrayParam", arrayValue );
+            primitivesAnnotation.setValue( "stringArrayParam", createArrayParam( "3", "4" ) );
             annotationsUpdateTest.addAnnotation( primitivesAnnotation );
 
             //add the MarkerAnnotation
@@ -295,18 +300,12 @@ public class JavaRoasterModelDriverTest {
         // @UniqueConstraint( name = "constraint1", columnNames = {"column1", "column2"} )
         Annotation constraint1 = createAnnotation( UniqueConstraint.class );
         constraint1.setValue( "name", "constraint1" );
-        ArrayList<String> columnNames1 = new ArrayList<String>(  );
-        columnNames1.add( "column1" );
-        columnNames1.add( "column2" );
-        constraint1.setValue( "columnNames", columnNames1 );
+        constraint1.setValue( "columnNames", createArrayParam( "column1", "column2" ) );
 
         // @UniqueConstraint( name = "constraint2", columnNames = {"column3","column4"} )
         Annotation constraint2 = createAnnotation( UniqueConstraint.class );
         constraint2.setValue( "name", "constraint2" );
-        ArrayList<String> columnNames2 = new ArrayList<String>(  );
-        columnNames2.add( "column3" );
-        columnNames2.add( "column4" );
-        constraint2.setValue( "columnNames", columnNames2 );
+        constraint2.setValue( "columnNames", createArrayParam( "column3", "column4" ) );
 
         List<Annotation> uniqueConstraints = new ArrayList<Annotation>(  );
         uniqueConstraints.add( constraint1 );
@@ -492,11 +491,16 @@ public class JavaRoasterModelDriverTest {
     private Annotation createEnumsAnnotation() {
         Annotation annotation = createAnnotation( EnumsAnnotation.class );
         annotation.setValue( "enum1Param",  TestEnums.ENUM1.VALUE1.toString() );
-        annotation.setValue( "enum1ArrayParam", "{TestEnums.ENUM1.VALUE1,TestEnums.ENUM1.VALUE2}" );
+        //annotation.setValue( "enum1ArrayParam", "{TestEnums.ENUM1.VALUE1,TestEnums.ENUM1.VALUE2}" );
+        annotation.setValue( "enum1ArrayParam", createEnumArrayParam( TestEnums.ENUM1.VALUE1, TestEnums.ENUM1.VALUE2 ) );
         annotation.setValue( "enum2Param", TestEnums.ENUM2.VALUE1.toString() );
-        annotation.setValue( "enum2ArrayParam", "{TestEnums.ENUM2.VALUE1,TestEnums.ENUM2.VALUE2}" );
+        //annotation.setValue( "enum2ArrayParam","{TestEnums.ENUM2.VALUE1,TestEnums.ENUM2.VALUE2}" );
+        annotation.setValue( "enum2ArrayParam", createEnumArrayParam( TestEnums.ENUM2.VALUE1, TestEnums.ENUM2.VALUE2 ) );
+
         annotation.setValue( "enum3Param", ENUM3.VALUE1.toString() );
-        annotation.setValue( "enum3ArrayParam", "{ENUM3.VALUE1,ENUM3.VALUE2}" );
+        //annotation.setValue( "enum3ArrayParam", "{ENUM3.VALUE1,ENUM3.VALUE2}" );
+        annotation.setValue( "enum3ArrayParam", createEnumArrayParam( ENUM3.VALUE1, ENUM3.VALUE2 ) );
+
         return annotation;
     }
 
@@ -512,27 +516,42 @@ public class JavaRoasterModelDriverTest {
     private Annotation createPrimitivesAnnotation() {
         Annotation annotation = createAnnotation( PrimitivesAnnotation.class );
         annotation.setValue( "byteParam", new Byte("1") );
-        annotation.setValue( "byteArrayParam", "{1,2}" );
+        //annotation.setValue( "byteArrayParam", "{1,2}" );
+        annotation.setValue( "byteArrayParam", createArrayParam( (byte)1, (byte)2 ) );
+
         annotation.setValue( "shortParam", new Short("1") );
-        annotation.setValue( "shortArrayParam", "{1,2}" );
+        //annotation.setValue( "shortArrayParam", "{1,2}" );
+        annotation.setValue( "shortArrayParam", createArrayParam( (short)1, (short)2 ) );
+
         annotation.setValue( "intParam", new Integer("1") );
-        annotation.setValue( "intArrayParam", "{1,2}" );
+        //annotation.setValue( "intArrayParam", "{1,2}" );
+        annotation.setValue( "intArrayParam", createArrayParam( (int)1, (int)2 ) );
+
+
         annotation.setValue( "longParam", new Long("1") );
-        annotation.setValue( "longArrayParam", "{1,2}" );
+        //annotation.setValue( "longArrayParam", "{1,2}" );
+        annotation.setValue( "longArrayParam", createArrayParam( (long)1, (long)2 ) );
+
+
         annotation.setValue( "floatParam", new Float("1") );
-        annotation.setValue( "floatArrayParam", "{1,2}" );
+        //annotation.setValue( "floatArrayParam", "{1,2}" );
+        annotation.setValue( "floatArrayParam", createArrayParam( (float)1, (float)2 ) );
+
         annotation.setValue( "doubleParam", new Double("1") );
-        annotation.setValue( "doubleArrayParam", "{1,2}" );
+        //annotation.setValue( "doubleArrayParam", "{1,2}" );
+        annotation.setValue( "doubleArrayParam", createArrayParam( (double)1, (double)2 ) );
+
         annotation.setValue( "booleanParam", true );
-        annotation.setValue( "booleanArrayParam", "{true,true}");
+        //annotation.setValue( "booleanArrayParam", "{true,true}");
+        annotation.setValue( "booleanArrayParam", createArrayParam( true, true ) );
+
         annotation.setValue( "charParam", '1');
-        annotation.setValue( "charArrayParam", "{'1','2'}" );
+        //annotation.setValue( "charArrayParam", "{'1','2'}" );
+        annotation.setValue( "charArrayParam", createArrayParam( '1','2' ) );
+
         annotation.setValue( "stringParam", "1" );
 
-        ArrayList<String> arrayValue = new ArrayList<String>(  );
-        arrayValue.add( "1" );
-        arrayValue.add( "2" );
-        annotation.setValue( "stringArrayParam", arrayValue );
+        annotation.setValue( "stringArrayParam", createArrayParam( "1", "2" ) );
         return annotation;
     }
 
@@ -569,15 +588,14 @@ public class JavaRoasterModelDriverTest {
          */
         Annotation primitivesAnnotation = createAnnotation( PrimitivesAnnotation.class );
         primitivesAnnotation.setValue( "byteParam", new Byte("2") );
-        primitivesAnnotation.setValue( "byteArrayParam", "{3,4}" );
+        //primitivesAnnotation.setValue( "byteArrayParam", "{3,4}" );
+        primitivesAnnotation.setValue( "byteArrayParam", createArrayParam( (byte)3, (byte)4 ) );
+
         primitivesAnnotation.setValue( "shortParam", new Short("2") );
-        primitivesAnnotation.setValue( "shortArrayParam", "{3,4}" );
+        primitivesAnnotation.setValue( "shortArrayParam", createArrayParam( ( short ) 3, ( short ) 4 ) );
         primitivesAnnotation.setValue( "stringParam", "2" );
 
-        ArrayList<String> arrayValue = new ArrayList<String>(  );
-        arrayValue.add( "3" );
-        arrayValue.add( "4" );
-        primitivesAnnotation.setValue( "stringArrayParam", arrayValue );
+        primitivesAnnotation.setValue( "stringArrayParam", createArrayParam( "3", "4" ) );
         dataObject.addAnnotation( primitivesAnnotation );
 
         /*
@@ -587,9 +605,13 @@ public class JavaRoasterModelDriverTest {
         */
         Annotation enumsAnnotation = createAnnotation( EnumsAnnotation.class );
         enumsAnnotation.setValue( "enum1Param",  TestEnums.ENUM1.VALUE2.toString() );
-        enumsAnnotation.setValue( "enum1ArrayParam", "{TestEnums.ENUM1.VALUE3}" );
+        //enumsAnnotation.setValue( "enum1ArrayParam", "{TestEnums.ENUM1.VALUE3}" );
+        enumsAnnotation.setValue( "enum1ArrayParam", createEnumArrayParam( TestEnums.ENUM1.VALUE3 ) );
+
         enumsAnnotation.setValue( "enum2Param", TestEnums.ENUM2.VALUE2.toString() );
-        enumsAnnotation.setValue( "enum2ArrayParam", "{TestEnums.ENUM2.VALUE3}" );
+        //enumsAnnotation.setValue( "enum2ArrayParam", "{TestEnums.ENUM2.VALUE3}" );
+        enumsAnnotation.setValue( "enum2ArrayParam", createEnumArrayParam( TestEnums.ENUM2.VALUE3 ) );
+
         dataObject.addAnnotation( enumsAnnotation );
 
 
@@ -716,6 +738,22 @@ public class JavaRoasterModelDriverTest {
         }
 
         return drl.toString();
+    }
+
+    private List<String> createEnumArrayParam( Enum<?>...params ) {
+        List<String> values = new ArrayList<String>(  );
+        for ( Enum<?> param : params ) {
+            values.add( param.name() );
+        }
+        return values;
+    }
+
+    private List<Object> createArrayParam( Object... params ) {
+        List<Object> values = new ArrayList<Object>(  );
+        for ( Object param : params ) {
+            values.add( param);
+        }
+        return values;
     }
 
 }

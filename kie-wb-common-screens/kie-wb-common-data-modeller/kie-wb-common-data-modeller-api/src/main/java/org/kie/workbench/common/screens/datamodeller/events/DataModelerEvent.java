@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 JBoss Inc
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,11 @@ package org.kie.workbench.common.screens.datamodeller.events;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 @Portable
 public class DataModelerEvent {
-
-    protected DataModel currentModel;
 
     protected DataObject currentDataObject;
 
@@ -46,18 +43,17 @@ public class DataModelerEvent {
     public DataModelerEvent() {
     }
 
-    public DataModelerEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject) {
-        this( contextId, source, currentModel, currentDataObject, null );
+    public DataModelerEvent( String contextId, String source, DataObject currentDataObject ) {
+        this( contextId, source, currentDataObject, null );
     }
 
-    public DataModelerEvent(String source, DataModel currentModel, DataObject currentDataObject) {
-        this( null, source, currentModel, currentDataObject, null );
+    public DataModelerEvent( String source, DataObject currentDataObject ) {
+        this( null, source, currentDataObject, null );
     }
 
-    public DataModelerEvent(String contextId, String source, DataModel currentModel, DataObject currentDataObject, ObjectProperty currentField) {
+    public DataModelerEvent( String contextId, String source, DataObject currentDataObject, ObjectProperty currentField ) {
         this.contextId = contextId;
         this.source = source;
-        this.currentModel = currentModel;
         this.currentDataObject = currentDataObject;
         this.currentField = currentField;
     }
@@ -73,27 +69,24 @@ public class DataModelerEvent {
         this.currentDataObject = currentDataObject;
     }
 
-    public DataModel getCurrentModel() {
-        return currentModel;
-    }
-
-    public void setCurrentModel(DataModel currentModel) {
-        this.currentModel = currentModel;
-    }
-
     public DataObject getCurrentDataObject() {
         return currentDataObject;
     }
 
-    public void setCurrentDataObject(DataObject currentDataObject) {
+    public void setCurrentDataObject( DataObject currentDataObject ) {
         this.currentDataObject = currentDataObject;
+    }
+
+    public DataModelerEvent withCurrentDataObject( DataObject currentDataObject ) {
+        setCurrentDataObject( currentDataObject );
+        return this;
     }
 
     public ObjectProperty getCurrentField() {
         return currentField;
     }
 
-    public void setCurrentField(ObjectProperty currentField) {
+    public void setCurrentField( ObjectProperty currentField ) {
         this.currentField = currentField;
     }
 
@@ -101,7 +94,7 @@ public class DataModelerEvent {
         return source;
     }
 
-    public void setSource(String source) {
+    public void setSource( String source ) {
         this.source = source;
     }
 
@@ -113,15 +106,11 @@ public class DataModelerEvent {
         this.currentProject = currentProject;
     }
 
-    public boolean isFrom( DataModel dataModel) {
-        return currentModel != null && dataModel != null && currentModel.getId() == dataModel.getId();
-    }
-
-    public boolean isFrom(Project project) {
+    public boolean isFrom( Project project ) {
         return currentProject != null && currentProject.equals( project );
     }
 
-    public boolean isFrom(String source) {
+    public boolean isFrom( String source ) {
         return source != null && source.equals( source );
     }
 

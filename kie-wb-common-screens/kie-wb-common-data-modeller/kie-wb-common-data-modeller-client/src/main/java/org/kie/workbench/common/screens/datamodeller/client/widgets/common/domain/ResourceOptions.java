@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.handlers;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain;
 
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 
-public interface DomainOptionsHandler {
+public interface ResourceOptions {
 
-    String getName();
+    Widget getWidget( );
 
-    int getPriority();
-
-    Widget getWidget();
-
-    void restoreDefaults();
+    void restoreOptionsDefaults();
 
     Map<String, Object> getOptions();
+
+    DomainHandler getHandler();
 
 }

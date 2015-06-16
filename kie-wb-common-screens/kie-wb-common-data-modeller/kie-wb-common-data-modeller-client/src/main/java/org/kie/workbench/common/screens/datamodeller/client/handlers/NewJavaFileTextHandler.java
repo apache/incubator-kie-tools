@@ -17,9 +17,6 @@
 package org.kie.workbench.common.screens.datamodeller.client.handlers;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +29,8 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.javaeditor.client.resources.JavaEditorResources;
 import org.kie.workbench.common.screens.javaeditor.client.resources.i18n.Constants;
@@ -67,27 +64,21 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     @Inject
     private SyncBeanManager iocBeanManager;
 
-    private List<DomainOptionsHandler> optionsHandler = new ArrayList<DomainOptionsHandler>(  );
+    private List<ResourceOptions> resourceOptions = new ArrayList<ResourceOptions>(  );
+
+    @Inject
+    private DomainHandlerRegistry domainHandlerRegistry;
 
     @PostConstruct
     private void setupExtensions() {
 
-        final Collection<IOCBeanDef<DomainOptionsHandler>> optionsHandlerBeans = iocBeanManager.lookupBeans( DomainOptionsHandler.class );
-        if ( optionsHandlerBeans != null && optionsHandlerBeans.size() > 0 ) {
-            for ( IOCBeanDef<DomainOptionsHandler> beanDef : optionsHandlerBeans ) {
-                optionsHandler.add( beanDef.getInstance() );
+        ResourceOptions options;
+        for ( DomainHandler handler : domainHandlerRegistry.getDomainHandlers() ) {
+            options = handler.getResourceOptions( false );
+            if ( options != null ) {
+                resourceOptions.add( options );
+                extensions.add( new Pair<String, Widget>( handler.getName(), options.getWidget() ) );
             }
-        }
-        Collections.sort( optionsHandler, new Comparator<DomainOptionsHandler>() {
-            @Override public int compare( DomainOptionsHandler handler1, DomainOptionsHandler handler2 ) {
-                Integer key1 = handler1.getPriority();
-                Integer key2 = handler2.getPriority();
-                return key1.compareTo( key2 );
-            }
-        } );
-
-        for ( DomainOptionsHandler handler : optionsHandler ) {
-            extensions.add( new Pair<String, Widget>( handler.getName(), handler.getWidget() ) );
         }
     }
 
@@ -122,8 +113,8 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
         busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
 
         Map<String, Object> params = new HashMap<String, Object>( );
-        for ( DomainOptionsHandler handler : optionsHandler ) {
-            params.putAll( handler.getOptions() );
+        for ( ResourceOptions options : resourceOptions ) {
+            params.putAll( options.getOptions() );
         }
 
         dataModelerService.call( getSuccessCallback( presenter ),

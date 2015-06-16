@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.maindomain;
 
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import com.github.gwtbootstrap.client.ui.TextArea;
@@ -37,21 +36,20 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
+import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.packageselector.PackageSelector;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.refactoring.ShowUsagesPopup;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.superselector.SuperclassSelector;
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
-import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
@@ -62,8 +60,6 @@ public class MainDataObjectEditor extends ObjectEditor {
             extends UiBinder<Widget, MainDataObjectEditor> {
 
     }
-
-    public static final String NOT_SELECTED = "NOT_SELECTED";
 
     private static final String DEFAULT_LABEL_CLASS = "gwt-Label";
 
@@ -95,9 +91,6 @@ public class MainDataObjectEditor extends ObjectEditor {
 
     @UiField
     SuperclassSelector superclassSelector;
-
-    @Inject
-    Event<DataModelerEvent> dataModelerEvent;
 
     @Inject
     private Caller<DataModelerService> modelerService;
@@ -136,6 +129,11 @@ public class MainDataObjectEditor extends ObjectEditor {
         return "MAIN_OBJECT_EDITOR";
     }
 
+    @Override
+    public String getDomainName() {
+        return MainDomainEditor.MAIN_DOMAIN;
+    }
+
     public void setContext( DataModelerContext context ) {
         super.setContext( context );
         packageSelector.setContext( context );
@@ -169,14 +167,14 @@ public class MainDataObjectEditor extends ObjectEditor {
 
             name.setText( dataObject.getName() );
 
-            Annotation annotation = dataObject.getAnnotation( AnnotationDefinitionTO.LABEL_ANNOTATION );
+            Annotation annotation = dataObject.getAnnotation( MainDomainAnnotations.LABEL_ANNOTATION );
             if ( annotation != null ) {
-                label.setText( annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() );
+                label.setText( annotation.getValue( MainDomainAnnotations.VALUE_PARAM ).toString() );
             }
 
-            annotation = dataObject.getAnnotation( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION );
+            annotation = dataObject.getAnnotation( MainDomainAnnotations.DESCRIPTION_ANNOTATION );
             if ( annotation != null ) {
-                description.setText( annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM ).toString() );
+                description.setText( annotation.getValue( MainDomainAnnotations.VALUE_PARAM ).toString() );
             }
 
             packageSelector.setDataObject( dataObject );
@@ -284,7 +282,11 @@ public class MainDataObjectEditor extends ObjectEditor {
                     public void onSuccess() {
                         nameLabel.setStyleName( DEFAULT_LABEL_CLASS );
                         dataObject.setName( newValue );
-                        notifyObjectChange( ChangeType.CLASS_NAME_CHANGE, "name", oldValue, newValue );
+
+                        notifyChange( createDataObjectChangeEvent( ChangeType.CLASS_NAME_CHANGE )
+                                .withOldValue( oldValue )
+                                .withNewValue( newValue ) );
+
                     }
                 } );
             }
@@ -294,59 +296,22 @@ public class MainDataObjectEditor extends ObjectEditor {
 
     @UiHandler("label")
     void labelChanged( final ValueChangeEvent<String> event ) {
-        if ( getDataObject() == null ) {
-            return;
+        if ( getDataObject() != null ) {
+            String value = DataModelerUtils.nullTrim( label.getValue() );
+            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
+                    getName(), getDataObject(), MainDomainAnnotations.LABEL_ANNOTATION, "value", value, true );
+            command.execute();
         }
-
-        String oldValue = null;
-        String _label = label.getValue();
-        Annotation annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.LABEL_ANNOTATION );
-
-        if ( annotation != null ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
-            if ( _label != null && !"".equals( _label ) ) {
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _label );
-            } else {
-                getDataObject().removeAnnotation( annotation.getClassName() );
-            }
-        } else {
-            if ( _label != null && !"".equals( _label ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ) );
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _label );
-                getDataObject().addAnnotation( annotation );
-            }
-        }
-        // TODO replace 'label' literal with annotation definition constant
-        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
-                "label", oldValue, _label );
     }
 
     @UiHandler("description")
     void descriptionChanged( final ValueChangeEvent<String> event ) {
-        if ( getDataObject() == null ) {
-            return;
+        if ( getDataObject() != null ) {
+            String value = DataModelerUtils.nullTrim( description.getValue() );
+            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
+                    getName(), getDataObject(), MainDomainAnnotations.DESCRIPTION_ANNOTATION, "value", value, true );
+            command.execute();
         }
-
-        String oldValue = null;
-        String _description = description.getValue();
-        Annotation annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION );
-
-        if ( annotation != null ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
-            if ( _description != null && !"".equals( _description ) ) {
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _description );
-            } else {
-                getDataObject().removeAnnotation( annotation.getClassName() );
-            }
-        } else {
-            if ( _description != null && !"".equals( _description ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.DESCRIPTION_ANNOTATION ) );
-                annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, _description );
-                getDataObject().addAnnotation( annotation );
-            }
-        }
-        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
-                AnnotationDefinitionTO.DESCRIPTION_ANNOTATION, oldValue, _description );
     }
 
     private void packageChanged( ChangeEvent event ) {
@@ -410,8 +375,10 @@ public class MainDataObjectEditor extends ObjectEditor {
     private void doPackageChange( String oldPackageName,
             String newPackageName ) {
         getDataObject().setPackageName( newPackageName );
-        notifyObjectChange( ChangeType.PACKAGE_NAME_CHANGE,
-                "packageName", oldPackageName, newPackageName );
+
+        notifyChange( createDataObjectChangeEvent( ChangeType.PACKAGE_NAME_CHANGE )
+                .withOldValue( oldPackageName )
+                .withNewValue( newPackageName ) );
     }
 
     private void superClassChanged( ChangeEvent event ) {
@@ -454,15 +421,17 @@ public class MainDataObjectEditor extends ObjectEditor {
                         getContext().getHelper().dataObjectExtended( oldSuperClass, getDataObject().getClassName(), false );
                     }
                     getContext().getHelper().dataObjectExtended( newSuperClass, getDataObject().getClassName(), true );
-                    notifyObjectChange( ChangeType.SUPER_CLASS_NAME_CHANGE,
-                            "superClassName", oldSuperClass, newSuperClass );
+                    notifyChange( createDataObjectChangeEvent( ChangeType.SUPER_CLASS_NAME_CHANGE )
+                            .withOldValue( oldSuperClass )
+                            .withNewValue( newSuperClass ) );
                 }
             } );
         } else {
             getDataObject().setSuperClassName( null );
             getContext().getHelper().dataObjectExtended( oldSuperClass, getDataObject().getClassName(), false );
-            notifyObjectChange( ChangeType.SUPER_CLASS_NAME_CHANGE,
-                    "superClassName", oldSuperClass, newSuperClass );
+            notifyChange(  createDataObjectChangeEvent( ChangeType.SUPER_CLASS_NAME_CHANGE )
+                    .withOldValue( oldSuperClass )
+                    .withNewValue( null ) );
         }
     }
 

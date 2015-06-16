@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.util;
+package org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.FetchMode;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.RelationType;
+import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
@@ -42,13 +48,13 @@ public class RelationshipAnnotationValueHandler extends AnnotationValueHandler {
     }
 
     public RelationType getRelationType() {
-        if ( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ONE_TO_ONE.equals( annotation.getClassName() ) ) {
+        if ( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE.equals( annotation.getClassName() ) ) {
             return RelationType.ONE_TO_ONE;
-        } else if ( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ONE_TO_MANY.equals( annotation.getClassName() ) ) {
+        } else if ( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY.equals( annotation.getClassName() ) ) {
             return RelationType.ONE_TO_MANY;
-        } else if ( AnnotationDefinitionTO.JAVAX_PERSISTENCE_MANY_TO_ONE.equals( annotation.getClassName() ) ) {
+        } else if ( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_ONE.equals( annotation.getClassName() ) ) {
             return RelationType.MANY_TO_ONE;
-        } else if ( AnnotationDefinitionTO.JAVAX_PERSISTENCE_MANY_TO_MANY.equals( annotation.getClassName() ) ) {
+        } else if ( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_MANY.equals( annotation.getClassName() ) ) {
             return RelationType.MANY_TO_MANY;
         }
         return null;
@@ -70,17 +76,27 @@ public class RelationshipAnnotationValueHandler extends AnnotationValueHandler {
         return RelationType.MANY_TO_MANY.equals( getRelationType() );
     }
 
-    public CascadeType getCascade() {
-        try {
-            return CascadeType.valueOf( getStringValue( annotation, CASCADE ) );
-        } catch (Exception e) {
-            return null;
+    public List<CascadeType> getCascade() {
+        List<Object> internalCascadeTypes = (List<Object>) annotation.getValue( CASCADE );
+        List<CascadeType> cascadeTypes = internalCascadeTypes != null ? new ArrayList<CascadeType>( internalCascadeTypes.size() ) : null;
+        if ( internalCascadeTypes != null ) {
+            for ( Object internalCascadeType : internalCascadeTypes ) {
+                try {
+                    cascadeTypes.add( internalCascadeType != null ? CascadeType.valueOf( internalCascadeType.toString() ) : null );
+                } catch (Exception e) {
+                }
+            }
         }
+        return cascadeTypes;
     }
 
-    public void setCascade( CascadeType cascade ) {
+    public void setCascade( List<CascadeType> cascade ) {
         if ( cascade != null ) {
-            annotation.setValue( CASCADE, cascade.name() );
+            List<Object> cascadeTypes = new ArrayList<Object>( cascade.size() );
+            for ( CascadeType cascadeType : cascade ) {
+                cascadeTypes.add( cascadeType.name() );
+            }
+            annotation.setValue( CASCADE, cascadeTypes );
         } else {
             annotation.removeValue( CASCADE );
         }
@@ -148,7 +164,11 @@ public class RelationshipAnnotationValueHandler extends AnnotationValueHandler {
         }
     }
 
-    public static Annotation createAnnotation( RelationType relationType, CascadeType cascadeType, FetchMode fetchMode,
+    public static Annotation createAnnotation( RelationType relationType, List<CascadeType> cascadeTypes, Map<String, AnnotationDefinition> annotationDefinitions ) {
+        return createAnnotation( relationType, cascadeTypes, null, null, null, null, annotationDefinitions );
+    }
+
+    public static Annotation createAnnotation( RelationType relationType, List<CascadeType> cascadeTypes, FetchMode fetchMode,
                 Boolean optional, String mappedBy, Boolean orphanRemoval, Map<String, AnnotationDefinition> annotationDefinitions) {
 
         if ( relationType == null ) return null;
@@ -156,28 +176,28 @@ public class RelationshipAnnotationValueHandler extends AnnotationValueHandler {
 
         switch ( relationType ) {
             case ONE_TO_ONE:
-                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ONE_TO_ONE ) ) );
+                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE ) ) );
                 valueHandler.setOptional( optional );
                 valueHandler.setMappedBy( mappedBy );
                 valueHandler.setOrphanRemoval( orphanRemoval );
                 break;
             case ONE_TO_MANY:
-                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ONE_TO_MANY ) ) );
+                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY ) ) );
                 valueHandler.setMappedBy( mappedBy );
                 valueHandler.setOrphanRemoval( orphanRemoval );
                 break;
             case MANY_TO_ONE:
-                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_MANY_TO_ONE ) ) );
+                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_ONE ) ) );
                 valueHandler.setOptional( optional );
                 break;
             case MANY_TO_MANY:
-                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_MANY_TO_MANY ) ) );
+                valueHandler = new RelationshipAnnotationValueHandler( new AnnotationImpl( annotationDefinitions.get( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_MANY ) ) );
                 valueHandler.setMappedBy( mappedBy );
                 break;
         }
 
         valueHandler.setFetch( fetchMode );
-        valueHandler.setCascade( cascadeType );
+        valueHandler.setCascade( cascadeTypes );
 
         return valueHandler.getAnnotation();
     }

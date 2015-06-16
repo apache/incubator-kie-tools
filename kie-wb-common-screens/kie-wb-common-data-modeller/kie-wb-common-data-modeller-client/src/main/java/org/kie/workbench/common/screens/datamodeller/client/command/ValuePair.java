@@ -14,16 +14,33 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.util;
+package org.kie.workbench.common.screens.datamodeller.client.command;
 
-public enum CascadeType {
+public class ValuePair {
 
-    ALL,
-    PERSIST,
-    MERGE,
-    REMOVE,
-    REFRESH,
-    DETACH
+    private String name;
 
+    private Object value;
+
+    public ValuePair( String name, Object value ) {
+        this.name = name;
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue( Object value ) {
+        this.value = value;
+    }
 
 }

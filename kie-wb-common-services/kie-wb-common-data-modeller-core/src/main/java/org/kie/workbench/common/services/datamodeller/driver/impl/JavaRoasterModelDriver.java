@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.drools.core.base.ClassTypeResolver;
 import org.jboss.forge.roaster.Roaster;
-import org.jboss.forge.roaster.model.AnnotationTarget;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.SyntaxError;
 import org.jboss.forge.roaster.model.Type;
@@ -663,11 +662,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         if ( valuePairDefinition.isEnum() ) {
             if ( valuePairDefinition.isArray() ) {
-                //TODO I have already implemented the enum array writing but not yet the parsing, so this
-                //invocation is commented in order to make tests consistent.
-                //this should be uncommented when enum array parsing is implemented.
-                //encodedValue = DriverUtils.encodeEnumArrayValue( valuePairDefinition, value );
-                encodedValue = value.toString();
+                encodedValue = DriverUtils.encodeEnumArrayValue( valuePairDefinition, value );
             } else {
                 encodedValue = DriverUtils.encodeEnumValue( valuePairDefinition, value );
             }
@@ -686,11 +681,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
         } else if ( valuePairDefinition.isPrimitiveType() ) {
             //primitive types are wrapped by the java.lang.type.
             if ( valuePairDefinition.isArray() ) {
-                //TODO I have already implemented the primitive array writing but not yet the parsing, so this
-                //invocation is commented in order to make tests consistent.
-                //this should be uncommented when primitive array parsing is implemented.
-                //encodedValue = DriverUtils.encodePrimitiveArrayValue( valuePairDefinition, value );
-                encodedValue = value.toString();
+                encodedValue = DriverUtils.encodePrimitiveArrayValue( valuePairDefinition, value );
             } else {
                 encodedValue = DriverUtils.encodePrimitiveValue( valuePairDefinition, value );
             }

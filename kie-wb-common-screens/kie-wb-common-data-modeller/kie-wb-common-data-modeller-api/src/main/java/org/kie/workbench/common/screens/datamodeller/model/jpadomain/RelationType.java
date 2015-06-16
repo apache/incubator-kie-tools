@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.util;
+package org.kie.workbench.common.screens.datamodeller.model.jpadomain;
 
-public enum FetchMode {
+public enum RelationType {
 
-    EAGER,
-    LAZY
+    ONE_TO_ONE,
+    ONE_TO_MANY,
+    MANY_TO_ONE,
+    MANY_TO_MANY
 
 }

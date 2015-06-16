@@ -24,6 +24,8 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domai
 @Dependent
 public class MainDomainEditor extends BaseDomainEditor {
 
+    public static final String MAIN_DOMAIN = "MAIN";
+
     public MainDomainEditor() {
     }
 
@@ -37,11 +39,4 @@ public class MainDomainEditor extends BaseDomainEditor {
         ( ( MainDataObjectFieldEditor ) fieldEditor ).refreshTypeList( keepSelection );
     }
 
-    @Override public String getName() {
-        return "MAIN";
-    }
-
-    @Override public int getPriority() {
-        return 1;
-    }
 }

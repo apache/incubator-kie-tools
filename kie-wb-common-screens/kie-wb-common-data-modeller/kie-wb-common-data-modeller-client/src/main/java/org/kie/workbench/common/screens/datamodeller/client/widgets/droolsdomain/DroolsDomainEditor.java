@@ -24,6 +24,8 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domai
 @Dependent
 public class DroolsDomainEditor extends BaseDomainEditor {
 
+    public static final String DROOLS_DOMAIN = "DROOLS";
+
     public DroolsDomainEditor() {
     }
 
@@ -32,11 +34,4 @@ public class DroolsDomainEditor extends BaseDomainEditor {
         super( objectEditor, fieldEditor );
     }
 
-    @Override public String getName() {
-        return "DROOLS";
-    }
-
-    @Override public int getPriority() {
-        return 2;
-    }
 }

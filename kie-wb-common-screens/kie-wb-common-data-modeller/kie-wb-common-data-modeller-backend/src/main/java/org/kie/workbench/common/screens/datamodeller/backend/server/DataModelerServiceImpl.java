@@ -58,11 +58,8 @@ import org.kie.workbench.common.screens.datamodeller.backend.server.handler.Doma
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectCreatedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.ServiceException;
@@ -200,7 +197,7 @@ public class DataModelerServiceImpl
     public Path createJavaFile( final Path context,
             final String fileName,
             final String comment,
-            final Map<String, Object> portableParams ) {
+            final Map<String, Object> options ) {
 
         final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
         final Path newPath = Paths.convert( nioPath );
@@ -221,7 +218,7 @@ public class DataModelerServiceImpl
 
             Iterator<DomainHandler> it = domainHandlers != null ? domainHandlers.iterator() : null;
             while ( it != null && it.hasNext() ) {
-                it.next().setDefaultValues( dataObject, portableParams );
+                it.next().setDefaultValues( dataObject, options );
             }
 
             String source = createJavaSource( dataObject );
@@ -963,64 +960,6 @@ public class DataModelerServiceImpl
         }
     }
 
-    private Pair<String, List<DataModelerError>> updateJavaSource(org.uberfire.java.nio.file.Path path,
-            DataObjectTO dataObjectTO,
-            Map<String, String> renames,
-            List<String> deletions,
-            ClassLoader classLoader) throws Exception {
-
-        String originalSource;
-        originalSource = ioService.readAllString( path );
-        if (logger.isDebugEnabled()) {
-            logger.debug("path is: " + path);
-        }
-
-        return updateJavaSource( originalSource, dataObjectTO, renames, deletions, classLoader );
-    }
-
-    private Pair<String, List<DataModelerError>> updateJavaSource(String originalSource,
-            DataObjectTO dataObjectTO,
-            Map<String, String> renames,
-            List<String> deletions,
-            ClassLoader classLoader) throws Exception {
-
-        String newSource;
-        ClassTypeResolver classTypeResolver;
-        List<DataModelerError> errors = new ArrayList<DataModelerError>();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Starting java source update for class: " + dataObjectTO.getClassName());
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("original source is: " + originalSource);
-        }
-
-        JavaType<?> javaType = Roaster.parse(originalSource);
-        if (javaType.isClass()) {
-            if (javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
-                //if a file has parsing errors it will be skipped.
-                errors.addAll(serviceHelper.toDataModelerError(javaType.getSyntaxErrors(), null));
-                newSource = originalSource;
-            } else {
-                JavaClassSource javaClassSource = (JavaClassSource) javaType;
-                classTypeResolver = DriverUtils.createClassTypeResolver(javaClassSource, classLoader);
-                updateJavaClassSource(dataObjectTO, javaClassSource, renames, deletions, classTypeResolver);
-                newSource = javaClassSource.toString();
-            }
-        } else {
-            logger.debug("No Class definition was found for source: " + originalSource + ", original source won't be modified.");
-            newSource = originalSource;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("updated source is: " + newSource);
-        }
-        return new Pair<String, List<DataModelerError>>(newSource, errors);
-    }
-
-
-
     private Pair<String, List<DataModelerError>> updateJavaSource(String originalSource,
             DataObject dataObject,
             Map<String, String> renames,
@@ -1062,46 +1001,6 @@ public class DataModelerServiceImpl
         return new Pair<String, List<DataModelerError>>(newSource, errors);
     }
 
-
-    @Deprecated
-    private void updateJavaClassSource(DataObjectTO dataObjectTO,
-                                       JavaClassSource javaClassSource,
-                                       Map<String, String> renames,
-                                       List<String> deletions,
-                                       ClassTypeResolver classTypeResolver) throws Exception {
-
-        if (javaClassSource == null || !javaClassSource.isClass()) {
-            logger.warn("A null javaClassSource or javaClassSouce is not a Class, no processing will be done. javaClassSource: " + javaClassSource + " className: " + (javaClassSource != null ? javaClassSource.getName() : null));
-            return;
-        }
-
-        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver();
-        UpdateInfo updateInfo = new UpdateInfo();
-        DataObject dataObject = serviceHelper.to2Domain(dataObjectTO);
-
-        //prepare additional update info prior update
-        for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
-            if ( propertyTO.isVolatile() ) {
-                updateInfo.addNewProperty( dataObject.getProperty( propertyTO.getName() ) );
-            } else if ( propertyTO.nameChanged() ) {
-                updateInfo.addPropertyRename( dataObject.getProperty( propertyTO.getName() ), propertyTO.getName(), propertyTO.getOriginalName() );
-            }
-        }
-
-        if ( renames != null ) {
-            for ( Map.Entry<String, String> entry : renames.entrySet() ) {
-                updateInfo.addClassRename( entry.getKey(), entry.getValue() );
-            }
-        }
-        if ( deletions != null ) {
-            for ( String deletion : deletions ) {
-                updateInfo.addDeletedClass( deletion );
-            }
-        }
-
-        modelDriver.updateSource( javaClassSource, dataObject, updateInfo, classTypeResolver );
-    }
-
     private void updateJavaClassSource(DataObject dataObject,
             JavaClassSource javaClassSource,
             Map<String, String> renames,
@@ -1117,16 +1016,7 @@ public class DataModelerServiceImpl
         UpdateInfo updateInfo = new UpdateInfo();
 
         //prepare additional update info prior update
-        /**
-        for (ObjectPropertyTO propertyTO : dataObjectTO.getProperties()) {
-            if ( propertyTO.isVolatile() ) {
-                updateInfo.addNewProperty( dataObject.getProperty( propertyTO.getName() ) );
-            } else if ( propertyTO.nameChanged() ) {
-                updateInfo.addPropertyRename( dataObject.getProperty( propertyTO.getName() ), propertyTO.getName(), propertyTO.getOriginalName() );
-            }
-        }
 
-         **/
         if ( renames != null ) {
             for ( Map.Entry<String, String> entry : renames.entrySet() ) {
                 updateInfo.addClassRename( entry.getKey(), entry.getValue() );
@@ -1245,12 +1135,9 @@ public class DataModelerServiceImpl
     }
 
     @Override
-    public List<PropertyTypeTO> getBasePropertyTypes() {
-        List<PropertyTypeTO> types = new ArrayList<PropertyTypeTO>();
-
-        for (PropertyType baseType : PropertyTypeFactoryImpl.getInstance().getBasePropertyTypes()) {
-            types.add(new PropertyTypeTO(baseType.getName(), baseType.getClassName(), baseType.isPrimitive()));
-        }
+    public List<PropertyType> getBasePropertyTypes() {
+        List<PropertyType> types = new ArrayList<PropertyType>();
+        types.addAll( PropertyTypeFactoryImpl.getInstance().getBasePropertyTypes() );
         return types;
     }
 

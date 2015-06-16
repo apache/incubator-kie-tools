@@ -26,24 +26,22 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.FetchMode;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.RelationType;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.SequenceGeneratorValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
-import org.kie.workbench.common.screens.datamodeller.client.util.CascadeType;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.util.FetchMode;
-import org.kie.workbench.common.screens.datamodeller.client.util.RelationType;
-import org.kie.workbench.common.screens.datamodeller.client.util.RelationshipAnnotationValueHandler;
-import org.kie.workbench.common.screens.datamodeller.client.util.SequenceGeneratorValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties.IdGeneratorField;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties.RelationshipField;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties.SequenceGeneratorField;
-import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.client.fields.BooleanField;
 import org.uberfire.ext.properties.editor.client.fields.TextField;
@@ -100,6 +98,11 @@ public class JPADataObjectFieldEditor extends FieldEditor {
     }
 
     @Override
+    public String getDomainName() {
+        return JPADomainEditor.JPA_DOMAIN;
+    }
+
+    @Override
     protected void loadDataObjectField( DataObject dataObject, ObjectProperty objectField ) {
         clean();
         setReadonly( true );
@@ -107,10 +110,10 @@ public class JPADataObjectFieldEditor extends FieldEditor {
             this.dataObject = dataObject;
             this.objectField = objectField;
 
-            updateIdentifierField( objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ID_ANNOTATION ) );
-            updateColumnFields( objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION ) );
-            updateGeneratedValueField( objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION ) );
-            updateSequenceGeneratorField( objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION ) );
+            updateIdentifierField( objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION ) );
+            updateColumnFields( objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION ) );
+            updateGeneratedValueField( objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION ) );
+            updateSequenceGeneratorField( objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION ) );
             updateRelationshipField( getCurrentRelationshipAnnotation( objectField ) );
 
             setReadonly( getContext() == null || getContext().isReadonly() );
@@ -326,111 +329,57 @@ public class JPADataObjectFieldEditor extends FieldEditor {
 
     private void identifierFieldChanged( String newStringValue ) {
 
-        if ( getObjectField() == null ) return;
+        if ( getObjectField() != null ) {
 
-        Annotation annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ID_ANNOTATION );
-        Boolean wasSet = annotation != null;
-
-        final Boolean isSet = Boolean.TRUE.toString().equals( newStringValue );
-
-        if ( wasSet && !isSet ) {
-            getObjectField().removeAnnotation( annotation.getClassName() );
-        } else if ( !wasSet && isSet ) {
-            annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ID_ANNOTATION ) );
-            getObjectField().addAnnotation( annotation );
-        }
-        if ( wasSet != isSet ) {
-            notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
-                    AnnotationDefinitionTO.JAVAX_PERSISTENCE_ID_ANNOTATION, wasSet, isSet );
+            Boolean doAdd = Boolean.TRUE.toString().equals( newStringValue );
+            commandBuilder.buildFieldAddOrRemoveAnnotationCommand( getContext(),
+                    getName(), getDataObject(), getObjectField(),
+                    JPADomainAnnotations.JAVAX_PERSISTENCE_ID_ANNOTATION, doAdd ).execute();
         }
     }
 
     private void columnFieldChanged( DataModelerPropertyEditorFieldInfo fieldInfo, String newValue ) {
 
-        if ( getObjectField() == null ) return;
+        if ( getObjectField() != null ) {
 
-        Annotation annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION );
-        String oldValue = null;
+            if ( COLUMN_NAME_FIELD.equals( fieldInfo.getKey() ) ) {
 
-        if ( COLUMN_NAME_FIELD.equals( fieldInfo.getKey() ) ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, "name", null );
-            if ( annotation != null ) {
-                if ( newValue == null || "".equals( newValue ) ) {
-                    annotation.removeValue( "name" );
-                } else {
-                    annotation.setValue( "name", newValue );
-                }
-            } else if ( newValue != null && !"".equals( newValue ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION ) );
-                annotation.setValue( "name", newValue );
-                getObjectField().addAnnotation( annotation );
+                //TODO add column name validator
+                String value = DataModelerUtils.nullTrim( newValue );
+                commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, "name", value, false ).execute();
+
+            } else if ( COLUMN_UNIQUE_FIELD.equals( fieldInfo.getKey() ) ) {
+
+                commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, "unique", newValue, false ).execute();
+
+            } else if ( COLUMN_NULLABLE_FIELD.equals( fieldInfo.getKey() ) ) {
+
+                commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, "nullable", newValue, false ).execute();
+
+            } else if ( COLUMN_INSERTABLE_FIELD.equals( fieldInfo.getKey() ) ) {
+
+                commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, "insertable", newValue, false ).execute();
+
+            } else if ( COLUMN_UPDATABLE_FIELD.equals( fieldInfo.getKey() ) ) {
+
+                commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, "updatable", newValue, false ).execute();
+
             }
 
-        } else if ( COLUMN_UNIQUE_FIELD.equals( fieldInfo.getKey() ) ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, "unique", null );
-            if ( annotation != null ) {
-                if ( newValue == null || "false".equals( newValue ) ) {
-                    annotation.removeValue( "unique" );
-                } else {
-                    annotation.setValue( "unique", newValue );
-                }
-            } else if ( newValue != null && !"false".equals( newValue ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION ) );
-                annotation.setValue( "unique", newValue );
-                getObjectField().addAnnotation( annotation );
-            }
+            Annotation annotation = getObjectField().getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION );
 
-        } else if ( COLUMN_NULLABLE_FIELD.equals( fieldInfo.getKey() ) ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, "nullable", null );
-            if ( annotation != null ) {
-                if ( newValue == null || "true".equals( newValue ) ) {
-                    annotation.removeValue( "nullable" );
-                } else {
-                    annotation.setValue( "nullable", newValue );
-                }
-            } else if ( newValue != null && !"true".equals( newValue ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION ) );
-                annotation.setValue( "nullable", newValue );
-                getObjectField().addAnnotation( annotation );
-            }
+            //If the COLUMN annotation just has the by default parameters configured just remove it.
+            if ( annotation != null && hasOnlyDefaultValues( annotation ) ) {
+                commandBuilder.buildFieldAddOrRemoveAnnotationCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, false ).execute();
 
-        } else if ( COLUMN_INSERTABLE_FIELD.equals( fieldInfo.getKey() ) ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, "insertable", null );
-            if ( annotation != null ) {
-                if ( newValue == null || "true".equals( newValue ) ) {
-                    annotation.removeValue( "insertable" );
-                } else {
-                    annotation.setValue( "insertable", newValue );
-                }
-            } else if ( newValue != null && !"true".equals( newValue ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION ) );
-                annotation.setValue( "insertable", newValue );
-                getObjectField().addAnnotation( annotation );
             }
-
-        } else if ( COLUMN_UPDATABLE_FIELD.equals( fieldInfo.getKey() ) ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, "updatable", null );
-            if ( annotation != null ) {
-                if ( newValue == null || "true".equals( newValue ) ) {
-                    annotation.removeValue( "updatable" );
-                } else {
-                    annotation.setValue( "updatable", newValue );
-                }
-            } else if ( newValue != null && !"true".equals( newValue ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION ) );
-                annotation.setValue( "updatable", newValue );
-                getObjectField().addAnnotation( annotation );
-            }
-
         }
-
-        //If the COLUMN annotation just has the by default parameters configured just remove it.
-        if ( annotation != null && hasOnlyDefaultValues( annotation ) ) {
-            getObjectField().removeAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION );
-        }
-
-        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
-                AnnotationDefinitionTO.JAVAX_PERSISTENCE_COLUMN_ANNOTATION, oldValue, newValue );
     }
 
     boolean hasOnlyDefaultValues( Annotation columnAnnotation ) {
@@ -448,7 +397,7 @@ public class JPADataObjectFieldEditor extends FieldEditor {
         }
 
         strValue = AnnotationValueHandler.getStringValue( columnAnnotation, "nullable", null );
-        if ( strValue != null && !"true".equals( true ) ) {
+        if ( strValue != null && !"true".equals( strValue ) ) {
             return false;
         }
 
@@ -467,95 +416,89 @@ public class JPADataObjectFieldEditor extends FieldEditor {
 
     private void generatedValueFieldChanged( DataModelerPropertyEditorFieldInfo fieldInfo, String newStringValue ) {
 
-        if ( getObjectField() == null ) return;
+        if ( getObjectField() != null ) {
 
-        String strategy = (String) getField( GENERATED_VALUE_FIELD ).getCurrentValue( "strategy" );
-        String generator = (String) getField( GENERATED_VALUE_FIELD ).getCurrentValue( "generator" );
-        Annotation annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION );
+            String strategy = DataModelerUtils.nullTrim( ( String ) getField( GENERATED_VALUE_FIELD ).getCurrentValue( "strategy" ) );
+            String generator = DataModelerUtils.nullTrim( ( String ) getField( GENERATED_VALUE_FIELD ).getCurrentValue( "generator" ) );
 
-        if ( strategy == null || "NONE".equals( strategy ) ) {
-            getObjectField().removeAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION );
-        } else {
-            if ( annotation == null ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION ) );
-                getObjectField().addAnnotation( annotation );
-            }
-            annotation.setValue( "strategy", strategy );
-            if ( generator == null ) {
-                //uncommon case
-                annotation.removeValue( "generator" );
+            if ( strategy == null || "NONE".equals( strategy ) ) {
+                commandBuilder.buildFieldAnnotationRemoveCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION ).execute();
             } else {
-                annotation.setValue( "generator", generator );
+
+                commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION, "strategy", strategy, false ).execute();
+
+                commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        JPADomainAnnotations.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION, "generator", generator, false ).execute();
             }
         }
-
-        //TODO review this
-        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
-                AnnotationDefinitionTO.JAVAX_PERSISTENCE_GENERATED_VALUE_ANNOTATION, "oldValue", "newValue" );
     }
 
     private void relationTypeFieldChanged( DataModelerPropertyEditorFieldInfo fieldInfo, String newValue ) {
 
-        if ( getObjectField() == null ) return;
+        if ( getObjectField() != null ) {
 
-        Annotation oldRelation = getCurrentRelationshipAnnotation( getObjectField() );
-        RelationshipAnnotationValueHandler oldRelationHandler = oldRelation != null ? new RelationshipAnnotationValueHandler( oldRelation ) : null;
-        Annotation newRelation;
+            Annotation oldRelation = getCurrentRelationshipAnnotation( getObjectField() );
+            RelationshipAnnotationValueHandler oldRelationHandler = oldRelation != null ? new RelationshipAnnotationValueHandler( oldRelation ) : null;
+            Annotation newRelation;
 
-        RelationType newRelationType = ( RelationType ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.RELATION_TYPE );
-        CascadeType newCascadeType = ( CascadeType ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.CASCADE );
-        FetchMode newFetchMode = ( FetchMode ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.FETCH );
-        Boolean newOptional = ( Boolean ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.OPTIONAL );
-        String newMappedBy = ( String ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.MAPPED_BY );
-        Boolean newOrphanRemoval = ( Boolean ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.ORPHAN_REMOVAL );
+            RelationType newRelationType = ( RelationType ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.RELATION_TYPE );
+            List<CascadeType> newCascadeTypes = ( List<CascadeType> ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.CASCADE );
+            FetchMode newFetchMode = ( FetchMode ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.FETCH );
+            Boolean newOptional = ( Boolean ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.OPTIONAL );
+            String newMappedBy = DataModelerUtils.nullTrim( ( String ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.MAPPED_BY ) );
+            Boolean newOrphanRemoval = ( Boolean ) fieldInfo.getCurrentValue( RelationshipAnnotationValueHandler.ORPHAN_REMOVAL );
 
-        //TODO add more fine grained control to the changes if needed. By now I can just remove the old relation annotation
-        //and add the new one. This may alter the annotations order for the given field, but's not a problem.
-        if ( oldRelationHandler != null ) getObjectField().removeAnnotation( oldRelationHandler.getClassName() );
+            //TODO add more fine grained control for the changes if needed. By now I can just remove the old relation annotation
+            //and add the new one. This may alter the annotations order for the given field, but it's not a problem.
+            if ( oldRelationHandler != null ) {
+                commandBuilder.buildFieldAnnotationRemoveCommand( getContext(), getName(), getDataObject(),
+                        getObjectField(), oldRelationHandler.getClassName() ).execute();
+            }
 
-        newRelation = RelationshipAnnotationValueHandler.createAnnotation( newRelationType,
-                newCascadeType, newFetchMode, newOptional, newMappedBy, newOrphanRemoval,
-                getContext().getAnnotationDefinitions() );
+            newRelation = RelationshipAnnotationValueHandler.createAnnotation( newRelationType,
+                    newCascadeTypes, newFetchMode, newOptional, newMappedBy, newOrphanRemoval,
+                    getContext().getAnnotationDefinitions() );
 
-        if ( newRelation != null ) {
-            getObjectField().addAnnotation( newRelation );
+            if ( newRelation != null ) {
+                getObjectField().addAnnotation( newRelation );
+                commandBuilder.buildFieldAnnotationAddCommand( getContext(), getName(), getDataObject(),
+                        getObjectField(), newRelation ).execute();
+            }
         }
-
-        //TODO review this
-        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
-                "relationType", oldRelationHandler != null ? oldRelationHandler.getClassName() : null,
-                newRelation != null ? newRelation.getClassName() : null );
     }
 
     private void sequenceGeneratorFieldChanged( DataModelerPropertyEditorFieldInfo fieldInfo, String newValue ) {
-        if ( getObjectField() == null ) return;
+        if ( getObjectField() != null ) {
 
-        Annotation oldGenerator = getObjectField().getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION );
-        SequenceGeneratorValueHandler oldGeneratorHandler = oldGenerator != null ? new SequenceGeneratorValueHandler( oldGenerator ) : null;
-        Annotation newGenerator = null;
+            Annotation oldGenerator = getObjectField().getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION );
+            SequenceGeneratorValueHandler oldGeneratorHandler = oldGenerator != null ? new SequenceGeneratorValueHandler( oldGenerator ) : null;
+            Annotation newGenerator = null;
 
-        //TODO add more fine grained control to the changes if needed. By now I can just remove the old generator annotation
-        //and add the new one. This may alter the annotations order for the given field, but's not a problem.
-        if ( oldGeneratorHandler != null ) getObjectField().removeAnnotation( oldGeneratorHandler.getClassName() );
+            //TODO add more fine grained control to the changes if needed. By now I can just remove the old generator annotation
+            //and add the new one. This may alter the annotations order for the given field, but it's not a problem.
+            if ( oldGeneratorHandler != null ) {
+                commandBuilder.buildFieldAnnotationRemoveCommand( getContext(), getName(), getDataObject(),
+                        getObjectField(), oldGeneratorHandler.getClassName() ).execute();
+            }
 
-        String name = (String) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.NAME );
-        String sequenceName = (String) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.SEQUENCE_NAME );
-        Integer initialValue = (Integer) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.INITIAL_VALUE );
-        Integer allocationSize = (Integer) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.ALLOCATION_SIZE );
+            String name = DataModelerUtils.nullTrim( ( String ) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.NAME ) );
+            String sequenceName = DataModelerUtils.nullTrim( ( String ) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.SEQUENCE_NAME ) );
+            Integer initialValue = ( Integer ) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.INITIAL_VALUE );
+            Integer allocationSize = ( Integer ) fieldInfo.getCurrentValue( SequenceGeneratorValueHandler.ALLOCATION_SIZE );
 
-        if ( name != null && !"".equals( name.trim() ) ) {
-            newGenerator = SequenceGeneratorValueHandler.createAnnotation( name,
-                    sequenceName,
-                    initialValue,
-                    allocationSize,
-                    getContext().getAnnotationDefinitions() );
-            getObjectField().addAnnotation( newGenerator );
+            if ( name != null && !"".equals( name.trim() ) ) {
+                newGenerator = SequenceGeneratorValueHandler.createAnnotation( name,
+                        sequenceName,
+                        initialValue,
+                        allocationSize,
+                        getContext().getAnnotationDefinitions() );
+
+                commandBuilder.buildFieldAnnotationAddCommand( getContext(), getName(), getDataObject(),
+                        getObjectField(), newGenerator ).execute();
+            }
         }
-
-        //TODO review this
-        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE,
-                "sequenceGenerator", oldGeneratorHandler != null ? oldGeneratorHandler.getName() : null,
-                newGenerator != null ? name : null );
     }
 
     // Event handlers
@@ -598,20 +541,20 @@ public class JPADataObjectFieldEditor extends FieldEditor {
     private Annotation getCurrentRelationshipAnnotation( ObjectProperty objectProperty ) {
         Annotation annotation;
 
-        if ( ( annotation = objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ONE_TO_ONE ) ) != null ) {
+        if ( ( annotation = objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_ONE ) ) != null ) {
             return annotation;
-        } else if ( ( annotation = objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ONE_TO_MANY ) ) != null ) {
+        } else if ( ( annotation = objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ONE_TO_MANY ) ) != null ) {
             return annotation;
-        } else if ( ( annotation = objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_MANY_TO_ONE ) ) != null ) {
+        } else if ( ( annotation = objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_ONE ) ) != null ) {
             return annotation;
-        } else if ( ( annotation = objectField.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_MANY_TO_MANY ) ) != null ) {
+        } else if ( ( annotation = objectField.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_MANY_TO_MANY ) ) != null ) {
             return annotation;
         }
         return null;
     }
 
     private String getCurrentEditorEventId() {
-        //TODO, temporal mecanism to avoid two property editors opened in different workech JPA editors receiving crossed events
+        //TODO, temporal mechanism to avoid two property editors opened in different workbench JPA editors receiving crossed events
         return JPA_DATA_OBJECT_FIELD_EDITOR_EVENT + "-" + this.hashCode();
     }
 

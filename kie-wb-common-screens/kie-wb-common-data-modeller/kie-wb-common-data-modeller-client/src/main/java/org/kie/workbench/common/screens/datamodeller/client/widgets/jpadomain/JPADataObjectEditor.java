@@ -26,14 +26,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.command.DataModelCommand;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
+import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ObjectEditor;
-import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.client.fields.BooleanField;
 import org.uberfire.ext.properties.editor.client.fields.TextField;
@@ -78,14 +78,19 @@ public class JPADataObjectEditor extends ObjectEditor {
         return "JPA_OBJECT_EDITOR";
     }
 
+    @Override
+    public String getDomainName() {
+        return JPADomainEditor.JPA_DOMAIN;
+    }
+
     protected void loadDataObject( DataObject dataObject ) {
         clean();
         setReadonly( true );
         this.dataObject = dataObject;
 
         if ( dataObject != null ) {
-            updateEntityField( dataObject.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ENTITY_ANNOTATION ) );
-            updateTableNameField( dataObject.getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_TABLE_ANNOTATION ) );
+            updateEntityField( dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION ) );
+            updateTableNameField( dataObject.getAnnotation( JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION ) );
         }
         loadPropertyEditor();
     }
@@ -183,52 +188,25 @@ public class JPADataObjectEditor extends ObjectEditor {
     }
 
     private void entityFieldChanged( String newValue ) {
-        if ( getDataObject() == null ) {
-            return;
+
+        if ( getDataObject() != null ) {
+
+            Boolean doAdd = Boolean.TRUE.toString().equals( newValue );
+            DataModelCommand command = commandBuilder.buildDataObjectAddOrRemoveAnnotationCommand( getContext(),
+                    getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, doAdd );
+            command.execute();
         }
-
-        Boolean oldValue = null;
-        Annotation annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ENTITY_ANNOTATION );
-        oldValue = annotation != null;
-
-        final Boolean isChecked = Boolean.TRUE.toString().equals( newValue );
-
-        if ( annotation != null && !isChecked ) {
-            getDataObject().removeAnnotation( annotation.getClassName() );
-        } else if ( annotation == null && isChecked ) {
-            annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_ENTITY_ANNOTATION ) );
-            getDataObject().addAnnotation( annotation );
-        }
-
-        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,
-                AnnotationDefinitionTO.JAVAX_PERSISTENCE_ENTITY_ANNOTATION, oldValue, isChecked );
     }
 
     private void tableNameChanged( String newValue ) {
-        if ( getDataObject() == null ) {
-            return;
-        }
 
-        String oldValue = null;
-        String _label = newValue != null ? newValue.trim() : null;
-        Annotation annotation = getDataObject().getAnnotation( AnnotationDefinitionTO.JAVAX_PERSISTENCE_TABLE_ANNOTATION );
+        if ( getDataObject() != null ) {
 
-        if ( annotation != null ) {
-            oldValue = AnnotationValueHandler.getStringValue( annotation, "name" );
-            if ( _label != null && !"".equals( _label ) ) {
-                annotation.setValue( "name", _label );
-            } else {
-                getDataObject().removeAnnotation( annotation.getClassName() );
-            }
-        } else {
-            if ( _label != null && !"".equals( _label ) ) {
-                annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_TABLE_ANNOTATION ) );
-                annotation.setValue( "name", _label );
-                getDataObject().addAnnotation( annotation );
-            }
+            String value = DataModelerUtils.nullTrim( newValue );
+            DataModelCommand command = commandBuilder.buildDataObjectAnnotationValueChangeCommand( getContext(),
+                    getName(), getDataObject(), JPADomainAnnotations.JAVAX_PERSISTENCE_TABLE_ANNOTATION, "name", value, true );
+            command.execute();
         }
-        // TODO replace 'label' literal with annotation definition constant
-        notifyObjectChange( ChangeType.TYPE_ANNOTATION_VALUE_CHANGE,  "tableName", oldValue, _label );
     }
 
     private String getCurrentEditorEventId() {

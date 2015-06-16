@@ -49,7 +49,6 @@ import org.kie.workbench.common.screens.datamodeller.events.DataObjectSelectedEv
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeatures;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
@@ -59,6 +58,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl;
 import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -679,11 +679,10 @@ public class DataModelerScreenPresenter
                     notification.fire( new NotificationEvent( org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
                     dataModelerEvent.fire( new DataModelStatusChangeEvent( context.getContextId(),
                                                                            DataModelerEvent.DATA_MODEL_BROWSER,
-                                                                           getDataModel(),
                                                                            oldDirtyStatus,
                                                                            false ) );
 
-                    dataModelerEvent.fire( new DataModelSaved( context.getContextId(), null, getDataModel() ) );
+                    dataModelerEvent.fire( new DataModelSaved( context.getContextId(), null ) );
 
                     versionRecordManager.reloadVersions( currentPath );
 
@@ -851,10 +850,10 @@ public class DataModelerScreenPresenter
 
         if ( model.getDataObject() != null ) {
             context.setParseStatus( DataModelerContext.ParseStatus.PARSED );
-            dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), model.getDataObject() ) );
+            dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, model.getDataObject() ) );
         } else {
             context.setParseStatus( DataModelerContext.ParseStatus.PARSE_ERRORS );
-            dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), null ) );
+            dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, null ) );
         }
     }
 
@@ -898,7 +897,7 @@ public class DataModelerScreenPresenter
             context.getDataModel().removeDataObject( dataObject.getClassName() );
             context.getDataModel().getDataObjects().add( dataObject );
         }
-        dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, getDataModel(), dataObject ) );
+        dataModelerEvent.fire( new DataObjectSelectedEvent( context.getContextId(), DataModelerEvent.DATA_MODEL_BROWSER, dataObject ) );
     }
 
     @Override
@@ -1117,9 +1116,9 @@ public class DataModelerScreenPresenter
         context = new DataModelerContext( editorId );
 
         modelerService.call(
-                new RemoteCallback<List<PropertyTypeTO>>() {
+                new RemoteCallback<List<PropertyType>>() {
                     @Override
-                    public void callback( List<PropertyTypeTO> baseTypes ) {
+                    public void callback( List<PropertyType> baseTypes ) {
                         context.init( baseTypes );
                     }
                 },

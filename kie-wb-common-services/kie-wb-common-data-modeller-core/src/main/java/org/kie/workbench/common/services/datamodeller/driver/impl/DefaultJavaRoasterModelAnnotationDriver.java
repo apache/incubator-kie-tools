@@ -18,7 +18,6 @@ package org.kie.workbench.common.services.datamodeller.driver.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -31,6 +30,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
+import org.kie.workbench.common.services.datamodeller.util.PortableStringUtils;
 import org.kie.workbench.common.services.datamodeller.util.StringEscapeUtils;
 
 public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver {
@@ -87,10 +87,9 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         }
 
         if ( valuePairDefinition.isArray() ) {
-            //TODO parse primitive arrays. Not implemented in Roaster.
-            result = value;
+            result = parsePrimitiveArrayValue( value, valuePairDefinition.getClassName(), valuePairDefinition );
         } else {
-            result = parsePrimitiveValue( value, valuePairDefinition.getClassName(), valuePairDefinition.isArray() );
+            result = parsePrimitiveValue( value, valuePairDefinition.getClassName() );
         }
         return result;
     }
@@ -104,8 +103,7 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         }
 
         if ( valuePairDefinition.isArray() ) {
-            //TODO parse enum arrays. If we assume the Enum.class is accessible to current classloader then Roaster can do it.
-            result = value;
+            result = parseEnumArrayValue( value, valuePairDefinition );
         } else {
             result = parseEnumValue( value, valuePairDefinition );
         }
@@ -179,17 +177,37 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         return result;
     }
 
-    private Object parsePrimitiveValue( String value, String className, boolean isArray ) {
+    private Object parsePrimitiveValue( String value, String className ) {
         if ( NamingUtils.isByteId( className ) ) {
-            return parseByteValue( value, className, isArray );
+            return parseByteValue( value, className );
         } else if ( NamingUtils.isCharId( className ) ) {
-            return parseCharValue( value, className, isArray );
+            return parseCharValue( value, className );
         } else {
             return NamingUtils.parsePrimitiveValue( className, value );
         }
     }
 
-    private Object parseByteValue( String value, String className, boolean isArray ) {
+    private List<Object> parsePrimitiveArrayValue( String value, String className, AnnotationValuePairDefinition valuePairDefinition ) {
+        if ( value == null ) return null;
+        List<Object> values = new ArrayList<Object>(  );
+        value = value.trim();
+        if ( !value.startsWith( "{" ) || !value.endsWith( "}" ) ) {
+            //mal formed array
+            return values;
+        } else {
+            value = PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( value, '{' ), '}' );
+            String[] primitiveValues = value.split( "," );
+            Object primitiveValue;
+            for ( int i = 0; i < primitiveValues.length; i++ ) {
+                primitiveValue = parsePrimitiveValue( primitiveValues[i], className );
+                values.add( primitiveValue );
+            }
+        }
+        return values;
+    }
+
+
+    private Object parseByteValue( String value, String className ) {
         //remove the word (byte) in case the value is something like (byte)222"
         String regex = "(\\s)*\\((\\s)*byte(\\s)*\\)(\\s)*";
         Pattern pattern = Pattern.compile( regex );
@@ -212,7 +230,7 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         return result;
     }
 
-    private Object parseCharValue( String value, String className, boolean isArray ) {
+    private Object parseCharValue( String value, String className ) {
         String unquotedValue = StringEscapeUtils.unquoteSingle( value );
         return NamingUtils.parsePrimitiveValue( className, unquotedValue );
     }
@@ -230,6 +248,26 @@ public class DefaultJavaRoasterModelAnnotationDriver implements AnnotationDriver
         }
         return result;
     }
+
+    private List<Object> parseEnumArrayValue( String value, AnnotationValuePairDefinition valuePairDefinition ) {
+        if ( value == null ) return null;
+        List<Object> values = new ArrayList<Object>(  );
+        value = value.trim();
+        if ( !value.startsWith( "{" ) || !value.endsWith( "}" ) ) {
+            //mal formed array
+            return values;
+        } else {
+            value = PortableStringUtils.removeLastChar( PortableStringUtils.removeFirstChar( value, '{' ), '}' );
+            String[] enumValues = value.split( "," );
+            Object enumValue;
+            for ( int i = 0; i < enumValues.length; i++ ) {
+                enumValue = parseEnumValue( enumValues[i], valuePairDefinition );
+                values.add( enumValue );
+            }
+        }
+        return values;
+    }
+
 
     private String parseLiteralValue( String literalValue ) {
         return literalValue != null ? StringEscapeUtils.unquote( StringEscapeUtils.unescapeJava( literalValue ) ) : literalValue;

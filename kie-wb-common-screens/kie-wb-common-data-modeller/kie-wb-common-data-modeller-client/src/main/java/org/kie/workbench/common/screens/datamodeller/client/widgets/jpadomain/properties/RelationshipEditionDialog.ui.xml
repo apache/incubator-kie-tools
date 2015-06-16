@@ -35,8 +35,15 @@
         <b:ControlLabel for="relationType"  ><g:Label ui:field="relationTypeLabel" text="Relationship type"  /></b:ControlLabel>
         <b:ListBox b:id="relationTypeLabel" ui:field="relationType"></b:ListBox>
 
-        <b:ControlLabel for="cascadeType"  ><g:Label ui:field="cascadeTypeLabel" text="Cascade mode"  /></b:ControlLabel>
-        <b:ListBox b:id="cascadeTypeLabel" ui:field="cascadeType"></b:ListBox>
+        <b:ControlLabel for="cascadeAll"  ><g:Label ui:field="cascadeAllLabel" text="Cascade mode"  /></b:ControlLabel>
+        <g:HorizontalPanel>
+          <b:CheckBox b:id="cascadeAllLabel" ui:field="cascadeAll" text="All"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
+          <b:CheckBox ui:field="cascadePersist"  text="Persist"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
+          <b:CheckBox ui:field="cascadeMerge"    text="Merge"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
+          <b:CheckBox ui:field="cascadeRemove"   text="Remove"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
+          <b:CheckBox ui:field="cascadeRefresh"  text="Refresh"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
+          <b:CheckBox ui:field="cascadeDetach"   text="Detach"></b:CheckBox><g:HTML>&nbsp;&nbsp;</g:HTML>
+        </g:HorizontalPanel>
 
         <b:ControlLabel for="fetchMode"  ><g:Label ui:field="fetchModeLabel" text="Fetch mode"  /></b:ControlLabel>
         <b:ListBox b:id="fetchModeLabel" ui:field="fetchMode"></b:ListBox>

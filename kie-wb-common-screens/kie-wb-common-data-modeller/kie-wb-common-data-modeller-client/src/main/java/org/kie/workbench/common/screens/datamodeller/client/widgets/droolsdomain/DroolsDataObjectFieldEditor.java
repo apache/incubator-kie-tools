@@ -35,19 +35,16 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
+import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.client.resources.i18n.Constants;
-import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.client.validation.ValidatorService;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.FieldEditor;
-import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 public class DroolsDataObjectFieldEditor extends FieldEditor {
@@ -110,6 +107,11 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
         return "DROOLS_FIELD_EDITOR";
     }
 
+    @Override
+    public String getDomainName() {
+        return DroolsDomainEditor.DROOLS_DOMAIN;
+    }
+
     public void setReadonly( boolean readonly ) {
         super.setReadonly( readonly );
         boolean value = !readonly;
@@ -133,14 +135,14 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
             this.dataObject = dataObject;
             this.objectField = objectField;
 
-            Annotation annotation = objectField.getAnnotation( AnnotationDefinitionTO.KEY_ANNOTATION );
+            Annotation annotation = objectField.getAnnotation( DroolsDomainAnnotations.KEY_ANNOTATION );
             if ( annotation != null ) {
                 equalsSelector.setValue( Boolean.TRUE );
             }
 
-            annotation = objectField.getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION );
+            annotation = objectField.getAnnotation( DroolsDomainAnnotations.POSITION_ANNOTATION );
             if ( annotation != null ) {
-                Object positionValue = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM );
+                Object positionValue = annotation.getValue( DroolsDomainAnnotations.VALUE_PARAM );
                 String position = positionValue != null ? positionValue.toString() : "";
                 this.position.setText( position );
             }
@@ -153,90 +155,65 @@ public class DroolsDataObjectFieldEditor extends FieldEditor {
 
     @UiHandler("equalsSelector")
     void equalsChanged( final ClickEvent event ) {
-        if ( getObjectField() == null ) {
-            return;
-        }
+        if ( getObjectField() != null ) {
 
-        Boolean oldEquals = null;
-        Annotation annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.KEY_ANNOTATION );
-        if ( annotation != null ) {
-            Object annotationValue = annotation.getValue( AnnotationDefinitionTO.VALUE_PARAM );
-            oldEquals = annotationValue != null ? ( Boolean ) annotationValue : Boolean.FALSE;
-        }
-        final Boolean setEquals = equalsSelector.getValue();
+            final Boolean isChecked = equalsSelector.getValue();
 
-        if ( annotation != null && !setEquals ) {
-            getObjectField().removeAnnotation( annotation.getClassName() );
-        } else if ( annotation == null && setEquals ) {
-            annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.KEY_ANNOTATION ) );
-            getObjectField().addAnnotation( annotation );
+            commandBuilder.buildFieldAddOrRemoveAnnotationCommand( getContext(), getName(), getDataObject(),
+                    getObjectField(), DroolsDomainAnnotations.KEY_ANNOTATION, isChecked ).execute();
         }
-        notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE, AnnotationDefinitionTO.KEY_ANNOTATION, oldEquals, setEquals );
     }
 
     private void positionChanged( ChangeEvent event ) {
-
-        positionLabel.setStyleName( DEFAULT_LABEL_CLASS );
-        final Command afterCloseCommand = new Command() {
-            @Override
-            public void execute() {
-                positionLabel.setStyleName( TEXT_ERROR_CLASS );
-                position.selectAll();
-            }
-        };
-
-        Annotation annotation = getObjectField().getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION );
-        final String oldValue = AnnotationValueHandler.getStringValue( annotation, AnnotationDefinitionTO.VALUE_PARAM );
-        final String newValue = position.getText() != null ? position.getText().trim() : null;
-
-        boolean notify = false;
-
-        if ( newValue != null && !"".equals( newValue ) ) {
-            // validate that entered value is a valid position.
-            int newPosition;
-            String error = null;
-            try {
-                newPosition = Integer.parseInt( newValue );
-            } catch ( NumberFormatException e ) {
-                newPosition = -1;
-            }
-
-            if ( newPosition < 0 || newPosition >= MAX_CLASS_FIELDS ) {
-                error = Constants.INSTANCE.validation_error_position_greater_or_equal_than_and_lower_than( newValue, "0", MAX_CLASS_FIELDS + "" );
-            } else {
-                List<ObjectProperty> fieldsUsingPosition = getFieldsUsingPosition( newPosition );
-                if ( fieldsUsingPosition.size() > 0 ) {
-                    String fieldsUsingPositionNames = listNames( fieldsUsingPosition );
-                    error = Constants.INSTANCE.validation_error_position_already_used_by_fields( newPosition + "", fieldsUsingPositionNames );
+        if ( getDataObject() != null ) {
+            positionLabel.setStyleName( DEFAULT_LABEL_CLASS );
+            final Command afterCloseCommand = new Command() {
+                @Override
+                public void execute() {
+                    positionLabel.setStyleName( TEXT_ERROR_CLASS );
+                    position.selectAll();
                 }
-            }
+            };
 
-            if ( error != null ) {
-                ErrorPopup.showMessage( error, null, afterCloseCommand );
-            } else {
-                //just proceed to change the position
-                if ( annotation != null ) {
-                    annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, newPosition + "" );
+            final String newValue = DataModelerUtils.nullTrim( position.getText() );
+
+            if ( newValue != null && !"".equals( newValue ) ) {
+                // validate that entered value is a valid position.
+                int newPosition;
+                String error = null;
+                try {
+                    newPosition = Integer.parseInt( newValue );
+                } catch ( NumberFormatException e ) {
+                    newPosition = -1;
+                }
+
+                if ( newPosition < 0 || newPosition >= MAX_CLASS_FIELDS ) {
+                    error = Constants.INSTANCE.validation_error_position_greater_or_equal_than_and_lower_than( newValue, "0", MAX_CLASS_FIELDS + "" );
                 } else {
-                    annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.POSITION_ANNOTATION ) );
-                    annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, newPosition + "" );
-                    getObjectField().addAnnotation( annotation );
+                    List<ObjectProperty> fieldsUsingPosition = getFieldsUsingPosition( newPosition );
+                    if ( fieldsUsingPosition.size() > 0 ) {
+                        String fieldsUsingPositionNames = listNames( fieldsUsingPosition );
+                        error = Constants.INSTANCE.validation_error_position_already_used_by_fields( newPosition + "", fieldsUsingPositionNames );
+                    }
                 }
-                position.setText( newPosition + "" );
-                notify = true;
-            }
 
-        } else {
-            if ( annotation != null ) {
-                getObjectField().removeAnnotation( annotation.getClassName() );
-                notify = true;
-            }
-            position.setText( null );
-        }
+                if ( error != null ) {
+                    ErrorPopup.showMessage( error, null, afterCloseCommand );
+                } else {
+                    //just proceed to change the position
 
-        if ( notify ) {
-            notifyFieldChange( ChangeType.FIELD_ANNOTATION_VALUE_CHANGE ,
-                    AnnotationDefinitionTO.POSITION_ANNOTATION, oldValue, newValue );
+                    commandBuilder.buildFieldAnnotationValueChangeCommand( getContext(), getName(), getDataObject(),
+                            getObjectField(), DroolsDomainAnnotations.POSITION_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM,
+                            newPosition, false ).execute();
+
+                    position.setText( newPosition + "" );
+                }
+
+            } else {
+                commandBuilder.buildFieldAnnotationRemoveCommand( getContext(), getName(), getDataObject(), getObjectField(),
+                        DroolsDomainAnnotations.POSITION_ANNOTATION ).execute();
+                position.setText( null );
+            }
         }
     }
 

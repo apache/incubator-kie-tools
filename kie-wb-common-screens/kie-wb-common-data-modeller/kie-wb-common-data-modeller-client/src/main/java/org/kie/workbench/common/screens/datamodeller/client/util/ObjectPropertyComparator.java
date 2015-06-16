@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.util;
 
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-
 import java.util.Comparator;
+
+import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
+import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
 public class ObjectPropertyComparator implements Comparator<ObjectProperty> {
 
@@ -48,11 +48,11 @@ public class ObjectPropertyComparator implements Comparator<ObjectProperty> {
             key1 = o1.getName();
             key2 = o2.getName();
         } else if ("label".equals(field)) {
-            key1 = AnnotationValueHandler.getStringValue(o1, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
-            key2 = AnnotationValueHandler.getStringValue(o2, AnnotationDefinitionTO.LABEL_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key1 = AnnotationValueHandler.getStringValue(o1, MainDomainAnnotations.LABEL_ANNOTATION, MainDomainAnnotations.VALUE_PARAM);
+            key2 = AnnotationValueHandler.getStringValue(o2, MainDomainAnnotations.LABEL_ANNOTATION, MainDomainAnnotations.VALUE_PARAM);
         } else if ("position".equals(field)) {
-            key1 = AnnotationValueHandler.getStringValue(o1, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
-            key2 = AnnotationValueHandler.getStringValue(o2, AnnotationDefinitionTO.POSITION_ANNOTATION, AnnotationDefinitionTO.VALUE_PARAM);
+            key1 = AnnotationValueHandler.getStringValue(o1, DroolsDomainAnnotations.POSITION_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM);
+            key2 = AnnotationValueHandler.getStringValue(o2, DroolsDomainAnnotations.POSITION_ANNOTATION, DroolsDomainAnnotations.VALUE_PARAM);
             if (key1 != null) {
                 try {
                     key1 = new Integer(key1.toString());

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.validation;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,8 +25,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerErrorCallback;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -177,18 +173,6 @@ public class ValidatorService {
         }
     }
 
-    public boolean isReferencedByCurrentObject( DataModelerContext context,
-            DataObjectTO referencedObject,
-            DataModelTO model,
-            DataObjectTO currentObject ) {
-        Collection<String> self = new ArrayList<String>(1);
-        self.add( referencedObject.getClassName() );
-        Collection<String> refs = context.getHelper().getDataObjectReferences( referencedObject.getClassName() );
-        refs.removeAll( self );
-
-        return refs.contains( currentObject.getClassName() );
-    }
-
     public boolean isReferencedByCurrentObject( DataObject referencedObject,
             DataObject currentObject ) {
 
@@ -200,17 +184,6 @@ public class ValidatorService {
             }
         }
         return false;
-    }
-
-
-    public Collection<String> getDataObjectExternalReferences( DataModelerContext context,
-            DataObject object,
-            DataModel model ) {
-        Collection<String> self = new ArrayList<String>(1);
-        self.add( object.getClassName() );
-        Collection<String> refs = context.getHelper().getDataObjectReferences( object.getClassName() );
-        refs.removeAll( self );
-        return refs;
     }
 
 }

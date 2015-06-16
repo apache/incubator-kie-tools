@@ -27,12 +27,12 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerValueChangeEvent;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
@@ -58,9 +58,9 @@ public class DataModelHelper {
     // Map of all labelled class names that coexist within a project
     private Map<String, String> labelledClassNames = new TreeMap<String, String>();
 
-    Map <String, PropertyTypeTO> orderedBaseTypes = new TreeMap<String, PropertyTypeTO>();
+    Map <String, PropertyType> orderedBaseTypes = new TreeMap<String, PropertyType>();
 
-    Map <String, PropertyTypeTO> baseTypesByClassName = new HashMap<String, PropertyTypeTO>();
+    Map <String, PropertyType> baseTypesByClassName = new HashMap<String, PropertyType>();
 
     String contextId;
 
@@ -97,7 +97,7 @@ public class DataModelHelper {
         return Collections.unmodifiableMap(labelledClassNames);
     }
 
-    public Map <String, PropertyTypeTO> getOrderedBaseTypes() {
+    public Map <String, PropertyType> getOrderedBaseTypes() {
         return orderedBaseTypes;
     }
 
@@ -107,10 +107,10 @@ public class DataModelHelper {
         if (changeEvent.isFrom( contextId )) {
             if (DataModelerEvent.DATA_OBJECT_EDITOR.equalsIgnoreCase(changeEvent.getSource())) {
                 // If any object referenced the object whose name or package just changed, we need to adjust those internally
-                if ("name".equals(changeEvent.getPropertyName())) nameChanged( changeEvent.getCurrentDataObject(),
+                if ("name".equals(changeEvent.getValueName())) nameChanged( changeEvent.getCurrentDataObject(),
                                                                                (String) changeEvent.getOldValue(),
                                                                                (String) changeEvent.getNewValue());
-                else if ("packageName".equals(changeEvent.getPropertyName())) packageChanged( changeEvent.getCurrentDataObject(),
+                else if ("packageName".equals(changeEvent.getValueName())) packageChanged( changeEvent.getCurrentDataObject(),
                                                                                               (String) changeEvent.getOldValue(),
                                                                                               (String) changeEvent.getNewValue());
             }
@@ -185,8 +185,8 @@ public class DataModelHelper {
     }
 
     public Boolean isPrimitiveType(String type) {
-        PropertyTypeTO propertyTypeTO;
-        return ( propertyTypeTO = baseTypesByClassName.get( type ) ) != null && propertyTypeTO.isPrimitive();
+        PropertyType propertyType;
+        return ( propertyType = baseTypesByClassName.get( type ) ) != null && propertyType.isPrimitive();
     }
 
     /**
@@ -218,9 +218,9 @@ public class DataModelHelper {
         reset();
     }
 
-    public void setBaseTypes(List<PropertyTypeTO> baseTypes) {
+    public void setBaseTypes(List<PropertyType> baseTypes) {
         if (baseTypes != null) {
-            for (PropertyTypeTO type : baseTypes) {
+            for (PropertyType type : baseTypes) {
                 orderedBaseTypes.put(type.getName(), type);
                 baseTypesByClassName.put(type.getClassName(), type);
             }
@@ -242,7 +242,7 @@ public class DataModelHelper {
             }
             for (DataObject object : dataModel.getDataObjects()) {
                 String className = object.getClassName();
-                classNames.put(className, AnnotationValueHandler.getStringValue( object, AnnotationDefinitionTO.LABEL_ANNOTATION ));
+                classNames.put(className, AnnotationValueHandler.getStringValue( object, MainDomainAnnotations.LABEL_ANNOTATION ));
                 labelledClassNames.put(DataModelerUtils.getDataObjectFullLabel(object), className);
 
                 String superClassName = object.getSuperClassName();

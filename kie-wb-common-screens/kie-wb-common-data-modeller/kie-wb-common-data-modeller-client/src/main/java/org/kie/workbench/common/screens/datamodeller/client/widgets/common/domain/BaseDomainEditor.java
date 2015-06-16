@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 import org.kie.workbench.common.screens.datamodeller.events.DataModelerEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldCreatedEvent;
@@ -49,6 +50,8 @@ public abstract class BaseDomainEditor
     protected FieldEditor fieldEditor;
 
     protected DataModelerContext context;
+
+    protected DomainHandler handler;
 
     public BaseDomainEditor() {
         initWidget( mainPanel );
@@ -97,6 +100,15 @@ public abstract class BaseDomainEditor
     @Override
     public Widget getWidget() {
         return this.asWidget();
+    }
+
+    @Override
+    public DomainHandler getHandler() {
+        return handler;
+    }
+
+    public void setHandler( DomainHandler handler ) {
+        this.handler = handler;
     }
 
     protected void showFieldEditor( DataModelerEvent event ) {

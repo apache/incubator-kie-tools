@@ -25,11 +25,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
+import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.uberfire.backend.vfs.Path;
 
 public class DataModelerUtils {
@@ -53,7 +53,7 @@ public class DataModelerUtils {
      */
     public static String getDataObjectUILabel(DataObject dataObject) {
         if (dataObject != null) {
-            String label = AnnotationValueHandler.getStringValue( dataObject, AnnotationDefinitionTO.LABEL_ANNOTATION );
+            String label = AnnotationValueHandler.getStringValue( dataObject, MainDomainAnnotations.LABEL_ANNOTATION );
             if (label == null) label = dataObject.getName();
             return label;
         }
@@ -72,7 +72,7 @@ public class DataModelerUtils {
         StringBuilder sb = new StringBuilder("");
         if (dataObject != null) {
             sb.append(dataObject.getClassName());
-            String objectLabel = AnnotationValueHandler.getStringValue( dataObject, AnnotationDefinitionTO.LABEL_ANNOTATION );
+            String objectLabel = AnnotationValueHandler.getStringValue( dataObject, MainDomainAnnotations.LABEL_ANNOTATION );
             if (objectLabel != null) sb.insert(0, objectLabel + " (").append(")");
         }
         return sb.toString();
@@ -157,8 +157,8 @@ public class DataModelerUtils {
                 if ( skipField != null && skipField.equals( property.getName() )) continue;
 
                 String currentPosition = AnnotationValueHandler.getStringValue(
-                        property.getAnnotation( AnnotationDefinitionTO.POSITION_ANNOTATION ),
-                        AnnotationDefinitionTO.VALUE_PARAM );
+                        property.getAnnotation( DroolsDomainAnnotations.POSITION_ANNOTATION ),
+                        DroolsDomainAnnotations.VALUE_PARAM );
                 if ( currentPosition != null && currentPosition.trim().equals( position+"" ) ) {
                     fields.add( property );
                 }
@@ -174,7 +174,7 @@ public class DataModelerUtils {
         if (properties != null && properties.size() > 0) {
             for (ObjectProperty property : properties) {
                 try {
-                    currentPosition = new Integer( AnnotationValueHandler.getStringValue(property, AnnotationDefinitionTO.POSITION_ANNOTATION, "value", "-1") );
+                    currentPosition = new Integer( AnnotationValueHandler.getStringValue(property, DroolsDomainAnnotations.POSITION_ANNOTATION, "value", "-1") );
                 } catch (Exception e) {
                     currentPosition = -1;
                 }
@@ -184,8 +184,8 @@ public class DataModelerUtils {
         return maxPosition;
     }
 
-    public static boolean hasPosition(ObjectPropertyTO propertyTO) {
-        return propertyTO != null && propertyTO.getAnnotation(AnnotationDefinitionTO.POSITION_ANNOTATION ) != null;
+    public static boolean hasPosition(ObjectProperty property) {
+        return property != null && property.getAnnotation( DroolsDomainAnnotations.POSITION_ANNOTATION ) != null;
     }
 
     public static List<ObjectProperty> getManagedProperties( DataObject dataObject ) {
@@ -256,24 +256,24 @@ public class DataModelerUtils {
         }
     }
 
-    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, boolean includeEmptyItem ) {
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyType> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, boolean includeEmptyItem ) {
         initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, null, false, includeEmptyItem );
     }
 
-    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, final String selectedType, boolean selectedTypeMultiple ) {
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyType> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, final String selectedType, boolean selectedTypeMultiple ) {
         initTypeList( typeSelector, baseTypes, dataObjects, externalClasses, selectedType, selectedTypeMultiple, false );
     }
 
-    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyTypeTO> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, final String selectedType, boolean selectedTypeMultiple, boolean includeEmptyItem ) {
+    public static void initTypeList( final ListBox typeSelector, final Collection<PropertyType> baseTypes, final Collection<DataObject> dataObjects, final Collection<DataObject> externalClasses, final String selectedType, boolean selectedTypeMultiple, boolean includeEmptyItem ) {
 
         SortedMap<String, String> sortedModelTypeNames = new TreeMap<String, String>();
         SortedMap<String, String> sortedExternalTypeNames = new TreeMap<String, String>();
-        Map<String, PropertyTypeTO> orderedBaseTypes = new TreeMap<String, PropertyTypeTO>();
-        Map<String, PropertyTypeTO> baseTypesByClassName = new TreeMap<String, PropertyTypeTO>();
+        Map<String, PropertyType> orderedBaseTypes = new TreeMap<String, PropertyType>();
+        Map<String, PropertyType> baseTypesByClassName = new TreeMap<String, PropertyType>();
         boolean selectedTypeIncluded = false;
 
         if ( baseTypes != null ) {
-            for ( PropertyTypeTO type : baseTypes ) {
+            for ( PropertyType type : baseTypes ) {
                 orderedBaseTypes.put( type.getName(), type );
                 baseTypesByClassName.put( type.getClassName(), type );
             }
@@ -285,7 +285,7 @@ public class DataModelerUtils {
         }
 
         // First add all base types, ordered
-        for ( Map.Entry<String, PropertyTypeTO> baseType : orderedBaseTypes.entrySet() ) {
+        for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
             if ( !baseType.getValue().isPrimitive() ) {
 
                 String baseClassName = baseType.getValue().getClassName();
@@ -337,7 +337,7 @@ public class DataModelerUtils {
         }
 
         //finally add primitives
-        for ( Map.Entry<String, PropertyTypeTO> baseType : orderedBaseTypes.entrySet() ) {
+        for ( Map.Entry<String, PropertyType> baseType : orderedBaseTypes.entrySet() ) {
             if ( baseType.getValue().isPrimitive() ) {
                 typeSelector.addItem( baseType.getKey(), baseType.getValue().getClassName() );
             }
@@ -346,6 +346,15 @@ public class DataModelerUtils {
         if ( selectedType != null ) {
             String selectedValue = selectedType;
             typeSelector.setSelectedValue( selectedValue );
+        }
+    }
+
+    public static final String nullTrim( String value ) {
+        String result = value != null ? value.trim() : value;
+        if ( result != null && !"".equals( result ) ) {
+            return result;
+        } else {
+            return null;
         }
     }
 

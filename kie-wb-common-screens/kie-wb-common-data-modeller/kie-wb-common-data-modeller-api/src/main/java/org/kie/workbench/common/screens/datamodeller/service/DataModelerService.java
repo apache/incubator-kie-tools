@@ -26,11 +26,11 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Remote;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.screens.datamodeller.model.GenerationResult;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
 import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
@@ -39,7 +39,7 @@ public interface DataModelerService {
 
     Path createJavaFile( final Path context, final String fileName, final String comment );
 
-    Path createJavaFile(  final Path context, final String fileName, final String comment, Map<String, Object> portableParams );
+    Path createJavaFile(  final Path context, final String fileName, final String comment, Map<String, Object> options );
 
     EditorModelContent loadContent(final Path path);
 
@@ -75,7 +75,7 @@ public interface DataModelerService {
 
     TypeInfoResult loadJavaTypeInfo( final String source);
 
-    List<PropertyTypeTO> getBasePropertyTypes();
+    List<PropertyType> getBasePropertyTypes();
 
     Map<String, AnnotationDefinition> getAnnotationDefinitions();
 

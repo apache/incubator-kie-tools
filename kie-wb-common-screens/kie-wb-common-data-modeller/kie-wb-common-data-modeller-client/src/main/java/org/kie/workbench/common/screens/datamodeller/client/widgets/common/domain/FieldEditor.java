@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.common.doma
 import javax.enterprise.event.Observes;
 
 import org.kie.workbench.common.screens.datamodeller.events.ChangeType;
+import org.kie.workbench.common.screens.datamodeller.events.DataObjectChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldDeletedEvent;
 import org.kie.workbench.common.screens.datamodeller.events.DataObjectFieldSelectedEvent;
@@ -63,6 +64,13 @@ public abstract class FieldEditor extends BaseEditor {
         }
     }
 
+    protected void onDataObjectFieldChange( @Observes DataObjectFieldChangeEvent event ) {
+        if ( event.isFromContext( context != null ? context.getContextId() : null ) &&
+                !getName().equals( event.getSource() ) ) {
+            loadDataObjectField( event.getCurrentDataObject(), event.getCurrentField() );
+        }
+    }
+
     protected void onDataObjectFieldDeleted( @Observes DataObjectFieldDeletedEvent event ) {
         // When all attributes from the current object have been deleted clean
         if ( event.isFromContext( context != null ? context.getContextId() : null ) ) {
@@ -73,23 +81,15 @@ public abstract class FieldEditor extends BaseEditor {
         }
     }
 
-    protected void notifyFieldChange( ChangeType changeType,
-            String memberName,
-            Object oldValue,
-            Object newValue ) {
+    protected DataObjectFieldChangeEvent createFieldChangeEvent( ChangeType changeType ) {
 
-        //TODO check if data model for the event is needed
         DataObjectFieldChangeEvent changeEvent = new DataObjectFieldChangeEvent( changeType,
                 getContext().getContextId(),
                 getName(),
-                null,
                 getDataObject(),
                 getObjectField(),
-                memberName, oldValue, newValue );
-        //TODO, check if the helper is still needed.
-        // Notify helper directly
-        getContext().getHelper().dataModelChanged( changeEvent );
-        dataModelerEvent.fire( changeEvent );
+                null, null, null );
+        return changeEvent;
     }
 
 }

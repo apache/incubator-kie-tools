@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.util;
+package org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util;
 
 import java.util.Map;
 
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.JPADomainAnnotations;
+import org.kie.workbench.common.screens.datamodeller.client.util.AnnotationValueHandler;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
@@ -99,7 +100,7 @@ public class SequenceGeneratorValueHandler extends AnnotationValueHandler {
             Map<String, AnnotationDefinition> annotationDefinitions ) {
 
         SequenceGeneratorValueHandler valueHandler = new SequenceGeneratorValueHandler(
-                new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION ) ) );
+                new AnnotationImpl( annotationDefinitions.get( JPADomainAnnotations.JAVAX_PERSISTENCE_SEQUENCE_GENERATOR_ANNOTATION ) ) );
         valueHandler.setName( name );
         valueHandler.setSequenceName( sequenceName );
         valueHandler.setInitialValue( initialValue );

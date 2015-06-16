@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.screens.datamodeller.backend.server;
 
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,9 +26,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.project.model.Project;
@@ -39,34 +35,9 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.model.SyntaxError;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationMemberDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationTO;
-import org.kie.workbench.common.screens.datamodeller.model.DataModelTO;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
-import org.kie.workbench.common.screens.datamodeller.model.DataObjectTO;
-import org.kie.workbench.common.screens.datamodeller.model.JavaTypeInfoTO;
-import org.kie.workbench.common.screens.datamodeller.model.ObjectPropertyTO;
-import org.kie.workbench.common.screens.datamodeller.model.VisibilityTO;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.backend.builder.LRUProjectDependenciesClassLoaderCache;
-import org.kie.workbench.common.services.datamodeller.core.Annotation;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.services.datamodeller.core.ObjectSource;
-import org.kie.workbench.common.services.datamodeller.core.PropertyTypeFactory;
-import org.kie.workbench.common.services.datamodeller.core.Visibility;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationDefinitionImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationValuePairDefinitionImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
-import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
 import org.kie.workbench.common.services.datamodeller.util.MapClassLoader;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -99,283 +70,6 @@ public class DataModelerServiceHelper {
 
     @Inject
     private LRUBuilderCache builderCache;
-
-    public DataModel to2Domain( DataModelTO dataModelTO ) {
-        DataModel dataModel = ModelFactoryImpl.getInstance().newModel();
-        List<DataObjectTO> dataObjects = dataModelTO.getDataObjects();
-        DataObject dataObject;
-
-        if ( dataObjects != null ) {
-            for ( DataObjectTO dataObjectTO : dataObjects ) {
-                dataObject = dataModel.addDataObject( dataObjectTO.getPackageName(), dataObjectTO.getName() );
-                to2Domain( dataObjectTO, dataObject );
-            }
-        }
-        return dataModel;
-    }
-
-    public DataModelTO domain2To( DataModel dataModel, Map<String, Path> classPaths, Map<String, List<ObjectProperty>> unmanagedProperties, DataModelTO.TOStatus initialStatus, boolean calculateFingerprints ) throws Exception {
-        DataModelTO dataModelTO = new DataModelTO();
-        List<DataObject> dataObjects = new ArrayList<DataObject>();
-        List<DataObject> externalDataObjects = new ArrayList<DataObject>();
-        Map<String, String> externalClasses = new HashMap<String, String>();
-
-        dataObjects.addAll( dataModel.getDataObjects() );
-        externalDataObjects.addAll( dataModel.getDataObjects( ObjectSource.DEPENDENCY ) );
-
-        DataObjectTO dataObjectTO;
-
-        if ( dataObjects != null ) {
-            for ( DataObject dataObject : dataObjects ) {
-                dataObjectTO = new DataObjectTO( dataObject.getName(), dataObject.getPackageName(), dataObject.getSuperClassName(), dataObject.isAbstract(), dataObject.isInterface(), dataObject.isFinal() );
-                if ( initialStatus != null ) {
-                    dataObjectTO.setStatus( initialStatus );
-                }
-                domain2To( dataObject, dataObjectTO, initialStatus );
-                dataModelTO.getDataObjects().add( dataObjectTO );
-                if ( calculateFingerprints ) {
-                    dataObjectTO.setFingerPrint( calculateFingerPrint( dataObjectTO.getStringId() ) );
-                }
-                if ( classPaths != null && classPaths.get( dataObjectTO.getClassName() ) != null ) {
-                    dataObjectTO.setPath( Paths.convert( classPaths.get( dataObjectTO.getClassName() ) ) );
-                }
-                if ( unmanagedProperties != null && unmanagedProperties.get( dataObject.getClassName() ) != null ) {
-                    for ( ObjectProperty property : unmanagedProperties.get( dataObject.getClassName() ) ) {
-                        dataObjectTO.getUnmanagedProperties().add( domain2To( property, initialStatus ) );
-                    }
-                }
-            }
-        }
-
-        for ( DataObject externalDataObject : externalDataObjects ) {
-            dataObjectTO = new DataObjectTO( externalDataObject.getName(), externalDataObject.getPackageName(), externalDataObject.getSuperClassName(), externalDataObject.isAbstract(), externalDataObject.isInterface(), externalDataObject.isFinal() );
-            if ( !externalClasses.containsKey( dataObjectTO.getClassName() ) ) {
-                //TODO if needed add the external clases properties.
-                //version 6.0.1 will not do anything with external classes properties, so we can
-                //skip properties loading.
-                dataModelTO.getExternalClasses().add( dataObjectTO );
-                externalClasses.put( dataObjectTO.getClassName(), dataObjectTO.getClassName() );
-            }
-
-        }
-
-        return dataModelTO;
-    }
-
-    public void domain2To( DataObject dataObject, DataObjectTO dataObjectTO, DataModelTO.TOStatus initialStatus ) {
-        dataObjectTO.setName( dataObject.getName() );
-        dataObjectTO.setPackageName( dataObject.getPackageName() );
-        dataObjectTO.setOriginalClassName( dataObject.getClassName() );
-        dataObjectTO.setSuperClassName( dataObject.getSuperClassName() );
-        List<ObjectProperty> properties = new ArrayList<ObjectProperty>();
-        properties.addAll( dataObject.getProperties() );
-
-        List<ObjectPropertyTO> propertiesTO = new ArrayList<ObjectPropertyTO>();
-        PropertyTypeFactory typeFactory = PropertyTypeFactoryImpl.getInstance();
-
-        //process type level annotations
-        for ( Annotation annotation : dataObject.getAnnotations() ) {
-            AnnotationTO annotationTO = domain2To( annotation );
-            if ( annotationTO != null ) {
-                dataObjectTO.addAnnotation( annotationTO );
-            }
-        }
-
-        ObjectPropertyTO propertyTO;
-        for ( ObjectProperty property : properties ) {
-            propertyTO = new ObjectPropertyTO( property.getName(), property.getClassName(), property.isMultiple(), typeFactory.isBasePropertyType( property.getClassName() ), property.getBag(), property.getModifiers() );
-            propertyTO.setOriginalName( property.getName() );
-            if ( initialStatus != null ) {
-                propertyTO.setStatus( initialStatus );
-            }
-            propertiesTO.add( propertyTO );
-            //process member level annotations.
-            for ( Annotation annotation : property.getAnnotations() ) {
-                AnnotationTO annotationTO = domain2To( annotation );
-                if ( annotationTO != null ) {
-                    propertyTO.addAnnotation( annotationTO );
-                }
-            }
-        }
-
-        dataObjectTO.setProperties( propertiesTO );
-    }
-
-    public ObjectPropertyTO domain2To( ObjectProperty property, DataModelTO.TOStatus initialStatus ) {
-        PropertyTypeFactory typeFactory = PropertyTypeFactoryImpl.getInstance();
-        ObjectPropertyTO propertyTO = new ObjectPropertyTO( property.getName(), property.getClassName(), property.isMultiple(), typeFactory.isBasePropertyType( property.getClassName() ), property.getBag(), property.getModifiers() );
-        propertyTO.setOriginalName( property.getName() );
-        if ( initialStatus != null ) {
-            propertyTO.setStatus( initialStatus );
-        }
-        //process member level annotations.
-        for ( Annotation annotation : property.getAnnotations() ) {
-            AnnotationTO annotationTO = domain2To( annotation );
-            if ( annotationTO != null ) {
-                propertyTO.addAnnotation( annotationTO );
-            }
-        }
-        return propertyTO;
-    }
-
-    public DataObject to2Domain( DataObjectTO dataObjectTO ) {
-        DataObject dataObject = new DataObjectImpl( dataObjectTO.getPackageName(), dataObjectTO.getName() );
-        to2Domain( dataObjectTO, dataObject );
-        return dataObject;
-    }
-
-    public void to2Domain( DataObjectTO dataObjectTO, DataObject dataObject ) {
-        dataObject.setName( dataObjectTO.getName() );
-        List<ObjectPropertyTO> properties = dataObjectTO.getProperties();
-        dataObject.setSuperClassName( dataObjectTO.getSuperClassName() );
-
-        //process type level annotations.
-        for ( AnnotationTO annotationTO : dataObjectTO.getAnnotations() ) {
-            Annotation annotation = to2Domain( annotationTO );
-            if ( annotation != null ) {
-                dataObject.addAnnotation( annotation );
-            }
-        }
-
-        if ( properties != null ) {
-            ObjectProperty property;
-            for ( ObjectPropertyTO propertyTO : properties ) {
-                property = dataObject.addProperty( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), to2Domain( propertyTO.getVisibility() ), propertyTO.isStatic(), propertyTO.isFinal() );
-                //process member level annotations.
-                for ( AnnotationTO annotationTO : propertyTO.getAnnotations() ) {
-                    Annotation annotation = to2Domain( annotationTO );
-                    if ( annotation != null ) {
-                        property.addAnnotation( annotation );
-                    }
-                }
-            }
-        }
-    }
-
-    public ObjectProperty to2Domain( ObjectPropertyTO propertyTO ) {
-        ObjectPropertyImpl property = new ObjectPropertyImpl( propertyTO.getName(), propertyTO.getClassName(), propertyTO.isMultiple(), propertyTO.getBag(), to2Domain( propertyTO.getVisibility() ), propertyTO.isStatic(), propertyTO.isFinal() );
-        for ( AnnotationTO annotationTO : propertyTO.getAnnotations() ) {
-            Annotation annotation = to2Domain( annotationTO );
-            if ( annotation != null ) {
-                property.addAnnotation( annotation );
-            }
-        }
-        return property;
-    }
-
-    public Annotation to2Domain( AnnotationTO annotationTO ) {
-        AnnotationDefinition annotationDefinition = to2Domain( annotationTO.getAnnotationDefinition() );
-        Annotation annotation = new AnnotationImpl( annotationDefinition );
-        Object memberValue;
-        for ( AnnotationValuePairDefinition memberDefinition : annotationDefinition.getValuePairs() ) {
-            memberValue = annotationTO.getValue( memberDefinition.getName() );
-            if ( memberValue != null ) {
-                annotation.setValue( memberDefinition.getName(), memberValue );
-            }
-        }
-        return annotation;
-    }
-
-    public AnnotationDefinition to2Domain( AnnotationDefinitionTO annotationDefinitionTO ) {
-        AnnotationDefinitionImpl annotationDefinition = new AnnotationDefinitionImpl( annotationDefinitionTO.getClassName(), annotationDefinitionTO.isObjectAnnotation(), annotationDefinitionTO.isPropertyAnnotation() );
-        AnnotationValuePairDefinition memberDefinition;
-        for ( AnnotationMemberDefinitionTO memberDefinitionTO : annotationDefinitionTO.getAnnotationMembers() ) {
-            //TODO 6.3  check how to assign the value pair type properly
-            memberDefinition = new AnnotationValuePairDefinitionImpl( memberDefinitionTO.getName(), memberDefinitionTO.getClassName(), memberDefinitionTO.isEnum() ? AnnotationValuePairDefinition.ValuePairType.ENUM : AnnotationValuePairDefinition.ValuePairType.STRING , memberDefinitionTO.getDefaultValue() );
-            annotationDefinition.addValuePair( memberDefinition );
-        }
-        return annotationDefinition;
-    }
-
-    public AnnotationTO domain2To( Annotation annotation ) {
-        AnnotationDefinitionTO annotationDefinitionTO = domain2To( annotation.getAnnotationDefinition() );
-        AnnotationTO annotationTO = new AnnotationTO( annotationDefinitionTO );
-        Object memberValue;
-        for ( AnnotationMemberDefinitionTO memberDefinitionTO : annotationDefinitionTO.getAnnotationMembers() ) {
-            memberValue = annotation.getValue( memberDefinitionTO.getName() );
-            if ( memberValue != null ) {
-                annotationTO.setValue( memberDefinitionTO.getName(), memberValue );
-            }
-        }
-        return annotationTO;
-    }
-
-    public AnnotationDefinitionTO domain2To( AnnotationDefinition annotationDefinition ) {
-
-        AnnotationDefinitionTO annotationDefinitionTO = new AnnotationDefinitionTO( annotationDefinition.getClassName(), annotationDefinition.isTypeAnnotation(), annotationDefinition.isFieldAnnotation() );
-        AnnotationMemberDefinitionTO memberDefinitionTO;
-        for ( AnnotationValuePairDefinition memberDefinition : annotationDefinition.getValuePairs() ) {
-            memberDefinitionTO = new AnnotationMemberDefinitionTO( memberDefinition.getName(), memberDefinition.getClassName(), memberDefinition.isPrimitiveType(), memberDefinition.isEnum(), memberDefinition.getDefaultValue() );
-            annotationDefinitionTO.addMember( memberDefinitionTO );
-        }
-
-        return annotationDefinitionTO;
-    }
-
-    public JavaTypeInfoTO domain2TO( JavaTypeInfo javaTypeInfo ) {
-        if ( javaTypeInfo == null ) {
-            return null;
-        }
-
-        JavaTypeInfoTO javaTypeInfoTO = new JavaTypeInfoTO( javaTypeInfo.getName(), javaTypeInfo.getPackageName() );
-        javaTypeInfoTO.setAnnotation( javaTypeInfo.isAnnotation() );
-        javaTypeInfoTO.setClass( javaTypeInfo.isClass() );
-        javaTypeInfoTO.setInterface( javaTypeInfo.isInterface() );
-        javaTypeInfoTO.setEnum( javaTypeInfo.isEnum() );
-        javaTypeInfoTO.setPackagePrivate( javaTypeInfo.isPackagePrivate() );
-        javaTypeInfoTO.setPrivate( javaTypeInfo.isPrivate() );
-        javaTypeInfoTO.setProtected( javaTypeInfo.isProtected() );
-        javaTypeInfoTO.setPublic( javaTypeInfo.isPublic() );
-
-        return javaTypeInfoTO;
-    }
-
-    public String calculateFingerPrint( String str ) {
-        return Base64.encodeBase64String( DigestUtils.sha( str ) );
-    }
-
-    public String calculateFingerPrint( Object obj ) throws Exception {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream( byteArrayOutputStream );
-        objectOutputStream.writeObject( obj );
-        objectOutputStream.close();
-        byte[] fingerPrint = DigestUtils.sha( byteArrayOutputStream.toByteArray() );
-        return Base64.encodeBase64String( fingerPrint );
-    }
-
-    public Map<String, String> claculateFingerPrints( DataModelTO dataModelTO ) {
-        Map<String, String> fingerPrints = new HashMap<String, String>();
-        for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects() ) {
-            fingerPrints.put( dataObjectTO.getClassName(), calculateFingerPrint( dataObjectTO.getStringId() ) );
-        }
-        return fingerPrints;
-    }
-
-    /**
-     * Returns the list of persistent renamed data objects.
-     */
-    public Map<String, String> calculatePersistentDataObjectRenames( DataModelTO dataModelTO ) {
-        Map<String, String> renames = new HashMap<String, String>();
-        for ( DataObjectTO dataObjectTO : dataModelTO.getDataObjects() ) {
-            if ( !dataObjectTO.isVolatile() && dataObjectTO.classNameChanged() ) {
-                renames.put( dataObjectTO.getOriginalClassName(), dataObjectTO.getClassName() );
-            }
-        }
-        return renames;
-    }
-
-    /**
-     * Returns the list of persistent deleted data objects.
-     */
-    public List<String> calculatePersistentDataObjectDeletions( DataModelTO dataModelTO ) {
-        List<String> deletions = new ArrayList<String>();
-        for ( DataObjectTO dataObjectTO : dataModelTO.getDeletedDataObjects() ) {
-            if ( !dataObjectTO.isVolatile() ) {
-                deletions.add( dataObjectTO.getOriginalClassName() );
-            }
-        }
-        return deletions;
-    }
 
     public List<DataModelerError> toDataModelerError( List<ModelDriverError> errors ) {
         List<DataModelerError> result = new ArrayList<DataModelerError>();
@@ -496,13 +190,6 @@ public class DataModelerServiceHelper {
         if ( path == null ) return null;
         String fileName = path.getFileName();
         return fileName.substring( 0, fileName.indexOf( "." ) );
-    }
-
-    public Visibility to2Domain( VisibilityTO visibilityTO ) {
-        if ( visibilityTO == VisibilityTO.PUBLIC ) return Visibility.PUBLIC;
-        if ( visibilityTO == VisibilityTO.PRIVATE ) return Visibility.PRIVATE;
-        if ( visibilityTO == VisibilityTO.PACKAGE_PRIVATE ) return Visibility.PACKAGE_PRIVATE;
-        return Visibility.PROTECTED;
     }
 
     public ClassLoader getProjectClassLoader(KieProject project) {

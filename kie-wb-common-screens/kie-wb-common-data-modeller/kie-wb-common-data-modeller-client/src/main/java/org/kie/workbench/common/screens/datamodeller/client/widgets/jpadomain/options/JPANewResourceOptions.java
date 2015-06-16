@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.datamodeller.client.handlers;
+package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.options;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,19 +30,21 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domain.ResourceOptions;
 
 @ApplicationScoped
-public class JPADomainOptionsHandler
+public class JPANewResourceOptions
         extends Composite
-        implements DomainOptionsHandler {
+        implements ResourceOptions {
 
-    interface JavaFileOptionsUIBinder
+    interface JPANewResourceOptionsUIBinder
         extends
-            UiBinder<Widget, JPADomainOptionsHandler> {
+            UiBinder<Widget, JPANewResourceOptions> {
 
     }
 
-    private static JavaFileOptionsUIBinder uiBinder = GWT.create( JavaFileOptionsUIBinder.class );
+    private static JPANewResourceOptionsUIBinder uiBinder = GWT.create( JPANewResourceOptionsUIBinder.class );
 
     @UiField CheckBox persistable;
 
@@ -58,7 +60,9 @@ public class JPADomainOptionsHandler
     //@UiField
     HelpInline tableNameHelpInline;
 
-    public JPADomainOptionsHandler() {
+    private DomainHandler handler;
+
+    public JPANewResourceOptions() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
@@ -66,24 +70,22 @@ public class JPADomainOptionsHandler
         return persistable.getValue();
     }
 
+    public void setPersistable( boolean persistable ) {
+        this.persistable.setValue( persistable );
+    }
+
     public String getTableName() {
         return tableName.getValue();
     }
 
-    @Override
-    public String getName() {
-        return "JPADomainOptionsHandler";
+    public void setTableName( String tableName ) {
+        this.tableName.setText( tableName );
     }
 
     @Override
-    public int getPriority() {
-        return 3;
-    }
-
-    @Override
-    public void restoreDefaults() {
-        persistable.setValue( false );
-        tableName.setText( "" );
+    public void restoreOptionsDefaults() {
+        setPersistable( false );
+        setTableName( null );
     }
 
     @Override
@@ -95,7 +97,16 @@ public class JPADomainOptionsHandler
     }
 
     @Override
+    public DomainHandler getHandler() {
+        return null;
+    }
+
+    public void setHandler( DomainHandler handler ) {
+        this.handler = handler;
+    }
+
+    @Override
     public Widget getWidget() {
-        return this.asWidget();
+        return super.asWidget();
     }
 }

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.datamodeller.events;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
@@ -30,13 +29,12 @@ public class DataObjectFieldChangeEvent extends DataModelerValueChangeEvent {
     public DataObjectFieldChangeEvent( ChangeType changeType,
             String contextId,
             String source,
-            DataModel currentModel,
             DataObject currentDataObject,
             ObjectProperty currentField,
-            String propertyName,
+            String valueName,
             Object oldValue,
             Object newValue) {
-        super(changeType, contextId, source, currentModel, currentDataObject, propertyName, oldValue, newValue);
+        super(changeType, contextId, source, currentDataObject, valueName, oldValue, newValue);
         setCurrentField(currentField);
     }
 }

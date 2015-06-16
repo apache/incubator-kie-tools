@@ -16,14 +16,18 @@
 
 package org.kie.workbench.common.screens.datamodeller.events;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Portable
 public class DataModelerValueChangeEvent extends DataModelerEvent {
 
-    private String propertyName;
+    public static String ANNOTATION_CLASS_NAME = "ANNOTATION_CLASS_NAME";
+
+    private String valueName;
 
     private Object oldValue;
 
@@ -31,31 +35,47 @@ public class DataModelerValueChangeEvent extends DataModelerEvent {
 
     private ChangeType changeType;
 
+    private Map<String, Object> changeParams = new HashMap<String, Object>(  );
+
     public DataModelerValueChangeEvent() {
     }
 
     public DataModelerValueChangeEvent( ChangeType changeType,
             String contextId,
             String source,
-            DataModel currentModel,
             DataObject currentDataObject,
-            String propertyName,
+            String valueName,
             Object oldValue,
             Object newValue ) {
 
-        super(contextId, source, currentModel, currentDataObject);
+        super(contextId, source, currentDataObject);
         this.changeType = changeType;
-        this.propertyName = propertyName;
+        this.valueName = valueName;
         this.oldValue = oldValue;
         this.newValue = newValue;
     }
 
-    public String getPropertyName() {
-        return propertyName;
+    public DataModelerValueChangeEvent withValueName( String valueName ) {
+        setValueName( valueName );
+        return this;
     }
 
-    public void setPropertyName(String propertyName) {
-        this.propertyName = propertyName;
+    public DataModelerValueChangeEvent withParam( String paramName, Object paramValue ) {
+        addParam( paramName, paramValue );
+        return this;
+    }
+
+    public DataModelerValueChangeEvent withAnnotationClassName( String annotationClassName ) {
+        addParam( ANNOTATION_CLASS_NAME, annotationClassName );
+        return this;
+    }
+
+    public String getValueName() {
+        return valueName;
+    }
+
+    public void setValueName( String valueName ) {
+        this.valueName = valueName;
     }
 
     public Object getOldValue() {
@@ -66,6 +86,11 @@ public class DataModelerValueChangeEvent extends DataModelerEvent {
         this.oldValue = oldValue;
     }
 
+    public DataModelerValueChangeEvent withOldValue( Object oldValue ) {
+        setOldValue( oldValue );
+        return this;
+    }
+
     public Object getNewValue() {
         return newValue;
     }
@@ -74,7 +99,20 @@ public class DataModelerValueChangeEvent extends DataModelerEvent {
         this.newValue = newValue;
     }
 
+    public DataModelerValueChangeEvent withNewValue( Object newValue ) {
+        setNewValue( newValue );
+        return this;
+    }
+
     public ChangeType getChangeType() {
         return changeType;
+    }
+
+    public Object getParam( String name ) {
+        return changeParams.get( name );
+    }
+
+    public void addParam( String name, Object value ) {
+        changeParams.put( name, value );
     }
 }

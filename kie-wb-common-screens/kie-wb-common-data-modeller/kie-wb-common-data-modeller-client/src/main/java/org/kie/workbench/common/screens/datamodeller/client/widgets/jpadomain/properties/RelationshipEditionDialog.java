@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.jpadomain.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.github.gwtbootstrap.client.ui.CheckBox;
 import com.github.gwtbootstrap.client.ui.ControlGroup;
 import com.github.gwtbootstrap.client.ui.HelpInline;
@@ -26,22 +29,24 @@ import com.github.gwtbootstrap.client.ui.event.HiddenHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.model.DataModelerPropertyEditorFieldInfo;
-import org.kie.workbench.common.screens.datamodeller.client.util.CascadeType;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.CascadeType;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.screens.datamodeller.client.util.FetchMode;
-import org.kie.workbench.common.screens.datamodeller.client.util.RelationType;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.FetchMode;
+import org.kie.workbench.common.screens.datamodeller.model.jpadomain.RelationType;
 import org.kie.workbench.common.screens.datamodeller.client.widgets.common.properties.PropertyEditionPopup;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-import static org.kie.workbench.common.screens.datamodeller.client.util.RelationshipAnnotationValueHandler.*;
+import static org.kie.workbench.common.screens.datamodeller.client.handlers.jpadomain.util.RelationshipAnnotationValueHandler.*;
 
 
 public class RelationshipEditionDialog
@@ -49,9 +54,6 @@ public class RelationshipEditionDialog
 
     @UiField
     ListBox relationType;
-
-    @UiField
-    ListBox cascadeType;
 
     @UiField
     ListBox fetchMode;
@@ -80,11 +82,31 @@ public class RelationshipEditionDialog
     @UiField
     HelpInline relationGroupInline;
 
+    @UiField
+    CheckBox cascadeAll;
+
+    @UiField
+    CheckBox cascadePersist;
+
+    @UiField
+    CheckBox cascadeMerge;
+
+    @UiField
+    CheckBox cascadeRemove;
+
+    @UiField
+    CheckBox cascadeRefresh;
+
+    @UiField
+    CheckBox cascadeDetach;
+
     private Boolean revertChanges = Boolean.TRUE;
 
     PropertyEditorFieldInfo property;
 
     Command okCommand;
+
+    private boolean cascadeAllWasClicked = false;
 
     interface Binder
             extends
@@ -126,13 +148,6 @@ public class RelationshipEditionDialog
                 relationTypeChanged();
             }
         } );
-
-        cascadeType.addItem( "ALL", CascadeType.ALL.name() );
-        cascadeType.addItem( "PERSIST", CascadeType.PERSIST.name() );
-        cascadeType.addItem( "MERGE", CascadeType.MERGE.name() );
-        cascadeType.addItem( "REMOVE", CascadeType.REMOVE.name() );
-        cascadeType.addItem( "REFRESH", CascadeType.REFRESH.name() );
-        cascadeType.addItem( "DETACH", CascadeType.DETACH.name() );
 
         fetchMode.addItem( "EAGER", FetchMode.EAGER.name() );
         fetchMode.addItem( "LAZY", FetchMode.LAZY.name() );
@@ -223,13 +238,9 @@ public class RelationshipEditionDialog
 
         enableRelationDependentFields( relationTypeValue );
 
-        CascadeType cascadeTypeValue = (CascadeType) fieldInfo.getCurrentValue( CASCADE );
-
-        if ( cascadeTypeValue != null ) {
-            cascadeType.setSelectedValue( cascadeTypeValue.name() );
-        } else {
-            cascadeType.setSelectedValue( DataModelerUtils.NOT_SELECTED );
-        }
+        cascadeAllWasClicked = false;
+        setCascadeTypes( ( List<CascadeType> ) fieldInfo.getCurrentValue( CASCADE ) );
+        enableCascadeTypes( true, true );
 
         FetchMode fetchModeValue = (FetchMode) fieldInfo.getCurrentValue( FETCH );
 
@@ -274,7 +285,7 @@ public class RelationshipEditionDialog
 
         if ( !relationTypeValueStr.equals( DataModelerUtils.NOT_SELECTED )) {
             fieldInfo.setCurrentValue( RELATION_TYPE, RelationType.valueOf( relationType.getValue() ) );
-            fieldInfo.setCurrentValue( CASCADE, CascadeType.valueOf( cascadeType.getValue() ) );
+            fieldInfo.setCurrentValue( CASCADE, getCascadeTypes() );
             fieldInfo.setCurrentValue( FETCH, FetchMode.valueOf( fetchMode.getValue() ) );
 
             if ( relationType.getValue().equals( RelationType.ONE_TO_ONE.name() ) ||
@@ -324,4 +335,74 @@ public class RelationshipEditionDialog
     public void setStringValue( String value ) {
         //do nothing
     }
+
+    private void setCascadeTypes( List<CascadeType> cascadeTypes ) {
+        cascadeAll.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.ALL ) );
+        cascadePersist.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.PERSIST ) );
+        cascadeMerge.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.MERGE ) );
+        cascadeRemove.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.REMOVE ) );
+        cascadeRefresh.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.REFRESH ) );
+        cascadeDetach.setValue( cascadeTypes != null && cascadeTypes.contains( CascadeType.DETACH ) );
+    }
+
+    private List<CascadeType> getCascadeTypes() {
+        List<CascadeType> cascadeTypes = new ArrayList<CascadeType>(  );
+        if ( cascadeAll.getValue() ) {
+            cascadeTypes.add( CascadeType.ALL );
+            if ( cascadeAllWasClicked ) {
+                //when cascade ALL was selected in the UI by intention, then it's the only option that we will
+                //configure since it include the other available ones.
+                return cascadeTypes;
+            }
+        }
+        if ( cascadePersist.getValue() ) {
+            cascadeTypes.add( CascadeType.PERSIST );
+        }
+        if ( cascadeMerge.getValue() ) {
+            cascadeTypes.add( CascadeType.MERGE );
+        }
+        if ( cascadeRemove.getValue() ) {
+            cascadeTypes.add( CascadeType.REMOVE );
+        }
+        if ( cascadeRefresh.getValue() ) {
+            cascadeTypes.add( CascadeType.REFRESH );
+        }
+        if ( cascadeDetach.getValue() ) {
+            cascadeTypes.add( CascadeType.DETACH );
+        }
+        return cascadeTypes;
+    }
+
+    @UiHandler( "cascadeAll" )
+    void onCascadeAllChanged( ClickEvent clickEvent ) {
+        if ( cascadeAll.getValue() ) {
+            enableCascadeTypes( true, false );
+            cascadePersist.setValue( true );
+            cascadeMerge.setValue( true );
+            cascadeRemove.setValue( true );
+            cascadeRefresh.setValue( true );
+            cascadeDetach.setValue( true );
+        } else {
+            enableCascadeTypes( true, true );
+            if ( cascadeAllWasClicked ) {
+                //if cascade is clicked for second time then we can enable the auto disabling mode
+                cascadePersist.setValue( false );
+                cascadeMerge.setValue( false );
+                cascadeRemove.setValue( false );
+                cascadeRefresh.setValue( false );
+                cascadeDetach.setValue( false );
+            }
+        }
+        cascadeAllWasClicked = true;
+    }
+
+    private void enableCascadeTypes( boolean enableCascadeAll, boolean enableTheRest ) {
+        cascadeAll.setEnabled( enableCascadeAll );
+        cascadePersist.setEnabled( enableTheRest );
+        cascadeMerge.setEnabled( enableTheRest );
+        cascadeRemove.setEnabled( enableTheRest );
+        cascadeRefresh.setEnabled( enableTheRest );
+        cascadeDetach.setEnabled( enableTheRest );
+    }
+
 }

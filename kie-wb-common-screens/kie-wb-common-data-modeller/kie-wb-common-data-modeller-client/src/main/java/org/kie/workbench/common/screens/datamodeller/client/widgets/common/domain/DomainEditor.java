@@ -18,15 +18,14 @@ package org.kie.workbench.common.screens.datamodeller.client.widgets.common.doma
 
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
+import org.kie.workbench.common.screens.datamodeller.client.handlers.DomainHandler;
 
 public interface DomainEditor {
 
-    String getName();
-
-    int getPriority();
-
-    Widget getWidget();
+    Widget getWidget( );
 
     void setContext( DataModelerContext context );
+
+    DomainHandler getHandler();
 
 }

@@ -24,19 +24,13 @@ import org.kie.workbench.common.screens.datamodeller.client.widgets.common.domai
 @Dependent
 public class JPADomainEditor extends BaseDomainEditor {
 
+    public static final String JPA_DOMAIN = "JPA";
+
     public JPADomainEditor() {
     }
 
     @Inject
     public JPADomainEditor( JPADataObjectEditor objectEditor, JPADataObjectFieldEditor fieldEditor ) {
         super( objectEditor, fieldEditor );
-    }
-
-    @Override public String getName() {
-        return "JPA";
-    }
-
-    @Override public int getPriority() {
-        return 3;
     }
 }
