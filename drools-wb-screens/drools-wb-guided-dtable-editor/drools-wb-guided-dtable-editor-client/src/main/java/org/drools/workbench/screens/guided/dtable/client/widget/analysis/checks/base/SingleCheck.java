@@ -22,9 +22,9 @@ public abstract class SingleCheck
         extends CheckBase
         implements Comparable<SingleCheck> {
 
-    protected RowInspector rowInspector;
+    protected final RowInspector rowInspector;
 
-    public SingleCheck( RowInspector rowInspector ) {
+    public SingleCheck( final RowInspector rowInspector ) {
         this.rowInspector = rowInspector;
     }
 
@@ -33,7 +33,7 @@ public abstract class SingleCheck
     }
 
     @Override
-    public int compareTo( SingleCheck singleCheck ) {
+    public int compareTo( final SingleCheck singleCheck ) {
         return rowInspector.getRowIndex() - singleCheck.getRowInspector().getRowIndex();
     }
 }

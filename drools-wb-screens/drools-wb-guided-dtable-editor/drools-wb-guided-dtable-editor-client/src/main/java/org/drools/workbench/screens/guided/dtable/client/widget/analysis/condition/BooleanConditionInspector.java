@@ -17,11 +17,13 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
 
 public class BooleanConditionInspector
         extends ConditionInspector {
 
-    public Boolean value = null;
+    private final Operator operator;
+    public final Boolean value;
 
     public BooleanConditionInspector( Pattern52 pattern,
                                       String factField,
@@ -29,11 +31,19 @@ public class BooleanConditionInspector
                                       String operator ) {
         super( pattern,
                factField );
-        if ( operator.equals( "==" ) ) {
-            this.value = value;
-        } else if ( operator.equals( "!=" ) ) {
-            this.value = !value;
+        this.operator = Operator.resolve( operator );
+
+        switch (this.operator) {
+            case EQUALS:
+                this.value = value;
+                break;
+            case NOT_EQUALS:
+                this.value = !value;
+                break;
+            default:
+                this.value = null;
         }
+
     }
 
     @Override
@@ -63,5 +73,10 @@ public class BooleanConditionInspector
     @Override
     public boolean hasValue() {
         return value != null;
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        return getFactField() + " " + operator + " " + value;
     }
 }

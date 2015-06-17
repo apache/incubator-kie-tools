@@ -32,16 +32,17 @@ public class RowInspector
                    IsSubsuming,
                    IsConflicting {
 
+    private final GuidedDecisionTable52.TableFormat tableFormat;
+    private final RowInspectorCache cache;
+
+    private final Conditions conditions = new Conditions();
+    private final Actions actions = new Actions();
+
     private int rowIndex;
-    private GuidedDecisionTable52.TableFormat tableFormat;
-    private RowInspectorCache cache;
-    private Conditions conditions = new Conditions();
 
-    private Actions actions = new Actions();
-
-    public RowInspector( int rowIndex,
-                         GuidedDecisionTable52.TableFormat tableFormat,
-                         RowInspectorCache cache ) {
+    public RowInspector( final int rowIndex,
+                         final GuidedDecisionTable52.TableFormat tableFormat,
+                         final RowInspectorCache cache ) {
         this.rowIndex = rowIndex;
         this.tableFormat = tableFormat;
         this.cache = cache;
@@ -59,12 +60,12 @@ public class RowInspector
         return tableFormat;
     }
 
-    public void addConditionInspector( ConditionInspector conditionInspector ) {
+    public void addConditionInspector( final ConditionInspector conditionInspector ) {
         conditions.put( conditionInspector.getKey(),
                         conditionInspector );
     }
 
-    public void addActionInspector( ActionInspector actionInspector ) {
+    public void addActionInspector( final ActionInspector actionInspector ) {
         actions.put( actionInspector.getKey(),
                      actionInspector );
     }
@@ -104,11 +105,11 @@ public class RowInspector
         return false;
     }
 
-    private boolean areActionsRedundant( RowInspector other ) {
+    private boolean areActionsRedundant( final RowInspector other ) {
         return other.actions.isRedundant( actions );
     }
 
-    private boolean areConditionsRedundant( RowInspector other ) {
+    private boolean areConditionsRedundant( final RowInspector other ) {
         return other.conditions.isRedundant( conditions );
     }
 

@@ -21,15 +21,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,7 +63,7 @@ public class DecisionTableAnalyzerUpdateTest {
     @Mock
     AsyncPackageDataModelOracle oracle;
 
-    EventBusMock eventBus;
+    private AnalysisReport analysisReport;
 
     @Before
     public void setUp() throws Exception {
@@ -75,7 +76,6 @@ public class DecisionTableAnalyzerUpdateTest {
         when( oracle.getFieldType( "Person", "age" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
         when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
 
-        eventBus = new EventBusMock();
     }
 
     @Test
@@ -90,14 +90,12 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 2, "description", 1, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertContains( "ThisRowIsRedundantTo(1)", eventBus.getUpdateColumnDataEvent().getColumnData() );
-        assertContains( "ThisRowIsRedundantTo(2)", eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertContains( "RedundantRows", analysisReport, 1 );
+        assertContains( "RedundantRows", analysisReport, 2 );
 
         table52.getData().get( 1 ).get( 2 ).setNumericValue( 0 );
 
@@ -105,7 +103,7 @@ public class DecisionTableAnalyzerUpdateTest {
         updates.put( new Coordinate( 1, 2 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertColumnValuesAreEmpty( eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertColumnValuesAreEmpty( analysisReport );
     }
 
     @Test
@@ -123,14 +121,12 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 4, "description", 1, 1, false } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertContains( "ConflictingMatchWithRow(4)", eventBus.getUpdateColumnDataEvent().getColumnData() );
-        assertContains( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "ConflictingRows", analysisReport, 4 );
+        assertContains( "ImpossibleMatch", analysisReport, 2 );
 
         // REMOVE 2
         table52.getData().remove( 1 );
@@ -139,8 +135,8 @@ public class DecisionTableAnalyzerUpdateTest {
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertContains( "ConflictingMatchWithRow(3)", eventBus.getUpdateColumnDataEvent().getColumnData() );
-        assertDoesNotContain( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "ConflictingRows", analysisReport, 3 );
+        assertDoesNotContain( "ImpossibleMatch", analysisReport, 3 );
 
         // BREAK LINE NUMBER 2 ( previously line number 3 )
         table52.getData().get( 1 ).get( 3 ).setNumericValue( 1 ); // Change the value of person.age ==
@@ -150,7 +146,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         analyzer.onValidate( new ValidateEvent( getUpdates( 1, 3 ) ) );
 
-        assertContains( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "ImpossibleMatch", analysisReport, 2 );
 
     }
 
@@ -167,14 +163,12 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 2, "description", 1, 10, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertContains( "ThisRowIsRedundantTo(2)", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertContains( "ThisRowIsRedundantTo(1)", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "RedundantRows", analysisReport, 1 );
+        assertContains( "RedundantRows", analysisReport, 2 );
 
         // REMOVE 2
         table52.getData().remove( 0 );
@@ -183,7 +177,7 @@ public class DecisionTableAnalyzerUpdateTest {
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertEmpty( eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
     }
 
     @Test
@@ -199,13 +193,11 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 3, "description", 3, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertColumnValuesAreEmpty( eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertColumnValuesAreEmpty( analysisReport );
 
         // REMOVE COLUMN
         table52.getActionCols().remove( 0 );
@@ -215,7 +207,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         analyzer.onAfterDeletedColumn( new AfterColumnDeleted() );
 
-        assertContains( "RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertContains( "RuleHasNoAction", analysisReport );
 
     }
 
@@ -232,13 +224,11 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 3, "description", 3, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertColumnValuesAreEmpty( eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertColumnValuesAreEmpty( analysisReport );
 
         // ADD COLUMN
         table52.getActionCols().add( createActionSetField( "a", "approved", DataType.TYPE_BOOLEAN ) );
@@ -248,7 +238,7 @@ public class DecisionTableAnalyzerUpdateTest {
 
         analyzer.onAfterColumnInserted( new AfterColumnInserted() );
 
-        assertContains( "MultipleValuesForOneAction", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
+        assertContains( "MultipleValuesForOneAction", analysisReport, 3 );
 
     }
 
@@ -267,9 +257,7 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 3, "description", 2, 2, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
@@ -278,9 +266,7 @@ public class DecisionTableAnalyzerUpdateTest {
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertEquals( 4, eventBus.getUpdateColumnDataEvent().getColumnData().size() );
-
-        assertContains( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
+        assertContains( "ImpossibleMatch", analysisReport, 3 );
 
     }
 
@@ -298,26 +284,21 @@ public class DecisionTableAnalyzerUpdateTest {
                         { 3, "description", 2, 2, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertContains( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "ImpossibleMatch", analysisReport, 2 );
 
         table52.getData().add( new ArrayList<DTCellValue52>() );
         analyzer.onAppendRow( new AppendRowEvent() );
         analyzer.onUpdateColumnData( new UpdateColumnDataEvent( 0,
                                                                 getMockColumnData( table52.getData().size() ) ) );
 
-        assertEquals( 4, eventBus.getUpdateColumnDataEvent().getColumnData().size() );
-
+        assertContains( "ImpossibleMatch", analysisReport, 2 );
     }
 
     // TODO: test ignore changes when UpdateColumnDataEvent size has not changed.
-    // TODO: Remove add row/column
-    // TODO: Move Column
 
     private ArrayList<CellValue<? extends Comparable<?>>> getMockColumnData( int size ) {
         ArrayList<CellValue<? extends Comparable<?>>> list = new ArrayList<CellValue<? extends Comparable<?>>>();
@@ -334,16 +315,19 @@ public class DecisionTableAnalyzerUpdateTest {
         return updates;
     }
 
-    private void assertColumnValuesAreEmpty( List<CellValue<? extends Comparable<?>>> columnData ) {
-        String foundError = null;
+    private void assertColumnValuesAreEmpty( AnalysisReport report ) {
+        assertTrue( "Was not empty", report.getAnalysisData().isEmpty() );
+    }
 
-        for ( CellValue cellValue : columnData ) {
-            Analysis analysis = (Analysis) cellValue.getValue();
-            if ( analysis.getWarningsSize() != 0 ) {
-                foundError = analysis.toHtmlString();
+    // TODO: Move Column
+    // TODO: Remove add row/column
+    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
+        return new DecisionTableAnalyzer( oracle,
+                                          table52,
+                                          mock( EventBus.class ) ) {
+            @Override protected void sendReport( AnalysisReport report ) {
+                analysisReport = report;
             }
-        }
-
-        assertNull( "Was not empty", foundError );
+        };
     }
 }

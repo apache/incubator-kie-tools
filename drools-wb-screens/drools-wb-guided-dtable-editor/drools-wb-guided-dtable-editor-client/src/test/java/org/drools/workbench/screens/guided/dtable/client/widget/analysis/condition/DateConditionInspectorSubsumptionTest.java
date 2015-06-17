@@ -28,8 +28,8 @@ public class DateConditionInspectorSubsumptionTest {
 
     @Test
     public void testSubsume001() throws Exception {
-        DateConditionInspector a = getCondition( new Date( 100 ), "!=" );
-        DateConditionInspector b = getCondition( new Date( 100 ), "!=" );
+        ComparableConditionInspector<Date> a = getCondition( new Date( 100 ), "!=" );
+        ComparableConditionInspector<Date> b = getCondition( new Date( 100 ), "!=" );
 
         assertTrue( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
@@ -37,8 +37,8 @@ public class DateConditionInspectorSubsumptionTest {
 
     @Test
     public void testSubsumeEquals001() throws Exception {
-        DateConditionInspector a = getCondition( new Date( 100 ), "==" );
-        DateConditionInspector b = getCondition( new Date( 10 ), ">" );
+        ComparableConditionInspector<Date> a = getCondition( new Date( 100 ), "==" );
+        ComparableConditionInspector<Date> b = getCondition( new Date( 10 ), ">" );
 
         assertFalse( a.subsumes( b ) );
         assertTrue( b.subsumes( a ) );
@@ -46,15 +46,15 @@ public class DateConditionInspectorSubsumptionTest {
 
     @Test
     public void testSubsumeEquals002() throws Exception {
-        DateConditionInspector a = getCondition( new Date( 10 ), "==" );
-        DateConditionInspector b = getCondition( new Date( 100 ), ">" );
+        ComparableConditionInspector<Date> a = getCondition( new Date( 10 ), "==" );
+        ComparableConditionInspector<Date> b = getCondition( new Date( 100 ), ">" );
 
         assertFalse( a.subsumes( b ) );
         assertFalse( b.subsumes( a ) );
     }
 
-    private DateConditionInspector getCondition( Date date,
+    private ComparableConditionInspector<Date> getCondition( Date date,
                                                  String operator ) {
-        return new DateConditionInspector( mock( Pattern52.class ), "birthday", date, operator );
+        return new ComparableConditionInspector<Date>( mock( Pattern52.class ), "birthday", date, operator );
     }
 }

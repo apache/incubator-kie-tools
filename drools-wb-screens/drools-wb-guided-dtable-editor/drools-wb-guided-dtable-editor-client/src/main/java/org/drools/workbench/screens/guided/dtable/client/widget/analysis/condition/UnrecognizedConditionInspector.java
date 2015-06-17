@@ -21,10 +21,14 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 public class UnrecognizedConditionInspector
         extends ConditionInspector {
 
-    public UnrecognizedConditionInspector( Pattern52 pattern,
-                                           String factField,
-                                           String operator ) {
-        super( pattern, factField );
+    private final String operator;
+
+    public UnrecognizedConditionInspector( final Pattern52 pattern,
+                                           final String factField,
+                                           final String operator ) {
+        super( pattern,
+               factField );
+        this.operator = operator;
     }
 
     @Override
@@ -50,5 +54,10 @@ public class UnrecognizedConditionInspector
     @Override
     public boolean hasValue() {
         return true;
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        return getFactField() + " " + operator;
     }
 }

@@ -29,8 +29,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
-import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionVariableColumn;
@@ -42,7 +40,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTableUtils;
-import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.AnalysisCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupBoundPatternDropDownEditCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.cells.PopupValueListDropDownEditCell;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
@@ -181,9 +178,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
 
         } else if ( column instanceof BRLActionVariableColumn ) {
             cell = derieveCellFromAction( (BRLActionVariableColumn) column );
-
-        } else if ( column instanceof AnalysisCol52 ) {
-            cell = makeRowAnalysisCell();
         }
 
         return cell;
@@ -371,12 +365,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<BaseColumn> {
     private DecoratedGridCellValueAdaptor<String> makeCalendarsCell() {
         return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell( isReadOnly ),
                                                           eventBus );
-    }
-
-    // Make a new Cell for Rule Analysis columns
-    private DecoratedGridCellValueAdaptor<Analysis> makeRowAnalysisCell() {
-        return new DecoratedGridCellValueAdaptor<Analysis>( new AnalysisCell(),
-                                                            eventBus );
     }
 
     //Get a cell for a Value List

@@ -16,32 +16,22 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.List;
-
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.NumericIntegerConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.StringConditionInspector;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 
 import static org.junit.Assert.*;
 
 public class TestUtil {
 
-    public static void assertEmpty( List<CellValue<? extends Comparable<?>>> result ) {
-        for ( CellValue cellValue : result ) {
-            Analysis analysis = (Analysis) cellValue.getValue();
-            assertEquals( "<span></span>", analysis.toHtmlString() );
-        }
-    }
-
     public static void assertContains( String expected,
-                                       List<CellValue<? extends Comparable<?>>> result ) {
+                                       AnalysisReport result ) {
         boolean foundIt = false;
 
-        for ( CellValue cellValue : result ) {
-            Analysis analysis = (Analysis) cellValue.getValue();
-            if ( analysis.toHtmlString().contains( expected ) ) {
+        for (Issue issue : result.getAnalysisData()) {
+            if ( issue.getTitle().contains( expected ) ) {
                 foundIt = true;
                 break;
             }
@@ -51,12 +41,11 @@ public class TestUtil {
     }
 
     public static void assertDoesNotContain( String notExpected,
-                                             List<CellValue<? extends Comparable<?>>> result ) {
+                                             AnalysisReport result ) {
         boolean foundIt = false;
 
-        for ( CellValue cellValue : result ) {
-            Analysis analysis = (Analysis) cellValue.getValue();
-            if ( analysis.toHtmlString().contains( notExpected ) ) {
+        for (Issue issue : result.getAnalysisData()) {
+            if ( issue.getTitle().contains( notExpected ) ) {
                 foundIt = true;
                 break;
             }
@@ -66,21 +55,45 @@ public class TestUtil {
     }
 
     public static void assertDoesNotContain( String notExpected,
-                                             List<CellValue<? extends Comparable<?>>> result,
+                                             AnalysisReport result,
                                              int rowNumber ) {
 
-        Analysis analysis = (Analysis) result.get( rowNumber ).getValue();
+        boolean foundOne = false;
 
-        assertFalse( "Found " + notExpected, analysis.toHtmlString().contains( notExpected ) );
+        for (Issue issue : result.getAnalysisData()) {
+            if ( containsRowNumber( rowNumber, issue ) && issue.getTitle().contains( notExpected ) ) {
+                foundOne = true;
+                break;
+            }
+        }
+
+        assertFalse( "Found " + notExpected, foundOne );
     }
 
     public static void assertContains( String expected,
-                                       List<CellValue<? extends Comparable<?>>> result,
+                                       AnalysisReport result,
                                        int rowNumber ) {
 
-        Analysis analysis = (Analysis) result.get( rowNumber ).getValue();
+        boolean foundOne = false;
 
-        assertTrue( "Could not find " + expected, analysis.toHtmlString().contains( expected ) );
+        for (Issue issue : result.getAnalysisData()) {
+            if ( containsRowNumber( rowNumber, issue ) && issue.getTitle().contains( expected ) ) {
+                foundOne = true;
+                break;
+            }
+        }
+
+        assertTrue( "Could not find " + expected, foundOne );
+    }
+
+    private static boolean containsRowNumber( int rowNumber,
+                                              Issue issue ) {
+        for (Integer number : issue.getRowNumbers()) {
+            if ( rowNumber == number ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static NumericIntegerConditionInspector getNumericIntegerCondition( Pattern52 pattern,

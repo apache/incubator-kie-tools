@@ -20,11 +20,11 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 public class ConditionInspectorKey {
 
-    private Pattern52 pattern;
-    private String factField;
+    private final Pattern52 pattern;
+    private final String factField;
 
-    public ConditionInspectorKey(Pattern52 pattern,
-                                 String factField) {
+    public ConditionInspectorKey( final Pattern52 pattern,
+                                  final String factField ) {
         this.pattern = pattern;
         this.factField = factField;
     }

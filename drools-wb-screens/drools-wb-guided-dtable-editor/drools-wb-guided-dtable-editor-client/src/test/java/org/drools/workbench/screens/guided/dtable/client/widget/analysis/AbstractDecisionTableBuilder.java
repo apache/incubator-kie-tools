@@ -54,20 +54,12 @@ public class AbstractDecisionTableBuilder {
 
     public AbstractDecisionTableBuilder withData( Object[][] data ) {
 
-        List<List<DTCellValue52>> dataList = DataUtilities.makeDataLists( data );
-
-        // Reverse to get the row numbers right.
-//        Collections.reverse(dataList);
-
-        table.setData( dataList );
+        table.setData( DataUtilities.makeDataLists( data ) );
 
         return this;
     }
 
     public GuidedDecisionTable52 build() {
-
-        table.initAnalysisColumn();
-
         return table;
     }
 

@@ -54,7 +54,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCo
 import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
@@ -364,13 +363,6 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
                 tce.appendChild( makeLabel( ( (ActionCol52) modelCol ).getHeader(),
                                             width,
                                             resources.rowHeaderHeight() ) );
-                tce.addClassName( resources.cellTableColumn( modelCol ) );
-            } else if ( modelCol instanceof AnalysisCol52 ) {
-                tce.appendChild( makeLabel( GuidedDecisionTableConstants.INSTANCE.Analysis(),
-                                            width,
-                                            resources.rowHeaderHeight() ) );
-                tce.<TableCellElement>cast().setRowSpan( 4 );
-                tce.addClassName( resources.headerRowIntermediate() );
                 tce.addClassName( resources.cellTableColumn( modelCol ) );
             }
 
@@ -928,7 +920,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         // Row 3 (Fact Fields)
         if ( multiRowColumnOffset != -1 ) {
             colOffsetIndex = resizeColumnIndex - multiRowColumnOffset;
-            if ( colOffsetIndex >= 0 && !( resizeColumn.getModelColumn() instanceof AnalysisCol52 ) ) {
+            if ( colOffsetIndex >= 0 ) {
                 DynamicColumn<BaseColumn> col = widget.visibleCols.get( resizeColumnIndex );
                 tce = widget.rowHeaders[ 3 ].getChild( colOffsetIndex ).<TableCellElement>cast();
                 div = tce.getFirstChild().<DivElement>cast();
@@ -970,7 +962,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
         // Row 2 (Fact Types) - Action Columns
         if ( multiRowColumnActionsOffset != -1 ) {
             colOffsetIndex = resizeColumnIndex - multiRowColumnActionsOffset;
-            if ( colOffsetIndex >= 0 && !( resizeColumn.getModelColumn() instanceof AnalysisCol52 ) ) {
+            if ( colOffsetIndex >= 0 ) {
                 colOffsetIndex = colOffsetIndex + iRow2ColColumn;
                 DynamicColumn<BaseColumn> col = widget.visibleCols.get( resizeColumnIndex );
                 tce = widget.rowHeaders[ 2 ].getChild( colOffsetIndex ).<TableCellElement>cast();

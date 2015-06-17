@@ -28,11 +28,12 @@ public abstract class ConditionInspector
                    IsSubsuming,
                    IsConflicting {
 
-    protected ConditionInspectorKey key;
+    protected final ConditionInspectorKey key;
 
-    protected ConditionInspector( Pattern52 pattern,
-                                  String factField ) {
-        this.key = new ConditionInspectorKey( pattern, factField );
+    protected ConditionInspector( final Pattern52 pattern,
+                                  final String factField ) {
+        this.key = new ConditionInspectorKey( pattern,
+                                              factField );
     }
 
     public ConditionInspectorKey getKey() {
@@ -57,4 +58,7 @@ public abstract class ConditionInspector
             return a.equals( b );
         }
     }
+
+    public abstract String toHumanReadableString();
+
 }

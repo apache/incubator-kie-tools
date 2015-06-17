@@ -32,7 +32,6 @@ import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionMessageType;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
-import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
@@ -96,7 +95,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 13,
+        assertEquals( 12,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
@@ -110,7 +109,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         assertTrue( columns.get( 9 ) instanceof AttributeCol52 );
         assertTrue( columns.get( 10 ) instanceof AttributeCol52 );
         assertTrue( columns.get( 11 ) instanceof AttributeCol52 );
-        assertTrue( columns.get( 12 ) instanceof AnalysisCol52 );
 
         //Check individual attributes
         AttributeCol52 attrCol2 = ( (AttributeCol52) columns.get( 2 ) );
@@ -207,12 +205,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 4,
+        assertEquals( 3,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns.get( 2 ) instanceof AttributeCol52 );
-        assertTrue( columns.get( 3 ) instanceof AnalysisCol52 );
 
         //Check attribute column
         AttributeCol52 attrCol2 = ( (AttributeCol52) columns.get( 2 ) );
@@ -279,12 +276,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 4,
+        assertEquals( 3,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns.get( 2 ) instanceof AttributeCol52 );
-        assertTrue( columns.get( 3 ) instanceof AnalysisCol52 );
 
         //Check attribute column
         AttributeCol52 attrCol2 = ( (AttributeCol52) columns.get( 2 ) );
@@ -351,12 +347,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 4,
+        assertEquals( 3,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns.get( 2 ) instanceof AttributeCol52 );
-        assertTrue( columns.get( 3 ) instanceof AnalysisCol52 );
 
         //Check attribute column
         AttributeCol52 attrCol2 = ( (AttributeCol52) columns.get( 2 ) );
@@ -417,12 +412,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 4,
+        assertEquals( 3,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns.get( 2 ) instanceof MetadataCol52 );
-        assertTrue( columns.get( 3 ) instanceof AnalysisCol52 );
 
         //Check metadata column
         MetadataCol52 mdCol2 = ( (MetadataCol52) columns.get( 2 ) );
@@ -481,7 +475,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 8,
+        assertEquals( 7,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
@@ -490,7 +484,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         assertTrue( columns.get( 4 ) instanceof BRLActionVariableColumn );
         assertTrue( columns.get( 5 ) instanceof BRLActionVariableColumn );
         assertTrue( columns.get( 6 ) instanceof BRLActionVariableColumn );
-        assertTrue( columns.get( 7 ) instanceof AnalysisCol52 );
 
         //Check individual action columns
         assertEquals( 4,
@@ -688,7 +681,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 8,
+        assertEquals( 7,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
@@ -697,7 +690,6 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         assertTrue( columns.get( 4 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns.get( 5 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns.get( 6 ) instanceof BRLConditionVariableColumn );
-        assertTrue( columns.get( 7 ) instanceof AnalysisCol52 );
 
         //Check individual condition columns
         assertEquals( 2,
@@ -852,14 +844,13 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns0 = dtable0.getExpandedColumns();
         assertNotNull( columns0 );
-        assertEquals( 6,
+        assertEquals( 5,
                       columns0.size() );
         assertTrue( columns0.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns0.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns0.get( 2 ) instanceof AttributeCol52 );
         assertTrue( columns0.get( 3 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns0.get( 4 ) instanceof BRLActionVariableColumn );
-        assertTrue( columns0.get( 5 ) instanceof AnalysisCol52 );
 
         AttributeCol52 attrCol0_2 = ( (AttributeCol52) columns0.get( 2 ) );
         assertEquals( GuidedDecisionTable52.AGENDA_GROUP_ATTR,
@@ -935,13 +926,12 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns1 = dtable1.getExpandedColumns();
         assertNotNull( columns1 );
-        assertEquals( 5,
+        assertEquals( 4,
                       columns1.size() );
         assertTrue( columns1.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns1.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns1.get( 2 ) instanceof BRLConditionVariableColumn );
         assertTrue( columns1.get( 3 ) instanceof BRLConditionVariableColumn );
-        assertTrue( columns1.get( 4 ) instanceof AnalysisCol52 );
 
         //Check individual condition columns
         assertEquals( 1,
@@ -1039,12 +1029,11 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         //Check expanded columns
         List<BaseColumn> columns = dtable.getExpandedColumns();
         assertNotNull( columns );
-        assertEquals( 4,
+        assertEquals( 3,
                       columns.size() );
         assertTrue( columns.get( 0 ) instanceof RowNumberCol52 );
         assertTrue( columns.get( 1 ) instanceof DescriptionCol52 );
         assertTrue( columns.get( 2 ) instanceof BRLConditionVariableColumn );
-        assertTrue( columns.get( 3 ) instanceof AnalysisCol52 );
 
         //Check individual condition columns
         assertEquals( 1,

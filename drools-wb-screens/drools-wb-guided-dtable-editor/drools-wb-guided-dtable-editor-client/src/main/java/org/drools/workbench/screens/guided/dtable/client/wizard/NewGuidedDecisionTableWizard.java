@@ -23,7 +23,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -189,12 +188,10 @@ public class NewGuidedDecisionTableWizard extends AbstractWizard {
         //Slurp out expanded rows and construct decision table data
         int rowIndex = 0;
         final RowExpander.RowIterator ri = re.iterator();
-        model.initAnalysisColumn();
         while ( ri.hasNext() ) {
             List<DTCellValue52> row = ri.next();
             model.getData().add( row );
             model.getData().get( rowIndex ).get( 0 ).setNumericValue( new BigDecimal( rowIndex + 1 ) );
-            model.getAnalysisData().add( new Analysis() );
             rowIndex++;
         }
 

@@ -24,8 +24,8 @@ public abstract class PairCheck
     protected final RowInspector rowInspector;
     protected final RowInspector other;
 
-    public PairCheck( RowInspector rowInspector,
-                      RowInspector other ) {
+    public PairCheck( final RowInspector rowInspector,
+                      final RowInspector other ) {
         this.rowInspector = rowInspector;
         this.other = other;
     }

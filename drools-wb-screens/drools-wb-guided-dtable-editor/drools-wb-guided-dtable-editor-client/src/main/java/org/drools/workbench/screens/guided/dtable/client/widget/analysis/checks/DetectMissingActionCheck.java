@@ -17,15 +17,15 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 
 public class DetectMissingActionCheck
         extends SingleCheck {
 
-    private String issue;
-
-    public DetectMissingActionCheck( RowInspector rowInspector ) {
+    public DetectMissingActionCheck( final RowInspector rowInspector ) {
         super( rowInspector );
     }
 
@@ -37,7 +37,15 @@ public class DetectMissingActionCheck
     }
 
     @Override
-    public String getIssue() {
-        return AnalysisConstants.INSTANCE.RuleHasNoAction();
+    public Issue getIssue() {
+        Issue issue = new Issue( Severity.WARNING,
+                                 AnalysisConstants.INSTANCE.RuleHasNoAction(),
+                                 rowInspector.getRowIndex() + 1 );
+
+        issue.getExplanation()
+                .addParagraph( AnalysisConstants.INSTANCE.WhenARuleHasNoActionItDoesFireButSinceTheActionSideIsEmptyNothingHappens() )
+                .addParagraph( AnalysisConstants.INSTANCE.ItIsPossibleThatTheActionsWereLeftOutByAccidentInThisCasePleaseAddThemOtherwiseTheRuleCanNeRemoved() );
+
+        return issue;
     }
 }

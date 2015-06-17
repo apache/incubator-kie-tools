@@ -25,13 +25,17 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInsp
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspectorKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectImpossibleMatchCheck
         extends SingleCheck {
 
-    private String issue;
+    private final ArrayList<ConditionInspector> conflictingConditions = new ArrayList<ConditionInspector>();
 
-    public DetectImpossibleMatchCheck( RowInspector rowInspector ) {
+    private ConditionInspectorKey key;
+
+    public DetectImpossibleMatchCheck( final RowInspector rowInspector ) {
         super( rowInspector );
     }
 
@@ -39,7 +43,7 @@ public class DetectImpossibleMatchCheck
     public void check() {
         for ( ConditionInspectorKey key : rowInspector.getConditions().keys() ) {
             if ( inspect( rowInspector.getConditions().get( key ) ) ) {
-                issue = AnalysisConstants.INSTANCE.ImpossibleMatchOn( key.getFactField() );
+                this.key = key;
                 hasIssues = true;
                 return;
             }
@@ -47,16 +51,30 @@ public class DetectImpossibleMatchCheck
     }
 
     @Override
-    public String getIssue() {
+    public Issue getIssue() {
+        Issue issue = new Issue( Severity.ERROR,
+                                 AnalysisConstants.INSTANCE.ImpossibleMatch(),
+                                 rowInspector.getRowIndex() + 1 );
+
+        issue.getExplanation()
+                .startNote()
+                .addParagraph(
+                        AnalysisConstants.INSTANCE.ImpossibleMatchNote1P1( (rowInspector.getRowIndex() + 1), key.getFactField(), key.getPattern().getFactType() ) )
+                .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchNote1P2( conflictingConditions.get( 0 ).toHumanReadableString(), conflictingConditions.get( 1 ).toHumanReadableString() ) )
+                .end()
+                .addParagraph( AnalysisConstants.INSTANCE.ImpossibleMatchP1( key.getFactField() ) );
+
         return issue;
     }
 
-    private boolean inspect( Collection<ConditionInspector> param ) {
-        List<ConditionInspector> conditionInspectors = new ArrayList<ConditionInspector>( param );
+    private boolean inspect( final Collection<ConditionInspector> conditions ) {
+        List<ConditionInspector> conditionInspectors = new ArrayList<ConditionInspector>( conditions );
 
         for ( int i = 0; i < conditionInspectors.size(); i++ ) {
             for ( int j = i + 1; j < conditionInspectors.size(); j++ ) {
                 if ( conditionInspectors.get( i ).conflicts( conditionInspectors.get( j ) ) ) {
+                    conflictingConditions.add( conditionInspectors.get( i ) );
+                    conflictingConditions.add( conditionInspectors.get( j ) );
                     return true;
                 }
             }

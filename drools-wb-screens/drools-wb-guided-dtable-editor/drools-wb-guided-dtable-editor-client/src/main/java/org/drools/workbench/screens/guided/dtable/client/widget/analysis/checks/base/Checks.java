@@ -24,7 +24,6 @@ import java.util.Set;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectConflictingRowsCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectDeficientRowsCheck;
-import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectDuplicateCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectImpossibleMatchCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectMissingActionCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.DetectMissingConditionCheck;
@@ -35,9 +34,9 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 
 public class Checks {
 
-    private Set<Check> set = new HashSet<Check>();
+    private final Set<Check> set = new HashSet<Check>();
 
-    private HashSet<Check> rechecks = new HashSet<Check>();
+    private final HashSet<Check> rechecks = new HashSet<Check>();
 
     public void run() {
 
@@ -54,13 +53,13 @@ public class Checks {
         rechecks.clear();
     }
 
-    public void update( RowInspector oldRowInspector,
-                        RowInspector newRowInspector ) {
+    public void update( final RowInspector oldRowInspector,
+                        final RowInspector newRowInspector ) {
         remove( oldRowInspector );
         add( newRowInspector );
     }
 
-    public Collection<Check> get( RowInspector rowInspector ) {
+    public Collection<Check> get( final RowInspector rowInspector ) {
         Set<Check> result = new HashSet<Check>();
         for (Check check : set) {
             if ( containsRowInspector( rowInspector,
@@ -77,8 +76,8 @@ public class Checks {
 
     }
 
-    private boolean containsRowInspector( RowInspector rowInspector,
-                                          Check check ) {
+    private boolean containsRowInspector( final RowInspector rowInspector,
+                                          final Check check ) {
         if ( check instanceof SingleCheck ) {
             if ( ( (SingleCheck) check ).getRowInspector().equals( rowInspector ) ) {
                 return true;
@@ -91,8 +90,8 @@ public class Checks {
         return false;
     }
 
-    private boolean containsRowInspectorAsOther( RowInspector rowInspector,
-                                                 Check check ) {
+    private boolean containsRowInspectorAsOther( final RowInspector rowInspector,
+                                                 final Check check ) {
         if ( check instanceof PairCheck ) {
             return ((PairCheck) check).getOther().equals( rowInspector );
         } else {
@@ -104,12 +103,12 @@ public class Checks {
         return set.isEmpty();
     }
 
-    public void add( RowInspector rowInspector ) {
+    public void add( final RowInspector rowInspector ) {
         addSingleRowChecks( rowInspector );
         addPairRowChecks( rowInspector );
     }
 
-    private void addPairRowChecks( RowInspector rowInspector ) {
+    private void addPairRowChecks( final RowInspector rowInspector ) {
         for ( RowInspector other : rowInspector.getCache().all() ) {
             if ( !rowInspector.equals( other ) ) {
 
@@ -124,13 +123,13 @@ public class Checks {
         }
     }
 
-    private void addSingleRowChecks( RowInspector rowInspector ) {
+    private void addSingleRowChecks( final RowInspector rowInspector ) {
         ArrayList<Check> checks = makeSingleRowChecks( rowInspector );
         set.addAll( checks );
         rechecks.addAll( checks );
     }
 
-    public Collection<Check> getAll( RowInspector rowInspector ) {
+    public Collection<Check> getAll( final RowInspector rowInspector ) {
         ArrayList<Check> result = new ArrayList<Check>();
         for (Check check : set) {
             if ( containsRowInspector( rowInspector, check ) || containsRowInspectorAsOther( rowInspector, check ) ) {
@@ -140,24 +139,23 @@ public class Checks {
         return result;
     }
 
-    public Collection<Check> remove( RowInspector removedRowInspector ) {
+    public Collection<Check> remove( final RowInspector removedRowInspector ) {
         Collection<Check> removed = getAll( removedRowInspector );
         set.removeAll( removed );
         return removed;
     }
 
-    protected ArrayList<Check> makePairRowChecks( RowInspector rowInspector,
-                                                  RowInspector other ) {
+    protected ArrayList<Check> makePairRowChecks( final RowInspector rowInspector,
+                                                  final RowInspector other ) {
         ArrayList<Check> checkList = new ArrayList<Check>();
         if ( other.getRowIndex() != rowInspector.getRowIndex() ) {
             checkList.add( new DetectConflictingRowsCheck( rowInspector, other ) );
-            checkList.add( new DetectDuplicateCheck( rowInspector, other ) );
             checkList.add( new DetectRedundantRowsCheck( rowInspector, other ) );
         }
         return checkList;
     }
 
-    protected ArrayList<Check> makeSingleRowChecks( RowInspector rowInspector ) {
+    protected ArrayList<Check> makeSingleRowChecks( final RowInspector rowInspector ) {
         ArrayList<Check> checkList = new ArrayList<Check>();
         checkList.add( new DetectImpossibleMatchCheck( rowInspector ) );
         checkList.add( new DetectMultipleValuesForOneActionCheck( rowInspector ) );

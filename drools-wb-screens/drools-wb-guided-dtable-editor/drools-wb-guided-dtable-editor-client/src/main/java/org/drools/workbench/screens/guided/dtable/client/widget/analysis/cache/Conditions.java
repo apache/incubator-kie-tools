@@ -31,7 +31,7 @@ public class Conditions
                    IsSubsuming,
                    IsDeficient {
 
-    public void addAll( Collection<ConditionInspector> conditionInspectorList ) {
+    public void addAll( final Collection<ConditionInspector> conditionInspectorList ) {
         for ( ConditionInspector inspector : conditionInspectorList ) {
             put( inspector.getKey(), inspector );
         }
@@ -98,7 +98,7 @@ public class Conditions
         return false;
     }
 
-    public boolean keyHasNoValues( ConditionInspectorKey key ) {
+    public boolean keyHasNoValues( final ConditionInspectorKey key ) {
         for (ConditionInspector inspector : get( key )) {
             if ( inspector.hasValue() ) {
                 return true;

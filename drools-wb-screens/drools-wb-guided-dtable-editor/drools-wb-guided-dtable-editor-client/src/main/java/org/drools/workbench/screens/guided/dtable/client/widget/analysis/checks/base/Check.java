@@ -16,11 +16,13 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+
 public interface Check {
 
     void check();
 
-    String getIssue();
+    Issue getIssue();
 
     boolean hasIssues();
 }

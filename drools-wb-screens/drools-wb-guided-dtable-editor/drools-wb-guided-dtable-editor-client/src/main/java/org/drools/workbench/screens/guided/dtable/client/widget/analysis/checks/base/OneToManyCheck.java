@@ -26,13 +26,13 @@ public abstract class OneToManyCheck
 
     private RowInspectorCache.Filter filter;
 
-    public OneToManyCheck( RowInspector rowInspector,
-                           RowInspectorCache.Filter filter ) {
+    public OneToManyCheck( final RowInspector rowInspector,
+                           final RowInspectorCache.Filter filter ) {
         super( rowInspector );
         this.filter = filter;
     }
 
-    public OneToManyCheck( RowInspector rowInspector ) {
+    public OneToManyCheck( final RowInspector rowInspector ) {
         super( rowInspector );
     }
 

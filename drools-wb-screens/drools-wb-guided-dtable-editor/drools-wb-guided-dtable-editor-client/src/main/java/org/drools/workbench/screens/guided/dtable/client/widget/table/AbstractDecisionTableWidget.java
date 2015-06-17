@@ -42,7 +42,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionRetractFactC
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
@@ -2062,7 +2061,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     public void onDeleteRow( DeleteRowEvent event ) {
         model.getData().remove( event.getIndex() );
-        model.getAnalysisData().remove( event.getIndex() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
@@ -2080,8 +2078,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<DTCellValue52> data = cellValueFactory.makeRowData();
         model.getData().add( event.getIndex(),
                              data );
-        model.getAnalysisData().add( event.getIndex(),
-                                     new Analysis() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
@@ -2155,8 +2151,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
             model.getData().add( iRow,
                                  rowData );
-            model.getAnalysisData().add( iRow,
-                                         new Analysis() );
 
             //Log insertion of row
             model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getIdentifier(),
@@ -2177,7 +2171,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
     public void onAppendRow( AppendRowEvent event ) {
         List<DTCellValue52> data = cellValueFactory.makeRowData();
         model.getData().add( data );
-        model.getAnalysisData().add( new Analysis() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {

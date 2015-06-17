@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -28,6 +29,7 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,8 +49,7 @@ public class DecisionTableAnalyzerDeficiencyTest {
     @GwtMock DateTimeFormat dateTimeFormat;
 
     @Mock AsyncPackageDataModelOracle oracle;
-
-    EventBusMock eventBus;
+    private AnalysisReport analysisReport;
 
     @Before
     public void setUp() throws Exception {
@@ -60,7 +61,6 @@ public class DecisionTableAnalyzerDeficiencyTest {
         when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
         when( oracle.getFieldType( "Person", "lastName" ) ).thenReturn( DataType.TYPE_STRING );
 
-        eventBus = new EventBusMock();
 
         Map<String, String> preferences = new HashMap<String, String>();
         preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
@@ -84,15 +84,13 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertContains( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
+        assertContains( "DeficientRow", analysisReport, 2 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
 
     }
 
@@ -114,16 +112,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 2 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
 
         table52.getData().get( 1 ).get( 3 ).setStringValue( "Toni" );
 
@@ -131,10 +127,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
         updates.put( new Coordinate( 1, 3 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertContains( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
+        assertContains( "DeficientRow", analysisReport, 2 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
 
     }
 
@@ -156,16 +152,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertContains( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
+        assertContains( "DeficientRow", analysisReport, 2 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
 
         table52.getData().get( 2 ).get( 3 ).setStringValue( "Toni" );
 
@@ -173,10 +167,10 @@ public class DecisionTableAnalyzerDeficiencyTest {
         updates.put( new Coordinate( 2, 3 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 2 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
 
     }
 
@@ -198,16 +192,14 @@ public class DecisionTableAnalyzerDeficiencyTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 2 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
 
         table52.getData().get( 2 ).get( 3 ).setStringValue( "" );
 
@@ -215,11 +207,21 @@ public class DecisionTableAnalyzerDeficiencyTest {
         updates.put( new Coordinate( 2, 3 ), new ArrayList<List<CellValue<? extends Comparable<?>>>>() );
         analyzer.onValidate( new ValidateEvent( updates ) );
 
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertContains( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 2 );
-        assertDoesNotContain( "ThisRowIsDeficient", eventBus.getUpdateColumnDataEvent().getColumnData(), 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 1 );
+        assertContains( "DeficientRow", analysisReport, 2 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 3 );
+        assertDoesNotContain( "DeficientRow", analysisReport, 4 );
 
+    }
+
+    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
+        return new DecisionTableAnalyzer( oracle,
+                                          table52,
+                                          mock( EventBus.class ) ) {
+            @Override protected void sendReport( AnalysisReport report ) {
+                DecisionTableAnalyzerDeficiencyTest.this.analysisReport = report;
+            }
+        };
     }
 
 }

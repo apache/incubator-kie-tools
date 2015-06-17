@@ -16,17 +16,15 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.event.shared.EventBus;
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReportScreen;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
-import org.kie.workbench.common.widgets.decoratedgrid.client.widget.CellValue;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnDeleted;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AfterColumnInserted;
 import org.kie.workbench.common.widgets.decoratedgrid.client.widget.events.AppendRowEvent;
@@ -45,23 +43,22 @@ public class DecisionTableAnalyzer
 
     private final RowInspectorCache cache;
     private final GuidedDecisionTable52 model;
-    private final EventBus eventBus;
     private final Checks checks = new Checks();
     private final EventManager eventManager = new EventManager();
 
-    public DecisionTableAnalyzer( AsyncPackageDataModelOracle oracle,
-                                  GuidedDecisionTable52 model,
-                                  EventBus eventBus ) {
+    public DecisionTableAnalyzer( final AsyncPackageDataModelOracle oracle,
+                                  final GuidedDecisionTable52 model,
+                                  final EventBus eventBus ) {
         this.model = model;
-        this.eventBus = eventBus;
 
         cache = new RowInspectorCache( oracle,
                                        model,
                                        new UpdateHandler() {
                                            @Override
-                                           public void updateRow( RowInspector oldRowInspector,
-                                                                  RowInspector newRowInspector ) {
-                                               checks.update( oldRowInspector, newRowInspector );
+                                           public void updateRow( final RowInspector oldRowInspector,
+                                                                  final RowInspector newRowInspector ) {
+                                               checks.update( oldRowInspector,
+                                                              newRowInspector );
                                            }
                                        } );
 
@@ -87,52 +84,29 @@ public class DecisionTableAnalyzer
         }
     }
 
-    private List<Analysis> analyze() {
+    private void analyze() {
 
-        final List<Analysis> analysisData = new ArrayList<Analysis>();
+        final AnalysisReport report = new AnalysisReport();
 
         this.checks.run();
 
         for ( RowInspector rowInspector : cache.all() ) {
-            Analysis analysis = new Analysis();
             for ( Check check : checks.get( rowInspector ) ) {
                 if ( check.hasIssues() ) {
-                    analysis.addRowMessage( check.getIssue() );
+                    report.addIssue( check.getIssue() );
                 }
             }
-            analysisData.add( analysis );
         }
 
-        return analysisData;
+        sendReport( report );
     }
 
-    private void updateAnalysisColumn() {
-        model.getAnalysisData().clear();
-        model.getAnalysisData().addAll(analyze());
-
-        eventBus.fireEvent(new UpdateColumnDataEvent(getAnalysisColumnIndex(),
-                                                     getAnalysisColumnData()));
-
-    }
-
-    // Retrieve the data for the analysis column
-    private List<CellValue<? extends Comparable<?>>> getAnalysisColumnData() {
-        List<CellValue<? extends Comparable<?>>> columnData = new ArrayList<CellValue<? extends Comparable<?>>>();
-        List<Analysis> analysisData = model.getAnalysisData();
-        for ( int i = 0; i < analysisData.size(); i++ ) {
-            Analysis analysis = analysisData.get( i );
-            CellValue<Analysis> cell = new CellValue<Analysis>( analysis );
-            columnData.add( cell );
-        }
-        return columnData;
-    }
-
-    private int getAnalysisColumnIndex() {
-        return model.getExpandedColumns().indexOf( model.getAnalysisCol() );
+    protected void sendReport( final AnalysisReport report ) {
+        IOC.getBeanManager().lookupBean( AnalysisReportScreen.class ).getInstance().showReport( report );
     }
 
     @Override
-    public void onValidate( ValidateEvent event ) {
+    public void onValidate( final ValidateEvent event ) {
 
         if ( event.getUpdates().isEmpty() || checks.isEmpty() ) {
             resetChecks();
@@ -141,75 +115,74 @@ public class DecisionTableAnalyzer
                                        model.getData() );
         }
 
-        updateAnalysisColumn();
+        analyze();
     }
 
     @Override
-    public void onAfterDeletedColumn( AfterColumnDeleted event ) {
+    public void onAfterDeletedColumn( final AfterColumnDeleted event ) {
 
         cache.reset();
 
         resetChecks();
 
-        updateAnalysisColumn();
+        analyze();
     }
 
     @Override
-    public void onAfterColumnInserted( AfterColumnInserted event ) {
+    public void onAfterColumnInserted( final AfterColumnInserted event ) {
 
         cache.reset();
 
         resetChecks();
 
-        updateAnalysisColumn();
+        analyze();
     }
 
     @Override
-    public void onUpdateColumnData( UpdateColumnDataEvent event ) {
+    public void onUpdateColumnData( final UpdateColumnDataEvent event ) {
 
         if ( hasTheRowCountIncreased( event ) ) {
 
             addRow( eventManager.getNewIndex() );
-            updateAnalysisColumn();
+            analyze();
 
         } else if ( hasTheRowCountDecreased( event ) ) {
 
             RowInspector removed = cache.removeRow( eventManager.rowDeleted );
             checks.remove( removed );
 
-            updateAnalysisColumn();
-
+            analyze();
         }
 
         eventManager.clear();
     }
 
-    private boolean hasTheRowCountDecreased( UpdateColumnDataEvent event ) {
+    private boolean hasTheRowCountDecreased( final UpdateColumnDataEvent event ) {
         return cache.all().size() > event.getColumnData().size();
     }
 
-    private boolean hasTheRowCountIncreased( UpdateColumnDataEvent event ) {
+    private boolean hasTheRowCountIncreased( final UpdateColumnDataEvent event ) {
         return cache.all().size() < event.getColumnData().size();
     }
 
-    private void addRow( int index ) {
+    private void addRow( final int index ) {
         RowInspector rowInspector = cache.addRow( index,
                                                   model.getData().get( index ) );
         checks.add(rowInspector);
     }
 
     @Override
-    public void onDeleteRow( DeleteRowEvent event ) {
+    public void onDeleteRow( final DeleteRowEvent event ) {
         eventManager.rowDeleted = event.getIndex();
     }
 
     @Override
-    public void onAppendRow( AppendRowEvent event ) {
+    public void onAppendRow( final AppendRowEvent event ) {
         eventManager.rowAppended = true;
     }
 
     @Override
-    public void onInsertRow( InsertRowEvent event ) {
+    public void onInsertRow( final InsertRowEvent event ) {
         eventManager.rowInserted = event.getIndex();
     }
 
@@ -233,7 +206,7 @@ public class DecisionTableAnalyzer
                 return eventManager.rowInserted;
             }
 
-            throw new IllegalStateException( "There is no active updates" );
+            throw new IllegalStateException( "There are no active updates" );
         }
     }
 }

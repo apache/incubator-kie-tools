@@ -22,16 +22,16 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 public class FactFieldColumnActionInspectorKey
         extends ActionInspectorKey {
 
-    private String boundName;
-    private String factField;
+    private final String boundName;
+    private final String factField;
 
-    public FactFieldColumnActionInspectorKey( ActionSetFieldCol52 actionCol ) {
+    public FactFieldColumnActionInspectorKey( final ActionSetFieldCol52 actionCol ) {
         super( actionCol );
         this.boundName = actionCol.getBoundName();
         this.factField = actionCol.getFactField();
     }
 
-    public FactFieldColumnActionInspectorKey( ActionInsertFactCol52 actionCol ) {
+    public FactFieldColumnActionInspectorKey( final ActionInsertFactCol52 actionCol ) {
         super( actionCol );
         this.boundName = actionCol.getBoundName();
         this.factField = actionCol.getFactField();
@@ -46,7 +46,7 @@ public class FactFieldColumnActionInspectorKey
     }
 
     @Override
-    public boolean equals( Object o ) {
+    public boolean equals( final Object o ) {
         if ( this == o ) {
             return true;
         } else if ( o instanceof FactFieldColumnActionInspectorKey ) {
@@ -60,6 +60,11 @@ public class FactFieldColumnActionInspectorKey
     @Override
     public int hashCode() {
         return boundName.hashCode() * 37 + factField.hashCode();
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        return boundName + "." + factField;
     }
 
 }

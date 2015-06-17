@@ -61,15 +61,16 @@ public class RowInspectorGenerator {
 
         int index = 0;
         for ( List<DTCellValue52> row : model.getData() ) {
-            rowInspectors.add( generate( index, row ) );
+            rowInspectors.add( generate( index,
+                                         row ) );
             index++;
         }
 
         return rowInspectors;
     }
 
-    public RowInspector generate( int index,
-                                  List<DTCellValue52> row ) {
+    public RowInspector generate( final int index,
+                                  final List<DTCellValue52> row ) {
         this.row = row;
 
         rowInspector = new RowInspector( index,
@@ -80,10 +81,6 @@ public class RowInspectorGenerator {
         addActionInspector();
 
         return rowInspector;
-    }
-
-    private Integer getRowNumber() {
-        return (Integer) row.get( 0 ).getNumericValue();
     }
 
     private void addActionInspector() {
@@ -115,12 +112,12 @@ public class RowInspectorGenerator {
         }
     }
 
-    private boolean rowHasIndex( int columnIndex ) {
+    private boolean rowHasIndex( final int columnIndex ) {
         return columnIndex > 0 && columnIndex < row.size();
     }
 
-    private void addActionInspector( ActionCol52 actionCol,
-                                     DTCellValue52 visibleCellValue ) {
+    private void addActionInspector( final ActionCol52 actionCol,
+                                     final DTCellValue52 visibleCellValue ) {
         // Blank cells are ignored
         if ( isCellNotBlank( actionCol,
                              visibleCellValue ) ) {
@@ -129,9 +126,9 @@ public class RowInspectorGenerator {
         }
     }
 
-    private void addConditionInspector( Pattern52 pattern,
-                                        ConditionCol52 conditionColumn,
-                                        DTCellValue52 visibleCellValue ) {
+    private void addConditionInspector( final Pattern52 pattern,
+                                        final ConditionCol52 conditionColumn,
+                                        final DTCellValue52 visibleCellValue ) {
         // Blank cells are ignored
         boolean cellNotBlank = isCellNotBlank( conditionColumn,
                                                visibleCellValue );
@@ -142,9 +139,9 @@ public class RowInspectorGenerator {
         }
     }
 
-    private ConditionInspector buildConditionInspector( Pattern52 pattern,
-                                                        ConditionCol52 conditionColumn,
-                                                        DTCellValue52 visibleCellValue ) {
+    private ConditionInspector buildConditionInspector( final Pattern52 pattern,
+                                                        final ConditionCol52 conditionColumn,
+                                                        final DTCellValue52 visibleCellValue ) {
 
         return new ConditionInspectorBuilder(
                 utils,
@@ -156,14 +153,14 @@ public class RowInspectorGenerator {
 
     }
 
-    private ActionInspector buildActionInspector( ActionCol52 actionCol,
-                                                  DTCellValue52 visibleCellValue ) {
+    private ActionInspector buildActionInspector( final ActionCol52 actionCol,
+                                                  final DTCellValue52 visibleCellValue ) {
         return new ActionInspector( getKey( actionCol ),
                                     getRealCellValue( actionCol,
                                                       visibleCellValue ) );
     }
 
-    private ActionInspectorKey getKey( ActionCol52 actionCol ) {
+    private ActionInspectorKey getKey( final ActionCol52 actionCol ) {
         if ( actionCol instanceof ActionSetFieldCol52 ) {
             return new FactFieldColumnActionInspectorKey( (ActionSetFieldCol52) actionCol );
         } else if ( actionCol instanceof ActionInsertFactCol52 ) {
@@ -173,8 +170,8 @@ public class RowInspectorGenerator {
         }
     }
 
-    private DTCellValue52 getRealCellValue( DTColumnConfig52 config52,
-                                            DTCellValue52 visibleCellValue ) {
+    private DTCellValue52 getRealCellValue( final DTColumnConfig52 config52,
+                                            final DTCellValue52 visibleCellValue ) {
         if ( config52 instanceof LimitedEntryCol ) {
             return ( (LimitedEntryCol) config52 ).getValue();
         } else {
@@ -182,8 +179,8 @@ public class RowInspectorGenerator {
         }
     }
 
-    private boolean isCellNotBlank( DTColumnConfig52 config52,
-                                    DTCellValue52 visibleCellValue ) {
+    private boolean isCellNotBlank( final DTColumnConfig52 config52,
+                                    final DTCellValue52 visibleCellValue ) {
         if ( config52 instanceof LimitedEntryCol ) {
             return visibleCellValue.getBooleanValue();
         } else {

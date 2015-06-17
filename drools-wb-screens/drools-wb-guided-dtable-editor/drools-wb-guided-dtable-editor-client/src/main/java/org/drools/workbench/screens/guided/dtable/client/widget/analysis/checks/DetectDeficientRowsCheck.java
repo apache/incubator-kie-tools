@@ -21,11 +21,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInsp
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.ConflictingActionsFilter;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.OneToManyCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspectorKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectDeficientRowsCheck
         extends OneToManyCheck {
 
-    public DetectDeficientRowsCheck( RowInspector rowInspector ) {
+    public DetectDeficientRowsCheck( final RowInspector rowInspector ) {
         super( rowInspector,
                new ConflictingActionsFilter( rowInspector ) );
     }
@@ -46,7 +48,7 @@ public class DetectDeficientRowsCheck
         return true;
     }
 
-    private boolean isDeficient( RowInspector other ) {
+    private boolean isDeficient( final RowInspector other ) {
         for (ConditionInspectorKey key : other.getConditions().keys()) {
 
             if ( other.getConditions().keyHasNoValues( key )
@@ -59,8 +61,31 @@ public class DetectDeficientRowsCheck
     }
 
     @Override
-    public String getIssue() {
-        return AnalysisConstants.INSTANCE.ThisRowIsDeficient();
+    public Issue getIssue() {
+        Issue issue = new Issue( Severity.WARNING,
+                                 AnalysisConstants.INSTANCE.DeficientRow(),
+                                 rowInspector.getRowIndex() + 1 );
+
+        issue.getExplanation()
+                .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsP1() )
+                .startNote()
+                .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsNoteP1() )
+                .startExampleTable()
+                .startHeader()
+                .headerConditions( AnalysisConstants.INSTANCE.Salary(), AnalysisConstants.INSTANCE.Savings() )
+                .headerActions( AnalysisConstants.INSTANCE.ApproveLoan() )
+                .end()
+                .startRow()
+                .addConditions( "--", "100 000" ).addActions( "true" )
+                .end()
+                .startRow()
+                .addConditions( "30 000", "--" ).addActions( "false" )
+                .end()
+                .end()
+                .end()
+                .addParagraph( AnalysisConstants.INSTANCE.DeficientRowsP2() );
+
+        return issue;
     }
 
 }

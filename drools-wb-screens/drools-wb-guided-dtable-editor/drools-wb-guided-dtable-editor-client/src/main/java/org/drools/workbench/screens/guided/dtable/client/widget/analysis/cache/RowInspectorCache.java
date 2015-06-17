@@ -38,9 +38,9 @@ public class RowInspectorCache {
     private final RowInspectorGenerator rowInspectorGenerator;
     private final UpdateHandler updateHandler;
 
-    public RowInspectorCache( AsyncPackageDataModelOracle oracle,
-                              GuidedDecisionTable52 model,
-                              UpdateHandler updateHandler ) {
+    public RowInspectorCache( final AsyncPackageDataModelOracle oracle,
+                              final GuidedDecisionTable52 model,
+                              final UpdateHandler updateHandler ) {
 
         rowInspectorGenerator = new RowInspectorGenerator( oracle,
                                                            model,
@@ -62,7 +62,7 @@ public class RowInspectorCache {
         return rowInspectorList.getSortedList();
     }
 
-    public Collection<RowInspector> all( Filter filter ) {
+    public Collection<RowInspector> all( final Filter filter ) {
         ArrayList<RowInspector> result = new ArrayList<RowInspector>();
         for (RowInspector rowInspector : all()) {
             if ( filter.accept( rowInspector ) ) {
@@ -76,8 +76,8 @@ public class RowInspectorCache {
         return conditions;
     }
 
-    public void updateRowInspectors( Set<Coordinate> coordinates,
-                                     List<List<DTCellValue52>> data ) {
+    public void updateRowInspectors( final Set<Coordinate> coordinates,
+                                     final List<List<DTCellValue52>> data ) {
         for ( Coordinate coordinate : coordinates ) {
             if ( coordinate.getCol() != DESCRIPTION_COLUMN ) {
                 RowInspector oldRow = rowInspectorList.getRowInspector( coordinate.getRow() );
@@ -91,21 +91,22 @@ public class RowInspectorCache {
 
     }
 
-    private boolean add( RowInspector rowInspector ) {
+    private boolean add( final RowInspector rowInspector ) {
         boolean add = rowInspectorList.add( rowInspector );
         conditions.addAll( rowInspector.getConditions().allValues() );
         return add;
     }
 
-    public RowInspector removeRow( int rowNumber ) {
+    public RowInspector removeRow( final int rowNumber ) {
         RowInspector removed = rowInspectorList.removeRowInspector( rowNumber );
         rowInspectorList.decreaseRowNumbers( rowNumber );
         return removed;
     }
 
-    public RowInspector addRow( int index,
-                                List<DTCellValue52> row ) {
-        RowInspector rowInspector = rowInspectorGenerator.generate( index, row );
+    public RowInspector addRow( final int index,
+                                final List<DTCellValue52> row ) {
+        RowInspector rowInspector = rowInspectorGenerator.generate( index,
+                                                                    row );
         rowInspectorList.increaseRowNumbers( index );
         add( rowInspector );
         return rowInspector;
@@ -113,7 +114,7 @@ public class RowInspectorCache {
 
     public interface Filter {
 
-        boolean accept( RowInspector rowInspector );
+        boolean accept( final RowInspector rowInspector );
 
     }
 }

@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.guided.dtable.shared.model.Analysis;
-import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -67,8 +65,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
     public List<DTCellValue52> makeRowData() {
         List<DTCellValue52> data = new ArrayList<DTCellValue52>();
         List<BaseColumn> columns = model.getExpandedColumns();
-        //Use allColumns.size() - 1 to exclude the Analysis column that is not stored in the general grid data
-        for ( int iCol = 0; iCol < columns.size() - 1; iCol++ ) {
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             BaseColumn column = columns.get( iCol );
             DTCellValue52 cell = makeModelCellValue( column );
             data.add( cell );
@@ -156,11 +153,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
     public CellValue<? extends Comparable<?>> convertModelCellValue( BaseColumn column,
                                                                      DTCellValue52 dcv ) {
 
-        //Analysis cells do not use data-type
-        if ( column instanceof AnalysisCol52 ) {
-            return makeNewAnalysisCellValue();
-        }
-
         //Other cells do use data-type
         DataType.DataTypes dataType = utilities.getDataType( column );
         utilities.assertDTCellValue( dataType,
@@ -237,11 +229,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<Base
             cv.setValue( initialValue );
         }
         return cv;
-    }
-
-    public CellValue<Analysis> makeNewAnalysisCellValue() {
-        Analysis analysis = new Analysis();
-        return new CellValue<Analysis>( analysis );
     }
 
     /**

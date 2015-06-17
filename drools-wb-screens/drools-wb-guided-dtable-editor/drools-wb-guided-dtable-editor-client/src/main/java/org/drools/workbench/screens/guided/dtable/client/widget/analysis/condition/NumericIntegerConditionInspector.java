@@ -21,10 +21,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 public class NumericIntegerConditionInspector
         extends ComparableConditionInspector<Integer> {
 
-    public NumericIntegerConditionInspector( Pattern52 pattern,
-                                             String factField,
-                                             Integer value,
-                                             String operator ) {
+    public NumericIntegerConditionInspector( final Pattern52 pattern,
+                                             final String factField,
+                                             final Integer value,
+                                             final String operator ) {
         super( pattern,
                factField,
                value,

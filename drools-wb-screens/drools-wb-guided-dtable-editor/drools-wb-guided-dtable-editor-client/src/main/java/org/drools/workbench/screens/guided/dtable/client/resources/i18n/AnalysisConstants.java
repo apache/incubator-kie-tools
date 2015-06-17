@@ -18,7 +18,6 @@ package org.drools.workbench.screens.guided.dtable.client.resources.i18n;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
-import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 
 public interface AnalysisConstants
         extends
@@ -26,11 +25,9 @@ public interface AnalysisConstants
 
     public static final AnalysisConstants INSTANCE = GWT.create(AnalysisConstants.class);
 
-    String ConflictingMatchWithRow(int rowNumber);
+    String ConflictingRows();
 
-    String DuplicatedMatchWithRow(int rowNumber);
-
-    String ImpossibleMatchOn(String factField);
+    String ImpossibleMatch();
 
     String RuleHasNoAction();
 
@@ -40,16 +37,70 @@ public interface AnalysisConstants
 
     String ConstrainsForFieldXOfFactYAreRedundantTheyWillAlwaysPass(String factField, String factType);
 
-    String ThisRowIsRedundantTo(int rowIndex);
+    String RedundantRows();
 
-    String ThisRowIsSubsumedByRow(int rowNumber);
+    String SubsumptantRows();
 
-    String ThisRowIsDeficient();
+    String DeficientRow();
 
     String ValueForFactFieldIsSetTwice( String factName, String fieldName );
 
     String ValueForAnActionIsSetTwice();
 
-    String ConditionsForFieldAreRedundant( String patternName, String factField );
+    String RedundantConditionsNote1P1( String patternName, String factField );
+
+    String AffectedRows();
+
+    String WhenARuleHasNoActionItDoesFireButSinceTheActionSideIsEmptyNothingHappens();
+
+    String ItIsPossibleThatTheActionsWereLeftOutByAccidentInThisCasePleaseAddThemOtherwiseTheRuleCanNeRemoved();
+
+    String ConflictingRowsP1();
+
+    String ConflictingRowsP2();
+
+    String DeficientRowsP1();
+
+    String DeficientRowsNoteP1();
+
+    String Salary();
+
+    String Savings();
+
+    String ApproveLoan();
+
+    String DeficientRowsP2();
+
+    String ImpossibleMatchNote1P1( int rowNumber, String factField, String factType );
+
+    String ImpossibleMatchNote1P2( String condition1, String condition2 );
+
+    String ImpossibleMatchP1( String factField );
+
+    String MissingConditionP1();
+
+    String MultipleValuesP1();
+
+    String MultipleValuesNote1P1( String condition1, String condition2 );
+
+    String RedundantActionsP1();
+
+    String RedundantActionsNote1P1( String condition1, String condition2 );
+
+    String RedundantConditionsTitle();
+
+    String RedundantConditionsP1();
+
+    String RedundantConditionsNote1P2( String condition1, String condition2 );
+
+    String RedundantRowsP1();
+
+    String RedundantRowsP2();
+
+    String RedundantRowsP3();
+
+    String SubsumptantRowsP1();
+
+    String SubsumptantRowsP2();
 
 }

@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -29,6 +30,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +53,7 @@ public class DecisionTableAnalyzerTest {
 
     @Mock AsyncPackageDataModelOracle oracle;
 
-    EventBusMock eventBus;
+    private AnalysisReport analysisReport;
 
     @Before
     public void setUp() throws Exception {
@@ -59,8 +61,6 @@ public class DecisionTableAnalyzerTest {
         when(oracle.getFieldType("Person", "age")).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
         when(oracle.getFieldType("Person", "approved")).thenReturn(DataType.TYPE_BOOLEAN);
         when(oracle.getFieldType("Person", "name")).thenReturn(DataType.TYPE_STRING);
-
-        eventBus = new EventBusMock();
 
         Map<String, String> preferences = new HashMap<String, String>();
         preferences.put(ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy");
@@ -70,12 +70,33 @@ public class DecisionTableAnalyzerTest {
     @Test
     public void testEmpty() throws Exception {
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(new AsyncPackageDataModelOracleImpl(),
-                                                                   getModel(),
-                                                                   eventBus);
+                                                                   new GuidedDecisionTable52(),
+                                                                   mock( EventBus.class ) ) {
+            @Override protected void sendReport( AnalysisReport report ) {
+                analysisReport = report;
+            }
+        };
 
-        analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertTrue(eventBus.getUpdateColumnDataEvent().getColumnData().isEmpty());
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
+
+    }
+
+    @Test
+    public void testEmptyRow() throws Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
+                                                                                new ArrayList<Import>(),
+                                                                                "mytable" )
+                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+                .withData( new Object[][]{{1, "description", ""}} )
+                .build();
+
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
+
+        analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
+
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
 
     }
 
@@ -88,12 +109,10 @@ public class DecisionTableAnalyzerTest {
                 .withData(new Object[][]{{1, "description", 0}})
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
-                                                                   table52,
-                                                                   eventBus);
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
-        assertContains("RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData());
+        assertContains( "RuleHasNoAction", analysisReport );
 
     }
 
@@ -112,13 +131,11 @@ public class DecisionTableAnalyzerTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
-                                                                   table52,
-                                                                   eventBus);
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
-        assertContains( "RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertDoesNotContain( "RuleHasNoAction", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "RuleHasNoAction", analysisReport, 1 );
+        assertDoesNotContain( "RuleHasNoAction", analysisReport, 2 );
 
     }
 
@@ -131,12 +148,10 @@ public class DecisionTableAnalyzerTest {
                 .withData(new Object[][]{{1, "description", true}})
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
-                                                                   table52,
-                                                                   eventBus);
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
-        assertContains("RuleHasNoRestrictionsAndWillAlwaysFire", eventBus.getUpdateColumnDataEvent().getColumnData());
+        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport );
 
     }
 
@@ -154,13 +169,11 @@ public class DecisionTableAnalyzerTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
-                                                                   table52,
-                                                                   eventBus);
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
-        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", eventBus.getUpdateColumnDataEvent().getColumnData(), 0 );
-        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 1 );
+        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analysisReport, 2 );
 
     }
 
@@ -175,12 +188,10 @@ public class DecisionTableAnalyzerTest {
                 .withData(new Object[][]{{1, "description", 100, true, false}})
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
-                                                                   table52,
-                                                                   eventBus);
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
-        assertContains("MultipleValuesForOneAction", eventBus.getUpdateColumnDataEvent().getColumnData());
+        assertContains( "MultipleValuesForOneAction", analysisReport );
 
     }
 
@@ -204,21 +215,22 @@ public class DecisionTableAnalyzerTest {
                         {2, "description", true, false, true}})
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(oracle,
-                table52,
-                eventBus);
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate(new ValidateEvent(new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>()));
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains("ThisRowIsRedundantTo(2)", result);
-        assertContains("ThisRowIsRedundantTo(1)", result);
+        assertContains( "RedundantRows", analysisReport, 1 );
+        assertContains( "RedundantRows", analysisReport, 2 );
 
     }
 
-    private GuidedDecisionTable52 getModel() {
-        GuidedDecisionTable52 guidedDecisionTable52 = new GuidedDecisionTable52();
-        guidedDecisionTable52.initAnalysisColumn();
-        return guidedDecisionTable52;
+    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
+        return new DecisionTableAnalyzer( oracle,
+                                          table52,
+                                          mock( EventBus.class ) ) {
+            @Override protected void sendReport( AnalysisReport report ) {
+                analysisReport = report;
+            }
+        };
     }
 }

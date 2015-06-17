@@ -14,9 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
-public abstract class TableCheck
-        extends CheckBase {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+
+public class AnalysisReport {
+
+    private final SortedSet<Issue> issues = new TreeSet<Issue>();
+
+    public void addIssue( final Issue issue ) {
+        issues.add( issue );
+    }
+
+    public List<Issue> getAnalysisData() {
+        return new ArrayList<Issue>( issues );
+    }
 }

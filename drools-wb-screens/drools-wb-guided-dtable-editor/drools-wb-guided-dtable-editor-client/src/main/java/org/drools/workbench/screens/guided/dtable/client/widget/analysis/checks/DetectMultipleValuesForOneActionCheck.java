@@ -16,16 +16,22 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks;
 
+import java.util.List;
+
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.action.ActionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Conflict;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectMultipleValuesForOneActionCheck
         extends SingleCheck {
 
-    public DetectMultipleValuesForOneActionCheck( RowInspector rowInspector ) {
+    private List<ActionInspector> conflictingObjects;
+
+    public DetectMultipleValuesForOneActionCheck( final RowInspector rowInspector ) {
         super( rowInspector );
     }
 
@@ -35,6 +41,8 @@ public class DetectMultipleValuesForOneActionCheck
             if ( Conflict.hasConflictingObjectInList( rowInspector.getActions().allValues(),
                                                       actionInspector ) ) {
                 hasIssues = true;
+                conflictingObjects = Conflict.getConflictingObjects( rowInspector.getActions().allValues(),
+                                                                     actionInspector );
                 return;
             }
         }
@@ -42,7 +50,17 @@ public class DetectMultipleValuesForOneActionCheck
     }
 
     @Override
-    public String getIssue() {
-        return AnalysisConstants.INSTANCE.MultipleValuesForOneAction();
+    public Issue getIssue() {
+        Issue issue = new Issue( Severity.WARNING,
+                                 AnalysisConstants.INSTANCE.MultipleValuesForOneAction(),
+                                 rowInspector.getRowIndex() + 1 );
+
+        issue.getExplanation()
+                .startNote()
+                .addParagraph( AnalysisConstants.INSTANCE.MultipleValuesNote1P1( conflictingObjects.get( 0 ).toHumanReadableString(), conflictingObjects.get( 1 ).toHumanReadableString() ) )
+                .end()
+                .addParagraph( AnalysisConstants.INSTANCE.MultipleValuesP1() );
+
+        return issue;
     }
 }

@@ -20,14 +20,14 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 
 public abstract class ActionInspectorKey {
 
-    protected ActionCol52 actionCol;
+    protected final ActionCol52 actionCol;
 
-    protected ActionInspectorKey( ActionCol52 actionCol ) {
+    protected ActionInspectorKey( final ActionCol52 actionCol ) {
         this.actionCol = actionCol;
     }
 
     @Override
-    public boolean equals( Object o ) {
+    public boolean equals( final Object o ) {
         // Basically it's never equal to any other column but it is to the same column
         if ( this == o ) {
             return true;
@@ -43,5 +43,7 @@ public abstract class ActionInspectorKey {
     public int hashCode() {
         return System.identityHashCode( actionCol );
     }
+
+    public abstract String toHumanReadableString();
 
 }

@@ -23,20 +23,15 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 public class EnumConditionInspector
         extends StringConditionInspector {
 
-    public EnumConditionInspector( Pattern52 pattern,
-                                   String factField,
-                                   List<String> allValueList,
-                                   String value,
-                                   String operator ) {
+    public EnumConditionInspector( final Pattern52 pattern,
+                                   final String factField,
+                                   final List<String> allValueList,
+                                   final String value,
+                                   final String operator ) {
         super( pattern,
                factField,
                value,
                operator );
-
-        if ( !allValueList.contains( value ) ) {
-            System.out.println( "Warning: value (" + value + ") is not a valid enum value (" + allValueList + ")." );
-        }
-
     }
 
 }

@@ -16,12 +16,14 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Conflict {
 
-    public static boolean isConflicting( Collection collection,
-                                         Collection otherCollection ) {
+    public static boolean isConflicting( final Collection collection,
+                                         final Collection otherCollection ) {
 
         if ( collection == null || otherCollection == null ) {
             return false;
@@ -38,17 +40,28 @@ public class Conflict {
         return false;
     }
 
-    public static boolean hasConflictingObjectInList( Collection collection,
-                                                      IsConflicting isConflicting ) {
+    public static boolean hasConflictingObjectInList( final Collection collection,
+                                                      final IsConflicting isConflicting ) {
+        return !getConflictingObjects( collection,
+                                       isConflicting ).isEmpty();
+    }
+
+    public static List getConflictingObjects( final Collection collection,
+                                              final IsConflicting isConflicting ) {
+        ArrayList result = new ArrayList();
+
         if ( isConflicting == null || collection == null ) {
-            return false;
+            return result;
         }
 
         for ( Object other : collection ) {
             if ( isConflicting.conflicts( other ) ) {
-                return true;
+                result.add( isConflicting );
+                result.add( other );
+                return result;
             }
         }
-        return false;
+
+        return result;
     }
 }

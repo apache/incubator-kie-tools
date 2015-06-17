@@ -22,14 +22,14 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.R
 public class ConflictingActionsFilter
         implements RowInspectorCache.Filter {
 
-    private RowInspector rowInspector;
+    private final RowInspector rowInspector;
 
-    public ConflictingActionsFilter( RowInspector rowInspector ) {
+    public ConflictingActionsFilter( final RowInspector rowInspector ) {
         this.rowInspector = rowInspector;
     }
 
     @Override
-    public boolean accept( RowInspector other ) {
+    public boolean accept( final RowInspector other ) {
         return rowInspector.getActions().conflicts( other.getActions() );
     }
 }

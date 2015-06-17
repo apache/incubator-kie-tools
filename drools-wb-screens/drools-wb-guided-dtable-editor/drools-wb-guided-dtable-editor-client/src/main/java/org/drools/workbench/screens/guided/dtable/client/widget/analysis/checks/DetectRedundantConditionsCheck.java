@@ -25,13 +25,17 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInsp
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.SingleCheck;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition.ConditionInspectorKey;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectRedundantConditionsCheck
         extends SingleCheck {
 
+    private final List<ConditionInspector> conditions = new ArrayList<ConditionInspector>();
+
     private ConditionInspectorKey key;
 
-    public DetectRedundantConditionsCheck( RowInspector rowInspector ) {
+    public DetectRedundantConditionsCheck( final RowInspector rowInspector ) {
         super( rowInspector );
     }
 
@@ -47,16 +51,34 @@ public class DetectRedundantConditionsCheck
     }
 
     @Override
-    public String getIssue() {
-        return AnalysisConstants.INSTANCE.ConditionsForFieldAreRedundant( key.getPattern().getFactType(), key.getFactField() );
+    public Issue getIssue() {
+        Issue issue = new Issue(
+                Severity.NOTE,
+                AnalysisConstants.INSTANCE.RedundantConditionsTitle(),
+                rowInspector.getRowIndex() + 1 );
+
+        issue.getExplanation()
+                .startNote()
+                .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsNote1P1( key.getPattern().getFactType(),
+                                                                                      key.getFactField() ) )
+                .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsNote1P2( conditions.get( 0 ).toHumanReadableString(),
+                                                                                      conditions.get( 1 ).toHumanReadableString() ) )
+                .end()
+                .addParagraph( AnalysisConstants.INSTANCE.RedundantConditionsP1() );
+
+        return issue;
     }
 
-    private boolean inspect( Collection<ConditionInspector> param ) {
-        List<ConditionInspector> conditionInspectors = new ArrayList<ConditionInspector>( param );
+    private boolean inspect( final Collection<ConditionInspector> conditions ) {
+        List<ConditionInspector> conditionInspectors = new ArrayList<ConditionInspector>( conditions );
 
         for (int i = 0; i < conditionInspectors.size(); i++) {
             for (int j = i + 1; j < conditionInspectors.size(); j++) {
                 if ( conditionInspectors.get( i ).isRedundant( conditionInspectors.get( j ) ) ) {
+                    this.conditions.clear();
+                    this.conditions.add( conditionInspectors.get( i ) );
+                    this.conditions.add( conditionInspectors.get( j ) );
+
                     return true;
                 }
             }

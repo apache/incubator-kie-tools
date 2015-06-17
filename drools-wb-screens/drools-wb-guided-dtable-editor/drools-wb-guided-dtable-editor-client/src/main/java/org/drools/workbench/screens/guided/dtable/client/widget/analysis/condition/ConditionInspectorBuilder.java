@@ -19,6 +19,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condit
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
@@ -28,15 +29,15 @@ import org.drools.workbench.screens.guided.dtable.client.utils.GuidedDecisionTab
 
 public class ConditionInspectorBuilder {
 
-    private GuidedDecisionTableUtils utils;
+    private final GuidedDecisionTableUtils utils;
     private final Pattern52 pattern;
-    private ConditionCol52 conditionColumn;
+    private final ConditionCol52 conditionColumn;
     private final DTCellValue52 realCellValue;
 
-    public ConditionInspectorBuilder( GuidedDecisionTableUtils utils,
-                                      Pattern52 pattern,
-                                      ConditionCol52 conditionColumn,
-                                      DTCellValue52 realCellValue ) {
+    public ConditionInspectorBuilder( final GuidedDecisionTableUtils utils,
+                                      final Pattern52 pattern,
+                                      final ConditionCol52 conditionColumn,
+                                      final DTCellValue52 realCellValue ) {
         this.utils = utils;
         this.pattern = pattern;
         this.conditionColumn = conditionColumn;
@@ -68,34 +69,34 @@ public class ConditionInspectorBuilder {
                                                  conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC ) || type.equals( DataType.TYPE_NUMERIC_BIGDECIMAL ) ) {
-            return new NumericBigDecimalConditionInspector( pattern,
-                                                            conditionColumn.getFactField(),
-                                                            getBigDecimalValue(),
-                                                            conditionColumn.getOperator() );
+            return new ComparableConditionInspector<BigDecimal>( pattern,
+                                                                 conditionColumn.getFactField(),
+                                                                 getBigDecimalValue(),
+                                                                 conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC_BIGINTEGER ) ) {
-            return new NumericBigIntegerConditionInspector( pattern,
-                                                            conditionColumn.getFactField(),
-                                                            getBigIntegerValue(),
-                                                            conditionColumn.getOperator() );
+            return new ComparableConditionInspector<BigInteger>( pattern,
+                                                                 conditionColumn.getFactField(),
+                                                                 getBigIntegerValue(),
+                                                                 conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC_BYTE ) ) {
-            return new NumericByteConditionInspector( pattern,
-                                                      conditionColumn.getFactField(),
-                                                      (Byte) realCellValue.getNumericValue(),
-                                                      conditionColumn.getOperator() );
+            return new ComparableConditionInspector<Byte>( pattern,
+                                                           conditionColumn.getFactField(),
+                                                           (Byte) realCellValue.getNumericValue(),
+                                                           conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC_DOUBLE ) ) {
-            return new NumericDoubleConditionInspector( pattern,
-                                                        conditionColumn.getFactField(),
-                                                        getDoubleValue(),
-                                                        conditionColumn.getOperator() );
+            return new ComparableConditionInspector<Double>( pattern,
+                                                             conditionColumn.getFactField(),
+                                                             getDoubleValue(),
+                                                             conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC_FLOAT ) ) {
-            return new NumericFloatConditionInspector( pattern,
-                                                       conditionColumn.getFactField(),
-                                                       (Float) realCellValue.getNumericValue(),
-                                                       conditionColumn.getOperator() );
+            return new ComparableConditionInspector<Float>( pattern,
+                                                            conditionColumn.getFactField(),
+                                                            (Float) realCellValue.getNumericValue(),
+                                                            conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC_INTEGER ) ) {
             return new NumericIntegerConditionInspector( pattern,
@@ -104,16 +105,16 @@ public class ConditionInspectorBuilder {
                                                          conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC_LONG ) ) {
-            return new NumericLongConditionInspector( pattern,
-                                                      conditionColumn.getFactField(),
-                                                      getLongValue(),
-                                                      conditionColumn.getOperator() );
+            return new ComparableConditionInspector<Long>( pattern,
+                                                           conditionColumn.getFactField(),
+                                                           getLongValue(),
+                                                           conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_NUMERIC_SHORT ) ) {
-            return new NumericShortConditionInspector( pattern,
-                                                       conditionColumn.getFactField(),
-                                                       getShortValue(),
-                                                       conditionColumn.getOperator() );
+            return new ComparableConditionInspector<Short>( pattern,
+                                                            conditionColumn.getFactField(),
+                                                            getShortValue(),
+                                                            conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_BOOLEAN ) ) {
             return new BooleanConditionInspector( pattern,
@@ -122,10 +123,10 @@ public class ConditionInspectorBuilder {
                                                   conditionColumn.getOperator() );
 
         } else if ( type.equals( DataType.TYPE_DATE ) ) {
-            return new DateConditionInspector( pattern,
-                                               conditionColumn.getFactField(),
-                                               realCellValue.getDateValue(),
-                                               conditionColumn.getOperator() );
+            return new ComparableConditionInspector<Date>( pattern,
+                                                           conditionColumn.getFactField(),
+                                                           realCellValue.getDateValue(),
+                                                           conditionColumn.getOperator() );
 
         } else {
             return new UnrecognizedConditionInspector( pattern,
@@ -135,12 +136,20 @@ public class ConditionInspectorBuilder {
     }
 
     private Short getShortValue() {
-        return (Short) realCellValue.getNumericValue();
+        if ( realCellValue.getNumericValue() != null ) {
+            return (Short) realCellValue.getNumericValue();
+        } else if ( realCellValue.getStringValue() == null || realCellValue.getStringValue().isEmpty() ) {
+            return null;
+        } else {
+            return new Short( realCellValue.getStringValue() );
+        }
     }
 
     private Long getLongValue() {
         if ( realCellValue.getNumericValue() != null ) {
             return (Long) realCellValue.getNumericValue();
+        } else if ( realCellValue.getStringValue() == null || realCellValue.getStringValue().isEmpty() ) {
+            return null;
         } else {
             return new Long( realCellValue.getStringValue() );
         }
@@ -149,6 +158,8 @@ public class ConditionInspectorBuilder {
     private Double getDoubleValue() {
         if ( realCellValue.getNumericValue() != null ) {
             return (Double) realCellValue.getNumericValue();
+        } else if ( realCellValue.getStringValue() == null || realCellValue.getStringValue().isEmpty() ) {
+            return null;
         } else {
             return new Double( realCellValue.getStringValue() );
         }
@@ -157,6 +168,8 @@ public class ConditionInspectorBuilder {
     private BigInteger getBigIntegerValue() {
         if ( realCellValue.getNumericValue() != null ) {
             return (BigInteger) realCellValue.getNumericValue();
+        } else if ( realCellValue.getStringValue() == null || realCellValue.getStringValue().isEmpty() ) {
+            return null;
         } else {
             return new BigInteger( realCellValue.getStringValue() );
         }
@@ -165,6 +178,8 @@ public class ConditionInspectorBuilder {
     private BigDecimal getBigDecimalValue() {
         if ( realCellValue.getNumericValue() != null ) {
             return (BigDecimal) realCellValue.getNumericValue();
+        } else if ( realCellValue.getStringValue() == null || realCellValue.getStringValue().isEmpty() ) {
+            return null;
         } else {
             return new BigDecimal( realCellValue.getStringValue() );
         }
@@ -173,6 +188,8 @@ public class ConditionInspectorBuilder {
     private Integer getIntegerValue() {
         if ( realCellValue.getNumericValue() != null ) {
             return (Integer) realCellValue.getNumericValue();
+        } else if ( realCellValue.getStringValue() == null || realCellValue.getStringValue().isEmpty() ) {
+            return null;
         } else {
             return new Integer( realCellValue.getStringValue() );
         }

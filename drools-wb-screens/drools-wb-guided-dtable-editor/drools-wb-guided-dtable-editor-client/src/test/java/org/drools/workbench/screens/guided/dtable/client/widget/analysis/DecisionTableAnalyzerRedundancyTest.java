@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -28,6 +29,7 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +54,7 @@ public class DecisionTableAnalyzerRedundancyTest {
     @Mock
     AsyncPackageDataModelOracle oracle;
 
-    EventBusMock eventBus;
+    private AnalysisReport analysisReport;
 
     @Before
     public void setUp() throws Exception {
@@ -69,7 +71,6 @@ public class DecisionTableAnalyzerRedundancyTest {
         when( oracle.getFieldType( "IncomeSource", "type" ) ).thenReturn( DataType.TYPE_STRING );
         when( oracle.getFieldType( "Person", "name" ) ).thenReturn( DataType.TYPE_STRING );
 
-        eventBus = new EventBusMock();
     }
 
     @Test
@@ -93,18 +94,15 @@ public class DecisionTableAnalyzerRedundancyTest {
                         {5, "description", null, null, null, null, null, null, null, null}} )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertDoesNotContain( "ThisRowIsRedundantTo(1)", result );
-        assertDoesNotContain( "ThisRowIsRedundantTo(2)", result );
-        assertDoesNotContain( "ThisRowIsRedundantTo(3)", result );
-        assertDoesNotContain( "ThisRowIsRedundantTo(4)", result );
-        assertDoesNotContain( "ThisRowIsRedundantTo(5)", result );
+        assertDoesNotContain( "ThisRowIsRedundantTo(1)", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo(2)", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo(3)", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo(4)", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo(5)", analysisReport );
 
     }
 
@@ -127,16 +125,13 @@ public class DecisionTableAnalyzerRedundancyTest {
                         { 3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6 } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertDoesNotContain( "ThisRowIsRedundantTo(1)", result );
-        assertDoesNotContain( "ThisRowIsRedundantTo(2)", result );
-        assertDoesNotContain( "ThisRowIsRedundantTo(3)", result );
+        assertDoesNotContain( "ThisRowIsRedundantTo(1)", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo(2)", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo(3)", analysisReport );
 
     }
 
@@ -159,15 +154,12 @@ public class DecisionTableAnalyzerRedundancyTest {
                         { 3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6 } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains( "ThisRowIsRedundantTo(1)", result );
-        assertContains( "ThisRowIsRedundantTo(2)", result );
+        assertContains( "RedundantRows", analysisReport, 1 );
+        assertContains( "RedundantRows", analysisReport, 2 );
 
     }
 
@@ -186,15 +178,12 @@ public class DecisionTableAnalyzerRedundancyTest {
                         { 3, "description", "100001", "Michael", "Job", "true" } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains( "ThisRowIsRedundantTo(1)", result );
-        assertContains( "ThisRowIsRedundantTo(2)", result );
+        assertContains( "RedundantRows", analysisReport, 1 );
+        assertContains( "RedundantRows", analysisReport, 2 );
 
     }
 
@@ -213,15 +202,12 @@ public class DecisionTableAnalyzerRedundancyTest {
                         { 3, "description", "100001", "Michael", "Job", "true" } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains( "ThisRowIsRedundantTo(1)", result );
-        assertContains( "ThisRowIsRedundantTo(2)", result );
+        assertContains( "RedundantRows", analysisReport, 1 );
+        assertContains( "RedundantRows", analysisReport, 2 );
 
     }
 
@@ -235,14 +221,11 @@ public class DecisionTableAnalyzerRedundancyTest {
                 .withData( new Object[][]{{1, "description", "Toni", "Toni"}} )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains( "ConditionsForFieldAreRedundant(Person, name)", result );
+        assertContains( "RedundantConditions", analysisReport );
 
     }
 
@@ -260,15 +243,12 @@ public class DecisionTableAnalyzerRedundancyTest {
                         { 2, "description", 100, 0, true, false } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertDoesNotContain( "ThisRowIsRedundantTo(1)", result );
-        assertDoesNotContain( "ThisRowIsRedundantTo(2)", result );
+        assertDoesNotContain( "ThisRowIsRedundantTo(1)", analysisReport );
+        assertDoesNotContain( "ThisRowIsRedundantTo(2)", analysisReport );
 
     }
 
@@ -288,14 +268,11 @@ public class DecisionTableAnalyzerRedundancyTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains( "ValueForFactFieldIsSetTwice(a, salary)", result );
+        assertContains( "ValueForFactFieldIsSetTwice(a, salary)", analysisReport );
 
     }
 
@@ -315,15 +292,22 @@ public class DecisionTableAnalyzerRedundancyTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getDecisionTableAnalyzer( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains( "ValueForFactFieldIsSetTwice(b, salary)", result );
+        assertContains( "ValueForFactFieldIsSetTwice(b, salary)", analysisReport );
 
+    }
+
+    private DecisionTableAnalyzer getDecisionTableAnalyzer( GuidedDecisionTable52 table52 ) {
+        return new DecisionTableAnalyzer( oracle,
+                                          table52,
+                                          mock( EventBus.class ) ) {
+            @Override protected void sendReport( AnalysisReport report ) {
+                analysisReport = report;
+            }
+        };
     }
 
 }

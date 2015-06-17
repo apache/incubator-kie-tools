@@ -20,8 +20,13 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 
 public class UnrecognizedActionInspectorKey extends ActionInspectorKey {
 
-    public UnrecognizedActionInspectorKey( ActionCol52 actionCol ) {
+    public UnrecognizedActionInspectorKey( final ActionCol52 actionCol ) {
         super( actionCol );
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        return actionCol.getHeader();
     }
 
 }

@@ -178,8 +178,6 @@ public class GuidedDecisionTableWidget extends Composite
         this.rm = new BRLRuleModel( model );
         this.isReadOnly = isReadOnly;
 
-        this.model.initAnalysisColumn();
-
         this.layout = new VerticalPanel();
 
         setupDecisionTable();

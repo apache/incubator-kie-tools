@@ -28,13 +28,13 @@ public enum Operator {
 
     IN( "in" );
 
-    private String operator;
+    private final String operator;
 
-    Operator( String operator ) {
+    Operator( final String operator ) {
         this.operator = operator;
     }
 
-    public static Operator resolve( String operator ) {
+    public static Operator resolve( final String operator ) {
         if ( operator.equals( "==" ) ) {
             return EQUALS;
         } else if ( operator.equals( "!=" ) ) {
@@ -54,4 +54,8 @@ public enum Operator {
         }
     }
 
+    @Override
+    public String toString() {
+        return operator;
+    }
 }

@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util;
+package org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel;
 
-public class Point {
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.view.client.ListDataProvider;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 
-    private Integer value;
-    private Operator operator;
+public interface AnalysisReportScreenView
+        extends IsWidget {
 
-    public Point( Integer value,
-                  Operator operator ) {
-        this.value = value;
-        this.operator = operator;
-    }
+        void setUpDataProvider( ListDataProvider<Issue> dataProvider );
 
-    public Integer getValue() {
-        return value;
-    }
+        void setPresenter( AnalysisReportScreen presenter );
 
-    public Operator getOperator() {
-        return operator;
-    }
+        void show( Issue issue );
 
+        void clearIssue();
 }

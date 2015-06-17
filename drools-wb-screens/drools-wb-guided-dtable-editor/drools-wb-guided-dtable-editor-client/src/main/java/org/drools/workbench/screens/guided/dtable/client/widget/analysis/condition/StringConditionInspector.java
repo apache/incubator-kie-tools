@@ -17,6 +17,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.analysis.condition;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -27,13 +28,13 @@ import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.
 public class StringConditionInspector
         extends ConditionInspector {
 
-    private List<String> values = new ArrayList<String>();
-    private Operator operator;
+    private final List<String> values = new ArrayList<String>();
+    private final Operator operator;
 
-    public StringConditionInspector( Pattern52 pattern,
-                                     String factField,
-                                     String value,
-                                     String operator ) {
+    public StringConditionInspector( final Pattern52 pattern,
+                                     final String factField,
+                                     final String value,
+                                     final String operator ) {
         super( pattern,
                factField );
         this.operator = Operator.resolve( operator );
@@ -123,7 +124,7 @@ public class StringConditionInspector
         return false;
     }
 
-    private boolean containsAny( List<String> otherValues ) {
+    private boolean containsAny( final List<String> otherValues ) {
         for ( String thisValue : values ) {
             for ( String otherValue : otherValues ) {
                 if ( thisValue.equals( otherValue ) ) {
@@ -158,6 +159,25 @@ public class StringConditionInspector
     @Override
     public boolean hasValue() {
         return values != null && !values.isEmpty() && hasAValueSetInList();
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append( getFactField() );
+        stringBuilder.append( " " );
+        stringBuilder.append( operator );
+        stringBuilder.append( " " );
+
+        Iterator<String> iterator = getValues().iterator();
+        while (iterator.hasNext()) {
+            stringBuilder.append( iterator.next() );
+            if ( iterator.hasNext() ) {
+                stringBuilder.append( ", " );
+            }
+        }
+
+        return stringBuilder.toString();
     }
 
     private boolean hasAValueSetInList() {

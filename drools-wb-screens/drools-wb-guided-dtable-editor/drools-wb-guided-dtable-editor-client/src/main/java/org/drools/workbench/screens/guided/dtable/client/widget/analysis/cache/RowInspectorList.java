@@ -39,7 +39,7 @@ public class RowInspectorList
         return result;
     }
 
-    public RowInspector getRowInspector( int rowNumber ) {
+    public RowInspector getRowInspector( final int rowNumber ) {
         for ( RowInspector rowInspector : this ) {
             if ( rowInspector.getRowIndex() == rowNumber ) {
                 return rowInspector;
@@ -49,20 +49,20 @@ public class RowInspectorList
     }
 
     @Override
-    public RowInspector set( int rowNumber,
-                             RowInspector rowInspector ) {
+    public RowInspector set( final int rowNumber,
+                             final RowInspector rowInspector ) {
         removeRowInspector( rowNumber );
         add( rowInspector );
         return rowInspector;
     }
 
-    public RowInspector removeRowInspector( int rowNumber ) {
+    public RowInspector removeRowInspector( final int rowNumber ) {
         RowInspector rowInspector = getRowInspector( rowNumber );
         super.remove( rowInspector );
         return rowInspector;
     }
 
-    public void increaseRowNumbers( int startingRowNumber ) {
+    public void increaseRowNumbers( final int startingRowNumber ) {
         for ( RowInspector rowInspector : this ) {
             if ( rowInspector.getRowIndex() >= startingRowNumber ) {
                 rowInspector.setRowIndex( rowInspector.getRowIndex() + 1 );
@@ -70,7 +70,7 @@ public class RowInspectorList
         }
     }
 
-    public void decreaseRowNumbers( int startingRowNumber ) {
+    public void decreaseRowNumbers( final int startingRowNumber ) {
         for ( RowInspector rowInspector : this ) {
             if ( rowInspector.getRowIndex() > startingRowNumber ) {
                 rowInspector.setRowIndex( rowInspector.getRowIndex() - 1 );

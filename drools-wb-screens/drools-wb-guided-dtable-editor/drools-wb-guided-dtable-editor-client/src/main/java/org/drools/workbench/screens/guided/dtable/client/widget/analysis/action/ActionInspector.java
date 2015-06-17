@@ -31,14 +31,14 @@ public class ActionInspector
                    IsSubsuming,
                    IsConflicting {
 
-    protected ActionInspectorKey key;
-    private DTCellValue52 value;
+    protected final ActionInspectorKey key;
+    private final DTCellValue52 value;
 
     private static final String DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
     private static final DateTimeFormat DATE_FORMATTER = DateTimeFormat.getFormat( DATE_FORMAT );
 
-    public ActionInspector( ActionInspectorKey key,
-                            DTCellValue52 value ) {
+    public ActionInspector( final ActionInspectorKey key,
+                            final DTCellValue52 value ) {
         this.key = key;
         this.value = value;
     }
@@ -52,7 +52,7 @@ public class ActionInspector
     }
 
     @Override
-    public boolean isRedundant( Object other ) {
+    public boolean isRedundant( final Object other ) {
         if ( other instanceof ActionInspector ) {
             return key.equals( ( (ActionInspector) other ).key )
                     && isValueRedundant( ( (ActionInspector) other ).value );
@@ -61,7 +61,7 @@ public class ActionInspector
         }
     }
 
-    private boolean isValueRedundant( DTCellValue52 other ) {
+    private boolean isValueRedundant( final DTCellValue52 other ) {
         if ( value.equals( other ) ) {
             return true;
         } else if ( isDataTypeString( value ) && !isDataTypeString( other ) ) {
@@ -75,12 +75,12 @@ public class ActionInspector
         }
     }
 
-    private boolean isDataTypeString( DTCellValue52 value ) {
+    private boolean isDataTypeString( final DTCellValue52 value ) {
         return value.getDataType().equals( DataType.DataTypes.STRING );
     }
 
-    private boolean isStringValueEqualTo( String stringValue,
-                                          DTCellValue52 dtCellValue52 ) {
+    private boolean isStringValueEqualTo( final String stringValue,
+                                          final DTCellValue52 dtCellValue52 ) {
         switch ( dtCellValue52.getDataType() ) {
             case STRING:
                 return stringValue.equals( dtCellValue52.getStringValue() );
@@ -103,12 +103,12 @@ public class ActionInspector
         }
     }
 
-    protected String format( Date dateValue ) {
+    protected String format( final Date dateValue ) {
         return DATE_FORMATTER.format( dateValue );
     }
 
     @Override
-    public boolean conflicts( Object other ) {
+    public boolean conflicts( final Object other ) {
         if ( other instanceof ActionInspector ) {
             if ( key.equals( ((ActionInspector) other).key )
                     && hasValue()
@@ -120,7 +120,7 @@ public class ActionInspector
     }
 
     @Override
-    public boolean subsumes( Object other ) {
+    public boolean subsumes( final Object other ) {
         // At the moment we are not smart enough to figure out subsumption in the RHS.
         // So redundancy == subsumption in this case.
         return isRedundant( other );
@@ -143,5 +143,28 @@ public class ActionInspector
             default:
                 return value.getStringValue() != null && !value.getStringValue().isEmpty();
         }
+    }
+
+    public String getValueAsString() {
+        switch (value.getDataType()) {
+            case NUMERIC:
+            case NUMERIC_BIGDECIMAL:
+            case NUMERIC_BIGINTEGER:
+            case NUMERIC_BYTE:
+            case NUMERIC_DOUBLE:
+            case NUMERIC_FLOAT:
+            case NUMERIC_INTEGER:
+            case NUMERIC_LONG:
+            case NUMERIC_SHORT:
+                return value.getNumericValue().toString();
+            case BOOLEAN:
+                return value.getBooleanValue().toString();
+            default:
+                return value.getStringValue();
+        }
+    }
+
+    public String toHumanReadableString() {
+        return key.toHumanReadableString() + " = " + getValueAsString();
     }
 }

@@ -19,6 +19,8 @@ package org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.PairCheck;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 
 public class DetectRedundantRowsCheck
         extends PairCheck {
@@ -26,9 +28,10 @@ public class DetectRedundantRowsCheck
     private boolean isRedundant;
     private boolean subsumes;
 
-    public DetectRedundantRowsCheck( RowInspector rowInspector,
-                                     RowInspector other ) {
-        super( rowInspector, other );
+    public DetectRedundantRowsCheck( final RowInspector rowInspector,
+                                     final RowInspector other ) {
+        super( rowInspector,
+               other );
     }
 
     @Override
@@ -45,11 +48,36 @@ public class DetectRedundantRowsCheck
     }
 
     @Override
-    public String getIssue() {
+    public Issue getIssue() {
+        Issue issue = new Issue( Severity.WARNING,
+                                 getMessage(),
+                                 rowInspector.getRowIndex() + 1,
+                                 other.getRowIndex() + 1 );
+
+        setExplanation( issue );
+
+        return issue;
+    }
+
+    private void setExplanation( final Issue issue ) {
         if ( isRedundant ) {
-            return AnalysisConstants.INSTANCE.ThisRowIsRedundantTo( other.getRowIndex() + 1 );
+            issue.getExplanation()
+                    .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP1() )
+                    .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP2() )
+                    .addParagraph( AnalysisConstants.INSTANCE.RedundantRowsP3() );
+
         } else if ( subsumes ) {
-            return AnalysisConstants.INSTANCE.ThisRowIsSubsumedByRow( other.getRowIndex() + 1 );
+            issue.getExplanation()
+                    .addParagraph( AnalysisConstants.INSTANCE.SubsumptantRowsP1() )
+                    .addParagraph( AnalysisConstants.INSTANCE.SubsumptantRowsP2() );
+        }
+    }
+
+    private String getMessage() {
+        if ( isRedundant ) {
+            return AnalysisConstants.INSTANCE.RedundantRows();
+        } else if ( subsumes ) {
+            return AnalysisConstants.INSTANCE.SubsumptantRows();
         } else {
             return "";
         }

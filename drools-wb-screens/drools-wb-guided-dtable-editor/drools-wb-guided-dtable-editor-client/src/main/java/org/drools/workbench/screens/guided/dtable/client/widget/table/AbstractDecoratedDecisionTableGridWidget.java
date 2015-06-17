@@ -23,7 +23,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Panel;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
@@ -320,22 +319,6 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
             }
 
         }
-
-        AnalysisCol52 analysisCol = model.getAnalysisCol();
-        DynamicColumn<BaseColumn> analysisColumn = new DynamicColumn<BaseColumn>( analysisCol,
-                                                                                  cellFactory.getCell( analysisCol ),
-                                                                                  colIndex,
-                                                                                  true,
-                                                                                  false,
-                                                                                  eventBus );
-        analysisColumn.setWidth( 200 );
-        columns.add( analysisColumn );
-
-        data.addColumn( colIndex,
-                        makeAnalysisColumnData( model,
-                                                analysisCol,
-                                                colIndex++ ),
-                        analysisColumn.isVisible() );
     }
 
     // Make a column of data representing the Row Number column for insertion into a DecoratedGridWidget
@@ -372,22 +355,7 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         }
         return columnData;
     }
-
-    // Make a column of data representing the Analysis column for insertion into a DecoratedGridWidget
-    private List<CellValue<? extends Comparable<?>>> makeAnalysisColumnData( GuidedDecisionTable52 model,
-                                                                             AnalysisCol52 column,
-                                                                             int colIndex ) {
-        model.initAnalysisColumn();
-        int dataSize = model.getAnalysisData().size();
-        List<CellValue<? extends Comparable<?>>> columnData = new ArrayList<CellValue<? extends Comparable<?>>>( dataSize );
-
-        for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            CellValue<? extends Comparable<?>> cv = cellValueFactory.makeNewAnalysisCellValue();
-            columnData.add( cv );
-        }
-        return columnData;
-    }
-
+        
     public void onInsertColumn( InsertColumnEvent<BaseColumn, DTCellValue52> event ) {
         List<DynamicColumn<BaseColumn>> columns = new ArrayList<DynamicColumn<BaseColumn>>();
         List<List<CellValue<? extends Comparable<?>>>> columnsData = new ArrayList<List<CellValue<? extends Comparable<?>>>>();

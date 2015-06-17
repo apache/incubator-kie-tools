@@ -20,50 +20,28 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Covers;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.util.Operator;
 
-public abstract class ComparableConditionInspector<T extends Comparable<T>>
+public class ComparableConditionInspector<T extends Comparable<T>>
         extends ConditionInspector
         implements Covers<T> {
 
     protected final Operator operator;
-    protected T from = null;
-    protected T to = null;
+    protected final T value;
 
-    public ComparableConditionInspector( Pattern52 pattern,
-                                         String factField,
-                                         T value,
-                                         String operator ) {
+    public ComparableConditionInspector( final Pattern52 pattern,
+                                         final String factField,
+                                         final T value,
+                                         final String operator ) {
         super( pattern,
                factField );
 
         this.operator = Operator.resolve( operator );
 
-        setValue( value );
-    }
+        this.value = value;
 
-    private void setValue( T value ) {
-        switch ( this.operator ) {
-            case EQUALS:
-            case NOT_EQUALS:
-                from = value;
-                to = value;
-                break;
-            case GREATER_THAN:
-            case GREATER_THAN_OR_EQUALS:
-                from = value;
-                break;
-            case LESS_THAN:
-            case LESS_THAN_OR_EQUALS:
-                to = value;
-                break;
-        }
     }
 
     public T getValue() {
-        if ( from != null ) {
-            return from;
-        } else {
-            return to;
-        }
+        return value;
     }
 
     public Operator getOperator() {
@@ -87,12 +65,11 @@ public abstract class ComparableConditionInspector<T extends Comparable<T>>
     }
 
     @Override
-    public boolean isRedundant( Object b ) {
-        if ( b instanceof ComparableConditionInspector ) {
-            ComparableConditionInspector other = (ComparableConditionInspector) b;
+    public boolean isRedundant( Object object ) {
+        if ( object instanceof ComparableConditionInspector ) {
+            ComparableConditionInspector other = (ComparableConditionInspector) object;
             return this.operator.equals( other.operator )
-                    && nullSafeEquals( from, other.from )
-                    && nullSafeEquals( to, other.to );
+                    && nullSafeEquals( value, other.value );
 
         }
 
@@ -101,7 +78,7 @@ public abstract class ComparableConditionInspector<T extends Comparable<T>>
 
     @Override
     public boolean hasValue() {
-        return from != null || to != null;
+        return value != null;
     }
 
     @Override
@@ -255,23 +232,28 @@ public abstract class ComparableConditionInspector<T extends Comparable<T>>
         }
     }
 
-    private boolean valueIsGreaterThanOrEqualTo( Comparable<T> otherValue ) {
+    private boolean valueIsGreaterThanOrEqualTo( final Comparable<T> otherValue ) {
         return valueIsEqualTo( otherValue ) || valueIsGreaterThan( otherValue );
     }
 
-    private boolean valueIsLessThanOrEqualTo( Comparable<T> otherValue ) {
+    private boolean valueIsLessThanOrEqualTo( final Comparable<T> otherValue ) {
         return valueIsEqualTo( otherValue ) || valueIsLessThan( otherValue );
     }
 
-    private boolean valueIsGreaterThan( Comparable<T> otherValue ) {
+    private boolean valueIsGreaterThan( final Comparable<T> otherValue ) {
         return otherValue.compareTo( getValue() ) > 0;
     }
 
-    private boolean valueIsLessThan( Comparable<T> otherValue ) {
+    private boolean valueIsLessThan( final Comparable<T> otherValue ) {
         return otherValue.compareTo( getValue() ) < 0;
     }
 
-    private boolean valueIsEqualTo( Comparable<T> otherValue ) {
+    private boolean valueIsEqualTo( final Comparable<T> otherValue ) {
         return otherValue.compareTo( getValue() ) == 0;
+    }
+
+    @Override
+    public String toHumanReadableString() {
+        return getFactField() + " " + operator + " " + getValue();
     }
 }

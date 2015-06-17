@@ -26,6 +26,7 @@ public class GuidedDecisionTableEditorEntryPoint {
     @AfterInitialization
     public void startApp() {
         GuidedDecisionTableResources.INSTANCE.css().ensureInjected();
+        GuidedDecisionTableResources.INSTANCE.analysisCss().ensureInjected();
     }
 
 }

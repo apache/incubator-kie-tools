@@ -20,8 +20,8 @@ import java.util.Collection;
 
 public class Redundancy {
 
-    public static boolean isRedundant( Collection collection,
-                                       Collection otherCollection ) {
+    public static boolean isRedundant( final Collection collection,
+                                       final Collection otherCollection ) {
         return subsumes( collection,
                          otherCollection )
                 && subsumes( otherCollection,
@@ -33,8 +33,8 @@ public class Redundancy {
      * @param otherCollection
      * @return True if every object in otherCollection is subsumed by an item in collection.
      */
-    public static boolean subsumes( Collection collection,
-                                    Collection otherCollection ) {
+    public static boolean subsumes( final Collection collection,
+                                    final Collection otherCollection ) {
         if ( collection == null || otherCollection == null ) {
             return false;
         }
@@ -55,8 +55,8 @@ public class Redundancy {
         return true;
     }
 
-    public static boolean isSubsumedByAnObjectInThisList( Collection otherCollection,
-                                                          Object object ) {
+    public static boolean isSubsumedByAnObjectInThisList( final Collection otherCollection,
+                                                          final Object object ) {
         if ( object instanceof IsSubsuming ) {
             for ( Object otherObject : otherCollection ) {
                 if ( ( (IsSubsuming) object ).subsumes( otherObject ) ) {
@@ -69,13 +69,4 @@ public class Redundancy {
         }
     }
 
-    public static boolean hasRedundantObjectInList( Collection otherCollection,
-                                                    IsRedundant object ) {
-        for ( Object otherObject : otherCollection ) {
-            if ( object.isRedundant( otherObject ) ) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

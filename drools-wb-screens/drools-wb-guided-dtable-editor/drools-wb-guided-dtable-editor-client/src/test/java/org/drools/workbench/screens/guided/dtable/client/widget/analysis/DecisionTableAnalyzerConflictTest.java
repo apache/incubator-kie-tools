@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -29,6 +30,7 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.AnalysisConstants;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.panel.AnalysisReport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +41,7 @@ import org.kie.workbench.common.widgets.decoratedgrid.client.widget.data.Coordin
 import org.mockito.Mock;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.analysis.TestUtil.*;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -52,8 +55,7 @@ public class DecisionTableAnalyzerConflictTest {
 
     @Mock
     AsyncPackageDataModelOracle oracle;
-
-    EventBusMock eventBus;
+    private AnalysisReport analysisReport;
 
     @Before
     public void setUp() throws Exception {
@@ -67,7 +69,6 @@ public class DecisionTableAnalyzerConflictTest {
         when( oracle.getFieldType( "Account", "deposit" ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
         when( oracle.getFieldType( "Person", "approved" ) ).thenReturn( DataType.TYPE_BOOLEAN );
 
-        eventBus = new EventBusMock();
     }
 
     @Test
@@ -81,12 +82,10 @@ public class DecisionTableAnalyzerConflictTest {
                 .withData( new Object[][]{ { 1, "description", 100, 0, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
-        assertEmpty( eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertTrue( analysisReport.getAnalysisData().isEmpty() );
 
     }
 
@@ -100,12 +99,10 @@ public class DecisionTableAnalyzerConflictTest {
                 .withData( new Object[][]{ { 1, "description", 100, 0 } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
-        assertContains( "ImpossibleMatchOn(age)", eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertContains( "ImpossibleMatch", analysisReport );
     }
 
     @Test
@@ -118,12 +115,10 @@ public class DecisionTableAnalyzerConflictTest {
                 .withData( new Object[][]{{1, "description", "Toni", ""}} )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
-        assertDoesNotContain( "ImpossibleMatchOn(name)", eventBus.getUpdateColumnDataEvent().getColumnData() );
+        assertDoesNotContain( "ImpossibleMatch", analysisReport );
     }
 
     @Test
@@ -147,15 +142,12 @@ public class DecisionTableAnalyzerConflictTest {
                         { 2, "description", true, false, true } } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertContains( "ConflictingMatchWithRow(2)", result );
-        assertContains( "ConflictingMatchWithRow(1)", result );
+        assertContains( "ConflictingRows", analysisReport ,2);
+        assertContains( "ConflictingRows", analysisReport,1 );
 
     }
 
@@ -171,15 +163,12 @@ public class DecisionTableAnalyzerConflictTest {
                         {2, "description", null, "true"}} )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        List<CellValue<? extends Comparable<?>>> result = eventBus.getUpdateColumnDataEvent().getColumnData();
-        assertDoesNotContain( "ConflictingMatchWithRow(1)", result );
-        assertDoesNotContain( "ConflictingMatchWithRow(2)", result );
+        assertDoesNotContain( "ConflictingRows", analysisReport, 1 );
+        assertDoesNotContain( "ConflictingRows", analysisReport, 2 );
 
     }
 
@@ -201,13 +190,22 @@ public class DecisionTableAnalyzerConflictTest {
                 } )
                 .build();
 
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( oracle,
-                                                                    table52,
-                                                                    eventBus );
+        DecisionTableAnalyzer analyzer = getAnalyser( table52 );
 
         analyzer.onValidate( new ValidateEvent( new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>() ) );
 
-        assertContains( "ConflictingMatchWithRow(3)", eventBus.getUpdateColumnDataEvent().getColumnData(), 1 );
+        assertContains( "ConflictingRows", analysisReport, 2 );
+        assertContains( "ConflictingRows", analysisReport, 3 );
 
+    }
+
+    private DecisionTableAnalyzer getAnalyser( final GuidedDecisionTable52 table52 ) {
+        return new DecisionTableAnalyzer( oracle,
+                                          table52,
+                                          mock( EventBus.class ) ) {
+            @Override protected void sendReport( AnalysisReport report ) {
+                analysisReport = report;
+            }
+        };
     }
 }

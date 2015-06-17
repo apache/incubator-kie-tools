@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class MultiMap<K, V> {
 
-    private Map<K, Collection<V>> map = new HashMap<K, Collection<V>>();
+    private Map<K, List<V>> map = new HashMap<K, List<V>>();
 
     public boolean isEmpty() {
         return map.isEmpty();
@@ -48,7 +48,7 @@ public class MultiMap<K, V> {
     }
 
     public void putAllValues( K key,
-                              Collection<V> values ) {
+                              List<V> values ) {
         map.put( key, values );
     }
 
@@ -76,7 +76,7 @@ public class MultiMap<K, V> {
         return map.keySet();
     }
 
-    public Collection<V> get( K key ) {
+    public List<V> get( K key ) {
         return map.get( key );
     }
 

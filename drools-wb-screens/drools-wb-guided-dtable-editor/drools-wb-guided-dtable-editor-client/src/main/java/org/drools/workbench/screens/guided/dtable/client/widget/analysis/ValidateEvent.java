@@ -41,7 +41,7 @@ public class ValidateEvent extends GwtEvent<ValidateEvent.Handler> {
     public static Type<Handler> TYPE = new Type<Handler>();
 
     //Updated data: Key=Coordinate of start, Value=Cell-row data
-    private Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates;
+    private final Map<Coordinate, List<List<CellValue<? extends Comparable<?>>>>> updates;
 
     public ValidateEvent() {
         updates = Collections.emptyMap();
@@ -51,8 +51,8 @@ public class ValidateEvent extends GwtEvent<ValidateEvent.Handler> {
         this.updates = updates;
     }
 
-    public ValidateEvent( Coordinate coordinate,
-                          List<List<CellValue<? extends Comparable<?>>>> data ) {
+    public ValidateEvent( final Coordinate coordinate,
+                          final List<List<CellValue<? extends Comparable<?>>>> data ) {
         this.updates = new HashMap<Coordinate, List<List<CellValue<? extends Comparable<?>>>>>();
         this.updates.put( coordinate,
                           data );

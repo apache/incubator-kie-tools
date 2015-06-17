@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Issue;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.RowInspector;
+import org.drools.workbench.screens.guided.dtable.client.widget.analysis.reporting.Severity;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.cache.RowInspectorCache;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Check;
 import org.drools.workbench.screens.guided.dtable.client.widget.analysis.checks.base.Checks;
@@ -148,7 +150,7 @@ public class ChecksTest {
     private void assertHasIssues( RowInspector rowInspector ) {
         for ( Check check : checks.get( rowInspector ) ) {
             assertTrue( check.hasIssues() );
-            assertEquals( "1", check.getIssue() );
+            assertEquals( "1", check.getIssue().getTitle() );
         }
     }
 
@@ -173,8 +175,9 @@ public class ChecksTest {
         }
 
         @Override
-        public String getIssue() {
-            return ++runCount + "";
+        public Issue getIssue() {
+            return new Issue( Severity.NOTE,
+                              ++runCount + "" );
         }
     }
 
@@ -195,8 +198,9 @@ public class ChecksTest {
         }
 
         @Override
-        public String getIssue() {
-            return ++runCount + "";
+        public Issue getIssue() {
+            return new Issue( Severity.NOTE,
+                              ++runCount + "" );
         }
     }
 }
