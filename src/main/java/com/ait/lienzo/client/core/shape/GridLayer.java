@@ -20,7 +20,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
@@ -332,7 +332,7 @@ public class GridLayer extends Layer
     }
 
     @Override
-    protected void drawWithoutTransforms(Context2D context, double alpha, final ClipRegion bounds)
+    protected void drawWithoutTransforms(Context2D context, double alpha, final BoundingBox bounds)
     {
         if (false == isVisible())
         {

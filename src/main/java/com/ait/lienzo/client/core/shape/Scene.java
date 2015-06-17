@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.SceneFastArrayStorageEngine;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.util.ScratchCanvas;
 import com.ait.lienzo.shared.core.types.DataURLType;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -686,7 +686,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            ClipRegion clip = getClipRegion();
+            BoundingBox clip = getStorageBounds();
 
             if (null == clip)
             {
@@ -694,7 +694,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != viewport)
                 {
-                    clip = viewport.getClipRegion();
+                    clip = viewport.getStorageBounds();
                 }
             }
             if (null != layers)
@@ -731,7 +731,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            ClipRegion clip = getClipRegion();
+            BoundingBox clip = getStorageBounds();
 
             if (null == clip)
             {
@@ -739,7 +739,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != viewport)
                 {
-                    clip = viewport.getClipRegion();
+                    clip = viewport.getStorageBounds();
                 }
             }
             if (null != layers)
@@ -778,7 +778,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            ClipRegion clip = getClipRegion();
+            BoundingBox clip = getStorageBounds();
 
             if (null == clip)
             {
@@ -786,7 +786,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != viewport)
                 {
-                    clip = viewport.getClipRegion();
+                    clip = viewport.getStorageBounds();
                 }
             }
             if (null != layers)
@@ -823,7 +823,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            ClipRegion clip = getClipRegion();
+            BoundingBox clip = getStorageBounds();
 
             if (null == clip)
             {
@@ -831,7 +831,7 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != viewport)
                 {
-                    clip = viewport.getClipRegion();
+                    clip = viewport.getStorageBounds();
                 }
             }
             if (null != layers)

@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
@@ -944,8 +947,22 @@ public abstract class GroupOf<T extends IPrimitive<?>, C extends GroupOf<T, C>> 
     }
 
     @Override
+    public IControlHandleList getControlHandles(ControlHandleType... types)
+    {
+        return getControlHandles(Arrays.asList(types));
+    }
+
+    @Override
     public IControlHandleList getControlHandles(List<ControlHandleType> types)
     {
+        if ((null == types) || (types.isEmpty()))
+        {
+            return null;
+        }
+        if (types.size() > 1)
+        {
+            types = new ArrayList<ControlHandleType>(new HashSet<ControlHandleType>(types));
+        }
         IControlHandleFactory factory = getControlHandleFactory();
 
         if (null == factory)

@@ -14,13 +14,11 @@
    limitations under the License.
  */
 
-package com.ait.lienzo.client.core.shape.storage;
+package com.ait.lienzo.client.core.shape;
 
-import java.util.Iterator;
+import com.ait.lienzo.client.core.Context2D;
 
-import com.ait.lienzo.client.core.types.BoundingBox;
-
-public interface IStorageEngineIterable<M> extends Iterable<M>
+public interface IPathClipper
 {
-    public Iterator<M> iterator(BoundingBox bounds);
+    public void clip(Context2D context);
 }

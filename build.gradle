@@ -15,12 +15,30 @@
 */
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 
-version = '2.0.118-SNAPSHOT'
+version = '2.0.118-RC0'
 
 group = 'com.ahome-it'
+
+task doJavaDocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    failOnError = false
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: doJavaDocs) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+compileJava.dependsOn(clean)
 
 jar {
     manifest {
@@ -44,15 +62,51 @@ sourceSets {
 
 dependencies {
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.6.1')
-    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.35-SNAPSHOT')
+    compile(group: 'com.ahome-it', name: 'ahome-tooling-nativetools', version: '1.0.35-RC0')
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+    archives jar
+}
+
+signing {
+    sign configurations.archives
 }
 
 uploadArchives {
     repositories {
         mavenDeployer {
-            repository(url: "${sonatype_snapshotURL}") {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
                 authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
+            }
+            pom.project {
+                name 'Lienzo-Core'
+                packaging 'jar'
+                description 'Lienzo-Core is GWT library for high-speed Structued Graphics based on the Canvas element'
+                url 'https://github.com/ahome-it/lienzo-core'
+                scm {
+                    url 'scm:git@github.com:ahome-it/lienzo-core.git'
+                    connection 'scm:git@github.com:ahome-it/lienzo-core.git'
+                    developerConnection 'scm:git@github.com:ahome-it/lienzo-core.git'
+                }
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'SprocketNYC'
+                        name 'Dean Jones'
+                    }
+                }
             }
         }
     }
 }
+

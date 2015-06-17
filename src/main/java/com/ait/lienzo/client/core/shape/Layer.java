@@ -27,7 +27,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.shape.storage.PrimitiveFastArrayStorageEngine;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.ImageDataPixelColor;
 import com.ait.lienzo.client.core.types.OnLayerAfterDraw;
 import com.ait.lienzo.client.core.types.OnLayerBeforeDraw;
@@ -588,11 +588,11 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                         context.transform(transform);
                     }
-                    ClipRegion clip = getClipRegion();
+                    BoundingBox clip = getStorageBounds();
 
                     if ((null == clip) || (null != viewport))
                     {
-                        clip = viewport.getClipRegion();
+                        clip = viewport.getStorageBounds();
                     }
                     drawWithTransforms(context, 1, clip);
 

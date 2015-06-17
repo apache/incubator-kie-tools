@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.shape.storage;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 import com.google.gwt.json.client.JSONObject;
 
@@ -90,7 +90,7 @@ public abstract class AbstractFastArrayStorageEngine<M> extends AbstractStorageE
     }
 
     @Override
-    public NFastArrayList<M> getChildren(ClipRegion bounds)
+    public NFastArrayList<M> getChildren(BoundingBox bounds)
     {
         return m_list;
     }

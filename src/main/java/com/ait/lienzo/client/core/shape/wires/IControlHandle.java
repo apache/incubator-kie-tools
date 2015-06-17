@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.tooling.common.api.types.IActivatable;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
@@ -30,7 +33,8 @@ public interface IControlHandle extends IActivatable
 
     public HandlerRegistrationManager getHandlerRegistrationManager();
 
-    public abstract static class ControlHandleType
+    @SuppressWarnings("serial")
+    public abstract static class ControlHandleType implements Serializable
     {
         private final int    m_value;
 
@@ -40,7 +44,7 @@ public interface IControlHandle extends IActivatable
 
         protected ControlHandleType(final String label)
         {
-            m_label = label;
+            m_label = Objects.requireNonNull(label);
 
             m_value = ++s_value;
         }
@@ -66,23 +70,43 @@ public interface IControlHandle extends IActivatable
         {
             return "ControlHandleType(" + m_label + "," + m_value + ")";
         }
+
+        @Override
+        public boolean equals(final Object other)
+        {
+            if ((other == null) || (false == (other instanceof ControlHandleType)))
+            {
+                return false;
+            }
+            if (this == other)
+            {
+                return true;
+            }
+            ControlHandleType that = ((ControlHandleType) other);
+
+            return ((that.getValue() == getValue()) && (getLabel().equals(that.getLabel())));
+        }
     }
 
     public static final class ControlHandleStandardType extends ControlHandleType
     {
-        public static final ControlHandleType POINT     = new ControlHandleStandardType("POINT");
+        private static final long             serialVersionUID = -7777890528630854581L;
 
-        public static final ControlHandleType ROTATE    = new ControlHandleStandardType("ROTATE");
+        public static final ControlHandleType POINT            = new ControlHandleStandardType("POINT");
 
-        public static final ControlHandleType RESIZE    = new ControlHandleStandardType("RESIZE");
+        public static final ControlHandleType ROTATE           = new ControlHandleStandardType("ROTATE");
 
-        public static final ControlHandleType CONNECTOR = new ControlHandleStandardType("CONNECTOR");
+        public static final ControlHandleType RESIZE           = new ControlHandleStandardType("RESIZE");
 
-        public static final ControlHandleType HANDLE    = new ControlHandleStandardType("HANDLE");
+        public static final ControlHandleType SCALE            = new ControlHandleStandardType("SCALE");
 
-        public static final ControlHandleType MAGNET    = new ControlHandleStandardType("MAGNET");
+        public static final ControlHandleType SHEAR            = new ControlHandleStandardType("SHEAR");
 
-        public static final ControlHandleType CONFIGURE = new ControlHandleStandardType("CONFIGURE");
+        public static final ControlHandleType HANDLE           = new ControlHandleStandardType("HANDLE");
+
+        public static final ControlHandleType MAGNET           = new ControlHandleStandardType("MAGNET");
+
+        public static final ControlHandleType CONNECTOR        = new ControlHandleStandardType("CONNECTOR");
 
         private ControlHandleStandardType(final String label)
         {

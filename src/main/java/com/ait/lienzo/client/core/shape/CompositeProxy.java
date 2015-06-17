@@ -16,6 +16,9 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Attribute;
@@ -28,7 +31,7 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.widget.DefaultDragConstraintEnforcer;
@@ -675,8 +678,22 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
     }
 
     @Override
+    public IControlHandleList getControlHandles(ControlHandleType... types)
+    {
+        return getControlHandles(Arrays.asList(types));
+    }
+
+    @Override
     public IControlHandleList getControlHandles(List<ControlHandleType> types)
     {
+        if ((null == types) || (types.isEmpty()))
+        {
+            return null;
+        }
+        if (types.size() > 1)
+        {
+            types = new ArrayList<ControlHandleType>(new HashSet<ControlHandleType>(types));
+        }
         IControlHandleFactory factory = getControlHandleFactory();
 
         if (null == factory)
@@ -755,7 +772,7 @@ public abstract class CompositeProxy<C extends CompositeProxy<C, P>, P extends I
     }
 
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha, final ClipRegion bounds)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, final BoundingBox bounds)
     {
         if ((context.isSelection()) && (false == isListening()))
         {

@@ -19,7 +19,7 @@ package com.ait.lienzo.client.core.shape;
 import java.util.LinkedHashSet;
 
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
@@ -40,13 +40,17 @@ public interface IContainer<T extends IContainer<T, M>, M>
      * 
      * @return FastArrayList
      */
-    public NFastArrayList<M> getChildNodes(ClipRegion bounds);
+    public NFastArrayList<M> getChildNodes(BoundingBox bounds);
 
     public T setStorageEngine(IStorageEngine<M> storage);
 
     public IStorageEngine<M> getStorageEngine();
 
     public IStorageEngine<M> getDefaultStorageEngine();
+
+    public T setStorageBounds(BoundingBox bounds);
+
+    public BoundingBox getStorageBounds();
 
     /**
      * Adds a node to this container

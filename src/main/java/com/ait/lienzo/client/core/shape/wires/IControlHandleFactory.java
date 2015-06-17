@@ -22,5 +22,7 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 
 public interface IControlHandleFactory
 {
+    public IControlHandleList getControlHandles(ControlHandleType... types);
+
     public IControlHandleList getControlHandles(List<ControlHandleType> types);
 }

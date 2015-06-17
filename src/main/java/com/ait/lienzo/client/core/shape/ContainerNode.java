@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.NodeType;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -41,7 +41,7 @@ import com.google.gwt.json.client.JSONObject;
  */
 public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerNode<M, T>> extends Node<T> implements IContainer<T, M>, IDrawable<T>
 {
-    private ClipRegion        m_clip;
+    private BoundingBox       m_bbox;
 
     private IStorageEngine<M> m_stor;
 
@@ -83,9 +83,9 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
     }
 
     @Override
-    public NFastArrayList<M> getChildNodes(final ClipRegion clip)
+    public NFastArrayList<M> getChildNodes(final BoundingBox bounds)
     {
-        return getStorageEngine().getChildren(clip);
+        return getStorageEngine().getChildren(bounds);
     }
 
     @Override
@@ -116,16 +116,18 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         return cast();
     }
 
-    public ClipRegion getClipRegion()
+    @Override
+    public T setStorageBounds(BoundingBox bounds)
     {
-        return m_clip;
-    }
-
-    public T setClipRegion(final ClipRegion clip)
-    {
-        m_clip = clip;
+        m_bbox = bounds;
 
         return cast();
+    }
+
+    @Override
+    public BoundingBox getStorageBounds()
+    {
+        return m_bbox;
     }
 
     /**
@@ -189,7 +191,7 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
      * Groups should draw their children in the current context.
      */
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha, final ClipRegion bounds)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, final BoundingBox bounds)
     {
         if ((context.isSelection()) && (false == isListening()))
         {
@@ -201,19 +203,19 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
         {
             return;
         }
-        ClipRegion clip = getClipRegion();
+        BoundingBox bbox = getStorageBounds();
 
-        if (null == clip)
+        if (null == bbox)
         {
-            clip = bounds;
+            bbox = bounds;
         }
-        final NFastArrayList<M> list = getChildNodes(clip);
+        final NFastArrayList<M> list = getChildNodes(bbox);
 
         final int size = list.size();
 
         for (int i = 0; i < size; i++)
         {
-            list.get(i).drawWithTransforms(context, alpha, clip);
+            list.get(i).drawWithTransforms(context, alpha, bbox);
         }
     }
 

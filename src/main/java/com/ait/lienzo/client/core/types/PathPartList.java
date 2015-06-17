@@ -16,13 +16,17 @@
 
 package com.ait.lienzo.client.core.types;
 
+import java.io.Serializable;
+
 import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
 
-public final class PathPartList
+public final class PathPartList implements Serializable
 {
+    private static final long     serialVersionUID = -7014657029059390538L;
+
     private double                m_cpx;
 
     private double                m_cpy;
@@ -292,7 +296,6 @@ public final class PathPartList
     {
         m_box = null;
     }
-
 
     public BoundingBox getBoundingBox()
     {

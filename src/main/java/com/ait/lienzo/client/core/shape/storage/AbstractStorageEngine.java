@@ -23,7 +23,7 @@ import com.ait.lienzo.client.core.shape.json.AbstractFactory;
 import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.tooling.nativetools.client.NObjectJSO;
 import com.ait.tooling.nativetools.client.collection.MetaData;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
@@ -132,7 +132,7 @@ public abstract class AbstractStorageEngine<M> implements IStorageEngine<M>
     }
 
     @Override
-    public Iterator<M> iterator(final ClipRegion bounds)
+    public Iterator<M> iterator(final BoundingBox bounds)
     {
         return Collections.unmodifiableList(getChildren(bounds).toList()).iterator();
     }

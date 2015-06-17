@@ -22,7 +22,7 @@ import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.animation.IAnimationCallback;
 import com.ait.lienzo.client.core.animation.IAnimationHandle;
 import com.ait.lienzo.client.core.shape.guides.IGuidePrimitive;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 
@@ -154,7 +154,7 @@ public interface IDrawable<T>
      * 
      * @param context
      */
-    public void drawWithTransforms(Context2D context, double alpha, ClipRegion bounds);
+    public void drawWithTransforms(Context2D context, double alpha, BoundingBox bounds);
 
     /**
      * Move the object's {@link Layer} one level up

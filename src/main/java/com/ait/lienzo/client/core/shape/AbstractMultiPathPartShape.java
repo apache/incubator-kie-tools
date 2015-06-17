@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.Context2D;
@@ -30,10 +31,10 @@ import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
 import com.ait.lienzo.client.core.shape.wires.AbstractControlHandle;
 import com.ait.lienzo.client.core.shape.wires.ControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandleType;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleFactory;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.core.types.ClipRegion;
 import com.ait.lienzo.client.core.types.PathPartEntryJSO;
 import com.ait.lienzo.client.core.types.PathPartList;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -106,7 +107,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     }
 
     @Override
-    protected void drawWithoutTransforms(final Context2D context, double alpha, ClipRegion bounds)
+    protected void drawWithoutTransforms(final Context2D context, double alpha, BoundingBox bounds)
     {
         final Attributes attr = getAttributes();
 
@@ -163,17 +164,28 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     {
         private final AbstractMultiPathPartShape m_shape;
 
-        private       IControlHandleList         m_hlist;
+        private IControlHandleList               m_hlist;
 
-        private DragMode m_dmode = DragMode.SAME_LAYER;
+        private DragMode                         m_dmode = DragMode.SAME_LAYER;
 
         private DefaultMultiPathShapeHandleFactory(final AbstractMultiPathPartShape shape)
         {
             m_shape = shape;
         }
+
         @Override
-        public IControlHandleList getControlHandles(final List<IControlHandle.ControlHandleType> types)
+        public IControlHandleList getControlHandles(ControlHandleType... types)
         {
+            return getControlHandles(Arrays.asList(types));
+        }
+
+        @Override
+        public IControlHandleList getControlHandles(List<ControlHandleType> types)
+        {
+            if ((null == types) || (types.isEmpty()))
+            {
+                return null;
+            }
             return getResizeHandles();
         }
 
@@ -185,7 +197,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             final Point2D topLeftPoint = new Point2D(box.getX(), box.getY());
             final Point2D topRightPoint = new Point2D(box.getX() + box.getHeight(), box.getY());
-            final Point2D bottomRightPoint = new Point2D(box.getX() + box.getWidth(), box.getY() + box.getHeight());;
+            final Point2D bottomRightPoint = new Point2D(box.getX() + box.getWidth(), box.getY() + box.getHeight());
+            ;
             final Point2D bottomLeftPoint = new Point2D(box.getX(), box.getY() + box.getHeight());
 
             Circle prim = getControlPrimitive(topLeftPoint, box.getX(), box.getY());
@@ -196,11 +209,11 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             ResizeTopRight topRight = new ResizeTopRight(prim, m_hlist, m_shape, box);
             m_hlist.add(topRight);
 
-            prim = getControlPrimitive(topRightPoint, box.getX() + box.getWidth(), box.getY()  + box.getHeight());
+            prim = getControlPrimitive(topRightPoint, box.getX() + box.getWidth(), box.getY() + box.getHeight());
             ResizeBottomRight bottomRight = new ResizeBottomRight(prim, m_hlist, m_shape, box);
             m_hlist.add(bottomRight);
 
-            prim = getControlPrimitive(topRightPoint, box.getX(), box.getY()  + box.getHeight());
+            prim = getControlPrimitive(topRightPoint, box.getX(), box.getY() + box.getHeight());
             ResizeBottomLeft bottomLeft = new ResizeBottomLeft(prim, m_hlist, m_shape, box);
             m_hlist.add(bottomLeft);
 
@@ -211,8 +224,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         {
             final Point2D p = point;
 
-            return new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x).setY(y).setDraggable(true).setDragMode(
-                    m_dmode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
+            return new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x).setY(y).setDraggable(true).setDragMode(m_dmode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
         }
     }
 
@@ -223,7 +235,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         @Override
         public final ControlHandleType getType()
         {
-            return ControlHandleStandardType.POINT;
+            return ControlHandleStandardType.RESIZE;
         }
     }
 
@@ -234,21 +246,24 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             super(prim, hlist, shape, box);
         }
 
-        @Override double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
+        @Override
+        double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
         {
-            double wpc = ((100/startW)*((startTopLeftX+startW)-x))/100;
+            double wpc = ((100 / startW) * ((startTopLeftX + startW) - x)) / 100;
             double newX = x + (dx * wpc);
             return newX;
         }
 
-        @Override double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
+        @Override
+        double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
         {
-            double hpc = ((100/startH)*((startTopLeftY+startH)-y))/100;
+            double hpc = ((100 / startH) * ((startTopLeftY + startH) - y)) / 100;
             double newY = y + (dy * hpc);
             return newY;
         }
 
-        @Override void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
+        @Override
+        void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
         {
             IControlHandle topRight = m_hlist.getHandle(1);
             topRight.getControl().setY(boxStartY + dy);
@@ -265,21 +280,24 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             super(prim, hlist, shape, box);
         }
 
-        @Override double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
+        @Override
+        double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
         {
-            double wpc = ((100/startW)*(x-startTopLeftX))/100;
+            double wpc = ((100 / startW) * (x - startTopLeftX)) / 100;
             double newX = x + (dx * wpc);
             return newX;
         }
 
-        @Override double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
+        @Override
+        double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
         {
-            double hpc = ((100/startH)*((startTopLeftY+startH)-y))/100;
+            double hpc = ((100 / startH) * ((startTopLeftY + startH) - y)) / 100;
             double newY = y + (dy * hpc);
             return newY;
         }
 
-        @Override void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
+        @Override
+        void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
         {
             IControlHandle topLeft = m_hlist.getHandle(0);
             topLeft.getControl().setY(boxStartY + dy);
@@ -296,21 +314,24 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             super(prim, hlist, shape, box);
         }
 
-        @Override double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
+        @Override
+        double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
         {
-            double wpc = ((100/startW)*(x-startTopLeftX))/100;
+            double wpc = ((100 / startW) * (x - startTopLeftX)) / 100;
             double newX = x + (dx * wpc);
             return newX;
         }
 
-        @Override double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
+        @Override
+        double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
         {
-            double hpc = ((100/startH)*(y-startTopLeftY))/100;
+            double hpc = ((100 / startH) * (y - startTopLeftY)) / 100;
             double newY = y + (dy * hpc);
             return newY;
         }
 
-        @Override void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
+        @Override
+        void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
         {
             IControlHandle topRight = m_hlist.getHandle(1);
             topRight.getControl().setX(boxStartX + boxStartWidth + dx);
@@ -327,21 +348,24 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             super(prim, hlist, shape, box);
         }
 
-        @Override double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
+        @Override
+        double getX(double startTopLeftX, double startTopLeftY, double startW, double startH, double x, double dx)
         {
-            double wpc = ((100/startW)*((startTopLeftX+startW)-x))/100;
+            double wpc = ((100 / startW) * ((startTopLeftX + startW) - x)) / 100;
             double newX = x + (dx * wpc);
             return newX;
         }
 
-        @Override double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
+        @Override
+        double getY(double startTopLeftX, double startTopLeftY, double startW, double startH, double y, double dy)
         {
-            double hpc = ((100/startH)*(y-startTopLeftY))/100;
+            double hpc = ((100 / startH) * (y - startTopLeftY)) / 100;
             double newY = y + (dy * hpc);
             return newY;
         }
 
-        @Override void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
+        @Override
+        void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight)
         {
             IControlHandle topLeft = m_hlist.getHandle(0);
             topLeft.getControl().setX(boxStartX + dx);
@@ -355,8 +379,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     private static abstract class ResizeAbstractControlHandle extends AbstractControlHandle
     {
         final AbstractMultiPathPartShape m_shape;
-        final IControlHandleList m_hlist;
-        final Shape  m_prim;
+
+        final IControlHandleList         m_hlist;
+
+        final Shape                      m_prim;
 
         public ResizeAbstractControlHandle(Circle prim, IControlHandleList hlist, AbstractMultiPathPartShape shape, BoundingBox box)
         {
@@ -373,7 +399,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             register(m_prim.addNodeDragStartHandler(topRightHandler));
             register(m_prim.addNodeDragEndHandler(topRightHandler));
         }
-
 
         @Override
         public IPrimitive<?> getControl()
@@ -400,7 +425,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         abstract void updateOtherHandles(double dx, double dy, double boxStartX, double boxStartY, double boxStartWidth, double boxStartHeight);
     }
 
-    public static class HandleStartMoveEnddHandler implements  NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler {
+    public static class HandleStartMoveEnddHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
+    {
         protected AbstractMultiPathPartShape          m_shape;
 
         protected IControlHandleList                  m_chlist;
@@ -468,12 +494,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                             {
                                 NFastDoubleArrayJSO doubles = m_entries.get(i);
                                 double x = doubles.get(0);
-                                double newX = m_handle.getX(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight,
-                                                            x, dx);
+                                double newX = m_handle.getX(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, x, dx);
 
                                 double y = doubles.get(1);
-                                double newY = m_handle.getY(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight,
-                                                            y, dy);
+                                double newY = m_handle.getY(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, y, dy);
 
                                 points.set(0, newX);
                                 points.set(1, newY);

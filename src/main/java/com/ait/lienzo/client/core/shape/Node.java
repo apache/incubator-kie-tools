@@ -76,7 +76,7 @@ import com.ait.lienzo.client.core.shape.json.IJSONSerializable;
 import com.ait.lienzo.client.core.shape.json.JSONDeserializer;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationContext;
 import com.ait.lienzo.client.core.shape.json.validators.ValidationException;
-import com.ait.lienzo.client.core.types.ClipRegion;
+import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.shared.core.types.NodeType;
@@ -412,7 +412,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * and restores the context.
      */
     @Override
-    public void drawWithTransforms(final Context2D context, final double alpha, final ClipRegion bounds)
+    public void drawWithTransforms(final Context2D context, final double alpha, final BoundingBox bounds)
     {
         if ((context.isSelection()) && (false == isListening()))
         {
@@ -445,7 +445,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T>, IJSONSeri
      * 
      * @param context
      */
-    abstract protected void drawWithoutTransforms(Context2D context, double alpha, ClipRegion bounds);
+    abstract protected void drawWithoutTransforms(Context2D context, double alpha, BoundingBox bounds);
 
     public Point2D getAbsoluteLocation()
     {

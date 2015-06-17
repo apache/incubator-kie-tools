@@ -16,6 +16,7 @@
 
 package com.ait.lienzo.client.core.shape;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.ait.lienzo.client.core.event.NodeDragEndEvent;
@@ -100,9 +101,19 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
         }
 
         @Override
+        public IControlHandleList getControlHandles(ControlHandleType... types)
+        {
+            return getControlHandles(Arrays.asList(types));
+        }
+
+        @Override
         public IControlHandleList getControlHandles(final List<ControlHandleType> types)
         {
-            if (false == types.contains(ControlHandleStandardType.POINT))
+            if ((null == types) || (types.isEmpty()))
+            {
+                return null;
+            }
+            if (false == types.contains(ControlHandleStandardType.RESIZE))
             {
                 return null;
             }
