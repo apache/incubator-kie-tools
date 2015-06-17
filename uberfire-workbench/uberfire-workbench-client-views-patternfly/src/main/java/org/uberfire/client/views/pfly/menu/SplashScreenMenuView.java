@@ -1,5 +1,8 @@
 package org.uberfire.client.views.pfly.menu;
 
+import java.util.List;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
@@ -11,11 +14,8 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.uberfire.client.menu.SplashScreenMenuPresenter;
 import org.uberfire.client.menu.SplashScreenMenuPresenter.SplashScreenListEntry;
 
-import javax.enterprise.context.Dependent;
-import java.util.List;
-
 @Dependent
-public class SplashScreenMenuView extends UtilityMenu implements SplashScreenMenuPresenter.View {
+public class SplashScreenMenuView extends AnchorListItem implements SplashScreenMenuPresenter.View {
 
     final DropDownMenu dropdown = new DropDownMenu();
 

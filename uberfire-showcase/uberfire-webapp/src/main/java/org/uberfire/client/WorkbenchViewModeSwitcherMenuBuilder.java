@@ -16,54 +16,33 @@
  *
  */
 
-package org.uberfire.client.views.pfly.menu;
+package org.uberfire.client;
 
+import javax.enterprise.context.Dependent;
+
+import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.uberfire.mvp.Command;
+import org.uberfire.client.menu.WorkbenchViewModeSwitcherPresenter;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
-import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
-/**
- * Created by Cristiano Nicolai.
- */
-public class UserMenuBuilder implements MenuFactory.CustomMenuBuilder,
-        MenuFactory.CommandMenu {
-
-    public static UserMenuBuilder withUserMenu() {
-        return new UserMenuBuilder();
-    }
-
-    private Command command;
-
-    @Override
-    public Object respondsWith( final Command command ) {
-        this.command = checkNotNull( "command", command );
-        return this;
-    }
+@Dependent
+public class WorkbenchViewModeSwitcherMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
     @Override
     public void push( MenuFactory.CustomMenuBuilder element ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+
     }
 
     @Override
     public MenuItem build() {
-        return new BaseMenuCustom<UserMenu>() {
+        return new BaseMenuCustom<IsWidget>() {
 
             @Override
-            public UserMenu build() {
-                return IOC.getBeanManager().lookupBean( UserMenu.class ).getInstance();
-            }
-
-            @Override
-            public void accept( MenuVisitor visitor ) {
-                visitor.visit( this );
+            public IsWidget build() {
+                return IOC.getBeanManager().lookupBean( WorkbenchViewModeSwitcherPresenter.class ).getInstance();
             }
         };
     }
-
 }

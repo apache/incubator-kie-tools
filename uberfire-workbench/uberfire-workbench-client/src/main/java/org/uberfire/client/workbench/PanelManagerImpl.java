@@ -1,12 +1,9 @@
 package org.uberfire.client.workbench;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -15,6 +12,15 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Event.NativePreviewEvent;
+import com.google.gwt.user.client.Event.NativePreviewHandler;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -24,6 +30,8 @@ import org.uberfire.client.workbench.events.DropPlaceEvent;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.client.workbench.events.PlaceLostFocusEvent;
+import org.uberfire.client.workbench.events.PlaceMaximizedEvent;
+import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
@@ -37,15 +45,7 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * Standard implementation of {@link PanelManager}.
@@ -64,6 +64,12 @@ public class PanelManagerImpl implements PanelManager {
 
     @Inject
     protected Event<SelectPlaceEvent> selectPlaceEvent;
+
+    @Inject
+    protected Event<PlaceMaximizedEvent> placeMaximizedEventEvent;
+
+    @Inject
+    protected Event<PlaceMinimizedEvent> placeMinimizedEventEvent;
 
     @Inject
     protected SyncBeanManager iocManager;
@@ -271,6 +277,16 @@ public class PanelManagerImpl implements PanelManager {
         activePart = part;
         panelFocusEvent.fire( new PanelFocusEvent( part.getParentPanel() ) );
         placeGainFocusEvent.fire( new PlaceGainFocusEvent( part.getPlace() ) );
+    }
+
+    @Override
+    public void onPartMaximized( final PartDefinition part ) {
+        placeMaximizedEventEvent.fire( new PlaceMaximizedEvent( part.getPlace() ) );
+    }
+
+    @Override
+    public void onPartMinimized( final PartDefinition part ) {
+        placeMinimizedEventEvent.fire( new PlaceMinimizedEvent( part.getPlace() ) );
     }
 
     @Override

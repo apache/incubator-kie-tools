@@ -1,14 +1,23 @@
 package org.uberfire.client.workbench.widgets.menu;
 
-import org.uberfire.workbench.model.menu.Menus;
+import org.uberfire.mvp.Command;
 
 /**
  *
  */
-public interface WorkbenchMenuBar {
-
-    void addMenus( final Menus menus );
+public interface WorkbenchMenuBar extends HasMenus {
 
     void clear();
 
+    void expand();
+
+    void collapse();
+
+    void addCollapseHandler( Command command );
+
+    void addExpandHandler( Command command );
+
+    boolean isUseExpandedMode();
+
+    boolean isExpanded();
 }

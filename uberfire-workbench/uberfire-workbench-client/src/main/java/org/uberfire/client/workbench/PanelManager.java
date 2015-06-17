@@ -1,5 +1,6 @@
 package org.uberfire.client.workbench;
 
+import com.google.gwt.user.client.ui.HasWidgets;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UIPart;
@@ -11,8 +12,6 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
-
-import com.google.gwt.user.client.ui.HasWidgets;
 
 /**
  * Internal framework component that handles the creation, destruction, layout, and composition (parent-child nesting)
@@ -179,4 +178,14 @@ public interface PanelManager {
      * @return the definition for the panel servicing the given place, or null if no such part can be found.
      */
     PanelDefinition getPanelForPlace( PlaceRequest place );
+
+    /**
+     * @param part the part that has been maximized
+     */
+    void onPartMaximized( PartDefinition part );
+
+    /**
+     * @param part the part that has been minimized
+     */
+    void onPartMinimized( PartDefinition part );
 }

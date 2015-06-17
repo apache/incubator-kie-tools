@@ -187,10 +187,61 @@
     padding-top: 0px;
 }
 
+.uf-navbar-compact .uf-navbar-nav-compact > li:first-child {
+    border-left: 1px solid #2b2b2b;
+}
+
+.uf-navbar-compact .uf-navbar-nav-compact > li > a {
+    padding: 7px 10px 7px 10px;
+}
+
+.uf-navbar-compact .uf-navbar-nav-compact > li > a:hover {
+    background-color: #1d1d1d;
+    border-top-color: #5c5c5c;
+    color: #cfcfcf;
+    background-image: -webkit-linear-gradient(top, #363636 0%, #1d1d1d 100%);
+    background-image: -o-linear-gradient(top, #363636 0%, #1d1d1d 100%);
+    background-image: linear-gradient(to bottom, #363636 0%, #1d1d1d 100%);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff363636', endColorstr='#ff1d1d1d', GradientType=0);
+}
+
+.navbar-pf .navbar-brand {
+    margin-right: 10px;
+}
+
+.navbar-pf .navbar-brand img {
+    height: 10px;
+}
+
+.navbar-pf .navbar-utility {
+    top: 1px;
+}
+
+@media (max-width: 767px) {
+    .navbar-pf .navbar-header {
+        float: none !important;
+    }
+
+    .uf-perspective-context-menu {
+        float: none !important;
+    }
+}
+
 /* Fix for modal behind backdrop. Potentially fixed by the next BS release.
    Broken in 3.3.4
    See https://github.com/twbs/bootstrap/issues/16148
  */
 .modal-dialog {
     z-index: 1050;
+}
+
+.navbar-pf .navbar-nav .uf-perspective-context-menu > a {
+    color: #0099d3;
+}
+
+.navbar-pf .navbar-nav .uf-perspective-context-menu.open > a,
+.navbar-pf .navbar-nav .uf-perspective-context-menu > a:hover,
+.navbar-pf .navbar-nav .uf-perspective-context-menu > a:focus {
+    color: #0076b7;
 }

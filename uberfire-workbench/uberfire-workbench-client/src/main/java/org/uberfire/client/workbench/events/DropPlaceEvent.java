@@ -16,26 +16,19 @@
 package org.uberfire.client.workbench.events;
 
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * An event when a WorkbenchPart is dropped as part of a DnD operation
  */
-public class DropPlaceEvent implements UberFireEvent {
-
-    private final PlaceRequest place;
+public class DropPlaceEvent extends AbstractPlaceEvent {
 
     public DropPlaceEvent( final PlaceRequest place ) {
-        this.place = place;
-    }
-
-    public PlaceRequest getPlace() {
-        return place;
+        super( place );
     }
 
     @Override
     public String toString() {
-        return "DropPlaceEvent [place=" + place + "]";
+        return "DropPlaceEvent [place=" + getPlace() + "]";
     }
 
 }

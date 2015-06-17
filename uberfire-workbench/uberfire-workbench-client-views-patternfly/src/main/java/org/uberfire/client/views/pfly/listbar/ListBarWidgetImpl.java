@@ -202,6 +202,7 @@ public class ListBarWidgetImpl
                     maximizeButton.addStyleName( "btn-default" );
                     maximizeButton.addStyleName( "btn-sm" );
                     toolBar.add( maximizeButton );
+                    panelManager.onPartMaximized( currentPart.getK1() );
                 } else {
                     toolBar.clear();
                     toolBar.add( toolBarDropDown );
@@ -209,6 +210,7 @@ public class ListBarWidgetImpl
                     maximizeButton.removeStyleName( "btn-default" );
                     maximizeButton.removeStyleName( "btn-sm" );
                     toolBarDropDownMenu.insert( maximizeButton, 0 );
+                    panelManager.onPartMinimized( currentPart.getK1() );
                 }
             }
         } );
