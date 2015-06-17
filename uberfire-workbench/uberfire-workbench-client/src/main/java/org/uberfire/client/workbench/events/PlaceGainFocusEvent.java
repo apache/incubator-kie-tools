@@ -16,27 +16,20 @@
 package org.uberfire.client.workbench.events;
 
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * A CDI event fired by the framework each time a workbench screen or editor is selected within a panel. Application
  * code may observe and react to this event, but must not fire the event.
  */
-public class PlaceGainFocusEvent implements UberFireEvent {
-
-    private final PlaceRequest place;
+public class PlaceGainFocusEvent extends AbstractPlaceEvent {
 
     public PlaceGainFocusEvent( final PlaceRequest place ) {
-        this.place = place;
-    }
-
-    public PlaceRequest getPlace() {
-        return place;
+        super( place );
     }
 
     @Override
     public String toString() {
-        return "PlaceGainFocusEvent [place=" + place + "]";
+        return "PlaceGainFocusEvent [place=" + getPlace() + "]";
     }
 
 }

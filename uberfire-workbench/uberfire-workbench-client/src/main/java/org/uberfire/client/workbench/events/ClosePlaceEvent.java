@@ -16,28 +16,21 @@
 package org.uberfire.client.workbench.events;
 
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * Fired by the PlaceManager when the activity, panel, presenter, and view associated with a place are about to be
  * removed from the workbench. Observers of this event should clean up any of their own state associated with the given
  * place being live. It is not possible for an observer of this event to cancel the close operation.
  */
-public class ClosePlaceEvent implements UberFireEvent {
-
-    private final PlaceRequest place;
+public class ClosePlaceEvent extends AbstractPlaceEvent {
 
     public ClosePlaceEvent( final PlaceRequest place ) {
-        this.place = place;
-    }
-
-    public PlaceRequest getPlace() {
-        return place;
+        super( place );
     }
 
     @Override
     public String toString() {
-        return "ClosePlaceEvent [place=" + place + "]";
+        return "ClosePlaceEvent [place=" + getPlace() + "]";
     }
 
 }

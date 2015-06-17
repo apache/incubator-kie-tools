@@ -13,7 +13,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.uberfire.client.workbench.widgets.menu.PespectiveContextMenusPresenter;
+import org.uberfire.client.workbench.widgets.menu.PerspectiveContextMenusPresenter;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuGroup;
@@ -22,9 +22,9 @@ import org.uberfire.workbench.model.menu.MenuItemCommand;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-public class PespectiveContextMenusView
+public class PerspectiveContextMenusView
         extends Composite
-        implements PespectiveContextMenusPresenter.View {
+        implements PerspectiveContextMenusPresenter.View {
 
     @Inject
     private AuthorizationManager authzManager;
@@ -34,7 +34,7 @@ public class PespectiveContextMenusView
 
     NavPills menuBar = new NavPills();
 
-    public PespectiveContextMenusView() {
+    public PerspectiveContextMenusView() {
         initWidget( menuBar );
     }
 

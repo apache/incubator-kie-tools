@@ -1,15 +1,16 @@
 package org.uberfire.client.menu;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItemCommand;
+import org.uberfire.workbench.model.menu.MenuItemPerspective;
 import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 /**
  * Wraps a menu visitor, filtering out menu items that a given user is not allowed to access. The wrapped visitor only
@@ -87,4 +88,11 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
         }
     }
 
+    @Override
+    public void visit( MenuItemPerspective menuItemPerspective ) {
+        if ( authzManager.authorize( menuItemPerspective,
+                user ) ) {
+            chainedVisitor.visit( menuItemPerspective );
+        }
+    }
 }
