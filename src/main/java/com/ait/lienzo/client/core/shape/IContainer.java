@@ -20,6 +20,8 @@ import java.util.LinkedHashSet;
 
 import com.ait.lienzo.client.core.shape.storage.IStorageEngine;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.PathPartListArray;
 import com.ait.tooling.common.api.java.util.function.Predicate;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
@@ -51,6 +53,16 @@ public interface IContainer<T extends IContainer<T, M>, M>
     public T setStorageBounds(BoundingBox bounds);
 
     public BoundingBox getStorageBounds();
+
+    public T setPathClipper(IPathClipper clipper);
+
+    public T setPathClipper(BoundingBox clipper);
+
+    public T setPathClipper(PathPartList clipper);
+
+    public T setPathClipper(PathPartListArray clipper);
+
+    public IPathClipper getPathClipper();
 
     /**
      * Adds a node to this container
