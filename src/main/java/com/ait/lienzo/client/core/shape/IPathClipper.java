@@ -21,5 +21,5 @@ import com.ait.tooling.common.api.types.IActivatable;
 
 public interface IPathClipper extends IActivatable
 {
-    public void clip(Context2D context);
+    public boolean clip(Context2D context);
 }

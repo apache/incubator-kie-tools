@@ -31,28 +31,74 @@ public abstract class AbstractPathClipper extends Activatable implements IPathCl
     }
 
     @Override
-    public void clip(final Context2D context)
+    public boolean clip(final Context2D context)
     {
         if (isActive())
         {
-            apply(context);
+            return apply(context);
         }
+        return false;
     }
 
-    abstract protected void apply(Context2D context);
+    abstract protected boolean apply(Context2D context);
 
     public static final IPathClipper make(final BoundingBox bbox)
     {
-        return null;
+        return new BoundingBoxPathClipper(bbox);
     }
 
     public static final IPathClipper make(final PathPartList path)
     {
-        return null;
+        return new PathPartListPathClipper(path);
     }
 
     public static final IPathClipper make(final PathPartListArray path)
     {
-        return null;
+        return new PathPartListArrayPathClipper(path);
+    }
+
+    private static final class BoundingBoxPathClipper extends AbstractPathClipper
+    {
+        private static final long serialVersionUID = 7860410970267151015L;
+
+        private BoundingBoxPathClipper(final BoundingBox bbox)
+        {
+        }
+
+        @Override
+        protected boolean apply(final Context2D context)
+        {
+            return false;
+        }
+    }
+
+    private static final class PathPartListPathClipper extends AbstractPathClipper
+    {
+        private static final long serialVersionUID = -8566776415376567100L;
+
+        private PathPartListPathClipper(final PathPartList path)
+        {
+        }
+
+        @Override
+        protected boolean apply(final Context2D context)
+        {
+            return false;
+        }
+    }
+
+    private static final class PathPartListArrayPathClipper extends AbstractPathClipper
+    {
+        private static final long serialVersionUID = -688994989495752351L;
+
+        private PathPartListArrayPathClipper(final PathPartListArray path)
+        {
+        }
+
+        @Override
+        protected boolean apply(final Context2D context)
+        {
+            return false;
+        }
     }
 }
