@@ -90,7 +90,7 @@ public class WorkbenchToolBarView extends Composite
     public WorkbenchToolBarView() {
         PatternFlyBootstrapper.ensurejQueryIsAvailable();
         initWidget( uiBinder.createAndBindUi( this ) );
-        tip.setText( WorkbenchConstants.INSTANCE.collapseToolbar() );
+        tip.setTitle( WorkbenchConstants.INSTANCE.collapseToolbar() );
         tip.setPlacement( Placement.LEFT );
         tip.setWidget( viewControl );
         simpleMargin.setVisible( false );
@@ -174,7 +174,7 @@ public class WorkbenchToolBarView extends Composite
         container.getElement().getStyle().clearZIndex();
         masterContainer.add( container );
 
-        tip.setText( WorkbenchConstants.INSTANCE.collapseToolbar() );
+        tip.setTitle( WorkbenchConstants.INSTANCE.collapseToolbar() );
         tip.setPlacement( Placement.LEFT );
         tip.setWidget( viewControl );
         tip.reconfigure();
@@ -192,7 +192,7 @@ public class WorkbenchToolBarView extends Composite
         container.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
         RootPanel.get().add( container );
 
-        tip.setText( WorkbenchConstants.INSTANCE.expandToolbar() );
+        tip.setTitle( WorkbenchConstants.INSTANCE.expandToolbar() );
         tip.setPlacement( Placement.RIGHT );
         tip.setWidget( viewControl );
         tip.reconfigure();

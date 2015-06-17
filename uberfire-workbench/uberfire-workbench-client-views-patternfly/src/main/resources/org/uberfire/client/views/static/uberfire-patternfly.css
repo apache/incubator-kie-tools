@@ -186,3 +186,11 @@
 .uf-multi-page-editor .uf-tabbar-panel-nav-tabs {
     padding-top: 0px;
 }
+
+/* Fix for modal behind backdrop. Potentially fixed by the next BS release.
+   Broken in 3.3.4
+   See https://github.com/twbs/bootstrap/issues/16148
+ */
+.modal-dialog {
+    z-index: 1050;
+}
