@@ -478,6 +478,7 @@ public class DataObjectBrowser extends Composite {
                                 if ( propertyLabel != null && !"".equals( propertyLabel ) ) {
                                     Annotation annotation = new AnnotationImpl( getContext().getAnnotationDefinitions().get( AnnotationDefinitionTO.LABEL_ANNOTATION ) );
                                     annotation.setValue( AnnotationDefinitionTO.VALUE_PARAM, propertyLabel );
+                                    property.addAnnotation( annotation );
                                 }
                                 addDataObjectProperty( property );
                                 resetInput();
