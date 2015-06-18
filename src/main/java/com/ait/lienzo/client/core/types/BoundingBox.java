@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.client.core.types;
 
+import java.util.Objects;
+
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
@@ -29,52 +31,73 @@ public final class BoundingBox
         this(Double.MAX_VALUE, Double.MAX_VALUE, Double.MIN_VALUE, Double.MIN_VALUE);
     }
 
-    public BoundingBox(BoundingBox bbox)
+    public BoundingBox(final BoundingBox bbox)
     {
         this();
 
         add(bbox);
     }
 
-    public BoundingBox(double minx, double miny, double maxx, double maxy)
+    public BoundingBox(final double minx, final double miny, final double maxx, final double maxy)
     {
         this(BoundingBoxJSO.make(minx, miny, maxx, maxy));
     }
 
-    public BoundingBox(Point2D point, Point2D... points)
+    public BoundingBox(final Point2D point, final Point2D... points)
     {
         this();
 
         add(point, points);
     }
 
-    public BoundingBox(Point2DArray points)
+    public BoundingBox(final Point2DArray points)
     {
         this();
 
         add(points);
     }
 
-    public BoundingBox(BoundingBoxJSO jso)
+    public BoundingBox(final BoundingBoxJSO jso)
     {
-        m_jso = jso;
+        m_jso = Objects.requireNonNull(jso);
     }
 
-    public final BoundingBox addX(double x)
+    public final boolean isValid()
+    {
+        final double minx = m_jso.getMinX();
+
+        final double maxx = m_jso.getMaxX();
+
+        if ((maxx <= minx) || (maxx == Double.MIN_VALUE) || (minx == Double.MAX_VALUE))
+        {
+            return false;
+        }
+        final double miny = m_jso.getMinY();
+
+        final double maxy = m_jso.getMaxY();
+
+        if ((maxy <= miny) || (maxy == Double.MIN_VALUE) || (miny == Double.MAX_VALUE))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public final BoundingBox addX(final double x)
     {
         m_jso.addX(x);
 
         return this;
     }
 
-    public final BoundingBox addY(double y)
+    public final BoundingBox addY(final double y)
     {
         m_jso.addY(y);
 
         return this;
     }
 
-    public final BoundingBox add(double x, double y)
+    public final BoundingBox add(final double x, final double y)
     {
         m_jso.addX(x);
 
@@ -98,21 +121,29 @@ public final class BoundingBox
         return this;
     }
 
-    public final BoundingBox add(Point2D point, Point2D... points)
+    public final BoundingBox add(final Point2D point, final Point2D... points)
     {
-        m_jso.addX(point.getX());
-
-        m_jso.addY(point.getY());
-
-        final int size = points.length;
-
-        for (int i = 0; i < size; i++)
+        if (null != point)
         {
-            final Point2D p = points[i];
+            m_jso.addX(point.getX());
 
-            m_jso.addX(p.getX());
+            m_jso.addY(point.getY());
+        }
+        if (null != points)
+        {
+            final int size = points.length;
 
-            m_jso.addY(p.getY());
+            for (int i = 0; i < size; i++)
+            {
+                final Point2D p = points[i];
+
+                if (null != p)
+                {
+                    m_jso.addX(p.getX());
+
+                    m_jso.addY(p.getY());
+                }
+            }
         }
         return this;
     }
@@ -127,20 +158,25 @@ public final class BoundingBox
             {
                 final Point2D p = points.get(i);
 
-                m_jso.addX(p.getX());
+                if (null != p)
+                {
+                    m_jso.addX(p.getX());
 
-                m_jso.addY(p.getY());
+                    m_jso.addY(p.getY());
+                }
             }
         }
         return this;
     }
 
-    public final BoundingBox add(Point2D point)
+    public final BoundingBox add(final Point2D point)
     {
-        m_jso.addX(point.getX());
+        if (null != point)
+        {
+            m_jso.addX(point.getX());
 
-        m_jso.addY(point.getY());
-
+            m_jso.addY(point.getY());
+        }
         return this;
     }
 
@@ -156,12 +192,12 @@ public final class BoundingBox
 
     public final double getWidth()
     {
-        return m_jso.getMaxX() - m_jso.getMinX();
+        return Math.abs(m_jso.getMaxX() - m_jso.getMinX());
     }
 
     public final double getHeight()
     {
-        return m_jso.getMaxY() - m_jso.getMinY();
+        return Math.abs(m_jso.getMaxY() - m_jso.getMinY());
     }
 
     public final BoundingBoxJSO getJSO()
@@ -185,13 +221,13 @@ public final class BoundingBox
     }
 
     @Override
-    public String toString()
+    public final String toString()
     {
         return toJSONString();
     }
 
     @Override
-    public boolean equals(Object other)
+    public final boolean equals(final Object other)
     {
         if ((other == null) || (false == (other instanceof BoundingBox)))
         {
@@ -201,13 +237,13 @@ public final class BoundingBox
         {
             return true;
         }
-        BoundingBox that = ((BoundingBox) other);
+        final BoundingBox that = ((BoundingBox) other);
 
         return ((that.getX() == getX()) && (that.getY() == getY()) && (that.getWidth() == getWidth()) && (that.getHeight() == getHeight()));
     }
 
     @Override
-    public int hashCode()
+    public final int hashCode()
     {
         return toJSONString().hashCode();
     }

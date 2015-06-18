@@ -22,6 +22,8 @@ import com.ait.lienzo.client.core.util.Geometry;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 
 public final class PathPartList implements Serializable
 {
@@ -206,6 +208,33 @@ public final class PathPartList implements Serializable
     public final String toJSONString()
     {
         return toJSONArray().toString();
+    }
+
+    public final PathPartList deep()
+    {
+        final JSONValue value = JSONParser.parseStrict(toJSONString());
+
+        if (null == value)
+        {
+            return null;
+        }
+        final JSONArray array = value.isArray();
+
+        if (null != array)
+        {
+            final PathPartList make = new PathPartList((PathPartListJSO) array.getJavaScriptObject(), false);
+
+            make.m_fin = m_fin;
+
+            make.m_mov = m_mov;
+
+            make.m_cpx = m_cpx;
+
+            make.m_cpy = m_cpy;
+
+            return make;
+        }
+        return null;
     }
 
     @Override

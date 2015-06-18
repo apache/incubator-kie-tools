@@ -686,29 +686,41 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            BoundingBox clip = getStorageBounds();
+            BoundingBox bbox = getStorageBounds();
 
-            if (null == clip)
+            if (null == bbox)
             {
                 Viewport viewport = getViewport();
 
                 if (null != viewport)
                 {
-                    clip = viewport.getStorageBounds();
+                    bbox = viewport.getStorageBounds();
                 }
             }
             if (null != layers)
             {
                 final int size = layers.size();
 
+                final IPathClipper clip = getPathClipper();
+
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.save();
+
+                    clip.clip(context);
+                }
                 for (int i = size - 1; i >= 0; i--)
                 {
                     final Layer layer = layers.get(i);
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, clip);
+                        layer.drawWithTransforms(context, 1, bbox);
                     }
+                }
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.restore();
                 }
             }
             return scratch.toDataURL();
@@ -731,15 +743,15 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            BoundingBox clip = getStorageBounds();
+            BoundingBox bbox = getStorageBounds();
 
-            if (null == clip)
+            if (null == bbox)
             {
                 Viewport viewport = getViewport();
 
                 if (null != viewport)
                 {
-                    clip = viewport.getStorageBounds();
+                    bbox = viewport.getStorageBounds();
                 }
             }
             if (null != layers)
@@ -748,7 +760,15 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(context, 1, clip);
+                    background.drawWithTransforms(context, 1, bbox);
+                }
+                final IPathClipper clip = getPathClipper();
+
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.save();
+
+                    clip.clip(context);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -756,8 +776,12 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, clip);
+                        layer.drawWithTransforms(context, 1, bbox);
                     }
+                }
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.restore();
                 }
             }
             return scratch.toDataURL();
@@ -778,29 +802,41 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            BoundingBox clip = getStorageBounds();
+            BoundingBox bbox = getStorageBounds();
 
-            if (null == clip)
+            if (null == bbox)
             {
                 Viewport viewport = getViewport();
 
                 if (null != viewport)
                 {
-                    clip = viewport.getStorageBounds();
+                    bbox = viewport.getStorageBounds();
                 }
             }
             if (null != layers)
             {
                 final int size = layers.size();
 
+                final IPathClipper clip = getPathClipper();
+
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.save();
+
+                    clip.clip(context);
+                }
                 for (int i = size - 1; i >= 0; i--)
                 {
                     final Layer layer = layers.get(i);
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, clip);
+                        layer.drawWithTransforms(context, 1, bbox);
                     }
+                }
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.restore();
                 }
             }
             return scratch.toDataURL(mimetype, 1.0);
@@ -823,15 +859,15 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
             final NFastArrayList<Layer> layers = getChildNodes();
 
-            BoundingBox clip = getStorageBounds();
+            BoundingBox bbox = getStorageBounds();
 
-            if (null == clip)
+            if (null == bbox)
             {
                 Viewport viewport = getViewport();
 
                 if (null != viewport)
                 {
-                    clip = viewport.getStorageBounds();
+                    bbox = viewport.getStorageBounds();
                 }
             }
             if (null != layers)
@@ -840,7 +876,15 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                 if (null != background)
                 {
-                    background.drawWithTransforms(context, 1, clip);
+                    background.drawWithTransforms(context, 1, bbox);
+                }
+                final IPathClipper clip = getPathClipper();
+
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.save();
+
+                    clip.clip(context);
                 }
                 for (int i = size - 1; i >= 0; i--)
                 {
@@ -848,8 +892,12 @@ public class Scene extends ContainerNode<Layer, Scene> implements IJSONSerializa
 
                     if ((null != layer) && (layer.isVisible()))
                     {
-                        layer.drawWithTransforms(context, 1, clip);
+                        layer.drawWithTransforms(context, 1, bbox);
                     }
+                }
+                if ((null != clip) && (clip.isActive()))
+                {
+                    context.restore();
                 }
             }
             return scratch.toDataURL(mimetype, 1.0);

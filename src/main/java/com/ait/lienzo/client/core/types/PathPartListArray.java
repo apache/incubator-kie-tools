@@ -47,6 +47,25 @@ public final class PathPartListArray implements Serializable
         return bbox;
     }
 
+    public final int size()
+    {
+        return m_list.size();
+    }
+
+    public PathPartList get(int index)
+    {
+        return m_list.get(index);
+    }
+
+    public PathPartListArray add(final PathPartList value)
+    {
+        if (null != value)
+        {
+            m_list.add(value);
+        }
+        return this;
+    }
+
     public PathPartListArray clear()
     {
         final int size = m_list.size();

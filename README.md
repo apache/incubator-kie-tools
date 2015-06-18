@@ -33,6 +33,18 @@ SNAPSHOT:
 </dependency>
 ```
 
+RELEASE:
+
+The RC and RELEASE versions will be found in Maven Central
+
+```xml
+<dependency>
+  <groupId>com.ahome-it</groupId>
+  <artifactId>lienzo-core</artifactId>
+  <version>2.0.118-RC1</version>
+</dependency>
+```
+
 Documentation
 
 https://github.com/ahome-it/lienzo-core/wiki

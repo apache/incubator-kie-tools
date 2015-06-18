@@ -588,14 +588,26 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                         context.transform(transform);
                     }
-                    BoundingBox clip = getStorageBounds();
+                    BoundingBox bbox = getStorageBounds();
 
-                    if ((null == clip) || (null != viewport))
+                    if ((null == bbox) || (null != viewport))
                     {
-                        clip = viewport.getStorageBounds();
+                        bbox = viewport.getStorageBounds();
                     }
-                    drawWithTransforms(context, 1, clip);
+                    final IPathClipper clip = getPathClipper();
 
+                    if ((null != clip) && (clip.isActive()))
+                    {
+                        context.save();
+
+                        clip.clip(context);
+                    }
+                    drawWithTransforms(context, 1, bbox);
+
+                    if ((null != clip) && (clip.isActive()))
+                    {
+                        context.restore();
+                    }
                     if (transform != null)
                     {
                         context.restore();
@@ -620,8 +632,18 @@ public class Layer extends ContainerNode<IPrimitive<?>, Layer>
 
                                 context.transform(transform);
                             }
-                            drawWithTransforms(context, 1, clip);
+                            if ((null != clip) && (clip.isActive()))
+                            {
+                                context.save();
 
+                                clip.clip(context);
+                            }
+                            drawWithTransforms(context, 1, bbox);
+
+                            if ((null != clip) && (clip.isActive()))
+                            {
+                                context.restore();
+                            }
                             if (transform != null)
                             {
                                 context.restore();

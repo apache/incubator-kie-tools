@@ -217,9 +217,26 @@ public abstract class ContainerNode<M extends IDrawable<?>, T extends ContainerN
 
         final int size = list.size();
 
-        for (int i = 0; i < size; i++)
+        final IPathClipper clip = getPathClipper();
+
+        if ((null != clip) && (clip.isActive()))
         {
-            list.get(i).drawWithTransforms(context, alpha, bbox);
+            context.save();
+
+            clip.clip(context);
+
+            for (int i = 0; i < size; i++)
+            {
+                list.get(i).drawWithTransforms(context, alpha, bbox);
+            }
+            context.restore();
+        }
+        else
+        {
+            for (int i = 0; i < size; i++)
+            {
+                list.get(i).drawWithTransforms(context, alpha, bbox);
+            }
         }
     }
 
