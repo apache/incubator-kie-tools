@@ -582,4 +582,55 @@ public final class NativeContext2D extends JavaScriptObject
         }
         return fill;
     }-*/;
+    
+    public final native boolean clip(PathPartListJSO list)
+    /*-{
+        var leng = list.length;
+        if (leng < 1) {
+            return false;
+        }
+        var indx = 0;
+        var fill = false;
+        while (indx < leng) {
+            var e = list[indx++];
+            var p = e.points;
+            switch (e.command) {
+                case 1:
+                    this.lineTo(p[0], p[1]);
+                    break;
+                case 2:
+                    this.moveTo(p[0], p[1]);
+                    break;
+                case 3:
+                    this.bezierCurveTo(p[0], p[1], p[2], p[3], p[4], p[5]);
+                    break;
+                case 4:
+                    this.quadraticCurveTo(p[0], p[1], p[2], p[3]);
+                    break;
+                case 5:
+                    var rx = p[2];
+                    var ry = p[3];
+                    var th = p[4];
+                    this.save();
+                    this.translate(p[0], p[1]);
+                    this.rotate(p[6]);
+                    if(rx > ry) {
+                        this.scale(1, (ry / rx));
+                        this.arc(0, 0, rx, th, th + p[5], (1 - p[7]) > 0);
+                    } else {
+                        this.scale((rx / ry), 1);
+                        this.arc(0, 0, ry, th, th + p[5], (1 - p[7]) > 0);
+                    }
+                    this.restore();
+                    break;
+                case 6:
+                    return true;
+                    break;
+                case 7:
+                    this.arcTo(p[0], p[1], p[2], p[3], p[4]);
+                    break;
+            }
+        }
+        return fill;
+    }-*/;
 }

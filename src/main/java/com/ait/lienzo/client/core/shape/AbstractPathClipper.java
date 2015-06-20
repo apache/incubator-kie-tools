@@ -19,8 +19,8 @@ package com.ait.lienzo.client.core.shape;
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.PathPartList;
-import com.ait.lienzo.client.core.types.PathPartListArray;
 import com.ait.tooling.common.api.types.Activatable;
+import com.ait.tooling.nativetools.client.util.Client;
 
 @SuppressWarnings("serial")
 public abstract class AbstractPathClipper extends Activatable implements IPathClipper
@@ -96,52 +96,6 @@ public abstract class AbstractPathClipper extends Activatable implements IPathCl
         return new PathPartListPathClipper(copy);
     }
 
-    public static final IPathClipper make(final PathPartListArray path)
-    {
-        if (null == path)
-        {
-            return null;
-        }
-        final int size = path.size();
-
-        if (size < 1)
-        {
-            return null;
-        }
-        if (size == 1)
-        {
-            final PathPartList copy = deep(path.get(0));
-
-            if (null == copy)
-            {
-                return null;
-            }
-            return new PathPartListPathClipper(copy);
-        }
-        final PathPartListArray list = new PathPartListArray();
-
-        for (int i = 0; i < size; i++)
-        {
-            final PathPartList copy = deep(path.get(i));
-
-            if (null != copy)
-            {
-                list.add(copy);
-            }
-        }
-        if (list.size() == 1)
-        {
-            final PathPartList copy = list.get(0);
-
-            if (null == copy)
-            {
-                return null;
-            }
-            return new PathPartListPathClipper(copy);
-        }
-        return new PathPartListArrayPathClipper(list);
-    }
-
     private static final class BoundingBoxPathClipper extends AbstractPathClipper
     {
         private static final long serialVersionUID = 7860410970267151015L;
@@ -170,6 +124,8 @@ public abstract class AbstractPathClipper extends Activatable implements IPathCl
         @Override
         protected boolean apply(final Context2D context)
         {
+            context.beginPath();
+
             context.rect(m_x, m_y, m_w, m_h);
 
             context.clip();
@@ -188,31 +144,7 @@ public abstract class AbstractPathClipper extends Activatable implements IPathCl
         {
             m_path = path;
 
-            setActive(true);
-        }
-
-        @Override
-        protected boolean apply(final Context2D context)
-        {
-            final boolean fill = context.path(m_path);
-
-            if (fill)
-            {
-                context.clip();
-            }
-            return fill;
-        }
-    }
-
-    private static final class PathPartListArrayPathClipper extends AbstractPathClipper
-    {
-        private static final long       serialVersionUID = -688994989495752351L;
-
-        private final PathPartListArray m_list;
-
-        private PathPartListArrayPathClipper(final PathPartListArray list)
-        {
-            m_list = list;
+            Client.get().info(path.toJSONString());
 
             setActive(true);
         }
@@ -220,14 +152,10 @@ public abstract class AbstractPathClipper extends Activatable implements IPathCl
         @Override
         protected boolean apply(final Context2D context)
         {
-            boolean fill = true;
+            context.beginPath();
 
-            final int size = m_list.size();
+            final boolean fill = context.clip(m_path);
 
-            for (int i = 0; i < size; i++)
-            {
-                fill = (fill && context.path(m_list.get(i)));
-            }
             if (fill)
             {
                 context.clip();

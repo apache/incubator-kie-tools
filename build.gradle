@@ -20,7 +20,7 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 
-version = '2.0.118-RC1'
+version = '2.0.121-SNAPSHOT'
 
 group = 'com.ahome-it'
 
@@ -81,7 +81,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            repository(url: "${sonatype_snapshotURL}") {
                 authentication(userName: "${sonatype_user}", password: "${sonatype_password}")
             }
             pom.project {

@@ -296,6 +296,11 @@ public class Context2D
     {
         return m_jso.path(list.getJSO());
     }
+    
+    public boolean clip(PathPartList list)
+    {
+        return m_jso.clip(list.getJSO());
+    }
 
     public boolean isSupported(String feature)
     {
