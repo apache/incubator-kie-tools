@@ -399,6 +399,57 @@ public final class PathPartList implements Serializable
         return m_box;
     }
 
+    public Point2DArray getPoints()
+    {
+        final int size = size();
+
+        Point2DArray points = new Point2DArray();
+        if (size < 1)
+        {
+            return points;
+        }
+        double oldx = 0;
+        double oldy = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            final PathPartEntryJSO part = get(i);
+
+            final NFastDoubleArrayJSO p = part.getPoints();
+
+            switch (part.getCommand())
+            {
+                case PathPartEntryJSO.LINETO_ABSOLUTE:
+                    points.push(oldx = p.get(0), oldy = p.get(1));
+                    break;
+                case PathPartEntryJSO.MOVETO_ABSOLUTE:
+                    points.push(oldx = p.get(0), oldy = p.get(1));
+                    break;
+                case PathPartEntryJSO.BEZIER_CURVETO_ABSOLUTE:
+                    points.push(oldx = p.get(4), oldy = p.get(5));
+                    break;
+                case PathPartEntryJSO.QUADRATIC_CURVETO_ABSOLUTE:
+                    points.push(oldx = p.get(2), oldy = p.get(3));
+                    break;
+                case PathPartEntryJSO.ARCTO_ABSOLUTE:
+                    points.push(oldx = p.get(8), oldy = p.get(9));
+                    break;
+                case PathPartEntryJSO.CANVAS_ARCTO_ABSOLUTE:
+                    double x0 = p.get(0);
+                    double y0 = p.get(1);
+                    double x1 = p.get(2);
+                    double y1 = p.get(3);
+                    double ra = p.get(4);
+                    Point2D p0 = new Point2D(oldx, oldy);
+                    Point2DArray pa = Geometry.getCanvasArcToPoints(p0, new Point2D(x0, y0), new Point2D(x1, y1), ra);
+                    Point2D ep = pa.get(2); // this is always the end point of the path
+                    points.push(oldx = ep.getX(), oldy =  ep.getY());
+                    break;
+            }
+        }
+        return points;
+    }
+
     public static final class PathPartListJSO extends JsArray<PathPartEntryJSO>
     {
         public static final PathPartListJSO make()

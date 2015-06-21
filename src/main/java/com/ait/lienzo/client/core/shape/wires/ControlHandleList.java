@@ -107,7 +107,7 @@ public final class ControlHandleList extends Activatable implements IControlHand
     }
 
     @Override
-    public void display(final Layer layer)
+    public void show(final Layer layer)
     {
         if (null != layer)
         {
@@ -137,6 +137,35 @@ public final class ControlHandleList extends Activatable implements IControlHand
 
                 m_layer.batch();
             }
+        }
+    }
+
+    @Override
+    public void hide()
+    {
+        int totl = 0;
+
+        final int size = size();
+
+        for (int i = 0; i < size; i++)
+        {
+            final IControlHandle handle = m_chlist.get(i);
+
+            if (null != handle)
+            {
+                IPrimitive<?> prim = handle.getControl();
+
+                if (null != prim)
+                {
+                    prim.removeFromParent();
+
+                    totl++;
+                }
+            }
+        }
+        if (totl > 0)
+        {
+            m_layer.batch();
         }
     }
 

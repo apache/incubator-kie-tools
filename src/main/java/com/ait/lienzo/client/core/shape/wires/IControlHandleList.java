@@ -35,5 +35,7 @@ public interface IControlHandleList extends IActivatable, Iterable<IControlHandl
 
     public void destroy();
 
-    public void display(Layer layer);
+    public void show(Layer layer);
+
+    public void hide();
 }
