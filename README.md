@@ -24,7 +24,7 @@ The RC and RELEASE versions will be found in Maven Central
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.122-RC1</version>
+  <version>2.0.123-RC1</version>
 </dependency>
 ```
 

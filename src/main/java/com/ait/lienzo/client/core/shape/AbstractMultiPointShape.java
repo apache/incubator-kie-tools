@@ -113,7 +113,7 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
             {
                 return null;
             }
-            if (false == types.contains(ControlHandleStandardType.RESIZE))
+            if (false == types.contains(ControlHandleStandardType.POINT))
             {
                 return null;
             }
