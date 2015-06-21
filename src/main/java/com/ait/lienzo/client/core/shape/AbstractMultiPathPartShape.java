@@ -168,15 +168,16 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
     {
         private final NFastArrayList<PathPartList> m_listOfPaths;
 
-        private final Shape                        m_shape;
+        private final Shape<?>                     m_shape;
 
         private IControlHandleList                 m_hlist;
 
         private DragMode                           m_dmode = DragMode.SAME_LAYER;
 
-        public DefaultMultiPathShapeHandleFactory(NFastArrayList<PathPartList> listOfPaths, Shape shape)
+        public DefaultMultiPathShapeHandleFactory(NFastArrayList<PathPartList> listOfPaths, Shape<?> shape)
         {
             m_listOfPaths = listOfPaths;
+
             m_shape = shape;
         }
 
@@ -193,32 +194,37 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             {
                 return null;
             }
-            if ( types.get(0) == IControlHandle.ControlHandleStandardType.RESIZE)
+            if (types.get(0) == IControlHandle.ControlHandleStandardType.RESIZE)
             {
                 m_hlist = getResizeHandles(m_shape, m_listOfPaths, m_dmode);
-                return  m_hlist;
+
+                return m_hlist;
             }
-            else if ( types.get(0) == IControlHandle.ControlHandleStandardType.POINT)
+            else if (types.get(0) == IControlHandle.ControlHandleStandardType.POINT)
             {
                 return getPointHandles();
             }
-
             return new ControlHandleList();
         }
-
 
         public IControlHandleList getPointHandles()
         {
             m_hlist = new ControlHandleList();
+
             NFastArrayList<Point2DArray> allPoints = new NFastArrayList<Point2DArray>();
 
-            Node parent = m_shape.getParent();
+            Node<?> parent = m_shape.getParent();
+
             double offsetX = 0;
+
             double offsetY = 0;
-            if ( parent != null )
+
+            if (null != parent)
             {
                 Point2D absLoc = parent.getAbsoluteLocation();
+
                 offsetX = absLoc.getX();
+
                 offsetY = absLoc.getY();
             }
 
@@ -226,45 +232,54 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             for (PathPartList path : m_listOfPaths)
             {
                 Point2DArray points = path.getPoints();
+
                 BoundingBox box = path.getBoundingBox();
+
                 allPoints.add(points);
                 int entryIndex = 0;
-                for ( Point2D point : points)
+                for (Point2D point : points)
                 {
                     Circle prim = getControlPrimitive(point.getX(), point.getY(), offsetX, offsetY, m_dmode);
-                    PointControlHandle pointHandle = new PointControlHandle(prim, pathIndex, entryIndex++, m_shape, m_listOfPaths, path, m_hlist );
+
+                    PointControlHandle pointHandle = new PointControlHandle(prim, pathIndex, entryIndex++, m_shape, m_listOfPaths, path, m_hlist);
+
                     m_hlist.add(pointHandle);
                 }
                 pathIndex++;
-
             }
-
             return m_hlist;
         }
 
-        public static IControlHandleList getResizeHandles(Shape shape, NFastArrayList<PathPartList> listOfPaths, DragMode dragMode)
+        public static IControlHandleList getResizeHandles(Shape<?> shape, NFastArrayList<PathPartList> listOfPaths, DragMode dragMode)
         {
-            ControlHandleList chlist  = new ControlHandleList();
+            ControlHandleList chlist = new ControlHandleList();
 
             BoundingBox box = shape.getBoundingBox();
 
             final Point2D topLeftPoint = new Point2D(box.getX(), box.getY());
+
             final Point2D topRightPoint = new Point2D(box.getX() + box.getWidth(), box.getY());
+
             final Point2D bottomRightPoint = new Point2D(box.getX() + box.getWidth(), box.getY() + box.getHeight());
+
             final Point2D bottomLeftPoint = new Point2D(box.getX(), box.getY() + box.getHeight());
 
             ArrayList<ResizeControlHandle> orderedChList = new ArrayList<ResizeControlHandle>();
 
-            Node parent = shape.getParent();
+            Node<?> parent = shape.getParent();
+
             double offsetX = 0;
+
             double offsetY = 0;
-            if ( parent != null )
+
+            if (null != parent)
             {
                 Point2D absLoc = parent.getAbsoluteLocation();
+
                 offsetX = absLoc.getX();
+
                 offsetY = absLoc.getY();
             }
-
             Circle prim = getControlPrimitive(topLeftPoint.getX(), topLeftPoint.getY(), offsetX, offsetY, dragMode);
             ResizeControlHandle topLeft = new ResizeControlHandle(prim, chlist, orderedChList, shape, listOfPaths, 0);
             chlist.add(topLeft);
@@ -290,13 +305,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         private static Circle getControlPrimitive(double x, double y, double offsetX, double offsetY, DragMode dragMode)
         {
-            return new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + offsetX).setY(y  + offsetY).setDraggable(true).setDragMode(dragMode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
+            return new Circle(9).setFillColor(ColorName.RED).setFillAlpha(0.4).setX(x + offsetX).setY(y + offsetY).setDraggable(true).setDragMode(dragMode).setStrokeColor(ColorName.BLACK).setStrokeWidth(2);
         }
     }
 
     private static class PointControlHandle extends AbstractControlHandle
     {
-        private final Shape                        m_shape;
+        private final Shape<?>                     m_shape;
 
         private final NFastArrayList<PathPartList> m_listOfPaths;
 
@@ -304,13 +319,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         private final IControlHandleList           m_chlist;
 
-        private final Shape                        m_prim;
+        private final Shape<?>                     m_prim;
 
         private final int                          m_pathIndex;
 
         private final int                          m_entryIndex;
 
-        public PointControlHandle(Shape prim, int pathIndex, int entryIndex, Shape shape, NFastArrayList<PathPartList> listOfPaths, PathPartList plist, IControlHandleList hlist)
+        public PointControlHandle(Shape<?> prim, int pathIndex, int entryIndex, Shape<?> shape, NFastArrayList<PathPartList> listOfPaths, PathPartList plist, IControlHandleList hlist)
         {
             m_shape = shape;
             m_listOfPaths = listOfPaths;
@@ -324,8 +339,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         public void init()
         {
-            PointHandleDragHandler topRightHandler = new PointHandleDragHandler(m_shape, m_listOfPaths, m_chlist,
-                                                                                m_prim, this);
+            PointHandleDragHandler topRightHandler = new PointHandleDragHandler(m_shape, m_listOfPaths, m_chlist, m_prim, this);
             register(m_prim.addNodeDragMoveHandler(topRightHandler));
             register(m_prim.addNodeDragStartHandler(topRightHandler));
             register(m_prim.addNodeDragEndHandler(topRightHandler));
@@ -362,19 +376,19 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     public static class PointHandleDragHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        protected final Shape                               m_shape;
+        protected final Shape<?>                      m_shape;
 
-        private final   NFastArrayList<PathPartList>        m_listOfPaths;
+        private final NFastArrayList<PathPartList>    m_listOfPaths;
 
-        protected final IControlHandleList                  m_chlist;
+        protected final IControlHandleList            m_chlist;
 
-        protected final Shape                               m_prim;
+        protected final Shape<?>                      m_prim;
 
-        protected final PointControlHandle                  m_handle;
+        protected final PointControlHandle            m_handle;
 
-        protected       NFastArrayList<NFastDoubleArrayJSO> m_entries;
+        protected NFastArrayList<NFastDoubleArrayJSO> m_entries;
 
-        public PointHandleDragHandler(Shape shape, NFastArrayList<PathPartList> listOfPaths, IControlHandleList chlist, Shape prim, PointControlHandle handle)
+        public PointHandleDragHandler(Shape<?> shape, NFastArrayList<PathPartList> listOfPaths, IControlHandleList chlist, Shape<?> prim, PointControlHandle handle)
         {
             m_shape = shape;
             m_listOfPaths = listOfPaths;
@@ -387,8 +401,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
         public void onNodeDragStart(NodeDragStartEvent event)
         {
             copyDoubles();
-
-            Node parent = m_shape.getParent();
 
             if ((m_handle.isActive()) && (m_chlist.isActive()))
             {
@@ -422,7 +434,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                         break;
                     }
                 }
-
                 m_shape.refresh();
                 m_shape.getLayer().draw();
             }
@@ -434,19 +445,20 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             if ((m_handle.isActive()) && (m_chlist.isActive()))
             {
                 NFastArrayList<PathPartList> lists = m_listOfPaths;
+
                 for (PathPartList list : lists)
                 {
                     list.resetBoundingBox();
                 }
-
                 m_prim.setFillColor(ColorName.RED);
+
                 m_prim.getLayer().draw();
             }
         }
 
         private void copyDoubles()
         {
-            m_entries = new NFastArrayList();
+            m_entries = new NFastArrayList<NFastDoubleArrayJSO>();
             NFastArrayList<PathPartList> lists = m_listOfPaths;
             for (PathPartList list : lists)
             {
@@ -484,7 +496,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     private static class ResizeControlHandle extends AbstractControlHandle
     {
-        private final Shape                          m_shape;
+        private final Shape<?>                       m_shape;
 
         private final NFastArrayList<PathPartList>   m_listOfPaths;
 
@@ -492,11 +504,11 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         private final ArrayList<ResizeControlHandle> m_orderedChList;
 
-        private final Shape                          m_prim;
+        private final Shape<?>                       m_prim;
 
         private int                                  m_position;
 
-        public ResizeControlHandle(Circle prim, IControlHandleList hlist, ArrayList<ResizeControlHandle> orderedChList, Shape shape, NFastArrayList<PathPartList> listOfPaths, int position)
+        public ResizeControlHandle(Circle prim, IControlHandleList hlist, ArrayList<ResizeControlHandle> orderedChList, Shape<?> shape, NFastArrayList<PathPartList> listOfPaths, int position)
         {
             m_prim = prim;
             m_chlist = hlist;
@@ -509,8 +521,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         public void init()
         {
-            ResizeHandleDragHandler topRightHandler = new ResizeHandleDragHandler(m_shape, m_listOfPaths, m_chlist,
-                                                                                  m_prim, this);
+            ResizeHandleDragHandler topRightHandler = new ResizeHandleDragHandler(m_shape, m_listOfPaths, m_chlist, m_prim, this);
             register(m_prim.addNodeDragMoveHandler(topRightHandler));
             register(m_prim.addNodeDragStartHandler(topRightHandler));
             register(m_prim.addNodeDragEndHandler(topRightHandler));
@@ -544,7 +555,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             return ControlHandleStandardType.RESIZE;
         }
 
-        public Shape getPrimitive()
+        public Shape<?> getPrimitive()
         {
             return m_prim;
         }
@@ -657,13 +668,13 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
     public static class ResizeHandleDragHandler implements NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private final Shape                         m_shape;
+        private final Shape<?>                      m_shape;
 
         private final NFastArrayList<PathPartList>  m_listOfPaths;
 
         private final IControlHandleList            m_chlist;
 
-        private final Shape                         m_prim;
+        private final Shape<?>                      m_prim;
 
         private final ResizeControlHandle           m_handle;
 
@@ -677,13 +688,14 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         private NFastArrayList<NFastDoubleArrayJSO> m_entries;
 
-        private double m_offsetX;
-        private double m_offsetY;
+        private double                              m_offsetX;
 
-        public ResizeHandleDragHandler(Shape shape, NFastArrayList<PathPartList> listOfPaths, IControlHandleList chlist, Shape prim, ResizeControlHandle handle)
+        private double                              m_offsetY;
+
+        public ResizeHandleDragHandler(Shape<?> shape, NFastArrayList<PathPartList> listOfPaths, IControlHandleList chlist, Shape<?> prim, ResizeControlHandle handle)
         {
             m_shape = shape;
-            m_listOfPaths =  listOfPaths;
+            m_listOfPaths = listOfPaths;
             m_chlist = chlist;
             m_prim = prim;
             m_handle = handle;
@@ -699,14 +711,14 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             m_boxStartWidth = box.getWidth();
             m_boxStartHeight = box.getHeight();
 
-            Node parent = m_shape.getParent();
-            if ( parent != null )
+            Node<?> parent = m_shape.getParent();
+
+            if (null != parent)
             {
                 Point2D absLoc = parent.getAbsoluteLocation();
                 m_offsetX = absLoc.getX();
                 m_offsetY = absLoc.getY();
             }
-
             repositionAndResortHandles(box);
 
             copyDoubles();
@@ -732,7 +744,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             ResizeControlHandle topLeft = m_handle.m_orderedChList.get(0);
             for (ResizeControlHandle handle : m_handle.m_orderedChList)
             {
-                if ( handle.getPrimitive().getX() <= x && handle.getPrimitive().getY() <= y )
+                if (handle.getPrimitive().getX() <= x && handle.getPrimitive().getY() <= y)
                 {
                     x = handle.getPrimitive().getX();
                     y = handle.getPrimitive().getY();
@@ -746,7 +758,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             ResizeControlHandle topRight = m_handle.m_orderedChList.get(0);
             for (ResizeControlHandle handle : m_handle.m_orderedChList)
             {
-                if ( handle.getPrimitive().getX() >= x && handle.getPrimitive().getY() <= y )
+                if (handle.getPrimitive().getX() >= x && handle.getPrimitive().getY() <= y)
                 {
                     x = handle.getPrimitive().getX();
                     y = handle.getPrimitive().getY();
@@ -760,7 +772,7 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             ResizeControlHandle bottomRight = m_handle.m_orderedChList.get(0);
             for (ResizeControlHandle handle : m_handle.m_orderedChList)
             {
-                if ( handle.getPrimitive().getX() >= x && handle.getPrimitive().getY() >= y )
+                if (handle.getPrimitive().getX() >= x && handle.getPrimitive().getY() >= y)
                 {
                     x = handle.getPrimitive().getX();
                     y = handle.getPrimitive().getY();
@@ -769,13 +781,12 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
             }
             bottomRight.setPosition(2);
 
-
             x = m_handle.m_orderedChList.get(0).getPrimitive().getX();
             y = m_handle.m_orderedChList.get(0).getPrimitive().getY();
             ResizeControlHandle bottomLeft = m_handle.m_orderedChList.get(0);
             for (ResizeControlHandle handle : m_handle.m_orderedChList)
             {
-                if ( handle.getPrimitive().getX() <= x && handle.getPrimitive().getY() >= y )
+                if (handle.getPrimitive().getX() <= x && handle.getPrimitive().getY() >= y)
                 {
                     x = handle.getPrimitive().getX();
                     y = handle.getPrimitive().getY();
@@ -786,7 +797,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
             Collections.sort(m_handle.m_orderedChList, new Comparator<ResizeControlHandle>()
             {
-                @Override public int compare(ResizeControlHandle h1, ResizeControlHandle h2)
+                @Override
+                public int compare(ResizeControlHandle h1, ResizeControlHandle h2)
                 {
                     if (h1.getPosition() > h2.getPosition())
                     {
@@ -824,12 +836,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                             {
                                 NFastDoubleArrayJSO doubles = m_entries.get(i);
                                 double x = doubles.get(0);
-                                double newX = m_handle.getX(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight,
-                                                            x, dx);
+                                double newX = m_handle.getX(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, x, dx);
 
                                 double y = doubles.get(1);
-                                double newY = m_handle.getY(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight,
-                                                            y, dy);
+                                double newY = m_handle.getY(m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight, y, dy);
 
                                 points.set(0, newX);
                                 points.set(1, newY);
@@ -838,10 +848,10 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                         }
                     }
                 }
-
                 m_handle.updateOtherHandles(dx, dy, m_offsetX, m_offsetY, m_boxStartX, m_boxStartY, m_boxStartWidth, m_boxStartHeight);
 
                 m_shape.refresh();
+
                 m_shape.getLayer().draw();
             }
         }
@@ -855,7 +865,6 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
                 {
                     list.resetBoundingBox();
                 }
-
                 m_prim.setFillColor(ColorName.RED);
                 m_prim.getLayer().draw();
             }
@@ -863,7 +872,8 @@ public abstract class AbstractMultiPathPartShape<T extends AbstractMultiPathPart
 
         private void copyDoubles()
         {
-            m_entries = new NFastArrayList();
+            m_entries = new NFastArrayList<NFastDoubleArrayJSO>();
+
             for (PathPartList list : m_listOfPaths)
             {
                 for (int i = 0; i < list.size(); i++)

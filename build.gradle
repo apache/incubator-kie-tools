@@ -20,7 +20,7 @@ apply plugin: 'signing'
 
 sourceCompatibility = 1.7
 
-version = '2.0.121-RC1'
+version = '2.0.122-RC1'
 
 group = 'com.ahome-it'
 

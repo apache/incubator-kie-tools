@@ -16,23 +16,6 @@ Lienzo provides an amazingly large number of features out the box:
 
 Downloading artifacts
 
-SNAPSHOT:
-
-```xml
-<repositories>
-  <repository>
-  <id>sonatype</id>
-  <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-  </repository>
-</repositories>
-
-<dependency>
-  <groupId>com.ahome-it</groupId>
-  <artifactId>lienzo-core</artifactId>
-  <version>2.0.121-SNAPSHOT</version>
-</dependency>
-```
-
 RELEASE:
 
 The RC and RELEASE versions will be found in Maven Central
@@ -41,7 +24,7 @@ The RC and RELEASE versions will be found in Maven Central
 <dependency>
   <groupId>com.ahome-it</groupId>
   <artifactId>lienzo-core</artifactId>
-  <version>2.0.121-RC1</version>
+  <version>2.0.122-RC1</version>
 </dependency>
 ```
 
