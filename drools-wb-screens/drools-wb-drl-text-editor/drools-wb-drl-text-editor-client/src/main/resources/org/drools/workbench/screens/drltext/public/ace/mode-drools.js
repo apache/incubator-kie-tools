@@ -1196,25 +1196,35 @@ var DroolsHighlightRules = function() {
         this.$rules = {
         "start" : [
             {
+                token : "constant.language.attributes",
+                regex : "@[a-zA-Z0-9_]+"
+            },
+            {
                 token : "comment",
                 regex : "\\/\\/.*$"
-            }, {
+            },
+            {
                 token : "comment", // multi line comment
                 regex : "\\/\\*",
                 next : "comment"
-            }, {
+            }, 
+            {
                 token : "string", // single line
                 regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
-            }, {
+            },
+            {
                 token : "string", // single line
                 regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
-            }, {
+            },
+            {
                 token : "constant.numeric", // hex
                 regex : "0[xX][0-9a-fA-F]+\\b"
-            }, {
+            },
+            {
                 token : "constant.numeric", // float
                 regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-            }, {
+            },
+            {
                 token : "constant.language.boolean",
                 regex : "(?:true|false)\\b"
             },
@@ -1249,8 +1259,7 @@ var DroolsHighlightRules = function() {
                 regex : ".*?\\*\\/",
                 next : "start"
             }, {
-                token : "comment", // comment spanning whole line
-                regex : ".+"
+                defaultToken : "comment"
             }
         ]
     };
@@ -1269,37 +1278,51 @@ var DroolsHighlightRules = function() {
     var DroolsRuleAttributes = {
         "start" : [
             {
+                token : "constant.language.attributes",
+                regex : "@[a-zA-Z0-9_]+"
+            },
+            {
                 token : "comment",
                 regex : "\\/\\/.*$"
-            }, {
+            }, 
+            {
                 token : "comment", // multi line comment
                 regex : "\\/\\*",
                 next : "comment"
-            }, {
+            }, 
+            {
                 token : "string", // single line
                 regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
-            }, {
+            }, 
+            {
                 token : "string", // single line
                 regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
-            }, {
+            },
+            {
                 token : "constant.numeric", // hex
                 regex : "0[xX][0-9a-fA-F]+\\b"
-            }, {
+            },
+            {
                 token : "constant.numeric", // float
                 regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-            }, {
+            }, 
+            {
                 token : "constant.language.boolean",
                 regex : "(?:true|false)"
-            }, {
+            }, 
+            {
                 token : attributeKeywordMapper,
                 regex : "[a-zA-Z_$]+[\\-]*[a-zA-Z0-9_$]+[\\-]*[a-zA-Z0-9_$]+\\b"
-            }, {
+            },
+            {
                 token : "lparen",
                 regex : "[[({]"
-            }, {
+            },
+            {
                 token : "rparen",
                 regex : "[\\])}]"
-            }, {
+            }, 
+            {
                 token : "text",
                 regex : "\\s+"
             }
@@ -1309,9 +1332,9 @@ var DroolsHighlightRules = function() {
                 token : "comment", // closing comment
                 regex : ".*?\\*\\/",
                 next : "start"
-            }, {
-                token : "comment", // comment spanning whole line
-                regex : ".+"
+            },
+            {
+                defaultToken : "comment"
             }
         ]
     };
@@ -1329,8 +1352,32 @@ var DroolsHighlightRules = function() {
 
     this.embedRules(JavaHighlightRules, "java-", [
         {
+            token : "constant.language.attributes",
+            regex : "@[a-zA-Z0-9_]+"
+        },
+        {
+            token: "keyword",
+            regex: "drools\\b"
+        },
+        {
             token: "keyword",
             regex: "modify\\b"
+        },
+        {
+            token: "keyword",
+            regex: "insert\\b"
+        },
+        {
+            token: "keyword",
+            regex: "insertLogical\\b"
+        },
+        {
+            token: "keyword",
+            regex: "update\\b"
+        },
+        {
+            token: "keyword",
+            regex: "retract\\b"
         },
         {
             token: "keyword",
