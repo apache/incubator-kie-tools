@@ -28,12 +28,12 @@
 </span>
 <div class="container">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-sm-12">
       <div id="brand">
         <img src="org.uberfire.UberfireShowcase/images/uf.png" alt="Uberfire UI Framework">
       </div>
     </div>
-    <div class="col-md-4 login">
+    <div class="col-sm-7 col-md-6 col-lg-5 login">
       <% if (request.getParameter( FormAuthenticationScheme.LOGIN_ERROR_QUERY_PARAM ) != null) { %>
         <div class="alert alert-danger">
         <span class="pficon-layered">
@@ -45,32 +45,32 @@
       <% } %>
       <form class="form-horizontal" role="form" action="uf_security_check" method="post">
         <div class="form-group">
-          <label for="uf_username" class="col-md-2 control-label">Username</label>
-          <div class="col-md-10">
+          <label for="uf_username" class="col-sm-2 col-md-2 control-label">Username</label>
+          <div class="col-sm-10 col-md-10">
             <input type="text" class="form-control" id="uf_username" name="uf_username" placeholder="admin" tabindex="1" autofocus>
           </div>
         </div>
         <div class="form-group">
-          <label for="uf_password" class="col-md-2 control-label">Password</label>
-          <div class="col-md-10">
+          <label for="uf_password" class="col-sm-2 col-md-2 control-label">Password</label>
+          <div class="col-sm-10 col-md-10">
             <input type="password" class="form-control" id="uf_password" name="uf_password" placeholder="admin" tabindex="2">
           </div>
         </div>
         <div class="form-group">
-          <div class="col-md-offset-2 col-md-7">
+          <div class="col-xs-8 col-sm-offset-2 col-sm-6 col-md-offset-2 col-md-6">
             <div class="checkbox">
               <label>
                 <input id="nosplash" name="nosplash" type="checkbox" tabindex="3"> Deactivate Splash Screen
               </label>
             </div>
           </div>
-          <div class="col-md-3 submit">
+          <div class="col-xs-4 col-sm-4 col-md-4 submit">
             <button type="submit" class="btn btn-primary btn-lg" tabindex="4">Log In</button>
           </div>
         </div>
       </form>
     </div>
-    <div class="col-md-8 details">
+    <div class="col-sm-5 col-md-6 col-lg-7 details">
       <p><strong>Welcome to UberFire Showcase!</strong></p>
     </div>
   </div>
