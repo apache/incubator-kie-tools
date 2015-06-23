@@ -59,7 +59,7 @@ public interface MenuVisitor {
     /**
      * Visits a menu item that has an associated command.
      *
-     * @param menuItemPlain the plain menu item to visit.
+     * @param menuItemCommand the command menu item to visit.
      */
     void visit( MenuItemCommand menuItemCommand );
 
