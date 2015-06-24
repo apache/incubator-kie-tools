@@ -1012,10 +1012,8 @@ public class ProjectScreenPresenter
     }
 
     private void enableBuildAndDeploy( boolean enabled ) {
-        if ( Boolean.TRUE.equals( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) ) &&
-                buildOptions.getMenuWiget().getWidgetCount() > 1 ) {
+        if ( Boolean.TRUE.equals( ApplicationPreferences.getBooleanPref( "support.runtime.deploy" ) )) {
             buildOptions.getMenuWiget().getWidget( 2 ).setVisible( enabled );
-
         }
     }
 
