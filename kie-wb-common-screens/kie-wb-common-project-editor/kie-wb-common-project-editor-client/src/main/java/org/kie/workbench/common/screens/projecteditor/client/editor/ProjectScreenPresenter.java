@@ -16,20 +16,24 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
+import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.F_PROJECT_AUTHORING_BUILDANDDEPLOY;
+import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.F_PROJECT_AUTHORING_COPY;
+import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.F_PROJECT_AUTHORING_DELETE;
+import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.F_PROJECT_AUTHORING_RENAME;
+import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.F_PROJECT_AUTHORING_SAVE;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentDelete;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentRename;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import com.github.gwtbootstrap.client.ui.DropdownButton;
-import com.github.gwtbootstrap.client.ui.NavLink;
-import com.github.gwtbootstrap.client.ui.constants.ButtonType;
-import com.github.gwtbootstrap.client.ui.constants.IconType;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 import org.guvnor.asset.management.service.AssetManagementService;
 import org.guvnor.common.services.project.builder.model.BuildResults;
@@ -43,7 +47,11 @@ import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.util.CreationalCallback;
 import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.async.AsyncBeanDef;
+import org.jboss.errai.ioc.client.container.async.AsyncBeanManager;
+import org.kie.workbench.common.screens.projecteditor.client.editor.extension.BuildOptionExtension;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
@@ -64,6 +72,7 @@ import org.uberfire.client.mvp.LockTarget;
 import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.file.CommandWithFileNameAndCommitMessage;
 import org.uberfire.ext.editor.commons.client.file.CopyPopup;
 import org.uberfire.ext.editor.commons.client.file.DeletePopup;
@@ -88,8 +97,12 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import static org.kie.workbench.common.screens.projecteditor.security.ProjectEditorFeatures.*;
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
+import com.github.gwtbootstrap.client.ui.DropdownButton;
+import com.github.gwtbootstrap.client.ui.NavLink;
+import com.github.gwtbootstrap.client.ui.constants.ButtonType;
+import com.github.gwtbootstrap.client.ui.constants.IconType;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -126,10 +139,11 @@ public class ProjectScreenPresenter
     private Caller<AssetManagementService> assetManagementServices;
 
     private DropdownButton buildOptions;
+    private Collection<Widget> buildExtensions;
 
     private ProjectContext             workbenchContext;
     private ProjectContextChangeHandle projectContextChangeHandle;
-    
+
     private Instance<LockManager> lockManagerInstanceProvider;
     private Map<Widget, LockManager> lockManagers = new HashMap<Widget, LockManager>();
 
@@ -198,6 +212,73 @@ public class ProjectScreenPresenter
             }
         };
     }
+
+    private void configureBuildExtensions( Project project, DropdownButton buildDropdownButton ) {
+        cleanExtensions();
+
+        if ( project == null ) {
+            buildExtensions = null;
+            return;
+        }
+
+        Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> pair = getBuildExtensions();
+        Collection<BuildOptionExtension> allExtensions = pair.getK1();
+        Collection<BuildOptionExtension> dependentScopedExtensions = pair.getK2();
+
+        buildExtensions = new ArrayList<Widget>( allExtensions.size() );
+
+        for ( BuildOptionExtension ext : allExtensions ) {
+            for ( Widget option : ext.getBuildOptions( project ) ) {
+                buildExtensions.add( option );
+                buildDropdownButton.add( option );
+            }
+        }
+
+        destroyExtensions( dependentScopedExtensions );
+    }
+
+    private void cleanExtensions() {
+        if ( buildExtensions != null && buildOptions != null ) {
+            for ( Widget ext : buildExtensions ) {
+                buildOptions.remove( ext );
+            }
+        }
+    }
+
+    private Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> getBuildExtensions() {
+        AsyncBeanManager beanManager = IOC.getAsyncBeanManager();
+        Collection<AsyncBeanDef<BuildOptionExtension>> beans = beanManager.lookupBeans( BuildOptionExtension.class );
+        final Collection<BuildOptionExtension> dependentScoped = new ArrayList<BuildOptionExtension>( beans.size() );
+        final Collection<BuildOptionExtension> instances = new ArrayList<BuildOptionExtension>( beans.size() );
+
+        for ( final AsyncBeanDef<BuildOptionExtension> bean : beans ) {
+            /*
+             * We are assuming that extensions are not marked with @LoadAsync.
+             * Thus getInstance will immediately invoke the callback.
+             */
+            bean.getInstance( new CreationalCallback<BuildOptionExtension>() {
+
+                @Override
+                public void callback( BuildOptionExtension extension ) {
+                    instances.add( extension );
+                    if ( bean.getScope().equals( Dependent.class ) ) {
+                        dependentScoped.add( extension );
+                    }
+                }
+            } );
+        }
+
+        return new Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>>( instances, dependentScoped );
+    }
+
+    private void destroyExtensions( Collection<BuildOptionExtension> extensions ) {
+        AsyncBeanManager beanManager = IOC.getAsyncBeanManager();
+
+        for ( BuildOptionExtension ext : extensions ) {
+            beanManager.destroyBean( ext );
+        }
+    }
+
 
     private boolean isRepositoryManaged() {
         Boolean isRepositoryManaged = Boolean.FALSE;
@@ -310,6 +391,8 @@ public class ProjectScreenPresenter
         if ( model == null ) {
             view.showGAVPanel();
         }
+
+        configureBuildExtensions( project, buildOptions );
     }
 
     private void updateEditorTitle() {
