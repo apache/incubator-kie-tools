@@ -195,7 +195,7 @@ public class ProjectScreenPresenter
         this.buildOptions = view.getBuildOptionsButton();
 
         makeMenuBar();
-        
+
         reloadRunnable = new Runnable() {
 
             @Override
@@ -203,7 +203,7 @@ public class ProjectScreenPresenter
                 ProjectScreenPresenter.this.reload();
             }
         };
-        
+
         titleProvider = new TitleProvider() {
 
             @Override
@@ -295,7 +295,7 @@ public class ProjectScreenPresenter
         this.placeRequest = placeRequest;
         update();
     }
-    
+
     @OnMayClose
     public boolean onMayClose() {
         if (isDirty()) {
@@ -311,7 +311,7 @@ public class ProjectScreenPresenter
             lockManager.releaseLock();
         }
     }
-    
+
     private void update() {
         if (workbenchContext.getActiveProject() == null) {
             disableMenus();
@@ -400,12 +400,12 @@ public class ProjectScreenPresenter
                 model.getPOM().getGav().getArtifactId() + ":" +
                         model.getPOM().getGav().getGroupId() + ":" +
                         model.getPOM().getGav().getVersion() );
-        
+
         changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent(
                 placeRequest,
                 title ) );
     }
-    
+
     private void updateCurrentView() {
         if ( view.showsGAVPanel() ) {
             onGAVPanelSelected();
@@ -421,7 +421,7 @@ public class ProjectScreenPresenter
         }
         else if ( view.showsKBasePanel() ) {
             onKBasePanelSelected();
-        } 
+        }
         else if ( view.showsKBaseMetadataPanel() ) {
             onKBaseMetadataPanelSelected();
         }
@@ -1046,14 +1046,14 @@ public class ProjectScreenPresenter
             }
         } ).validateVersion( version );
     }
-    
+
     private void acquireLockOnDemand(final Path path, final Widget widget) {
         final LockManager lockManager = getOrCreateLockManager( widget );
         final LockTarget lockTarget = new LockTarget(path, widget, placeRequest, titleProvider, reloadRunnable );
         lockManager.init( lockTarget );
         lockManager.acquireLockOnDemand();
     }
-    
+
     private LockManager getOrCreateLockManager(final Widget widget) {
         LockManager lockManager = lockManagers.get( widget );
         if (lockManager == null) {
@@ -1062,5 +1062,5 @@ public class ProjectScreenPresenter
         }
         return lockManager;
     }
-    
+
 }
