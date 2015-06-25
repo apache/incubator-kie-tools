@@ -134,6 +134,14 @@
       </modules>
     </module>
     <module id="${rootArtifactId}-showcase" dir="__rootArtifactId__-showcase" name="${rootArtifactId}-showcase">
+      <fileSets>
+        <fileSet encoding="UTF-8">
+          <directory></directory>
+          <includes>
+            <include>.gitignore</include>
+          </includes>
+        </fileSet>
+      </fileSets>
       <modules>
         <module id="${rootArtifactId}-webapp" dir="__rootArtifactId__-webapp" name="${rootArtifactId}-webapp">
           <fileSets>
