@@ -53,14 +53,14 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
@@ -129,9 +129,9 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
 
     @PostConstruct
     public void initialiseTypeConversionMetaData() {
-        final List<PropertyTypeTO> baseTypes = modellerService.getBasePropertyTypes();
+        final List<PropertyType> baseTypes = modellerService.getBasePropertyTypes();
         if ( baseTypes != null ) {
-            for ( PropertyTypeTO type : baseTypes ) {
+            for ( PropertyType type : baseTypes ) {
                 orderedBaseTypes.put( type.getName(), type.getClassName() );
             }
         }
@@ -325,7 +325,7 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             final Map<String, String> values = annotationMetaModel.values;
 
             Annotation annotation;
-            String key = AnnotationDefinitionTO.VALUE_PARAM;
+            String key = DroolsDomainAnnotations.VALUE_PARAM;
             String value = "";
 
             if ( values.size() > 0 ) {
@@ -334,15 +334,15 @@ public class DecisionTableXLSToDecisionTableGuidedConverter implements DecisionT
             }
 
             if ( "Role".equals( name ) ) {
-                annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ) );
+                annotation = new AnnotationImpl( annotationDefinitions.get( DroolsDomainAnnotations.ROLE_ANNOTATION ) );
                 annotation.setValue( key, value );
                 dataObject.addAnnotation( annotation );
             } else if ( "Position".equals( name ) ) {
-                annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.POSITION_ANNOTATION ) );
+                annotation = new AnnotationImpl( annotationDefinitions.get( DroolsDomainAnnotations.POSITION_ANNOTATION ) );
                 annotation.setValue( key, value );
                 dataObject.addAnnotation( annotation );
             } else if ( "Equals".equals( name ) ) {
-                annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.KEY_ANNOTATION ) );
+                annotation = new AnnotationImpl( annotationDefinitions.get( DroolsDomainAnnotations.KEY_ANNOTATION ) );
                 annotation.setValue( key, value );
                 dataObject.addAnnotation( annotation );
             }

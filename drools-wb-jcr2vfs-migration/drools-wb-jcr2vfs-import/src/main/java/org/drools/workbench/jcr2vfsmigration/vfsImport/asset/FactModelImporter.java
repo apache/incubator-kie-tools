@@ -26,14 +26,14 @@ import org.drools.workbench.jcr2vfsmigration.util.MigrationPathManager;
 import org.drools.workbench.jcr2vfsmigration.xml.model.Module;
 import org.drools.workbench.jcr2vfsmigration.xml.model.asset.DataModelAsset;
 import org.guvnor.common.services.project.service.ProjectService;
-import org.kie.workbench.common.screens.datamodeller.model.AnnotationDefinitionTO;
-import org.kie.workbench.common.screens.datamodeller.model.PropertyTypeTO;
+import org.kie.workbench.common.screens.datamodeller.model.droolsdomain.DroolsDomainAnnotations;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
+import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.AnnotationImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
@@ -126,7 +126,7 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
                 Annotation annotation;
 
                 if ( "Role".equals( name ) ) {
-                    annotation = new AnnotationImpl( annotationDefinitions.get( AnnotationDefinitionTO.ROLE_ANNOTATION ) );
+                    annotation = new AnnotationImpl( annotationDefinitions.get( DroolsDomainAnnotations.ROLE_ANNOTATION ) );
                     annotation.setValue( key, value );
                 }
             }
@@ -139,9 +139,9 @@ public class FactModelImporter implements AssetImporter<DataModelAsset> {
     }
 
     private void initBasePropertyTypes() {
-        List<PropertyTypeTO> baseTypes = modelerService.getBasePropertyTypes();
+        List<PropertyType> baseTypes = modelerService.getBasePropertyTypes();
         if ( baseTypes != null ) {
-            for ( PropertyTypeTO type : baseTypes ) {
+            for ( PropertyType type : baseTypes ) {
                 orderedBaseTypes.put( type.getName(), type.getClassName() );
             }
         }
