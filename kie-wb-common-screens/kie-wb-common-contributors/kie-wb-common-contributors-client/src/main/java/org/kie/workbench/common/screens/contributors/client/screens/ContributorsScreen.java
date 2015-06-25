@@ -59,7 +59,7 @@ public class ContributorsScreen {
         checkNotNull("event", event);
 
         String targetUUID = event.getDataSetDef().getUUID();
-        if (ContributorsDataSets.ALL.equals(targetUUID)) {
+        if (ContributorsDataSets.GIT_CONTRIB.equals(targetUUID)) {
             workbenchNotification.fire(new NotificationEvent(ContributorsConstants.INSTANCE.contributorsDataSetOutdated(), INFO));
             contributorsView.redraw();
         }

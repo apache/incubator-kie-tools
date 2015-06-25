@@ -27,6 +27,7 @@ import org.dashbuilder.displayer.client.DisplayerHelper;
 import org.dashbuilder.renderer.client.DefaultRenderer;
 import org.kie.workbench.common.screens.contributors.client.resources.i18n.ContributorsConstants;
 
+import static org.dashbuilder.displayer.Position.*;
 import static org.dashbuilder.dataset.date.DayOfWeek.*;
 import static org.dashbuilder.dataset.group.DateIntervalType.*;
 import static org.dashbuilder.dataset.sort.SortOrder.*;
@@ -80,7 +81,7 @@ public class ContributorsView extends Composite {
 
         areaChartByDate = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newAreaChartSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_DATE).dynamic(80, MONTH, true)
                 .column(COLUMN_DATE, ContributorsConstants.INSTANCE.date())
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
@@ -93,7 +94,7 @@ public class ContributorsView extends Composite {
 
         bubbleChartByOrg = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newBubbleChartSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_ORG)
                 .column(COLUMN_ORG, ContributorsConstants.INSTANCE.organizationalUnit())
                 .column(COLUMN_REPO, DISTINCT).format(ContributorsConstants.INSTANCE.numberOfRepositories(), "#,##0")
@@ -109,7 +110,7 @@ public class ContributorsView extends Composite {
 
         pieChartYears = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newPieChartSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_DATE).dynamic(YEAR, false)
                 .column(COLUMN_DATE)
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
@@ -118,12 +119,13 @@ public class ContributorsView extends Composite {
                 .titleVisible(false)
                 .width(230).height(170)
                 .margins(0, 0, 10, 5)
+                .legendOn(RIGHT)
                 .filterOn(false, true, false)
                 .buildSettings());
 
         pieChartQuarters = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newPieChartSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_DATE).fixed(QUARTER, false)
                 .column(COLUMN_DATE)
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
@@ -131,12 +133,13 @@ public class ContributorsView extends Composite {
                 .titleVisible(false)
                 .width(230).height(170)
                 .margins(0, 0, 5, 5)
+                .legendOn(RIGHT)
                 .filterOn(false, true, false)
                 .buildSettings());
 
         barChartDayOfWeek = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newBarChartSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_DATE).fixed(DAY_OF_WEEK, false).firstDay(SUNDAY)
                 .column(COLUMN_DATE)
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
@@ -144,12 +147,13 @@ public class ContributorsView extends Composite {
                 .titleVisible(false)
                 .width(230).height(170)
                 .margins(0, 10, 70, 0)
+                .subType_Bar()
                 .filterOn(false, true, true)
                 .buildSettings());
 
         tableAll = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newTableSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .column(COLUMN_AUTHOR, ContributorsConstants.INSTANCE.author())
                 .column(COLUMN_REPO, ContributorsConstants.INSTANCE.repository())
                 .column(COLUMN_DATE, ContributorsConstants.INSTANCE.date())
@@ -165,7 +169,7 @@ public class ContributorsView extends Composite {
 
         orgSelector = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newSelectorSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_ORG)
                 .column(COLUMN_ORG, ContributorsConstants.INSTANCE.organizationalUnit())
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
@@ -176,7 +180,7 @@ public class ContributorsView extends Composite {
 
         repoSelector = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newSelectorSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_REPO)
                 .column(COLUMN_REPO, ContributorsConstants.INSTANCE.repository())
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
@@ -187,7 +191,7 @@ public class ContributorsView extends Composite {
 
         authorSelector = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newSelectorSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_AUTHOR)
                 .column(COLUMN_AUTHOR, ContributorsConstants.INSTANCE.author())
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
@@ -198,11 +202,11 @@ public class ContributorsView extends Composite {
 
         topAuthorSelector = DisplayerHelper.lookupDisplayer(
                 DisplayerSettingsFactory.newSelectorSettings()
-                .dataset(ALL)
+                .dataset(GIT_CONTRIB)
                 .group(COLUMN_AUTHOR)
                 .column(COLUMN_AUTHOR, ContributorsConstants.INSTANCE.topContributor())
                 .column(COUNT, "#commits").format(ContributorsConstants.INSTANCE.numberOfCommits(), "#,##0")
-                .sort(ContributorsConstants.INSTANCE.numberOfCommits(), DESCENDING)
+                .sort("#commits", DESCENDING)
                 .title(ContributorsConstants.INSTANCE.topContributor())
                 .filterOn(false, true, true)
                 .buildSettings());

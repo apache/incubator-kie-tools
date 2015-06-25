@@ -20,28 +20,31 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetBuilder;
 import org.dashbuilder.dataset.DataSetFactory;
-import org.dashbuilder.dataset.DataSetManager;
+import org.dashbuilder.dataset.DataSetGenerator;
+import org.dashbuilder.dataset.def.DataColumnDef;
+import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.def.DataSetDefRegistry;
+import org.dashbuilder.dataset.events.DataSetStaleEvent;
 import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
+import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationaUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
-import org.guvnor.structure.repositories.NewRepositoryEvent;
 import org.guvnor.structure.repositories.Repository;
-import org.guvnor.structure.repositories.RepositoryRemovedEvent;
-import org.uberfire.commons.services.cdi.Startup;
-
-import org.guvnor.structure.organizationalunit.OrganizationalUnitService;
 import org.guvnor.structure.repositories.RepositoryService;
+import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceBatchChangesEvent;
@@ -50,40 +53,53 @@ import org.uberfire.workbench.events.ResourceDeletedEvent;
 import org.uberfire.workbench.events.ResourceRenamedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
+import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.*;
 import static org.uberfire.commons.validation.PortablePreconditions.*;
 
-import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSets.*;
-import static org.kie.workbench.common.screens.contributors.model.ContributorsDataSetColumns.*;
-
 /**
- * This class is in charge of the initialization of a dashbuilder's data set holding all the
- * contributions made to the any of the managed repositories.
+ * This class is in charge of the initialization of a data set holding all the
+ * contributions made to any of the GIT managed repositories.
  */
 @Startup
 @ApplicationScoped
-public class ContributorsManager {
+public class ContributorsManager implements DataSetGenerator {
 
     @Inject
-    private OrganizationalUnitService organizationalUnitService;
+    protected DataSetDefRegistry dataSetDefRegistry;
 
     @Inject
-    private RepositoryService repositoryService;
+    protected OrganizationalUnitService organizationalUnitService;
 
     @Inject
-    private DataSetManager dataSetManager;
+    protected RepositoryService repositoryService;
+
+    @Inject
+    protected Event<DataSetStaleEvent> dataSetStaleEvent;
 
     /**
-     * Map holding alias to author name mappings.
+     * Map holding alias to author name mappings
      */
-    private Properties authorMappings = new Properties();
+    protected Properties authorMappings = new Properties();
+
+    /**
+     * The GIT contributors data set definition
+     */
+    protected DataSetDef dataSetdef = DataSetFactory.newBeanDataSetDef()
+            .uuid(GIT_CONTRIB)
+            .name("GIT Contributors")
+            .generatorClass(ContributorsManager.class.getName())
+            .label(COLUMN_ORG)
+            .label(COLUMN_REPO)
+            .label(COLUMN_AUTHOR)
+            .text(COLUMN_MSG)
+            .date(COLUMN_DATE)
+            .buildDef();
 
     @PostConstruct
-    private void init() {
-        initAuthorMappings();
-        initDataSets();
-    }
+    protected void init() {
+        dataSetDefRegistry.registerDataSetDef(dataSetdef);
 
-    private void initAuthorMappings() {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("author_mappings.properties");
         if (is != null) {
             try {
@@ -94,13 +110,13 @@ public class ContributorsManager {
         }
     }
 
-    private void initDataSets() {
-        DataSetBuilder dsBuilder = DataSetFactory.newDataSetBuilder()
-                .label(COLUMN_ORG)
-                .label(COLUMN_REPO)
-                .label(COLUMN_AUTHOR)
-                .label(COLUMN_MSG)
-                .date(COLUMN_DATE);
+    @Override
+    public DataSet buildDataSet(Map<String, String> params) {
+
+        DataSetBuilder dsBuilder = DataSetFactory.newDataSetBuilder();
+        for (DataColumnDef columnDef : dataSetdef.getColumns()) {
+            dsBuilder.column(columnDef.getId(), columnDef.getColumnType());
+        }
 
         Collection<OrganizationalUnit> orgUnitList = organizationalUnitService.getOrganizationalUnits();
         for (OrganizationalUnit orgUnit : orgUnitList) {
@@ -131,59 +147,63 @@ public class ContributorsManager {
         }
 
         DataSet dataSet = dsBuilder.buildDataSet();
-        dataSet.setUUID(ALL);
-        dataSetManager.registerDataSet(dataSet);
+        dataSet.setUUID(GIT_CONTRIB);
+        return dataSet;
+    }
+
+    protected void invalidateDataSet() {
+        dataSetStaleEvent.fire(new DataSetStaleEvent(dataSetdef));
     }
 
     // Keep synced the contributions data set with the changes made into the org>repos>commits hierarchy
 
     public void onRepoAddedToOrgUnit(@Observes final RepoAddedToOrganizationaUnitEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void onRepoRemovedFromOrgUnit(@Observes final RepoRemovedFromOrganizationalUnitEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void onOrganizationUnitAdded(@Observes final NewOrganizationalUnitEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void onOrganizationUnitRemoved(@Observes final RemoveOrganizationalUnitEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void processResourceAdd(@Observes final ResourceAddedEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void processResourceDelete(@Observes final ResourceDeletedEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void processResourceUpdate(@Observes final ResourceUpdatedEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void processResourceCopied(@Observes final ResourceCopiedEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void processResourceRenamed(@Observes final ResourceRenamedEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 
     public void processBatchChanges(@Observes final ResourceBatchChangesEvent event) {
         checkNotNull("event", event);
-        initDataSets();
+        invalidateDataSet();
     }
 }

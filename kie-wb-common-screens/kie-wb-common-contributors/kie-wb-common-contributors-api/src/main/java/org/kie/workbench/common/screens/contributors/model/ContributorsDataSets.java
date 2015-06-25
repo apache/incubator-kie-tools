@@ -20,6 +20,6 @@ package org.kie.workbench.common.screens.contributors.model;
  */
 public interface ContributorsDataSets {
 
-    String ALL = "contributors_all";
+    String GIT_CONTRIB = "gitContributors";
 
 }
