@@ -309,7 +309,9 @@ public class ProjectScreenPresenter
         workbenchContext.removeChangeHandler(projectContextChangeHandle);
         for (LockManager lockManager : lockManagers.values()) {
             lockManager.releaseLock();
+            lockManagerInstanceProvider.destroy( lockManager );
         }
+        lockManagers.clear();
     }
 
     private void update() {
