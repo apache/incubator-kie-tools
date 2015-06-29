@@ -27,6 +27,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import com.google.common.collect.Sets;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -82,17 +83,17 @@ public class ShowcaseEntryPoint {
     @Inject
     private Caller<AuthenticationService> authService;
 
-    private final List<String> menuItemsToRemove = new ArrayList<String>() {{
-        add( "IFrameScreen" );
-        add( "IPInfoGadget" );
-        add( "SportsNewsGadget" );
-        add( "StockQuotesGadget" );
-        add( "WeatherGadget" );
-        add( "YouTubeScreen" );
-        add( "YouTubeVideos" );
-        add( "chartPopulator" );
-        add( "welcome" );
-    }};
+    private static final Set<String> menuItemsToRemove = Sets.newHashSet(
+            "IFrameScreen",
+            "IPInfoGadget",
+            "SportsNewsGadget",
+            "StockQuotesGadget",
+            "WeatherGadget",
+            "YouTubeScreen",
+            "YouTubeVideos",
+            "chartPopulator",
+            "welcome"
+    );
 
     @AfterInitialization
     public void startApp() {
@@ -139,7 +140,7 @@ public class ShowcaseEntryPoint {
         menubar.addMenus( menus );
     }
 
-    private List<MenuItem> getScreens() {
+    public static List<MenuItem> getScreens() {
         final List<MenuItem> screens = new ArrayList<MenuItem>();
         final List<String> names = new ArrayList<String>();
 
@@ -158,6 +159,7 @@ public class ShowcaseEntryPoint {
 
         Collections.sort( names );
 
+        final PlaceManager placeManager = IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance();
         for ( final String name : names ) {
             final MenuItem item = MenuFactory.newSimpleItem( name )
                     .respondsWith( new Command() {
@@ -213,6 +215,15 @@ public class ShowcaseEntryPoint {
 
         //Get Perspective Providers
         final Set<PerspectiveActivity> activities = activityManager.getActivities( PerspectiveActivity.class );
+
+        //Remove default perspective to avoid duplicate menu
+        final Iterator<PerspectiveActivity> iterator = activities.iterator();
+        while( iterator.hasNext() ){
+            final PerspectiveActivity activity = iterator.next();
+            if( activity.isDefault() ){
+                iterator.remove();
+            }
+        }
 
         //Sort Perspective Providers so they're always in the same sequence!
         List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>( activities );
