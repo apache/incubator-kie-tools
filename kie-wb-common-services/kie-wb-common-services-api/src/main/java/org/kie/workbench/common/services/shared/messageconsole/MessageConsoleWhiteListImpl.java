@@ -18,7 +18,6 @@ package org.kie.workbench.common.services.shared.messageconsole;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.guvnor.messageconsole.whitelist.MessageConsoleWhiteList;
@@ -30,11 +29,12 @@ public class MessageConsoleWhiteListImpl
     private List<String> allowedPerspectives = new ArrayList<String>();
 
     public MessageConsoleWhiteListImpl() {
-        allowedPerspectives.add("AuthoringPerspective");
+        allowedPerspectives.add( "AuthoringPerspective" );
+        allowedPerspectives.add( "AuthoringPerspectiveNoContext" );
     }
 
     @Override
-    public boolean contains(String perspective) {
-        return allowedPerspectives.contains(perspective);
+    public boolean contains( String perspective ) {
+        return allowedPerspectives.contains( perspective );
     }
 }
