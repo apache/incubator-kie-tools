@@ -27,6 +27,7 @@ public class MultiGridPreferencesStore extends UserPreference {
   private HashMap<String,HashMap> gridsSettings =  new HashMap<String, HashMap>(  );
   private ArrayList<String> gridsIds = new ArrayList<String>(  );
   private String selectedGrid = "NONE";
+  private int refreshInterval = 10;
 
   public MultiGridPreferencesStore() {
   }
@@ -101,4 +102,11 @@ public class MultiGridPreferencesStore extends UserPreference {
     return selectedGrid;
   }
 
+  public int getRefreshInterval() {
+    return refreshInterval;
+  }
+
+  public void setRefreshInterval( int refreshInterval ) {
+    this.refreshInterval = refreshInterval;
+  }
 }
