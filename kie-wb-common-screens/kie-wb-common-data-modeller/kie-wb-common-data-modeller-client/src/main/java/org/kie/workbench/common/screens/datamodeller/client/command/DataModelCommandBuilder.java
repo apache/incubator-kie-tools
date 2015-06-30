@@ -85,6 +85,26 @@ public class DataModelCommandBuilder {
 
     }
 
+    public DataObjectAddAnnotationCommand buildDataObjectAddAnnotationCommand( final DataModelerContext context, final String source,
+            final DataObject dataObject,
+            final String annotationClassName, final List<ValuePair> valuePairs ) {
+
+        return new DataObjectAddAnnotationCommand( context, source, dataObject, annotationClassName, valuePairs, notifier);
+    }
+
+    public DataObjectAddAnnotationCommand buildDataObjectAddAnnotationCommand( final DataModelerContext context, final String source,
+            final DataObject dataObject,
+            final Annotation annotation ) {
+        return new DataObjectAddAnnotationCommand( context, source, dataObject, annotation, notifier );
+    }
+
+    public DataObjectAddAnnotationCommand buildDataObjectAddAnnotationCommand( final DataModelerContext context, final String source,
+            final DataObject dataObject,
+            final String annotationClassName ) {
+
+        return new DataObjectAddAnnotationCommand( context, source, dataObject, annotationClassName, notifier);
+    }
+
     public DataObjectAddOrRemoveAnnotationCommand buildDataObjectAddOrRemoveAnnotationCommand( final DataModelerContext context, final String source,
             final DataObject dataObject,
             final String annotationClassName,
@@ -126,4 +146,24 @@ public class DataModelCommandBuilder {
                 propertyType, isMultiple, notifier );
     }
 
+    public DataObjectSuperClassChangeCommand buildDataObjectSuperClassChangeCommand( final DataModelerContext context,
+            final String source,
+            final DataObject dataObject,
+            final String newSuperClass ) {
+        return new DataObjectSuperClassChangeCommand( context, source, dataObject, newSuperClass, notifier );
+    }
+
+    public DataObjectPackageChangeCommand buildDataObjectPackageChangeCommand( final DataModelerContext context,
+            final String source,
+            final DataObject dataObject,
+            final String newPackage ) {
+        return new DataObjectPackageChangeCommand( context, source, dataObject, newPackage, notifier );
+    }
+
+    public DataObjectNameChangeCommand buildDataObjectNameChangeCommand( final DataModelerContext context,
+            final String source,
+            final DataObject dataObject,
+            final String newName ) {
+        return new DataObjectNameChangeCommand( context, source, dataObject, newName, notifier );
+    }
 }

@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.screens.datamodeller.client.widgets.superselector;
 
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.List;
 
 import com.github.gwtbootstrap.client.ui.ListBox;
 import com.google.gwt.core.client.GWT;
@@ -26,128 +24,57 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
-import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
-import org.kie.workbench.common.services.datamodeller.core.DataModel;
-import org.kie.workbench.common.services.datamodeller.core.DataObject;
-
+import org.uberfire.commons.data.Pair;
 
 public class SuperclassSelector extends Composite {
+
+    public static final String NOT_SELECTED = "NOT_SELECTED";
+
+    public static final String NOT_SELECTED_DESC = "";
 
     interface SuperclassSelectorUIBinder
             extends UiBinder<Widget, SuperclassSelector> {
 
     }
 
+    private static SuperclassSelectorUIBinder uiBinder = GWT.create(SuperclassSelectorUIBinder.class);
+
     @UiField
     ListBox superclassList;
 
-    private DataModelerContext context;
-
-    private DataObject dataObject;
-
-    private static SuperclassSelectorUIBinder uiBinder = GWT.create(SuperclassSelectorUIBinder.class);
-
-    public static final String NOT_SELECTED = "NOT_SELECTED";
-
-    private String editorId;
-
     public SuperclassSelector() {
-        initWidget(uiBinder.createAndBindUi(this));
-        initList();
+        initWidget( uiBinder.createAndBindUi( this ) );
+        clean();
     }
 
     public ListBox getSuperclassList() {
         return superclassList;
     }
 
-    public DataModelerContext getContext() {
-        return context;
-    }
-
-    public void setContext(DataModelerContext context) {
-        this.context = context;
-        initList();
-    }
-
-    public void setDataObject(DataObject dataObject) {
-        this.dataObject = dataObject;
-        initList();
-    }
-
-    public void setEditorId( String editorId ) {
-        this.editorId = editorId;
-    }
-
-    public String getEditorId() {
-        return editorId;
-    }
-
     public void setEnabled(boolean enabled) {
-        this.superclassList.setEnabled(enabled);
+        this.superclassList.setEnabled( enabled );
     }
 
-    private DataModel getDataModel() {
-        return getContext() != null ? getContext().getDataModel() : null;
-    }
-
-    public void initList() {
+    public void clean() {
         superclassList.clear();
-        superclassList.addItem("", DataModelerUtils.NOT_SELECTED);
-
-        if (getDataModel() != null) {
-            SortedMap<String, String> sortedModelClasses = new TreeMap<String, String>( );
-            SortedMap<String, String> sortedExternalClasses = new TreeMap<String, String>( );
-            boolean isExtensible = false;
-            String className;
-            String classLabel;
-            String selectedValue = DataModelerUtils.NOT_SELECTED;
-
-            // first, all data objects form this model in order
-            for (DataObject internalDataObject : getDataModel().getDataObjects()) {
-                className = internalDataObject.getClassName();
-                classLabel = DataModelerUtils.getDataObjectFullLabel(internalDataObject);
-                isExtensible = !internalDataObject.isAbstract() && !internalDataObject.isFinal() && !internalDataObject.isInterface();
-                if (isExtensible) {
-                    if (dataObject != null && className.toLowerCase().equals(dataObject.getClassName().toLowerCase())) continue;
-                    sortedModelClasses.put( classLabel, className );
-                }
-            }
-
-            // Then add all external types, ordered
-            for (DataObject externalDataObject : getDataModel().getExternalClasses()) {
-                className = externalDataObject.getClassName();
-                classLabel = DataModelerUtils.EXTERNAL_PREFIX + className;
-                isExtensible = !externalDataObject.isAbstract() && !externalDataObject.isFinal() && !externalDataObject.isInterface();
-                if (isExtensible) {
-                    if (dataObject != null && className.toLowerCase().equals(dataObject.getClassName().toLowerCase())) continue;
-                    sortedExternalClasses.put(classLabel, className);
-                }
-            }
-
-            if (dataObject != null && dataObject.getSuperClassName() != null) {
-                selectedValue = dataObject.getSuperClassName();
-                if (!sortedModelClasses.containsKey( selectedValue ) && !sortedExternalClasses.containsKey( selectedValue )) {
-                    //the model was loaded but the super class is not a model class nor an external class, e.g. java.lang.Object. Still needs to be loaded.
-                    sortedModelClasses.put( selectedValue, selectedValue );
-                }
-            }
-
-            for (Map.Entry<String, String> classNameEntry : sortedModelClasses.entrySet()) {
-                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
-            }
-
-            for (Map.Entry<String, String> classNameEntry : sortedExternalClasses.entrySet()) {
-                superclassList.addItem(classNameEntry.getKey(), classNameEntry.getValue());
-            }
-
-            superclassList.setSelectedValue( selectedValue );
-        }
+        superclassList.addItem( NOT_SELECTED_DESC, NOT_SELECTED );
     }
 
-    public void refreshList( boolean keepSelection ) {
+    public void initList( List<Pair<String, String>> values, String selectedValue ) {
+        superclassList.clear();
+        superclassList.addItem( NOT_SELECTED_DESC, NOT_SELECTED );
+
+        if ( values != null ) {
+            for ( Pair<String, String> value : values ) {
+                superclassList.addItem( value.getK1(), value.getK2() );
+            }
+        }
+        superclassList.setSelectedValue( selectedValue != null ? selectedValue : NOT_SELECTED );
+    }
+
+    public void refreshList( List<Pair<String, String>> values, boolean keepSelection ) {
         String selectedValue = superclassList.getValue();
-        initList();
+        initList( values, selectedValue );
         if ( keepSelection && selectedValue != null ) {
             superclassList.setSelectedValue( selectedValue );
         }

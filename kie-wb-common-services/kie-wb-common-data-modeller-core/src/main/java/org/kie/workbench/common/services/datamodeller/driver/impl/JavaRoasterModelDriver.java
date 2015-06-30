@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.drools.core.base.ClassTypeResolver;
 import org.jboss.forge.roaster.Roaster;
+import org.jboss.forge.roaster.model.JavaClass;
 import org.jboss.forge.roaster.model.JavaType;
 import org.jboss.forge.roaster.model.SyntaxError;
 import org.jboss.forge.roaster.model.Type;
@@ -47,6 +49,7 @@ import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.services.datamodeller.core.Visibility;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
@@ -54,20 +57,24 @@ import org.kie.workbench.common.services.datamodeller.core.impl.JavaTypeInfoImpl
 import org.kie.workbench.common.services.datamodeller.core.impl.ModelFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.ObjectPropertyImpl;
 import org.kie.workbench.common.services.datamodeller.driver.AnnotationDriver;
-import org.kie.workbench.common.services.datamodeller.driver.DriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriverListener;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.driver.TypeInfoResult;
 import org.kie.workbench.common.services.datamodeller.driver.impl.annotations.CommonAnnotations;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
+import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
+import org.kie.workbench.common.services.datamodeller.driver.model.DriverResult;
+import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.util.DataModelUtils;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.backend.server.util.Paths;
+import org.uberfire.commons.data.Pair;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 
@@ -169,7 +176,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
                                 Pair<DataObject, List<ObjectProperty>> pair = parseDataObject( ( JavaClassSource ) javaType );
                                 if ( pair.getK1() != null ) {
                                     dataModel.addDataObject( pair.getK1() );
-                                    result.setClassPath( pair.getK1().getClassName(), scanResult.getFile() );
+                                    result.setClassPath( pair.getK1().getClassName(), Paths.convert( scanResult.getFile() ) );
                                     result.setUnmanagedProperties( pair.getK1().getClassName(), pair.getK2() );
                                 }
                             } catch ( ModelDriverException e ) {
@@ -212,7 +219,7 @@ public class JavaRoasterModelDriver implements ModelDriver {
                         //try to load the data object.
                         Pair<DataObject, List<ObjectProperty>> pair = parseDataObject( ( JavaClassSource ) javaType );
                         dataModel.addDataObject( pair.getK1() );
-                        result.setClassPath( pair.getK1().getClassName(), path );
+                        result.setClassPath( pair.getK1().getClassName(), Paths.convert( path ) );
                         result.setUnmanagedProperties( pair.getK1().getClassName(), pair.getK2() );
                     } catch ( ModelDriverException e ) {
                         logger.error( "An error was produced when source: " + source + " was being loaded into a DataObject.", e );
@@ -268,8 +275,55 @@ public class JavaRoasterModelDriver implements ModelDriver {
         return result;
     }
 
+    public AnnotationSourceResponse resolveSourceRequest( AnnotationSourceRequest sourceRequest ) {
+        AnnotationSourceResponse sourceResponse = new AnnotationSourceResponse();
+
+        for ( Annotation annotation : sourceRequest.getAnnotations() ) {
+            sourceResponse.withAnnotationSource( annotation.getClassName(), resolveAnnotationSource( annotation ) );
+        }
+        return sourceResponse;
+    }
+
+    public org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSource resolveAnnotationSource( Annotation annotation ) {
+        org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSource annotationSource =
+                new org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSource();
+
+        //TODO this method can be optimized and likely migrated to Roaster. Should be reviewed when we evaluate
+        //the removal of Velocity.
+
+        GenerationTools generationTools = new GenerationTools();
+        AnnotationDefinition annotationDefinition;
+
+        StringBuilder annotationCode = new StringBuilder(  );
+        annotationCode.append( "@" );
+        annotationCode.append( annotation.getClassName() );
+
+        if ( ( annotationDefinition = annotation.getAnnotationDefinition() ) != null ) {
+
+            if ( !annotationDefinition.isMarker() ) {
+                annotationCode.append( generationTools.resolveAnnotationType( annotation ) );
+            }
+
+            if ( annotationDefinition.getValuePairs() != null ) {
+                Object value;
+                String valuePairCode;
+                for ( AnnotationValuePairDefinition valuePairDefinition : annotationDefinition.getValuePairs() ) {
+                    if ( ( value = annotation.getValue( valuePairDefinition.getName() ) ) != null ) {
+                        valuePairCode = generationTools.resolveMemberTypeExpression( valuePairDefinition, value );
+                    } else {
+                        valuePairCode = null;
+                    }
+                    annotationSource.withValuePairSource( valuePairDefinition.getName(), valuePairCode );
+                }
+            }
+        }
+
+        annotationSource.withSource( annotationCode.toString() );
+        return annotationSource;
+    }
+
     private void addModelDriverError( ModelDriverResult result, Path file, ModelDriverException e ) {
-        ModelDriverError error;
+        DriverError error;
 
         StringBuilder message = new StringBuilder();
         message.append( e.getMessage() );
@@ -283,23 +337,18 @@ public class JavaRoasterModelDriver implements ModelDriver {
                 cause = null;
             }
         }
-        error = new ModelDriverError( message.toString(), file );
+        error = new DriverError( message.toString(), Paths.convert( file ) );
         result.addError( error );
     }
 
     private void addSyntaxErrors( DriverResult result, Path file, List<SyntaxError> syntaxErrors ) {
-        ModelDriverError error;
+        DriverError error;
         for ( SyntaxError syntaxError : syntaxErrors ) {
-            error = new ModelDriverError( syntaxError.getDescription(), file );
+            error = new DriverError( syntaxError.getDescription(), Paths.convert( file ) );
             error.setLine( syntaxError.getLine() );
             error.setColumn( syntaxError.getColumn() );
             result.addError( error );
         }
-    }
-
-    private void addError( ModelDriverResult result, Path file, Exception e ) {
-        ModelDriverError error = new ModelDriverError( e.getMessage(), file );
-        result.addError( error );
     }
 
     @Override
@@ -465,7 +514,6 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
         annotationDefinition = buildAnnotationDefinition( annotationToken, classTypeResolver );
         if ( annotationDefinition != null ) {
-            //TODO review this
             AnnotationDriver annotationDriver = new DefaultJavaRoasterModelAnnotationDriver();
             annotation = annotationDriver.buildAnnotation( annotationDefinition, annotationToken );
         } else {
@@ -475,13 +523,18 @@ public class JavaRoasterModelDriver implements ModelDriver {
     }
 
     public AnnotationDefinition buildAnnotationDefinition( AnnotationSource annotationSource, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
+        return buildAnnotationDefinition( annotationSource.getQualifiedName(), classTypeResolver );
+    }
+
+    public AnnotationDefinition buildAnnotationDefinition( String annotationClassName,
+            ClassTypeResolver classTypeResolver ) throws ModelDriverException {
         try {
-            String annotationClassName = resolveTypeName( classTypeResolver, annotationSource.getQualifiedName() );
-            Class annotationClass = classTypeResolver.resolveType( annotationClassName );
+            String resolvedClassName = resolveTypeName( classTypeResolver, annotationClassName );
+            Class annotationClass = classTypeResolver.resolveType( resolvedClassName );
             return DriverUtils.buildAnnotationDefinition( annotationClass );
         } catch ( ClassNotFoundException e ) {
-            logger.error( errorMessage( ANNOTATION_LOAD_ERROR, annotationSource.getName() ), e );
-            throw new ModelDriverException( errorMessage( ANNOTATION_LOAD_ERROR, annotationSource.getName() ), e );
+            logger.error( errorMessage( ANNOTATION_LOAD_ERROR, annotationClassName ), e );
+            throw new ModelDriverException( errorMessage( ANNOTATION_LOAD_ERROR, annotationClassName ), e );
         }
     }
 
@@ -671,12 +724,12 @@ public class JavaRoasterModelDriver implements ModelDriver {
             }
         } else if ( valuePairDefinition.isString() ) {
             if ( valuePairDefinition.isArray() ) {
-                String arrayValues[] = DriverUtils.encodeStringArrayValue( value );
-                if ( arrayValues != null ) {
-                    annotationSource.setStringArrayValue( valuePairDefinition.getName(), arrayValues );
-                }
+                encodedValue = DriverUtils.encodeStringArrayValue( value );
             } else {
-                annotationSource.setStringValue( valuePairDefinition.getName(), value.toString() );
+                encodedValue = DriverUtils.encodeStringValue( value );
+            }
+            if ( encodedValue != null ) {
+                annotationSource.setLiteralValue( valuePairDefinition.getName(), encodedValue );
             }
         } else if ( valuePairDefinition.isPrimitiveType() ) {
             //primitive types are wrapped by the java.lang.type.
@@ -1361,6 +1414,61 @@ public class JavaRoasterModelDriver implements ModelDriver {
         }
     }
 
+    public Pair<Annotation, List<DriverError>> parseAnnotationWithValuePair( String annotationClassName,
+            ElementType target, String valuePairName, String literalValue, ClassLoader classLoader ) {
+
+        List<DriverError> driverErrors = new ArrayList<DriverError>();
+        Annotation annotation = null;
+
+        Pair<AnnotationSource<JavaClassSource>, List<DriverError>> parseResult = parseAnnotationWithValuePair(
+                annotationClassName, target, valuePairName, literalValue );
+
+        driverErrors.addAll( parseResult.getK2() );
+        if ( driverErrors.size() == 0 ) {
+            //TODO review this, we should use DriverUtils.createClassTypeResolver( javaClassSource, classLoader ); instead
+
+            ClassTypeResolver classTypeResolver = new ClassTypeResolver( Collections.EMPTY_SET, classLoader );
+
+            try {
+                annotation = createAnnotation( parseResult.getK1(), classTypeResolver );
+            } catch ( Exception e ) {
+                driverErrors.add( new DriverError( e.getMessage() ) );
+            }
+        }
+        return new Pair( annotation, driverErrors );
+    }
+
+    public Pair<AnnotationSource<JavaClassSource>, List<DriverError>> parseAnnotationWithValuePair( String annotationClassName,
+            ElementType target, String valuePairName, String literalValue ) {
+
+        List<DriverError> syntaxErrors = new ArrayList<DriverError>();
+
+        String annotationStr = "@" + annotationClassName + "(" + valuePairName + "=" + literalValue + " )";
+        String stub;
+        AnnotationSource<JavaClassSource> annotation = null;
+        if ( ElementType.TYPE.equals( target ) ) {
+            stub = annotationStr + " public class Stub { }";
+        } else {
+            stub = "public class Stub { " + annotationStr + " int dummy; }";
+        }
+        JavaClassSource temp = ( JavaClassSource ) Roaster.parse( JavaClass.class, stub );
+        if ( temp.getSyntaxErrors() != null && temp.getSyntaxErrors().size() > 0 ) {
+            for ( org.jboss.forge.roaster.model.SyntaxError syntaxError : temp.getSyntaxErrors() ) {
+                syntaxErrors.add( new DriverError( syntaxError.getDescription(),
+                        syntaxError.getLine(), syntaxError.getColumn() ) );
+            }
+        } else if ( ElementType.TYPE.equals( target ) ) {
+            annotation = temp.getAnnotation( annotationClassName );
+        } else {
+            annotation = temp.getField( "dummy" ).getAnnotation( annotationClassName );
+        }
+
+        if ( annotation == null ) {
+            syntaxErrors.add( new DriverError( "Annotation value pair could not be parsed." ) );
+        }
+        return new Pair( annotation, syntaxErrors );
+    }
+
     public boolean isManagedAnnotation( AnnotationSource<?> annotation, ClassTypeResolver classTypeResolver ) throws Exception {
         String annotationClassName = resolveTypeName( classTypeResolver, annotation.getName() );
         return getConfiguredAnnotation( annotationClassName ) != null;
@@ -1368,33 +1476,6 @@ public class JavaRoasterModelDriver implements ModelDriver {
 
     private String errorMessage( String message, Object... params ) {
         return MessageFormat.format( message, params );
-    }
-
-    public static class Pair<K, T> {
-
-        K k1;
-        T k2;
-
-        public Pair( K k1, T k2 ) {
-            this.k1 = k1;
-            this.k2 = k2;
-        }
-
-        public K getK1() {
-            return k1;
-        }
-
-        public void setK1( K k1 ) {
-            this.k1 = k1;
-        }
-
-        public T getK2() {
-            return k2;
-        }
-
-        public void setK2( T k2 ) {
-            this.k2 = k2;
-        }
     }
 
 }

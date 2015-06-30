@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.datamodeller.client.util.DataModelerUtils;
 import org.kie.workbench.common.screens.datamodeller.model.EditorModelContent;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
 /**
@@ -209,7 +209,7 @@ public class DataModelerContext {
         return getDataObject() != null;
     }
 
-    public Project getCurrentProject() {
+    public KieProject getCurrentProject() {
         if ( editorModelContent != null ) {
             return editorModelContent.getCurrentProject();
         }

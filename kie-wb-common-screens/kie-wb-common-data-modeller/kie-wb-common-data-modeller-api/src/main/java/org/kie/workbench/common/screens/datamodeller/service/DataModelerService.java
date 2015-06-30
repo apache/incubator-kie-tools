@@ -30,7 +30,14 @@ import org.kie.workbench.common.screens.datamodeller.model.TypeInfoResult;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseRequest;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseResponse;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
@@ -59,11 +66,11 @@ public interface DataModelerService {
 
     GenerationResult updateSource( final String source, final Path path, final DataObject dataObject );
 
-    public GenerationResult updateDataObject(final DataObject dataObject, final String source, final Path path);
+    GenerationResult updateDataObject(final DataObject dataObject, final String source, final Path path);
 
     Path copy( final Path path, final String newName, final String comment, boolean refactor );
 
-    public Path rename( final Path path, final String newName, String comment, final boolean refactor,
+    Path rename( final Path path, final String newName, String comment, final boolean refactor,
             final boolean saveCurrentChanges, final String source, final DataObject dataObject,
             final Metadata metadata );
 
@@ -89,4 +96,13 @@ public interface DataModelerService {
 
     Set<Package> resolvePackages( final Path path );
 
+    AnnotationSourceResponse resolveSourceRequest( AnnotationSourceRequest sourceRequest );
+
+    List<ValidationMessage> validateValuePair( String annotationClassName, ElementType target, String valuePairName,
+            String literalValue);
+
+    AnnotationParseResponse resolveParseRequest( AnnotationParseRequest parseRequest, KieProject project );
+
+    AnnotationDefinitionResponse resolveDefinitionRequest( AnnotationDefinitionRequest definitionRequest,
+            KieProject kieProject );
 }

@@ -13,12 +13,11 @@
  * limitations under the License.
 */
 
-package org.kie.workbench.common.services.datamodeller.driver;
+package org.kie.workbench.common.services.datamodeller.driver.model;
 
-import org.uberfire.java.nio.file.Path;
+import org.uberfire.backend.vfs.Path;
 
-public class ModelDriverError {
-
+public class DriverError {
 
     private long id;
 
@@ -30,24 +29,31 @@ public class ModelDriverError {
 
     private int column;
 
-    private Exception nativeError;
-
-    public ModelDriverError() {
+    public DriverError() {
 
     }
 
-    public ModelDriverError( long id, String message, Path file, int line, int column, Exception nativeError ) {
+    public DriverError( long id, String message, Path file, int line, int column ) {
         this.id = id;
         this.message = message;
         this.file = file;
         this.line = line;
         this.column = column;
-        this.nativeError = nativeError;
     }
 
-    public ModelDriverError( String message, Path file ) {
+    public DriverError( String message, Path file ) {
         this.message = message;
         this.file = file;
+    }
+
+    public DriverError( String message, int line, int column ) {
+        this.message = message;
+        this.line = line;
+        this.column = column;
+    }
+
+    public DriverError( String message ) {
+        this.message = message;
     }
 
     public long getId() {
@@ -90,11 +96,4 @@ public class ModelDriverError {
         this.column = column;
     }
 
-    public Exception getNativeError() {
-        return nativeError;
-    }
-
-    public void setNativeError( Exception nativeError ) {
-        this.nativeError = nativeError;
-    }
 }

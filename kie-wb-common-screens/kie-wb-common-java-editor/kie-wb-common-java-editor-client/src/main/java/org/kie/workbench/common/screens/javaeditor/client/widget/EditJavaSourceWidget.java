@@ -96,6 +96,10 @@ public class EditJavaSourceWidget
         editor.redisplay();
     }
 
+    public void refresh() {
+        editor.redisplay();
+    }
+
     private void onAceEditorChange() {
         if ( !disableHandlers ) {
             for ( TextChangeHandler handler : handlers ) {

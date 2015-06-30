@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.services.datamodeller.core.impl;
 
-import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationRetention;
-import org.kie.workbench.common.services.datamodeller.core.ElementType;
-import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationRetention;
+import org.kie.workbench.common.services.datamodeller.core.AnnotationValuePairDefinition;
+import org.kie.workbench.common.services.datamodeller.core.ElementType;
 
 public class AbstractAnnotationDefinition implements AnnotationDefinition {
     
@@ -57,8 +57,20 @@ public class AbstractAnnotationDefinition implements AnnotationDefinition {
         return valuePairs;
     }
 
-    public void addValuePair( AnnotationValuePairDefinition annotationMember ) {
-        valuePairs.add( annotationMember );
+    @Override
+    public AnnotationValuePairDefinition getValuePair( String valuePairName ) {
+        if ( valuePairName != null ) {
+            for ( AnnotationValuePairDefinition valuePairDefinition : valuePairs ) {
+                if ( valuePairName.equals( valuePairDefinition.getName() ) ) {
+                    return valuePairDefinition;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void addValuePair( AnnotationValuePairDefinition valuePair ) {
+        valuePairs.add( valuePair );
     }
 
     @Override
@@ -110,10 +122,10 @@ public class AbstractAnnotationDefinition implements AnnotationDefinition {
     }
 
     @Override
-    public boolean hasValue( String name ) {
-        if ( name != null ) {
+    public boolean hasValue( String valuePairName ) {
+        if ( valuePairName != null ) {
             for ( AnnotationValuePairDefinition valuePairDefinition : valuePairs ) {
-                if ( name.equals( valuePairDefinition.getName() ) ) return true;
+                if ( valuePairName.equals( valuePairDefinition.getName() ) ) return true;
             }
         }
         return false;

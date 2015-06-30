@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.kie.workbench.common.services.datamodeller.driver;
+package org.kie.workbench.common.services.datamodeller.driver.model;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.uberfire.java.nio.file.Path;
+import org.uberfire.backend.vfs.Path;
 
 public class ModelDriverResult extends DriverResult {
 
@@ -38,7 +38,7 @@ public class ModelDriverResult extends DriverResult {
         this.dataModel = dataModel;
     }
 
-    public ModelDriverResult( DataModel dataModel, List<ModelDriverError> errors ) {
+    public ModelDriverResult( DataModel dataModel, List<DriverError> errors ) {
         this.dataModel = dataModel;
         this.errors = errors;
     }

@@ -61,6 +61,7 @@ import org.kie.workbench.common.services.datamodeller.core.impl.DataModelImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
+import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.NoSuchFileException;

@@ -38,7 +38,7 @@ import org.kie.scanner.KieModuleMetaData;
 import org.kie.workbench.common.screens.datamodeller.model.DataModelerError;
 import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
 import org.kie.workbench.common.services.backend.builder.LRUProjectDependenciesClassLoaderCache;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
+import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
 import org.kie.workbench.common.services.datamodeller.util.MapClassLoader;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -71,18 +71,18 @@ public class DataModelerServiceHelper {
     @Inject
     private LRUBuilderCache builderCache;
 
-    public List<DataModelerError> toDataModelerError( List<ModelDriverError> errors ) {
+    public List<DataModelerError> toDataModelerError( List<DriverError> errors ) {
         List<DataModelerError> result = new ArrayList<DataModelerError>();
         if ( errors == null ) {
             return result;
         }
 
-        for ( ModelDriverError error : errors ) {
+        for ( DriverError error : errors ) {
             DataModelerError dataModelerError = new DataModelerError(
                     error.getId(),
                     error.getMessage(),
                     SystemMessage.Level.ERROR,
-                    Paths.convert( error.getFile() ),
+                    error.getFile(),
                     error.getLine(),
                     error.getColumn() );
             result.add( dataModelerError );

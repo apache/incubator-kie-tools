@@ -13,25 +13,33 @@
  * limitations under the License.
 */
 
-package org.kie.workbench.common.services.datamodeller.driver;
+package org.kie.workbench.common.services.datamodeller.driver.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DriverResult {
 
-    protected List<ModelDriverError> errors = new ArrayList<ModelDriverError>( );
+    public DriverResult() {
+    }
 
-    public List<ModelDriverError> getErrors() {
+    protected List<DriverError> errors = new ArrayList<DriverError>( );
+
+    public List<DriverError> getErrors() {
         return errors;
     }
 
-    public void addError( ModelDriverError error ) {
+    public void addError( DriverError error ) {
         errors.add( error );
     }
 
     public boolean hasErrors() {
         return errors.size() > 0;
+    }
+
+    public DriverResult withErrors( List<DriverError> errors ) {
+        this.errors.addAll( errors );
+        return this;
     }
 
 }

@@ -207,13 +207,16 @@ public class GenerationTools {
 
         type.append( valuePairDefinition.getName() );
         type.append( " = " );
-
-        if ( valuePairDefinition.isArray() ) {
-            type.append( resolveMemberTypeArrayValue( valuePairDefinition, value ) );
-        } else {
-            type.append( resolveMemberTypeValue( valuePairDefinition, value ) );
-        }
+        type.append( resolveMemberTypeExpression( valuePairDefinition, value ) );
         return type.toString();
+    }
+
+    public String resolveMemberTypeExpression( AnnotationValuePairDefinition valuePairDefinition, Object value) {
+        if ( valuePairDefinition.isArray() ) {
+            return resolveMemberTypeArrayValue( valuePairDefinition, value );
+        } else {
+            return resolveMemberTypeValue( valuePairDefinition, value );
+        }
     }
 
     public String resolveMemberTypeArrayValue( AnnotationValuePairDefinition valuePairDefinition, Object value ) {

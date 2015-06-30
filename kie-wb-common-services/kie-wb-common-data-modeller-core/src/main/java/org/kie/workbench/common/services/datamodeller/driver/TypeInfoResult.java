@@ -16,6 +16,7 @@
 package org.kie.workbench.common.services.datamodeller.driver;
 
 import org.kie.workbench.common.services.datamodeller.core.JavaTypeInfo;
+import org.kie.workbench.common.services.datamodeller.driver.model.DriverResult;
 
 public class TypeInfoResult extends DriverResult {
 

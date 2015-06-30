@@ -22,12 +22,6 @@
              xmlns:b="urn:import:com.github.gwtbootstrap.client.ui"
     >
 
-  <ui:style>
-    .mandatory-field {
-      color: #FF0000 !important;
-    }
-  </ui:style>
-
   <g:HTMLPanel>
 
     <b:ControlGroup ui:field="generatorControlGroup">

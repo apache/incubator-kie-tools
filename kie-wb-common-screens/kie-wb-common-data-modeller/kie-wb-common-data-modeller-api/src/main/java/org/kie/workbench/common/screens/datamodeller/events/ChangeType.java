@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public enum ChangeType {
 
     DATA_MODEL_STATUS_CHANGE,
+    OBJECT_NAME_CHANGE,
     CLASS_NAME_CHANGE,
     SUPER_CLASS_NAME_CHANGE,
     PACKAGE_NAME_CHANGE,

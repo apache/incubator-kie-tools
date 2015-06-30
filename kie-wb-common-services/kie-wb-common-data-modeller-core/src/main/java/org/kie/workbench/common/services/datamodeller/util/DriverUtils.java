@@ -81,6 +81,10 @@ public class DriverUtils {
         return new ClassTypeResolver( classImports, classLoader );
     }
 
+    public static ClassTypeResolver createClassTypeResolver( ClassLoader classLoader ) {
+        return new ClassTypeResolver( new HashSet<String>(  ), classLoader);
+    }
+
     public static Object[] isSimpleGeneric( Type type, ClassTypeResolver classTypeResolver ) throws ModelDriverException {
         Object[] result = new Object[ 3 ];
         result[ 0 ] = false;
@@ -244,6 +248,7 @@ public class DriverUtils {
     }
 
     public static ElementType buildElementType( java.lang.annotation.ElementType elementType ) {
+
         switch ( elementType ) {
             case TYPE:
                 return ElementType.TYPE;
@@ -315,8 +320,14 @@ public class DriverUtils {
         if ( annotationClass.isAnnotationPresent( Target.class ) ) {
             Target targetAnnotation = ( Target ) annotationClass.getAnnotation( Target.class );
             java.lang.annotation.ElementType[] targets = targetAnnotation.value();
-            for ( int i = 0; targets != null && i < targets.length; i++ ) {
-                annotationDefinition.addTarget( buildElementType( targets[ i ] ) );
+            if ( targets != null && targets.length > 0 ) {
+                for ( int i = 0; i < targets.length; i++ ) {
+                    annotationDefinition.addTarget( buildElementType( targets[ i ] ) );
+                }
+            } else {
+                //added to avoid an errai unmarshalling error in broser side, when an annotation has no targets, e.g.
+                //javax.persistence.UniqueConstraint
+                annotationDefinition.addTarget( ElementType.UNDEFINED );
             }
         }
     }
@@ -353,7 +364,7 @@ public class DriverUtils {
         return modifiers;
     }
 
-    public static AnnotationDefinition buildAnnotationDefinition( Class cls) {
+    public static AnnotationDefinition buildAnnotationDefinition( Class cls ) {
 
         if ( !cls.isAnnotation() ) return null;
 
@@ -474,7 +485,38 @@ public class DriverUtils {
         return toEncodedArray( encodedValues );
     }
 
-    public static String[] encodeStringArrayValue( Object value ) {
+    public static String encodeStringArrayValue( Object value ) {
+        if ( value == null ) return null;
+
+        List<Object> encodedValues = new ArrayList<Object>( );
+        String encodedItem;
+
+        if ( value instanceof List ) {
+            for ( Object item : (List)value ) {
+                if ( item != null && ( encodedItem = encodeStringValue( item ) ) != null ) {
+                    encodedValues.add( encodedItem );
+                }
+            }
+        } else if ( ( encodedItem = encodeStringValue( value.toString() ) ) != null ) {
+            encodedValues.add( encodedItem );
+        }
+
+        return toEncodedArray( encodedValues );
+    }
+
+    public static String encodeStringValue( Object value ) {
+        if ( value == null ) {
+            return null;
+        } else {
+            StringBuilder encodedValue = new StringBuilder( );
+            encodedValue.append( "\"" );
+            encodedValue.append( value.toString() );
+            encodedValue.append( "\"" );
+            return encodedValue.toString();
+        }
+    }
+
+    public static String[] encodeStringArrayValueToArray( Object value ) {
         if ( value == null ) return null;
         List<String> notNulls = new ArrayList<String>( );
 

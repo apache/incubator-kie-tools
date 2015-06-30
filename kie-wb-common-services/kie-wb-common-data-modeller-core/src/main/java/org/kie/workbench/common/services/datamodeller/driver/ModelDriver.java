@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
+import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 
 public interface ModelDriver {
 

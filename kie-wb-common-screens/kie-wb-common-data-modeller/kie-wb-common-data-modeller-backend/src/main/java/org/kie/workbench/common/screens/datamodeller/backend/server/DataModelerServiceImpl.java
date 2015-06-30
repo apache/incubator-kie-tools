@@ -51,6 +51,7 @@ import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.forge.roaster.Roaster;
 import org.jboss.forge.roaster.model.JavaType;
+import org.jboss.forge.roaster.model.source.AnnotationSource;
 import org.jboss.forge.roaster.model.source.JavaClassSource;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerCopyHelper;
 import org.kie.workbench.common.screens.datamodeller.backend.server.file.DataModelerRenameHelper;
@@ -67,18 +68,27 @@ import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationContext;
 import org.kie.workbench.common.services.datamodeller.codegen.GenerationEngine;
+import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.AnnotationDefinition;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.datamodeller.core.ElementType;
 import org.kie.workbench.common.services.datamodeller.core.PropertyType;
 import org.kie.workbench.common.services.datamodeller.core.impl.DataObjectImpl;
 import org.kie.workbench.common.services.datamodeller.core.impl.PropertyTypeFactoryImpl;
 import org.kie.workbench.common.services.datamodeller.driver.ModelDriver;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriverError;
-import org.kie.workbench.common.services.datamodeller.driver.ModelDriverResult;
+import org.kie.workbench.common.services.datamodeller.driver.ModelDriverException;
 import org.kie.workbench.common.services.datamodeller.driver.impl.JavaRoasterModelDriver;
 import org.kie.workbench.common.services.datamodeller.driver.impl.ProjectDataModelOracleUtils;
 import org.kie.workbench.common.services.datamodeller.driver.impl.UpdateInfo;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionRequest;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationDefinitionResponse;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseRequest;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationParseResponse;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceRequest;
+import org.kie.workbench.common.services.datamodeller.driver.model.AnnotationSourceResponse;
+import org.kie.workbench.common.services.datamodeller.driver.model.DriverError;
+import org.kie.workbench.common.services.datamodeller.driver.model.ModelDriverResult;
 import org.kie.workbench.common.services.datamodeller.util.DriverUtils;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.datamodeller.util.NamingUtils;
@@ -258,14 +268,14 @@ public class DataModelerServiceImpl
             }
 
             Pair<DataModel, ModelDriverResult> resultPair = loadModel( project, false );
-            String className = calculateClassName(project, path);
+            String className = calculateClassName( project, path );
 
             editorModelContent.setCurrentProject(project);
             editorModelContent.setPath( path );
             editorModelContent.setCurrentProjectPackages(projectService.resolvePackages(project));
             editorModelContent.setDataModel( resultPair.getK1() );
             editorModelContent.setDataObject( resultPair.getK1().getDataObject( className  ) );
-            editorModelContent.setDataObjectPaths( serviceHelper.toVFSPaths( resultPair.getK2().getClassPaths() ) );
+            editorModelContent.setDataObjectPaths( resultPair.getK2().getClassPaths() );
 
             editorModelContent.setOriginalClassName(className);
             editorModelContent.setOriginalPackageName( NamingUtils.extractPackageName( className ) );
@@ -277,7 +287,7 @@ public class DataModelerServiceImpl
             }
 
             if (resultPair.getK2().hasErrors()) {
-                editorModelContent.setErrors(serviceHelper.toDataModelerError(resultPair.getK2().getErrors()));
+                editorModelContent.setErrors( serviceHelper.toDataModelerError( resultPair.getK2().getErrors() ) );
             }
 
             editorModelContent.setOverview(overview);
@@ -326,12 +336,12 @@ public class DataModelerServiceImpl
             }
 
             //by now we still use the DMO to calculate project external dependencies.
-            ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel(projectPath);
+            ProjectDataModelOracle projectDataModelOracle = dataModelService.getProjectDataModel( projectPath );
             ProjectDataModelOracleUtils.loadExternalDependencies( dataModel, projectDataModelOracle, classLoader );
 
             Long endTime = System.currentTimeMillis();
             if (logger.isDebugEnabled()) {
-                logger.debug("Time elapsed when loading " + projectPath.getFileName() + ": " + (endTime - startTime) + " ms");
+                logger.debug( "Time elapsed when loading " + projectPath.getFileName() + ": " + ( endTime - startTime ) + " ms" );
             }
 
             return new Pair<DataModel, ModelDriverResult>(dataModel, result);
@@ -774,7 +784,7 @@ public class DataModelerServiceImpl
         publishEvent.setMessageType("DataModeler");
 
         SystemMessage systemMessage;
-        for (ModelDriverError error : result.getErrors()) {
+        for (DriverError error : result.getErrors()) {
             systemMessage = new SystemMessage();
             systemMessage.setMessageType("DataModeler");
             systemMessage.setLevel(SystemMessage.Level.ERROR);
@@ -782,7 +792,7 @@ public class DataModelerServiceImpl
             systemMessage.setText(error.getMessage());
             systemMessage.setColumn(error.getColumn());
             systemMessage.setLine(error.getLine());
-            systemMessage.setPath(Paths.convert(error.getFile()));
+            systemMessage.setPath( error.getFile() );
             publishEvent.getMessagesToPublish().add(systemMessage);
         }
 
@@ -868,7 +878,7 @@ public class DataModelerServiceImpl
     public GenerationResult refactorClass(final Path path,
                                           final String newPackageName,
                                           final String newClassName) {
-        final String source = ioService.readAllString(Paths.convert(path));
+        final String source = ioService.readAllString( Paths.convert( path ) );
         return refactorClass(source, path, newPackageName, newClassName);
     }
 
@@ -975,10 +985,10 @@ public class DataModelerServiceImpl
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("original source is: " + originalSource);
+            logger.debug( "original source is: " + originalSource );
         }
 
-        JavaType<?> javaType = Roaster.parse(originalSource);
+        JavaType<?> javaType = Roaster.parse( originalSource );
         if (javaType.isClass()) {
             if (javaType.getSyntaxErrors() != null && !javaType.getSyntaxErrors().isEmpty()) {
                 //if a file has parsing errors it will be skipped.
@@ -1008,7 +1018,7 @@ public class DataModelerServiceImpl
             ClassTypeResolver classTypeResolver) throws Exception {
 
         if (javaClassSource == null || !javaClassSource.isClass()) {
-            logger.warn("A null javaClassSource or javaClassSouce is not a Class, no processing will be done. javaClassSource: " + javaClassSource + " className: " + (javaClassSource != null ? javaClassSource.getName() : null));
+            logger.warn( "A null javaClassSource or javaClassSouce is not a Class, no processing will be done. javaClassSource: " + javaClassSource + " className: " + ( javaClassSource != null ? javaClassSource.getName() : null ) );
             return;
         }
 
@@ -1170,6 +1180,70 @@ public class DataModelerServiceImpl
         }
     }
 
+    @Override
+    public AnnotationSourceResponse resolveSourceRequest( AnnotationSourceRequest sourceRequest ) {
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(  );
+        return modelDriver.resolveSourceRequest( sourceRequest );
+    }
+
+    @Override
+    public List<ValidationMessage> validateValuePair( String annotationClassName,
+            ElementType target, String valuePairName, String literalValue ) {
+        //TODO currently to achieve feature complete we only validate the syntax
+        //but additional checks should be added in order to be sure the value pair is correct
+        List<ValidationMessage> validationMessages = new ArrayList<ValidationMessage>(  );
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(  );
+        Pair<AnnotationSource<JavaClassSource>, List<DriverError>> parseResult =
+                modelDriver.parseAnnotationWithValuePair( annotationClassName,
+                target, valuePairName, literalValue );
+        if ( parseResult.getK2() != null && parseResult.getK2().size() > 0 ) {
+            ValidationMessage validationMessage;
+            for ( DriverError driverError : parseResult.getK2() ) {
+                validationMessage = new ValidationMessage();
+                validationMessage.setText( driverError.getMessage() );
+                validationMessage.setColumn( driverError.getColumn() );
+                validationMessage.setLine( driverError.getLine() );
+                validationMessage.setLevel( ValidationMessage.Level.ERROR );
+                validationMessages.add( validationMessage );
+            }
+        }
+        return validationMessages;
+    }
+
+    @Override
+    public AnnotationParseResponse resolveParseRequest( AnnotationParseRequest parseRequest, KieProject kieProject ) {
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(  );
+        Pair<Annotation, List<DriverError>> driverResult = modelDriver.parseAnnotationWithValuePair(
+                parseRequest.getAnnotationClassName(),
+                parseRequest.getTarget(),
+                parseRequest.getValuePairName(),
+                parseRequest.getValuePairLiteralValue(),
+                serviceHelper.getProjectClassLoader( kieProject ) );
+
+        AnnotationParseResponse response = new AnnotationParseResponse( driverResult.getK1() );
+        response.withErrors( driverResult.getK2() );
+        return response;
+    }
+
+    @Override
+    public AnnotationDefinitionResponse resolveDefinitionRequest( AnnotationDefinitionRequest definitionRequest,
+            KieProject kieProject ) {
+
+        JavaRoasterModelDriver modelDriver = new JavaRoasterModelDriver(  );
+        ClassLoader classLoader = serviceHelper.getProjectClassLoader( kieProject );
+        ClassTypeResolver classTypeResolver = DriverUtils.createClassTypeResolver( classLoader );
+        AnnotationDefinitionResponse definitionResponse = new AnnotationDefinitionResponse( );
+
+        try {
+            AnnotationDefinition annotationDefinition = modelDriver.buildAnnotationDefinition( definitionRequest.getClassName(), classTypeResolver );
+            definitionResponse.withAnnotationDefinition( annotationDefinition );
+        } catch ( ModelDriverException e ) {
+            DriverError driverError = new DriverError( e.getMessage() );
+            definitionResponse.addError( driverError );
+        }
+        return definitionResponse;
+    }
+
     private void cleanupEmptyDirs(org.uberfire.java.nio.file.Path projectPath) {
         FileUtils fileUtils = FileUtils.getInstance();
         List<String> deleteableFiles = new ArrayList<String>();
@@ -1178,7 +1252,7 @@ public class DataModelerServiceImpl
     }
 
     private org.uberfire.java.nio.file.Path existsProjectJavaPath(org.uberfire.java.nio.file.Path projectPath) {
-        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve("src").resolve("main").resolve("java");
+        org.uberfire.java.nio.file.Path javaPath = projectPath.resolve( "src" ).resolve("main").resolve("java");
         if (ioService.exists(javaPath)) {
             return javaPath;
         }

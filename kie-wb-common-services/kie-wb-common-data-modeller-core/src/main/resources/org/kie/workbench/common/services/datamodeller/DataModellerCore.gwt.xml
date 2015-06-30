@@ -20,6 +20,7 @@
 <module>
 
   <source path="core"/>
+  <source path="driver/model"/>
   <source path="util">
     <include name="**/NamingUtils.java" />
     <include name="**/PortableStringUtils.java" />

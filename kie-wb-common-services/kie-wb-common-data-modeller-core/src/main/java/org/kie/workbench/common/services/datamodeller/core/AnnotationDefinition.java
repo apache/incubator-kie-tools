@@ -28,11 +28,13 @@ public interface AnnotationDefinition extends HasClassName {
 
     List<AnnotationValuePairDefinition> getValuePairs();
 
+    AnnotationValuePairDefinition getValuePair( String valuePairName );
+
     boolean isTypeAnnotation();
 
     boolean isFieldAnnotation();
 
-    boolean hasValue( String name );
+    boolean hasValue( String valuePairName );
 
     AnnotationRetention getRetention();
 

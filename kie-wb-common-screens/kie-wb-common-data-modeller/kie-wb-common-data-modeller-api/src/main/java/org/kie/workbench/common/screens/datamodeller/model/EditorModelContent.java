@@ -22,11 +22,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.guvnor.common.services.project.model.Package;
-import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.services.datamodeller.core.DataModel;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.uberfire.backend.vfs.Path;
 
 @Portable
@@ -60,16 +60,11 @@ public class EditorModelContent extends DataModelerResult {
 
     private long elapsedTime;
 
-    private Project currentProject;
+    private KieProject currentProject;
 
     private Set<Package> currentProjectPackages = new HashSet<Package>(  );
 
     private Map<String, Path> dataObjectPaths = new HashMap<String, Path>(  );
-
-    private static int modelIds = 0;
-
-    //only to distinguish models created in memory
-    private int id = modelIds++;
 
     public EditorModelContent() {
     }
@@ -130,11 +125,11 @@ public class EditorModelContent extends DataModelerResult {
         this.elapsedTime = elapsedTime;
     }
 
-    public Project getCurrentProject() {
+    public KieProject getCurrentProject() {
         return currentProject;
     }
 
-    public void setCurrentProject( Project currentProject ) {
+    public void setCurrentProject( KieProject currentProject ) {
         this.currentProject = currentProject;
     }
 

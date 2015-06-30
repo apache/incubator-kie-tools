@@ -53,6 +53,12 @@ public enum ElementType {
      *
      * @since 1.8
      */
-    TYPE_USE
+    TYPE_USE,
+
+    /**
+     * Type to be used when an annotation has no target defined. I was found some errai marshalling errors when
+     * the annotation is unmarshalled on the browser side. e.g. javax.persistence.UniqueConstraint
+     */
+    UNDEFINED
 
 }
