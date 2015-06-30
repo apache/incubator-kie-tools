@@ -16,7 +16,7 @@
     All modules extend this parent, except for the boms (which are used here).</description>
 
   <properties>
-    <version.org.uberfire>0.7.0.Beta2</version.org.uberfire>
+    <version.org.uberfire>0.7.0-SNAPSHOT</version.org.uberfire>
 
     <version.de.benediktmeurer.gwt-slf4j>0.0.2</version.de.benediktmeurer.gwt-slf4j>
     <version.ch.qos.logback>1.0.9</version.ch.qos.logback>
