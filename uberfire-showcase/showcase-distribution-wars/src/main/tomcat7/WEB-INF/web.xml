@@ -48,17 +48,6 @@
   </filter-mapping>
 
   <servlet>
-    <servlet-name>GoogleGadget</servlet-name>
-    <servlet-class>org.uberfire.backend.server.impl.GoogleGadgetServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>GoogleGadget</servlet-name>
-    <url-pattern>/org.uberfire.UberfireShowcase/google.gadget</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
     <servlet-name>ErraiServlet</servlet-name>
     <servlet-class>org.jboss.errai.bus.server.servlet.DefaultBlockingServlet</servlet-class>
     <load-on-startup>1</load-on-startup>

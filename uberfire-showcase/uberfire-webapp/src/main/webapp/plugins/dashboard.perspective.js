@@ -5,7 +5,7 @@ $registerPerspective({
     view: {
         parts: [
             {
-                place: "IPInfoGadget"
+                place: "GitHubCommitStats"
             }
         ],
         panels: [
@@ -15,7 +15,7 @@ $registerPerspective({
                 panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
                 parts: [
                     {
-                        place: "my_angular_js"
+                        place: "GitHubCommitDaysStats"
                     }
                 ]
             },
@@ -36,7 +36,7 @@ $registerPerspective({
                 panel_type: "org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter",
                 parts: [
                     {
-                        place: "welcome"
+                        place: "GitHubFrequencyStats"
                     }
                 ]
             }
