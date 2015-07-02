@@ -66,6 +66,11 @@ public class KieTextEditorScreenPresenter
         } else {
             mode = AceEditorMode.TEXT;
         }
+
+        // set xml mode for business processes
+        if(path.getFileName().endsWith(".bpmn") || path.getFileName().endsWith(".bpmn2")) {
+            mode = AceEditorMode.XML;
+        }
     }
 
     @WorkbenchPartTitle
