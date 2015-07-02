@@ -20,6 +20,7 @@ import org.uberfire.workbench.events.ResourceAddedEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -99,10 +100,25 @@ public class LockManagerImpl implements LockManager {
     
     @Override
     public void acquireLockOnDemand() {
-        if (lockTarget == null)
+        if ( lockTarget == null )
             return;
-        
+
         final Element element = lockTarget.getWidget().getElement();
+        acquireLockOnDemand( element );
+
+        lockTarget.getWidget().addAttachHandler( new AttachEvent.Handler() {
+
+            @Override
+            public void onAttachOrDetach( AttachEvent event ) {
+                // Handle widget reattachment/reparenting 
+                if ( event.isAttached() ) {
+                    acquireLockOnDemand( element );
+                }
+            }
+        } );
+    }
+    
+    private void acquireLockOnDemand(final Element element) {
         Event.sinkEvents( element,
                           Event.KEYEVENTS | Event.ONCHANGE | Event.ONCLICK );
 
